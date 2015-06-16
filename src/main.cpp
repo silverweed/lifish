@@ -13,8 +13,17 @@ int main() {
 			switch (event.type) {
 			case sf::Event::Closed:
 				window.close();
+				break;
+			case sf::Event::KeyPressed:
+				switch (event.key.code) {
+				case sf::Keyboard::Key::Escape:
+					window.close();
+					break;
+				}
+				break;
 			}
 		}
+		window.clear();
 		level.draw(window);
 		window.display();
 	}
