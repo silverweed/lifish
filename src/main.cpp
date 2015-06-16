@@ -1,8 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include "Level.hpp"
+#include "LevelSet.hpp"
 
 int main() {
 	sf::RenderWindow window(sf::VideoMode(640, 480), "Level test");
+
+	Game::LevelSet ls = Game::LevelSet::loadFromJSON("levels.json");
 
 	Game::Level level("../assets/textures/level_test.png");
 	level.draw(window);
