@@ -1,20 +1,53 @@
 #include "Level.hpp"
 #include "Game.hpp"
+#include "GameCache.hpp"
 #include <iostream>
+#include <sstream>
 
-using namespace Game;
+using Game::Level;
+using Game::pwd;
+using Game::DIRSEP;
 
 Level::Level() {}
 
 Level::Level(const std::string& texture_name) {
-	// Load background texture
-	if (!bgTexture.loadFromFile(texture_name)) 
-		std::cerr << "[Level.cpp] Error: couldn't load texture " << texture_name << std::endl;
-
-	loadTiles();
+	initialized = _loadTexture(texture_name);
 }
 
-void Level::loadTiles() {
+bool Level::_loadTexture(const std::string& texture_name) {
+	// Load background texture
+	bool loaded = false;
+	// Check if image is in cache
+	sf::Image *img = Game::cache.getTexture(texture_name);
+	if (img != nullptr) {
+		if (!bgTexture.loadFromImage(*img)) 
+			std::cerr << "[Level.cpp] Error: couldn't load texture " << texture_name << " from memory!" << std::endl;
+		else {
+			loaded = true;
+			std::clog << "[Level.cpp] loaded texture " << texture_name << " from memory." << std::endl;
+		}
+	}
+	// Load from file and update the cache
+	if (!loaded) {
+		sf::Image *img = new sf::Image;
+		if (!img->loadFromFile(texture_name))
+			std::cerr << "[Level.cpp] Error: couldn't load texture " << texture_name << " from file!" << std::endl;
+		else if (bgTexture.loadFromImage(*img)) {
+			loaded = true;
+			std::clog << "[Level.cpp] loaded texture " << texture_name << " from file." << std::endl;
+			Game::cache.putTexture(texture_name, img);
+		} else 
+			std::cerr << "[Level.cpp] Error: couldn't load texture " << texture_name << " from image!" << std::endl;
+	}
+	if (loaded) {
+		std::clog << "[Level.cpp] Texture " << texture_name << " loaded correctly. Loading tiles..." << std::endl;
+		_loadTiles();
+		return true;
+	}
+	return false;
+}
+
+void Level::_loadTiles() {
 	for (unsigned short i = 0; i < bgTiles.size(); ++i)
 		bgTiles[i].setTexture(bgTexture);
 
@@ -34,6 +67,16 @@ void Level::loadTiles() {
 }
 
 Level::~Level() {}
+
+bool Level::init() {
+	// Load the appropriate tileset from assets
+	std::stringstream assetspath;
+	assetspath << pwd << DIRSEP << ".." << DIRSEP << "assets";
+	std::stringstream texturename;
+	texturename << assetspath.str() << DIRSEP << "textures" << DIRSEP << "tileset" << tileset << ".png";
+	initialized = _loadTexture(texturename.str());
+	return initialized;
+}
 
 void Level::draw(sf::RenderTarget& window) {
 	window.draw(bgTiles[TILE_UPPER_LEFT]);
@@ -58,8 +101,22 @@ void Level::draw(sf::RenderTarget& window) {
 	}
 	for (unsigned short i = 1; i < LEVEL_WIDTH + 1; ++i) {
 		for (unsigned short j = 1; j < LEVEL_HEIGHT + 1; ++j) {
-			bgTiles[TILE_REGULAR].setPosition(sf::Vector2f(i * TILE_SIZE, j * TILE_SIZE));
-			window.draw(bgTiles[TILE_REGULAR]);
+			sf::Sprite& sprite = bgTiles[TILE_REGULAR];
+			switch (tiles[j][i].getType()) {
+			using T = Tile::Type;
+			case T::EMPTY:
+				break;
+			case T::BREAKABLE:
+				// TODO
+				break;
+			case T::UNBREAKABLE:
+				// TODO
+				break;
+			default:
+				sprite = *tiles[j][i].getSprite();
+			}
+			sprite.setPosition(sf::Vector2f(i * TILE_SIZE, j * TILE_SIZE));
+			window.draw(sprite);
 		}
 	}
 }
@@ -71,4 +128,36 @@ void Level::setTile(unsigned short left, unsigned short top, const Tile& tile) {
 		top = LEVEL_HEIGHT - 1;
 
 	tiles[top][left] = tile;
+}
+
+bool Level::setTilemap(const std::string& tilemap) {
+	unsigned short x = 0, y = 0;
+	using T = Tile::Type;
+	for (unsigned int i = 0; i < tilemap.length(); ++i) {
+		switch (tilemap[i]) {
+		case T::EMPTY:
+		case T::BREAKABLE:
+		case T::UNBREAKABLE:
+			tiles[y][x].setType(static_cast<T>(tilemap[i]));
+			break;
+		// TODO: enemies, players, teleporters, etc
+		default:
+			// invalid tile symbol
+			return false;
+		}
+		if (++x == LEVEL_WIDTH) {
+			x = 0;
+			if (++y == LEVEL_HEIGHT)
+				break;
+		}
+	}
+	return true;
+}
+
+void Level::printTilemap() const {
+	for (unsigned short i = 0; i < LEVEL_HEIGHT; ++i) {
+		for (unsigned short j = 0; j < LEVEL_WIDTH; ++j)
+			std::cout << static_cast<char>(tiles[j][i].getType()) << " ";
+		std::cout << std::endl;
+	}
 }

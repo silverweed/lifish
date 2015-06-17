@@ -1,20 +1,48 @@
 #include "LevelSet.hpp"
+#include "json.hpp"
 #include <fstream>
 #include <iostream>
 
 using json = nlohmann::json;
-using namespace Game;
+using Game::LevelSet;
+using Game::Level;
 
-LevelSet LevelSet::loadFromJSON(const std::string& path) {
-	LevelSet levelSet;
+LevelSet::LevelSet(const std::string& path) {
 	json levelJSON = json::parse(std::ifstream(path.c_str()));
-	auto levels = levelJSON["levels"];
+	// TODO: load metadata
 
-	std::cerr << "levels: " << levels << std::endl;
-	unsigned short x = 0, y = 0;
-	for (auto lvinfo : levels) {
+	auto levelsdata = levelJSON["levels"];
+
+	unsigned short lvnum = 1;
+	/* lvinfo = {
+	 *		"time": uint,
+	 *		"tileset": ushort,
+	 *		"tilemap": string
+	 * }
+	 */
+	for (auto lvinfo : levelsdata) {
 		// TODO: create the levels
+		Level *level = new Level;
+		level->setTime((unsigned int)lvinfo["time"]);
+		level->setTileset((unsigned short)lvinfo["tileset"]);
+		if (!level->setTilemap(lvinfo["tilemap"]))
+			std::cerr << "[LevelSet.cpp] Level " << lvnum << " has invalid tilemap: skipping." << std::endl;
+		else {
+			++lvnum;
+			levels.push_back(level);
+		}
 	}
+}
 
-	return levelSet;
+LevelSet::~LevelSet() {
+	for (auto& it : levels) 
+		if (it != nullptr)
+			delete it;
+}
+
+Level* LevelSet::getLevel(unsigned short num) const {
+	if (num > levels.size()) return nullptr;
+	if (!levels[num-1]->isInitialized())
+		levels[num-1]->init();
+	return levels[num-1];
 }

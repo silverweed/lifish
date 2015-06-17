@@ -1,6 +1,6 @@
 #include "Tile.hpp"
 
-using namespace Game;
+using Game::Tile;
 
 Tile::Tile(const Tile::Type type) : type(type) {}
 
