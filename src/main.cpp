@@ -13,7 +13,7 @@ int main() {
 	}
 	sf::RenderWindow window(sf::VideoMode(640, 480), "Level test");
 
-	Game::LevelSet levelset("../levels.json");
+	Game::LevelSet levelset(std::string(Game::pwd) + std::string("/../levels.json"));
 	std::clog << "Loaded " << levelset.getLevelsNum() << " levels." << std::endl;
 
 	Game::Level *level = levelset.getLevel(2);
