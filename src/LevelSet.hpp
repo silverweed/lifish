@@ -2,16 +2,17 @@
 
 #include <string>
 #include <vector>
-#include <unordered_set>
+#include <unordered_map>
 #include "Level.hpp"
 #include "Game.hpp"
 
 namespace Game {
 
+class Level;
+
 class LevelSet {
-	std::vector<Level*> levels;
-	// TODO
-	//std::unordered_set<basic_json> metadata;
+	std::vector<Game::Level*> levels;
+	std::unordered_map<std::string, std::string> metadata;
 public:
 	LevelSet(const std::string& jsonPath);
 	~LevelSet();
@@ -21,6 +22,8 @@ public:
 	 */
 	Level* getLevel(unsigned short i) const;
 	unsigned short getLevelsNum() const { return levels.size(); }
+
+	void printInfo() const;
 };
 
 }

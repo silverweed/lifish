@@ -2,14 +2,27 @@
 #include "json.hpp"
 #include <fstream>
 #include <iostream>
+#include <typeinfo>
 
 using json = nlohmann::json;
 using Game::LevelSet;
 using Game::Level;
 
+/** Optional additional metadata; all values must be strings */
+static constexpr const char* AVAIL_METADATA[] = {
+	"author", "created", "difficulty"
+};
+
 LevelSet::LevelSet(const std::string& path) {
 	json levelJSON = json::parse(std::ifstream(path.c_str()));
-	// TODO: load metadata
+	// load metadata
+	metadata["name"] = levelJSON["name"].get<std::string>();
+	if (metadata["name"].length() < 1)
+		metadata["name"] = path;
+	for (auto& key : AVAIL_METADATA) {
+		if (levelJSON.find(key) != levelJSON.end())
+			metadata[key] = levelJSON[key].get<std::string>();
+	}
 
 	auto levelsdata = levelJSON["levels"];
 
@@ -21,8 +34,7 @@ LevelSet::LevelSet(const std::string& path) {
 	 * }
 	 */
 	for (auto lvinfo : levelsdata) {
-		// TODO: create the levels
-		Level *level = new Level;
+		Level *level = new Level(this);
 		level->setTime((unsigned int)lvinfo["time"]);
 		level->setTileset((unsigned short)lvinfo["tileset"]);
 		if (!level->setTilemap(lvinfo["tilemap"]))
@@ -45,4 +57,13 @@ Level* LevelSet::getLevel(unsigned short num) const {
 	if (!levels[num-1]->isInitialized())
 		levels[num-1]->init();
 	return levels[num-1];
+}
+
+void LevelSet::printInfo() const {
+	std::cout << "Level Set: " << metadata.find("name")->second << "\n"
+		  << "Levels: " << levels.size() << "\n";
+	for (auto& pair : metadata) {
+		if (pair.first == "name") continue;
+		std::cout << pair.first << ": " << pair.second << "\n";
+	}
 }

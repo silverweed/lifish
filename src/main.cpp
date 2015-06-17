@@ -16,9 +16,8 @@ int main() {
 	Game::LevelSet levelset("../levels.json");
 	std::clog << "Loaded " << levelset.getLevelsNum() << " levels." << std::endl;
 
-	//Game::Level level("../assets/textures/level_test.png");
 	Game::Level *level = levelset.getLevel(2);
-	level->printTilemap();
+	level->printInfo();
 	level->draw(window);
 
 	while (window.isOpen()) {

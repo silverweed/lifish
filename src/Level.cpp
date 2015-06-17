@@ -7,8 +7,9 @@
 using Game::Level;
 using Game::pwd;
 using Game::DIRSEP;
+using Game::EntityType;
 
-Level::Level() {}
+Level::Level(const LevelSet *_levelSet) : levelSet(_levelSet) {}
 
 Level::Level(const std::string& texture_name) {
 	initialized = _loadTexture(texture_name);
@@ -79,6 +80,7 @@ bool Level::init() {
 }
 
 void Level::draw(sf::RenderTarget& window) {
+	// Draw the borders
 	window.draw(bgTiles[TILE_UPPER_LEFT]);
 	for (unsigned short i = 1; i < LEVEL_WIDTH + 1; ++i) {
 		bgTiles[TILE_UPPER].setPosition(sf::Vector2f(i * TILE_SIZE, 0));
@@ -99,52 +101,21 @@ void Level::draw(sf::RenderTarget& window) {
 		bgTiles[TILE_LEFT].setPosition(sf::Vector2f(0, i * TILE_SIZE));
 		window.draw(bgTiles[TILE_LEFT]);
 	}
+	// Draw the level background
 	for (unsigned short i = 1; i < LEVEL_WIDTH + 1; ++i) {
 		for (unsigned short j = 1; j < LEVEL_HEIGHT + 1; ++j) {
-			sf::Sprite& sprite = bgTiles[TILE_REGULAR];
-			switch (tiles[j][i].getType()) {
-			using T = Tile::Type;
-			case T::EMPTY:
-				break;
-			case T::BREAKABLE:
-				// TODO
-				break;
-			case T::UNBREAKABLE:
-				// TODO
-				break;
-			default:
-				sprite = *tiles[j][i].getSprite();
-			}
-			sprite.setPosition(sf::Vector2f(i * TILE_SIZE, j * TILE_SIZE));
-			window.draw(sprite);
+			bgTiles[TILE_REGULAR].setPosition(sf::Vector2f(i * TILE_SIZE, j * TILE_SIZE));
+			window.draw(bgTiles[TILE_REGULAR]);
 		}
 	}
 }
 
-void Level::setTile(unsigned short left, unsigned short top, const Tile& tile) {
-	if (left > LEVEL_WIDTH-1)
-		left = LEVEL_WIDTH - 1;
-	if (top > LEVEL_HEIGHT-1)
-		top = LEVEL_HEIGHT - 1;
-
-	tiles[top][left] = tile;
-}
-
 bool Level::setTilemap(const std::string& tilemap) {
 	unsigned short x = 0, y = 0;
-	using T = Tile::Type;
 	for (unsigned int i = 0; i < tilemap.length(); ++i) {
-		switch (tilemap[i]) {
-		case T::EMPTY:
-		case T::BREAKABLE:
-		case T::UNBREAKABLE:
-			tiles[y][x].setType(static_cast<T>(tilemap[i]));
-			break;
-		// TODO: enemies, players, teleporters, etc
-		default:
-			// invalid tile symbol
-			return false;
-		}
+		EntityType et = Game::entityFromLetter(tilemap[i]);
+		if (et == EntityType::UNKNOWN) return false;
+		tiles[y][x] = et;
 		if (++x == LEVEL_WIDTH) {
 			x = 0;
 			if (++y == LEVEL_HEIGHT)
@@ -156,8 +127,23 @@ bool Level::setTilemap(const std::string& tilemap) {
 
 void Level::printTilemap() const {
 	for (unsigned short i = 0; i < LEVEL_HEIGHT; ++i) {
-		for (unsigned short j = 0; j < LEVEL_WIDTH; ++j)
-			std::cout << static_cast<char>(tiles[j][i].getType()) << " ";
+		for (unsigned short j = 0; j < LEVEL_WIDTH; ++j) {
+			std::cout << tiles[i][j] << " ";
+		}
 		std::cout << std::endl;
 	}
+}
+
+void Level::printInfo() const {
+	std::cout << "Level Info:\n" 
+		  << "-----------\n"
+		  << "Time: " << time << " s\n"
+		  << "Tileset: " << tileset << "\n";
+	if (levelSet != nullptr) {
+		std::cout << "Belongs to: >>>\n";
+		levelSet->printInfo();
+		std::cout << "<<<\n";
+	}
+	std::cout << "Tilemap:\n";
+	printTilemap();
 }
