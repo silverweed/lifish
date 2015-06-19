@@ -5,7 +5,7 @@ using Game::GameCache;
 GameCache::GameCache() {}
 
 GameCache::~GameCache() {
-	for (auto it : textures) {
+	for (auto& it : textures) {
 		if (it.second != nullptr)
 			delete it.second;
 	}

@@ -1,3 +1,4 @@
+Makefile
 *.gch
 CMakeCache.txt
 CMakeFiles/

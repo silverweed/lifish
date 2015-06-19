@@ -19,7 +19,7 @@ LevelSet::LevelSet(const std::string& path) {
 	metadata["name"] = levelJSON["name"].get<std::string>();
 	if (metadata["name"].length() < 1)
 		metadata["name"] = path;
-	for (auto& key : AVAIL_METADATA) {
+	for (const auto& key : AVAIL_METADATA) {
 		if (levelJSON.find(key) != levelJSON.end())
 			metadata[key] = levelJSON[key].get<std::string>();
 	}
@@ -33,7 +33,7 @@ LevelSet::LevelSet(const std::string& path) {
 	 *		"tilemap": string
 	 * }
 	 */
-	for (auto lvinfo : levelsdata) {
+	for (const auto& lvinfo : levelsdata) {
 		Level *level = new Level(this);
 		level->setTime((unsigned int)lvinfo["time"]);
 		level->setTileset((unsigned short)lvinfo["tileset"]);
