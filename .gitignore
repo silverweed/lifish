@@ -5,3 +5,4 @@ CMakeFiles/
 *.o
 lifish
 assets/test
+cmake_install.cmake
