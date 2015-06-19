@@ -54,7 +54,8 @@ class Level : public Game::Drawable {
 	bool initialized = false;
 public:
 	/** Constructs a level without a specified time and tileset. init() must
-	 *  be called before using this level.
+	 *  be called before using this level. Optionally, can specify a LevelSet
+	 *  this Level belongs to.
 	 */
 	Level(const LevelSet *levelSet = nullptr);
 	// XXX: testing constructor
@@ -72,15 +73,17 @@ public:
 	/** Draws this level's background in the target window */
 	void draw(sf::RenderTarget& window);
 
+	unsigned short getTileset() const { return tileset; }
 	void setTileset(unsigned short _tileset) { tileset = _tileset; }
+
+	unsigned int getTime() const { return time; }
 	void setTime(unsigned int _time) { time = _time; }
+
 	/** Given a string representation of the level, sets its static tilemap
 	 *  by filling the <entities> vector.
 	 */
+	EntityType getTile(unsigned short left, unsigned short top) const;
 	bool setTilemap(const std::string& tilemap);
-
-	unsigned int getTime() const { return time; }
-	unsigned short getTileset() const { return tileset; }
 
 	void printInfo() const;
 	void printTilemap() const;

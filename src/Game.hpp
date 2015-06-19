@@ -32,6 +32,7 @@ constexpr unsigned short PWD_BUFSIZE = 512;
 /** The executable working directory */
 extern char pwd[PWD_BUFSIZE];
 
+/** Global game cache (caches textures in memory for faster loading) */
 class GameCache;
 extern GameCache cache;
 

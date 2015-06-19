@@ -72,7 +72,7 @@ Level::~Level() {}
 bool Level::init() {
 	// Load the appropriate tileset from assets
 	std::stringstream assetspath;
-	assetspath << pwd << DIRSEP << ".." << DIRSEP << "assets";
+	assetspath << pwd << DIRSEP << "assets";
 	std::stringstream texturename;
 	texturename << assetspath.str() << DIRSEP << "textures" << DIRSEP << "tileset" << tileset << ".png";
 	initialized = _loadTexture(texturename.str());
@@ -108,6 +108,11 @@ void Level::draw(sf::RenderTarget& window) {
 			window.draw(bgTiles[TILE_REGULAR]);
 		}
 	}
+}
+
+EntityType Level::getTile(unsigned short left, unsigned short top) const {
+	if (left >= LEVEL_WIDTH || top >= LEVEL_HEIGHT) return EntityType::UNKNOWN;
+	return tiles[top][left];
 }
 
 bool Level::setTilemap(const std::string& tilemap) {

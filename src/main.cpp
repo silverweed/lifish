@@ -6,14 +6,14 @@
 
 int main() {
 	if (Game::init()) {
-		std::clog << "Game successfully initialized. pwd = " << Game::pwd << std::endl;
+		std::clog << "Game successfully initialized. Version = " << VERSION << "; pwd = " << Game::pwd << std::endl;
 	} else {
 		std::cerr << "Game failed to initialize!" << std::endl;
 		return 1;
 	}
 	sf::RenderWindow window(sf::VideoMode(640, 480), "Level test");
 
-	Game::LevelSet levelset(std::string(Game::pwd) + std::string("/../levels.json"));
+	Game::LevelSet levelset(std::string(Game::pwd) + std::string("/levels.json"));
 	std::clog << "Loaded " << levelset.getLevelsNum() << " levels." << std::endl;
 
 	Game::Level *level = levelset.getLevel(2);

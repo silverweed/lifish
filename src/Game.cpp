@@ -48,7 +48,7 @@ bool Game::init() {
 
 	// strip executable name
 	for (int i = len-1; i > -1; --i) {
-		if (pwd[i] == '/') {
+		if (pwd[i] == Game::DIRSEP) {
 			pwd[i] = '\0';
 			break;
 		}
