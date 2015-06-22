@@ -1,0 +1,9 @@
+boh1
+-----
+loopstart
+sample 000325731
+seconds 7.386
+
+looplength
+sample 001952700
+seconds 44.279

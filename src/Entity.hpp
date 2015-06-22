@@ -16,7 +16,9 @@ public:
 	virtual ~Entity();
 
 	sf::Sprite getSprite() const { return sprite; }
+
 	sf::Vector2f getPos() const { return pos; }
+	void setPos(sf::Vector2f _pos) { pos = _pos; }
 
 	void draw(sf::RenderTarget& win);
 };

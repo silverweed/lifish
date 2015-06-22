@@ -24,6 +24,25 @@ LevelSet::LevelSet(const std::string& path) {
 			metadata[key] = levelJSON[key].get<std::string>();
 	}
 
+	// load tracks data
+	auto tracksdata = levelJSON["tracks"];
+	unsigned short tracknum = 1;
+	for (const auto& trackinfo : tracksdata) {
+		auto loop = trackinfo["loop"];
+		float loopstart = loop["start"]; 
+		float looplength = -1;
+		auto len = loop.find("length");
+		if (len != loop.end()) {
+			looplength = *len;
+		} else {
+			float loopend = loop["end"];
+			looplength = loopend - loopstart;
+		}
+		Track *track = new Track(tracknum++, loopstart, looplength);
+		tracks.push_back(track);
+	}
+
+	// load levels data
 	auto levelsdata = levelJSON["levels"];
 
 	unsigned short lvnum = 1;
@@ -37,6 +56,7 @@ LevelSet::LevelSet(const std::string& path) {
 		Level *level = new Level(this);
 		level->setTime((unsigned int)lvinfo["time"]);
 		level->setTileset((unsigned short)lvinfo["tileset"]);
+		level->setTrack(tracks[(unsigned short)lvinfo["music"]-1]);
 		if (!level->setTilemap(lvinfo["tilemap"]))
 			std::cerr << "[LevelSet.cpp] Level " << lvnum << " has invalid tilemap: skipping." << std::endl;
 		else {
@@ -50,6 +70,9 @@ LevelSet::~LevelSet() {
 	for (auto& it : levels) 
 		if (it != nullptr)
 			delete it;
+	for (auto& it : tracks)
+		if (it != nullptr)
+			delete it;
 }
 
 Level* LevelSet::getLevel(unsigned short num) const {
@@ -61,8 +84,9 @@ Level* LevelSet::getLevel(unsigned short num) const {
 
 void LevelSet::printInfo() const {
 	std::cout << "Level Set: " << metadata.find("name")->second << "\n"
+		  << "Tracks: " << tracks.size() << "\n"
 		  << "Levels: " << levels.size() << "\n";
-	for (auto& pair : metadata) {
+	for (const auto& pair : metadata) {
 		if (pair.first == "name") continue;
 		std::cout << pair.first << ": " << pair.second << "\n";
 	}

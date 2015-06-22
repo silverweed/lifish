@@ -67,7 +67,24 @@ void Level::_loadTiles() {
 	bgTiles[TILE_LEFT].setTextureRect(sf::IntRect(2*TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 }
 
-Level::~Level() {}
+bool Level::_loadMusic(const std::string& music_name) {
+	sf::InputSoundFile input;
+	if (!input.openFromFile(music_name)) {
+		std::cerr << "[Level.cpp] Error: couldn't load music " << music_name << " from file!" << std::endl;
+		return false;
+	}
+	music = new LoopingMusic(input);
+	music->setLoopPoints(sf::seconds(track->getLoopStart()), sf::seconds(track->getLoopEnd()));
+	std::clog << "[Level.cpp] Loaded music " << music_name << "; loop: (" << music->getLoopBegin().asSeconds()
+		<< ", " << music->getLoopEnd().asSeconds() << ")" << std::endl;
+	return true;
+}
+
+Level::~Level() {
+	if (music != nullptr)
+		delete music;
+	// don't delete track as it's managed by LevelSet
+}
 
 bool Level::init() {
 	// Load the appropriate tileset from assets
@@ -76,6 +93,8 @@ bool Level::init() {
 	std::stringstream texturename;
 	texturename << assetspath.str() << DIRSEP << "textures" << DIRSEP << "tileset" << tileset << ".png";
 	initialized = _loadTexture(texturename.str());
+	// Load the music
+	initialized &= _loadMusic(track->getName());
 	return initialized;
 }
 
@@ -143,7 +162,8 @@ void Level::printInfo() const {
 	std::cout << "Level Info:\n" 
 		  << "-----------\n"
 		  << "Time: " << time << " s\n"
-		  << "Tileset: " << tileset << "\n";
+		  << "Tileset: " << tileset << "\n"
+		  << "Music: " << track->getName() << "\n";
 	if (levelSet != nullptr) {
 		std::cout << "Belongs to: >>>\n";
 		levelSet->printInfo();
