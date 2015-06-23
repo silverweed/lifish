@@ -11,10 +11,9 @@
 #include "Drawable.hpp"
 #include "Game.hpp"
 #include "Track.hpp"
-#include "FixedEntity.hpp"
-#include "MovingEntity.hpp"
 #include "EntityType.hpp"
 #include "LevelSet.hpp"
+#include "ShadedText.hpp"
 #include "utils.hpp"
 
 namespace Game {
@@ -22,6 +21,9 @@ namespace Game {
 class LevelSet;
 
 class Level : public Game::Drawable {
+	/** Font for the level num text */
+	constexpr static const char* LEVELNUM_FONT = "FreeMono.ttf";
+
 	/** Types of bg texture tiles */
 	enum : unsigned short {
 		TILE_REGULAR = 0,
@@ -49,6 +51,11 @@ class Level : public Game::Drawable {
 
 	/** The music track data */
 	Track track;
+
+	/** Number of the level */
+	unsigned short levelnum = 0;
+
+	Game::ShadedText *levelnumtext = nullptr;
 
 	/** Time before "Hurry Up" */
 	unsigned int time;
@@ -98,10 +105,10 @@ public:
 	void draw(sf::RenderTarget& window);
 
 	unsigned short getTileset() const { return tileset; }
-	void setTileset(unsigned short _tileset) { tileset = _tileset; }
+	void setTileset(const unsigned short _tileset) { tileset = _tileset; }
 
 	unsigned int getTime() const { return time; }
-	void setTime(unsigned int _time) { time = _time; }
+	void setTime(const unsigned int _time) { time = _time; }
 
 	/** Given a string representation of the level, sets its static tilemap
 	 *  by filling the <entities> vector.
@@ -109,10 +116,13 @@ public:
 	EntityType getTile(unsigned short left, unsigned short top) const;
 	bool setTilemap(const std::string& tilemap);
 
-	Track getTrack() const { return track; }
+	const Track& getTrack() const { return track; }
 	void setTrack(const Track& _track) { track = _track; }
 
 	LoopingMusic* getMusic() const { return music; }
+
+	void setLevelNum(const unsigned short num) { levelnum = num; }
+	unsigned short getLevelNum() const { return levelnum; }
 
 	void printInfo() const;
 	void printTilemap() const;

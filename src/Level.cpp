@@ -83,6 +83,8 @@ bool Level::_loadMusic(const std::string& music_name) {
 Level::~Level() {
 	if (music != nullptr)
 		delete music;
+	if (levelnumtext != nullptr)
+		delete levelnumtext;
 }
 
 bool Level::init() {
@@ -95,6 +97,13 @@ bool Level::init() {
 
 	// Load the music
 	initialized &= _loadMusic(track.name);
+
+	// Load the levelnum text
+	levelnumtext = ShadedText::newShadedText(
+			Game::getAssetDir("fonts") + std::string(LEVELNUM_FONT),
+			std::to_string(levelnum),
+			sf::Vector2f(TILE_SIZE * (LEVEL_WIDTH+1), 0));
+	levelnumtext->setStyle(sf::Text::Bold);
 
 	return initialized;
 }
@@ -128,6 +137,10 @@ void Level::draw(sf::RenderTarget& window) {
 			window.draw(bgTiles[TILE_REGULAR]);
 		}
 	}
+
+	// Draw the level number
+	if (levelnumtext->ok)
+		levelnumtext->draw(window);
 }
 
 EntityType Level::getTile(unsigned short left, unsigned short top) const {

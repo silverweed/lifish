@@ -7,6 +7,7 @@
 int main() {
 	if (Game::init()) {
 		std::clog << "Game successfully initialized. Version = " << VERSION << "; pwd = " << Game::pwd << std::endl;
+
 	} else {
 		std::cerr << "Game failed to initialize!" << std::endl;
 		return 1;

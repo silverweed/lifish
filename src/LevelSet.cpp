@@ -56,6 +56,7 @@ LevelSet::LevelSet(const std::string& path) {
 		level->setTime((unsigned int)lvinfo["time"]);
 		level->setTileset((unsigned short)lvinfo["tileset"]);
 		level->setTrack(tracks[(unsigned short)lvinfo["music"]-1]);
+		level->setLevelNum(lvnum);
 		if (!level->setTilemap(lvinfo["tilemap"]))
 			std::cerr << "[LevelSet.cpp] Level " << lvnum << " has invalid tilemap: skipping." << std::endl;
 		else {

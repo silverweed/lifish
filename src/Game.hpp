@@ -3,6 +3,10 @@
  * Game definitions
  */
 
+#include <string>
+#include <map>
+#include <SFML/Graphics.hpp>
+
 namespace Game {
 
 #if defined(__unix__) || defined(unix) || _BSD_SOURCE || _XOPEN_SOURCE >= 500 || _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED || _POSIX_C_SOURCE >= 200112L
@@ -35,6 +39,8 @@ extern char pwd[PWD_BUFSIZE];
 /** Global game cache (caches textures in memory for faster loading) */
 class GameCache;
 extern GameCache cache;
+
+std::string getAssetDir(const std::string& dir);
 
 /** Initializes runtime variables */
 bool init();

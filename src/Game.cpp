@@ -1,6 +1,8 @@
 #include "Game.hpp"
 #include "GameCache.hpp"
 #include <cstring>
+#include <sstream>
+#include <iostream>
 
 #if defined(IS_POSIX)
 #	include <unistd.h>
@@ -18,6 +20,7 @@ namespace Game {
 using Game::pwd;
 
 bool Game::init() {
+	// Setup pwd variable
 	pwd[0] = '\0';
 #if defined(IS_POSIX)
 	ssize_t bytes = 0;
@@ -48,10 +51,17 @@ bool Game::init() {
 
 	// strip executable name
 	for (int i = len-1; i > -1; --i) {
-		if (pwd[i] == Game::DIRSEP) {
+		if (pwd[i] == DIRSEP) {
 			pwd[i] = '\0';
 			break;
 		}
 	}
+
 	return true;
+}
+
+std::string Game::getAssetDir(const std::string& dir) {
+	std::stringstream ss;
+	ss << pwd << DIRSEP << "assets" << DIRSEP << dir << DIRSEP;
+	return ss.str();
 }
