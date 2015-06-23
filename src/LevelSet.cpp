@@ -48,7 +48,8 @@ LevelSet::LevelSet(const std::string& path) {
 	/* lvinfo = {
 	 *		"time": uint,
 	 *		"tileset": ushort,
-	 *		"tilemap": string
+	 *		"tilemap": string,
+	 *		"music": ushort,
 	 * }
 	 */
 	for (const auto& lvinfo : levelsdata) {

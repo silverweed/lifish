@@ -175,6 +175,7 @@ void Level::printTilemap() const {
 void Level::printInfo() const {
 	std::cout << "Level Info:\n" 
 		  << "-----------\n"
+		  << "Level " << levelnum << "\n"
 		  << "Time: " << time << " s\n"
 		  << "Tileset: " << tileset << "\n"
 		  << "Music: " << track.name << "\n";
