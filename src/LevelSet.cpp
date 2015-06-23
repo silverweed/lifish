@@ -38,8 +38,7 @@ LevelSet::LevelSet(const std::string& path) {
 			float loopend = loop["end"];
 			looplength = loopend - loopstart;
 		}
-		Track *track = new Track(tracknum++, loopstart, looplength);
-		tracks.push_back(track);
+		tracks.push_back(getNthTrack(tracknum++, loopstart, looplength));
 	}
 
 	// load levels data
@@ -68,9 +67,6 @@ LevelSet::LevelSet(const std::string& path) {
 
 LevelSet::~LevelSet() {
 	for (auto& it : levels) 
-		if (it != nullptr)
-			delete it;
-	for (auto& it : tracks)
 		if (it != nullptr)
 			delete it;
 }

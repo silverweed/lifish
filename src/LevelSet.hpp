@@ -13,7 +13,7 @@ class Level;
 
 class LevelSet {
 	std::vector<Game::Level*> levels;
-	std::vector<Game::Track*> tracks;
+	std::vector<Game::Track> tracks;
 	std::unordered_map<std::string, std::string> metadata;
 public:
 	LevelSet(const std::string& jsonPath);

@@ -18,7 +18,6 @@ int main() {
 
 	Game::Level *level = levelset.getLevel(2);
 	level->printInfo();
-	// FIXME
 	level->getMusic()->play();
 	level->draw(window);
 

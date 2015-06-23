@@ -4,20 +4,24 @@
  */
 
 #include <string>
+#include <sstream>
 
 namespace Game {
 
-class Track {
+struct Track {
 	std::string name;
-	float loopstart, looplength;
-public:
-	Track(const std::string& name, float start, float length);
-	Track(unsigned short num, float start, float length);
-
-	std::string getName() const { return name; }
-	float getLoopStart() const { return loopstart; }
-	float getLoopLength() const { return looplength; }
-	float getLoopEnd() const { return loopstart + looplength; }
+	float loopstart, loopend, looplength;
 };
+
+static Track getNthTrack(unsigned short num, float start, float length) {
+	std::stringstream ss;
+	ss << Game::pwd << DIRSEP << "assets" << DIRSEP << "music" << DIRSEP << "music" << num << ".ogg";
+	Track track;
+	track.name = ss.str();
+	track.loopstart = start;
+	track.looplength = length;
+	track.loopend = start + length;
+	return track;
+}
 
 }

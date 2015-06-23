@@ -34,31 +34,46 @@ class Level : public Game::Drawable {
 		TILE_LEFT = 7,
 		TILE_RIGHT = 8,
 	};
+
 	/** The background texture */
 	sf::Texture bgTexture;
+
 	/** The sprites for the background tiles */
 	std::array<sf::Sprite, 9> bgTiles;
+
+	/** The input sound file for the BGM */
+	sf::InputSoundFile musicInput;
+
 	/** The music for this level */
 	LoopingMusic *music = nullptr;
+
 	/** The music track data */
-	Track *track;
+	Track track;
+
 	/** Time before "Hurry Up" */
 	unsigned int time;
+
 	/** The tileset to use */
 	unsigned short tileset = 1;
+
 	/** This level's static (initial) tilemap */
 	Matrix<EntityType, LEVEL_HEIGHT, LEVEL_WIDTH> tiles;
+
 	/** (Optional) LevelSet this level belongs to */
 	const LevelSet *levelSet;
+
 
 	/** Loads the texture from the file <texture_name> (or from memory, if
 	 *  texture has already been cached)
 	 */
 	bool _loadTexture(const std::string& texture_name);
+
 	/** Loads the music from the file <music_name> */
 	bool _loadMusic(const std::string& music_name);
+
 	/** Loads the content of bgTiles (bgTexture must already be set) */
 	void _loadTiles();
+
 	/** Whether this level has been initialized or not */
 	bool initialized = false;
 public:
@@ -94,8 +109,8 @@ public:
 	EntityType getTile(unsigned short left, unsigned short top) const;
 	bool setTilemap(const std::string& tilemap);
 
-	const Track* getTrack() const { return track; }
-	void setTrack(Track *_track) { track = _track; }
+	Track getTrack() const { return track; }
+	void setTrack(const Track& _track) { track = _track; }
 
 	LoopingMusic* getMusic() const { return music; }
 
