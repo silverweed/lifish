@@ -25,7 +25,7 @@ LevelSet::LevelSet(const std::string& path) {
 	}
 
 	// load tracks data
-	auto tracksdata = levelJSON["tracks"];
+	const auto tracksdata = levelJSON["tracks"];
 	unsigned short tracknum = 1;
 	for (const auto& trackinfo : tracksdata) {
 		auto loop = trackinfo["loop"];
@@ -42,7 +42,7 @@ LevelSet::LevelSet(const std::string& path) {
 	}
 
 	// load levels data
-	auto levelsdata = levelJSON["levels"];
+	const auto levelsdata = levelJSON["levels"];
 
 	unsigned short lvnum = 1;
 	/* lvinfo = {
@@ -50,6 +50,10 @@ LevelSet::LevelSet(const std::string& path) {
 	 *		"tileset": ushort,
 	 *		"tilemap": string,
 	 *		"music": ushort,
+	 *		"walls": {
+	 *			"fixed": ushort,
+	 *			"breakable": ushort
+	 *		}
 	 * }
 	 */
 	for (const auto& lvinfo : levelsdata) {
@@ -58,6 +62,8 @@ LevelSet::LevelSet(const std::string& path) {
 		level->setTileset((unsigned short)lvinfo["tileset"]);
 		level->setTrack(tracks[(unsigned short)lvinfo["music"]-1]);
 		level->setLevelNum(lvnum);
+		level->setFixedWallsTextureNum((unsigned short)lvinfo["walls"]["fixed"]);
+		level->setBreakableWallsTextureNum((unsigned short)lvinfo["walls"]["breakable"]);
 		if (!level->setTilemap(lvinfo["tilemap"]))
 			std::cerr << "[LevelSet.cpp] Level " << lvnum << " has invalid tilemap: skipping." << std::endl;
 		else {

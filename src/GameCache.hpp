@@ -18,6 +18,12 @@ public:
 
 	sf::Image* getTexture(const std::string& name);
 	void putTexture(const std::string& name, sf::Image* img) { textures[name] = img; }
+
+	/** Tries to load `texture_name` into `texture`; if `texture_name` is already
+	 *  in the cache, load it from there; else, load from file and put the
+	 *  loaded image into the cache.
+	 */
+	bool loadTexture(sf::Texture& texture, const std::string& texture_name);
 };
 
 }

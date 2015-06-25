@@ -17,30 +17,7 @@ Level::Level(const std::string& texture_name) {
 
 bool Level::_loadTexture(const std::string& texture_name) {
 	// Load background texture
-	bool loaded = false;
-	// Check if image is in cache
-	sf::Image *img = Game::cache.getTexture(texture_name);
-	if (img != nullptr) {
-		if (!bgTexture.loadFromImage(*img)) 
-			std::cerr << "[Level.cpp] Error: couldn't load texture " << texture_name << " from memory!" << std::endl;
-		else {
-			loaded = true;
-			std::clog << "[Level.cpp] loaded texture " << texture_name << " from memory." << std::endl;
-		}
-	}
-	// Load from file and update the cache
-	if (!loaded) {
-		sf::Image *img = new sf::Image;
-		if (!img->loadFromFile(texture_name))
-			std::cerr << "[Level.cpp] Error: couldn't load texture " << texture_name << " from file!" << std::endl;
-		else if (bgTexture.loadFromImage(*img)) {
-			loaded = true;
-			std::clog << "[Level.cpp] loaded texture " << texture_name << " from file." << std::endl;
-			Game::cache.putTexture(texture_name, img);
-		} else 
-			std::cerr << "[Level.cpp] Error: couldn't load texture " << texture_name << " from image!" << std::endl;
-	}
-	if (loaded) {
+	if (Game::cache.loadTexture(bgTexture, texture_name)) {
 		std::clog << "[Level.cpp] Texture " << texture_name << " loaded correctly. Loading tiles..." << std::endl;
 		_loadTiles();
 		return true;
@@ -100,7 +77,7 @@ bool Level::init() {
 
 	// Load the levelnum text
 	levelnumtext = ShadedText::newShadedText(
-			Game::getAssetDir("fonts") + std::string(LEVELNUM_FONT),
+			Game::getAsset("fonts", LEVELNUM_FONT),
 			std::to_string(levelnum),
 			sf::Vector2f(TILE_SIZE * (LEVEL_WIDTH+1), 0));
 	levelnumtext->setStyle(sf::Text::Bold);
@@ -139,7 +116,7 @@ void Level::draw(sf::RenderTarget& window) {
 	}
 
 	// Draw the level number
-	if (levelnumtext->ok)
+	if (levelnumtext != nullptr)
 		levelnumtext->draw(window);
 }
 

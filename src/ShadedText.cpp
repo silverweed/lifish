@@ -10,7 +10,6 @@ ShadedText::ShadedText(const std::string& fontname, const std::string& _str,
 	if (!font.loadFromFile(fontname)) {
 		std::cerr << "[ShadedFont.cpp] Error loading font " << fontname << std::cerr;
 	} else {
-		ok = true;
 		fgtext.setFont(font);
 		bgtext.setFont(font);
 		fgtext.setString(str);

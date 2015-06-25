@@ -6,6 +6,10 @@
 
 namespace Game {
 
-class FixedEntity : public Entity {};
+class FixedEntity : public Entity {
+public:
+	FixedEntity(sf::Vector2f pos, const std::string& texture_name)
+		: Entity(pos, texture_name) {}
+};
 
 }

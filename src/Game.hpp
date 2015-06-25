@@ -41,6 +41,7 @@ class GameCache;
 extern GameCache cache;
 
 std::string getAssetDir(const std::string& dir);
+std::string getAsset(const std::string& dir, const std::string& file);
 
 /** Initializes runtime variables */
 bool init();

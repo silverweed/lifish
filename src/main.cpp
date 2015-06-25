@@ -1,8 +1,8 @@
-#pragma GCC diagnostic ignored "-Wswitch"
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "Level.hpp"
 #include "LevelSet.hpp"
+#include "LevelRenderer.hpp"
 
 int main() {
 	if (Game::init()) {
@@ -19,8 +19,9 @@ int main() {
 
 	Game::Level *level = levelset.getLevel(2);
 	level->printInfo();
-	level->getMusic()->play();
-	level->draw(window);
+	Game::LevelRenderer lr(level);
+	lr.loadEntities();
+	lr.renderFrame(window);
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -34,12 +35,16 @@ int main() {
 				case sf::Keyboard::Key::Escape:
 					window.close();
 					break;
+				default:
+					break;
 				}
+				break;
+			default:
 				break;
 			}
 		}
 		window.clear();
-		level->draw(window);
+		lr.renderFrame(window);
 		window.display();
 	}
 	return 0;

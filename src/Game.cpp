@@ -65,3 +65,7 @@ std::string Game::getAssetDir(const std::string& dir) {
 	ss << pwd << DIRSEP << "assets" << DIRSEP << dir << DIRSEP;
 	return ss.str();
 }
+
+std::string Game::getAsset(const std::string& dir, const std::string& file) {
+	return getAssetDir(dir) + DIRSEP + file;
+}

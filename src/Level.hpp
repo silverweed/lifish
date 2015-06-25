@@ -55,6 +55,7 @@ class Level : public Game::Drawable {
 	/** Number of the level */
 	unsigned short levelnum = 0;
 
+	/** The text containing the level number */
 	Game::ShadedText *levelnumtext = nullptr;
 
 	/** Time before "Hurry Up" */
@@ -62,6 +63,12 @@ class Level : public Game::Drawable {
 
 	/** The tileset to use */
 	unsigned short tileset = 1;
+
+	/** The texture number for fixed walls */
+	unsigned short fixedWallsTextureNum = 1;
+
+	/** The texture number for breakable walls */
+	unsigned short breakableWallsTextureNum = 1;
 
 	/** This level's static (initial) tilemap */
 	Matrix<EntityType, LEVEL_HEIGHT, LEVEL_WIDTH> tiles;
@@ -121,8 +128,14 @@ public:
 
 	LoopingMusic* getMusic() const { return music; }
 
-	void setLevelNum(const unsigned short num) { levelnum = num; }
 	unsigned short getLevelNum() const { return levelnum; }
+	void setLevelNum(const unsigned short num) { levelnum = num; }
+
+	unsigned short getFixedWallsTextureNum() const { return fixedWallsTextureNum; }
+	void setFixedWallsTextureNum(const unsigned short num) { fixedWallsTextureNum = num; }
+
+	unsigned short getBreakableWallsTextureNum() const { return breakableWallsTextureNum; }
+	void setBreakableWallsTextureNum(const unsigned short num) { breakableWallsTextureNum = num; }
 
 	void printInfo() const;
 	void printTilemap() const;
