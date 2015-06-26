@@ -62,7 +62,7 @@ bool Game::init() {
 
 std::string Game::getAssetDir(const std::string& dir) {
 	std::stringstream ss;
-	ss << pwd << DIRSEP << "assets" << DIRSEP << dir << DIRSEP;
+	ss << pwd << DIRSEP << "assets" << DIRSEP << dir;
 	return ss.str();
 }
 

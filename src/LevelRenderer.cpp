@@ -1,6 +1,7 @@
 #include "LevelRenderer.hpp"
 #include "EntityType.hpp"
 #include "FixedWall.hpp"
+#include "BreakableWall.hpp"
 #include <sstream>
 
 using Game::LevelRenderer;
@@ -41,6 +42,10 @@ void LevelRenderer::loadEntities() {
 							getAsset("textures", getWallname(e))));
 				break;
 			case EntityType::BREAKABLE:
+				fixedEntities.push_back(new Game::BreakableWall(
+							curPos(left, top),
+							getAsset("textures", getWallname(e))));
+				break;
 			case EntityType::PLAYER1:
 			case EntityType::PLAYER2:
 			case EntityType::TELEPORT:

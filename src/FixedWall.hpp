@@ -1,6 +1,6 @@
 #pragma once
 /**
- * Un unbreakable wall
+ * An unbreakable wall
  */
 #include <string>
 #include "Wall.hpp"
