@@ -10,7 +10,18 @@ file (GLOB LIFISH_SRC src/*.cpp)
 add_executable (${PROJECT_NAME} ${LIFISH_SRC} ${LIFISH_HEADERS})
 set_target_properties (${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
-add_definitions (-DVERSION=${MAJOR}.${MINOR})
+# Add git commit information (thanks, hamcha)
+include(FindGit OPTIONAL)
+if(GIT_FOUND)
+    execute_process(WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND ${GIT_EXECUTABLE} describe --always --long --dirty
+        OUTPUT_VARIABLE CURRENTREV
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    string(REGEX REPLACE "(-0)?-[^-]+((-dirty)?)$" "\\2" CURRENTREV "${CURRENTREV}")
+else()
+    set(CURRENTREV "unknown")
+endif()
+
+add_definitions (-DVERSION="${MAJOR}.${MINOR}" -DCOMMIT="${CURRENTREV}")
 
 find_package(SFML REQUIRED system window graphics network audio)
 include_directories(${SFML_INCLUDE_DIR})

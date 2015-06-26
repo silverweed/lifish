@@ -4,9 +4,10 @@
 #include "LevelSet.hpp"
 #include "LevelRenderer.hpp"
 
-int main() {
+int main(int argc, char **argv) {
+	std::clog << "lifish v." << VERSION << " rev." << COMMIT << std::endl;	
 	if (Game::init()) {
-		std::clog << "Game successfully initialized. Version = " << VERSION << "; pwd = " << Game::pwd << std::endl;
+		std::clog << "Game successfully initialized. pwd = " << Game::pwd << std::endl;
 
 	} else {
 		std::cerr << "Game failed to initialize!" << std::endl;

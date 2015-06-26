@@ -27,12 +27,13 @@ void LevelRenderer::loadEntities() {
 		}
 		return fname.str();
 	};
+
 	auto curPos = [] (unsigned short left, unsigned short top) {
 		return sf::Vector2f((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
 	};
+
 	for (unsigned short left = 0; left < LEVEL_WIDTH; ++left) {
 		for (unsigned short top = 0; top < LEVEL_HEIGHT; ++top) {
-			std::clog << "(" << left << ", " << top << ") " << level->getTile(left, top) << std::endl;
 			switch (EntityType e = level->getTile(left, top)) {
 			case EntityType::FIXED: 
 				fixedEntities.push_back(new Game::FixedWall(
