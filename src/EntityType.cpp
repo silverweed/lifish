@@ -9,6 +9,7 @@ EntityType entityFromLetter(const char c) {
 	case '0': return EntityType::EMPTY;
 	case '1': return EntityType::FIXED;
 	case '2': return EntityType::BREAKABLE;
+	case '3': return EntityType::COIN;
 	case 'X': return EntityType::PLAYER1;
 	case 'Y': return EntityType::PLAYER2;
 	case '+': return EntityType::TELEPORT;
@@ -33,6 +34,7 @@ std::ostream& operator<<(std::ostream& stream, const Game::EntityType& et) {
 	case EntityType::EMPTY:     stream << '0'; break;
 	case EntityType::FIXED:     stream << '1'; break;
 	case EntityType::BREAKABLE: stream << '2'; break;
+	case EntityType::COIN:      stream << '3'; break;
 	case EntityType::PLAYER1:   stream << 'X'; break;
 	case EntityType::PLAYER2:   stream << 'Y'; break;
 	case EntityType::TELEPORT:  stream << '+'; break;

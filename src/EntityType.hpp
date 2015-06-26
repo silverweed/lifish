@@ -8,6 +8,7 @@ enum class EntityType {
 	UNKNOWN,
 	EMPTY,
 	FIXED,
+	COIN,
 	BREAKABLE,
 	PLAYER1,
 	PLAYER2,

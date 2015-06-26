@@ -43,6 +43,9 @@ extern GameCache cache;
 std::string getAssetDir(const std::string& dir);
 std::string getAsset(const std::string& dir, const std::string& file);
 
+/** The game frame clock */
+static sf::Clock frameClock;
+
 /** Initializes runtime variables */
 bool init();
 

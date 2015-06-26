@@ -7,7 +7,7 @@ namespace Game {
 
 class Animated {
 protected:
-	std::map<std::string, Animation> animations;
+	Animation animations[4];
 	AnimatedSprite animatedSprite; 
 };
 

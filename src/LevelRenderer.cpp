@@ -2,6 +2,7 @@
 #include "EntityType.hpp"
 #include "FixedWall.hpp"
 #include "BreakableWall.hpp"
+#include "Coin.hpp"
 #include <sstream>
 
 using Game::LevelRenderer;
@@ -45,6 +46,11 @@ void LevelRenderer::loadEntities() {
 				fixedEntities.push_back(new Game::BreakableWall(
 							curPos(left, top),
 							getAsset("textures", getWallname(e))));
+				break;
+			case EntityType::COIN:
+				fixedEntities.push_back(new Game::Coin(
+							curPos(left, top),
+							getAsset("textures", "coin.png")));
 				break;
 			case EntityType::PLAYER1:
 			case EntityType::PLAYER2:
