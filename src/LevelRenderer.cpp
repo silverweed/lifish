@@ -8,13 +8,24 @@
 using Game::LevelRenderer;
 
 LevelRenderer::~LevelRenderer() {
+	_clearEntities();
+}
+
+void LevelRenderer::_clearEntities() {
 	for (auto& e : fixedEntities)
 		delete e;
 	for (auto& e : movingEntities)
 		delete e;
 }
 
-void LevelRenderer::loadEntities() {
+void LevelRenderer::loadLevel(Game::Level *const _level) {
+	if (level != nullptr) {
+		_clearEntities();
+		fixedEntities.clear();
+		movingEntities.clear();
+		level = _level;
+	}
+		
 	auto curPos = [] (unsigned short left, unsigned short top) {
 		return sf::Vector2f((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
 	};
@@ -25,12 +36,12 @@ void LevelRenderer::loadEntities() {
 			case EntityType::FIXED: 
 				fixedEntities.push_back(new Game::FixedWall(
 							curPos(left, top),
-							getAsset("graphics", "fixed.png")));
+							level->tileIDs.fixed));
 				break;
 			case EntityType::BREAKABLE:
 				fixedEntities.push_back(new Game::BreakableWall(
 							curPos(left, top),
-							getAsset("graphics", "breakable.png")));
+							level->tileIDs.breakable));
 				break;
 			case EntityType::COIN:
 				fixedEntities.push_back(new Game::Coin(
@@ -50,6 +61,7 @@ void LevelRenderer::loadEntities() {
 			case EntityType::ENEMY8:
 			case EntityType::ENEMY9:
 			case EntityType::ENEMY10:
+			case EntityType::BOSS:
 			default:
 				// TODO
 				break;

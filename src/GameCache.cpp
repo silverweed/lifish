@@ -28,7 +28,6 @@ bool GameCache::loadTexture(sf::Texture& texture, const std::string& texture_nam
 			std::cerr << "[GameCache.cpp] Error: couldn't load texture " << texture_name << " from memory!" << std::endl;
 		else {
 			loaded = true;
-			std::clog << "[GameCache.cpp] loaded texture " << texture_name << " from memory." << std::endl;
 		}
 	}
 	// Load from file and update the cache
@@ -38,8 +37,7 @@ bool GameCache::loadTexture(sf::Texture& texture, const std::string& texture_nam
 			std::cerr << "[GameCache.cpp] Error: couldn't load texture " << texture_name << " from file!" << std::endl;
 		else if (texture.loadFromImage(*img)) {
 			loaded = true;
-			std::clog << "[GameCache.cpp] loaded texture " << texture_name << " from file." << std::endl;
-			texture.setSmooth(true);
+			//texture.setSmooth(true);
 			putTexture(texture_name, img);
 		} else 
 			std::cerr << "[GameCache.cpp] Error: couldn't load texture " << texture_name << " from image!" << std::endl;

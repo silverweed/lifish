@@ -82,7 +82,7 @@ LevelSet::~LevelSet() {
 }
 
 Level* LevelSet::getLevel(unsigned short num) const {
-	if (num > levels.size()) return nullptr;
+	if (num == 0 || num > levels.size()) return nullptr;
 	if (!levels[num-1]->isInitialized())
 		levels[num-1]->init();
 	return levels[num-1];

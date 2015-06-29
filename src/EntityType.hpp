@@ -22,7 +22,8 @@ enum class EntityType {
 	ENEMY7,
 	ENEMY8,
 	ENEMY9,
-	ENEMY10
+	ENEMY10,
+	BOSS
 };
 
 EntityType entityFromLetter(const char c);

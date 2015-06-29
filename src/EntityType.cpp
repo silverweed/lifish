@@ -22,7 +22,8 @@ EntityType entityFromLetter(const char c) {
 	case 'G': return EntityType::ENEMY7;
 	case 'H': return EntityType::ENEMY8;
 	case 'I': return EntityType::ENEMY9;
-	case 'K': return EntityType::ENEMY10;
+	case 'J': return EntityType::ENEMY10;
+	case '*': return EntityType::BOSS;
 	}
 	return EntityType::UNKNOWN;
 }
@@ -47,7 +48,8 @@ std::ostream& operator<<(std::ostream& stream, const Game::EntityType& et) {
 	case EntityType::ENEMY7:    stream << 'G'; break;
 	case EntityType::ENEMY8:    stream << 'H'; break;
 	case EntityType::ENEMY9:    stream << 'I'; break;
-	case EntityType::ENEMY10:   stream << 'K'; break;
+	case EntityType::ENEMY10:   stream << 'J'; break;
+	case EntityType::BOSS:   stream << '*'; break;
 	case EntityType::UNKNOWN:   stream << "?"; break;
 	}
 	return stream;

@@ -4,6 +4,8 @@
 
 using Game::Entity;
 
+Entity::Entity(sf::Vector2f _pos) : pos(_pos) {}
+
 Entity::Entity(sf::Vector2f _pos, const std::string& texture_name)
 	: pos(_pos)
 {

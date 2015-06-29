@@ -13,6 +13,7 @@ protected:
 	sf::Sprite sprite;
 	sf::Vector2f pos;
 public:
+	Entity(sf::Vector2f _pos);
 	Entity(sf::Vector2f _pos, const std::string& texture_name);
 	virtual ~Entity() {}
 

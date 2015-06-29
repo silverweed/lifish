@@ -9,7 +9,7 @@ namespace Game {
 
 class FixedWall : public Wall {
 public:
-	FixedWall(sf::Vector2f pos, const std::string& texture_name);
+	FixedWall(sf::Vector2f pos, const unsigned short id);
 };
 
 }

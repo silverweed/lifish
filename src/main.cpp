@@ -13,15 +13,19 @@ int main(int argc, char **argv) {
 		std::cerr << "Game failed to initialize!" << std::endl;
 		return 1;
 	}
+	std::string levelSet = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
+	if (argc > 1)
+		levelSet = std::string(argv[1]);
+
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Level test");
 
-	Game::LevelSet levelset(std::string(Game::pwd) + std::string("/levels.json"));
+	Game::LevelSet levelset(levelSet);
 	std::clog << "Loaded " << levelset.getLevelsNum() << " levels." << std::endl;
 
 	Game::Level *level = levelset.getLevel(1);
 	level->printInfo();
-	Game::LevelRenderer lr(level);
-	lr.loadEntities();
+	Game::LevelRenderer lr;
+	lr.loadLevel(level);
 	lr.renderFrame(window);
 
 	while (window.isOpen()) {
@@ -32,12 +36,32 @@ int main(int argc, char **argv) {
 				window.close();
 				break;
 			case sf::Event::KeyPressed:
-				switch (event.key.code) {
+				switch (sf::Keyboard::Key key = event.key.code) {
 				case sf::Keyboard::Key::Escape:
 					window.close();
 					break;
-				default:
+				case sf::Keyboard::Key::Right: {
+					short n = level->getLevelNum() + 1;
+					if (n > levelset.getLevelsNum())
+						n = 1;
+					lr.loadLevel(level = levelset.getLevel(n));
 					break;
+				}
+				case sf::Keyboard::Key::Left: {
+					short n = level->getLevelNum() - 1;
+					if (n < 1)
+						n = levelset.getLevelsNum();
+					lr.loadLevel(level = levelset.getLevel(n));
+					break;
+				}
+				default: {
+					short n = keyToNumber(key);
+					if (n >= 0) {
+						level = levelset.getLevel(n);
+						if (level != nullptr)
+							lr.loadLevel(level);
+					}
+				}
 				}
 				break;
 			default:

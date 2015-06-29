@@ -16,7 +16,7 @@ class LevelRenderer {
 	using MovingEntityList = std::vector<Game::MovingEntity*>;
 
 	/** The level this object is rendering */
-	Game::Level *const level;
+	Game::Level *level;
 	
 	/** The fixed entities */
 	FixedEntityList fixedEntities;
@@ -24,12 +24,16 @@ class LevelRenderer {
 	/** The moving entities */
 	MovingEntityList movingEntities;
 
+
+	/** Deletes all entities */
+	void _clearEntities();
+
 public:
-	LevelRenderer(Game::Level *const _level) : level(_level) {}
+	LevelRenderer() {}
 	~LevelRenderer();
 
 	/** Creates the initial entities based on this level's tilemap. */
-	void loadEntities();
+	void loadLevel(Game::Level *const _level);
 	void renderFrame(sf::RenderWindow& window);
 };
 
