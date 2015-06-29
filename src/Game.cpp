@@ -39,7 +39,8 @@ bool Game::init() {
 		return false;
 
 #elif defined(IS_APPLE)
-	if (_NSGetExecutablePath(pwd, Game::PWD_BUFSIZE) != 0)
+	auto bufsz = static_cast<uint32_t>(Game::PWD_BUFSIZE);
+	if (_NSGetExecutablePath(pwd, &bufsz) != 0)
 		return false;
 
 #endif

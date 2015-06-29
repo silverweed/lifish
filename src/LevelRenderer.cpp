@@ -23,8 +23,8 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 		_clearEntities();
 		fixedEntities.clear();
 		movingEntities.clear();
-		level = _level;
 	}
+	level = _level;
 		
 	auto curPos = [] (unsigned short left, unsigned short top) {
 		return sf::Vector2f((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);

@@ -21,7 +21,7 @@ LevelSet::LevelSet(const std::string& path) {
 		metadata["name"] = path;
 	for (const auto& key : AVAIL_METADATA) {
 		if (levelJSON.find(key) != levelJSON.end())
-			metadata[key] = levelJSON[key].get<std::string>();
+			metadata[key] = levelJSON[(std::string)key].get<std::string>();
 	}
 
 	// load tracks data
