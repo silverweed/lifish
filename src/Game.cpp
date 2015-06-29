@@ -1,7 +1,6 @@
 #include "Game.hpp"
 #include "GameCache.hpp"
 #include <cstring>
-#include <sstream>
 #include <iostream>
 
 #if defined(IS_POSIX)
@@ -58,14 +57,4 @@ bool Game::init() {
 	}
 
 	return true;
-}
-
-std::string Game::getAssetDir(const std::string& dir) {
-	std::stringstream ss;
-	ss << pwd << DIRSEP << "assets" << DIRSEP << dir;
-	return ss.str();
-}
-
-std::string Game::getAsset(const std::string& dir, const std::string& file) {
-	return getAssetDir(dir) + DIRSEP + file;
 }

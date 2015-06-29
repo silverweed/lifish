@@ -5,6 +5,7 @@
 
 #include <string>
 #include <map>
+#include <sstream>
 #include <SFML/Graphics.hpp>
 
 namespace Game {
@@ -23,7 +24,7 @@ constexpr char DIRSEP = '\\';
 constexpr char DIRSEP = '/';
 #endif
 
-constexpr unsigned short TILE_SIZE = 32;
+constexpr unsigned short TILE_SIZE = 32; // pixels
 /**
  * Level width / height in tiles. Don't take the
  * level borders into accounts, so a level will
@@ -40,8 +41,17 @@ extern char pwd[PWD_BUFSIZE];
 class GameCache;
 extern GameCache cache;
 
-std::string getAssetDir(const std::string& dir);
-std::string getAsset(const std::string& dir, const std::string& file);
+//std::string getAssetDir(const std::string& dir);
+//std::string getAsset(const std::string& dir, const std::string& file);
+inline std::string getAssetDir(const std::string& dir) {
+	std::stringstream ss;
+	ss << pwd << DIRSEP << "assets" << DIRSEP << dir;
+	return ss.str();
+}
+
+inline std::string getAsset(const std::string& dir, const std::string& file) {
+	return getAssetDir(dir) + DIRSEP + file;
+}
 
 /** The game frame clock */
 static sf::Clock frameClock;

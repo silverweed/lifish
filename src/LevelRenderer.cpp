@@ -15,42 +15,27 @@ LevelRenderer::~LevelRenderer() {
 }
 
 void LevelRenderer::loadEntities() {
-	auto getWallname = [this] (EntityType e) {
-		std::stringstream fname;
-		switch (e) {
-			using E = EntityType;
-		case E::FIXED: 
-			fname << "fixed" << level->getFixedWallsTextureNum() << ".png";
-			break;
-		case E::BREAKABLE: 
-			fname << "breakable" << level->getBreakableWallsTextureNum() << ".png"; 
-			break;
-		default: break;
-		}
-		return fname.str();
-	};
-
 	auto curPos = [] (unsigned short left, unsigned short top) {
 		return sf::Vector2f((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
 	};
 
 	for (unsigned short left = 0; left < LEVEL_WIDTH; ++left) {
 		for (unsigned short top = 0; top < LEVEL_HEIGHT; ++top) {
-			switch (EntityType e = level->getTile(left, top)) {
+			switch (level->getTile(left, top)) {
 			case EntityType::FIXED: 
 				fixedEntities.push_back(new Game::FixedWall(
 							curPos(left, top),
-							getAsset("textures", getWallname(e))));
+							getAsset("graphics", "fixed.png")));
 				break;
 			case EntityType::BREAKABLE:
 				fixedEntities.push_back(new Game::BreakableWall(
 							curPos(left, top),
-							getAsset("textures", getWallname(e))));
+							getAsset("graphics", "breakable.png")));
 				break;
 			case EntityType::COIN:
 				fixedEntities.push_back(new Game::Coin(
 							curPos(left, top),
-							getAsset("textures", "coin.png")));
+							getAsset("graphics", "coin.png")));
 				break;
 			case EntityType::PLAYER1:
 			case EntityType::PLAYER2:

@@ -40,6 +40,9 @@ class Level : public Game::Drawable {
 	/** The background texture */
 	sf::Texture bgTexture;
 
+	/** The borders' texture */
+	sf::Texture borderTexture;
+
 	/** The sprites for the background tiles */
 	std::array<sf::Sprite, 9> bgTiles;
 
@@ -61,26 +64,17 @@ class Level : public Game::Drawable {
 	/** Time before "Hurry Up" */
 	unsigned int time;
 
-	/** The tileset to use */
-	unsigned short tileset = 1;
-
-	/** The texture number for fixed walls */
-	unsigned short fixedWallsTextureNum = 1;
-
-	/** The texture number for breakable walls */
-	unsigned short breakableWallsTextureNum = 1;
-
 	/** This level's static (initial) tilemap */
 	Matrix<EntityType, LEVEL_HEIGHT, LEVEL_WIDTH> tiles;
 
 	/** (Optional) LevelSet this level belongs to */
-	const LevelSet *levelSet;
+	const LevelSet *const levelSet;
 
 
-	/** Loads the texture from the file <texture_name> (or from memory, if
+	/** Loads the background/border textures from the file (or from memory, if
 	 *  texture has already been cached)
 	 */
-	bool _loadTexture(const std::string& texture_name);
+	bool _loadTexture();
 
 	/** Loads the music from the file <music_name> */
 	bool _loadMusic(const std::string& music_name);
@@ -91,13 +85,20 @@ class Level : public Game::Drawable {
 	/** Whether this level has been initialized or not */
 	bool initialized = false;
 public:
+	/** This is public for convenience */
+	struct {
+		unsigned short bg = 1,
+			       border = 1,
+			       fixed = 1,
+			       breakable = 1;
+	} tileIDs;
+
+
 	/** Constructs a level without a specified time and tileset. init() must
 	 *  be called before using this level. Optionally, can specify a LevelSet
 	 *  this Level belongs to.
 	 */
-	Level(const LevelSet *levelSet = nullptr);
-	// XXX: testing constructor
-	Level(const std::string& texture_name);
+	Level(const LevelSet *const levelSet = nullptr);
 	virtual ~Level();
 
 	/** Loads the appropriate bgTexture, fills the bgTiles and makes this level
@@ -110,9 +111,6 @@ public:
 
 	/** Draws this level's background in the target window */
 	void draw(sf::RenderTarget& window);
-
-	unsigned short getTileset() const { return tileset; }
-	void setTileset(const unsigned short _tileset) { tileset = _tileset; }
 
 	unsigned int getTime() const { return time; }
 	void setTime(const unsigned int _time) { time = _time; }
@@ -130,12 +128,6 @@ public:
 
 	unsigned short getLevelNum() const { return levelnum; }
 	void setLevelNum(const unsigned short num) { levelnum = num; }
-
-	unsigned short getFixedWallsTextureNum() const { return fixedWallsTextureNum; }
-	void setFixedWallsTextureNum(const unsigned short num) { fixedWallsTextureNum = num; }
-
-	unsigned short getBreakableWallsTextureNum() const { return breakableWallsTextureNum; }
-	void setBreakableWallsTextureNum(const unsigned short num) { breakableWallsTextureNum = num; }
 
 	void printInfo() const;
 	void printTilemap() const;
