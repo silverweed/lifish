@@ -5,10 +5,8 @@
 using Game::FixedWall;
 
 FixedWall::FixedWall(sf::Vector2f pos, const unsigned short id) 
-	: Wall(pos)
+	: Wall(pos, Game::getAsset("graphics", "fixed.png"))
 {
-	Game::cache.loadTexture(texture, Game::getAsset("graphics", "fixed.png"));
 	// Fixed walls only have 1 sprite
-	sprite.setTexture(texture);
 	sprite.setTextureRect(sf::IntRect((id-1) * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 }

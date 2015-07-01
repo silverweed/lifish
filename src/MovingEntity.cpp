@@ -1,15 +1,15 @@
 #include "MovingEntity.hpp"
 #include "Game.hpp"
 #include "GameCache.hpp"
+#include <iostream>
 
 using Game::MovingEntity;
 using Game::TILE_SIZE;
+using Game::Direction;
 
 MovingEntity::MovingEntity(sf::Vector2f pos, const std::string& texture_name) 
-	: Entity(pos)
+	: Entity(pos, texture_name)
 {
-	Game::cache.loadTexture(texture, texture_name);
-
 	for (unsigned short i = 0; i < MAX_N_ANIMATIONS; ++i)
 		animations[i].setSpriteSheet(texture);
 
@@ -25,13 +25,42 @@ MovingEntity::MovingEntity(sf::Vector2f pos, const std::string& texture_name)
 		animations[k].addFrame(sf::IntRect(i * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 	}
 
+	animatedSprite.setPosition(pos);
 	animatedSprite.setAnimation(animations[ANIM_DOWN]);
 	animatedSprite.setLooped(true);
 	animatedSprite.pause();
 }
 
-void MovingEntity::draw(sf::RenderTarget& window) {
-	// TODO
-	animatedSprite.setPosition(pos);
-	window.draw(animatedSprite);
+void MovingEntity::move(const Direction dir) {
+	sf::Vector2f shift(0.f, 0.f);
+	sf::Time frameTime = frameClock.restart();
+
+	switch (dir) {
+	case Direction::UP:
+		animatedSprite.setAnimation(animations[ANIM_UP]);
+		shift.y -= speed;
+		break;
+	case Direction::LEFT:
+		animatedSprite.setAnimation(animations[ANIM_LEFT]);
+		shift.x -= speed;
+		break;
+	case Direction::DOWN:
+		animatedSprite.setAnimation(animations[ANIM_DOWN]);
+		shift.y += speed;
+		break;
+	case Direction::RIGHT:
+		animatedSprite.setAnimation(animations[ANIM_RIGHT]);
+		shift.x += speed;
+		break;
+	}
+
+        animatedSprite.play();
+        animatedSprite.move(shift * frameTime.asSeconds());
+	animatedSprite.update(frameTime);
+}
+
+void MovingEntity::stop() {
+	animatedSprite.setAnimation(animations[ANIM_DOWN]);
+	animatedSprite.stop();
+	animatedSprite.update(frameClock.restart());
 }

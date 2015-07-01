@@ -3,6 +3,9 @@
 #include "Level.hpp"
 #include "LevelSet.hpp"
 #include "LevelRenderer.hpp"
+#include "MovingEntity.hpp"
+
+using Game::Direction;
 
 int main(int argc, char **argv) {
 	std::clog << "lifish v." << VERSION << " rev." << COMMIT << std::endl;	
@@ -28,6 +31,8 @@ int main(int argc, char **argv) {
 	lr.loadLevel(level);
 	lr.renderFrame(window);
 
+	Game::Player *player1 = lr.getPlayer(1);
+
 	while (window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -36,38 +41,44 @@ int main(int argc, char **argv) {
 				window.close();
 				break;
 			case sf::Event::KeyPressed:
-				switch (sf::Keyboard::Key key = event.key.code) {
+				switch (event.key.code) {
 				case sf::Keyboard::Key::Escape:
 					window.close();
 					break;
-				case sf::Keyboard::Key::Right: {
+				case sf::Keyboard::Key::Add: {
 					short n = level->getLevelNum() + 1;
 					if (n > levelset.getLevelsNum())
 						n = 1;
 					lr.loadLevel(level = levelset.getLevel(n));
 					break;
 				}
-				case sf::Keyboard::Key::Left: {
+				case sf::Keyboard::Key::Subtract: {
 					short n = level->getLevelNum() - 1;
 					if (n < 1)
 						n = levelset.getLevelsNum();
 					lr.loadLevel(level = levelset.getLevel(n));
 					break;
 				}
-				default: {
-					short n = keyToNumber(key);
-					if (n >= 0) {
-						level = levelset.getLevel(n);
-						if (level != nullptr)
-							lr.loadLevel(level);
-					}
-				}
+				default:
+					break; 
 				}
 				break;
 			default:
 				break;
 			}
 		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+			player1->move(Direction::UP);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+			player1->move(Direction::LEFT);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+			player1->move(Direction::DOWN);
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+			player1->move(Direction::RIGHT);
+		else
+			player1->stop();
+
+		// FIXME: can we avoid clearing and drawing the background each frame?
 		window.clear();
 		lr.renderFrame(window);
 		window.display();

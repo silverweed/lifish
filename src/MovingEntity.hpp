@@ -10,6 +10,8 @@
 
 namespace Game {
 
+enum class Direction { UP, RIGHT, DOWN, LEFT };
+
 class MovingEntity : public Game::Entity, public Game::Animated {
 protected:
 	constexpr static unsigned short WALK_N_FRAMES = 8;
@@ -25,14 +27,14 @@ protected:
 	};
 	float speed;
 public:
-	MovingEntity(sf::Vector2f pos)
-		: Entity(pos) {}
-
 	MovingEntity(sf::Vector2f pos, const std::string& texture_name);
 
-	void draw(sf::RenderTarget& window) override;
-
 	virtual float getSpeed() const { return speed; }
+
+	virtual void draw(sf::RenderTarget& window) override { Game::Animated::draw(window); }
+
+	virtual void move(const Direction direction);
+	virtual void stop();
 };
 
 }

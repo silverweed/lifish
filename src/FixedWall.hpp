@@ -7,7 +7,7 @@
 
 namespace Game {
 
-class FixedWall : public Wall {
+class FixedWall : public Game::Wall {
 public:
 	FixedWall(sf::Vector2f pos, const unsigned short id);
 };

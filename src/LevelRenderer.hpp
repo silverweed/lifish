@@ -39,6 +39,8 @@ public:
 	/** Creates the initial entities based on this level's tilemap. */
 	void loadLevel(Game::Level *const _level);
 	void renderFrame(sf::RenderWindow& window);
+
+	Player* getPlayer(const unsigned short i) { return players[i-1]; }
 };
 
 }

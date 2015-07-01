@@ -55,9 +55,6 @@ inline std::string getAsset(const std::string& dir, const std::string& file) {
 	return getAssetDir(dir) + DIRSEP + file;
 }
 
-/** The game frame clock */
-static sf::Clock frameClock;
-
 /** Initializes runtime variables */
 bool init();
 

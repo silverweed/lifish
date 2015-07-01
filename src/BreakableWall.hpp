@@ -14,7 +14,8 @@ class BreakableWall : public Game::Wall, public Game::Lifed, public Game::Animat
 public:
 	BreakableWall(sf::Vector2f pos, const unsigned short id, unsigned short life = 1);
 
-	virtual void draw(sf::RenderTarget& window) override;
+	// Use animatedSprite, not the default sprite.
+	virtual void draw(sf::RenderTarget& window) override { Game::Animated::draw(window); }
 };
 
 }
