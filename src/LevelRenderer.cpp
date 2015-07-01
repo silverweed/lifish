@@ -16,6 +16,8 @@ void LevelRenderer::_clearEntities() {
 		delete e;
 	for (auto& e : movingEntities)
 		delete e;
+	for (unsigned short i = 0; i < MAX_PLAYERS; ++i)
+		players[i] = nullptr;
 }
 
 void LevelRenderer::loadLevel(Game::Level *const _level) {

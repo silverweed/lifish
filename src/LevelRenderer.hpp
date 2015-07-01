@@ -5,6 +5,7 @@
  */
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <array>
 #include "Level.hpp"
 #include "FixedEntity.hpp"
 #include "MovingEntity.hpp"
@@ -26,7 +27,7 @@ class LevelRenderer {
 	MovingEntityList movingEntities;
 
 	/** The players */
-	Game::Player *players[Game::MAX_PLAYERS] = { nullptr, nullptr };
+	std::array<Game::Player*, Game::MAX_PLAYERS> players;
 
 
 	/** Deletes all entities */
@@ -40,7 +41,8 @@ public:
 	void loadLevel(Game::Level *const _level);
 	void renderFrame(sf::RenderWindow& window);
 
-	Player* getPlayer(const unsigned short i) { return players[i-1]; }
+	std::array<Game::Player*, Game::MAX_PLAYERS> getPlayers() const { return players; }
+	Player* getPlayer(const unsigned short i) const { return players[i-1]; }
 };
 
 }

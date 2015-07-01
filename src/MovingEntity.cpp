@@ -28,6 +28,7 @@ MovingEntity::MovingEntity(sf::Vector2f pos, const std::string& texture_name)
 	animatedSprite.setPosition(pos);
 	animatedSprite.setAnimation(animations[ANIM_DOWN]);
 	animatedSprite.setLooped(true);
+	animatedSprite.setFrameTime(sf::seconds(0.06));
 	animatedSprite.pause();
 }
 
@@ -35,26 +36,28 @@ void MovingEntity::move(const Direction dir) {
 	sf::Vector2f shift(0.f, 0.f);
 	sf::Time frameTime = frameClock.restart();
 
+	Animation *anim;
+
 	switch (dir) {
 	case Direction::UP:
-		animatedSprite.setAnimation(animations[ANIM_UP]);
+		anim = &animations[ANIM_UP];
 		shift.y -= speed;
 		break;
 	case Direction::LEFT:
-		animatedSprite.setAnimation(animations[ANIM_LEFT]);
+		anim = &animations[ANIM_LEFT];
 		shift.x -= speed;
 		break;
 	case Direction::DOWN:
-		animatedSprite.setAnimation(animations[ANIM_DOWN]);
+		anim = &animations[ANIM_DOWN];
 		shift.y += speed;
 		break;
 	case Direction::RIGHT:
-		animatedSprite.setAnimation(animations[ANIM_RIGHT]);
+		anim = &animations[ANIM_RIGHT];
 		shift.x += speed;
 		break;
 	}
 
-        animatedSprite.play();
+        animatedSprite.play(*anim);
         animatedSprite.move(shift * frameTime.asSeconds());
 	animatedSprite.update(frameTime);
 }

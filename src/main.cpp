@@ -4,6 +4,7 @@
 #include "LevelSet.hpp"
 #include "LevelRenderer.hpp"
 #include "MovingEntity.hpp"
+#include "Controls.hpp"
 
 using Game::Direction;
 
@@ -31,7 +32,7 @@ int main(int argc, char **argv) {
 	lr.loadLevel(level);
 	lr.renderFrame(window);
 
-	Game::Player *player1 = lr.getPlayer(1);
+	auto players = lr.getPlayers();
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -50,6 +51,7 @@ int main(int argc, char **argv) {
 					if (n > levelset.getLevelsNum())
 						n = 1;
 					lr.loadLevel(level = levelset.getLevel(n));
+					players = lr.getPlayers();
 					break;
 				}
 				case sf::Keyboard::Key::Subtract: {
@@ -57,6 +59,7 @@ int main(int argc, char **argv) {
 					if (n < 1)
 						n = levelset.getLevelsNum();
 					lr.loadLevel(level = levelset.getLevel(n));
+					players = lr.getPlayers();
 					break;
 				}
 				default:
@@ -67,18 +70,23 @@ int main(int argc, char **argv) {
 				break;
 			}
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-			player1->move(Direction::UP);
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-			player1->move(Direction::LEFT);
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-			player1->move(Direction::DOWN);
-		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-			player1->move(Direction::RIGHT);
-		else
-			player1->stop();
 
-		// FIXME: can we avoid clearing and drawing the background each frame?
+		// Player movements
+		for (unsigned int i = 0; i < 2; ++i) {
+			if (players[i] == nullptr) continue;
+			if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::UP]))
+				players[i]->move(Direction::UP);
+			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::LEFT]))
+				players[i]->move(Direction::LEFT);
+			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::DOWN]))
+				players[i]->move(Direction::DOWN);
+			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::RIGHT]))
+				players[i]->move(Direction::RIGHT);
+			else
+				players[i]->stop();
+		}
+
+		// XXX: can we avoid clearing and drawing the background each frame?
 		window.clear();
 		lr.renderFrame(window);
 		window.display();

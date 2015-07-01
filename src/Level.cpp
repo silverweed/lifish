@@ -144,9 +144,18 @@ EntityType Level::getTile(unsigned short left, unsigned short top) const {
 
 bool Level::setTilemap(const std::string& tilemap) {
 	unsigned short x = 0, y = 0;
+	bool playerSet[] = { false, false };
 	for (unsigned int i = 0; i < tilemap.length(); ++i) {
 		EntityType et = Game::entityFromLetter(tilemap[i]);
 		if (et == EntityType::UNKNOWN) return false;
+		if (et == EntityType::PLAYER1) {
+			if (playerSet[0]) return false;
+			playerSet[0] = true;
+		}
+		if (et == EntityType::PLAYER2) {
+			if (playerSet[1]) return false;
+			playerSet[1] = true;
+		}
 		tiles[y][x] = et;
 		if (++x == LEVEL_WIDTH) {
 			x = 0;
