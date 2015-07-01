@@ -12,7 +12,7 @@ class Coin : public Game::FixedEntity {
 public:
 	Coin(sf::Vector2f pos, const std::string& texture_name);
 
-	void draw(sf::RenderTarget& window);
+	void draw(sf::RenderTarget& window) override;
 };
 
 }

@@ -22,7 +22,7 @@ public:
 	sf::Vector2f getPos() const { return pos; }
 	void setPos(sf::Vector2f _pos) { pos = _pos; }
 
-	virtual void draw(sf::RenderTarget& win);
+	virtual void draw(sf::RenderTarget& win) override;
 };
 
 }

@@ -8,6 +8,7 @@
 #include "Level.hpp"
 #include "FixedEntity.hpp"
 #include "MovingEntity.hpp"
+#include "Player.hpp"
 
 namespace Game {
 
@@ -23,6 +24,9 @@ class LevelRenderer {
 
 	/** The moving entities */
 	MovingEntityList movingEntities;
+
+	/** The players */
+	Game::Player *players[Game::MAX_PLAYERS] = { nullptr, nullptr };
 
 
 	/** Deletes all entities */

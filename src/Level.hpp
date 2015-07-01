@@ -26,15 +26,15 @@ class Level : public Game::Drawable {
 
 	/** Types of bg texture tiles */
 	enum : unsigned short {
-		TILE_REGULAR = 0,
-		TILE_UPPER_LEFT = 1,
+		TILE_REGULAR     = 0,
+		TILE_UPPER_LEFT  = 1,
 		TILE_UPPER_RIGHT = 2,
-		TILE_LOWER_LEFT = 3,
+		TILE_LOWER_LEFT  = 3,
 		TILE_LOWER_RIGHT = 4,
-		TILE_UPPER = 5,
-		TILE_LOWER = 6,
-		TILE_LEFT = 7,
-		TILE_RIGHT = 8,
+		TILE_UPPER       = 5,
+		TILE_LOWER       = 6,
+		TILE_LEFT        = 7,
+		TILE_RIGHT       = 8,
 	};
 
 	/** The background texture */
@@ -87,9 +87,9 @@ class Level : public Game::Drawable {
 public:
 	/** This is public for convenience */
 	struct {
-		unsigned short bg = 1,
-			       border = 1,
-			       fixed = 1,
+		unsigned short bg        = 1,
+			       border    = 1,
+			       fixed     = 1,
 			       breakable = 1;
 	} tileIDs;
 
@@ -108,9 +108,6 @@ public:
 	bool init();
 
 	bool isInitialized() const { return initialized; }
-
-	/** Draws this level's background in the target window */
-	void draw(sf::RenderTarget& window);
 
 	unsigned int getTime() const { return time; }
 	void setTime(const unsigned int _time) { time = _time; }
@@ -131,6 +128,9 @@ public:
 
 	void printInfo() const;
 	void printTilemap() const;
+
+	/** Draws this level's background in the target window */
+	void draw(sf::RenderTarget& window) override;
 };
 
 }

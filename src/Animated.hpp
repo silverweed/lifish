@@ -7,7 +7,8 @@ namespace Game {
 
 class Animated {
 protected:
-	Animation animations[4];
+	static constexpr unsigned short MAX_N_ANIMATIONS = 7;
+	Animation animations[MAX_N_ANIMATIONS];
 	AnimatedSprite animatedSprite; 
 };
 

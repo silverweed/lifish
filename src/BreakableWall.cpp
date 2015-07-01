@@ -6,7 +6,7 @@ using Game::BreakableWall;
 using Game::TILE_SIZE;
 
 BreakableWall::BreakableWall(sf::Vector2f pos, const unsigned short id, unsigned short _life) 
-	: Wall(pos), life(_life)
+	: Wall(pos), Lifed(_life)
 {
 	Game::cache.loadTexture(texture, Game::getAsset("graphics", "breakable.png"));
 	// Breakable walls have 4 sprites: the "animatedSprites" array is used

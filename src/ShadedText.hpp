@@ -30,7 +30,7 @@ public:
 
 	void setStyle(sf::Text::Style style);
 
-	void draw(sf::RenderTarget& window);
+	void draw(sf::RenderTarget& window) override;
 };
 
 }

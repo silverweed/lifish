@@ -33,6 +33,8 @@ constexpr unsigned short TILE_SIZE = 32; // pixels
 constexpr unsigned short LEVEL_WIDTH = 15; 
 constexpr unsigned short LEVEL_HEIGHT = 13;
 
+constexpr unsigned short MAX_PLAYERS = 2;
+
 constexpr unsigned short PWD_BUFSIZE = 512;
 /** The executable working directory */
 extern char pwd[PWD_BUFSIZE];

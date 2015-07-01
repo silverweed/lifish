@@ -48,8 +48,18 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 							curPos(left, top),
 							getAsset("graphics", "coin.png")));
 				break;
-			case EntityType::PLAYER1:
-			case EntityType::PLAYER2:
+			case EntityType::PLAYER1: {
+				Game::Player *player = new Game::Player(curPos(left, top), 1);
+				movingEntities.push_back(player);
+				players[0] = player;
+				break;
+			}
+			case EntityType::PLAYER2: {
+				Game::Player *player = new Game::Player(curPos(left, top), 2);
+				movingEntities.push_back(player);
+				players[1] = player;
+				break;
+			}
 			case EntityType::TELEPORT:
 			case EntityType::ENEMY1:
 			case EntityType::ENEMY2:
