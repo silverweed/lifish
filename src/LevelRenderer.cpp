@@ -186,7 +186,6 @@ void LevelRenderer::detectCollisions() {
 
 			if (collide(pos, opos, dir)) {
 				entity->colliding = true;
-				std::cerr << "colliding at " << pos.x << "/" << opos.x <<", " << pos.y <<"/" << opos.y<< std::endl;
 				checked[i] = true;
 				if (other->getDirection() == Game::oppositeDirection(dir)) {
 					other->colliding = true;
