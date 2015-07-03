@@ -6,6 +6,8 @@
 #include "MovingEntity.hpp"
 #include "Controls.hpp"
 
+using Game::Direction;
+
 int main(int argc, char **argv) {
 	std::clog << "lifish v." << VERSION << " rev." << COMMIT << std::endl;	
 	if (Game::init()) {
@@ -72,22 +74,22 @@ int main(int argc, char **argv) {
 		for (unsigned int i = 0; i < 2; ++i) {
 			if (players[i] == nullptr) continue;
 			if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::UP]))
-				players[i]->setDirection(Game::DIR_UP);
+				players[i]->setDirection(Game::Direction::UP);
 			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::LEFT]))
-				players[i]->setDirection(Game::DIR_LEFT);
+				players[i]->setDirection(Game::Direction::LEFT);
 			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::DOWN]))
-				players[i]->setDirection(Game::DIR_DOWN);
+				players[i]->setDirection(Game::Direction::DOWN);
 			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::RIGHT]))
-				players[i]->setDirection(Game::DIR_RIGHT);
+				players[i]->setDirection(Game::Direction::RIGHT);
 			else
-				players[i]->setDirection(Game::DIR_NONE);
+				players[i]->setDirection(Game::Direction::NONE);
 		}
 
 		// Collisions detection
 		lr.detectCollisions();
 
 		for (unsigned int i = 0; i < 2; ++i) {
-			if (players[i]->getDirection() == Game::DIR_NONE)
+			if (players[i]->getDirection() == Game::Direction::NONE)
 				players[i]->stop();
 			else
 				players[i]->move();

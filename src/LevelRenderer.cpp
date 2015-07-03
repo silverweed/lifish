@@ -99,30 +99,30 @@ void LevelRenderer::detectCollisions() {
 	 */
 	std::vector<bool> checked(movingEntities.size(), false);
 	
+	// FIXME: prevent players walking past each other if they collide at
+	// non-integral coordinates!
 	static auto collide = [] (const sf::Vector2f& pos, const sf::Vector2f& opos, const Game::Direction dir) {
 		unsigned short iposx = (unsigned short)pos.x,
 			       iposy = (unsigned short)pos.y,
 			       ioposx = (unsigned short)opos.x,
 			       ioposy = (unsigned short)opos.y;
 		switch (dir) {
-		case DIR_UP:
+		case Direction::UP:
 			return iposx - TILE_SIZE < ioposx && ioposx < iposx + TILE_SIZE
-				&& iposy - TILE_SIZE <= ioposy && ioposy <= iposy;
-		case DIR_LEFT:
-			return iposx - TILE_SIZE <= ioposx && ioposx <= iposx
+				&& ioposy == iposy - TILE_SIZE;
+		case Direction::LEFT:
+			return ioposx == iposx - TILE_SIZE
 				&& iposy - TILE_SIZE < ioposy && ioposy < iposy + TILE_SIZE;
-		case DIR_DOWN:
+		case Direction::DOWN:
 			return iposx - TILE_SIZE < ioposx && ioposx < iposx + TILE_SIZE
-				&& iposy + TILE_SIZE <= ioposy && ioposy < iposy + 2 * TILE_SIZE;
-		case DIR_RIGHT:
-			return iposx + TILE_SIZE <= ioposx && ioposx < iposx + 2 * TILE_SIZE
+				&& ioposy == iposy + TILE_SIZE;
+		case Direction::RIGHT:
+			return ioposx == iposx + TILE_SIZE
 				&& iposy - TILE_SIZE < ioposy && ioposy < iposy + TILE_SIZE;
-		case DIR_NONE:
+		default:
 			return false;
 		}
-		return false;
 	};
-
 	for (unsigned short i = 0, len = movingEntities.size(); i < len; ++i) {
 		if (checked[i]) continue;
 		MovingEntity *entity = movingEntities[i];
@@ -131,70 +131,75 @@ void LevelRenderer::detectCollisions() {
 		std::forward_list<Game::Entity*> others;
 		bool at_limit = false;
 
-		for (unsigned short i = 0; i < 4; ++i)
-			entity->colliding[i] = false;
+		entity->colliding = false;
 
 		const Direction dir = entity->getDirection();
 		const unsigned short iposx = (unsigned short)pos.x,
 		                     iposy = (unsigned short)pos.y;
 
 		switch (dir) {
-		case DIR_UP:
+		case Direction::UP:
 			if (iposy == TILE_SIZE) {
 				// Reached the top
-				entity->colliding[DIR_UP] = true;
+				entity->colliding = true;
 				continue;
 			}
 
 			at_limit = iposy % TILE_SIZE == 0;
 			break;
-		case DIR_LEFT:
+		case Direction::LEFT:
 			if (iposx == TILE_SIZE) {
-				entity->colliding[DIR_LEFT] = true;
+				entity->colliding = true;
 				continue;
 			}
 			at_limit = iposx % TILE_SIZE == 0;
 			break;
-		case DIR_DOWN:
+		case Direction::DOWN:
 			if (iposy == TILE_SIZE * LEVEL_HEIGHT) {
-				entity->colliding[DIR_DOWN] = true;
+				entity->colliding = true;
 				continue;
 			}
 			at_limit = iposy % TILE_SIZE == 0;
 			break;
-		case DIR_RIGHT:
+		case Direction::RIGHT:
 			if (iposx == TILE_SIZE * LEVEL_WIDTH) {
-				entity->colliding[DIR_RIGHT] = true;
+				entity->colliding = true;
 				continue;
 			}
 			at_limit = iposx % TILE_SIZE == 0;
 			break;
-		case DIR_NONE:
+		case Direction::NONE:
 			continue;
 		}
-		for (unsigned short j = i + 1; j < len; ++j) {
+
+		bool collision_detected = false;
+		for (unsigned short j = 0; j < len; ++j) {
+			if (i == j) continue;
+
 			MovingEntity *other = movingEntities[j];
-			if ((is_player && other->transparentTo.players) || other->transparentTo.enemies)
+			if ((is_player && other->transparentTo.players) || (!is_player && other->transparentTo.enemies))
 				continue;
+			
 			sf::Vector2f opos = other->getPosition();
 
 			if (collide(pos, opos, dir)) {
-				entity->colliding[dir] = true;
+				entity->colliding = true;
 				checked[i] = true;
-				if (other->getDirection() == (dir + 2) % 4) {
-					other->colliding[(dir + 2) % 4] = true;
+				if (other->getDirection() == Game::oppositeDirection(dir)) {
+					other->colliding = true;
 					checked[j] = true;
 				}
+				collision_detected = true;
 				break;
 			}
 		}
-		if (at_limit) {
+		if (!collision_detected && at_limit) {
 			for (auto& other : fixedEntities) {
 				if ((is_player && other->transparentTo.players) || other->transparentTo.enemies)
 					continue;
 				sf::Vector2f opos = other->getPosition();
 				if (collide(pos, opos, dir)) {
-					entity->colliding[dir] = true;
+					entity->colliding = true;
 					checked[i] = true;
 					break;
 				}

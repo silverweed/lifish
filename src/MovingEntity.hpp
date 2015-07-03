@@ -11,14 +11,19 @@
 
 namespace Game {
 
-/** Directions; NOTE: it's mandatory that (dir + 2) % 4 == opposite direction */
-enum Direction : unsigned short { 
-	DIR_UP    = 0,
-	DIR_RIGHT = 1, 
-	DIR_DOWN  = 2, 
-	DIR_LEFT  = 3,
-	DIR_NONE  = 4
+enum class Direction {
+	UP, LEFT, DOWN, RIGHT, NONE
 };
+
+inline Direction oppositeDirection(const Direction dir) {
+	switch (dir) {
+	case Direction::UP:    return Direction::DOWN;
+	case Direction::DOWN:  return Direction::UP;
+	case Direction::LEFT:  return Direction::RIGHT;
+	case Direction::RIGHT: return Direction::LEFT;
+	default:               return Direction::NONE;
+	}
+}
 
 class MovingEntity : public Game::Entity, public Game::Animated {
 protected:
@@ -34,11 +39,10 @@ protected:
 		ANIM_HURT  = 6
 	};
 	float speed;
-	Game::Direction direction, prevDirection = Game::DIR_NONE;
+	Game::Direction direction, prevDirection = Game::Direction::NONE;
 	bool moving = false;
 public:
-	/** Indexed with DIR_UP, etc */
-	std::array<bool, 4> colliding;
+	bool colliding = false;
 
 	MovingEntity(sf::Vector2f pos, const std::string& texture_name);
 

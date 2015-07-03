@@ -70,33 +70,31 @@ void MovingEntity::move(const Direction dir) {
 	Animation *anim;
 		 
 	switch (direction) {
-	case DIR_UP:
+	case Direction::UP:
 		anim = &animations[ANIM_UP];
-		if (!colliding[DIR_UP])
-			shift.y -= speed;
+		shift.y -= speed;
 		break;
-	case DIR_LEFT:
+	case Direction::LEFT:
 		anim = &animations[ANIM_LEFT];
-		if (!colliding[DIR_LEFT])
-			shift.x -= speed;
+		shift.x -= speed;
 		break;
-	case DIR_DOWN:
+	case Direction::DOWN:
 		anim = &animations[ANIM_DOWN];
-		if (!colliding[DIR_DOWN])
-			shift.y += speed;
+		shift.y += speed;
 		break;
-	case DIR_RIGHT:
+	case Direction::RIGHT:
 		anim = &animations[ANIM_RIGHT];
-		if (!colliding[DIR_RIGHT])
-			shift.x += speed;
+		shift.x += speed;
 		break;
-	case DIR_NONE:
+	case Direction::NONE:
 		return;
 	}
 	
         animatedSprite.play(*anim);
-        animatedSprite.move(shift * frameTime.asSeconds());
-	pos = animatedSprite.getPosition();
+	if (!colliding) {
+		animatedSprite.move(shift * frameTime.asSeconds());
+		pos = animatedSprite.getPosition();
+	}
 	animatedSprite.update(frameTime);
 }
 
@@ -105,4 +103,5 @@ void MovingEntity::stop() {
 	animatedSprite.stop();
 	animatedSprite.update(frameClock.restart());
 	moving = false;
+	direction = prevDirection = Game::Direction::NONE;
 }
