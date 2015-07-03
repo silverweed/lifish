@@ -1,15 +1,15 @@
 #include "MovingEntity.hpp"
 #include "Game.hpp"
 #include "GameCache.hpp"
-#include <iostream>
 
 using Game::MovingEntity;
 using Game::TILE_SIZE;
-using Game::Direction;
 
 MovingEntity::MovingEntity(sf::Vector2f pos, const std::string& texture_name) 
 	: Entity(pos, texture_name)
 {
+	transparentTo.bullets = false;
+
 	for (unsigned short i = 0; i < MAX_N_ANIMATIONS; ++i)
 		animations[i].setSpriteSheet(texture);
 
@@ -32,33 +32,71 @@ MovingEntity::MovingEntity(sf::Vector2f pos, const std::string& texture_name)
 	animatedSprite.pause();
 }
 
+void MovingEntity::move() {
+	move(direction);
+}
+
 void MovingEntity::move(const Direction dir) {
+	bool must_align = false;
+	if (moving && prevDirection != dir) {
+		// Entities are allowed to change direction only when
+		// they're aligned to a grid cell.
+		unsigned short ix = (unsigned short)pos.x,
+			       iy = (unsigned short)pos.y;
+		if (ix % TILE_SIZE != 0 || iy % TILE_SIZE != 0) {
+			must_align = true;
+		} else {
+			// we're already (almost) aligned: ensure we're exactly
+			// at integral coordinates.
+			pos.x = ix, pos.y = iy;
+			animatedSprite.setPosition(pos);
+		}
+	}
+	
+	moving = true;
+
+	if (must_align) {
+		// We're not aligned yet with the grid: go on
+		// in the current direction.
+		direction = prevDirection;
+	} else {
+		// Can change direction safely
+		prevDirection = direction = dir;
+	}
+
 	sf::Vector2f shift(0.f, 0.f);
 	sf::Time frameTime = frameClock.restart();
 
 	Animation *anim;
-
-	switch (dir) {
-	case Direction::UP:
+		 
+	switch (direction) {
+	case DIR_UP:
 		anim = &animations[ANIM_UP];
-		shift.y -= speed;
+		if (!colliding[DIR_UP])
+			shift.y -= speed;
 		break;
-	case Direction::LEFT:
+	case DIR_LEFT:
 		anim = &animations[ANIM_LEFT];
-		shift.x -= speed;
+		if (!colliding[DIR_LEFT])
+			shift.x -= speed;
 		break;
-	case Direction::DOWN:
+	case DIR_DOWN:
 		anim = &animations[ANIM_DOWN];
-		shift.y += speed;
+		if (!colliding[DIR_DOWN])
+			shift.y += speed;
 		break;
-	case Direction::RIGHT:
+	case DIR_RIGHT:
 		anim = &animations[ANIM_RIGHT];
-		shift.x += speed;
+		if (!colliding[DIR_RIGHT])
+			shift.x += speed;
 		break;
+	case DIR_NONE:
+		return;
 	}
-
+	
         animatedSprite.play(*anim);
         animatedSprite.move(shift * frameTime.asSeconds());
+	pos = animatedSprite.getPosition();
 	animatedSprite.update(frameTime);
 }
 
@@ -66,4 +104,5 @@ void MovingEntity::stop() {
 	animatedSprite.setAnimation(animations[ANIM_DOWN]);
 	animatedSprite.stop();
 	animatedSprite.update(frameClock.restart());
+	moving = false;
 }

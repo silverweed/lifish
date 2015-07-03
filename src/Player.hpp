@@ -13,6 +13,8 @@ class Player : public Game::MovingEntity, public Game::Lifed {
 	constexpr static unsigned short MAX_LIFE = 16;
 public:
 	Player(sf::Vector2f pos, const unsigned short id);
+	
+	void stop() override;
 };
 
 }

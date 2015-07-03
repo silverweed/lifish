@@ -6,8 +6,6 @@
 #include "MovingEntity.hpp"
 #include "Controls.hpp"
 
-using Game::Direction;
-
 int main(int argc, char **argv) {
 	std::clog << "lifish v." << VERSION << " rev." << COMMIT << std::endl;	
 	if (Game::init()) {
@@ -71,19 +69,28 @@ int main(int argc, char **argv) {
 			}
 		}
 
-		// Player movements
 		for (unsigned int i = 0; i < 2; ++i) {
 			if (players[i] == nullptr) continue;
 			if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::UP]))
-				players[i]->move(Direction::UP);
+				players[i]->setDirection(Game::DIR_UP);
 			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::LEFT]))
-				players[i]->move(Direction::LEFT);
+				players[i]->setDirection(Game::DIR_LEFT);
 			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::DOWN]))
-				players[i]->move(Direction::DOWN);
+				players[i]->setDirection(Game::DIR_DOWN);
 			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::RIGHT]))
-				players[i]->move(Direction::RIGHT);
+				players[i]->setDirection(Game::DIR_RIGHT);
 			else
+				players[i]->setDirection(Game::DIR_NONE);
+		}
+
+		// Collisions detection
+		lr.detectCollisions();
+
+		for (unsigned int i = 0; i < 2; ++i) {
+			if (players[i]->getDirection() == Game::DIR_NONE)
 				players[i]->stop();
+			else
+				players[i]->move();
 		}
 
 		// XXX: can we avoid clearing and drawing the background each frame?

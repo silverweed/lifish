@@ -5,6 +5,7 @@
  */
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <forward_list>
 #include <array>
 #include "Level.hpp"
 #include "FixedEntity.hpp"
@@ -32,7 +33,6 @@ class LevelRenderer {
 
 	/** Deletes all entities */
 	void _clearEntities();
-
 public:
 	LevelRenderer() {}
 	~LevelRenderer();
@@ -40,6 +40,11 @@ public:
 	/** Creates the initial entities based on this level's tilemap. */
 	void loadLevel(Game::Level *const _level);
 	void renderFrame(sf::RenderWindow& window);
+
+	/** Calculates collisions based on the current entites layout, filling
+	 *  the `colliding` array for each moving entity based on their transparency.
+	 */
+	void detectCollisions();
 
 	std::array<Game::Player*, Game::MAX_PLAYERS> getPlayers() const { return players; }
 	Player* getPlayer(const unsigned short i) const { return players[i-1]; }
