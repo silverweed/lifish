@@ -5,6 +5,7 @@
 
 #include <string>
 #include <array>
+#include <ostream>
 #include <SFML/Graphics.hpp>
 #include "Entity.hpp"
 #include "Animated.hpp"
@@ -14,6 +15,8 @@ namespace Game {
 enum class Direction {
 	UP, LEFT, DOWN, RIGHT, NONE
 };
+
+std::ostream& operator<<(std::ostream& stream, const Direction& dir);
 
 inline Direction oppositeDirection(const Direction dir) {
 	switch (dir) {
@@ -56,6 +59,12 @@ public:
 	virtual void move();
 	virtual void move(const Direction direction);
 	virtual void stop();
+
+	/** Realigns this entity to the grid.
+	 *  If direction != NONE, put the entity back to the tile whence it was moving,
+	 *  else just floor down x and y so that the coordinates are multiple of TILE_SIZE.
+	 */
+	void realign();
 
 	bool isMoving() const { return moving; }
 };

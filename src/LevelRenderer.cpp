@@ -50,18 +50,20 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 							curPos(left, top),
 							getAsset("graphics", "coin.png")));
 				break;
-			case EntityType::PLAYER1: {
-				Game::Player *player = new Game::Player(curPos(left, top), 1);
-				movingEntities.push_back(player);
-				players[0] = player;
-				break;
-			}
-			case EntityType::PLAYER2: {
-				Game::Player *player = new Game::Player(curPos(left, top), 2);
-				movingEntities.push_back(player);
-				players[1] = player;
-				break;
-			}
+			case EntityType::PLAYER1: 
+				{
+					Game::Player *player = new Game::Player(curPos(left, top), 1);
+					movingEntities.push_back(player);
+					players[0] = player;
+					break;
+				}
+			case EntityType::PLAYER2: 
+				{
+					Game::Player *player = new Game::Player(curPos(left, top), 2);
+					movingEntities.push_back(player);
+					players[1] = player;
+					break;
+				}
 			case EntityType::TELEPORT:
 			case EntityType::ENEMY1:
 			case EntityType::ENEMY2:
@@ -109,15 +111,15 @@ void LevelRenderer::detectCollisions() {
 		switch (dir) {
 		case Direction::UP:
 			return iposx - TILE_SIZE < ioposx && ioposx < iposx + TILE_SIZE
-				&& ioposy == iposy - TILE_SIZE;
+				&& iposy >= ioposy && ioposy >= iposy - TILE_SIZE;
 		case Direction::LEFT:
-			return ioposx == iposx - TILE_SIZE
+			return iposx >= ioposx && ioposx >= iposx - TILE_SIZE
 				&& iposy - TILE_SIZE < ioposy && ioposy < iposy + TILE_SIZE;
 		case Direction::DOWN:
 			return iposx - TILE_SIZE < ioposx && ioposx < iposx + TILE_SIZE
-				&& ioposy == iposy + TILE_SIZE;
+				&& ioposy >= iposy && ioposy <= iposy + TILE_SIZE;
 		case Direction::RIGHT:
-			return ioposx == iposx + TILE_SIZE
+			return ioposx >= iposx && ioposx <= iposx + TILE_SIZE
 				&& iposy - TILE_SIZE < ioposy && ioposy < iposy + TILE_SIZE;
 		default:
 			return false;
@@ -184,6 +186,7 @@ void LevelRenderer::detectCollisions() {
 
 			if (collide(pos, opos, dir)) {
 				entity->colliding = true;
+				std::cerr << "colliding at " << pos.x << "/" << opos.x <<", " << pos.y <<"/" << opos.y<< std::endl;
 				checked[i] = true;
 				if (other->getDirection() == Game::oppositeDirection(dir)) {
 					other->colliding = true;

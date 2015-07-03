@@ -6,7 +6,7 @@
 #include "MovingEntity.hpp"
 #include "Controls.hpp"
 
-using Game::Direction;
+using Game::TILE_SIZE;
 
 int main(int argc, char **argv) {
 	std::clog << "lifish v." << VERSION << " rev." << COMMIT << std::endl;	
@@ -46,22 +46,24 @@ int main(int argc, char **argv) {
 				case sf::Keyboard::Key::Escape:
 					window.close();
 					break;
-				case sf::Keyboard::Key::Add: {
-					short n = level->getLevelNum() + 1;
-					if (n > levelset.getLevelsNum())
-						n = 1;
-					lr.loadLevel(level = levelset.getLevel(n));
-					players = lr.getPlayers();
-					break;
-				}
-				case sf::Keyboard::Key::Subtract: {
-					short n = level->getLevelNum() - 1;
-					if (n < 1)
-						n = levelset.getLevelsNum();
-					lr.loadLevel(level = levelset.getLevel(n));
-					players = lr.getPlayers();
-					break;
-				}
+				case sf::Keyboard::Key::Add:
+					{
+						short n = level->getLevelNum() + 1;
+						if (n > levelset.getLevelsNum())
+							n = 1;
+						lr.loadLevel(level = levelset.getLevel(n));
+						players = lr.getPlayers();
+						break;
+					}
+				case sf::Keyboard::Key::Subtract: 
+					{
+						short n = level->getLevelNum() - 1;
+						if (n < 1)
+							n = levelset.getLevelsNum();
+						lr.loadLevel(level = levelset.getLevel(n));
+						players = lr.getPlayers();
+						break;
+					}
 				default:
 					break; 
 				}
@@ -71,18 +73,22 @@ int main(int argc, char **argv) {
 			}
 		}
 
+		Game::Direction dir[] = { Game::Direction::NONE, Game::Direction::NONE };
 		for (unsigned int i = 0; i < 2; ++i) {
 			if (players[i] == nullptr) continue;
+
 			if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::UP]))
-				players[i]->setDirection(Game::Direction::UP);
+				dir[i] = Game::Direction::UP;
 			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::LEFT]))
-				players[i]->setDirection(Game::Direction::LEFT);
+				dir[i] = Game::Direction::LEFT;
 			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::DOWN]))
-				players[i]->setDirection(Game::Direction::DOWN);
+				dir[i] = Game::Direction::DOWN;
 			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::RIGHT]))
-				players[i]->setDirection(Game::Direction::RIGHT);
-			else
-				players[i]->setDirection(Game::Direction::NONE);
+				dir[i] = Game::Direction::RIGHT;
+
+			if (players[i]->isAligned()) {
+				players[i]->setDirection(dir[i]);
+			}
 		}
 
 		// Collisions detection

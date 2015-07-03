@@ -5,6 +5,17 @@
 using Game::MovingEntity;
 using Game::TILE_SIZE;
 
+std::ostream& Game::operator<<(std::ostream& stream, const Direction& dir) {
+	switch (dir) {
+	case Direction::UP: stream << "UP"; break;
+	case Direction::LEFT: stream << "LEFT"; break;
+	case Direction::DOWN: stream << "DOWN"; break;
+	case Direction::RIGHT: stream << "RIGHT"; break;
+	default: stream << "NONE"; break;
+	}
+	return stream;
+}
+
 MovingEntity::MovingEntity(sf::Vector2f pos, const std::string& texture_name) 
 	: Entity(pos, texture_name)
 {
@@ -37,32 +48,8 @@ void MovingEntity::move() {
 }
 
 void MovingEntity::move(const Direction dir) {
-	bool must_align = false;
-	if (moving && prevDirection != dir) {
-		// Entities are allowed to change direction only when
-		// they're aligned to a grid cell.
-		unsigned short ix = (unsigned short)pos.x,
-			       iy = (unsigned short)pos.y;
-		if (ix % TILE_SIZE != 0 || iy % TILE_SIZE != 0) {
-			must_align = true;
-		} else {
-			// we're already (almost) aligned: ensure we're exactly
-			// at integral coordinates.
-			pos.x = ix, pos.y = iy;
-			animatedSprite.setPosition(pos);
-		}
-	}
-	
 	moving = true;
-
-	if (must_align) {
-		// We're not aligned yet with the grid: go on
-		// in the current direction.
-		direction = prevDirection;
-	} else {
-		// Can change direction safely
-		prevDirection = direction = dir;
-	}
+	direction = dir;
 
 	sf::Vector2f shift(0.f, 0.f);
 	sf::Time frameTime = frameClock.restart();
@@ -89,11 +76,13 @@ void MovingEntity::move(const Direction dir) {
 	case Direction::NONE:
 		return;
 	}
-	
+
         animatedSprite.play(*anim);
 	if (!colliding) {
 		animatedSprite.move(shift * frameTime.asSeconds());
 		pos = animatedSprite.getPosition();
+	} else {
+		realign();
 	}
 	animatedSprite.update(frameTime);
 }
@@ -104,4 +93,27 @@ void MovingEntity::stop() {
 	animatedSprite.update(frameClock.restart());
 	moving = false;
 	direction = prevDirection = Game::Direction::NONE;
+	realign();
+}
+
+void MovingEntity::realign() {
+	switch (direction) {
+	case Game::Direction::UP:
+		pos = sf::Vector2f(pos.x, ((unsigned short)((pos.y-1) / TILE_SIZE) + 1) * TILE_SIZE);
+		break;
+	case Game::Direction::LEFT:
+		pos = sf::Vector2f(((unsigned short)((pos.x-1) / TILE_SIZE) + 1) * TILE_SIZE, pos.y);
+		break;
+	case Game::Direction::DOWN:
+		pos = sf::Vector2f(pos.x, (unsigned short)(pos.y / TILE_SIZE) * TILE_SIZE);
+
+		break;
+	case Game::Direction::RIGHT:
+		pos = sf::Vector2f((unsigned short)(pos.x / TILE_SIZE) * TILE_SIZE, pos.y);
+		break;
+	default: 
+		pos = sf::Vector2f((unsigned short)(pos.x / TILE_SIZE) * TILE_SIZE, (unsigned short)(pos.y / TILE_SIZE) * TILE_SIZE);
+		break;
+	}
+	animatedSprite.setPosition(pos);
 }

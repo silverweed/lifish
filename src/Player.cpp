@@ -14,19 +14,3 @@ Player::Player(sf::Vector2f pos, const unsigned short id) :
 	speed = 150.f;
 	transparentTo.players = false;
 }
-
-void Player::stop() {
-	// Discretize the movement: if the player was moving 
-	// towards a certain direction, make him reach the next
-	// tile before actually stopping.
-	unsigned short ix = (unsigned short)pos.x,
-		       iy = (unsigned short)pos.y;
-	if (ix % TILE_SIZE != 0 || iy % TILE_SIZE != 0) {
-		move(direction);
-	} else {
-		ix = (unsigned short)pos.x,
-		iy = (unsigned short)pos.y;
-		animatedSprite.setPosition(ix, iy);
-		MovingEntity::stop();
-	}
-}
