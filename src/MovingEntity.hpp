@@ -12,6 +12,8 @@
 
 namespace Game {
 
+class LevelRenderer;
+
 enum class Direction {
 	UP, LEFT, DOWN, RIGHT, NONE
 };
@@ -66,6 +68,8 @@ public:
 	void realign();
 
 	bool isMoving() const { return moving; }
+
+	bool canGo(const Game::Direction direction, const Game::LevelRenderer *const lr) const; 
 };
 
 }

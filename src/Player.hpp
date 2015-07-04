@@ -15,6 +15,9 @@ class Player : public Game::MovingEntity, public Game::Lifed {
 	constexpr static unsigned short DEATH_N_FRAMES = 3;
 public:
 	Player(sf::Vector2f pos, const unsigned short id);
+
+	virtual void move() override;
+	void move(const Direction dir) override;
 };
 
 }

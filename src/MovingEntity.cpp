@@ -1,9 +1,11 @@
 #include "MovingEntity.hpp"
 #include "Game.hpp"
 #include "GameCache.hpp"
+#include "LevelRenderer.hpp"
 
 using Game::MovingEntity;
 using Game::TILE_SIZE;
+using Game::Direction;
 
 std::ostream& Game::operator<<(std::ostream& stream, const Direction& dir) {
 	switch (dir) {
@@ -60,9 +62,7 @@ void MovingEntity::move(const Direction dir) {
 	if (!colliding) {
 		animatedSprite.move(shift * frameTime.asSeconds());
 		pos = animatedSprite.getPosition();
-	} else {
-		realign();
-	}
+	} 
 	animatedSprite.update(frameTime);
 }
 
@@ -95,4 +95,31 @@ void MovingEntity::realign() {
 		break;
 	}
 	animatedSprite.setPosition(pos);
+}
+
+bool MovingEntity::canGo(const Direction dir, const Game::LevelRenderer *const lr) const {
+	unsigned short iposx = (unsigned short)(pos.x / TILE_SIZE),
+		       iposy = (unsigned short)(pos.y / TILE_SIZE);
+	
+	switch (dir) {
+	case Direction::UP:
+		--iposy;
+		break;
+	case Direction::LEFT:
+		--iposx;
+		break;
+	case Direction::DOWN:
+		++iposy;
+		break;
+	case Direction::RIGHT:
+		++iposx;
+		break;
+	default: return true;
+	}
+	unsigned short idx = iposy * LEVEL_WIDTH + iposx;
+	auto fixed = lr->getFixedEntities();
+	if (idx < 0 || idx >= fixed.size()) {
+		return false;
+	}
+	return fixed[idx] == nullptr;
 }

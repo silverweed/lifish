@@ -19,7 +19,6 @@ protected:
 	sf::Clock frameClock;
 public:
 	virtual void draw(sf::RenderTarget& window) override;
-	AnimatedSprite* getAS(){return &animatedSprite;}
 };
 
 }
