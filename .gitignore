@@ -4,6 +4,7 @@ CMakeCache.txt
 CMakeFiles/
 *~
 *.swp
+*.swo
 *.o
 lifish
 assets/test
