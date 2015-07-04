@@ -11,7 +11,7 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
 	speed = 75.f;
 	transparentTo.enemies = false;
 	transparentTo.bullets = false;
-
+	direction = prevDirection = Game::Direction::DOWN;
 
 	for (unsigned short i = 0; i < MAX_N_ANIMATIONS; ++i) {
 		animations[i].setSpriteSheet(texture);
@@ -37,4 +37,42 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
 	animatedSprite.setLooped(true);
 	animatedSprite.setFrameTime(sf::seconds(0.12));
 	animatedSprite.pause();
+}
+void Enemy::move(const Direction dir) {
+	moving = true;
+	direction = dir;
+
+	sf::Vector2f shift(0.f, 0.f);
+	sf::Time frameTime = frameClock.restart();
+
+	Animation *anim;
+		 
+	switch (direction) {
+	case Direction::UP:
+		anim = &animations[ANIM_UP];
+		shift.y -= speed;
+		break;
+	case Direction::LEFT:
+		anim = &animations[ANIM_LEFT];
+		shift.x -= speed;
+		break;
+	case Direction::DOWN:
+		anim = &animations[ANIM_DOWN];
+		shift.y += speed;
+		break;
+	case Direction::RIGHT:
+		anim = &animations[ANIM_RIGHT];
+		shift.x += speed;
+		break;
+	case Direction::NONE:
+		return;
+	}
+
+        animatedSprite.play(*anim);
+	if (!colliding) {
+		animatedSprite.move(shift * frameTime.asSeconds());
+		pos = animatedSprite.getPosition();
+	} else {
+	}
+	animatedSprite.update(frameTime);
 }

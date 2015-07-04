@@ -148,7 +148,7 @@ void LevelRenderer::detectCollisions() {
 
 		switch (dir) {
 		case Direction::UP:
-			if (iposy == TILE_SIZE) {
+			if (iposy <= TILE_SIZE) {
 				// Reached the top
 				entity->colliding = true;
 				continue;
@@ -157,7 +157,7 @@ void LevelRenderer::detectCollisions() {
 			--next_tile.y;
 			break;
 		case Direction::LEFT:
-			if (iposx == TILE_SIZE) {
+			if (iposx <= TILE_SIZE) {
 				entity->colliding = true;
 				continue;
 			}
@@ -165,7 +165,7 @@ void LevelRenderer::detectCollisions() {
 			--next_tile.x;
 			break;
 		case Direction::DOWN:
-			if (iposy == TILE_SIZE * LEVEL_HEIGHT) {
+			if (iposy >= TILE_SIZE * LEVEL_HEIGHT) {
 				entity->colliding = true;
 				continue;
 			}
@@ -173,7 +173,7 @@ void LevelRenderer::detectCollisions() {
 			++next_tile.y;
 			break;
 		case Direction::RIGHT:
-			if (iposx == TILE_SIZE * LEVEL_WIDTH) {
+			if (iposx >= TILE_SIZE * LEVEL_WIDTH) {
 				entity->colliding = true;
 				continue;
 			}
@@ -206,12 +206,16 @@ void LevelRenderer::detectCollisions() {
 			}
 		}
 		if (!collision_detected && at_limit) {
-			FixedEntity *other = fixedEntities[next_tile.y * LEVEL_WIDTH + next_tile.x];
+			unsigned short idx = next_tile.y * LEVEL_WIDTH + next_tile.x;
+			if (idx < 0 || idx >= fixedEntities.size()) {
+				entity->colliding = true;
+				continue;
+			}
+			FixedEntity *other = fixedEntities[idx];
 			if (other != nullptr && ((is_player && !other->transparentTo.players) 
 						|| (!is_player && !other->transparentTo.enemies))) 
 			{
 				entity->colliding = true;
-				checked[i] = true;
 			}
 		}
 	}
@@ -219,7 +223,7 @@ void LevelRenderer::detectCollisions() {
 
 void LevelRenderer::selectEnemyMoves() {
 	for (auto& entity : movingEntities) {
-		if (entity == players[0] || entity == players[1] || !entity->isAligned()) continue;
+		if (entity == players[0] || entity == players[1] || !(entity->isAligned() || entity->colliding)) continue;
 		Enemy *enemy = dynamic_cast<Enemy*>(entity);
 		enemy->setDirection(enemy->getAI()(this));
 	}

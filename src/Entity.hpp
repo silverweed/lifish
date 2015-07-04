@@ -32,9 +32,7 @@ public:
 
 	virtual void draw(sf::RenderTarget& window) override;
 
-	inline bool isAligned() const {
-		return (unsigned short)pos.x % Game::TILE_SIZE == 0 && (unsigned short)pos.y % Game::TILE_SIZE == 0;
-	}
+	bool isAligned(const char axis = 'b') const;
 
 	sf::FloatRect getBounds() const {
 		return sf::FloatRect(pos.x, pos.y, Game::TILE_SIZE, Game::TILE_SIZE);

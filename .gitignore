@@ -10,3 +10,4 @@ lifish
 assets/test
 cmake_install.cmake
 doxy
+cov-int

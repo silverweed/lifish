@@ -19,6 +19,8 @@ public:
 
 	void setAI(AIFunction aifunc) { ai = aifunc(this); }
 	AIBoundFunction getAI() const { return ai; }
+
+	void move(const Direction dir) override;
 };
 
 }
