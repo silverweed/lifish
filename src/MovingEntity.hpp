@@ -30,8 +30,7 @@ inline Direction oppositeDirection(const Direction dir) {
 
 class MovingEntity : public Game::Entity, public Game::Animated {
 protected:
-	constexpr static unsigned short WALK_N_FRAMES = 8;
-	constexpr static unsigned short DEATH_N_FRAMES = 3;
+	/** It's mandatory that directions are the first 4 elements */
 	enum : unsigned short {
 		ANIM_UP    = 0,
 		ANIM_RIGHT = 1,

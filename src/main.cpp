@@ -91,6 +91,9 @@ int main(int argc, char **argv) {
 			}
 		}
 
+		// Choose enemy movements
+		lr.selectEnemyMoves();
+
 		// Collisions detection
 		lr.detectCollisions();
 
@@ -100,6 +103,9 @@ int main(int argc, char **argv) {
 			else
 				players[i]->move();
 		}
+
+		// Actually move enemies
+		lr.applyEnemyMoves();
 
 		// XXX: can we avoid clearing and drawing the background each frame?
 		window.clear();

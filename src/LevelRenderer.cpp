@@ -3,9 +3,14 @@
 #include "FixedWall.hpp"
 #include "BreakableWall.hpp"
 #include "Coin.hpp"
+#include "Enemy.hpp"
 #include <sstream>
 
 using Game::LevelRenderer;
+
+LevelRenderer::LevelRenderer() {
+	fixedEntities.fill(nullptr);
+}
 
 LevelRenderer::~LevelRenderer() {
 	_clearEntities();
@@ -13,7 +18,7 @@ LevelRenderer::~LevelRenderer() {
 
 void LevelRenderer::_clearEntities() {
 	for (auto& e : fixedEntities)
-		delete e;
+		if (e != nullptr) delete e;
 	for (auto& e : movingEntities)
 		delete e;
 	for (unsigned short i = 0; i < MAX_PLAYERS; ++i)
@@ -23,7 +28,7 @@ void LevelRenderer::_clearEntities() {
 void LevelRenderer::loadLevel(Game::Level *const _level) {
 	if (level != nullptr) {
 		_clearEntities();
-		fixedEntities.clear();
+		fixedEntities.fill(nullptr);
 		movingEntities.clear();
 	}
 	level = _level;
@@ -36,19 +41,16 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 		for (unsigned short top = 0; top < LEVEL_HEIGHT; ++top) {
 			switch (level->getTile(left, top)) {
 			case EntityType::FIXED: 
-				fixedEntities.push_back(new Game::FixedWall(
-							curPos(left, top),
-							level->tileIDs.fixed));
+				fixedEntities[top * LEVEL_WIDTH + left] = 
+					new Game::FixedWall(curPos(left, top), level->tileIDs.fixed);
 				break;
 			case EntityType::BREAKABLE:
-				fixedEntities.push_back(new Game::BreakableWall(
-							curPos(left, top),
-							level->tileIDs.breakable));
+				fixedEntities[top * LEVEL_WIDTH + left] = 
+					new Game::BreakableWall(curPos(left, top), level->tileIDs.breakable);
 				break;
 			case EntityType::COIN:
-				fixedEntities.push_back(new Game::Coin(
-							curPos(left, top),
-							getAsset("graphics", "coin.png")));
+				fixedEntities[top * LEVEL_WIDTH + left] = 
+					new Game::Coin(curPos(left, top), getAsset("graphics", "coin.png"));
 				break;
 			case EntityType::PLAYER1: 
 				{
@@ -66,6 +68,12 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				}
 			case EntityType::TELEPORT:
 			case EntityType::ENEMY1:
+				{
+					Game::Enemy *enemy = new Game::Enemy(curPos(left, top), 1);
+					enemy->setAI(Game::ai_random);
+					movingEntities.push_back(enemy);
+					break;
+				}
 			case EntityType::ENEMY2:
 			case EntityType::ENEMY3:
 			case EntityType::ENEMY4:
@@ -89,7 +97,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 
 	level->draw(window);
 	for (const auto& entity : fixedEntities)
-		entity->draw(window);
+		if (entity != nullptr) entity->draw(window);
 	for (const auto& entity : movingEntities)
 		entity->draw(window);
 }
@@ -101,8 +109,6 @@ void LevelRenderer::detectCollisions() {
 	 */
 	std::vector<bool> checked(movingEntities.size(), false);
 	
-	// FIXME: prevent players walking past each other if they collide at
-	// non-integral coordinates!
 	static auto collide = [] (const sf::Vector2f& pos, const sf::Vector2f& opos, const Game::Direction dir) {
 		unsigned short iposx = (unsigned short)pos.x,
 			       iposy = (unsigned short)pos.y,
@@ -138,6 +144,7 @@ void LevelRenderer::detectCollisions() {
 		const Direction dir = entity->getDirection();
 		const unsigned short iposx = (unsigned short)pos.x,
 		                     iposy = (unsigned short)pos.y;
+		sf::Vector2i next_tile(iposx / TILE_SIZE - 1, iposy / TILE_SIZE - 1);
 
 		switch (dir) {
 		case Direction::UP:
@@ -146,8 +153,8 @@ void LevelRenderer::detectCollisions() {
 				entity->colliding = true;
 				continue;
 			}
-
 			at_limit = iposy % TILE_SIZE == 0;
+			--next_tile.y;
 			break;
 		case Direction::LEFT:
 			if (iposx == TILE_SIZE) {
@@ -155,6 +162,7 @@ void LevelRenderer::detectCollisions() {
 				continue;
 			}
 			at_limit = iposx % TILE_SIZE == 0;
+			--next_tile.x;
 			break;
 		case Direction::DOWN:
 			if (iposy == TILE_SIZE * LEVEL_HEIGHT) {
@@ -162,6 +170,7 @@ void LevelRenderer::detectCollisions() {
 				continue;
 			}
 			at_limit = iposy % TILE_SIZE == 0;
+			++next_tile.y;
 			break;
 		case Direction::RIGHT:
 			if (iposx == TILE_SIZE * LEVEL_WIDTH) {
@@ -169,6 +178,7 @@ void LevelRenderer::detectCollisions() {
 				continue;
 			}
 			at_limit = iposx % TILE_SIZE == 0;
+			++next_tile.x;
 			break;
 		case Direction::NONE:
 			continue;
@@ -196,16 +206,28 @@ void LevelRenderer::detectCollisions() {
 			}
 		}
 		if (!collision_detected && at_limit) {
-			for (auto& other : fixedEntities) {
-				if ((is_player && other->transparentTo.players) || other->transparentTo.enemies)
-					continue;
-				sf::Vector2f opos = other->getPosition();
-				if (collide(pos, opos, dir)) {
-					entity->colliding = true;
-					checked[i] = true;
-					break;
-				}
+			FixedEntity *other = fixedEntities[next_tile.y * LEVEL_WIDTH + next_tile.x];
+			if (other != nullptr && ((is_player && !other->transparentTo.players) 
+						|| (!is_player && !other->transparentTo.enemies))) 
+			{
+				entity->colliding = true;
+				checked[i] = true;
 			}
 		}
+	}
+}
+
+void LevelRenderer::selectEnemyMoves() {
+	for (auto& entity : movingEntities) {
+		if (entity == players[0] || entity == players[1] || !entity->isAligned()) continue;
+		Enemy *enemy = dynamic_cast<Enemy*>(entity);
+		enemy->setDirection(enemy->getAI()(this));
+	}
+}
+
+void LevelRenderer::applyEnemyMoves() {
+	for (auto& entity : movingEntities) {
+		if (entity == players[0] || entity == players[1]) continue;
+		entity->move();
 	}
 }

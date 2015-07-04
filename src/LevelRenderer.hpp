@@ -15,7 +15,8 @@
 namespace Game {
 
 class LevelRenderer {
-	using FixedEntityList = std::vector<Game::FixedEntity*>;
+	/** For Fixed Entities we use a fixed-size array for faster lookup */
+	using FixedEntityList = std::array<Game::FixedEntity*, LEVEL_WIDTH * LEVEL_HEIGHT>;
 	using MovingEntityList = std::vector<Game::MovingEntity*>;
 
 	/** The level this object is rendering */
@@ -34,7 +35,7 @@ class LevelRenderer {
 	/** Deletes all entities */
 	void _clearEntities();
 public:
-	LevelRenderer() {}
+	LevelRenderer();
 	~LevelRenderer();
 
 	/** Creates the initial entities based on this level's tilemap. */
@@ -46,8 +47,22 @@ public:
 	 */
 	void detectCollisions();
 
+	/** Cycles through enemies and calls each one's AI function.
+	 *  To actually move enemies, `applyEnemyMoves` must be called
+	 *  after this (better yet, after `detectCollisions`). The
+	 *  proper way to move enemies in fact is:
+	 *  	selectEnemyMoves();
+	 *  	detectCollisions();
+	 *	applyEnemyMoves();
+	 */
+	void selectEnemyMoves();
+	void applyEnemyMoves();
+
 	std::array<Game::Player*, Game::MAX_PLAYERS> getPlayers() const { return players; }
 	Player* getPlayer(const unsigned short i) const { return players[i-1]; }
+	
+	const FixedEntityList& getFixedEntities() const { return fixedEntities; }
+	const MovingEntityList& getMovingEntities() const { return movingEntities; }
 };
 
 }
