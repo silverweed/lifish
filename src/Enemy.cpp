@@ -38,3 +38,7 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
 	animatedSprite.setFrameTime(sf::seconds(0.12));
 	animatedSprite.pause();
 }
+
+bool Enemy::_isTransparentTo(const Entity *const e) const {
+	return e->transparentTo.enemies;
+}

@@ -33,10 +33,6 @@ public:
 	virtual void draw(sf::RenderTarget& window) override;
 
 	bool isAligned(const char axis = 'b') const;
-
-	sf::FloatRect getBounds() const {
-		return sf::FloatRect(pos.x, pos.y, Game::TILE_SIZE, Game::TILE_SIZE);
-	}
 };
 
 }

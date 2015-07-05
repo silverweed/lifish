@@ -77,3 +77,7 @@ void Player::move(const Direction dir) {
 	}
 	animatedSprite.update(frameTime);
 }
+
+bool Player::_isTransparentTo(const Entity *const e) const {
+	return e->transparentTo.players;
+}

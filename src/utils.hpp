@@ -1,7 +1,9 @@
 #pragma once
 
 #include <array>
+#include <ostream>
 #include <SFML/Window/Keyboard.hpp>
+#include <SFML/System/Vector2.hpp>
 #include "Game.hpp"
 
 template <class T, size_t ROWS, size_t COLS>
@@ -23,3 +25,5 @@ T abs(const T& num) {
 #else
 #define HAVE_STD_ABS
 #endif
+
+sf::Vector2i tile(const sf::Vector2f& pos);

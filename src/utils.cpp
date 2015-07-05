@@ -16,3 +16,9 @@ short keyToNumber(sf::Keyboard::Key key) {
 	default: return -1;
 	}
 }
+
+sf::Vector2i tile(const sf::Vector2f& pos) {
+	return sf::Vector2i(
+			(unsigned short)pos.x / Game::TILE_SIZE, 
+			(unsigned short)pos.y / Game::TILE_SIZE);
+}

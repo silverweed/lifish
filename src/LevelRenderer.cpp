@@ -82,6 +82,12 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 					break;
 				}
 			case EntityType::ENEMY3:
+				{
+					Game::Enemy *enemy = new Game::Enemy(curPos(left, top), 3);
+					enemy->setAI(Game::ai_random_forward);
+					movingEntities.push_back(enemy);
+					break;
+				}
 			case EntityType::ENEMY4:
 			case EntityType::ENEMY5:
 			case EntityType::ENEMY6:
@@ -229,7 +235,11 @@ void LevelRenderer::detectCollisions() {
 
 void LevelRenderer::selectEnemyMoves() {
 	for (auto& entity : movingEntities) {
-		if (entity == players[0] || entity == players[1] || !(entity->isAligned() || entity->colliding)) continue;
+		if (entity == players[0] || entity == players[1] ||
+				!(entity->isAligned() || entity->colliding)) 
+		{
+			continue;
+		}
 		Enemy *enemy = dynamic_cast<Enemy*>(entity);
 		enemy->setDirection(enemy->getAI()(this));
 	}

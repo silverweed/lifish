@@ -45,6 +45,8 @@ protected:
 	float speed;
 	Game::Direction direction, prevDirection = Game::Direction::NONE;
 	bool moving = false;
+
+	virtual bool _isTransparentTo(const Entity *const e) const = 0;
 public:
 	bool colliding = false;
 

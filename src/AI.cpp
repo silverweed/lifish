@@ -10,42 +10,41 @@ static D directions[] = { D::UP, D::RIGHT, D::DOWN, D::LEFT };
 
 AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
 	return [enemy] (const LevelRenderer*) { 
-		static unsigned short steps = 0;
-		if (steps++ < 150 && !enemy->colliding) return enemy->getDirection();
-		steps = 0;
-		std::vector<D> dirs;
+		if (enemy->steps++ < 150 && !enemy->colliding) return enemy->getDirection();
+		enemy->steps = 0;
+		D dirs[4];
+		unsigned short n = 0;
 		if (enemy->isAligned('x')) {
-			dirs.push_back(D::UP);
-			dirs.push_back(D::DOWN);
+			dirs[n++] = D::UP;
+			dirs[n++] = D::DOWN;
 		}
 		if (enemy->isAligned('y')) {
-			dirs.push_back(D::LEFT);
-			dirs.push_back(D::RIGHT);
+			dirs[n++] = D::LEFT;
+			dirs[n++] = D::RIGHT;
 		}
-		std::uniform_int_distribution<int> d(0, dirs.size() - 1);
+		std::uniform_int_distribution<int> d(0, n - 1);
 		return dirs[d(rng)];
 	};
 }
 
-// FIXME
 AIBoundFunction Game::ai_random_forward(Game::Enemy *const enemy) {
 	return [enemy] (const LevelRenderer *lr) { 
-		/*static unsigned short steps = 0;
-		if (enemy->colliding) {
-			std::uniform_int_distribution<int> d(0, 3);
-			return directions[d(rng)];			
-		}*/
-		std::vector<D> dirs;
 		D cur = enemy->getDirection();
-		if (enemy->isAligned('x')) {
-			if ((enemy->colliding || cur != D::DOWN) && enemy->canGo(D::UP, lr)) dirs.push_back(D::UP);
-			if ((enemy->colliding || cur != D::UP) && enemy->canGo(D::DOWN, lr)) dirs.push_back(D::DOWN);
+		auto curAlign = tile(enemy->getPosition());
+		if (enemy->prevAlign == curAlign && !enemy->colliding) return cur;
+		enemy->prevAlign = curAlign; 
+		D opp = oppositeDirection(cur);
+		if (enemy->colliding && enemy->canGo(cur, lr)) {
+			// we're colliding with a moving entity
+			return opp;
 		}
-		if (enemy->isAligned('y')) {
-			if ((enemy->colliding || cur != D::RIGHT) && enemy->canGo(D::LEFT, lr)) dirs.push_back(D::LEFT);
-			if ((enemy->colliding || cur != D::LEFT) && enemy->canGo(D::RIGHT, lr)) dirs.push_back(D::RIGHT);
-		}
-		std::uniform_int_distribution<int> d(0, dirs.size() - 1);
-		return dirs[d(rng)];
+		D dirs[4];
+		unsigned short n = 0;
+		for (const auto& d : directions)
+			if (enemy->canGo(d, lr) && d != opp) dirs[n++] = d;
+		if (n == 0)
+			dirs[n++] = opp;
+		std::uniform_int_distribution<int> dist(0, n - 1);
+		return dirs[dist(rng)];
 	};
 }

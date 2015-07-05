@@ -17,7 +17,11 @@ class Enemy : public Game::MovingEntity, public Game::Lifed {
 	AIBoundFunction ai;
 
 	// TODO: type of bullets, fire rate, etc
+	bool _isTransparentTo(const Entity *const e) const override;
 public:
+	unsigned short steps = 0;
+	sf::Vector2i prevAlign = sf::Vector2i(-1, -1);
+
 	Enemy(sf::Vector2f pos, const unsigned short id);
 
 	void setAI(AIFunction aifunc) { ai = aifunc(this); }

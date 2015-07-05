@@ -1,6 +1,7 @@
 #include "Entity.hpp"
 #include "GameCache.hpp"
 #include "Game.hpp"
+#include <cmath>
 
 using Game::Entity;
 
@@ -21,5 +22,6 @@ bool Entity::isAligned(const char axis) const {
 		case 'x': return (unsigned short)pos.x % Game::TILE_SIZE == 0;
 		case 'y': return (unsigned short)pos.y % Game::TILE_SIZE == 0;
 	}
-	return (unsigned short)pos.x % Game::TILE_SIZE == 0 && (unsigned short)pos.y % Game::TILE_SIZE == 0;
+	return (unsigned short)pos.x % Game::TILE_SIZE == 0 
+		&& (unsigned short)pos.y % Game::TILE_SIZE == 0;
 }
