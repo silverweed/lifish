@@ -90,7 +90,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				}
 			case EntityType::ENEMY4:
 				{
-					Game::Enemy *enemy = new Game::Enemy(curPos(left, top), 6);
+					Game::Enemy *enemy = new Game::Enemy(curPos(left, top), 4);
 					enemy->setAI(Game::ai_random_forward);
 					enemy->setSpeed(150.f);
 					movingEntities.push_back(enemy);
