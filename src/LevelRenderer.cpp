@@ -89,6 +89,13 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 					break;
 				}
 			case EntityType::ENEMY4:
+				{
+					Game::Enemy *enemy = new Game::Enemy(curPos(left, top), 6);
+					enemy->setAI(Game::ai_random_forward);
+					enemy->setSpeed(150.f);
+					movingEntities.push_back(enemy);
+					break;
+				}
 			case EntityType::ENEMY5:
 			case EntityType::ENEMY6:
 			case EntityType::ENEMY7:

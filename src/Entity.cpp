@@ -1,7 +1,6 @@
 #include "Entity.hpp"
 #include "GameCache.hpp"
 #include "Game.hpp"
-#include <cmath>
 
 using Game::Entity;
 

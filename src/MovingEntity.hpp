@@ -53,6 +53,7 @@ public:
 	MovingEntity(sf::Vector2f pos, const std::string& texture_name);
 
 	float getSpeed() const { return speed; }
+	void setSpeed(const float _speed) { speed = _speed; }
 
 	Game::Direction getDirection() const { return direction; }
 	void setDirection(const Game::Direction dir) { direction = dir; }
