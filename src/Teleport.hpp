@@ -9,7 +9,7 @@
 namespace Game {
 
 class Teleport : public Game::FixedEntity, public Game::Animated {
-	constexpr static unsigned int COOLDOWN_FRAMES = 10000;
+	constexpr static unsigned int COOLDOWN_FRAMES = 3000;
 
 	/** The Teleport this one teleports to */
 	Teleport *next_t = nullptr;
@@ -31,10 +31,8 @@ public:
 
 	bool isDisabled() const { return disableCount > 0; }
 
-	/** If disableCount is 0 (teleport is enabled), return -1. Else,
-	 *  lower the disableCount by 1 and return it.
-	 */
-	int waitCooldown();
+	/** Lower the disableCount by 1. */
+	void tick();
 };
 
 }

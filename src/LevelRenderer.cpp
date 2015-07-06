@@ -24,6 +24,7 @@ void LevelRenderer::_clearEntities() {
 		delete e;
 	for (unsigned short i = 0; i < MAX_PLAYERS; ++i)
 		players[i] = nullptr;
+	firstTeleport = nullptr;
 }
 
 void LevelRenderer::loadLevel(Game::Level *const _level) {
@@ -75,15 +76,13 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 					// Save the first Teleport added
 					if (firstTeleport == nullptr)
 						firstTeleport = teleport;
+					else
+						teleport->linkTo(firstTeleport);
+
 					// If we had already added a Teleport, link it to this one.
 					if (latest_teleport != nullptr)
 						latest_teleport->linkTo(teleport);
 					latest_teleport = teleport;
-
-					// For now, link this teleport to the first one, unless it's the
-					// first one. If more teleports will be found, they'll correctly relink this one.
-					if (teleport != firstTeleport)
-						teleport->linkTo(firstTeleport);
 
 					fixedEntities[top * LEVEL_WIDTH + left] = teleport;
 					break;
@@ -231,7 +230,7 @@ void LevelRenderer::detectCollisions() {
 		}
 
 		// Check for teleports
-		if (entity->canTeleport && entity->isAligned()) {
+		if (firstTeleport != nullptr && entity->canTeleport && entity->isAligned()) {
 			auto cur_tile = tile(pos);
 
 			if (level->getTile(cur_tile.x - 1, cur_tile.y - 1) == EntityType::TELEPORT && entity->prevAlign != cur_tile) {
@@ -341,4 +340,12 @@ bool LevelRenderer::isEntityTouching(sf::Vector2f tile) const {
 		if (rect.intersects(tileRect)) return true;
 	}
 	return false;
+}
+
+void LevelRenderer::tickTeleports() {
+	Game::Teleport *ft = firstTeleport;
+	if (ft == nullptr) return;
+	ft->tick();
+	for (Game::Teleport *t = ft->next(); t != nullptr && t != ft; t = t->next())
+		t->tick();
 }

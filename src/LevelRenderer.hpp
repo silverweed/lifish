@@ -80,6 +80,8 @@ public:
 	 *  the rectangle at coordinates (tile)
 	 */
 	bool isEntityTouching(sf::Vector2f tile) const;
+
+	void tickTeleports();
 };
 
 }

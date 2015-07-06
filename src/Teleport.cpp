@@ -31,7 +31,6 @@ void Teleport::disable() {
 	disableCount = COOLDOWN_FRAMES;
 }
 
-int Teleport::waitCooldown() {
-	if (disableCount == 0) return -1;
-	return --disableCount;
+void Teleport::tick() {
+	if(disableCount > 0) --disableCount;
 }

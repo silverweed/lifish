@@ -125,6 +125,9 @@ int main(int argc, char **argv) {
 		// Actually move enemies
 		lr.applyEnemyMoves();
 
+		// Updates teleports' cooldown
+		lr.tickTeleports();
+
 		float cur_time = fps_clock.restart().asSeconds();
 		if (cycle++ % 10000 == 0) {
 			int fps = (int)(1.f / cur_time);
