@@ -4,6 +4,7 @@
  * entities, time and so on.
  */
 #include <SFML/Graphics.hpp>
+#include <SFML/System/NonCopyable.hpp>
 #include <vector>
 #include <forward_list>
 #include <array>
@@ -14,7 +15,7 @@
 
 namespace Game {
 
-class LevelRenderer {
+class LevelRenderer : private sf::NonCopyable {
 	/** For Fixed Entities we use a fixed-size array for faster lookup */
 	using FixedEntityList = std::array<Game::FixedEntity*, LEVEL_WIDTH * LEVEL_HEIGHT>;
 	using MovingEntityList = std::vector<Game::MovingEntity*>;
@@ -27,6 +28,8 @@ class LevelRenderer {
 
 	/** The moving entities */
 	MovingEntityList movingEntities;
+
+	sf::Vector2f origin;
 
 	/** The players */
 	std::array<Game::Player*, Game::MAX_PLAYERS> players;
@@ -63,6 +66,10 @@ public:
 	
 	const FixedEntityList& getFixedEntities() const { return fixedEntities; }
 	const MovingEntityList& getMovingEntities() const { return movingEntities; }
+
+	void setOrigin(const sf::Vector2f& _origin) {
+		origin = _origin;
+	}
 };
 
 }

@@ -7,10 +7,11 @@
 #include <map>
 #include <string>
 #include <SFML/Graphics.hpp>
+#include <SFML/System/NonCopyable.hpp>
 
 namespace Game {
 
-class GameCache {
+class GameCache : private sf::NonCopyable {
 	std::map<std::string, sf::Image*> textures;
 public:
 	GameCache();

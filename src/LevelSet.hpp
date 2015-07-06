@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <SFML/System/NonCopyable.hpp>
 #include "Level.hpp"
 #include "Track.hpp"
 #include "Game.hpp"
@@ -11,7 +12,7 @@ namespace Game {
 
 class Level;
 
-class LevelSet {
+class LevelSet : private sf::NonCopyable {
 	std::vector<Game::Level*> levels;
 	std::vector<Game::Track> tracks;
 	std::unordered_map<std::string, std::string> metadata;

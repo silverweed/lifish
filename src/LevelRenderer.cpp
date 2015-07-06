@@ -3,6 +3,7 @@
 #include "FixedWall.hpp"
 #include "BreakableWall.hpp"
 #include "Coin.hpp"
+#include "Teleport.hpp"
 #include "Enemy.hpp"
 #include <sstream>
 
@@ -67,6 +68,9 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 					break;
 				}
 			case EntityType::TELEPORT:
+				fixedEntities[top * LEVEL_WIDTH + left] =
+					new Game::Teleport(curPos(left, top));
+				break;
 			case EntityType::ENEMY1:
 				{
 					Game::Enemy *enemy = new Game::Enemy(curPos(left, top), 1);
@@ -114,11 +118,17 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 	if (level == nullptr) return;
 
+	level->setOrigin(origin);
 	level->draw(window);
 	for (const auto& entity : fixedEntities)
-		if (entity != nullptr) entity->draw(window);
-	for (const auto& entity : movingEntities)
+		if (entity != nullptr) {
+			entity->setOrigin(origin);
+			entity->draw(window);
+		}
+	for (const auto& entity : movingEntities) {
+		entity->setOrigin(origin);
 		entity->draw(window);
+	}
 }
 
 void LevelRenderer::detectCollisions() {

@@ -35,6 +35,11 @@ constexpr unsigned short LEVEL_HEIGHT = 13;
 
 constexpr unsigned short MAX_PLAYERS = 2;
 
+/** How much the main game window is shifted relative to the
+ *  SFML window
+ */
+const sf::Vector2f MAIN_WINDOW_SHIFT = sf::Vector2f(128.f, 0.f);
+
 constexpr unsigned short PWD_BUFSIZE = 512;
 /** The executable working directory */
 extern char pwd[PWD_BUFSIZE];

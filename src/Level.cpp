@@ -88,8 +88,15 @@ bool Level::init() {
 			std::to_string(levelnum),
 			sf::Vector2f(TILE_SIZE * (LEVEL_WIDTH+1), 0));
 	levelnumtext->setStyle(sf::Text::Bold);
+	levelnumtext->setCharacterSize(26);
 
 	return initialized;
+}
+
+void Level::setOrigin(const sf::Vector2f& origin) {
+	for (unsigned short i = 0; i < bgTiles.size(); ++i)
+		bgTiles[i].setOrigin(origin);
+	levelnumtext->setOrigin(origin);
 }
 
 void Level::draw(sf::RenderTarget& window) {

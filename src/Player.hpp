@@ -3,7 +3,6 @@
  * The player
  */
 
-#include <SFML/Graphics.hpp>
 #include "MovingEntity.hpp"
 #include "Lifed.hpp"
 

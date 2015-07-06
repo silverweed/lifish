@@ -18,7 +18,7 @@ std::ostream& Game::operator<<(std::ostream& stream, const Direction& dir) {
 	return stream;
 }
 
-MovingEntity::MovingEntity(sf::Vector2f pos, const std::string& texture_name) 
+MovingEntity::MovingEntity(const sf::Vector2f& pos, const std::string& texture_name) 
 	: Entity(pos, texture_name)
 {
 	transparentTo.bullets = false;

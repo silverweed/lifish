@@ -7,6 +7,7 @@
 #include <array>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
+#include <SFML/System/NonCopyable.hpp>
 #include "LoopingMusic.hpp"
 #include "Drawable.hpp"
 #include "Game.hpp"
@@ -20,9 +21,9 @@ namespace Game {
 
 class LevelSet;
 
-class Level : public Game::Drawable {
+class Level : public Game::Drawable, private sf::NonCopyable {
 	/** Font for the level num text */
-	constexpr static const char* LEVELNUM_FONT = "FreeMono.ttf";
+	constexpr static const char* LEVELNUM_FONT = "pf_tempesta_seven.ttf";
 
 	/** Types of bg texture tiles */
 	enum : unsigned short {
@@ -128,6 +129,9 @@ public:
 
 	void printInfo() const;
 	void printTilemap() const;
+
+	/** Changes the origin of all tiles */
+	void setOrigin(const sf::Vector2f& origin);
 
 	/** Draws this level's background in the target window */
 	void draw(sf::RenderTarget& window) override;

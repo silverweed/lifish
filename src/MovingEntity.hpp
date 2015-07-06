@@ -6,7 +6,6 @@
 #include <string>
 #include <array>
 #include <ostream>
-#include <SFML/Graphics.hpp>
 #include "Entity.hpp"
 #include "Animated.hpp"
 
@@ -50,7 +49,7 @@ protected:
 public:
 	bool colliding = false;
 
-	MovingEntity(sf::Vector2f pos, const std::string& texture_name);
+	MovingEntity(const sf::Vector2f& pos, const std::string& texture_name);
 
 	float getSpeed() const { return speed; }
 	void setSpeed(const float _speed) { speed = _speed; }
@@ -58,7 +57,9 @@ public:
 	Game::Direction getDirection() const { return direction; }
 	void setDirection(const Game::Direction dir) { direction = dir; }
 
+	/** Use Animated::draw, not Entity's */
 	virtual void draw(sf::RenderTarget& window) override { Game::Animated::draw(window); }
+	void setOrigin(const sf::Vector2f& _origin) override { Game::Animated::setOrigin(_origin); }
 
 	virtual void move();
 	virtual void move(const Direction direction);

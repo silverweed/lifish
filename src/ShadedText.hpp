@@ -30,6 +30,12 @@ public:
 
 	void setStyle(sf::Text::Style style);
 
+	void setString(const std::string& str);
+
+	void setOrigin(const sf::Vector2f& origin);
+
+	void setCharacterSize(unsigned int size);
+
 	void draw(sf::RenderTarget& window) override;
 };
 

@@ -24,15 +24,17 @@ public:
 	} transparentTo;
 
 
-	Entity(sf::Vector2f _pos, const std::string& texture_name);
+	Entity(const sf::Vector2f& _pos, const std::string& texture_name);
 	virtual ~Entity() {}
 
-	sf::Vector2f getPosition() const { return pos; }
+	const sf::Vector2f& getPosition() const { return pos; }
 	void setPosition(sf::Vector2f _pos) { pos = _pos; }
 
 	virtual void draw(sf::RenderTarget& window) override;
 
 	bool isAligned(const char axis = 'b') const;
+
+	virtual void setOrigin(const sf::Vector2f& origin);
 };
 
 }

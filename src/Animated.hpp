@@ -19,6 +19,9 @@ protected:
 	sf::Clock frameClock;
 public:
 	virtual void draw(sf::RenderTarget& window) override;
+	virtual void setOrigin(const sf::Vector2f& _origin) {
+		animatedSprite.setOrigin(_origin);
+	}
 };
 
 }

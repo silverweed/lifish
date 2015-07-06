@@ -29,8 +29,19 @@ int main(int argc, char **argv) {
 	Game::Level *level = levelset.getLevel(1);
 	level->printInfo();
 	Game::LevelRenderer lr;
+	lr.setOrigin(-Game::MAIN_WINDOW_SHIFT);
 	lr.loadLevel(level);
 	lr.renderFrame(window);
+
+	bool show_fps = false;
+	sf::Clock fps_clock;
+	Game::ShadedText fps_text(Game::getAsset("fonts", "pf_tempesta_seven_condensed.ttf"),
+			"-", sf::Vector2f(10, 10));
+	fps_text.setOrigin(-Game::MAIN_WINDOW_SHIFT);
+	fps_text.setStyle(sf::Text::Style::Bold);
+	fps_text.setCharacterSize(20);
+
+	int cycle = 0;
 
 	auto players = lr.getPlayers();
 
@@ -64,6 +75,9 @@ int main(int argc, char **argv) {
 						players = lr.getPlayers();
 						break;
 					}
+				case sf::Keyboard::Key::F:
+					show_fps = !show_fps;
+					break;
 				default:
 					break; 
 				}
@@ -107,9 +121,17 @@ int main(int argc, char **argv) {
 		// Actually move enemies
 		lr.applyEnemyMoves();
 
+		float cur_time = fps_clock.restart().asSeconds();
+		if (cycle++ % 10000 == 0) {
+			int fps = (int)(1.f / cur_time);
+			fps_text.setString(std::to_string(fps) + std::string(" fps"));
+		}
+
 		// XXX: can we avoid clearing and drawing the background each frame?
 		window.clear();
 		lr.renderFrame(window);
+		if (show_fps)
+			fps_text.draw(window);
 		window.display();
 	}
 	return 0;
