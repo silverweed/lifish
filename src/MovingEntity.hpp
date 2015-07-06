@@ -8,6 +8,7 @@
 #include <ostream>
 #include "Entity.hpp"
 #include "Animated.hpp"
+#include "Teleport.hpp"
 
 namespace Game {
 
@@ -48,6 +49,10 @@ protected:
 	virtual bool _isTransparentTo(const Entity *const e) const = 0;
 public:
 	bool colliding = false;
+	/** Whether this entity is affected by Teleports or not */
+	bool canTeleport = true;
+	Game::Teleport *onTeleport = nullptr;
+	sf::Vector2i prevAlign = sf::Vector2i(-1, -1);
 
 	MovingEntity(const sf::Vector2f& pos, const std::string& texture_name);
 
@@ -74,6 +79,11 @@ public:
 	bool isMoving() const { return moving; }
 
 	bool canGo(const Game::Direction direction, const Game::LevelRenderer *const lr) const; 
+
+	void setPosition(const sf::Vector2f& _pos) override {
+		Game::Animated::setPosition(_pos);
+		Game::Entity::setPosition(_pos);
+	}
 };
 
 }

@@ -30,9 +30,9 @@ AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
 AIBoundFunction Game::ai_random_forward(Game::Enemy *const enemy) {
 	return [enemy] (const LevelRenderer *lr) { 
 		D cur = enemy->getDirection();
-		auto curAlign = tile(enemy->getPosition());
-		if (enemy->prevAlign == curAlign && !enemy->colliding) return cur;
-		enemy->prevAlign = curAlign; 
+		auto cur_align = tile(enemy->getPosition());
+		if (enemy->prevAlign == cur_align && !enemy->colliding) return cur;
+		enemy->prevAlign = cur_align; 
 		D opp = oppositeDirection(cur);
 		if (enemy->colliding && enemy->canGo(cur, lr)) {
 			// we're colliding with a moving entity

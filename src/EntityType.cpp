@@ -30,7 +30,7 @@ EntityType entityFromLetter(const char c) {
 
 }
 
-std::ostream& operator<<(std::ostream& stream, const Game::EntityType& et) {
+std::ostream& operator<<(std::ostream& stream, const EntityType& et) {
 	switch (et) {
 	case EntityType::EMPTY:     stream << '0'; break;
 	case EntityType::FIXED:     stream << '1'; break;
@@ -49,7 +49,7 @@ std::ostream& operator<<(std::ostream& stream, const Game::EntityType& et) {
 	case EntityType::ENEMY8:    stream << 'H'; break;
 	case EntityType::ENEMY9:    stream << 'I'; break;
 	case EntityType::ENEMY10:   stream << 'J'; break;
-	case EntityType::BOSS:   stream << '*'; break;
+	case EntityType::BOSS:      stream << '*'; break;
 	case EntityType::UNKNOWN:   stream << "?"; break;
 	}
 	return stream;

@@ -26,4 +26,7 @@ T abs(const T& num) {
 #define HAVE_STD_ABS
 #endif
 
+/** Returns the aligned tile corresponding to position `pos` by
+ *  flooring its components and dividing by TILE_SIZE.
+ */
 sf::Vector2i tile(const sf::Vector2f& pos);

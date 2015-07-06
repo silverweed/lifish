@@ -22,6 +22,9 @@ public:
 	virtual void setOrigin(const sf::Vector2f& _origin) {
 		animatedSprite.setOrigin(_origin);
 	}
+	virtual void setPosition(const sf::Vector2f& _pos) {
+		animatedSprite.setPosition(_pos);
+	}
 };
 
 }

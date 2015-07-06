@@ -22,6 +22,16 @@ Teleport::Teleport(const sf::Vector2f& _pos)
 }
 
 void Teleport::draw(sf::RenderTarget& window) {
-	animatedSprite.update(frameClock.restart());
+	if (disableCount == 0)
+		animatedSprite.update(frameClock.restart());
 	window.draw(animatedSprite);
+}
+
+void Teleport::disable() {
+	disableCount = COOLDOWN_FRAMES;
+}
+
+int Teleport::waitCooldown() {
+	if (disableCount == 0) return -1;
+	return --disableCount;
 }

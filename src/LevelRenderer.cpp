@@ -3,8 +3,8 @@
 #include "FixedWall.hpp"
 #include "BreakableWall.hpp"
 #include "Coin.hpp"
-#include "Teleport.hpp"
 #include "Enemy.hpp"
+#include "utils.hpp"
 #include <sstream>
 
 using Game::LevelRenderer;
@@ -38,6 +38,8 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 		return sf::Vector2f((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
 	};
 
+	Game::Teleport *latest_teleport = nullptr;
+
 	for (unsigned short left = 0; left < LEVEL_WIDTH; ++left) {
 		for (unsigned short top = 0; top < LEVEL_HEIGHT; ++top) {
 			switch (level->getTile(left, top)) {
@@ -68,9 +70,24 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 					break;
 				}
 			case EntityType::TELEPORT:
-				fixedEntities[top * LEVEL_WIDTH + left] =
-					new Game::Teleport(curPos(left, top));
-				break;
+				{
+					Game::Teleport *teleport = new Game::Teleport(curPos(left, top));
+					// Save the first Teleport added
+					if (firstTeleport == nullptr)
+						firstTeleport = teleport;
+					// If we had already added a Teleport, link it to this one.
+					if (latest_teleport != nullptr)
+						latest_teleport->linkTo(teleport);
+					latest_teleport = teleport;
+
+					// For now, link this teleport to the first one, unless it's the
+					// first one. If more teleports will be found, they'll correctly relink this one.
+					if (teleport != firstTeleport)
+						teleport->linkTo(firstTeleport);
+
+					fixedEntities[top * LEVEL_WIDTH + left] = teleport;
+					break;
+				}
 			case EntityType::ENEMY1:
 				{
 					Game::Enemy *enemy = new Game::Enemy(curPos(left, top), 1);
@@ -210,9 +227,38 @@ void LevelRenderer::detectCollisions() {
 			++next_tile.x;
 			break;
 		case Direction::NONE:
-			continue;
+			break;
 		}
 
+		// Check for teleports
+		if (entity->canTeleport && entity->isAligned()) {
+			auto cur_tile = tile(pos);
+
+			if (level->getTile(cur_tile.x - 1, cur_tile.y - 1) == EntityType::TELEPORT && entity->prevAlign != cur_tile) {
+				unsigned short idx = (cur_tile.y - 1) * LEVEL_WIDTH + cur_tile.x - 1;
+
+				// Get Teleport from fixed entities
+				Game::Teleport *teleport = dynamic_cast<Teleport*>(fixedEntities[idx]);
+
+				if (teleport->isDisabled()) continue;
+				// Get destination Teleport
+				Game::Teleport *next = teleport->next();
+				if (next == nullptr) continue;
+				// Check no other entity is covering the destination
+				if (isEntityTouching(next->getPosition())) continue;
+
+				// TODO: play animation
+
+				// Teleport the entity
+				entity->setPosition(next->getPosition());
+				entity->prevAlign = tile(next->getPosition());
+
+				// Disable both source and destination for a while
+				teleport->disable();
+				next->disable();
+				continue;
+			}
+		}
 		bool collision_detected = false;
 		for (unsigned short j = 0; j < len; ++j) {
 			if (i == j) continue;
@@ -234,17 +280,35 @@ void LevelRenderer::detectCollisions() {
 				break;
 			}
 		}
+	
 		if (!collision_detected && at_limit) {
 			unsigned short idx = next_tile.y * LEVEL_WIDTH + next_tile.x;
 			if (idx < 0 || idx >= fixedEntities.size()) {
+				// Should never happen: means we're outside the grid
 				entity->colliding = true;
 				continue;
 			}
 			FixedEntity *other = fixedEntities[idx];
-			if (other != nullptr && ((is_player && !other->transparentTo.players) 
-						|| (!is_player && !other->transparentTo.enemies))) 
-			{
-				entity->colliding = true;
+			if (other != nullptr) {
+				if ((is_player && !other->transparentTo.players) 
+						|| (!is_player && !other->transparentTo.enemies))
+				{
+					// Colliding with a wall
+					entity->colliding = true;
+				} else {
+					// Either a coin, a powerup or a teleport. We can know for sure
+					// what this entity is with a single lookup to level->tiles:
+					// if we find a teleport or a coin, it means it's that entity;
+					// else, if we find a breakable, it's a powerup.
+					switch (level->getTile(next_tile.x, next_tile.y)) {
+					case EntityType::COIN:
+						// TODO: grab the coin
+					case EntityType::BREAKABLE:
+						// TODO: grab the powerup
+					default:
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -267,4 +331,14 @@ void LevelRenderer::applyEnemyMoves() {
 		if (entity == players[0] || entity == players[1]) continue;
 		entity->move();
 	}
+}
+
+bool LevelRenderer::isEntityTouching(sf::Vector2f tile) const {
+	sf::FloatRect tileRect(tile.x, tile.y, TILE_SIZE, TILE_SIZE);
+	for (auto& entity : movingEntities) {
+		sf::Vector2f pos = entity->getPosition();
+		sf::FloatRect rect(pos.x, pos.y, TILE_SIZE, TILE_SIZE);
+		if (rect.intersects(tileRect)) return true;
+	}
+	return false;
 }

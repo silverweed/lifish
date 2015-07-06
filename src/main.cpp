@@ -112,6 +112,10 @@ int main(int argc, char **argv) {
 		lr.detectCollisions();
 
 		for (unsigned int i = 0; i < 2; ++i) {
+			if (players[i]->isAligned()) {
+				players[i]->prevAlign = tile(players[i]->getPosition());
+			}
+
 			if (players[i]->getDirection() == Game::Direction::NONE)
 				players[i]->stop();
 			else

@@ -12,6 +12,7 @@
 #include "FixedEntity.hpp"
 #include "MovingEntity.hpp"
 #include "Player.hpp"
+#include "Teleport.hpp"
 
 namespace Game {
 
@@ -33,6 +34,12 @@ class LevelRenderer : private sf::NonCopyable {
 
 	/** The players */
 	std::array<Game::Player*, Game::MAX_PLAYERS> players;
+
+	/** The first Teleport of the level, if any. Keeping the
+	 *  pointer to it allows us to traverse the Teleports'
+	 *  linked list.
+	 */
+	Game::Teleport *firstTeleport = nullptr;
 
 
 	/** Deletes all entities */
@@ -67,9 +74,12 @@ public:
 	const FixedEntityList& getFixedEntities() const { return fixedEntities; }
 	const MovingEntityList& getMovingEntities() const { return movingEntities; }
 
-	void setOrigin(const sf::Vector2f& _origin) {
-		origin = _origin;
-	}
+	void setOrigin(const sf::Vector2f& _origin) { origin = _origin; }
+
+	/** Checks if any moving entity's bounding box is intersecting
+	 *  the rectangle at coordinates (tile)
+	 */
+	bool isEntityTouching(sf::Vector2f tile) const;
 };
 
 }
