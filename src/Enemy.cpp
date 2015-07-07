@@ -13,6 +13,15 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
 	transparentTo.bullets = false;
 	direction = prevDirection = Game::Direction::DOWN;
 
+	unsigned short death_n_frames = 2;
+	switch (id) {
+	case 3:
+		death_n_frames = 4;
+		break;
+	default:
+		break;
+	}
+
 	for (unsigned short i = 0; i < MAX_N_ANIMATIONS; ++i) {
 		animations[i].setSpriteSheet(texture);
 		if (i < 4)
@@ -29,8 +38,9 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
 	shootFrame[ANIM_UP].setTextureRect(sf::IntRect(TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 	shootFrame[ANIM_RIGHT].setTextureRect(sf::IntRect(2 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 	shootFrame[ANIM_LEFT].setTextureRect(sf::IntRect(3 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
-	animations[ANIM_DEATH].addFrame(sf::IntRect(WALK_N_FRAMES * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
-	animations[ANIM_DEATH].addFrame(sf::IntRect((WALK_N_FRAMES + 1) * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+
+	for (unsigned short i = 0; i < death_n_frames; ++i) 
+		animations[ANIM_DEATH].addFrame(sf::IntRect((WALK_N_FRAMES + i) * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
 	animatedSprite.setPosition(pos);
 	animatedSprite.setAnimation(animations[ANIM_DOWN]);

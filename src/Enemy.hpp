@@ -8,7 +8,6 @@ namespace Game {
 
 class Enemy : public Game::MovingEntity, public Game::Lifed {
 	constexpr static unsigned short WALK_N_FRAMES = 4;
-	constexpr static unsigned short DEATH_N_FRAMES = 2;
 	
 	/** Indexed with ANIM_UP etc */
 	sf::Sprite shootFrame[4];

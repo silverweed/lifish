@@ -114,6 +114,8 @@ int main(int argc, char **argv) {
 		for (unsigned int i = 0; i < 2; ++i) {
 			if (players[i]->isAligned()) {
 				players[i]->prevAlign = tile(players[i]->getPosition());
+				if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::BOMB]))
+					lr.dropBomb(i);
 			}
 
 			if (players[i]->getDirection() == Game::Direction::NONE)
@@ -124,9 +126,6 @@ int main(int argc, char **argv) {
 
 		// Actually move enemies
 		lr.applyEnemyMoves();
-
-		// Updates teleports' cooldown
-		lr.tickTeleports();
 
 		float cur_time = fps_clock.restart().asSeconds();
 		if (cycle++ % 10000 == 0) {

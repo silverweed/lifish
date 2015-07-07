@@ -18,21 +18,27 @@ Teleport::Teleport(const sf::Vector2f& _pos)
 	animatedSprite.setPosition(pos);
 	animatedSprite.setAnimation(animations[0]);
 	animatedSprite.setLooped(true);
-	animatedSprite.setFrameTime(sf::seconds(0.08));
+	animatedSprite.setFrameTime(sf::seconds(0.05));
 	animatedSprite.play();
 }
 
 void Teleport::draw(sf::RenderTarget& window) {
 	sf::Time frameTime = frameClock.restart();
-	if (disableCount == 0)
+	if (!isDisabled())
 		animatedSprite.update(frameTime);
 	window.draw(animatedSprite);
 }
 
 void Teleport::disable() {
-	disableCount = COOLDOWN_FRAMES;
+	disabled = true;
+	disableClock.restart();
 }
 
-void Teleport::tick() {
-	if(disableCount > 0) --disableCount;
+bool Teleport::isDisabled() {
+	if (!disabled) return false;
+	if ((unsigned int)disableClock.getElapsedTime().asMilliseconds() >= COOLDOWN_TIME) {
+		disabled = false;
+		return false;
+	}
+	return true;
 }

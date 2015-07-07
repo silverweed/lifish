@@ -15,6 +15,7 @@
 #include "Player.hpp"
 #include "Teleport.hpp"
 #include "Temporary.hpp"
+#include "Bomb.hpp"
 
 namespace Game {
 
@@ -35,6 +36,9 @@ class LevelRenderer : private sf::NonCopyable {
 
 	/** The temporary entities (flashes, explosions, ...) */
 	TemporaryEntityList temporary;
+	
+	/** The players' bombs */
+	Matrix<Game::Bomb*, Game::MAX_PLAYERS, Game::Player::MAX_MAX_BOMBS> bombs;
 
 	sf::Vector2f origin;
 
@@ -89,7 +93,7 @@ public:
 	 */
 	bool isEntityTouching(sf::Vector2f tile) const;
 
-	void tickTeleports();
+	void dropBomb(const unsigned short player_id);
 };
 
 }

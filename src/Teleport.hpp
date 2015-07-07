@@ -9,12 +9,14 @@
 namespace Game {
 
 class Teleport : public Game::FixedEntity, public Game::Animated {
-	constexpr static unsigned int COOLDOWN_FRAMES = 3000;
+	constexpr static unsigned int COOLDOWN_TIME = 1000; // milliseconds
 
 	/** The Teleport this one teleports to */
 	Teleport *next_t = nullptr;
-	/** Number of frames to wait before reactivating */
-	int disableCount = 0;
+
+	bool disabled = false;
+	/** Time to wait before reactivating */
+	sf::Clock disableClock;
 public:
 	Teleport(const sf::Vector2f& pos);
 
@@ -29,10 +31,7 @@ public:
 	 */
 	void disable();
 
-	bool isDisabled() const { return disableCount > 0; }
-
-	/** Lower the disableCount by 1. */
-	void tick();
+	bool isDisabled();
 };
 
 }

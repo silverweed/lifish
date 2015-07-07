@@ -13,6 +13,8 @@ using Game::LevelRenderer;
 LevelRenderer::LevelRenderer() {
 	fixedEntities.fill(nullptr);
 	players.fill(nullptr);
+	for (unsigned short i = 0; i < bombs.size(); ++i)
+		bombs[i].fill(nullptr);
 }
 
 LevelRenderer::~LevelRenderer() {
@@ -137,11 +139,26 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 
 	level->setOrigin(origin);
 	level->draw(window);
-	for (const auto& entity : fixedEntities)
+	for (const auto& entity : fixedEntities) {
 		if (entity != nullptr) {
 			entity->setOrigin(origin);
 			entity->draw(window);
 		}
+	}
+	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+		for (unsigned short j = 0; j < bombs[i].size(); ++j) {
+			auto bomb = bombs[i][j];
+			if (bomb == nullptr) continue;
+			if (bomb->exploded()) {
+				// TODO
+				delete bomb;
+				bombs[i][j] = nullptr;
+			} else {
+				bomb->setOrigin(origin);
+				bomb->draw(window);
+			}
+		}
+	}
 	for (const auto& entity : movingEntities) {
 		entity->setOrigin(origin);
 		entity->draw(window);
@@ -232,7 +249,6 @@ void LevelRenderer::detectCollisions() {
 					if (!viable) continue;
 				}
 
-				// TODO: play animation
 				_pushTemporary(new Game::Flash(teleport->getPosition()));
 				_pushTemporary(new Game::Flash(next->getPosition()));
 
@@ -379,15 +395,32 @@ bool LevelRenderer::isEntityTouching(sf::Vector2f tile) const {
 	return false;
 }
 
-void LevelRenderer::tickTeleports() {
-	Game::Teleport *ft = firstTeleport;
-	if (ft == nullptr) return;
-	ft->tick();
-	for (Game::Teleport *t = ft->next(); t != nullptr && t != ft; t = t->next())
-		t->tick();
-}
-
 void LevelRenderer::_pushTemporary(Temporary *const tmp) {
 	temporary.push_back(tmp);
 	tmp->play();
+}
+
+void LevelRenderer::dropBomb(const unsigned short id) {
+	// Count how many bombs the player has already dropped
+	unsigned short n_bombs = 0, idx = 0;
+	auto pl_tile = tile(players[id]->getPosition());
+	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+		for (unsigned short j = 0; j < Game::Player::MAX_MAX_BOMBS; ++j) {
+			if (bombs[i][j] == nullptr) {
+				if (i == id) idx = j;
+			} else {
+				// Don't drop 2 bombs in the same tile
+				if (tile(bombs[i][j]->getPosition()) == pl_tile)
+					return;
+				if (i == id) ++n_bombs;
+			}
+		}
+	}
+	if (n_bombs == players[id]->getMaxBombs()) return;
+	Game::Bomb *bomb = new Game::Bomb(
+			players[id]->getPosition(),
+			players[id]->powers.bombFuseTime,
+			players[id]->powers.bombRadius);
+	bombs[id][idx] = bomb;
+	bomb->ignite();
 }
