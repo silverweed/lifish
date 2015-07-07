@@ -11,3 +11,4 @@ assets/test
 cmake_install.cmake
 doxy
 cov-int
+cov-token

@@ -33,6 +33,7 @@ bool Game::init() {
 	}
 
 	if (bytes < 1) return false;
+	pwd[bytes] = '\0';
 
 #elif defined(IS_WINDOWS)
 	if (_get_pgmptr(pwd) != 0)

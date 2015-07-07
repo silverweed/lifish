@@ -22,7 +22,7 @@ class LevelRenderer : private sf::NonCopyable {
 	using MovingEntityList = std::vector<Game::MovingEntity*>;
 
 	/** The level this object is rendering */
-	Game::Level *level;
+	Game::Level *level = nullptr;
 	
 	/** The fixed entities */
 	FixedEntityList fixedEntities;

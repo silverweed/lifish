@@ -11,6 +11,7 @@ using Game::LevelRenderer;
 
 LevelRenderer::LevelRenderer() {
 	fixedEntities.fill(nullptr);
+	players.fill(nullptr);
 }
 
 LevelRenderer::~LevelRenderer() {
@@ -22,8 +23,7 @@ void LevelRenderer::_clearEntities() {
 		if (e != nullptr) delete e;
 	for (auto& e : movingEntities)
 		delete e;
-	for (unsigned short i = 0; i < MAX_PLAYERS; ++i)
-		players[i] = nullptr;
+	players.fill(nullptr);
 	firstTeleport = nullptr;
 }
 
@@ -201,7 +201,7 @@ void LevelRenderer::detectCollisions() {
 				// Get Teleport from fixed entities
 				Game::Teleport *teleport = dynamic_cast<Teleport*>(fixedEntities[idx]);
 
-				if (teleport->isDisabled()) continue;
+				if (teleport == nullptr || teleport->isDisabled()) continue;
 				// Get destination Teleport
 				Game::Teleport *next = teleport->next();
 				if (next == nullptr) continue;
@@ -338,7 +338,8 @@ void LevelRenderer::selectEnemyMoves() {
 			continue;
 		}
 		Enemy *enemy = dynamic_cast<Enemy*>(entity);
-		enemy->setDirection(enemy->getAI()(this));
+		if (enemy != nullptr)
+			enemy->setDirection(enemy->getAI()(this));
 
 	}
 }

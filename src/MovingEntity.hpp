@@ -43,7 +43,7 @@ protected:
 		ANIM_HURT  = 6
 	};
 	float speed;
-	Game::Direction direction, prevDirection = Game::Direction::NONE;
+	Game::Direction direction = Game::Direction::NONE, prevDirection = Game::Direction::NONE;
 	bool moving = false;
 
 	virtual bool _isTransparentTo(const Entity *const e) const = 0;
