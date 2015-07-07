@@ -191,6 +191,50 @@ void LevelRenderer::detectCollisions() {
 		                     iposy = (unsigned short)pos.y;
 		sf::Vector2i next_tile(iposx / TILE_SIZE - 1, iposy / TILE_SIZE - 1);
 
+		// Check for teleports
+		if (firstTeleport != nullptr && entity->canTeleport && entity->isAligned()) {
+			auto cur_tile = tile(pos);
+
+			if (level->getTile(cur_tile.x - 1, cur_tile.y - 1) == EntityType::TELEPORT && entity->prevAlign != cur_tile) {
+				unsigned short idx = (cur_tile.y - 1) * LEVEL_WIDTH + cur_tile.x - 1;
+
+				// Get Teleport from fixed entities
+				Game::Teleport *teleport = dynamic_cast<Teleport*>(fixedEntities[idx]);
+
+				if (teleport->isDisabled()) continue;
+				// Get destination Teleport
+				Game::Teleport *next = teleport->next();
+				if (next == nullptr) continue;
+				if (next->isDisabled() || isEntityTouching(next->getPosition())) {
+					Game::Teleport *self = next;
+					bool viable = false;
+					do {
+						next = next->next();
+						if (next == teleport || next->isDisabled() || isEntityTouching(next->getPosition()))
+							next = next->next();
+						else {
+							viable = true;
+							break;
+						}
+					} while (next != self);
+					// Check if we've found an enabled destination
+					if (!viable) continue;
+				}
+
+				// TODO: play animation
+
+				// Teleport the entity
+				entity->setPosition(next->getPosition());
+				entity->prevAlign = tile(next->getPosition());
+
+				// Disable both source and destination for a while
+				teleport->disable();
+				next->disable();
+				continue;
+			}
+		}
+
+		// Check for impacts with the borders
 		switch (dir) {
 		case Direction::UP:
 			if (iposy <= TILE_SIZE) {
@@ -229,35 +273,7 @@ void LevelRenderer::detectCollisions() {
 			break;
 		}
 
-		// Check for teleports
-		if (firstTeleport != nullptr && entity->canTeleport && entity->isAligned()) {
-			auto cur_tile = tile(pos);
-
-			if (level->getTile(cur_tile.x - 1, cur_tile.y - 1) == EntityType::TELEPORT && entity->prevAlign != cur_tile) {
-				unsigned short idx = (cur_tile.y - 1) * LEVEL_WIDTH + cur_tile.x - 1;
-
-				// Get Teleport from fixed entities
-				Game::Teleport *teleport = dynamic_cast<Teleport*>(fixedEntities[idx]);
-
-				if (teleport->isDisabled()) continue;
-				// Get destination Teleport
-				Game::Teleport *next = teleport->next();
-				if (next == nullptr) continue;
-				// Check no other entity is covering the destination
-				if (isEntityTouching(next->getPosition())) continue;
-
-				// TODO: play animation
-
-				// Teleport the entity
-				entity->setPosition(next->getPosition());
-				entity->prevAlign = tile(next->getPosition());
-
-				// Disable both source and destination for a while
-				teleport->disable();
-				next->disable();
-				continue;
-			}
-		}
+		// Check for impacts with moving entities
 		bool collision_detected = false;
 		for (unsigned short j = 0; j < len; ++j) {
 			if (i == j) continue;
@@ -279,7 +295,8 @@ void LevelRenderer::detectCollisions() {
 				break;
 			}
 		}
-	
+
+		// Check for impacts with fixed entities
 		if (!collision_detected && at_limit) {
 			unsigned short idx = next_tile.y * LEVEL_WIDTH + next_tile.x;
 			if (idx < 0 || idx >= fixedEntities.size()) {
@@ -322,12 +339,18 @@ void LevelRenderer::selectEnemyMoves() {
 		}
 		Enemy *enemy = dynamic_cast<Enemy*>(entity);
 		enemy->setDirection(enemy->getAI()(this));
+
 	}
 }
 
 void LevelRenderer::applyEnemyMoves() {
 	for (auto& entity : movingEntities) {
 		if (entity == players[0] || entity == players[1]) continue;
+		if (entity->isAligned()) {
+			auto cur_align = tile(entity->getPosition());
+			if (entity->prevAlign != cur_align)
+				entity->prevAlign = cur_align; 
+		}
 		entity->move();
 	}
 }
