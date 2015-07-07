@@ -42,7 +42,7 @@ protected:
 		ANIM_WIN   = 5,
 		ANIM_HURT  = 6
 	};
-	float speed;
+	float speed = 0.f;
 	Game::Direction direction = Game::Direction::NONE, prevDirection = Game::Direction::NONE;
 	bool moving = false;
 

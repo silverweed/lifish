@@ -299,7 +299,7 @@ void LevelRenderer::detectCollisions() {
 		// Check for impacts with fixed entities
 		if (!collision_detected && at_limit) {
 			unsigned short idx = next_tile.y * LEVEL_WIDTH + next_tile.x;
-			if (idx < 0 || idx >= fixedEntities.size()) {
+			if (idx >= fixedEntities.size()) {
 				// Should never happen: means we're outside the grid
 				entity->colliding = true;
 				continue;

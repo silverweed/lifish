@@ -22,6 +22,7 @@ AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
 			dirs[n++] = D::LEFT;
 			dirs[n++] = D::RIGHT;
 		}
+		if (n < 1) return D::NONE;
 		std::uniform_int_distribution<int> d(0, n - 1);
 		return dirs[d(rng)];
 	};

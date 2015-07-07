@@ -98,8 +98,8 @@ void MovingEntity::realign() {
 }
 
 bool MovingEntity::canGo(const Direction dir, const Game::LevelRenderer *const lr) const {
-	unsigned short iposx = (unsigned short)(pos.x / TILE_SIZE) - 1,
-		       iposy = (unsigned short)(pos.y / TILE_SIZE) - 1;
+	short iposx = (short)(pos.x / TILE_SIZE) - 1,
+	      iposy = (short)(pos.y / TILE_SIZE) - 1;
 	
 	switch (dir) {
 	case Direction::UP:
@@ -119,10 +119,8 @@ bool MovingEntity::canGo(const Direction dir, const Game::LevelRenderer *const l
 	if (iposx < 0 || iposx >= LEVEL_WIDTH || iposy < 0 || iposy >= LEVEL_HEIGHT)
 		return false;
 
-	unsigned short idx = iposy * LEVEL_WIDTH + iposx;
+	short idx = iposy * LEVEL_WIDTH + iposx;
 	auto fixed = lr->getFixedEntities();
-	if (idx < 0 || idx >= fixed.size())
-		return false;
 	
 	return (fixed[idx] == nullptr || _isTransparentTo(fixed[idx]));
 }
