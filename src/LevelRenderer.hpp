@@ -7,12 +7,14 @@
 #include <SFML/System/NonCopyable.hpp>
 #include <vector>
 #include <forward_list>
+#include <list>
 #include <array>
 #include "Level.hpp"
 #include "FixedEntity.hpp"
 #include "MovingEntity.hpp"
 #include "Player.hpp"
 #include "Teleport.hpp"
+#include "Temporary.hpp"
 
 namespace Game {
 
@@ -20,6 +22,7 @@ class LevelRenderer : private sf::NonCopyable {
 	/** For Fixed Entities we use a fixed-size array for faster lookup */
 	using FixedEntityList = std::array<Game::FixedEntity*, LEVEL_WIDTH * LEVEL_HEIGHT>;
 	using MovingEntityList = std::vector<Game::MovingEntity*>;
+	using TemporaryEntityList = std::list<Game::Temporary*>;
 
 	/** The level this object is rendering */
 	Game::Level *level = nullptr;
@@ -29,6 +32,9 @@ class LevelRenderer : private sf::NonCopyable {
 
 	/** The moving entities */
 	MovingEntityList movingEntities;
+
+	/** The temporary entities (flashes, explosions, ...) */
+	TemporaryEntityList temporary;
 
 	sf::Vector2f origin;
 
@@ -44,6 +50,8 @@ class LevelRenderer : private sf::NonCopyable {
 
 	/** Deletes all entities */
 	void _clearEntities();
+
+	void _pushTemporary(Temporary *const tmp);
 public:
 	LevelRenderer();
 	~LevelRenderer();

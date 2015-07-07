@@ -3,6 +3,7 @@
 #include "FixedWall.hpp"
 #include "BreakableWall.hpp"
 #include "Coin.hpp"
+#include "Flash.hpp"
 #include "Enemy.hpp"
 #include "utils.hpp"
 #include <sstream>
@@ -145,6 +146,16 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		entity->setOrigin(origin);
 		entity->draw(window);
 	}
+	for (auto it = temporary.begin(); it != temporary.end(); ) {
+		(*it)->setOrigin(origin);
+		if (!(*it)->isPlaying()) {
+			delete *it;
+			it = temporary.erase(it);
+		} else {
+			(*it)->draw(window);
+			++it;
+		}
+	}
 }
 
 void LevelRenderer::detectCollisions() {
@@ -222,6 +233,8 @@ void LevelRenderer::detectCollisions() {
 				}
 
 				// TODO: play animation
+				_pushTemporary(new Game::Flash(teleport->getPosition()));
+				_pushTemporary(new Game::Flash(next->getPosition()));
 
 				// Teleport the entity
 				entity->setPosition(next->getPosition());
@@ -372,4 +385,9 @@ void LevelRenderer::tickTeleports() {
 	ft->tick();
 	for (Game::Teleport *t = ft->next(); t != nullptr && t != ft; t = t->next())
 		t->tick();
+}
+
+void LevelRenderer::_pushTemporary(Temporary *const tmp) {
+	temporary.push_back(tmp);
+	tmp->play();
 }
