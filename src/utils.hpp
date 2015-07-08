@@ -11,22 +11,31 @@ using Matrix = std::array<std::array<T, COLS>, ROWS>;
 
 short keyToNumber(sf::Keyboard::Key key);
 
-// Apple Clang is a "good" compiler...
-#ifdef IS_APPLE
 namespace Game {
 
-template<typename T>
-T abs(const T& num) {
+inline float abs(float num) {
+#ifdef IS_APPLE
+// Apple Clang is a "good" compiler...
 	if (num < 0) return -num;
 	return num;
-}
-
-}
 #else
-#define HAVE_STD_ABS
+	return std::abs(num);
 #endif
+}
 
 /** Returns the aligned tile corresponding to position `pos` by
  *  flooring its components and dividing by TILE_SIZE.
  */
-sf::Vector2i tile(const sf::Vector2f& pos);
+inline sf::Vector2i tile(const sf::Vector2f& pos) {
+	return sf::Vector2i(
+			(unsigned short)pos.x / Game::TILE_SIZE, 
+			(unsigned short)pos.y / Game::TILE_SIZE);
+}
+
+inline sf::Vector2f aligned(const sf::Vector2f& pos) {
+	return sf::Vector2f(
+		(float)(((unsigned short)pos.x/TILE_SIZE) * TILE_SIZE),
+		(float)(((unsigned short)pos.y/TILE_SIZE) * TILE_SIZE));
+}
+
+}

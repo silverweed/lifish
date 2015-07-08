@@ -1,4 +1,5 @@
 #include "Player.hpp"
+#include "utils.hpp"
 #include <sstream>
 
 using Game::Player;
@@ -72,6 +73,23 @@ void Player::move(const Direction dir) {
 	if (!colliding) {
 		animatedSprite.move(shift * frameTime.asSeconds());
 		pos = animatedSprite.getPosition();
+		switch (direction) {
+		case Direction::RIGHT:
+		case Direction::DOWN:
+			if (Game::tile(pos) != prevAlign)
+				pos = Game::aligned(pos);
+			break;
+		case Direction::LEFT:
+			if (Game::tile(pos).x == prevAlign.x - 2)
+				pos = Game::aligned(pos) + sf::Vector2f(Game::TILE_SIZE, 0);
+			break;
+		case Direction::UP:
+			if (Game::tile(pos).y == prevAlign.y - 2)
+				pos = Game::aligned(pos) + sf::Vector2f(0, Game::TILE_SIZE);
+			break;
+		case Direction::NONE:
+			break;
+		}
 	} else {
 		realign();
 	}

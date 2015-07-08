@@ -34,14 +34,12 @@ int main(int argc, char **argv) {
 	lr.renderFrame(window);
 
 	bool show_fps = false;
-	sf::Clock fps_clock;
+	sf::Clock fps_clock, fps_update_clock;
 	Game::ShadedText fps_text(Game::getAsset("fonts", "pf_tempesta_seven_condensed.ttf"),
 			"-", sf::Vector2f(10, 10));
 	fps_text.setOrigin(-Game::MAIN_WINDOW_SHIFT);
 	fps_text.setStyle(sf::Text::Style::Bold);
 	fps_text.setCharacterSize(20);
-
-	int cycle = 0;
 
 	auto players = lr.getPlayers();
 
@@ -113,7 +111,7 @@ int main(int argc, char **argv) {
 
 		for (unsigned int i = 0; i < 2; ++i) {
 			if (players[i]->isAligned()) {
-				players[i]->prevAlign = tile(players[i]->getPosition());
+				players[i]->prevAlign = Game::tile(players[i]->getPosition());
 				if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::BOMB]))
 					lr.dropBomb(i);
 			}
@@ -128,9 +126,10 @@ int main(int argc, char **argv) {
 		lr.applyEnemyMoves();
 
 		float cur_time = fps_clock.restart().asSeconds();
-		if (cycle++ % 10000 == 0) {
+		if (fps_update_clock.getElapsedTime().asSeconds() >= 1) {
 			int fps = (int)(1.f / cur_time);
 			fps_text.setString(std::to_string(fps) + std::string(" fps"));
+			fps_update_clock.restart();
 		}
 
 		// XXX: can we avoid clearing and drawing the background each frame?

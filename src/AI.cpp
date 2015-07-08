@@ -1,5 +1,6 @@
 #include "AI.hpp"
 #include "Enemy.hpp"
+#include "utils.hpp"
 #include <random>
 
 using Game::AIBoundFunction;
@@ -10,8 +11,8 @@ static D directions[] = { D::UP, D::RIGHT, D::DOWN, D::LEFT };
 
 AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
 	return [enemy] (const LevelRenderer*) { 
-		if (enemy->steps++ < 100 && !enemy->colliding) return enemy->getDirection();
-		enemy->steps = 0;
+		auto cur_align = Game::tile(enemy->getPosition());
+		if (enemy->prevAlign == cur_align && !enemy->colliding) return enemy->getDirection();
 		D dirs[4];
 		unsigned short n = 0;
 		if (enemy->isAligned('x')) {
@@ -31,7 +32,7 @@ AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
 AIBoundFunction Game::ai_random_forward(Game::Enemy *const enemy) {
 	return [enemy] (const LevelRenderer *lr) { 
 		D cur = enemy->getDirection();
-		auto cur_align = tile(enemy->getPosition());
+		auto cur_align = Game::tile(enemy->getPosition());
 		if (enemy->prevAlign == cur_align && !enemy->colliding) return cur;
 		D opp = oppositeDirection(cur);
 		if (enemy->colliding && enemy->canGo(cur, lr)) {

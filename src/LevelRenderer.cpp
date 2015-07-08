@@ -209,19 +209,10 @@ void LevelRenderer::detectCollisions() {
 		MovingEntity *entity = movingEntities[i];
 		sf::Vector2f pos = entity->getPosition();
 		const bool is_player = (entity == players[0] or entity == players[1]);
-		std::forward_list<Game::Entity*> others;
-		bool at_limit = false;
-
-		entity->colliding = false;
-
-		const Direction dir = entity->getDirection();
-		const unsigned short iposx = (unsigned short)pos.x,
-		                     iposy = (unsigned short)pos.y;
-		sf::Vector2i next_tile(iposx / TILE_SIZE - 1, iposy / TILE_SIZE - 1);
 
 		// Check for teleports
 		if (firstTeleport != nullptr && entity->canTeleport && entity->isAligned()) {
-			auto cur_tile = tile(pos);
+			auto cur_tile = Game::tile(pos);
 
 			if (level->getTile(cur_tile.x - 1, cur_tile.y - 1) == EntityType::TELEPORT && entity->prevAlign != cur_tile) {
 				unsigned short idx = (cur_tile.y - 1) * LEVEL_WIDTH + cur_tile.x - 1;
@@ -254,14 +245,22 @@ void LevelRenderer::detectCollisions() {
 
 				// Teleport the entity
 				entity->setPosition(next->getPosition());
-				entity->prevAlign = tile(next->getPosition());
+				entity->prevAlign = Game::tile(next->getPosition());
 
 				// Disable both source and destination for a while
 				teleport->disable();
 				next->disable();
-				continue;
 			}
 		}
+
+		entity->colliding = false;
+
+		pos = entity->getPosition();
+		const Direction dir = entity->getDirection();
+		const unsigned short iposx = (unsigned short)pos.x,
+		                     iposy = (unsigned short)pos.y;
+		sf::Vector2i next_tile(iposx / TILE_SIZE - 1, iposy / TILE_SIZE - 1);
+		bool at_limit = false;
 
 		// Check for impacts with the borders
 		switch (dir) {
@@ -377,7 +376,7 @@ void LevelRenderer::applyEnemyMoves() {
 	for (auto& entity : movingEntities) {
 		if (entity == players[0] || entity == players[1]) continue;
 		if (entity->isAligned()) {
-			auto cur_align = tile(entity->getPosition());
+			auto cur_align = Game::tile(entity->getPosition());
 			if (entity->prevAlign != cur_align)
 				entity->prevAlign = cur_align; 
 		}
@@ -403,14 +402,14 @@ void LevelRenderer::_pushTemporary(Temporary *const tmp) {
 void LevelRenderer::dropBomb(const unsigned short id) {
 	// Count how many bombs the player has already dropped
 	unsigned short n_bombs = 0, idx = 0;
-	auto pl_tile = tile(players[id]->getPosition());
+	auto pl_tile = Game::tile(players[id]->getPosition());
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 		for (unsigned short j = 0; j < Game::Player::MAX_MAX_BOMBS; ++j) {
 			if (bombs[i][j] == nullptr) {
 				if (i == id) idx = j;
 			} else {
 				// Don't drop 2 bombs in the same tile
-				if (tile(bombs[i][j]->getPosition()) == pl_tile)
+				if (Game::tile(bombs[i][j]->getPosition()) == pl_tile)
 					return;
 				if (i == id) ++n_bombs;
 			}

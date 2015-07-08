@@ -32,8 +32,6 @@
 
 #include "Animation.hpp"
 
-#include "utils.hpp"
-
 class AnimatedSprite : public sf::Drawable, public sf::Transformable
 {
 public:
