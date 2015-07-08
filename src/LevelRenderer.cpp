@@ -44,8 +44,8 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 
 	Game::Teleport *latest_teleport = nullptr;
 
-	for (unsigned short left = 0; left < LEVEL_WIDTH; ++left) {
-		for (unsigned short top = 0; top < LEVEL_HEIGHT; ++top) {
+	for (unsigned short top = 0; top < LEVEL_HEIGHT; ++top) {
+		for (unsigned short left = 0; left < LEVEL_WIDTH; ++left) {
 			switch (level->getTile(left, top)) {
 			case EntityType::FIXED: 
 				fixedEntities[top * LEVEL_WIDTH + left] = 
