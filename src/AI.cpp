@@ -35,10 +35,8 @@ AIBoundFunction Game::ai_random_forward(Game::Enemy *const enemy) {
 		auto cur_align = Game::tile(enemy->getPosition());
 		if (enemy->prevAlign == cur_align && !enemy->colliding) return cur;
 		D opp = oppositeDirection(cur);
-		if (enemy->colliding && enemy->canGo(cur, lr)) {
-			// we're colliding with a moving entity
+		if (enemy->colliding && enemy->canGo(cur, lr))
 			return opp;
-		}
 		D dirs[4];
 		unsigned short n = 0;
 		for (const auto& d : directions)

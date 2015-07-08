@@ -60,7 +60,7 @@ public:
 	void setSpeed(const float _speed) { speed = _speed; }
 
 	Game::Direction getDirection() const { return direction; }
-	void setDirection(const Game::Direction dir) { realign(); direction = dir; }
+	void setDirection(const Game::Direction dir); 
 
 	/** Use Animated::draw, not Entity's */
 	virtual void draw(sf::RenderTarget& window) override { Game::Animated::draw(window); }

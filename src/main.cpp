@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
 		levelSet = std::string(argv[1]);
 
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Level test");
+	bool vsync = false;
 
 	Game::LevelSet levelset(levelSet);
 	std::clog << "Loaded " << levelset.getLevelsNum() << " levels." << std::endl;
@@ -40,6 +41,10 @@ int main(int argc, char **argv) {
 	fps_text.setOrigin(-Game::MAIN_WINDOW_SHIFT);
 	fps_text.setStyle(sf::Text::Style::Bold);
 	fps_text.setCharacterSize(20);
+	Game::ShadedText vsync_text(Game::getAsset("fonts", "pf_tempesta_seven_condensed.ttf"),
+			vsync ? "vsync on" : "vsync off", sf::Vector2f(6 * TILE_SIZE, 10));
+	vsync_text.setOrigin(-Game::MAIN_WINDOW_SHIFT);
+	vsync_text.setCharacterSize(16);
 
 	auto players = lr.getPlayers();
 
@@ -75,6 +80,11 @@ int main(int argc, char **argv) {
 					}
 				case sf::Keyboard::Key::F:
 					show_fps = !show_fps;
+					break;
+				case sf::Keyboard::Key::V:
+					vsync = !vsync;
+					vsync_text.setString(vsync ? "vsync on" : "vsync off");
+					window.setVerticalSyncEnabled(vsync);
 					break;
 				default:
 					break; 
@@ -128,15 +138,19 @@ int main(int argc, char **argv) {
 		float cur_time = fps_clock.restart().asSeconds();
 		if (fps_update_clock.getElapsedTime().asSeconds() >= 1) {
 			int fps = (int)(1.f / cur_time);
-			fps_text.setString(std::to_string(fps) + std::string(" fps"));
+			std::stringstream ss;
+			ss << fps << " fps"; 
+			fps_text.setString(ss.str());
 			fps_update_clock.restart();
 		}
 
 		// XXX: can we avoid clearing and drawing the background each frame?
 		window.clear();
 		lr.renderFrame(window);
-		if (show_fps)
+		if (show_fps) {
 			fps_text.draw(window);
+			vsync_text.draw(window);
+		}
 		window.display();
 	}
 	return 0;

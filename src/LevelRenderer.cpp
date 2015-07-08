@@ -265,7 +265,7 @@ void LevelRenderer::detectCollisions() {
 		// Check for impacts with the borders
 		switch (dir) {
 		case Direction::UP:
-			if (iposy <= TILE_SIZE) {
+			if (pos.y <= TILE_SIZE) {
 				// Reached the top
 				entity->colliding = true;
 				continue;
@@ -274,7 +274,7 @@ void LevelRenderer::detectCollisions() {
 			--next_tile.y;
 			break;
 		case Direction::LEFT:
-			if (iposx <= TILE_SIZE) {
+			if (pos.x <= TILE_SIZE) {
 				entity->colliding = true;
 				continue;
 			}
@@ -282,7 +282,7 @@ void LevelRenderer::detectCollisions() {
 			--next_tile.x;
 			break;
 		case Direction::DOWN:
-			if (iposy >= TILE_SIZE * LEVEL_HEIGHT) {
+			if (pos.y >= TILE_SIZE * LEVEL_HEIGHT) {
 				entity->colliding = true;
 				continue;
 			}
@@ -290,7 +290,7 @@ void LevelRenderer::detectCollisions() {
 			++next_tile.y;
 			break;
 		case Direction::RIGHT:
-			if (iposx >= TILE_SIZE * LEVEL_WIDTH) {
+			if (pos.x >= TILE_SIZE * LEVEL_WIDTH) {
 				entity->colliding = true;
 				continue;
 			}
@@ -360,15 +360,29 @@ void LevelRenderer::detectCollisions() {
 
 void LevelRenderer::selectEnemyMoves() {
 	for (auto& entity : movingEntities) {
-		if (entity == players[0] || entity == players[1] ||
-				!(entity->isAligned() || entity->colliding)) 
-		{
+		if (entity == players[0] || entity == players[1])
+			continue;
+		if (!entity->isAligned()) {
+			if (entity->colliding) {
+				switch (entity->getDirection()) {
+				case Direction::LEFT: case Direction::UP:
+					entity->prevAlign = Game::tile(entity->getPosition());
+					break;
+				case Direction::RIGHT:
+					entity->prevAlign = Game::tile(entity->getPosition()) + sf::Vector2i(1, 0);
+					break;
+				case Direction::DOWN:
+					entity->prevAlign = Game::tile(entity->getPosition()) + sf::Vector2i(0, 1);
+					break;
+				case Direction::NONE: break;
+				}
+				entity->setDirection(oppositeDirection(entity->getDirection()));
+			}
 			continue;
 		}
 		Enemy *enemy = dynamic_cast<Enemy*>(entity);
 		if (enemy != nullptr)
 			enemy->setDirection(enemy->getAI()(this));
-
 	}
 }
 
@@ -377,8 +391,7 @@ void LevelRenderer::applyEnemyMoves() {
 		if (entity == players[0] || entity == players[1]) continue;
 		if (entity->isAligned()) {
 			auto cur_align = Game::tile(entity->getPosition());
-			if (entity->prevAlign != cur_align)
-				entity->prevAlign = cur_align; 
+			entity->prevAlign = cur_align; 
 		}
 		entity->move();
 	}

@@ -110,7 +110,7 @@ void MovingEntity::realign() {
 		pos = sf::Vector2f((unsigned short)(pos.x / TILE_SIZE) * TILE_SIZE, pos.y);
 		break;
 	default: 
-		pos = sf::Vector2f((unsigned short)(pos.x / TILE_SIZE) * TILE_SIZE, (unsigned short)(pos.y / TILE_SIZE) * TILE_SIZE);
+		pos = Game::aligned(pos);
 		break;
 	}
 	animatedSprite.setPosition(pos);
@@ -142,4 +142,19 @@ bool MovingEntity::canGo(const Direction dir, const Game::LevelRenderer *const l
 	auto fixed = lr->getFixedEntities();
 	
 	return (fixed[idx] == nullptr || _isTransparentTo(fixed[idx]));
+}
+
+void MovingEntity::setDirection(const Direction dir) {
+	if (dir == direction) return;
+	switch (dir) {
+	case Direction::UP: case Direction::DOWN:
+		pos.x = (unsigned short)pos.x;
+		break;
+	case Direction::LEFT: case Direction::RIGHT:
+		pos.y = (unsigned short)pos.y;
+		break;
+	case Direction::NONE: break;
+	}
+	animatedSprite.setPosition(pos);
+	direction = dir;
 }
