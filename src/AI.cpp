@@ -9,6 +9,7 @@ using D = Game::Direction;
 static std::default_random_engine rng;
 static D directions[] = { D::UP, D::RIGHT, D::DOWN, D::LEFT };
 
+// FIXME
 AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
 	return [enemy] (const LevelRenderer*) { 
 		auto cur_align = Game::tile(enemy->getPosition());

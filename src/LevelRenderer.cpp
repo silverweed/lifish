@@ -26,8 +26,17 @@ void LevelRenderer::_clearEntities() {
 		if (e != nullptr) delete e;
 	for (auto& e : movingEntities)
 		delete e;
+	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
+		for (unsigned short j = 0; j < bombs[i].size(); ++j)
+			if (bombs[i][j] != nullptr) {
+				delete bombs[i][j];
+				bombs[i][j] = nullptr;
+			}
+	for (auto it = temporary.begin(); it != temporary.end(); ++it) 
+		delete *it;
 	players.fill(nullptr);
 	firstTeleport = nullptr;
+	temporary.clear();
 }
 
 void LevelRenderer::loadLevel(Game::Level *const _level) {
@@ -132,16 +141,21 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 			}
 		}
 	}
+
+	level->setOrigin(origin);
+	for (const auto& entity : fixedEntities) 
+		if (entity != nullptr)
+			entity->setOrigin(origin);
+	for (const auto& entity : movingEntities)
+		entity->setOrigin(origin);
 }
 
 void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 	if (level == nullptr) return;
 
-	level->setOrigin(origin);
 	level->draw(window);
 	for (const auto& entity : fixedEntities) {
 		if (entity != nullptr) {
-			entity->setOrigin(origin);
 			entity->draw(window);
 		}
 	}
@@ -160,7 +174,6 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		}
 	}
 	for (const auto& entity : movingEntities) {
-		entity->setOrigin(origin);
 		entity->draw(window);
 	}
 	for (auto it = temporary.begin(); it != temporary.end(); ) {

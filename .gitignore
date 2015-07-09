@@ -12,3 +12,4 @@ cmake_install.cmake
 doxy
 cov-int
 cov-token
+gmon.out
