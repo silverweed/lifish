@@ -39,18 +39,20 @@ void Level::_loadTiles() {
 	for (unsigned short i = 1; i < bgTiles.size(); ++i)
 		bgTiles[i].setTexture(borderTexture);
 
-	bgTiles[TILE_UPPER].setTextureRect(sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE));
+	const unsigned short b = (tileIDs.border-1) * TILE_SIZE;
+
+	bgTiles[TILE_UPPER].setTextureRect(sf::IntRect(0, b, TILE_SIZE, TILE_SIZE));
 	// TILE_UPPER y-mirrored
-	bgTiles[TILE_LOWER].setTextureRect(sf::IntRect(0, TILE_SIZE, TILE_SIZE, -TILE_SIZE));
-	bgTiles[TILE_LEFT].setTextureRect(sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
+	bgTiles[TILE_LOWER].setTextureRect(sf::IntRect(0, b + TILE_SIZE, TILE_SIZE, -TILE_SIZE));
+	bgTiles[TILE_LEFT].setTextureRect(sf::IntRect(TILE_SIZE, b, TILE_SIZE, TILE_SIZE));
 	// TILE_LEFT x-mirrored
-	bgTiles[TILE_RIGHT].setTextureRect(sf::IntRect(TILE_SIZE + TILE_SIZE, 0, -TILE_SIZE, TILE_SIZE));
-	bgTiles[TILE_UPPER_LEFT].setTextureRect(sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
+	bgTiles[TILE_RIGHT].setTextureRect(sf::IntRect(TILE_SIZE + TILE_SIZE, b, -TILE_SIZE, TILE_SIZE));
+	bgTiles[TILE_UPPER_LEFT].setTextureRect(sf::IntRect(2 * TILE_SIZE, b, TILE_SIZE, TILE_SIZE));
 	// TILE_UPPER_LEFT x-mirrored
-	bgTiles[TILE_UPPER_RIGHT].setTextureRect(sf::IntRect(2 * TILE_SIZE + TILE_SIZE, 0, -TILE_SIZE, TILE_SIZE));
-	bgTiles[TILE_LOWER_RIGHT].setTextureRect(sf::IntRect(3 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
+	bgTiles[TILE_UPPER_RIGHT].setTextureRect(sf::IntRect(2 * TILE_SIZE + TILE_SIZE, b, -TILE_SIZE, TILE_SIZE));
+	bgTiles[TILE_LOWER_RIGHT].setTextureRect(sf::IntRect(3 * TILE_SIZE, b, TILE_SIZE, TILE_SIZE));
 	// TILE_LOWER_RIGHT x-mirrored
-	bgTiles[TILE_LOWER_LEFT].setTextureRect(sf::IntRect(3 * TILE_SIZE + TILE_SIZE, 0, -TILE_SIZE, TILE_SIZE));
+	bgTiles[TILE_LOWER_LEFT].setTextureRect(sf::IntRect(3 * TILE_SIZE + TILE_SIZE, b, -TILE_SIZE, TILE_SIZE));
 
 	// Set angles' position once and for all
 	bgTiles[TILE_UPPER_LEFT].setPosition(sf::Vector2f(0, 0));
