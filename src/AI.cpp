@@ -11,7 +11,6 @@ static D directions[] = { D::UP, D::RIGHT, D::DOWN, D::LEFT };
 
 AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
 	return [enemy] (const LevelRenderer *lr) { 
-		auto cur_align = Game::tile(enemy->getPosition());
 		if (!enemy->colliding) {
 			if (enemy->distTravelled < Game::TILE_SIZE) return enemy->getDirection();
 			std::uniform_int_distribution<int> dist(0, 10);
