@@ -233,36 +233,37 @@ void LevelRenderer::detectCollisions() {
 				// Get Teleport from fixed entities
 				Game::Teleport *teleport = dynamic_cast<Teleport*>(fixedEntities[idx]);
 
-				if (teleport == nullptr || teleport->isDisabled()) continue;
-				// Get destination Teleport
-				Game::Teleport *next = teleport->next();
-				if (next == nullptr) continue;
-				if (next->isDisabled() || isEntityTouching(next->getPosition())) {
-					Game::Teleport *self = next;
-					bool viable = false;
-					do {
-						next = next->next();
-						if (next == teleport || next->isDisabled() || isEntityTouching(next->getPosition()))
+				if (teleport != nullptr && !teleport->isDisabled()) {
+					// Get destination Teleport
+					Game::Teleport *next = teleport->next();
+					if (next == nullptr) continue;
+					if (next->isDisabled() || isEntityTouching(next->getPosition())) {
+						Game::Teleport *self = next;
+						bool viable = false;
+						do {
 							next = next->next();
-						else {
-							viable = true;
-							break;
-						}
-					} while (next != self);
-					// Check if we've found an enabled destination
-					if (!viable) continue;
+							if (next == teleport || next->isDisabled() || isEntityTouching(next->getPosition()))
+								next = next->next();
+							else {
+								viable = true;
+								break;
+							}
+						} while (next != self);
+						// Check if we've found an enabled destination
+						if (!viable) continue;
+					}
+
+					_pushTemporary(new Game::Flash(teleport->getPosition()));
+					_pushTemporary(new Game::Flash(next->getPosition()));
+
+					// Teleport the entity
+					entity->setPosition(next->getPosition());
+					entity->prevAlign = Game::tile(next->getPosition());
+
+					// Disable both source and destination for a while
+					teleport->disable();
+					next->disable();
 				}
-
-				_pushTemporary(new Game::Flash(teleport->getPosition()));
-				_pushTemporary(new Game::Flash(next->getPosition()));
-
-				// Teleport the entity
-				entity->setPosition(next->getPosition());
-				entity->prevAlign = Game::tile(next->getPosition());
-
-				// Disable both source and destination for a while
-				teleport->disable();
-				next->disable();
 			}
 		}
 

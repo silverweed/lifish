@@ -53,6 +53,7 @@ public:
 	bool canTeleport = true;
 	Game::Teleport *onTeleport = nullptr;
 	sf::Vector2i prevAlign = sf::Vector2i(-1, -1);
+	float distTravelled = 0;
 
 	MovingEntity(const sf::Vector2f& pos, const std::string& texture_name);
 

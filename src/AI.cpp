@@ -9,20 +9,24 @@ using D = Game::Direction;
 static std::default_random_engine rng;
 static D directions[] = { D::UP, D::RIGHT, D::DOWN, D::LEFT };
 
-// FIXME
 AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
-	return [enemy] (const LevelRenderer*) { 
+	return [enemy] (const LevelRenderer *lr) { 
 		auto cur_align = Game::tile(enemy->getPosition());
-		if (enemy->prevAlign == cur_align && !enemy->colliding) return enemy->getDirection();
+		if (!enemy->colliding) {
+			if (enemy->distTravelled < Game::TILE_SIZE) return enemy->getDirection();
+			std::uniform_int_distribution<int> dist(0, 10);
+			if (enemy->distTravelled < 2 * Game::TILE_SIZE && dist(rng) <= 4) return enemy->getDirection();
+		}
+		enemy->distTravelled = 0;
 		D dirs[4];
 		unsigned short n = 0;
 		if (enemy->isAligned('x')) {
-			dirs[n++] = D::UP;
-			dirs[n++] = D::DOWN;
+			if (enemy->canGo(D::UP, lr)) dirs[n++] = D::UP;
+			if (enemy->canGo(D::DOWN, lr)) dirs[n++] = D::DOWN;
 		}
 		if (enemy->isAligned('y')) {
-			dirs[n++] = D::LEFT;
-			dirs[n++] = D::RIGHT;
+			if (enemy->canGo(D::LEFT, lr)) dirs[n++] = D::LEFT;
+			if (enemy->canGo(D::RIGHT, lr)) dirs[n++] = D::RIGHT;
 		}
 		if (n < 1) return D::NONE;
 		std::uniform_int_distribution<int> d(0, n - 1);

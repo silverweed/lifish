@@ -61,6 +61,7 @@ void MovingEntity::move(const Direction dir) {
         animatedSprite.play(*anim);
 	if (!colliding) {
 		animatedSprite.move(shift * frameTime.asSeconds());
+		distTravelled += speed * frameTime.asSeconds();
 		pos = animatedSprite.getPosition();
 		// Ensure we are always aligned at least for one frame for
 		// each tile we step in (this may not be the case if FPS are too low)
