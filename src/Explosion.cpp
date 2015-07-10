@@ -86,13 +86,13 @@ void Explosion::propagate(const LevelRenderer *const lr) {
 					sf::FloatRect expl_box(new_tile.x, new_tile.y, TILE_SIZE, TILE_SIZE);
 					for (auto& e : moving[dir]) {
 						// Check if entity's bounding box intersects this tile
-						sf::FloatRect enemy_box(e->getPosition().x, e->getPosition().y, TILE_SIZE, TILE_SIZE);
-						if (enemy_box.intersects(expl_box)) {
-							// TODO: kill enemy
+						sf::FloatRect e_box(e->getPosition().x, e->getPosition().y, TILE_SIZE, TILE_SIZE);
+						if (e_box.intersects(expl_box)) {
+							// TODO: damage
 						}
 					}
 				} else {
-					propagating[ANIM_UP] = false;
+					propagating[ANIM_UP] = false; // stop propagation
 					if (level->getTile(new_tile.x, new_tile.y) == Game::EntityType::BREAKABLE) {
 						// TODO: break
 					} else {

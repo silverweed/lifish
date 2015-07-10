@@ -14,7 +14,7 @@ public:
 
 	short getLife() const { return life; }
 	short getMaxLife() const { return maxLife; }
-	void incLife(const short inc) { life += inc; }
+	void decLife(const short dam) { life -= dam; }
 };
 
 }

@@ -149,8 +149,6 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 			entity->setOrigin(origin);
 	for (const auto& entity : movingEntities)
 		entity->setOrigin(origin);
-
-	_pushTemporary(new Game::Explosion(sf::Vector2f(64, 64), 3));
 }
 
 void LevelRenderer::renderFrame(sf::RenderWindow& window) {
