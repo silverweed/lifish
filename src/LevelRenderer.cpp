@@ -490,7 +490,6 @@ Game::Bomb* LevelRenderer::getBombAt(const unsigned short left, const unsigned s
 		for (unsigned short j = 0; j < bombs[i].size(); ++j) {
 			if (bombs[i][j] == nullptr) continue;
 			auto tile = Game::tile(bombs[i][j]->getPosition());
-			std::cerr << "tile= " << tile.x << ", " << tile.y << std::endl;
 			if (tile.x == left && tile.y == top) return bombs[i][j];
 		}
 	return nullptr;
