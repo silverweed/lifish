@@ -164,7 +164,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		for (unsigned short j = 0; j < bombs[i].size(); ++j) {
 			auto bomb = bombs[i][j];
 			if (bomb == nullptr) continue;
-			if (bomb->exploded()) {
+			if (bomb->isExploded()) {
 				// TODO
 				delete bomb;
 				bombs[i][j] = nullptr;
@@ -472,4 +472,26 @@ void LevelRenderer::dropBomb(const unsigned short id) {
 			players[id]->powers.bombRadius);
 	bombs[id][idx] = bomb;
 	bomb->ignite();
+}
+
+void LevelRenderer::checkBombExplosions() {
+	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
+		for (unsigned short j = 0; j < bombs[i].size(); ++j)
+			if (bombs[i][j] != nullptr && bombs[i][j]->isExploding()) {
+				Game::Explosion *expl = new Game::Explosion(bombs[i][j]->getPosition(), bombs[i][j]->getRadius());
+				expl->propagate(this);
+				_pushTemporary(expl);
+				bombs[i][j]->blowUp();
+			}
+}
+
+Game::Bomb* LevelRenderer::getBombAt(const unsigned short left, const unsigned short top) const {
+	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
+		for (unsigned short j = 0; j < bombs[i].size(); ++j) {
+			if (bombs[i][j] == nullptr) continue;
+			auto tile = Game::tile(bombs[i][j]->getPosition());
+			std::cerr << "tile= " << tile.x << ", " << tile.y << std::endl;
+			if (tile.x == left && tile.y == top) return bombs[i][j];
+		}
+	return nullptr;
 }

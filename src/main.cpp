@@ -116,6 +116,8 @@ int main(int argc, char **argv) {
 		// Choose enemy movements
 		lr.selectEnemyMoves();
 
+		lr.checkBombExplosions();
+
 		// Collisions detection
 		lr.detectCollisions();
 

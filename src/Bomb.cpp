@@ -21,7 +21,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const float _fuseTime, const unsigned short 
 }
 
 void Bomb::draw(sf::RenderTarget& window) {
-	if (ignited && fuseTime - fuseClock.getElapsedTime().asSeconds() < 2 && !exploded()) {
+	if (ignited && fuseTime - fuseClock.getElapsedTime().asSeconds() < 2 && !isExploded()) {
 		Animation *anim = &animations[1];
 		animatedSprite.play(*anim);
 	}

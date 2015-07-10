@@ -13,6 +13,8 @@ class Bomb : public Game::FixedEntity, public Game::Animated {
 	float fuseTime;
 	unsigned short radius;
 	bool ignited = false;
+	/** `true` if this bomb already spawned its explosion. */
+	bool exploded = false;
 public:
 	constexpr static float DEFAULT_FUSE = 5; // seconds
 	constexpr static unsigned short DEFAULT_RADIUS = 2;
@@ -24,7 +26,13 @@ public:
 
 	void ignite() { fuseClock.restart(); ignited = true; }
 
-	inline bool exploded() const { return ignited && fuseClock.getElapsedTime().asSeconds() >= fuseTime; }
+	inline bool isExploding() const { return ignited && fuseClock.getElapsedTime().asSeconds() >= fuseTime; }
+	void setExploding() { fuseTime = 0.03; fuseClock.restart(); }
+
+	inline bool isExploded() const { return exploded; }
+	void blowUp() { exploded = true; }
+
+	unsigned short getRadius() const { return radius; }
 };
 
 }

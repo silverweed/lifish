@@ -30,9 +30,9 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius)
 	animatedSprite.setAnimation(animations[ANIM_DEATH]);
 	explosionH.setAnimation(animations[ANIM_LEFT]);
 	explosionV.setAnimation(animations[ANIM_UP]);
-	animatedSprite.setFrameTime(sf::seconds(0.35));
-	explosionH.setFrameTime(sf::seconds(0.35));
-	explosionV.setFrameTime(sf::seconds(0.35));
+	animatedSprite.setFrameTime(sf::seconds(0.05));
+	explosionH.setFrameTime(sf::seconds(0.05));
+	explosionV.setFrameTime(sf::seconds(0.05));
 	animatedSprite.setLooped(false);
 	explosionH.setLooped(false);
 	explosionV.setLooped(false);
@@ -63,8 +63,8 @@ void Explosion::propagate(const LevelRenderer *const lr) {
 		else moving[4].push_back(e); // the same tile as the explosion's origin
 	}
 
-	for (unsigned short d = 1; d <= radius; ++d) {
-		for (unsigned short dir = 0; dir < 4; ++dir) {	
+	for (unsigned short dir = 0; dir < 4; ++dir) {	
+		for (unsigned short d = 1; d <= radius; ++d) {
 			if (propagating[dir]) {
 				sf::Vector2i new_tile = m_tile;
 				switch (dir) {
@@ -81,8 +81,23 @@ void Explosion::propagate(const LevelRenderer *const lr) {
 					new_tile.x += d;
 					break;
 				}
-				Entity *fxd = fixed[new_tile.y * LEVEL_WIDTH + new_tile.x];
+				
+				if (new_tile.x < 1 || new_tile.x > LEVEL_WIDTH || new_tile.y < 1 || new_tile.y > LEVEL_HEIGHT) {
+					propagating[dir] = false;
+					continue;
+				}
+
+				Entity *fxd = fixed[(new_tile.y - 1) * LEVEL_WIDTH + (new_tile.x - 1)];
 				if (fxd == nullptr || fxd->transparentTo.explosions) {
+					// Check if bomb
+					Game::Bomb *bomb = lr->getBombAt(new_tile.x, new_tile.y);
+					if (bomb != nullptr) {
+						bomb->setExploding();
+						propagating[dir] = false;
+					} else {
+						++propagation[dir];
+					}
+
 					sf::FloatRect expl_box(new_tile.x, new_tile.y, TILE_SIZE, TILE_SIZE);
 					for (auto& e : moving[dir]) {
 						// Check if entity's bounding box intersects this tile
@@ -92,11 +107,11 @@ void Explosion::propagate(const LevelRenderer *const lr) {
 						}
 					}
 				} else {
-					propagating[ANIM_UP] = false; // stop propagation
+					propagating[dir] = false; 
 					if (level->getTile(new_tile.x, new_tile.y) == Game::EntityType::BREAKABLE) {
 						// TODO: break
 					} else {
-						// TODO: check if bomb
+
 					}
 				}
 			}
@@ -111,8 +126,8 @@ void Explosion::draw(sf::RenderTarget& window) {
 	window.draw(animatedSprite);
 	// Draw horizontal
 	sf::Vector2i m_tile = Game::tile(pos);
-	unsigned short h_start_tile = std::max(1, m_tile.x - radius),
-		       h_end_tile = std::min(static_cast<int>(LEVEL_WIDTH), m_tile.x + radius);
+	unsigned short h_start_tile = m_tile.x - propagation[ANIM_LEFT],
+		       h_end_tile = m_tile.x + propagation[ANIM_RIGHT];
 	explosionH.update(frameTime);
 	for (unsigned short i = h_start_tile; i <= h_end_tile; ++i) {
 		if (i == m_tile.x) continue;
@@ -120,8 +135,8 @@ void Explosion::draw(sf::RenderTarget& window) {
 		window.draw(explosionH);
 	}
 	// Draw vertical
-	unsigned short v_start_tile = std::max(1, m_tile.y - radius),
-		       v_end_tile = std::min(static_cast<int>(LEVEL_HEIGHT), m_tile.y + radius);
+	unsigned short v_start_tile = m_tile.y - propagation[ANIM_UP],
+		       v_end_tile = m_tile.y + propagation[ANIM_DOWN];
 	explosionV.update(frameTime);
 	for (unsigned short i = v_start_tile; i <= v_end_tile; ++i) {
 		if (i == m_tile.y) continue;

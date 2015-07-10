@@ -86,6 +86,8 @@ public:
 	const FixedEntityList& getFixedEntities() const { return fixedEntities; }
 	const MovingEntityList& getMovingEntities() const { return movingEntities; }
 
+	Game::Bomb* getBombAt(const unsigned short left, const unsigned short top) const;
+
 	void setOrigin(const sf::Vector2f& _origin) { origin = _origin; }
 
 	/** Checks if any moving entity's bounding box is intersecting
@@ -101,6 +103,8 @@ public:
 	const Level* getLevel() const { return level; }
 
 	void dropBomb(const unsigned short player_id);
+
+	void checkBombExplosions();
 };
 
 }
