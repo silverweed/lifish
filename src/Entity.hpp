@@ -21,6 +21,7 @@ public:
 		bool players = true;
 		bool enemies = true;
 		bool bullets = true;
+		bool explosions = true;
 	} transparentTo;
 
 

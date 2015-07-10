@@ -15,6 +15,7 @@ public:
 		transparentTo.players = false;
 		transparentTo.enemies = false;
 		transparentTo.bullets = false;
+		transparentTo.explosions = false;
 	}
 };
 

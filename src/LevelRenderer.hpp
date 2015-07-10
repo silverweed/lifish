@@ -89,9 +89,16 @@ public:
 	void setOrigin(const sf::Vector2f& _origin) { origin = _origin; }
 
 	/** Checks if any moving entity's bounding box is intersecting
-	 *  the rectangle at coordinates (tile)
+	 *  the rectangle at coordinates `pos`
 	 */
-	bool isEntityTouching(sf::Vector2f tile) const;
+	bool isEntityTouching(const sf::Vector2f& pos) const;
+
+	/** Returns all entities (moving and fixed) touching the tile
+	 *  at coordinate `pos`
+	 */
+	//std::list<Entity*> getEntitiesTouching(const sf::Vector2i& pos) const;
+
+	const Level* getLevel() const { return level; }
 
 	void dropBomb(const unsigned short player_id);
 };

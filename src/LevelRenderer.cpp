@@ -5,6 +5,7 @@
 #include "Coin.hpp"
 #include "Flash.hpp"
 #include "Enemy.hpp"
+#include "Explosion.hpp"
 #include "utils.hpp"
 #include <sstream>
 
@@ -148,6 +149,8 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 			entity->setOrigin(origin);
 	for (const auto& entity : movingEntities)
 		entity->setOrigin(origin);
+
+	_pushTemporary(new Game::Explosion(sf::Vector2f(64, 64), 3));
 }
 
 void LevelRenderer::renderFrame(sf::RenderWindow& window) {
@@ -177,7 +180,6 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		entity->draw(window);
 	}
 	for (auto it = temporary.begin(); it != temporary.end(); ) {
-		(*it)->setOrigin(origin);
 		if (!(*it)->isPlaying()) {
 			delete *it;
 			it = temporary.erase(it);
@@ -411,7 +413,7 @@ void LevelRenderer::applyEnemyMoves() {
 	}
 }
 
-bool LevelRenderer::isEntityTouching(sf::Vector2f tile) const {
+bool LevelRenderer::isEntityTouching(const sf::Vector2f& tile) const {
 	sf::FloatRect tileRect(tile.x, tile.y, TILE_SIZE, TILE_SIZE);
 	for (auto& entity : movingEntities) {
 		sf::Vector2f pos = entity->getPosition();
@@ -421,8 +423,31 @@ bool LevelRenderer::isEntityTouching(sf::Vector2f tile) const {
 	return false;
 }
 
+/*std::list<Game::Entity*> LevelRenderer::getEntitiesTouching(const sf::Vector2i& tile) const {
+	std::list<Game::Entity*> entities;
+
+	if (tile.x <= 0 || tile.x > LEVEL_WIDTH || tile.y <= 0 || tile.y > LEVEL_HEIGHT)
+		return entities;
+
+	sf::FloatRect tileRect(tile.x, tile.y, TILE_SIZE, TILE_SIZE);
+	// First, check if a fixed entity is in that tile
+	Game::Entity *fixed = fixedEntities[tile.y * LEVEL_WIDTH + tile.x];
+	if (fixed != nullptr) {
+		entities.push_back(fixed);
+		return entities;
+	}
+	for (auto& entity : movingEntities) {
+		sf::Vector2f pos = entity->getPosition();
+		sf::FloatRect rect(pos.x, pos.y, TILE_SIZE, TILE_SIZE);
+		if (rect.intersects(tileRect)) 
+			entities.push_back(entity);
+	}
+	return entities;
+}*/
+
 void LevelRenderer::_pushTemporary(Temporary *const tmp) {
 	temporary.push_back(tmp);
+	tmp->setOrigin(origin);
 	tmp->play();
 }
 
