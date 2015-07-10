@@ -32,16 +32,6 @@ inline Direction oppositeDirection(const Direction dir) {
 
 class MovingEntity : public Game::Entity, public Game::Animated {
 protected:
-	/** It's mandatory that directions are the first 4 elements */
-	enum : unsigned short {
-		ANIM_UP    = 0,
-		ANIM_RIGHT = 1,
-		ANIM_DOWN  = 2,
-		ANIM_LEFT  = 3,
-		ANIM_DEATH = 4,
-		ANIM_WIN   = 5,
-		ANIM_HURT  = 6
-	};
 	float speed = 0.f;
 	Game::Direction direction = Game::Direction::NONE, prevDirection = Game::Direction::NONE;
 	bool moving = false;

@@ -28,13 +28,10 @@ bool Level::_loadTexture() {
 }
 
 void Level::_loadTiles() {
-	// The size of the background tiles
-	const unsigned short tsize = 2 * TILE_SIZE;
-
 	bgTiles[TILE_REGULAR].setTexture(bgTexture);
 	bgTexture.setRepeated(true);
 	bgTexture.setSmooth(true);
-	bgTiles[TILE_REGULAR].setTextureRect(sf::IntRect(0, 0, tsize, tsize));
+	bgTiles[TILE_REGULAR].setTextureRect(sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE));
 
 	for (unsigned short i = 1; i < bgTiles.size(); ++i)
 		bgTiles[i].setTexture(borderTexture);
@@ -102,20 +99,18 @@ void Level::setOrigin(const sf::Vector2f& origin) {
 }
 
 void Level::draw(sf::RenderTarget& window) {
-	// The size of the background/border tiles
-	const unsigned short tsize = 2 * TILE_SIZE;
 	// Border tiles number on x axis
-	const unsigned short btn_x = LEVEL_WIDTH * TILE_SIZE / tsize + 1;
+	const unsigned short btn_x = LEVEL_WIDTH + 1;
 	// Border tiles number on y axis
-	const unsigned short btn_y = LEVEL_HEIGHT * TILE_SIZE / tsize + 1;
+	const unsigned short btn_y = LEVEL_HEIGHT + 1;
 
 	// Draw the borders
 	window.draw(bgTiles[TILE_UPPER_LEFT]);
-	for (unsigned short i = 1; i < 2*btn_x; ++i) {
+	for (unsigned short i = 1; i < btn_x; ++i) {
 		bgTiles[TILE_UPPER].setPosition(sf::Vector2f(i * TILE_SIZE, 0));
 		window.draw(bgTiles[TILE_UPPER]);
 	}
-	for (unsigned short i = 1; i < 2*btn_y; ++i) {
+	for (unsigned short i = 1; i < btn_y; ++i) {
 		bgTiles[TILE_LEFT].setPosition(sf::Vector2f(0, i * TILE_SIZE));
 		window.draw(bgTiles[TILE_LEFT]);
 	}
@@ -124,19 +119,19 @@ void Level::draw(sf::RenderTarget& window) {
 	// Draw the level background
 	for (unsigned short i = 0; i < btn_x; ++i) {
 		for (unsigned short j = 0; j < btn_y; ++j) {
-			bgTiles[TILE_REGULAR].setPosition(sf::Vector2f(i * tsize + TILE_SIZE, j * tsize + TILE_SIZE));
+			bgTiles[TILE_REGULAR].setPosition(sf::Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE + TILE_SIZE));
 			window.draw(bgTiles[TILE_REGULAR]);
 		}
 	}
 
-	for (unsigned short i = 1; i < 2*(btn_y); ++i) {
-		bgTiles[TILE_RIGHT].setPosition(sf::Vector2f(2*btn_x * TILE_SIZE, i * TILE_SIZE));
+	for (unsigned short i = 1; i < (btn_y); ++i) {
+		bgTiles[TILE_RIGHT].setPosition(sf::Vector2f(btn_x * TILE_SIZE, i * TILE_SIZE));
 		window.draw(bgTiles[TILE_RIGHT]);
 	}
 
 	window.draw(bgTiles[TILE_LOWER_RIGHT]);
-	for (unsigned short i = 1; i < 2*btn_x; ++i) {
-		bgTiles[TILE_LOWER].setPosition(sf::Vector2f(i * TILE_SIZE, 2*btn_y * TILE_SIZE));
+	for (unsigned short i = 1; i < btn_x; ++i) {
+		bgTiles[TILE_LOWER].setPosition(sf::Vector2f(i * TILE_SIZE, btn_y * TILE_SIZE));
 		window.draw(bgTiles[TILE_LOWER]);
 	}
 	window.draw(bgTiles[TILE_LOWER_LEFT]);
