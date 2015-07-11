@@ -5,6 +5,7 @@
  * tiles at once and has a duration of ~200 ms (framerate: 0.05)
  */
 
+#include <array>
 #include "Temporary.hpp"
 
 namespace Game {
