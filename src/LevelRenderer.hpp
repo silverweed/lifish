@@ -56,6 +56,11 @@ class LevelRenderer : private sf::NonCopyable {
 	void _clearEntities();
 
 	void _pushTemporary(Temporary *const tmp);
+
+	/** If entity in `src` has a line of sight with the one in `target`, 
+	 *  returns the number of tiles separating them; else return -1.
+	 */
+	short _getDistance(const sf::Vector2i& src, const sf::Vector2i& target, bool axis_x);
 public:
 	LevelRenderer();
 	~LevelRenderer();
@@ -104,10 +109,16 @@ public:
 
 	void dropBomb(const unsigned short player_id);
 
+	/** Checks all the bombs deployed to see if any of them has finished its countdown and,
+	 *  if so, spawns an explosion at its place.
+	 */
 	void checkBombExplosions();
 
 	/** Checks if a bomb or a moving entity is touching an explosion */
 	void checkExplosionHits();
+
+	/** Sets seeingPlayer and playerIsVisible flags for all enemies */
+	void checkLinesOfSight();
 };
 
 }

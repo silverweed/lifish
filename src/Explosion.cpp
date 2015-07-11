@@ -162,8 +162,10 @@ void Explosion::checkHit(const LevelRenderer *const lr) {
 				if (e_box.intersects(expl_box)) {
 					// TODO: damage
 					le->decLife(1);
-					e->setHurt(true);
-					e->giveShield(Game::DAMAGE_SHIELD_TIME);
+					if (e == lr->getPlayer(1) || e == lr->getPlayer(2)) {
+						e->setHurt(true);
+						e->giveShield(Game::DAMAGE_SHIELD_TIME);
+					}
 				}
 			}
 		}

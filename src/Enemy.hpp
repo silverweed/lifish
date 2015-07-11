@@ -18,6 +18,11 @@ class Enemy : public Game::MovingEntity, public Game::Lifed {
 	// TODO: type of bullets, fire rate, etc
 	bool _isTransparentTo(const Entity *const e) const override;
 public:
+	/** Whether this enemy is currently seeing the player (i.e.
+	 *  it shares a coordinate with him and no walls are in the middle)
+	 */
+	Game::Direction seeingPlayer = Game::Direction::NONE;
+
 	Enemy(sf::Vector2f pos, const unsigned short id);
 
 	void setAI(AIFunction aifunc) { ai = aifunc(this); }

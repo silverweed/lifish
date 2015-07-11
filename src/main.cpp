@@ -113,6 +113,8 @@ int main(int argc, char **argv) {
 			}
 		}
 
+		lr.checkLinesOfSight();
+
 		// Choose enemy movements
 		lr.selectEnemyMoves();
 

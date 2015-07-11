@@ -47,45 +47,42 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 		movingEntities.clear();
 	}
 	level = _level;
-		
-	auto curPos = [] (unsigned short left, unsigned short top) {
-		return sf::Vector2f((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
-	};
 
 	Game::Teleport *latest_teleport = nullptr;
 
 	for (unsigned short top = 0; top < LEVEL_HEIGHT; ++top) {
 		for (unsigned short left = 0; left < LEVEL_WIDTH; ++left) {
+			const sf::Vector2f curPos = sf::Vector2f((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
 			switch (level->getTile(left, top)) {
 			case EntityType::FIXED: 
 				fixedEntities[top * LEVEL_WIDTH + left] = 
-					new Game::FixedWall(curPos(left, top), level->tileIDs.fixed);
+					new Game::FixedWall(curPos, level->tileIDs.fixed);
 				break;
 			case EntityType::BREAKABLE:
 				fixedEntities[top * LEVEL_WIDTH + left] = 
-					new Game::BreakableWall(curPos(left, top), level->tileIDs.breakable);
+					new Game::BreakableWall(curPos, level->tileIDs.breakable);
 				break;
 			case EntityType::COIN:
 				fixedEntities[top * LEVEL_WIDTH + left] = 
-					new Game::Coin(curPos(left, top), getAsset("graphics", "coin.png"));
+					new Game::Coin(curPos, getAsset("graphics", "coin.png"));
 				break;
 			case EntityType::PLAYER1: 
 				{
-					Game::Player *player = new Game::Player(curPos(left, top), 1);
+					Game::Player *player = new Game::Player(curPos, 1);
 					movingEntities.push_back(player);
 					players[0] = player;
 					break;
 				}
 			case EntityType::PLAYER2: 
 				{
-					Game::Player *player = new Game::Player(curPos(left, top), 2);
+					Game::Player *player = new Game::Player(curPos, 2);
 					movingEntities.push_back(player);
 					players[1] = player;
 					break;
 				}
 			case EntityType::TELEPORT:
 				{
-					Game::Teleport *teleport = new Game::Teleport(curPos(left, top));
+					Game::Teleport *teleport = new Game::Teleport(curPos);
 					// Save the first Teleport added
 					if (firstTeleport == nullptr)
 						firstTeleport = teleport;
@@ -102,42 +99,79 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				}
 			case EntityType::ENEMY1:
 				{
-					Game::Enemy *enemy = new Game::Enemy(curPos(left, top), 1);
+					Game::Enemy *enemy = new Game::Enemy(curPos, 1);
 					enemy->setAI(Game::ai_random);
 					movingEntities.push_back(enemy);
 					break;
 				}
 			case EntityType::ENEMY2:
 				{
-					Game::Enemy *enemy = new Game::Enemy(curPos(left, top), 2);
+					Game::Enemy *enemy = new Game::Enemy(curPos, 2);
 					enemy->setAI(Game::ai_random);
 					movingEntities.push_back(enemy);
 					break;
 				}
 			case EntityType::ENEMY3:
 				{
-					Game::Enemy *enemy = new Game::Enemy(curPos(left, top), 3);
+					Game::Enemy *enemy = new Game::Enemy(curPos, 3);
 					enemy->setAI(Game::ai_random_forward);
 					movingEntities.push_back(enemy);
 					break;
 				}
 			case EntityType::ENEMY4:
 				{
-					Game::Enemy *enemy = new Game::Enemy(curPos(left, top), 4);
+					Game::Enemy *enemy = new Game::Enemy(curPos, 4);
 					enemy->setAI(Game::ai_random_forward);
 					enemy->setSpeed(150.f);
 					movingEntities.push_back(enemy);
 					break;
 				}
 			case EntityType::ENEMY5:
+				{
+					Game::Enemy *enemy = new Game::Enemy(curPos, 5);
+					enemy->setAI(Game::ai_random_forward);
+					movingEntities.push_back(enemy);
+					break;
+				}
 			case EntityType::ENEMY6:
+				{
+					Game::Enemy *enemy = new Game::Enemy(curPos, 6);
+					enemy->setAI(Game::ai_follow);
+					movingEntities.push_back(enemy);
+					break;
+				}
 			case EntityType::ENEMY7:
+				{
+					Game::Enemy *enemy = new Game::Enemy(curPos, 7);
+					enemy->setAI(Game::ai_follow);
+					movingEntities.push_back(enemy);
+					break;
+				}
 			case EntityType::ENEMY8:
+				{
+					Game::Enemy *enemy = new Game::Enemy(curPos, 8);
+					enemy->setAI(Game::ai_follow);
+					movingEntities.push_back(enemy);
+					break;
+				}
 			case EntityType::ENEMY9:
+				{
+					Game::Enemy *enemy = new Game::Enemy(curPos, 9);
+					enemy->setAI(Game::ai_follow);
+					movingEntities.push_back(enemy);
+					break;
+				}
 			case EntityType::ENEMY10:
+				{
+					Game::Enemy *enemy = new Game::Enemy(curPos, 10);
+					enemy->setAI(Game::ai_follow);
+					enemy->setSpeed(150.f);
+					movingEntities.push_back(enemy);
+					break;
+				}
 			case EntityType::BOSS:
-			default:
 				// TODO
+			default:
 				break;
 			}
 		}
@@ -156,9 +190,8 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 
 	level->draw(window);
 	for (const auto& entity : fixedEntities) {
-		if (entity != nullptr) {
+		if (entity != nullptr) 
 			entity->draw(window);
-		}
 	}
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 		for (unsigned short j = 0; j < bombs[i].size(); ++j) {
@@ -194,10 +227,10 @@ void LevelRenderer::detectCollisions() {
 	std::vector<bool> checked(movingEntities.size(), false);
 	
 	static auto collide = [] (const sf::Vector2f& pos, const sf::Vector2f& opos, const Game::Direction dir) {
-		unsigned short iposx = (unsigned short)pos.x,
-			       iposy = (unsigned short)pos.y,
-			       ioposx = (unsigned short)opos.x,
-			       ioposy = (unsigned short)opos.y;
+		const unsigned short iposx = (unsigned short)pos.x,
+			             iposy = (unsigned short)pos.y,
+			             ioposx = (unsigned short)opos.x,
+			             ioposy = (unsigned short)opos.y;
 		switch (dir) {
 		case Direction::UP:
 			return iposx - TILE_SIZE < ioposx && ioposx < iposx + TILE_SIZE
@@ -223,10 +256,10 @@ void LevelRenderer::detectCollisions() {
 
 		// Check for teleports
 		if (firstTeleport != nullptr && entity->canTeleport && entity->isAligned()) {
-			auto cur_tile = Game::tile(pos);
+			const auto cur_tile = Game::tile(pos);
 
 			if (level->getTile(cur_tile.x - 1, cur_tile.y - 1) == EntityType::TELEPORT && entity->prevAlign != cur_tile) {
-				unsigned short idx = (cur_tile.y - 1) * LEVEL_WIDTH + cur_tile.x - 1;
+				const unsigned short idx = (cur_tile.y - 1) * LEVEL_WIDTH + cur_tile.x - 1;
 
 				// Get Teleport from fixed entities
 				Game::Teleport *teleport = dynamic_cast<Teleport*>(fixedEntities[idx]);
@@ -338,7 +371,7 @@ void LevelRenderer::detectCollisions() {
 
 		// Check for impacts with fixed entities
 		if (!collision_detected && at_limit) {
-			unsigned short idx = next_tile.y * LEVEL_WIDTH + next_tile.x;
+			const unsigned short idx = next_tile.y * LEVEL_WIDTH + next_tile.x;
 			if (idx >= fixedEntities.size()) {
 				// Should never happen: means we're outside the grid
 				entity->colliding = true;
@@ -376,6 +409,7 @@ void LevelRenderer::selectEnemyMoves() {
 			continue;
 		if (!entity->isAligned()) {
 			if (entity->colliding) {
+				// Fix prevAligns
 				switch (entity->getDirection()) {
 				case Direction::LEFT: case Direction::UP:
 					entity->prevAlign = Game::tile(entity->getPosition());
@@ -450,7 +484,7 @@ void LevelRenderer::_pushTemporary(Temporary *const tmp) {
 void LevelRenderer::dropBomb(const unsigned short id) {
 	// Count how many bombs the player has already dropped
 	unsigned short n_bombs = 0, idx = 0;
-	auto pl_tile = Game::tile(players[id]->getPosition());
+	const auto pl_tile = Game::tile(players[id]->getPosition());
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 		for (unsigned short j = 0; j < Game::Player::MAX_MAX_BOMBS; ++j) {
 			if (bombs[i][j] == nullptr) {
@@ -496,8 +530,67 @@ Game::Bomb* LevelRenderer::getBombAt(const unsigned short left, const unsigned s
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
 		for (unsigned short j = 0; j < bombs[i].size(); ++j) {
 			if (bombs[i][j] == nullptr) continue;
-			auto tile = Game::tile(bombs[i][j]->getPosition());
+			const auto tile = Game::tile(bombs[i][j]->getPosition());
 			if (tile.x == left && tile.y == top) return bombs[i][j];
 		}
 	return nullptr;
+}
+
+void LevelRenderer::checkLinesOfSight() {
+	std::array<sf::Vector2i, Game::MAX_PLAYERS> pos;
+	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
+		pos[i] = Game::tile(players[i]->getPosition());
+
+	for (auto& e : movingEntities) {
+		Game::Enemy* enemy = dynamic_cast<Game::Enemy*>(e);
+		if (enemy == nullptr) continue;
+		enemy->seeingPlayer = Direction::NONE;
+		const auto epos = Game::tile(e->getPosition());
+		short prev_dist = 2 * LEVEL_WIDTH;
+		for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+			if (pos[i].x == epos.x) {
+				const short dist = _getDistance(epos, pos[i], false);
+				if (dist >= 0 && dist < prev_dist) {
+					enemy->seeingPlayer = epos.y < pos[i].y ? Direction::DOWN : Direction::UP;
+					prev_dist = dist;
+				}
+			} else if (pos[i].y == epos.y) {
+				const short dist = _getDistance(epos, pos[i], true);
+				if (dist >= 0 && dist < prev_dist) {
+					enemy->seeingPlayer = epos.x < pos[i].x ? Direction::RIGHT : Direction::LEFT;
+					prev_dist = dist;
+				}
+			}
+		}
+	}
+}
+
+short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& target, bool axis_x) {
+	unsigned short start, end;
+	if (axis_x) {
+		if (src.x < target.x)
+			start = src.x, end = target.x;
+		else
+			start = target.x, end = src.x;
+		for (unsigned short i = start; i < end; ++i) {
+			const unsigned short idx = (src.y - 1) * LEVEL_WIDTH + i - 1;
+			if (idx >= fixedEntities.size()) return -1;
+			auto fxd = fixedEntities[idx];
+			if (fxd != nullptr && dynamic_cast<Wall*>(fxd) != nullptr)
+				return -1; // wall obstructs the sight
+		}
+	} else {
+		if (src.y < target.y)
+			start = src.y, end = target.y;
+		else
+			start = target.y, end = src.y;
+		for (unsigned short i = start; i < end; ++i) {
+			const unsigned short idx = (i - 1) * LEVEL_WIDTH + src.x - 1;
+			if (idx >= fixedEntities.size()) return -1;
+			auto fxd = fixedEntities[idx];
+			if (fxd != nullptr && dynamic_cast<Wall*>(fxd) != nullptr)
+				return -1; 
+		}
+	}
+	return end - start;
 }
