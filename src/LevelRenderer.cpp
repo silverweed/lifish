@@ -165,11 +165,9 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 			auto bomb = bombs[i][j];
 			if (bomb == nullptr) continue;
 			if (bomb->isExploded()) {
-				// TODO
 				delete bomb;
 				bombs[i][j] = nullptr;
 			} else {
-				bomb->setOrigin(origin);
 				bomb->draw(window);
 			}
 		}
@@ -471,6 +469,7 @@ void LevelRenderer::dropBomb(const unsigned short id) {
 			players[id]->powers.bombFuseTime,
 			players[id]->powers.bombRadius);
 	bombs[id][idx] = bomb;
+	bomb->setOrigin(origin);
 	bomb->ignite();
 }
 
@@ -483,6 +482,14 @@ void LevelRenderer::checkBombExplosions() {
 				_pushTemporary(expl);
 				bombs[i][j]->blowUp();
 			}
+}
+
+void LevelRenderer::checkExplosionHits() {
+	for (auto& tmp : temporary) {
+		Game::Explosion *expl = dynamic_cast<Game::Explosion*>(tmp);
+		if (expl != nullptr)
+			expl->checkHit(this);
+	}
 }
 
 Game::Bomb* LevelRenderer::getBombAt(const unsigned short left, const unsigned short top) const {

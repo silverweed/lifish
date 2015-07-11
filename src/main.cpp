@@ -118,6 +118,8 @@ int main(int argc, char **argv) {
 
 		lr.checkBombExplosions();
 
+		lr.checkExplosionHits();
+
 		// Collisions detection
 		lr.detectCollisions();
 
@@ -128,10 +130,14 @@ int main(int argc, char **argv) {
 					lr.dropBomb(i);
 			}
 
-			if (players[i]->getDirection() == Game::Direction::NONE)
+			if (players[i]->isHurt()) {
+				if (!players[i]->playHurtAnimation())
+					players[i]->setHurt(false);
+			} else if (players[i]->getDirection() == Game::Direction::NONE) {
 				players[i]->stop();
-			else
+			} else {
 				players[i]->move();
+			}
 		}
 
 		// Actually move enemies

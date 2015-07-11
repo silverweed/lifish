@@ -35,6 +35,10 @@ protected:
 	float speed = 0.f;
 	Game::Direction direction = Game::Direction::NONE, prevDirection = Game::Direction::NONE;
 	bool moving = false;
+	bool hurt = false;
+
+	float shieldTime = -1; // milliseconds; negative means "no shield"
+	sf::Clock shieldClock;
 
 	virtual bool _isTransparentTo(const Entity *const e) const = 0;
 public:
@@ -54,7 +58,7 @@ public:
 	void setDirection(const Game::Direction dir); 
 
 	/** Use Animated::draw, not Entity's */
-	virtual void draw(sf::RenderTarget& window) override { Game::Animated::draw(window); }
+	virtual void draw(sf::RenderTarget& window) override;
 	void setOrigin(const sf::Vector2f& _origin) override { Game::Animated::setOrigin(_origin); }
 
 	virtual void move();
@@ -75,6 +79,17 @@ public:
 		Game::Animated::setPosition(_pos);
 		Game::Entity::setPosition(_pos);
 	}
+
+	void setHurt(const bool b);
+	bool isHurt() const { return hurt; }
+
+	bool playHurtAnimation();
+
+	void giveShield(const float shieldMs) {
+		shieldTime = shieldMs;
+		shieldClock.restart();
+	}
+	inline bool hasShield() { return shieldTime > 0 && shieldClock.getElapsedTime().asMilliseconds() <= shieldTime; }
 };
 
 }

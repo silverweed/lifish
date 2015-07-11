@@ -33,6 +33,8 @@ constexpr unsigned short TILE_SIZE = 32; // pixels
 constexpr unsigned short LEVEL_WIDTH = 15; 
 constexpr unsigned short LEVEL_HEIGHT = 13;
 
+constexpr float DAMAGE_SHIELD_TIME = 1000; // ms
+
 constexpr unsigned short MAX_PLAYERS = 2;
 
 /** How much the main game window is shifted relative to the

@@ -34,6 +34,8 @@ public:
 	 */
 	void propagate(const LevelRenderer *const);
 
+	void checkHit(const LevelRenderer *const);
+
 	void draw(sf::RenderTarget& window) override;
 	
 	void setOrigin(const sf::Vector2f& pos) override {

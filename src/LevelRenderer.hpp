@@ -105,6 +105,9 @@ public:
 	void dropBomb(const unsigned short player_id);
 
 	void checkBombExplosions();
+
+	/** Checks if a bomb or a moving entity is touching an explosion */
+	void checkExplosionHits();
 };
 
 }

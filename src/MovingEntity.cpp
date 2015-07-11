@@ -159,3 +159,34 @@ void MovingEntity::setDirection(const Direction dir) {
 	animatedSprite.setPosition(pos);
 	direction = dir;
 }
+
+void MovingEntity::setHurt(const bool b) {
+	hurt = b;
+	if (hurt) {
+		animatedSprite.play(*&animations[ANIM_HURT]);
+		animatedSprite.setLooped(false);
+	} else {
+		animatedSprite.setLooped(true);
+	}
+}
+
+bool MovingEntity::playHurtAnimation() {
+	animatedSprite.update(frameClock.restart());
+	return animatedSprite.isPlaying();
+}
+
+void MovingEntity::draw(sf::RenderTarget& window) {
+	Game::Animated::draw(window);
+	if (hasShield()) {
+		float s = shieldClock.getElapsedTime().asSeconds();
+		float diff = s - std::floor(s);
+		if (shieldTime - 1000*s > 3000 || 4*diff - std::floor(4*diff) < 0.5) {
+			AnimatedSprite shieldSprite(animatedSprite);
+			shieldSprite.setOrigin(shieldSprite.getOrigin() + sf::Vector2f(TILE_SIZE/2, TILE_SIZE/2));
+			shieldSprite.scale(1.1, 1.1);
+			shieldSprite.move(TILE_SIZE/7, TILE_SIZE/2);
+			shieldSprite.setColor(sf::Color(50, 255, 0, 200));
+			window.draw(shieldSprite);
+		}
+	}
+}

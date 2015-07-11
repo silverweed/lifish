@@ -48,21 +48,6 @@ void Explosion::propagate(const LevelRenderer *const lr) {
 	auto allmoving = lr->getMovingEntities();
 	auto level = lr->getLevel();
 
-	std::array<std::list<MovingEntity*>, 5> moving;
-	// Skim moving entities and keep only those which may be hit by this explosion
-	for (auto& e : allmoving) {
-		sf::Vector2f epos = e->getPosition();
-		if (epos.x != pos.x && epos.y != pos.y) {
-			// this entity won't be affected by this explosion
-			continue;
-		}
-		if (epos.x < pos.x) moving[ANIM_LEFT].push_back(e);
-		else if (epos.x > pos.x) moving[ANIM_RIGHT].push_back(e);
-		else if (epos.y < pos.y) moving[ANIM_UP].push_back(e);
-		else if (epos.y > pos.y) moving[ANIM_DOWN].push_back(e);
-		else moving[4].push_back(e); // the same tile as the explosion's origin
-	}
-
 	for (unsigned short dir = 0; dir < 4; ++dir) {	
 		for (unsigned short d = 1; d <= radius; ++d) {
 			if (propagating[dir]) {
@@ -91,21 +76,11 @@ void Explosion::propagate(const LevelRenderer *const lr) {
 				if (fxd == nullptr || fxd->transparentTo.explosions) {
 					// Check if bomb
 					Game::Bomb *bomb = lr->getBombAt(new_tile.x, new_tile.y);
-					if (bomb != nullptr) {
+					if (bomb != nullptr)
 						bomb->setExploding();
-						propagating[dir] = false;
-					} else {
+					else
 						++propagation[dir];
-					}
 
-					sf::FloatRect expl_box(new_tile.x, new_tile.y, TILE_SIZE, TILE_SIZE);
-					for (auto& e : moving[dir]) {
-						// Check if entity's bounding box intersects this tile
-						sf::FloatRect e_box(e->getPosition().x, e->getPosition().y, TILE_SIZE, TILE_SIZE);
-						if (e_box.intersects(expl_box)) {
-							// TODO: damage
-						}
-					}
 				} else {
 					propagating[dir] = false; 
 					if (level->getTile(new_tile.x, new_tile.y) == Game::EntityType::BREAKABLE) {
@@ -113,6 +88,82 @@ void Explosion::propagate(const LevelRenderer *const lr) {
 					} else {
 
 					}
+				}
+			}
+		}
+	}
+}
+
+void Explosion::checkHit(const LevelRenderer *const lr) {
+	std::array<std::list<MovingEntity*>, 5> moving;
+
+	auto allmoving = lr->getMovingEntities();
+
+	// Skim moving entities and keep only those which may be hit by this explosion
+	for (auto& e : allmoving) {
+		sf::Vector2f epos = e->getPosition();
+		if (epos.x != pos.x && epos.y != pos.y) {
+			// this entity won't be affected by this explosion
+			continue;
+		}
+		if (epos.x < pos.x) moving[ANIM_LEFT].push_back(e);
+		else if (epos.x > pos.x) moving[ANIM_RIGHT].push_back(e);
+		else if (epos.y < pos.y) moving[ANIM_UP].push_back(e);
+		else if (epos.y > pos.y) moving[ANIM_DOWN].push_back(e);
+		else moving[4].push_back(e); // the same tile as the explosion's origin
+	}
+
+	sf::Vector2i m_tile = Game::tile(pos);
+	sf::FloatRect expl_box(m_tile.x * TILE_SIZE, m_tile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+	for (auto& e : moving[4]) {
+		if (e->hasShield()) continue;
+
+		// Check if entity's lifed
+		Lifed *le = dynamic_cast<Lifed*>(e);
+		if (le == nullptr) continue;
+
+		// Check if entity's bounding box intersects this tile
+		sf::FloatRect e_box(e->getPosition().x, e->getPosition().y, TILE_SIZE, TILE_SIZE);
+		if (e_box.intersects(expl_box)) {
+			// TODO: damage
+			le->decLife(1);
+			e->setHurt(true);
+			e->giveShield(Game::DAMAGE_SHIELD_TIME);
+		}
+	}
+	for (unsigned short dir = 0; dir < 4; ++dir) {
+		for (unsigned short d = 1; d <= propagation[dir]; ++d) {
+			sf::Vector2i new_tile = m_tile;
+			switch (dir) {
+			case ANIM_UP:
+				new_tile.y -= d;
+				break;
+			case ANIM_LEFT:
+				new_tile.x -= d;
+				break;
+			case ANIM_DOWN:
+				new_tile.y += d;
+				break;
+			case ANIM_RIGHT:
+				new_tile.x += d;
+				break;
+			}
+
+			sf::FloatRect expl_box(new_tile.x * TILE_SIZE, new_tile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+			for (auto& e : moving[dir]) {
+				if (e->hasShield()) continue;
+
+				// Check if entity's lifed
+				Lifed *le = dynamic_cast<Lifed*>(e);
+				if (le == nullptr) continue;
+
+				// Check if entity's bounding box intersects this tile
+				sf::FloatRect e_box(e->getPosition().x, e->getPosition().y, TILE_SIZE, TILE_SIZE);
+				if (e_box.intersects(expl_box)) {
+					// TODO: damage
+					le->decLife(1);
+					e->setHurt(true);
+					e->giveShield(Game::DAMAGE_SHIELD_TIME);
 				}
 			}
 		}
