@@ -53,6 +53,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 	for (unsigned short top = 0; top < LEVEL_HEIGHT; ++top) {
 		for (unsigned short left = 0; left < LEVEL_WIDTH; ++left) {
 			const sf::Vector2f curPos = sf::Vector2f((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
+			unsigned short enemy_id = 0;
 			switch (level->getTile(left, top)) {
 			case EntityType::FIXED: 
 				fixedEntities[top * LEVEL_WIDTH + left] = 
@@ -97,10 +98,27 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 					fixedEntities[top * LEVEL_WIDTH + left] = teleport;
 					break;
 				}
-			case EntityType::ENEMY1:
+			case EntityType::BOSS:
+				// TODO
+				break;
+			case EntityType::ENEMY1: enemy_id = 1; break;
+			case EntityType::ENEMY2: enemy_id = 2; break;
+			case EntityType::ENEMY3: enemy_id = 3; break;
+			case EntityType::ENEMY4: enemy_id = 4; break;
+			case EntityType::ENEMY5: enemy_id = 5; break;
+			case EntityType::ENEMY6: enemy_id = 6; break;
+			case EntityType::ENEMY7: enemy_id = 7; break;
+			case EntityType::ENEMY8: enemy_id = 8; break;
+			case EntityType::ENEMY9: enemy_id = 9; break;
+			case EntityType::ENEMY10: enemy_id = 10; break;
+			default:
+				  break;
+
+			/*case EntityType::ENEMY1:
 				{
 					Game::Enemy *enemy = new Game::Enemy(curPos, 1);
-					enemy->setAI(Game::ai_random);
+					enemy->setAI(Game::ai_functions[level->getLevelSet()->enemies[0].ai]);
+					enemy->setSpeed(Game::ai_functions[level->getLevelSet()->enemies[0].ai]);
 					movingEntities.push_back(enemy);
 					break;
 				}
@@ -169,10 +187,14 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 					movingEntities.push_back(enemy);
 					break;
 				}
-			case EntityType::BOSS:
-				// TODO
 			default:
-				break;
+				break;*/
+			}
+			if (enemy_id > 0) {
+				Game::Enemy *enemy = new Game::Enemy(curPos, enemy_id);
+				enemy->setAI(Game::ai_functions[level->getLevelSet()->getEnemyInfo(enemy_id).ai]);
+				enemy->setSpeed(Game::Enemy::BASE_SPEED * level->getLevelSet()->getEnemyInfo(enemy_id).speed);
+				movingEntities.push_back(enemy);
 			}
 		}
 	}
@@ -224,7 +246,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		}
 	}
 	for (auto it = movingEntities.begin(); it != movingEntities.end(); ) {
-		auto& entity = *it;
+		auto entity = *it;
 		if (entity->isDying()) {
 			if (entity->playDeathAnimation()) {
 				if (!isPlayer(entity) || entity->getRemainingLives() < 0) {
@@ -280,9 +302,10 @@ void LevelRenderer::detectCollisions() {
 			return false;
 		}
 	};
-	for (unsigned short i = 0, len = movingEntities.size(); i < len; ++i) {
+	unsigned short i = 0;
+	for (auto it = movingEntities.begin(); it != movingEntities.end(); ++it, ++i) {
 		if (checked[i]) continue;
-		MovingEntity *entity = movingEntities[i];
+		MovingEntity *entity = *it;
 		sf::Vector2f pos = entity->getPosition();
 		const bool is_player = isPlayer(entity);
 
@@ -380,10 +403,11 @@ void LevelRenderer::detectCollisions() {
 
 		// Check for impacts with moving entities
 		bool collision_detected = false;
-		for (unsigned short j = 0; j < len; ++j) {
+		unsigned short j = 0;
+		for (auto jt = movingEntities.begin(); jt != movingEntities.end(); ++jt, ++j) {
 			if (i == j) continue;
 
-			MovingEntity *other = movingEntities[j];
+			MovingEntity *other = *jt;
 			if ((is_player && other->transparentTo.players) || (!is_player && other->transparentTo.enemies))
 				continue;
 			
@@ -487,28 +511,6 @@ bool LevelRenderer::isEntityTouching(const sf::Vector2f& tile) const {
 	}
 	return false;
 }
-
-/*std::list<Game::Entity*> LevelRenderer::getEntitiesTouching(const sf::Vector2i& tile) const {
-	std::list<Game::Entity*> entities;
-
-	if (tile.x <= 0 || tile.x > LEVEL_WIDTH || tile.y <= 0 || tile.y > LEVEL_HEIGHT)
-		return entities;
-
-	sf::FloatRect tileRect(tile.x, tile.y, TILE_SIZE, TILE_SIZE);
-	// First, check if a fixed entity is in that tile
-	Game::Entity *fixed = fixedEntities[tile.y * LEVEL_WIDTH + tile.x];
-	if (fixed != nullptr) {
-		entities.push_back(fixed);
-		return entities;
-	}
-	for (auto& entity : movingEntities) {
-		sf::Vector2f pos = entity->getPosition();
-		sf::FloatRect rect(pos.x, pos.y, TILE_SIZE, TILE_SIZE);
-		if (rect.intersects(tileRect)) 
-			entities.push_back(entity);
-	}
-	return entities;
-}*/
 
 void LevelRenderer::_pushTemporary(Temporary *const tmp) {
 	temporary.push_back(tmp);

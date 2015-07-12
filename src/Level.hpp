@@ -96,10 +96,10 @@ public:
 
 
 	/** Constructs a level without a specified time and tileset. init() must
-	 *  be called before using this level. Optionally, can specify a LevelSet
+	 *  be called before using this level. You need to specify a LevelSet
 	 *  this Level belongs to.
 	 */
-	Level(const LevelSet *const levelSet = nullptr);
+	Level(const LevelSet *const levelSet);
 	virtual ~Level();
 
 	/** Loads the appropriate bgTexture, fills the bgTiles and makes this level
@@ -135,6 +135,8 @@ public:
 
 	/** Draws this level's background in the target window */
 	void draw(sf::RenderTarget& window) override;
+
+	const LevelSet *const getLevelSet() const { return levelSet; }
 };
 
 }

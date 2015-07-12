@@ -22,7 +22,7 @@ namespace Game {
 class LevelRenderer : private sf::NonCopyable {
 	/** For Fixed Entities we use a fixed-size array for faster lookup */
 	using FixedEntityList = std::array<Game::FixedEntity*, LEVEL_WIDTH * LEVEL_HEIGHT>;
-	using MovingEntityList = std::vector<Game::MovingEntity*>;
+	using MovingEntityList = std::list<Game::MovingEntity*>;
 	using TemporaryEntityList = std::list<Game::Temporary*>;
 
 	/** The level this object is rendering */
@@ -101,11 +101,6 @@ public:
 	bool isEntityTouching(const sf::Vector2f& pos) const;
 
 	bool isPlayer(const Entity *const) const;
-
-	/** Returns all entities (moving and fixed) touching the tile
-	 *  at coordinate `pos`
-	 */
-	//std::list<Entity*> getEntitiesTouching(const sf::Vector2i& pos) const;
 
 	const Level* getLevel() const { return level; }
 

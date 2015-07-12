@@ -72,3 +72,8 @@ AIBoundFunction Game::ai_follow(Game::Enemy *const enemy) {
 		return dirs[dist(rng)];
 	};
 }
+
+AIBoundFunction Game::ai_chase(Game::Enemy *const enemy) {
+	// TODO
+	return ai_follow(enemy);
+}

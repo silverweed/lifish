@@ -16,7 +16,7 @@ class Bomb : public Game::FixedEntity, public Game::Animated {
 	/** `true` if this bomb already spawned its explosion. */
 	bool exploded = false;
 public:
-	constexpr static float DEFAULT_FUSE = 3;//5; // seconds
+	constexpr static float DEFAULT_FUSE = 5; // seconds
 	constexpr static unsigned short DEFAULT_RADIUS = 2;
 
 	Bomb(const sf::Vector2f& pos, const float fuseTime = DEFAULT_FUSE, const unsigned short radius = DEFAULT_RADIUS);

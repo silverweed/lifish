@@ -46,6 +46,18 @@ lifish_hash = {
 			}
 		}
 	],
+	"enemies" => [
+		{ "ai" => 0, "speed" => 1 },
+		{ "ai" => 0, "speed" => 1 },
+		{ "ai" => 1, "speed" => 1 },
+		{ "ai" => 1, "speed" => 2 },
+		{ "ai" => 1, "speed" => 1 },
+		{ "ai" => 2, "speed" => 1 }, 
+		{ "ai" => 2, "speed" => 1 }, 
+		{ "ai" => 2, "speed" => 1 }, 
+		{ "ai" => 2, "speed" => 1 },
+		{ "ai" => 2, "speed" => 2 }
+	],
 	"levels" => []
 }
 

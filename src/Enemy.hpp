@@ -18,6 +18,8 @@ class Enemy : public Game::MovingEntity, public Game::Lifed {
 	// TODO: type of bullets, fire rate, etc
 	bool _isTransparentTo(const Entity *const e) const override;
 public:
+	constexpr static float BASE_SPEED = 75.f;
+
 	/** Whether this enemy is currently seeing the player (i.e.
 	 *  it shares a coordinate with him and no walls are in the middle)
 	 */

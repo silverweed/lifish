@@ -27,6 +27,13 @@ LevelSet::LevelSet(const std::string& path) {
 	// load tracks data
 	const auto tracksdata = levelJSON["tracks"];
 	unsigned short tracknum = 1;
+	/* trackinfo = {
+	 *		"loop": {
+	 *			"start": float,
+	 *			"end": float
+	 *		}
+	 * }
+	 */
 	for (const auto& trackinfo : tracksdata) {
 		auto loop = trackinfo["loop"];
 		float loopstart = loop["start"]; 
@@ -40,6 +47,21 @@ LevelSet::LevelSet(const std::string& path) {
 		}
 		tracks.push_back(getNthTrack(tracknum++, loopstart, looplength));
 	}
+
+	// load enemies data
+	const auto enemydata = levelJSON["enemies"];
+	unsigned short enemynum = 0;
+	/* enemyinfo = {
+	 *		"ai": ushort,
+	 *		"speed": ushort
+	 * }
+	 */
+	for (const auto& enemyinfo : enemydata) {
+		enemies[enemynum].ai = enemyinfo["ai"];
+		enemies[enemynum].speed = enemyinfo["speed"];
+		++enemynum;
+	}
+
 
 	// load levels data
 	const auto levelsdata = levelJSON["levels"];

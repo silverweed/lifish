@@ -8,7 +8,7 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
 	MovingEntity(pos, Game::getAsset("test", std::string("enemy") + std::to_string(id) + std::string(".png"))), 
 	Lifed(1)
 {
-	speed = 75.f;
+	speed = BASE_SPEED;
 	transparentTo.enemies = false;
 	transparentTo.bullets = false;
 	direction = prevDirection = Game::Direction::DOWN;

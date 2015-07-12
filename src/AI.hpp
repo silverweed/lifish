@@ -4,6 +4,7 @@
  */
 
 #include <functional>
+#include <array>
 #include "LevelRenderer.hpp"
 
 namespace Game {
@@ -26,5 +27,15 @@ AIBoundFunction ai_random_forward(Game::Enemy *const);
  *  in sight, chase nearest one)
  */
 AIBoundFunction ai_follow(Game::Enemy *const enemy);
+
+/** Actively chase the nearest player */
+AIBoundFunction ai_chase(Game::Enemy *const enemy);
+
+static std::array<AIFunction, 4> ai_functions = {{
+	ai_random,
+	ai_random_forward,
+	ai_follow,
+	ai_chase
+}};
 
 }

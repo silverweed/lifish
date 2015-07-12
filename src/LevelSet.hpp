@@ -12,9 +12,15 @@ namespace Game {
 
 class Level;
 
+struct EnemyInfo {
+	unsigned short ai;
+	unsigned short speed;
+};
+
 class LevelSet : private sf::NonCopyable {
 	std::vector<Game::Level*> levels;
 	std::vector<Game::Track> tracks;
+	std::array<EnemyInfo, 10> enemies;
 	std::unordered_map<std::string, std::string> metadata;
 public:
 	LevelSet(const std::string& jsonPath);
@@ -25,6 +31,8 @@ public:
 	 */
 	Level* getLevel(unsigned short i) const;
 	unsigned short getLevelsNum() const { return levels.size(); }
+
+	const EnemyInfo& getEnemyInfo(const unsigned short id) const { return enemies[id-1]; }
 
 	void printInfo() const;
 };

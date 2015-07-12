@@ -29,7 +29,9 @@ void BreakableWall::destroy() {
 }
 
 void BreakableWall::draw(sf::RenderTarget& window) {
-	if (destroyed)
+	if (destroyed) {
 		animatedSprite.update(frameClock.restart());
+		if (!animatedSprite.isPlaying()) return;
+	}
 	window.draw(animatedSprite);
 }
