@@ -12,6 +12,7 @@ Player::Player(sf::Vector2f pos, const unsigned short id) :
 {
 	speed = 150.f;
 	transparentTo.players = false;
+	remainingLives = Game::INITIAL_LIVES;
 
 	for (unsigned short i = 0; i < MAX_N_ANIMATIONS; ++i)
 		animations[i].setSpriteSheet(texture);
@@ -98,4 +99,8 @@ void Player::move(const Direction dir) {
 
 bool Player::_isTransparentTo(const Entity *const e) const {
 	return e->transparentTo.players;
+}
+
+void Player::resurrect() {
+	dead = false;
 }

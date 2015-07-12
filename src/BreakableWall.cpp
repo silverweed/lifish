@@ -17,5 +17,19 @@ BreakableWall::BreakableWall(const sf::Vector2f& pos, const unsigned short id, u
 	animatedSprite.setPosition(pos);
 	animatedSprite.setAnimation(animations[0]);
 	animatedSprite.setLooped(false);
+	animatedSprite.setFrameTime(sf::seconds(0.2));
 	animatedSprite.pause();
+}
+
+void BreakableWall::destroy() {
+	if (!destroyed) {
+		destroyed = true;
+		animatedSprite.play();
+	}
+}
+
+void BreakableWall::draw(sf::RenderTarget& window) {
+	if (destroyed)
+		animatedSprite.update(frameClock.restart());
+	window.draw(animatedSprite);
 }

@@ -190,3 +190,17 @@ void MovingEntity::draw(sf::RenderTarget& window) {
 		}
 	}
 }
+
+void MovingEntity::kill() {
+	if (!dead) {
+		dead = true;
+		--remainingLives;
+		animatedSprite.play(*&animations[ANIM_DEATH]);
+		deathClock.restart();
+	}
+}
+
+bool MovingEntity::playDeathAnimation() {
+	animatedSprite.update(frameClock.restart());
+	return deathClock.getElapsedTime().asSeconds() > deathTime;
+}

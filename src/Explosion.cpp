@@ -1,5 +1,6 @@
 #include "Explosion.hpp"
 #include "LevelRenderer.hpp"
+#include "BreakableWall.hpp"
 #include "utils.hpp"
 
 using Game::Explosion;
@@ -82,11 +83,15 @@ void Explosion::propagate(const LevelRenderer *const lr) {
 						++propagation[dir];
 
 				} else {
+					// It's a wall
 					propagating[dir] = false; 
-					if (level->getTile(new_tile.x, new_tile.y) == Game::EntityType::BREAKABLE) {
-						// TODO: break
-					} else {
 
+					if (d == 1 && level->getTile(new_tile.x - 1, new_tile.y - 1) == Game::EntityType::BREAKABLE) {
+						// Use static_cast for better performance (we know for sure this is a breakable)
+						auto bw = static_cast<Game::BreakableWall*>(fxd);
+						bw->destroy();
+					} else {
+						// TODO: boss
 					}
 				}
 			}
@@ -98,22 +103,22 @@ void Explosion::checkHit(const LevelRenderer *const lr) {
 	std::array<std::list<MovingEntity*>, 5> moving;
 
 	auto allmoving = lr->getMovingEntities();
+	sf::Vector2i m_tile = Game::tile(pos);
 
 	// Skim moving entities and keep only those which may be hit by this explosion
 	for (auto& e : allmoving) {
-		sf::Vector2f epos = e->getPosition();
-		if (epos.x != pos.x && epos.y != pos.y) {
+		sf::Vector2i e_tile = Game::tile(e->getPosition());
+		if (e_tile.x != m_tile.x && e_tile.y != m_tile.y) {
 			// this entity won't be affected by this explosion
 			continue;
 		}
-		if (epos.x < pos.x) moving[ANIM_LEFT].push_back(e);
-		else if (epos.x > pos.x) moving[ANIM_RIGHT].push_back(e);
-		else if (epos.y < pos.y) moving[ANIM_UP].push_back(e);
-		else if (epos.y > pos.y) moving[ANIM_DOWN].push_back(e);
+		if (m_tile.x < m_tile.x) moving[ANIM_LEFT].push_back(e);
+		else if (e_tile.x > m_tile.x) moving[ANIM_RIGHT].push_back(e);
+		else if (e_tile.y < m_tile.y) moving[ANIM_UP].push_back(e);
+		else if (e_tile.y > m_tile.y) moving[ANIM_DOWN].push_back(e);
 		else moving[4].push_back(e); // the same tile as the explosion's origin
 	}
 
-	sf::Vector2i m_tile = Game::tile(pos);
 	sf::FloatRect expl_box(m_tile.x * TILE_SIZE, m_tile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	for (auto& e : moving[4]) {
 		if (e->hasShield()) continue;
@@ -127,8 +132,13 @@ void Explosion::checkHit(const LevelRenderer *const lr) {
 		if (e_box.intersects(expl_box)) {
 			// TODO: damage
 			le->decLife(1);
-			e->setHurt(true);
-			e->giveShield(Game::DAMAGE_SHIELD_TIME);
+			if (lr->isPlayer(e)) {
+				e->setHurt(true);
+				e->giveShield(Game::DAMAGE_SHIELD_TIME);
+			}
+			if (le->getLife() < 0) {
+				e->kill();
+			}
 		}
 	}
 	for (unsigned short dir = 0; dir < 4; ++dir) {
@@ -162,9 +172,12 @@ void Explosion::checkHit(const LevelRenderer *const lr) {
 				if (e_box.intersects(expl_box)) {
 					// TODO: damage
 					le->decLife(1);
-					if (e == lr->getPlayer(1) || e == lr->getPlayer(2)) {
+					if (lr->isPlayer(e)) {
 						e->setHurt(true);
 						e->giveShield(Game::DAMAGE_SHIELD_TIME);
+					}
+					if (le->getLife() < 0) {
+						e->kill();
 					}
 				}
 			}

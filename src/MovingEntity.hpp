@@ -35,10 +35,16 @@ protected:
 	float speed = 0.f;
 	Game::Direction direction = Game::Direction::NONE, prevDirection = Game::Direction::NONE;
 	bool moving = false;
+
 	bool hurt = false;
+	bool dead = false;
+	short remainingLives = 0;
 
 	float shieldTime = -1; // milliseconds; negative means "no shield"
 	sf::Clock shieldClock;
+
+	unsigned short deathTime = 2; // seconds
+	sf::Clock deathClock;
 
 	virtual bool _isTransparentTo(const Entity *const e) const = 0;
 public:
@@ -84,12 +90,18 @@ public:
 	bool isHurt() const { return hurt; }
 
 	bool playHurtAnimation();
+	bool playDeathAnimation();
 
 	void giveShield(const float shieldMs) {
 		shieldTime = shieldMs;
 		shieldClock.restart();
 	}
-	inline bool hasShield() { return shieldTime > 0 && shieldClock.getElapsedTime().asMilliseconds() <= shieldTime; }
+	bool hasShield() const { return shieldTime > 0 && shieldClock.getElapsedTime().asMilliseconds() <= shieldTime; }
+
+	bool isDying() const { return dead; }
+	void kill();
+
+	unsigned short getRemainingLives() const { return remainingLives; }
 };
 
 }

@@ -32,6 +32,8 @@ public:
 	void move(const Direction dir) override;
 
 	unsigned short getMaxBombs() const { return maxBombs; }
+
+	void resurrect();
 };
 
 }

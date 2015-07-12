@@ -37,6 +37,8 @@ constexpr float DAMAGE_SHIELD_TIME = 1000; // ms
 
 constexpr unsigned short MAX_PLAYERS = 2;
 
+constexpr unsigned short INITIAL_LIVES = 3;
+
 /** How much the main game window is shifted relative to the
  *  SFML window
  */

@@ -100,6 +100,8 @@ public:
 	 */
 	bool isEntityTouching(const sf::Vector2f& pos) const;
 
+	bool isPlayer(const Entity *const) const;
+
 	/** Returns all entities (moving and fixed) touching the tile
 	 *  at coordinate `pos`
 	 */

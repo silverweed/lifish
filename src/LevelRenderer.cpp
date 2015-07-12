@@ -189,10 +189,28 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 	if (level == nullptr) return;
 
 	level->draw(window);
-	for (const auto& entity : fixedEntities) {
-		if (entity != nullptr) 
-			entity->draw(window);
+	for (unsigned short left = 0; left < LEVEL_WIDTH; ++left) {
+		for (unsigned short top = 0; top < LEVEL_HEIGHT; ++top) {
+			const unsigned short idx = top * LEVEL_WIDTH + left;
+			const auto entity = fixedEntities[idx];
+			if (entity == nullptr) continue;
+
+			const auto e_type = level->getTile(left, top);
+			if (e_type == EntityType::BREAKABLE) {
+				auto bw = static_cast<Game::BreakableWall*>(entity);
+				if (bw->isDestroyed()) {
+					delete bw;
+					fixedEntities[idx] = nullptr;
+				} else {
+					bw->draw(window);
+				}
+			} else {
+				// TODO: coins and powerups
+				entity->draw(window);
+			}
+		}
 	}
+
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 		for (unsigned short j = 0; j < bombs[i].size(); ++j) {
 			auto bomb = bombs[i][j];
@@ -205,8 +223,22 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 			}
 		}
 	}
-	for (const auto& entity : movingEntities) {
+	for (auto it = movingEntities.begin(); it != movingEntities.end(); ) {
+		auto& entity = *it;
+		if (entity->isDying()) {
+			if (entity->playDeathAnimation()) {
+				if (!isPlayer(entity) || entity->getRemainingLives() < 0) {
+					delete entity;
+					it = movingEntities.erase(it);
+				} else {
+					auto pl = static_cast<Player*>(entity);
+					pl->resurrect();
+				}
+				continue;
+			}
+		}
 		entity->draw(window);
+		++it;
 	}
 	for (auto it = temporary.begin(); it != temporary.end(); ) {
 		if (!(*it)->isPlaying()) {
@@ -252,7 +284,7 @@ void LevelRenderer::detectCollisions() {
 		if (checked[i]) continue;
 		MovingEntity *entity = movingEntities[i];
 		sf::Vector2f pos = entity->getPosition();
-		const bool is_player = (entity == players[0] or entity == players[1]);
+		const bool is_player = isPlayer(entity);
 
 		// Check for teleports
 		if (firstTeleport != nullptr && entity->canTeleport && entity->isAligned()) {
@@ -262,7 +294,7 @@ void LevelRenderer::detectCollisions() {
 				const unsigned short idx = (cur_tile.y - 1) * LEVEL_WIDTH + cur_tile.x - 1;
 
 				// Get Teleport from fixed entities
-				Game::Teleport *teleport = dynamic_cast<Teleport*>(fixedEntities[idx]);
+				Game::Teleport *teleport = static_cast<Teleport*>(fixedEntities[idx]);
 
 				if (teleport != nullptr && !teleport->isDisabled()) {
 					// Get destination Teleport
@@ -405,8 +437,9 @@ void LevelRenderer::detectCollisions() {
 
 void LevelRenderer::selectEnemyMoves() {
 	for (auto& entity : movingEntities) {
-		if (entity == players[0] || entity == players[1])
+		if (isPlayer(entity) || entity->isDying())
 			continue;
+
 		if (!entity->isAligned()) {
 			if (entity->colliding) {
 				// Fix prevAligns
@@ -426,7 +459,7 @@ void LevelRenderer::selectEnemyMoves() {
 			}
 			continue;
 		}
-		Enemy *enemy = dynamic_cast<Enemy*>(entity);
+		Enemy *enemy = static_cast<Enemy*>(entity);
 		if (enemy != nullptr)
 			enemy->setDirection(enemy->getAI()(this));
 	}
@@ -434,7 +467,9 @@ void LevelRenderer::selectEnemyMoves() {
 
 void LevelRenderer::applyEnemyMoves() {
 	for (auto& entity : movingEntities) {
-		if (entity == players[0] || entity == players[1]) continue;
+		if (isPlayer(entity) || entity->isDying()) 
+			continue;
+
 		if (entity->isAligned()) {
 			auto cur_align = Game::tile(entity->getPosition());
 			entity->prevAlign = cur_align; 
@@ -520,7 +555,7 @@ void LevelRenderer::checkBombExplosions() {
 
 void LevelRenderer::checkExplosionHits() {
 	for (auto& tmp : temporary) {
-		Game::Explosion *expl = dynamic_cast<Game::Explosion*>(tmp);
+		auto *expl = dynamic_cast<Game::Explosion*>(tmp);
 		if (expl != nullptr)
 			expl->checkHit(this);
 	}
@@ -574,10 +609,16 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 			start = target.x, end = src.x;
 		for (unsigned short i = start; i < end; ++i) {
 			const unsigned short idx = (src.y - 1) * LEVEL_WIDTH + i - 1;
-			if (idx >= fixedEntities.size()) return -1;
+			if (idx >= fixedEntities.size()) 
+				return -1;
+
+			auto tile = level->getTile(i, src.y);
+			if (tile == EntityType::FIXED) 
+				return -1;
+
 			auto fxd = fixedEntities[idx];
-			if (fxd != nullptr && dynamic_cast<Wall*>(fxd) != nullptr)
-				return -1; // wall obstructs the sight
+			if (fxd != nullptr && tile == EntityType::BREAKABLE)
+				return -1;
 		}
 	} else {
 		if (src.y < target.y)
@@ -586,11 +627,23 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 			start = target.y, end = src.y;
 		for (unsigned short i = start; i < end; ++i) {
 			const unsigned short idx = (i - 1) * LEVEL_WIDTH + src.x - 1;
-			if (idx >= fixedEntities.size()) return -1;
+			if (idx >= fixedEntities.size()) 
+				return -1;
+			
+			auto tile = level->getTile(src.x, i);
+			if (tile == EntityType::FIXED)
+				return -1;
+
 			auto fxd = fixedEntities[idx];
-			if (fxd != nullptr && dynamic_cast<Wall*>(fxd) != nullptr)
+			if (fxd != nullptr && tile == EntityType::BREAKABLE)
 				return -1; 
 		}
 	}
 	return end - start;
+}
+
+bool LevelRenderer::isPlayer(const Entity *const e) const {
+	for (unsigned short i = 0; i < players.size(); ++i)
+		if (e == players[i]) return true;
+	return false;
 }
