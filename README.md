@@ -15,9 +15,9 @@
 - [ ] Powerups can be taken by players
 - [x] Enemies  
   -   [x] Enemies move  
-  -     [x] Soldier/Sgt.Cool AI
-  -     [x] ThickLizzy/etc AI
-  -     [ ] Thing/etc AI (partially done but FIXME)
+    -     [x] Soldier/Sgt.Cool AI
+    -     [x] ThickLizzy/etc AI
+    -     [ ] Thing/etc AI (partially done but FIXME)
   -   [ ] Enemies shoot
   -   [x] Enemies die when hit by explosions
 - [ ] Bosses   
