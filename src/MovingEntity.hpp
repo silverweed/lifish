@@ -36,8 +36,8 @@ protected:
 	Game::Direction direction = Game::Direction::NONE, prevDirection = Game::Direction::NONE;
 	bool moving = false;
 
-	bool hurt = false;
-	bool dead = false;
+	bool hurt = false, hurtAnimPrepared = false;
+	bool dead = false, deathAnimPrepared = false;
 	short remainingLives = 0;
 
 	float shieldTime = -1; // milliseconds; negative means "no shield"
@@ -89,8 +89,10 @@ public:
 	void setHurt(const bool b);
 	bool isHurt() const { return hurt; }
 
-	bool playHurtAnimation();
-	bool playDeathAnimation();
+	virtual void prepareHurtAnimation();
+	virtual bool playHurtAnimation();
+	virtual void prepareDeathAnimation();
+	virtual bool playDeathAnimation();
 
 	void giveShield(const float shieldMs) {
 		shieldTime = shieldMs;

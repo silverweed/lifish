@@ -13,6 +13,7 @@ Player::Player(sf::Vector2f pos, const unsigned short id) :
 	speed = 150.f;
 	transparentTo.players = false;
 	remainingLives = Game::INITIAL_LIVES;
+	deathTime = 5;
 
 	for (unsigned short i = 0; i < MAX_N_ANIMATIONS; ++i)
 		animations[i].setSpriteSheet(texture);
@@ -103,4 +104,17 @@ bool Player::_isTransparentTo(const Entity *const e) const {
 
 void Player::resurrect() {
 	dead = false;
+	animatedSprite.setAnimation(*&animations[ANIM_DOWN]);
+	animatedSprite.pause();
+}
+
+bool Player::playDeathAnimation() {
+	float time = deathClock.getElapsedTime().asSeconds();
+	if (time > 3) {
+		animatedSprite.setFrame(1);
+		animatedSprite.pause();
+	} else {
+		animatedSprite.update(frameClock.restart());
+	}
+	return time < deathTime;
 }

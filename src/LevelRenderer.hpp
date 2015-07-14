@@ -116,6 +116,11 @@ public:
 
 	/** Sets seeingPlayer and playerIsVisible flags for all enemies */
 	void checkLinesOfSight();
+
+	/** Removes id-th player (starting from 1) from game and returns
+	 *  true if at least another player is still in game, false otherwise.
+	 */
+	bool removePlayer(const unsigned short id);
 };
 
 }

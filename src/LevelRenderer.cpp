@@ -171,15 +171,10 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 	}
 	for (auto it = movingEntities.begin(); it != movingEntities.end(); ) {
 		auto entity = *it;
-		if (entity->isDying()) {
+		if (entity->isDying() && !isPlayer(entity)) {
 			if (entity->playDeathAnimation()) {
-				if (!isPlayer(entity) || entity->getRemainingLives() < 0) {
-					delete entity;
-					it = movingEntities.erase(it);
-				} else {
-					auto pl = static_cast<Player*>(entity);
-					pl->resurrect();
-				}
+				delete entity;
+				it = movingEntities.erase(it);
 				continue;
 			}
 		}
@@ -512,13 +507,17 @@ void LevelRenderer::checkLinesOfSight() {
 			if (pos[i].x == epos.x) {
 				const short dist = _getDistance(epos, pos[i], false);
 				if (dist >= 0 && dist < prev_dist) {
-					enemy->seeingPlayer = epos.y < pos[i].y ? Direction::DOWN : Direction::UP;
+					enemy->seeingPlayer = epos.y < pos[i].y 
+								? Direction::DOWN 
+								: Direction::UP;
 					prev_dist = dist;
 				}
 			} else if (pos[i].y == epos.y) {
 				const short dist = _getDistance(epos, pos[i], true);
 				if (dist >= 0 && dist < prev_dist) {
-					enemy->seeingPlayer = epos.x < pos[i].x ? Direction::RIGHT : Direction::LEFT;
+					enemy->seeingPlayer = epos.x < pos[i].x 
+								? Direction::RIGHT 
+								: Direction::LEFT;
 					prev_dist = dist;
 				}
 			}
@@ -571,5 +570,13 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 bool LevelRenderer::isPlayer(const Entity *const e) const {
 	for (unsigned short i = 0; i < players.size(); ++i)
 		if (e == players[i]) return true;
+	return false;
+}
+
+bool LevelRenderer::removePlayer(const unsigned short id) {
+	movingEntities.remove(players[id-1]);
+	delete players[id-1];
+	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
+		if (players[i] != nullptr) return true;
 	return false;
 }

@@ -115,14 +115,12 @@ int main(int argc, char **argv) {
 
 		lr.checkLinesOfSight();
 
-		// Choose enemy movements
 		lr.selectEnemyMoves();
 
 		lr.checkBombExplosions();
 
 		lr.checkExplosionHits();
 
-		// Collisions detection
 		lr.detectCollisions();
 
 		for (unsigned int i = 0; i < 2; ++i) {
@@ -133,8 +131,19 @@ int main(int argc, char **argv) {
 			}
 
 			if (players[i]->isHurt()) {
+				players[i]->prepareHurtAnimation();
 				if (!players[i]->playHurtAnimation())
 					players[i]->setHurt(false);
+			} else if (players[i]->isDying()) {
+				players[i]->prepareDeathAnimation();
+				if (!players[i]->playDeathAnimation()) {
+					if (players[i]->getRemainingLives() < 0) {
+						lr.removePlayer(i + 1);
+					} else {
+						players[i]->resurrect();
+						players[i]->giveShield(Game::RESURRECT_SHIELD_TIME);
+					}
+				}
 			} else if (players[i]->getDirection() == Game::Direction::NONE) {
 				players[i]->stop();
 			} else {

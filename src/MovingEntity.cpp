@@ -162,17 +162,42 @@ void MovingEntity::setDirection(const Direction dir) {
 
 void MovingEntity::setHurt(const bool b) {
 	hurt = b;
-	if (hurt) {
+	hurtAnimPrepared = false;
+}
+
+void MovingEntity::prepareHurtAnimation() {
+	if (!hurtAnimPrepared) {
 		animatedSprite.play(*&animations[ANIM_HURT]);
 		animatedSprite.setLooped(false);
-	} else {
-		animatedSprite.setLooped(true);
+		hurtAnimPrepared = true;
 	}
 }
 
 bool MovingEntity::playHurtAnimation() {
 	animatedSprite.update(frameClock.restart());
 	return animatedSprite.isPlaying();
+}
+
+void MovingEntity::kill() {
+	if (!dead) {
+		dead = true;
+		deathAnimPrepared = false;
+		--remainingLives;
+	}
+}
+
+void MovingEntity::prepareDeathAnimation() {
+	if (!deathAnimPrepared) {
+		animatedSprite.play(*&animations[ANIM_DEATH]);
+		animatedSprite.setLooped(true);
+		deathClock.restart();
+		deathAnimPrepared = true;
+	}
+}
+
+bool MovingEntity::playDeathAnimation() {
+	animatedSprite.update(frameClock.restart());
+	return deathClock.getElapsedTime().asSeconds() > deathTime;
 }
 
 void MovingEntity::draw(sf::RenderTarget& window) {
@@ -189,18 +214,4 @@ void MovingEntity::draw(sf::RenderTarget& window) {
 			window.draw(shieldSprite);
 		}
 	}
-}
-
-void MovingEntity::kill() {
-	if (!dead) {
-		dead = true;
-		--remainingLives;
-		animatedSprite.play(*&animations[ANIM_DEATH]);
-		deathClock.restart();
-	}
-}
-
-bool MovingEntity::playDeathAnimation() {
-	animatedSprite.update(frameClock.restart());
-	return deathClock.getElapsedTime().asSeconds() > deathTime;
 }

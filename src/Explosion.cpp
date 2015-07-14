@@ -68,7 +68,8 @@ void Explosion::propagate(const LevelRenderer *const lr) {
 					break;
 				}
 				
-				if (new_tile.x < 1 || new_tile.x > LEVEL_WIDTH || new_tile.y < 1 || new_tile.y > LEVEL_HEIGHT) {
+				if (new_tile.x < 1 || new_tile.x > LEVEL_WIDTH 
+						|| new_tile.y < 1 || new_tile.y > LEVEL_HEIGHT) {
 					propagating[dir] = false;
 					continue;
 				}
@@ -87,7 +88,8 @@ void Explosion::propagate(const LevelRenderer *const lr) {
 					propagating[dir] = false; 
 
 					if (d == 1 && level->getTile(new_tile.x - 1, new_tile.y - 1) == Game::EntityType::BREAKABLE) {
-						// Use static_cast for better performance (we know for sure this is a breakable)
+						// Use static_cast for better performance 
+						// (we know for sure this is a breakable)
 						auto bw = static_cast<Game::BreakableWall*>(fxd);
 						bw->destroy();
 					} else {
@@ -136,7 +138,7 @@ void Explosion::checkHit(const LevelRenderer *const lr) {
 				e->setHurt(true);
 				e->giveShield(Game::DAMAGE_SHIELD_TIME);
 			}
-			if (le->getLife() < 0) {
+			if (le->getLife() <= 0) {
 				e->kill();
 			}
 		}
@@ -176,7 +178,7 @@ void Explosion::checkHit(const LevelRenderer *const lr) {
 						e->setHurt(true);
 						e->giveShield(Game::DAMAGE_SHIELD_TIME);
 					}
-					if (le->getLife() < 0) {
+					if (le->getLife() <= 0) {
 						e->kill();
 					}
 				}

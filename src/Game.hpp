@@ -34,6 +34,7 @@ constexpr unsigned short LEVEL_WIDTH = 15;
 constexpr unsigned short LEVEL_HEIGHT = 13;
 
 constexpr float DAMAGE_SHIELD_TIME = 1000; // ms
+constexpr float RESURRECT_SHIELD_TIME = 5000; // ms
 
 constexpr unsigned short MAX_PLAYERS = 2;
 
