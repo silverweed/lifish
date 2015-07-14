@@ -85,7 +85,7 @@ public:
 	void selectEnemyMoves();
 	void applyEnemyMoves();
 
-	std::array<Game::Player*, Game::MAX_PLAYERS> getPlayers() const { return players; }
+	const std::array<Game::Player*, Game::MAX_PLAYERS>& getPlayers() const { return players; }
 	Player* getPlayer(const unsigned short i) const { return players[i-1]; }
 	
 	const FixedEntityList& getFixedEntities() const { return fixedEntities; }
