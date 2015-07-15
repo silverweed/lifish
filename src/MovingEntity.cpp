@@ -209,7 +209,7 @@ void MovingEntity::draw(sf::RenderTarget& window) {
 			AnimatedSprite shieldSprite(animatedSprite);
 			shieldSprite.setOrigin(shieldSprite.getOrigin() + sf::Vector2f(TILE_SIZE/2, TILE_SIZE/2));
 			shieldSprite.scale(1.1, 1.1);
-			shieldSprite.move(TILE_SIZE/7, TILE_SIZE/2);
+			shieldSprite.move(TILE_SIZE/7., TILE_SIZE/2.);
 			shieldSprite.setColor(sf::Color(50, 255, 0, 200));
 			window.draw(shieldSprite);
 		}

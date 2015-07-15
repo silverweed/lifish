@@ -103,7 +103,7 @@ public:
 	bool isDying() const { return dead; }
 	void kill();
 
-	unsigned short getRemainingLives() const { return remainingLives; }
+	short getRemainingLives() const { return remainingLives; }
 };
 
 }

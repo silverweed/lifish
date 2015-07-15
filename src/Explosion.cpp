@@ -114,7 +114,7 @@ void Explosion::checkHit(const LevelRenderer *const lr) {
 			// this entity won't be affected by this explosion
 			continue;
 		}
-		if (m_tile.x < m_tile.x) moving[ANIM_LEFT].push_back(e);
+		if (e_tile.x < m_tile.x) moving[ANIM_LEFT].push_back(e);
 		else if (e_tile.x > m_tile.x) moving[ANIM_RIGHT].push_back(e);
 		else if (e_tile.y < m_tile.y) moving[ANIM_UP].push_back(e);
 		else if (e_tile.y > m_tile.y) moving[ANIM_DOWN].push_back(e);

@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
 	fps_text.setStyle(sf::Text::Style::Bold);
 	fps_text.setCharacterSize(20);
 	Game::ShadedText vsync_text(Game::getAsset("fonts", "pf_tempesta_seven_condensed.ttf"),
-			vsync ? "vsync on" : "vsync off", sf::Vector2f(6 * TILE_SIZE, 10));
+			"vsync off", sf::Vector2f(6 * TILE_SIZE, 10));
 	vsync_text.setOrigin(-Game::MAIN_WINDOW_SHIFT);
 	vsync_text.setCharacterSize(16);
 
