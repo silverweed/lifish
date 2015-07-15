@@ -10,7 +10,8 @@
 #	include <mach-o/dyld.h>
 #endif
 
-char Game::pwd[PWD_BUFSIZE];
+char Game::pwd[Game::PWD_BUFSIZE];
+std::array<unsigned int, Game::MAX_PLAYERS> Game::score;
 
 using Game::pwd;
 

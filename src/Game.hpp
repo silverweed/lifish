@@ -54,7 +54,7 @@ extern char pwd[PWD_BUFSIZE];
 static GameCache cache;
 
 /** The players' score */
-static std::array<unsigned int, MAX_PLAYERS> score;
+extern std::array<unsigned int, MAX_PLAYERS> score;
 
 inline std::string getAssetDir(const std::string& dir) {
 	std::stringstream ss;
