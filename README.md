@@ -27,10 +27,10 @@
   -   [x] Players move
   -   [x] Players drop bombs
   -   [x] Players are hurt by explosions
-  -   [ ] Players die when they should
+  -   [x] Players die when they should
 - [x] Bombs
 - [x] Coins   
-  -   [ ] Coins can be taken
+  -   [x] Coins can be taken
   -   [ ] Taking all coins causes Extra Game
 - [ ] Bullets
 - [ ] Hurry Up
