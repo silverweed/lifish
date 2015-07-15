@@ -64,8 +64,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 					new Game::BreakableWall(curPos, level->tileIDs.breakable);
 				break;
 			case EntityType::COIN:
-				fixedEntities[top * LEVEL_WIDTH + left] = 
-					new Game::Coin(curPos, getAsset("graphics", "coin.png"));
+				fixedEntities[top * LEVEL_WIDTH + left] = new Game::Coin(curPos);
 				break;
 			case EntityType::PLAYER1: 
 				{
@@ -142,16 +141,31 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 			if (entity == nullptr) continue;
 
 			const auto e_type = level->getTile(left, top);
-			if (e_type == EntityType::BREAKABLE) {
-				auto bw = static_cast<Game::BreakableWall*>(entity);
-				if (bw->isDestroyed()) {
-					delete bw;
-					fixedEntities[idx] = nullptr;
-				} else {
-					bw->draw(window);
+			switch (e_type) {
+			case EntityType::BREAKABLE:
+				{
+					auto bw = static_cast<Game::BreakableWall*>(entity);
+					if (bw->isDestroyed()) {
+						delete bw;
+						fixedEntities[idx] = nullptr;
+					} else {
+						bw->draw(window);
+					}
+					break;
 				}
-			} else {
-				// TODO: coins and powerups
+			case EntityType::COIN:
+				{
+					auto coin = static_cast<Game::Coin*>(entity);
+					if (coin->isGrabbed()) {
+						delete coin;
+						fixedEntities[idx] = nullptr;
+					} else {
+						coin->draw(window);
+					}
+					break;
+				}
+			default:
+				// TODO: powerups
 				entity->draw(window);
 			}
 		}
@@ -366,7 +380,15 @@ void LevelRenderer::detectCollisions() {
 					// else, if we find a breakable, it's a powerup.
 					switch (level->getTile(next_tile.x, next_tile.y)) {
 					case EntityType::COIN:
-						// TODO: grab the coin
+						{
+							if (!is_player) break;
+							auto coin = static_cast<Game::Coin*>(other);
+							if (!coin->isBeingGrabbed()) {
+								coin->grab();
+								Game::score[_getPlayerIndex(entity)] += Coin::VALUE;
+							}
+							break;
+						}
 					case EntityType::BREAKABLE:
 						// TODO: grab the powerup
 					default:
@@ -453,7 +475,7 @@ void LevelRenderer::dropBomb(const unsigned short id) {
 			}
 		}
 	}
-	if (n_bombs == players[id]->getMaxBombs()) return;
+	if (n_bombs == players[id]->powers.maxBombs) return;
 	Game::Bomb *bomb = new Game::Bomb(
 			players[id]->getPosition(),
 			players[id]->powers.bombFuseTime,
@@ -579,4 +601,10 @@ bool LevelRenderer::removePlayer(const unsigned short id) {
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
 		if (players[i] != nullptr) return true;
 	return false;
+}
+
+short LevelRenderer::_getPlayerIndex(const Game::Entity *const e) const {
+	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
+		if (e == players[i]) return i;
+	return -1;
 }

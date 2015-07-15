@@ -35,6 +35,7 @@ public:
 
 	bool isAligned(const char axis = 'b') const;
 
+	virtual const sf::Vector2f& getOrigin() const { return sprite.getOrigin(); }
 	virtual void setOrigin(const sf::Vector2f& origin);
 };
 

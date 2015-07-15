@@ -1,5 +1,4 @@
 #include "Game.hpp"
-#include "GameCache.hpp"
 #include <cstring>
 #include <iostream>
 
@@ -11,10 +10,7 @@
 #	include <mach-o/dyld.h>
 #endif
 
-namespace Game {
-	char pwd[PWD_BUFSIZE];
-	GameCache cache;
-}
+char Game::pwd[PWD_BUFSIZE];
 
 using Game::pwd;
 

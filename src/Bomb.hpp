@@ -18,6 +18,7 @@ class Bomb : public Game::FixedEntity, public Game::Animated {
 public:
 	constexpr static float DEFAULT_FUSE = 5; // seconds
 	constexpr static unsigned short DEFAULT_RADIUS = 2;
+	constexpr static unsigned short MAX_RADIUS = 4;
 
 	Bomb(const sf::Vector2f& pos, const float fuseTime = DEFAULT_FUSE, const unsigned short radius = DEFAULT_RADIUS);
 

@@ -61,6 +61,8 @@ class LevelRenderer : private sf::NonCopyable {
 	 *  returns the number of tiles separating them; else return -1.
 	 */
 	short _getDistance(const sf::Vector2i& src, const sf::Vector2i& target, bool axis_x);
+
+	short _getPlayerIndex(const Game::Entity *const) const;
 public:
 	LevelRenderer();
 	~LevelRenderer();

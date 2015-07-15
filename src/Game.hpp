@@ -7,6 +7,7 @@
 #include <map>
 #include <sstream>
 #include <SFML/Graphics.hpp>
+#include "GameCache.hpp"
 
 namespace Game {
 
@@ -50,8 +51,10 @@ constexpr unsigned short PWD_BUFSIZE = 512;
 extern char pwd[PWD_BUFSIZE];
 
 /** Global game cache (caches textures in memory for faster loading) */
-class GameCache;
-extern GameCache cache;
+static GameCache cache;
+
+/** The players' score */
+static std::array<unsigned int, MAX_PLAYERS> score;
 
 inline std::string getAssetDir(const std::string& dir) {
 	std::stringstream ss;

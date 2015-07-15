@@ -13,7 +13,6 @@ Player::Player(sf::Vector2f pos, const unsigned short id) :
 	speed = 150.f;
 	transparentTo.players = false;
 	remainingLives = Game::INITIAL_LIVES;
-	deathTime = 5;
 
 	for (unsigned short i = 0; i < MAX_N_ANIMATIONS; ++i)
 		animations[i].setSpriteSheet(texture);
@@ -106,6 +105,8 @@ void Player::resurrect() {
 	dead = false;
 	animatedSprite.setAnimation(*&animations[ANIM_DOWN]);
 	animatedSprite.pause();
+	frameClock.restart();
+	realign();
 }
 
 bool Player::playDeathAnimation() {
@@ -116,5 +117,5 @@ bool Player::playDeathAnimation() {
 	} else {
 		animatedSprite.update(frameClock.restart());
 	}
-	return time < deathTime;
+	return time < DEATH_TIME;
 }
