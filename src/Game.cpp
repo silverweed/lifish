@@ -1,6 +1,7 @@
 #include "Game.hpp"
 #include <cstring>
 #include <iostream>
+#include <array>
 
 #if defined(IS_POSIX)
 #	include <unistd.h>
