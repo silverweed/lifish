@@ -186,6 +186,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 	for (auto it = movingEntities.begin(); it != movingEntities.end(); ) {
 		auto entity = *it;
 		if (entity->isDying() && !isPlayer(entity)) {
+			entity->prepareDeathAnimation();
 			if (entity->playDeathAnimation()) {
 				delete entity;
 				it = movingEntities.erase(it);
