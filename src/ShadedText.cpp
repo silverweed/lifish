@@ -40,6 +40,11 @@ void ShadedText::setCharacterSize(unsigned int size) {
 	bgtext.setCharacterSize(size);
 	fgtext.setCharacterSize(size);
 }
+
+void ShadedText::setPosition(const sf::Vector2f& _pos) {
+	fgtext.setPosition(_pos);
+	bgtext.setPosition(_pos);
+}
 	
 void ShadedText::draw(sf::RenderTarget& window) {
 	window.draw(bgtext);

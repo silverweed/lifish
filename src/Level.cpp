@@ -52,10 +52,10 @@ void Level::_loadTiles() {
 	bgTiles[TILE_LOWER_LEFT].setTextureRect(sf::IntRect(3 * TILE_SIZE + TILE_SIZE, b, -TILE_SIZE, TILE_SIZE));
 
 	// Set angles' position once and for all
-	bgTiles[TILE_UPPER_LEFT].setPosition(sf::Vector2f(0, 0));
-	bgTiles[TILE_UPPER_RIGHT].setPosition(sf::Vector2f(TILE_SIZE * (LEVEL_WIDTH+1), 0));
-	bgTiles[TILE_LOWER_RIGHT].setPosition(sf::Vector2f(TILE_SIZE * (LEVEL_WIDTH+1), TILE_SIZE * (LEVEL_HEIGHT+1)));
-	bgTiles[TILE_LOWER_LEFT].setPosition(sf::Vector2f(0, TILE_SIZE * (LEVEL_HEIGHT+1)));
+	bgTiles[TILE_UPPER_LEFT].setPosition(0, 0);
+	bgTiles[TILE_UPPER_RIGHT].setPosition(TILE_SIZE * (LEVEL_WIDTH+1), 0);
+	bgTiles[TILE_LOWER_RIGHT].setPosition(TILE_SIZE * (LEVEL_WIDTH+1), TILE_SIZE * (LEVEL_HEIGHT+1));
+	bgTiles[TILE_LOWER_LEFT].setPosition(0, TILE_SIZE * (LEVEL_HEIGHT+1));
 }
 
 bool Level::_loadMusic(const std::string& music_name) {
@@ -82,7 +82,7 @@ bool Level::init() {
 	initialized = _loadTexture() && _loadMusic(track.name);
 
 	// Load the levelnum text
-	levelnumtext = ShadedText::newShadedText(
+	levelnumtext = new Game::ShadedText(
 			Game::getAsset("fonts", LEVELNUM_FONT),
 			std::to_string(levelnum),
 			sf::Vector2f(TILE_SIZE * (LEVEL_WIDTH+1), 0));
@@ -107,11 +107,11 @@ void Level::draw(sf::RenderTarget& window) {
 	// Draw the borders
 	window.draw(bgTiles[TILE_UPPER_LEFT]);
 	for (unsigned short i = 1; i < btn_x; ++i) {
-		bgTiles[TILE_UPPER].setPosition(sf::Vector2f(i * TILE_SIZE, 0));
+		bgTiles[TILE_UPPER].setPosition(i * TILE_SIZE, 0);
 		window.draw(bgTiles[TILE_UPPER]);
 	}
 	for (unsigned short i = 1; i < btn_y; ++i) {
-		bgTiles[TILE_LEFT].setPosition(sf::Vector2f(0, i * TILE_SIZE));
+		bgTiles[TILE_LEFT].setPosition(0, i * TILE_SIZE);
 		window.draw(bgTiles[TILE_LEFT]);
 	}
 	window.draw(bgTiles[TILE_UPPER_RIGHT]);
@@ -119,19 +119,19 @@ void Level::draw(sf::RenderTarget& window) {
 	// Draw the level background
 	for (unsigned short i = 0; i < btn_x; ++i) {
 		for (unsigned short j = 0; j < btn_y; ++j) {
-			bgTiles[TILE_REGULAR].setPosition(sf::Vector2f(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE + TILE_SIZE));
+			bgTiles[TILE_REGULAR].setPosition(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE + TILE_SIZE);
 			window.draw(bgTiles[TILE_REGULAR]);
 		}
 	}
 
 	for (unsigned short i = 1; i < (btn_y); ++i) {
-		bgTiles[TILE_RIGHT].setPosition(sf::Vector2f(btn_x * TILE_SIZE, i * TILE_SIZE));
+		bgTiles[TILE_RIGHT].setPosition(btn_x * TILE_SIZE, i * TILE_SIZE);
 		window.draw(bgTiles[TILE_RIGHT]);
 	}
 
 	window.draw(bgTiles[TILE_LOWER_RIGHT]);
 	for (unsigned short i = 1; i < btn_x; ++i) {
-		bgTiles[TILE_LOWER].setPosition(sf::Vector2f(i * TILE_SIZE, btn_y * TILE_SIZE));
+		bgTiles[TILE_LOWER].setPosition(i * TILE_SIZE, btn_y * TILE_SIZE);
 		window.draw(bgTiles[TILE_LOWER]);
 	}
 	window.draw(bgTiles[TILE_LOWER_LEFT]);

@@ -6,6 +6,7 @@
 #include "Flash.hpp"
 #include "Enemy.hpp"
 #include "Explosion.hpp"
+#include "Points.hpp"
 #include "utils.hpp"
 #include <sstream>
 
@@ -121,7 +122,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 			}
 		}
 	}
-
+	
 	level->setOrigin(origin);
 	for (const auto& entity : fixedEntities) 
 		if (entity != nullptr)
@@ -214,7 +215,7 @@ void LevelRenderer::detectCollisions() {
 	 */
 	std::vector<bool> checked(movingEntities.size(), false);
 	
-	static auto collide = [] (const sf::Vector2f& pos, const sf::Vector2f& opos, const Game::Direction dir) {
+	auto collide = [] (const sf::Vector2f& pos, const sf::Vector2f& opos, const Game::Direction dir) {
 		const unsigned short iposx = (unsigned short)pos.x,
 			             iposy = (unsigned short)pos.y,
 			             ioposx = (unsigned short)opos.x,
@@ -240,6 +241,7 @@ void LevelRenderer::detectCollisions() {
 	for (auto it = movingEntities.begin(); it != movingEntities.end(); ++it, ++i) {
 		if (checked[i]) continue;
 		MovingEntity *entity = *it;
+		if (entity->isDying()) continue;
 		sf::Vector2f pos = entity->getPosition();
 		const bool is_player = isPlayer(entity);
 
@@ -342,19 +344,54 @@ void LevelRenderer::detectCollisions() {
 			if (i == j) continue;
 
 			MovingEntity *other = *jt;
-			if ((is_player && other->transparentTo.players) || (!is_player && other->transparentTo.enemies))
-				continue;
-			
 			sf::Vector2f opos = other->getPosition();
 
 			if (collide(pos, opos, dir)) {
-				entity->colliding = true;
+				collision_detected = true;
 				checked[i] = true;
+
+				bool opaque;
+				Game::Player *player = nullptr;
+				Game::Enemy *enemy = nullptr;
+				if (!is_player) {
+					// If opaque == false, other entity is a player.
+					opaque = !other->transparentTo.enemies;
+					if (opaque)
+						entity->colliding = true;
+					else {
+						player = static_cast<Game::Player*>(other);
+						enemy = static_cast<Game::Enemy*>(entity);
+					}
+				} else {
+					// If opaque == false, other entity is an enemy.
+					opaque = !other->transparentTo.players;
+					if (opaque)
+						entity->colliding = true;
+					else {
+						player = static_cast<Game::Player*>(entity);
+						enemy = static_cast<Game::Enemy*>(other);
+					}
+				}
+
+				if (!opaque && !(enemy->isDying() || player->hasShield())) {
+					if (enemy->hasContactDamage()) {
+						// TODO: attack sprite
+						player->decLife(enemy->getDamage());
+					} else {
+						player->decLife(1);
+					}
+					if (!player->isHurt()) {
+						player->setHurt(true);
+						player->giveShield(Game::DAMAGE_SHIELD_TIME);
+					}
+				}
+
 				if (other->getDirection() == Game::oppositeDirection(dir)) {
-					other->colliding = true;
+					if (opaque)
+						other->colliding = true;
 					checked[j] = true;
 				}
-				collision_detected = true;
+
 				break;
 			}
 		}
@@ -386,7 +423,8 @@ void LevelRenderer::detectCollisions() {
 							auto coin = static_cast<Game::Coin*>(other);
 							if (!coin->isBeingGrabbed()) {
 								coin->grab();
-								Game::score[_getPlayerIndex(entity)] += Coin::VALUE;
+								Game::score[_getPlayerIndex(entity)] += coin->getPointsGiven();
+								spawnPoints(coin->getPosition(), coin->getPointsGiven());
 							}
 							break;
 						}
@@ -608,4 +646,16 @@ short LevelRenderer::_getPlayerIndex(const Game::Entity *const e) const {
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
 		if (e == players[i]) return i;
 	return -1;
+}
+
+void LevelRenderer::spawnPoints(const sf::Vector2f& pos, const int amount) {
+	// center the points in the tile
+	short nletters = 1;
+	int a = amount;
+	while (a > 9) {
+		a /= 10;
+		++nletters;
+	}
+	auto width = Game::Points::CHARACTER_SIZE * nletters;
+	_pushTemporary(new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), amount));
 }

@@ -25,6 +25,7 @@ public:
 	} transparentTo;
 
 
+	Entity(const sf::Vector2f& _pos);
 	Entity(const sf::Vector2f& _pos, const std::string& texture_name);
 	virtual ~Entity() {}
 

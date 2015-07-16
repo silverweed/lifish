@@ -6,7 +6,6 @@
 using Game::AIBoundFunction;
 using D = Game::Direction;
 
-static std::default_random_engine rng;
 static D directions[] = { D::UP, D::RIGHT, D::DOWN, D::LEFT };
 
 AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
@@ -14,7 +13,7 @@ AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
 		if (!enemy->colliding) {
 			if (enemy->distTravelled < Game::TILE_SIZE) return enemy->getDirection();
 			std::uniform_int_distribution<int> dist(0, 10);
-			if (enemy->distTravelled < 2 * Game::TILE_SIZE && dist(rng) <= 4) return enemy->getDirection();
+			if (enemy->distTravelled < 2 * Game::TILE_SIZE && dist(Game::rng) <= 4) return enemy->getDirection();
 		}
 		enemy->distTravelled = 0;
 		D dirs[4];
@@ -29,7 +28,7 @@ AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
 		}
 		if (n < 1) return D::NONE;
 		std::uniform_int_distribution<int> d(0, n - 1);
-		return dirs[d(rng)];
+		return dirs[d(Game::rng)];
 	};
 }
 
@@ -48,7 +47,7 @@ AIBoundFunction Game::ai_random_forward(Game::Enemy *const enemy) {
 		if (n == 0)
 			dirs[n++] = opp;
 		std::uniform_int_distribution<int> dist(0, n - 1);
-		return dirs[dist(rng)];
+		return dirs[dist(Game::rng)];
 	};
 }
 
@@ -69,7 +68,7 @@ AIBoundFunction Game::ai_follow(Game::Enemy *const enemy) {
 		if (n == 0)
 			dirs[n++] = opp;
 		std::uniform_int_distribution<int> dist(0, n - 1);
-		return dirs[dist(rng)];
+		return dirs[dist(Game::rng)];
 	};
 }
 

@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 #include <sstream>
+#include <random>
 #include <SFML/Graphics.hpp>
 #include "GameCache.hpp"
 
@@ -52,6 +53,9 @@ extern char pwd[PWD_BUFSIZE];
 
 /** Global game cache (caches textures in memory for faster loading) */
 static GameCache cache;
+
+/** Random number generator */
+static std::default_random_engine rng;
 
 /** The players' score */
 extern std::array<unsigned int, MAX_PLAYERS> score;

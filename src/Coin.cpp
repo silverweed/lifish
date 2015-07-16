@@ -5,8 +5,9 @@
 using Game::Coin;
 using Game::TILE_SIZE;
 
-Coin::Coin(const sf::Vector2f& pos)
-	: FixedEntity(pos, Game::getAsset("test", "coin.png"))
+Coin::Coin(const sf::Vector2f& pos) :
+	FixedEntity(pos, Game::getAsset("test", "coin.png")),
+	Scored(150)
 {
 	texture.setSmooth(true);
 

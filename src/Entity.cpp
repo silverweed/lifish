@@ -4,6 +4,10 @@
 
 using Game::Entity;
 
+Entity::Entity(const sf::Vector2f& _pos) : pos(_pos) {
+	sprite.setPosition(pos);
+}
+
 Entity::Entity(const sf::Vector2f& _pos, const std::string& texture_name)
 	: pos(_pos)
 {

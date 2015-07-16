@@ -6,10 +6,11 @@
 #include "Wall.hpp"
 #include "Animated.hpp"
 #include "Lifed.hpp"
+#include "Scored.hpp"
 
 namespace Game {
 
-class BreakableWall : public Game::Wall, public Game::Lifed, public Game::Animated {
+class BreakableWall : public Game::Wall, public Game::Lifed, public Game::Animated, public Game::Scored {
 	bool destroyed = false;
 public:
 	BreakableWall(const sf::Vector2f& pos, const unsigned short id, unsigned short life = 1);

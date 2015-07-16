@@ -123,6 +123,8 @@ public:
 	 *  true if at least another player is still in game, false otherwise.
 	 */
 	bool removePlayer(const unsigned short id);
+
+	void spawnPoints(const sf::Vector2f& pos, const int amount);
 };
 
 }

@@ -33,9 +33,9 @@ public:
 	 *  (fixed walls and borders stop the explosion). Also kills enemies and
 	 *  walls within the explosion.
 	 */
-	void propagate(const LevelRenderer *const);
+	void propagate(LevelRenderer *const);
 
-	void checkHit(const LevelRenderer *const);
+	void checkHit(LevelRenderer *const);
 
 	void draw(sf::RenderTarget& window) override;
 	

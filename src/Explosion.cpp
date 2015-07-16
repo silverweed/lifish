@@ -1,7 +1,9 @@
 #include "Explosion.hpp"
 #include "LevelRenderer.hpp"
 #include "BreakableWall.hpp"
+#include "Scored.hpp"
 #include "utils.hpp"
+#include <random>
 
 using Game::Explosion;
 using Game::TILE_SIZE;
@@ -41,7 +43,7 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius)
 	propagation.fill(0);
 }
 
-void Explosion::propagate(const LevelRenderer *const lr) {
+void Explosion::propagate(LevelRenderer *const lr) {
 	sf::Vector2i m_tile = Game::tile(pos);
 	bool propagating[] = { true, true, true, true };
 
@@ -92,6 +94,7 @@ void Explosion::propagate(const LevelRenderer *const lr) {
 						// (we know for sure this is a breakable)
 						auto bw = static_cast<Game::BreakableWall*>(fxd);
 						bw->destroy();
+						lr->spawnPoints(bw->getPosition(), bw->getPointsGiven());
 					} else {
 						// TODO: boss
 					}
@@ -101,7 +104,7 @@ void Explosion::propagate(const LevelRenderer *const lr) {
 	}
 }
 
-void Explosion::checkHit(const LevelRenderer *const lr) {
+void Explosion::checkHit(LevelRenderer *const lr) {
 	std::array<std::list<MovingEntity*>, 5> moving;
 
 	auto allmoving = lr->getMovingEntities();
@@ -121,27 +124,40 @@ void Explosion::checkHit(const LevelRenderer *const lr) {
 		else moving[4].push_back(e); // the same tile as the explosion's origin
 	}
 
-	sf::FloatRect expl_box(m_tile.x * TILE_SIZE, m_tile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-	for (auto& e : moving[4]) {
-		if (e->hasShield()) continue;
+	auto calcDamage = [] (const unsigned short d) {
+		std::normal_distribution<double> dist(2/3.*Game::Player::MAX_LIFE - 2*d, Game::Player::MAX_LIFE / 3.);
+		return std::max(1, static_cast<int>(dist(Game::rng)));
+	};
+
+	sf::FloatRect expl_box(pos.x, pos.y, TILE_SIZE, TILE_SIZE);
+
+	auto tryHit = [lr, &calcDamage, &expl_box] (Game::MovingEntity *const e, const unsigned short d) {
+		if (e->hasShield() || e->isDying()) return;
 
 		// Check if entity's lifed
-		Lifed *le = dynamic_cast<Lifed*>(e);
-		if (le == nullptr) continue;
+		Game::Lifed *le = dynamic_cast<Game::Lifed*>(e);
+		if (le == nullptr) return;
 
 		// Check if entity's bounding box intersects this tile
 		sf::FloatRect e_box(e->getPosition().x, e->getPosition().y, TILE_SIZE, TILE_SIZE);
 		if (e_box.intersects(expl_box)) {
-			// TODO: damage
-			le->decLife(1);
+			le->decLife(calcDamage(d));
 			if (lr->isPlayer(e)) {
 				e->setHurt(true);
 				e->giveShield(Game::DAMAGE_SHIELD_TIME);
+			} else {
+				auto se = dynamic_cast<Game::Scored*>(e);
+				if (se != nullptr)
+					lr->spawnPoints(e->getPosition(), se->getPointsGiven());
 			}
 			if (le->getLife() <= 0) {
 				e->kill();
 			}
 		}
+	};
+
+	for (auto& e : moving[4]) {
+		tryHit(e, 0);
 	}
 	for (unsigned short dir = 0; dir < 4; ++dir) {
 		for (unsigned short d = 1; d <= propagation[dir]; ++d) {
@@ -163,25 +179,7 @@ void Explosion::checkHit(const LevelRenderer *const lr) {
 
 			sf::FloatRect expl_box(new_tile.x * TILE_SIZE, new_tile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 			for (auto& e : moving[dir]) {
-				if (e->hasShield()) continue;
-
-				// Check if entity's lifed
-				Lifed *le = dynamic_cast<Lifed*>(e);
-				if (le == nullptr) continue;
-
-				// Check if entity's bounding box intersects this tile
-				sf::FloatRect e_box(e->getPosition().x, e->getPosition().y, TILE_SIZE, TILE_SIZE);
-				if (e_box.intersects(expl_box)) {
-					// TODO: damage
-					le->decLife(1);
-					if (lr->isPlayer(e)) {
-						e->setHurt(true);
-						e->giveShield(Game::DAMAGE_SHIELD_TIME);
-					}
-					if (le->getLife() <= 0) {
-						e->kill();
-					}
-				}
+				tryHit(e, d);
 			}
 		}
 	}
@@ -199,7 +197,7 @@ void Explosion::draw(sf::RenderTarget& window) {
 	explosionH.update(frameTime);
 	for (unsigned short i = h_start_tile; i <= h_end_tile; ++i) {
 		if (i == m_tile.x) continue;
-		explosionH.setPosition(sf::Vector2f(i * TILE_SIZE, pos.y));
+		explosionH.setPosition(i * TILE_SIZE, pos.y);
 		window.draw(explosionH);
 	}
 	// Draw vertical
@@ -208,7 +206,7 @@ void Explosion::draw(sf::RenderTarget& window) {
 	explosionV.update(frameTime);
 	for (unsigned short i = v_start_tile; i <= v_end_tile; ++i) {
 		if (i == m_tile.y) continue;
-		explosionV.setPosition(sf::Vector2f(pos.x, i * TILE_SIZE));
+		explosionV.setPosition(pos.x, i * TILE_SIZE);
 		window.draw(explosionV);
 	}
 }

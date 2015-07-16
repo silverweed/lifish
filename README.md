@@ -36,5 +36,5 @@
 - [ ] Hurry Up
 - [ ] Victory
 - [ ] Game Over
-- [ ] Points
+- [x] Points
 - [ ] Extra

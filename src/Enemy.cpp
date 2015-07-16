@@ -5,8 +5,9 @@ using Game::Enemy;
 Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
 	// TODO: enemy sprites
 	//MovingEntity(pos, Game::getAsset("graphics", std::string("player") + std::to_string(id) + std::string(".png"))), 
-	MovingEntity(pos, Game::getAsset("test", std::string("enemy") + std::to_string(id) + std::string(".png"))), 
-	Lifed(1)
+	Game::MovingEntity(pos, Game::getAsset("test", std::string("enemy") + std::to_string(id) + std::string(".png"))), 
+	Game::Lifed(1),
+	Game::Scored(id * 100)
 {
 	speed = BASE_SPEED;
 	transparentTo.enemies = false;

@@ -3,10 +3,11 @@
 #include "Lifed.hpp"
 #include "MovingEntity.hpp"
 #include "AI.hpp"
+#include "Scored.hpp"
 
 namespace Game {
 
-class Enemy : public Game::MovingEntity, public Game::Lifed {
+class Enemy : public Game::MovingEntity, public Game::Lifed, public Game::Scored {
 	constexpr static unsigned short WALK_N_FRAMES = 4;
 	
 	/** Indexed with ANIM_UP etc */
@@ -14,6 +15,9 @@ class Enemy : public Game::MovingEntity, public Game::Lifed {
 
 	/** The function determining this enemy's movements */
 	AIBoundFunction ai;
+
+	bool contactDamage = false;
+	unsigned short damage;
 
 	// TODO: type of bullets, fire rate, etc
 	bool _isTransparentTo(const Entity *const e) const override;
@@ -29,6 +33,10 @@ public:
 
 	void setAI(AIFunction aifunc) { ai = aifunc(this); }
 	AIBoundFunction getAI() const { return ai; }
+
+	bool hasContactDamage() const { return contactDamage; }
+
+	unsigned short getDamage() const { return damage; }
 };
 
 }
