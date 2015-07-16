@@ -347,7 +347,6 @@ void LevelRenderer::detectCollisions() {
 			sf::Vector2f opos = other->getPosition();
 
 			if (collide(pos, opos, dir)) {
-				collision_detected = true;
 				checked[i] = true;
 
 				bool opaque;
@@ -356,18 +355,20 @@ void LevelRenderer::detectCollisions() {
 				if (!is_player) {
 					// If opaque == false, other entity is a player.
 					opaque = !other->transparentTo.enemies;
-					if (opaque)
+					if (opaque) {
+						collision_detected = true;
 						entity->colliding = true;
-					else {
+					} else {
 						player = static_cast<Game::Player*>(other);
 						enemy = static_cast<Game::Enemy*>(entity);
 					}
 				} else {
 					// If opaque == false, other entity is an enemy.
 					opaque = !other->transparentTo.players;
-					if (opaque)
+					if (opaque) {
+						collision_detected = true;
 						entity->colliding = true;
-					else {
+					} else {
 						player = static_cast<Game::Player*>(entity);
 						enemy = static_cast<Game::Enemy*>(other);
 					}
@@ -567,7 +568,8 @@ void LevelRenderer::checkLinesOfSight() {
 		for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 			if (pos[i].x == epos.x) {
 				const short dist = _getDistance(epos, pos[i], false);
-				if (dist >= 0 && dist < prev_dist) {
+				if (dist < 0) break;
+				if (dist < prev_dist) {
 					enemy->seeingPlayer = epos.y < pos[i].y 
 								? Direction::DOWN 
 								: Direction::UP;
@@ -575,7 +577,8 @@ void LevelRenderer::checkLinesOfSight() {
 				}
 			} else if (pos[i].y == epos.y) {
 				const short dist = _getDistance(epos, pos[i], true);
-				if (dist >= 0 && dist < prev_dist) {
+				if (dist < 0) break;
+				if (dist < prev_dist) {
 					enemy->seeingPlayer = epos.x < pos[i].x 
 								? Direction::RIGHT 
 								: Direction::LEFT;
@@ -593,12 +596,12 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 			start = src.x, end = target.x;
 		else
 			start = target.x, end = src.x;
-		for (unsigned short i = start; i < end; ++i) {
+		for (unsigned short i = start + 1; i < end; ++i) {
 			const unsigned short idx = (src.y - 1) * LEVEL_WIDTH + i - 1;
 			if (idx >= fixedEntities.size()) 
 				return -1;
 
-			auto tile = level->getTile(i, src.y);
+			auto tile = level->getTile(i - 1, src.y - 1);
 			if (tile == EntityType::FIXED) 
 				return -1;
 
@@ -611,12 +614,12 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 			start = src.y, end = target.y;
 		else
 			start = target.y, end = src.y;
-		for (unsigned short i = start; i < end; ++i) {
+		for (unsigned short i = start + 1; i < end; ++i) {
 			const unsigned short idx = (i - 1) * LEVEL_WIDTH + src.x - 1;
 			if (idx >= fixedEntities.size()) 
 				return -1;
 			
-			auto tile = level->getTile(src.x, i);
+			auto tile = level->getTile(src.x - 1, i - 1);
 			if (tile == EntityType::FIXED)
 				return -1;
 
