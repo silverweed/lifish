@@ -3,7 +3,7 @@
 using Game::Bullet;
 
 Bullet::Bullet(const sf::Vector2f& pos, unsigned short id)
-	: MovingEntity(pos, Game::getAsset("test", "bullets.png"))
+	: Game::MovingEntity(pos, Game::getAsset("test", "bullets.png"))
 {
 	canTeleport = false;
 

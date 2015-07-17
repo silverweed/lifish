@@ -135,7 +135,7 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 		if (e->hasShield() || e->isDying()) return;
 
 		// Check if entity's lifed
-		Game::Lifed *le = dynamic_cast<Game::Lifed*>(e);
+		auto le = dynamic_cast<Game::Lifed*>(e);
 		if (le == nullptr) return;
 
 		// Check if entity's bounding box intersects this tile

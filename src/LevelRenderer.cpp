@@ -69,21 +69,21 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				break;
 			case EntityType::PLAYER1: 
 				{
-					Game::Player *player = new Game::Player(curPos, 1);
+					auto player = new Game::Player(curPos, 1);
 					movingEntities.push_back(player);
 					players[0] = player;
 					break;
 				}
 			case EntityType::PLAYER2: 
 				{
-					Game::Player *player = new Game::Player(curPos, 2);
+					auto player = new Game::Player(curPos, 2);
 					movingEntities.push_back(player);
 					players[1] = player;
 					break;
 				}
 			case EntityType::TELEPORT:
 				{
-					Game::Teleport *teleport = new Game::Teleport(curPos);
+					auto teleport = new Game::Teleport(curPos);
 					// Save the first Teleport added
 					if (firstTeleport == nullptr)
 						firstTeleport = teleport;
@@ -115,7 +115,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				  break;
 			}
 			if (enemy_id > 0) {
-				Game::Enemy *enemy = new Game::Enemy(curPos, enemy_id);
+				auto enemy = new Game::Enemy(curPos, enemy_id);
 				enemy->setAI(Game::ai_functions[level->getLevelSet()->getEnemyInfo(enemy_id).ai]);
 				enemy->setSpeed(Game::Enemy::BASE_SPEED * level->getLevelSet()->getEnemyInfo(enemy_id).speed);
 				movingEntities.push_back(enemy);
@@ -253,7 +253,7 @@ void LevelRenderer::detectCollisions() {
 				const unsigned short idx = (cur_tile.y - 1) * LEVEL_WIDTH + cur_tile.x - 1;
 
 				// Get Teleport from fixed entities
-				Game::Teleport *teleport = static_cast<Teleport*>(fixedEntities[idx]);
+				auto teleport = static_cast<Game::Teleport*>(fixedEntities[idx]);
 
 				if (teleport != nullptr && !teleport->isDisabled()) {
 					// Get destination Teleport
@@ -356,6 +356,7 @@ void LevelRenderer::detectCollisions() {
 					// If opaque == false, other entity is a player.
 					opaque = !other->transparentTo.enemies;
 					if (opaque) {
+						// TODO: check if bullet
 						collision_detected = true;
 						entity->colliding = true;
 					} else {
@@ -366,6 +367,7 @@ void LevelRenderer::detectCollisions() {
 					// If opaque == false, other entity is an enemy.
 					opaque = !other->transparentTo.players;
 					if (opaque) {
+						// TODO: check if bullet
 						collision_detected = true;
 						entity->colliding = true;
 					} else {
@@ -464,7 +466,7 @@ void LevelRenderer::selectEnemyMoves() {
 			}
 			continue;
 		}
-		Enemy *enemy = static_cast<Enemy*>(entity);
+		auto *enemy = static_cast<Game::Enemy*>(entity);
 		if (enemy != nullptr)
 			enemy->setDirection(enemy->getAI()(this));
 	}
@@ -476,7 +478,7 @@ void LevelRenderer::applyEnemyMoves() {
 			continue;
 
 		if (entity->isAligned()) {
-			auto cur_align = Game::tile(entity->getPosition());
+			const auto cur_align = Game::tile(entity->getPosition());
 			entity->prevAlign = cur_align; 
 		}
 		entity->move();
@@ -516,7 +518,7 @@ void LevelRenderer::dropBomb(const unsigned short id) {
 		}
 	}
 	if (n_bombs == players[id]->powers.maxBombs) return;
-	Game::Bomb *bomb = new Game::Bomb(
+	auto bomb = new Game::Bomb(
 			players[id]->getPosition(),
 			players[id]->powers.bombFuseTime,
 			players[id]->powers.bombRadius);
@@ -529,7 +531,7 @@ void LevelRenderer::checkBombExplosions() {
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
 		for (unsigned short j = 0; j < bombs[i].size(); ++j)
 			if (bombs[i][j] != nullptr && bombs[i][j]->isExploding()) {
-				Game::Explosion *expl = new Game::Explosion(bombs[i][j]->getPosition(), bombs[i][j]->getRadius());
+				auto expl = new Game::Explosion(bombs[i][j]->getPosition(), bombs[i][j]->getRadius());
 				expl->propagate(this);
 				_pushTemporary(expl);
 				bombs[i][j]->blowUp();
@@ -560,14 +562,16 @@ void LevelRenderer::checkLinesOfSight() {
 		pos[i] = Game::tile(players[i]->getPosition());
 
 	for (auto& e : movingEntities) {
-		Game::Enemy* enemy = dynamic_cast<Game::Enemy*>(e);
+		auto enemy = dynamic_cast<Game::Enemy*>(e);
 		if (enemy == nullptr) continue;
+
 		enemy->seeingPlayer = Direction::NONE;
 		const auto epos = Game::tile(e->getPosition());
-		short prev_dist = 2 * LEVEL_WIDTH;
+		short prev_dist = 2 * LEVEL_WIDTH; // set a distance greater than any possible one
 		for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 			if (pos[i].x == epos.x) {
 				const short dist = _getDistance(epos, pos[i], false);
+				// _getDistance returns -1 if sight is blocked
 				if (dist < 0) break;
 				if (dist < prev_dist) {
 					enemy->seeingPlayer = epos.y < pos[i].y 
@@ -591,6 +595,9 @@ void LevelRenderer::checkLinesOfSight() {
 
 short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& target, bool axis_x) {
 	unsigned short start, end;
+	// Check if src and target are on the same axis and:
+	//   if no opaque entity is between them, return their distance
+	//   else return -1.
 	if (axis_x) {
 		if (src.x < target.x)
 			start = src.x, end = target.x;
@@ -640,6 +647,7 @@ bool LevelRenderer::isPlayer(const Entity *const e) const {
 bool LevelRenderer::removePlayer(const unsigned short id) {
 	movingEntities.remove(players[id-1]);
 	delete players[id-1];
+	players[id-1] = nullptr;
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
 		if (players[i] != nullptr) return true;
 	return false;
