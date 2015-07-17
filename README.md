@@ -17,7 +17,7 @@
   -   [x] Enemies move  
     -     [x] Soldier/Sgt.Cool AI
     -     [x] ThickLizzy/etc AI
-    -     [ ] Thing/etc AI (partially done but FIXME)
+    -     [x] Thing/etc AI
   -   [ ] Enemies shoot
   -   [x] Enemies die when hit by explosions
 - [ ] Bosses   
@@ -38,3 +38,4 @@
 - [ ] Game Over
 - [x] Points
 - [ ] Extra
+- [ ] Side panel
