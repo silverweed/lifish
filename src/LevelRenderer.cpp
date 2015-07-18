@@ -67,7 +67,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				unsigned short id;
 				unsigned short damage;
 				float speed;
-				short range;
+				short range = -1;
 			} enemy_attack;	
 
 			switch (level->getTile(left, top)) {

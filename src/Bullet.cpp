@@ -139,7 +139,8 @@ void Bullet::move() {
 		animatedSprite.update(frameClock.restart());
 		return;
 	}
-	if (Game::abs(pos.x - origin.x) > Game::TILE_SIZE * range || Game::abs(pos.y - origin.y) > Game::TILE_SIZE * range) {
+	if (range > 0 && (Game::abs(pos.x - origin.x) > Game::TILE_SIZE * range 
+				|| Game::abs(pos.y - origin.y) > Game::TILE_SIZE * range)) {
 		destroy();
 		return;
 	}

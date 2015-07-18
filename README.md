@@ -18,7 +18,7 @@
     -     [x] Soldier/Sgt.Cool AI
     -     [x] ThickLizzy/etc AI
     -     [x] Thing/etc AI
-  -   [ ] Enemies shoot
+  -   [x] Enemies shoot
   -   [x] Enemies die when hit by explosions
 - [ ] Bosses   
   -   [ ] Bosses are hit by explosions
@@ -32,7 +32,8 @@
 - [x] Coins   
   -   [x] Coins can be taken
   -   [ ] Taking all coins causes Extra Game
-- [ ] Bullets
+- [x] Bullets
+  - [ ] Directional bullets use correct sprites
 - [ ] Hurry Up
 - [ ] Victory
 - [ ] Game Over
