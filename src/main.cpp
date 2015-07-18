@@ -124,6 +124,7 @@ int main(int argc, char **argv) {
 		lr.detectCollisions();
 
 		for (unsigned int i = 0; i < 2; ++i) {
+			if (players[i] == nullptr) continue;
 			if (players[i]->isAligned()) {
 				players[i]->prevAlign = Game::tile(players[i]->getPosition());
 				if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::BOMB]))
@@ -150,6 +151,8 @@ int main(int argc, char **argv) {
 				players[i]->move();
 			}
 		}
+
+		lr.moveBullets();
 
 		// Actually move enemies
 		lr.applyEnemyMoves();

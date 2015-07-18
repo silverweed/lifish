@@ -36,16 +36,22 @@ void LevelRenderer::_clearEntities() {
 			}
 	for (auto it = temporary.begin(); it != temporary.end(); ++it) 
 		delete *it;
+	for (auto it = bullets.begin(); it != bullets.end(); ++it)
+		delete *it;
+
 	players.fill(nullptr);
+	fixedEntities.fill(nullptr);
+
 	firstTeleport = nullptr;
+
 	temporary.clear();
+	movingEntities.clear();
+	bullets.clear();
 }
 
 void LevelRenderer::loadLevel(Game::Level *const _level) {
 	if (level != nullptr) {
 		_clearEntities();
-		fixedEntities.fill(nullptr);
-		movingEntities.clear();
 	}
 	level = _level;
 
@@ -130,7 +136,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				break;
 			case EntityType::ENEMY3: 
 				enemy_id = 3;
-				enemy_attack.id = 1;
+				enemy_attack.id = 2;
 				enemy_attack.type = AT::SIMPLE;
 				enemy_attack.damage = 2;
 				enemy_attack.speed = 0.5;
@@ -138,51 +144,52 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				break;
 			case EntityType::ENEMY4:
 				enemy_id = 4;
-				enemy_attack.id = 1;
 				enemy_attack.type = AT::CONTACT;
 				enemy_attack.damage = 2;
 				enemy_attack.fireRate = 1;
 				break;
 			case EntityType::ENEMY5: 
 				enemy_id = 5;
-				enemy_attack.id = 1;
-				enemy_attack.type = AT::CONTINUOUS | AT::BLOCKING;
+				enemy_attack.id = 3;
+				enemy_attack.type = AT::BLOCKING;
 				enemy_attack.damage = 2;
 				enemy_attack.speed = 1;
+				enemy_attack.fireRate = 10;
 				break;
 			case EntityType::ENEMY6: 
 				enemy_id = 6;
-				enemy_attack.id = 1;
+				enemy_attack.id = 4;
 				enemy_attack.type = AT::SIMPLE;
 				enemy_attack.damage = 3;
-				enemy_attack.fireRate = 1.5;
-				enemy_attack.speed = 0.5;
+				enemy_attack.fireRate = 1;
+				enemy_attack.speed = 0.6;
 				break;
 			case EntityType::ENEMY7: 
 				enemy_id = 7;
-				enemy_attack.id = 1;
 				enemy_attack.type = AT::CONTACT;
 				enemy_attack.damage = 1;
 				enemy_attack.fireRate = 1.5;
 				break;
 			case EntityType::ENEMY8: 
 				enemy_id = 8;
-				enemy_attack.id = 1;
-				enemy_attack.type = AT::RANGED | AT::CONTINUOUS | AT::BLOCKING;
+				enemy_attack.id = 5;
+				enemy_attack.type = AT::RANGED | AT::BLOCKING;
 				enemy_attack.damage = 3;
-				enemy_attack.range = 5;
+				enemy_attack.range = 4;
 				enemy_attack.speed = 0.5;
+				enemy_attack.fireRate = 4;
 				break;
 			case EntityType::ENEMY9: 
 				enemy_id = 9;
-				enemy_attack.id = 1;
-				enemy_attack.type = AT::CONTINUOUS | AT::BLOCKING;
+				enemy_attack.id = 6;
+				enemy_attack.type = AT::BLOCKING;
 				enemy_attack.damage = 3;
 				enemy_attack.speed = 1;
+				enemy_attack.fireRate = 10;
 				break;
 			case EntityType::ENEMY10: 
 				enemy_id = 10;
-				enemy_attack.id = 1;
+				enemy_attack.id = 7;
 				enemy_attack.type = AT::SIMPLE | AT::BLOCKING;
 				enemy_attack.damage = 4;
 				enemy_attack.fireRate = 0.7;
@@ -267,6 +274,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 			}
 		}
 	}
+	
 	for (auto it = movingEntities.begin(); it != movingEntities.end(); ) {
 		auto entity = *it;
 		if (entity->isDying() && !isPlayer(entity)) {
@@ -280,6 +288,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		entity->draw(window);
 		++it;
 	}
+	
 	for (auto it = temporary.begin(); it != temporary.end(); ) {
 		if (!(*it)->isPlaying()) {
 			delete *it;
@@ -289,6 +298,18 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 			++it;
 		}
 	}
+
+	for (auto it = bullets.begin(); it != bullets.end(); ) {
+		auto bullet = *it;
+		if (bullet->isDestroyed()) {
+			delete bullet;
+			it = bullets.erase(it);
+		} else {
+			bullet->draw(window);
+			++it;
+		}
+	}
+
 }
 
 void LevelRenderer::detectCollisions() {
@@ -373,6 +394,27 @@ void LevelRenderer::detectCollisions() {
 			}
 		}
 
+		// Check impact with bullets
+		if (!entity->transparentTo.bullets) {
+			for (auto it = bullets.begin(); it != bullets.end(); ++it) {
+				auto bullet = *it;
+				if (entity != bullet->getSource() && bullet->hits(entity->getPosition())) {
+					if (is_player && !(entity->hasShield() || entity->isDying())) {
+						// Damage player
+						auto player = static_cast<Game::Player*>(entity);
+						player->decLife(bullet->getDamage());
+						if (!player->isHurt()) {
+							player->setHurt(true);
+							player->giveShield(Game::DAMAGE_SHIELD_TIME);
+						}
+						if (player->getLife() <= 0)
+							player->kill();
+					} 
+					bullet->destroy();	
+				}
+			}
+		}
+
 		entity->colliding = false;
 
 		pos = entity->getPosition();
@@ -440,7 +482,6 @@ void LevelRenderer::detectCollisions() {
 					// If opaque == false, other entity is a player.
 					opaque = !other->transparentTo.enemies;
 					if (opaque) {
-						// TODO: check if bullet
 						collision_detected = true;
 						entity->colliding = true;
 					} else {
@@ -451,7 +492,6 @@ void LevelRenderer::detectCollisions() {
 					// If opaque == false, other entity is an enemy.
 					opaque = !other->transparentTo.players;
 					if (opaque) {
-						// TODO: check if bullet
 						collision_detected = true;
 						entity->colliding = true;
 					} else {
@@ -460,7 +500,7 @@ void LevelRenderer::detectCollisions() {
 					}
 				}
 
-				if (!opaque && !(enemy->isDying() || player->hasShield())) {
+				if (!opaque && !(enemy->isDying() || player->isDying() || player->hasShield())) {
 					if (enemy->attack.type & Enemy::AttackType::CONTACT) {
 						// TODO: attack sprite
 						player->decLife(enemy->attack.damage);
@@ -471,6 +511,8 @@ void LevelRenderer::detectCollisions() {
 						player->setHurt(true);
 						player->giveShield(Game::DAMAGE_SHIELD_TIME);
 					}
+					if (player->getLife() <= 0)
+						player->kill();
 				}
 
 				if (other->getDirection() == Game::oppositeDirection(dir)) {
@@ -524,6 +566,26 @@ void LevelRenderer::detectCollisions() {
 			}
 		}
 	}
+
+	for (auto& bullet : bullets) {
+		const auto pos = bullet->getPosition();
+		const auto szpos = pos + sf::Vector2f(bullet->getSize(), bullet->getSize());
+		if (szpos.x < TILE_SIZE || szpos.x >= (LEVEL_WIDTH + 1) * TILE_SIZE
+				|| szpos.y < TILE_SIZE || szpos.y >= (LEVEL_HEIGHT + 1) * TILE_SIZE) {
+			bullet->destroy();
+			continue;
+		}
+		const auto tile = Game::tile(pos);
+		const unsigned short idx = (tile.y - 1) * LEVEL_WIDTH + tile.x - 1;
+		if (idx >= fixedEntities.size()) {
+			bullet->destroy();
+			continue;
+		}
+		FixedEntity *other = fixedEntities[idx];
+		if (other != nullptr && !other->transparentTo.bullets) {
+			bullet->destroy();
+		}
+	}
 }
 
 void LevelRenderer::selectEnemyMoves() {
@@ -550,9 +612,16 @@ void LevelRenderer::selectEnemyMoves() {
 			}
 			continue;
 		}
-		auto *enemy = static_cast<Game::Enemy*>(entity);
-		if (enemy != nullptr)
+		auto enemy = static_cast<Game::Enemy*>(entity);
+		if (enemy != nullptr) {
 			enemy->setDirection(enemy->getAI()(this));
+		}
+	}
+}
+
+void LevelRenderer::moveBullets() {
+	for (auto& bullet : bullets) {
+		bullet->move();
 	}
 }
 
@@ -564,6 +633,39 @@ void LevelRenderer::applyEnemyMoves() {
 		if (entity->isAligned()) {
 			const auto cur_align = Game::tile(entity->getPosition());
 			entity->prevAlign = cur_align; 
+		}
+
+		auto enemy = static_cast<Game::Enemy*>(entity);
+
+		// Check if this enemy should shoot
+		if (!(enemy->attack.type & Game::Enemy::AttackType::CONTACT)
+				&& enemy->seeingPlayer == enemy->getDirection()) 
+		{
+			if (!enemy->isRecharging()) { 
+				if (!(enemy->attack.type & Game::Enemy::AttackType::RANGED)
+						|| enemy->distanceWithNearestPlayer <= enemy->attack.range)
+				{
+					enemy->shoot();
+					auto bullet = new Game::Bullet(
+								enemy->getPosition(), 
+								enemy->getDirection(),
+								enemy->attack.id,
+								enemy->attack.speed,
+								enemy->attack.damage,
+								enemy->attack.range);
+					bullet->setOrigin(origin);
+					bullet->setSource(enemy);
+					bullets.push_back(bullet);
+
+					if (enemy->attack.type & Game::Enemy::AttackType::BLOCKING) {
+						enemy->stop();
+						continue;
+					}
+				}
+			} else if (enemy->attack.type & Game::Enemy::AttackType::BLOCKING) {
+				enemy->stop();
+				continue;
+			}
 		}
 		entity->move();
 	}
@@ -644,34 +746,37 @@ Game::Bomb* LevelRenderer::getBombAt(const unsigned short left, const unsigned s
 void LevelRenderer::checkLinesOfSight() {
 	std::array<sf::Vector2i, Game::MAX_PLAYERS> pos;
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
-		pos[i] = Game::tile(players[i]->getPosition());
+		if (players[i] != nullptr)
+			pos[i] = Game::tile(players[i]->getPosition());
 
 	for (auto& e : movingEntities) {
-		auto enemy = dynamic_cast<Game::Enemy*>(e);
-		if (enemy == nullptr) continue;
+		if (isPlayer(e)) continue;
+		auto enemy = static_cast<Game::Enemy*>(e);
 
 		enemy->seeingPlayer = Direction::NONE;
 		const auto epos = Game::tile(e->getPosition());
-		short prev_dist = 2 * LEVEL_WIDTH; // set a distance greater than any possible one
+		// set a distance greater than any possible one
+		enemy->distanceWithNearestPlayer = 2 * LEVEL_WIDTH; 
 		for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+			if (players[i] == nullptr || players[i]->isDying()) continue;
 			if (pos[i].x == epos.x) {
 				const short dist = _getDistance(epos, pos[i], false);
 				// _getDistance returns -1 if sight is blocked
 				if (dist < 0) break;
-				if (dist < prev_dist) {
+				if (dist < enemy->distanceWithNearestPlayer) {
 					enemy->seeingPlayer = epos.y < pos[i].y 
 								? Direction::DOWN 
 								: Direction::UP;
-					prev_dist = dist;
+					enemy->distanceWithNearestPlayer = dist;
 				}
 			} else if (pos[i].y == epos.y) {
 				const short dist = _getDistance(epos, pos[i], true);
 				if (dist < 0) break;
-				if (dist < prev_dist) {
+				if (dist < enemy->distanceWithNearestPlayer) {
 					enemy->seeingPlayer = epos.x < pos[i].x 
 								? Direction::RIGHT 
 								: Direction::LEFT;
-					prev_dist = dist;
+					enemy->distanceWithNearestPlayer = dist;
 				}
 			}
 		}

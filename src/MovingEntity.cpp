@@ -63,25 +63,7 @@ void MovingEntity::move(const Direction dir) {
 		animatedSprite.move(shift * frameTime.asSeconds());
 		distTravelled += speed * frameTime.asSeconds();
 		pos = animatedSprite.getPosition();
-		// Ensure we are always aligned at least for one frame for
-		// each tile we step in (this may not be the case if FPS are too low)
-		switch (direction) {
-		case Direction::RIGHT:
-		case Direction::DOWN:
-			if (Game::tile(pos) != prevAlign)
-				pos = Game::aligned(pos);
-			break;
-		case Direction::LEFT:
-			if (Game::tile(pos).x == prevAlign.x - 2)
-				pos = Game::aligned(pos) + sf::Vector2f(Game::TILE_SIZE, 0);
-			break;
-		case Direction::UP:
-			if (Game::tile(pos).y == prevAlign.y - 2)
-				pos = Game::aligned(pos) + sf::Vector2f(0, Game::TILE_SIZE);
-			break;
-		case Direction::NONE:
-			break;
-		}
+		_ensureAlign();
 	} 
 	animatedSprite.update(frameTime);
 }
@@ -213,5 +195,27 @@ void MovingEntity::draw(sf::RenderTarget& window) {
 			shieldSprite.setColor(sf::Color(50, 255, 0, 200));
 			window.draw(shieldSprite);
 		}
+	}
+}
+
+void MovingEntity::_ensureAlign() {
+	// Ensure we are always aligned at least for one frame for
+	// each tile we step in (this may not be the case if FPS are too low)
+	switch (direction) {
+	case Direction::RIGHT:
+	case Direction::DOWN:
+		if (Game::tile(pos) != prevAlign)
+			pos = Game::aligned(pos);
+		break;
+	case Direction::LEFT:
+		if (Game::tile(pos).x == prevAlign.x - 2)
+			pos = Game::aligned(pos) + sf::Vector2f(Game::TILE_SIZE, 0);
+		break;
+	case Direction::UP:
+		if (Game::tile(pos).y == prevAlign.y - 2)
+			pos = Game::aligned(pos) + sf::Vector2f(0, Game::TILE_SIZE);
+		break;
+	case Direction::NONE:
+		break;
 	}
 }

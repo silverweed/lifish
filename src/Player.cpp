@@ -7,8 +7,7 @@ using Game::Player;
 Player::Player(sf::Vector2f pos, const unsigned short id) :
 	// TODO: player sprites
 	//MovingEntity(pos, Game::getAsset("graphics", std::string("player") + std::to_string(id) + std::string(".png"))), 
-	MovingEntity(pos, Game::getAsset("test", std::string("player") + std::to_string(id) + std::string(".png"))), 
-	Lifed(MAX_LIFE)
+	LifedMovingEntity(pos, Game::getAsset("test", std::string("player") + std::to_string(id) + std::string(".png")), MAX_LIFE)
 {
 	speed = 150.f;
 	transparentTo.players = false;
@@ -74,23 +73,7 @@ void Player::move(const Direction dir) {
 	if (!colliding) {
 		animatedSprite.move(shift * frameTime.asSeconds());
 		pos = animatedSprite.getPosition();
-		switch (direction) {
-		case Direction::RIGHT:
-		case Direction::DOWN:
-			if (Game::tile(pos) != prevAlign)
-				pos = Game::aligned(pos);
-			break;
-		case Direction::LEFT:
-			if (Game::tile(pos).x == prevAlign.x - 2)
-				pos = Game::aligned(pos) + sf::Vector2f(Game::TILE_SIZE, 0);
-			break;
-		case Direction::UP:
-			if (Game::tile(pos).y == prevAlign.y - 2)
-				pos = Game::aligned(pos) + sf::Vector2f(0, Game::TILE_SIZE);
-			break;
-		case Direction::NONE:
-			break;
-		}
+		_ensureAlign();
 	} else {
 		realign();
 	}

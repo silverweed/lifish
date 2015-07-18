@@ -5,8 +5,7 @@ using Game::Enemy;
 Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
 	// TODO: enemy sprites
 	//MovingEntity(pos, Game::getAsset("graphics", std::string("player") + std::to_string(id) + std::string(".png"))), 
-	Game::MovingEntity(pos, Game::getAsset("test", std::string("enemy") + std::to_string(id) + std::string(".png"))), 
-	Game::Lifed(1),
+	Game::LifedMovingEntity(pos, Game::getAsset("test", std::string("enemy") + std::to_string(id) + std::string(".png")), 1), 
 	Game::Scored(id * 100)
 {
 	speed = BASE_SPEED;
@@ -52,4 +51,34 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
 
 bool Enemy::_isTransparentTo(const Entity *const e) const {
 	return e->transparentTo.enemies;
+}
+
+bool Enemy::isRecharging() const {
+	return attackClock.getElapsedTime().asSeconds() < 1./attack.fireRate;
+}
+
+void Enemy::shoot() {
+	attackClock.restart();
+	shooting = true;
+}
+
+void Enemy::draw(sf::RenderTarget& window) {
+	if (shooting) {
+		if (attackClock.getElapsedTime().asMilliseconds() < shootFrameTime) {
+			unsigned short d = ANIM_DOWN;
+			switch (direction) {
+			case Game::Direction::UP: d = ANIM_UP; break;
+			case Game::Direction::RIGHT: d = ANIM_RIGHT; break;
+			case Game::Direction::DOWN: d = ANIM_DOWN; break;
+			case Game::Direction::LEFT: d = ANIM_LEFT; break;
+			default: break;
+			}
+			shootFrame[d].setPosition(pos);
+			window.draw(shootFrame[d]);
+			return;
+		} else {
+			shooting = false;
+		}
+	}
+	Game::MovingEntity::draw(window);
 }

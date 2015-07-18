@@ -11,19 +11,21 @@
 #include <array>
 #include "Level.hpp"
 #include "FixedEntity.hpp"
-#include "MovingEntity.hpp"
+#include "LifedMovingEntity.hpp"
 #include "Player.hpp"
 #include "Teleport.hpp"
 #include "Temporary.hpp"
 #include "Bomb.hpp"
+#include "Bullet.hpp"
 
 namespace Game {
 
 class LevelRenderer : private sf::NonCopyable {
 	/** For Fixed Entities we use a fixed-size array for faster lookup */
 	using FixedEntityList = std::array<Game::FixedEntity*, LEVEL_WIDTH * LEVEL_HEIGHT>;
-	using MovingEntityList = std::list<Game::MovingEntity*>;
+	using MovingEntityList = std::list<Game::LifedMovingEntity*>;
 	using TemporaryEntityList = std::list<Game::Temporary*>;
+	using BulletsList = std::list<Game::Bullet*>;
 
 	/** The level this object is rendering */
 	Game::Level *level = nullptr;
@@ -31,11 +33,14 @@ class LevelRenderer : private sf::NonCopyable {
 	/** The fixed entities */
 	FixedEntityList fixedEntities;
 
-	/** The moving entities */
+	/** The moving entities (except bullets) */
 	MovingEntityList movingEntities;
 
 	/** The temporary entities (flashes, explosions, ...) */
 	TemporaryEntityList temporary;
+
+	/** The bullets */
+	BulletsList bullets;
 	
 	/** The players' bombs */
 	Matrix<Game::Bomb*, Game::MAX_PLAYERS, Game::Player::MAX_MAX_BOMBS> bombs;
@@ -118,6 +123,8 @@ public:
 
 	/** Sets seeingPlayer and playerIsVisible flags for all enemies */
 	void checkLinesOfSight();
+
+	void moveBullets();
 
 	/** Removes id-th player (starting from 1) from game and returns
 	 *  true if at least another player is still in game, false otherwise.

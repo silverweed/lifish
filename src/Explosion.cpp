@@ -102,13 +102,13 @@ void Explosion::propagate(LevelRenderer *const lr) {
 }
 
 void Explosion::checkHit(LevelRenderer *const lr) {
-	std::array<std::list<MovingEntity*>, 5> moving;
+	std::array<std::list<Game::LifedMovingEntity*>, 5> moving;
 
 	const auto allmoving = lr->getMovingEntities();
 	const sf::Vector2i m_tile = Game::tile(pos);
 	const sf::FloatRect origin_box(pos.x, pos.y, TILE_SIZE, TILE_SIZE),
-		            row_box(0, pos.y, LEVEL_WIDTH * TILE_SIZE, TILE_SIZE),
-		            col_box(pos.x, 0, TILE_SIZE, LEVEL_HEIGHT * TILE_SIZE);
+		            row_box(TILE_SIZE, pos.y, LEVEL_WIDTH * TILE_SIZE, TILE_SIZE),
+		            col_box(pos.x, TILE_SIZE, TILE_SIZE, LEVEL_HEIGHT * TILE_SIZE);
 
 	// Skim moving entities and keep only those which may be hit by this originosion
 	for (auto& e : allmoving) {
@@ -119,7 +119,7 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 		           intersects_y = e_box.intersects(col_box);
 
 		if (intersects_x && intersects_y) {
-			// the same tile as the originosion's origin
+			// the same tile as the explosion's origin
 			moving[4].push_back(e); 
 		} else if (intersects_x) {
 			if (epos.x < pos.x) 
@@ -139,17 +139,13 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 		return std::max(1, static_cast<int>(dist(Game::rng)));
 	};
 
-	auto tryHit = [lr, &calcDamage] (Game::MovingEntity *const e, const unsigned short d, const sf::FloatRect& expl_box) {
+	auto tryHit = [lr, &calcDamage] (Game::LifedMovingEntity *const e, const unsigned short d, const sf::FloatRect& expl_box) {
 		if (e->hasShield() || e->isDying()) return;
-
-		// Check if entity's lifed
-		auto le = dynamic_cast<Game::Lifed*>(e);
-		if (le == nullptr) return;
 
 		// Check if entity's bounding box intersects this tile
 		const sf::FloatRect e_box(e->getPosition().x, e->getPosition().y, TILE_SIZE, TILE_SIZE);
 		if (e_box.intersects(expl_box)) {
-			le->decLife(calcDamage(d));
+			e->decLife(calcDamage(d));
 			if (lr->isPlayer(e)) {
 				e->setHurt(true);
 				e->giveShield(Game::DAMAGE_SHIELD_TIME);
@@ -158,7 +154,7 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 				if (se != nullptr)
 					lr->spawnPoints(e->getPosition(), se->getPointsGiven());
 			}
-			if (le->getLife() <= 0) {
+			if (e->getLife() <= 0) {
 				e->kill();
 			}
 		}

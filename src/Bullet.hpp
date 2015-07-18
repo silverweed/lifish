@@ -16,18 +16,48 @@ class Bullet : public Game::MovingEntity {
 	 */
 	unsigned short directionality = 1;
 	
+	/** The actual size of this bullet in pixels */
+	unsigned short size;
+
 	/** How many tiles does this bullet travel; -1 means infinite. */
 	short range;
+	/** The position this bullet was shot from */
+	sf::Vector2f origin;
+
 	unsigned short damage;
 
 	unsigned short nMotionFrames = 1,  // up to 2
 		       nDestroyFrames = 4; // up to 5
 
+	sf::Vector2f shift;
+
+	const Game::Entity *source = nullptr;
+
+	bool destroyed = false;
+
 	bool _isTransparentTo(const Entity *const) const;
 public:
-	constexpr static float BASE_SPEED = 150.f;
+	constexpr static float BASE_SPEED = 200.f;
 
-	Bullet(const sf::Vector2f& pos, unsigned short id, float speed, unsigned short damage, short range = -1);
+	Bullet(const sf::Vector2f& pos, const Game::Direction dir, unsigned short id,
+			float speed, unsigned short damage, short range = -1);
+
+	void setSource(const Game::Entity *e) { source = e; }
+	const Game::Entity* getSource() const { return source; }
+
+	void move() override;
+	void move(const Direction) override;
+
+	void draw(sf::RenderTarget& window) override;
+
+	bool hits(const sf::Vector2f& pos) const;
+
+	unsigned short getDamage() const { return damage; }
+
+	void destroy();
+	bool isDestroyed() const { return destroyed && !animatedSprite.isPlaying(); }
+
+	unsigned short getSize() const { return size; }
 };
 
 }

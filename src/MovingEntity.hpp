@@ -47,6 +47,7 @@ protected:
 	sf::Clock deathClock;
 
 	virtual bool _isTransparentTo(const Entity *const e) const = 0;
+	virtual void _ensureAlign();
 public:
 	bool colliding = false;
 	/** Whether this entity is affected by Teleports or not */

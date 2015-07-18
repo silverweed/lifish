@@ -3,13 +3,12 @@
  * The player
  */
 
-#include "MovingEntity.hpp"
+#include "LifedMovingEntity.hpp"
 #include "Bomb.hpp"
-#include "Lifed.hpp"
 
 namespace Game {
 
-class Player : public Game::MovingEntity, public Game::Lifed {
+class Player : public Game::LifedMovingEntity {
 	constexpr static unsigned short WALK_N_FRAMES = 8;
 	constexpr static unsigned short DEATH_N_FRAMES = 3;
 	constexpr static unsigned short DEFAULT_MAX_BOMBS = 5;
