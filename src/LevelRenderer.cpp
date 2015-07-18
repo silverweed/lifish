@@ -237,6 +237,7 @@ void LevelRenderer::detectCollisions() {
 			return false;
 		}
 	};
+
 	unsigned short i = 0;
 	for (auto it = movingEntities.begin(); it != movingEntities.end(); ++it, ++i) {
 		if (checked[i]) continue;
@@ -535,6 +536,7 @@ void LevelRenderer::checkBombExplosions() {
 				expl->propagate(this);
 				_pushTemporary(expl);
 				bombs[i][j]->blowUp();
+				expl->checkHit(this);
 			}
 }
 

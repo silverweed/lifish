@@ -48,7 +48,6 @@ void Explosion::propagate(LevelRenderer *const lr) {
 	bool propagating[] = { true, true, true, true };
 
 	auto fixed = lr->getFixedEntities();
-	auto allmoving = lr->getMovingEntities();
 	auto level = lr->getLevel();
 
 	for (unsigned short dir = 0; dir < 4; ++dir) {	
@@ -90,8 +89,6 @@ void Explosion::propagate(LevelRenderer *const lr) {
 					propagating[dir] = false; 
 
 					if (d == 1 && level->getTile(new_tile.x - 1, new_tile.y - 1) == Game::EntityType::BREAKABLE) {
-						// Use static_cast for better performance 
-						// (we know for sure this is a breakable)
 						auto bw = static_cast<Game::BreakableWall*>(fxd);
 						bw->destroy();
 						lr->spawnPoints(bw->getPosition(), bw->getPointsGiven());
@@ -107,21 +104,34 @@ void Explosion::propagate(LevelRenderer *const lr) {
 void Explosion::checkHit(LevelRenderer *const lr) {
 	std::array<std::list<MovingEntity*>, 5> moving;
 
-	auto allmoving = lr->getMovingEntities();
-	sf::Vector2i m_tile = Game::tile(pos);
+	const auto allmoving = lr->getMovingEntities();
+	const sf::Vector2i m_tile = Game::tile(pos);
+	const sf::FloatRect origin_box(pos.x, pos.y, TILE_SIZE, TILE_SIZE),
+		            row_box(0, pos.y, LEVEL_WIDTH * TILE_SIZE, TILE_SIZE),
+		            col_box(pos.x, 0, TILE_SIZE, LEVEL_HEIGHT * TILE_SIZE);
 
-	// Skim moving entities and keep only those which may be hit by this explosion
+	// Skim moving entities and keep only those which may be hit by this originosion
 	for (auto& e : allmoving) {
-		sf::Vector2i e_tile = Game::tile(e->getPosition());
-		if (e_tile.x != m_tile.x && e_tile.y != m_tile.y) {
-			// this entity won't be affected by this explosion
-			continue;
+		const auto epos = e->getPosition();
+		const sf::FloatRect e_box(epos.x, epos.y, TILE_SIZE, TILE_SIZE);
+
+		const bool intersects_x = e_box.intersects(row_box),
+		           intersects_y = e_box.intersects(col_box);
+
+		if (intersects_x && intersects_y) {
+			// the same tile as the originosion's origin
+			moving[4].push_back(e); 
+		} else if (intersects_x) {
+			if (epos.x < pos.x) 
+				moving[ANIM_LEFT].push_back(e);
+			else
+				moving[ANIM_RIGHT].push_back(e);
+		} else if (intersects_y) {
+			if (epos.y < pos.y) 
+				moving[ANIM_UP].push_back(e);
+			else 
+				moving[ANIM_DOWN].push_back(e);
 		}
-		if (e_tile.x < m_tile.x) moving[ANIM_LEFT].push_back(e);
-		else if (e_tile.x > m_tile.x) moving[ANIM_RIGHT].push_back(e);
-		else if (e_tile.y < m_tile.y) moving[ANIM_UP].push_back(e);
-		else if (e_tile.y > m_tile.y) moving[ANIM_DOWN].push_back(e);
-		else moving[4].push_back(e); // the same tile as the explosion's origin
 	}
 
 	auto calcDamage = [] (const unsigned short d) {
@@ -129,9 +139,7 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 		return std::max(1, static_cast<int>(dist(Game::rng)));
 	};
 
-	sf::FloatRect expl_box(pos.x, pos.y, TILE_SIZE, TILE_SIZE);
-
-	auto tryHit = [lr, &calcDamage, &expl_box] (Game::MovingEntity *const e, const unsigned short d) {
+	auto tryHit = [lr, &calcDamage] (Game::MovingEntity *const e, const unsigned short d, const sf::FloatRect& expl_box) {
 		if (e->hasShield() || e->isDying()) return;
 
 		// Check if entity's lifed
@@ -139,14 +147,14 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 		if (le == nullptr) return;
 
 		// Check if entity's bounding box intersects this tile
-		sf::FloatRect e_box(e->getPosition().x, e->getPosition().y, TILE_SIZE, TILE_SIZE);
+		const sf::FloatRect e_box(e->getPosition().x, e->getPosition().y, TILE_SIZE, TILE_SIZE);
 		if (e_box.intersects(expl_box)) {
 			le->decLife(calcDamage(d));
 			if (lr->isPlayer(e)) {
 				e->setHurt(true);
 				e->giveShield(Game::DAMAGE_SHIELD_TIME);
 			} else {
-				auto se = dynamic_cast<Game::Scored*>(e);
+				const auto se = dynamic_cast<Game::Scored*>(e);
 				if (se != nullptr)
 					lr->spawnPoints(e->getPosition(), se->getPointsGiven());
 			}
@@ -157,7 +165,7 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 	};
 
 	for (auto& e : moving[4]) {
-		tryHit(e, 0);
+		tryHit(e, 0, origin_box);
 	}
 	for (unsigned short dir = 0; dir < 4; ++dir) {
 		for (unsigned short d = 1; d <= propagation[dir]; ++d) {
@@ -177,9 +185,9 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 				break;
 			}
 
-			sf::FloatRect expl_box(new_tile.x * TILE_SIZE, new_tile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+			const sf::FloatRect expl_box(new_tile.x * TILE_SIZE, new_tile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 			for (auto& e : moving[dir]) {
-				tryHit(e, d);
+				tryHit(e, d, expl_box);
 			}
 		}
 	}
@@ -192,8 +200,8 @@ void Explosion::draw(sf::RenderTarget& window) {
 	window.draw(animatedSprite);
 	// Draw horizontal
 	sf::Vector2i m_tile = Game::tile(pos);
-	unsigned short h_start_tile = m_tile.x - propagation[ANIM_LEFT],
-		       h_end_tile = m_tile.x + propagation[ANIM_RIGHT];
+	const unsigned short h_start_tile = m_tile.x - propagation[ANIM_LEFT],
+	                     h_end_tile = m_tile.x + propagation[ANIM_RIGHT];
 	explosionH.update(frameTime);
 	for (unsigned short i = h_start_tile; i <= h_end_tile; ++i) {
 		if (i == m_tile.x) continue;
@@ -201,8 +209,8 @@ void Explosion::draw(sf::RenderTarget& window) {
 		window.draw(explosionH);
 	}
 	// Draw vertical
-	unsigned short v_start_tile = m_tile.y - propagation[ANIM_UP],
-		       v_end_tile = m_tile.y + propagation[ANIM_DOWN];
+	const unsigned short v_start_tile = m_tile.y - propagation[ANIM_UP],
+	                     v_end_tile = m_tile.y + propagation[ANIM_DOWN];
 	explosionV.update(frameTime);
 	for (unsigned short i = v_start_tile; i <= v_end_tile; ++i) {
 		if (i == m_tile.y) continue;
