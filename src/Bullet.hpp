@@ -15,14 +15,19 @@ class Bullet : public Game::MovingEntity {
 	 *  The effective number of frames is established by nMotionFrames.
 	 */
 	unsigned short directionality = 1;
+	
 	/** How many tiles does this bullet travel; -1 means infinite. */
-	short range = -1;
+	short range;
+	unsigned short damage;
+
 	unsigned short nMotionFrames = 1,  // up to 2
 		       nDestroyFrames = 4; // up to 5
 
 	bool _isTransparentTo(const Entity *const) const;
 public:
-	Bullet(const sf::Vector2f& pos, unsigned short id);
+	constexpr static float BASE_SPEED = 150.f;
+
+	Bullet(const sf::Vector2f& pos, unsigned short id, float speed, unsigned short damage, short range = -1);
 };
 
 }

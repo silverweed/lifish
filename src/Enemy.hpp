@@ -16,13 +16,27 @@ class Enemy : public Game::MovingEntity, public Game::Lifed, public Game::Scored
 	/** The function determining this enemy's movements */
 	AIBoundFunction ai;
 
-	bool contactDamage = false;
-	unsigned short damage;
-
-	// TODO: type of bullets, fire rate, etc
 	bool _isTransparentTo(const Entity *const e) const override;
 public:
 	constexpr static float BASE_SPEED = 75.f;
+	enum AttackType : unsigned short {
+		SIMPLE      = 1,
+		CONTACT     = 1 << 1,
+		CONTINUOUS  = 1 << 2,
+		RANGED      = 1 << 3,
+		BLOCKING    = 1 << 4
+	};
+
+	struct {
+		unsigned short type;
+		/** If atktype != CONTINUOUS, cooldown is 1000/fireRate ms. */
+		float fireRate;
+		unsigned short id;
+		unsigned short damage;
+		/** Projectile speed, in units of Bullet::BASE_SPEED */
+		float speed;
+		short range;
+	} attack;	
 
 	/** Whether this enemy is currently seeing the player (i.e.
 	 *  it shares a coordinate with him and no walls are in the middle)
@@ -33,10 +47,6 @@ public:
 
 	void setAI(AIFunction aifunc) { ai = aifunc(this); }
 	AIBoundFunction getAI() const { return ai; }
-
-	bool hasContactDamage() const { return contactDamage; }
-
-	unsigned short getDamage() const { return damage; }
 };
 
 }

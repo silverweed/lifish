@@ -2,10 +2,15 @@
 
 using Game::Bullet;
 
-Bullet::Bullet(const sf::Vector2f& pos, unsigned short id)
-	: Game::MovingEntity(pos, Game::getAsset("test", "bullets.png"))
+Bullet::Bullet(const sf::Vector2f& pos, unsigned short id, float _speed, unsigned short _damage, short _range) :
+	Game::MovingEntity(pos, Game::getAsset("test", "bullets.png")),
+	range(_range),
+	damage(_damage)
 {
+	speed = BASE_SPEED * _speed;
 	canTeleport = false;
+	transparentTo.enemies = false;
+	transparentTo.players = false;
 
 	// Bullets have a variable number of frames, up to 13:
 	// motion frames: 1 ~ 8 (max 8 / directional per direction)
@@ -39,10 +44,10 @@ Bullet::Bullet(const sf::Vector2f& pos, unsigned short id)
 		}
 		break;
 	case 1:
+		// same animation for all directions
 		for (unsigned short dir = 0; dir < 4; ++dir) {
-			for (unsigned short i = 0; i < nMotionFrames && i < 8; ++i) {
+			for (unsigned short i = 0; i < nMotionFrames && i < 8; ++i)
 				animations[dir].addFrame(sf::IntRect((j++) * TILE_SIZE, (id-1) * TILE_SIZE, TILE_SIZE, TILE_SIZE));
-			}
 		}
 		break;
 	default:

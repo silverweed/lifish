@@ -55,7 +55,17 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 		for (unsigned short left = 0; left < LEVEL_WIDTH; ++left) {
 			const sf::Vector2f curPos = sf::Vector2f((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
 			unsigned short enemy_id = 0;
+			struct {
+				unsigned short type;
+				float fireRate;
+				unsigned short id;
+				unsigned short damage;
+				float speed;
+				short range;
+			} enemy_attack;	
+
 			switch (level->getTile(left, top)) {
+				using AT = Game::Enemy::AttackType;
 			case EntityType::FIXED: 
 				fixedEntities[top * LEVEL_WIDTH + left] = 
 					new Game::FixedWall(curPos, level->tileIDs.fixed);
@@ -101,16 +111,83 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 			case EntityType::BOSS:
 				// TODO
 				break;
-			case EntityType::ENEMY1: enemy_id = 1; break;
-			case EntityType::ENEMY2: enemy_id = 2; break;
-			case EntityType::ENEMY3: enemy_id = 3; break;
-			case EntityType::ENEMY4: enemy_id = 4; break;
-			case EntityType::ENEMY5: enemy_id = 5; break;
-			case EntityType::ENEMY6: enemy_id = 6; break;
-			case EntityType::ENEMY7: enemy_id = 7; break;
-			case EntityType::ENEMY8: enemy_id = 8; break;
-			case EntityType::ENEMY9: enemy_id = 9; break;
-			case EntityType::ENEMY10: enemy_id = 10; break;
+			case EntityType::ENEMY1: 
+				// TODO: make enemy_attack configurable from levels.json
+				enemy_id = 1;
+				enemy_attack.id = 1;
+				enemy_attack.type = AT::SIMPLE;
+				enemy_attack.damage = 1;
+				enemy_attack.speed = 1;
+				enemy_attack.fireRate = 1;
+				break;
+			case EntityType::ENEMY2: 
+				enemy_id = 2;
+				enemy_attack.id = 1;
+				enemy_attack.type = AT::SIMPLE;
+				enemy_attack.damage = 1;
+				enemy_attack.speed = 1;
+				enemy_attack.fireRate = 2;
+				break;
+			case EntityType::ENEMY3: 
+				enemy_id = 3;
+				enemy_attack.id = 1;
+				enemy_attack.type = AT::SIMPLE;
+				enemy_attack.damage = 2;
+				enemy_attack.speed = 0.5;
+				enemy_attack.fireRate = 1;
+				break;
+			case EntityType::ENEMY4:
+				enemy_id = 4;
+				enemy_attack.id = 1;
+				enemy_attack.type = AT::CONTACT;
+				enemy_attack.damage = 2;
+				enemy_attack.fireRate = 1;
+				break;
+			case EntityType::ENEMY5: 
+				enemy_id = 5;
+				enemy_attack.id = 1;
+				enemy_attack.type = AT::CONTINUOUS | AT::BLOCKING;
+				enemy_attack.damage = 2;
+				enemy_attack.speed = 1;
+				break;
+			case EntityType::ENEMY6: 
+				enemy_id = 6;
+				enemy_attack.id = 1;
+				enemy_attack.type = AT::SIMPLE;
+				enemy_attack.damage = 3;
+				enemy_attack.fireRate = 1.5;
+				enemy_attack.speed = 0.5;
+				break;
+			case EntityType::ENEMY7: 
+				enemy_id = 7;
+				enemy_attack.id = 1;
+				enemy_attack.type = AT::CONTACT;
+				enemy_attack.damage = 1;
+				enemy_attack.fireRate = 1.5;
+				break;
+			case EntityType::ENEMY8: 
+				enemy_id = 8;
+				enemy_attack.id = 1;
+				enemy_attack.type = AT::RANGED | AT::CONTINUOUS | AT::BLOCKING;
+				enemy_attack.damage = 3;
+				enemy_attack.range = 5;
+				enemy_attack.speed = 0.5;
+				break;
+			case EntityType::ENEMY9: 
+				enemy_id = 9;
+				enemy_attack.id = 1;
+				enemy_attack.type = AT::CONTINUOUS | AT::BLOCKING;
+				enemy_attack.damage = 3;
+				enemy_attack.speed = 1;
+				break;
+			case EntityType::ENEMY10: 
+				enemy_id = 10;
+				enemy_attack.id = 1;
+				enemy_attack.type = AT::SIMPLE | AT::BLOCKING;
+				enemy_attack.damage = 4;
+				enemy_attack.fireRate = 0.7;
+				enemy_attack.speed = 1;
+				break;
 			default:
 				  break;
 			}
@@ -118,6 +195,12 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				auto enemy = new Game::Enemy(curPos, enemy_id);
 				enemy->setAI(Game::ai_functions[level->getLevelSet()->getEnemyInfo(enemy_id).ai]);
 				enemy->setSpeed(Game::Enemy::BASE_SPEED * level->getLevelSet()->getEnemyInfo(enemy_id).speed);
+				enemy->attack.id = enemy_attack.id;
+				enemy->attack.type = enemy_attack.type;
+				enemy->attack.damage = enemy_attack.damage;
+				enemy->attack.speed = enemy_attack.speed;
+				enemy->attack.fireRate = enemy_attack.fireRate;
+				enemy->attack.range = enemy_attack.range;
 				movingEntities.push_back(enemy);
 			}
 		}
@@ -378,9 +461,9 @@ void LevelRenderer::detectCollisions() {
 				}
 
 				if (!opaque && !(enemy->isDying() || player->hasShield())) {
-					if (enemy->hasContactDamage()) {
+					if (enemy->attack.type & Enemy::AttackType::CONTACT) {
 						// TODO: attack sprite
-						player->decLife(enemy->getDamage());
+						player->decLife(enemy->attack.damage);
 					} else {
 						player->decLife(1);
 					}
