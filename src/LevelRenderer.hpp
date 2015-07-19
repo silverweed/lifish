@@ -17,6 +17,7 @@
 #include "Temporary.hpp"
 #include "Bomb.hpp"
 #include "Bullet.hpp"
+#include "Boss.hpp"
 
 namespace Game {
 
@@ -26,6 +27,7 @@ class LevelRenderer : private sf::NonCopyable {
 	using MovingEntityList = std::list<Game::LifedMovingEntity*>;
 	using TemporaryEntityList = std::list<Game::Temporary*>;
 	using BulletsList = std::list<Game::Bullet*>;
+	using BossList = std::list<Game::Boss*>;
 
 	/** The level this object is rendering */
 	Game::Level *level = nullptr;
@@ -49,6 +51,9 @@ class LevelRenderer : private sf::NonCopyable {
 
 	/** The players */
 	std::array<Game::Player*, Game::MAX_PLAYERS> players;
+
+	/** The bosses, if any */
+	BossList bosses;
 
 	/** The first Teleport of the level, if any. Keeping the
 	 *  pointer to it allows us to traverse the Teleports'

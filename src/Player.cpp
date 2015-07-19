@@ -88,6 +88,7 @@ void Player::resurrect() {
 	dead = false;
 	animatedSprite.setAnimation(*&animations[ANIM_DOWN]);
 	animatedSprite.pause();
+	life = MAX_LIFE;
 	frameClock.restart();
 	realign();
 }

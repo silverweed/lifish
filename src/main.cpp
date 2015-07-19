@@ -140,6 +140,7 @@ int main(int argc, char **argv) {
 				if (!players[i]->playDeathAnimation()) {
 					if (players[i]->getRemainingLives() < 0) {
 						lr.removePlayer(i + 1);
+						players[i] = nullptr;
 					} else {
 						players[i]->resurrect();
 						players[i]->giveShield(Game::RESURRECT_SHIELD_TIME);

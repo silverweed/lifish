@@ -13,7 +13,7 @@ short keyToNumber(sf::Keyboard::Key key);
 
 namespace Game {
 
-inline float abs(float num) {
+template<typename T> inline T abs(T num) {
 #ifdef IS_APPLE
 // Apple Clang is a "good" compiler...
 	if (num < 0) return -num;

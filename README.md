@@ -14,26 +14,28 @@
 - [x] Collisions with walls
 - [ ] Powerups can be taken by players
 - [x] Enemies  
-  -   [x] Enemies move  
-    -     [x] Soldier/Sgt.Cool AI
-    -     [x] ThickLizzy/etc AI
-    -     [x] Thing/etc AI
-  -   [x] Enemies shoot
-  -   [x] Enemies die when hit by explosions
-- [ ] Bosses   
-  -   [ ] Bosses are hit by explosions
-  -   [ ] Bosses die correctly
+  - [x] Enemies move  
+    - [x] Soldier/Sgt.Cool AI
+    - [x] ThickLizzy/etc AI
+    - [x] Thing/etc AI
+  - [x] Enemies shoot
+  - [x] Enemies die when hit by explosions
+- [x] Bosses   
+  - [x] Boss collisions
+  - [ ] Bosses shoot
+  - [ ] Bosses are hit by explosions
+  - [ ] Bosses die correctly
 - [x] Players   
-  -   [x] Players move
-  -   [x] Players drop bombs
-  -   [x] Players are hurt by explosions
-  -   [x] Players die when they should
+  - [x] Players move
+  - [x] Players drop bombs
+  - [x] Players are hurt by explosions
+  - [x] Players die when they should
 - [x] Bombs
 - [x] Coins   
-  -   [x] Coins can be taken
-  -   [ ] Taking all coins causes Extra Game
+  - [x] Coins can be taken
+  - [ ] Taking all coins causes Extra Game
 - [x] Bullets
-  - [ ] Directional bullets use correct sprites
+  - [x] Directional bullets use correct sprites
 - [ ] Hurry Up
 - [ ] Victory
 - [ ] Game Over

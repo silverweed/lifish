@@ -28,6 +28,8 @@ void LevelRenderer::_clearEntities() {
 		if (e != nullptr) delete e;
 	for (auto& e : movingEntities)
 		delete e;
+	for (auto& b : bosses)
+		delete b;
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
 		for (unsigned short j = 0; j < bombs[i].size(); ++j)
 			if (bombs[i][j] != nullptr) {
@@ -47,6 +49,7 @@ void LevelRenderer::_clearEntities() {
 	temporary.clear();
 	movingEntities.clear();
 	bullets.clear();
+	bosses.clear();
 }
 
 void LevelRenderer::loadLevel(Game::Level *const _level) {
@@ -115,7 +118,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 					break;
 				}
 			case EntityType::BOSS:
-				// TODO
+				bosses.push_back(new Game::Boss(curPos));
 				break;
 			case EntityType::ENEMY1: 
 				// TODO: make enemy_attack configurable from levels.json
@@ -214,11 +217,13 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 	}
 	
 	level->setOrigin(origin);
-	for (const auto& entity : fixedEntities) 
+	for (auto& entity : fixedEntities) 
 		if (entity != nullptr)
 			entity->setOrigin(origin);
-	for (const auto& entity : movingEntities)
+	for (auto& entity : movingEntities)
 		entity->setOrigin(origin);
+	for (auto& boss : bosses)
+		boss->setOrigin(origin);
 }
 
 void LevelRenderer::renderFrame(sf::RenderWindow& window) {
@@ -309,7 +314,12 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 			++it;
 		}
 	}
-
+	
+	for (auto it = bosses.begin(); it != bosses.end(); ) {
+		// TODO
+		(*it)->draw(window);
+		++it;
+	}
 }
 
 void LevelRenderer::detectCollisions() {
@@ -564,6 +574,22 @@ void LevelRenderer::detectCollisions() {
 					}
 				}
 			}
+		
+
+			// Check for impacts with bosses
+			for (const auto& boss : bosses) {
+				if (boss->intersects(sf::FloatRect((next_tile.x+1)*TILE_SIZE, (next_tile.y+1)*TILE_SIZE, TILE_SIZE, TILE_SIZE))) {
+					if (is_player) {
+						if (!(entity->hasShield() || entity->isDying())) {
+							entity->kill();
+							break;
+						}
+					} else {
+						entity->colliding = true;
+						break;
+					}
+				}
+			}
 		}
 	}
 
@@ -584,6 +610,14 @@ void LevelRenderer::detectCollisions() {
 		FixedEntity *other = fixedEntities[idx];
 		if (other != nullptr && !other->transparentTo.bullets) {
 			bullet->destroy();
+			continue;
+		}
+
+		for (const auto& boss : bosses) {
+			if (boss->intersects(sf::FloatRect(szpos.x, szpos.y, bullet->getSize(), bullet->getSize()))) {
+				bullet->destroy();
+				break;	
+			}
 		}
 	}
 }
@@ -785,7 +819,7 @@ void LevelRenderer::checkLinesOfSight() {
 
 short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& target, bool axis_x) {
 	unsigned short start, end;
-	// Check if src and target are on the same axis and:
+	// Assume src and target are on the same axis and:
 	//   if no opaque entity is between them, return their distance
 	//   else return -1.
 	if (axis_x) {
@@ -793,6 +827,7 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 			start = src.x, end = target.x;
 		else
 			start = target.x, end = src.x;
+
 		for (unsigned short i = start + 1; i < end; ++i) {
 			const unsigned short idx = (src.y - 1) * LEVEL_WIDTH + i - 1;
 			if (idx >= fixedEntities.size()) 
@@ -811,6 +846,7 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 			start = src.y, end = target.y;
 		else
 			start = target.y, end = src.y;
+
 		for (unsigned short i = start + 1; i < end; ++i) {
 			const unsigned short idx = (i - 1) * LEVEL_WIDTH + src.x - 1;
 			if (idx >= fixedEntities.size()) 

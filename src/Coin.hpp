@@ -11,6 +11,7 @@ namespace Game {
 
 class Coin : public Game::FixedEntity, public Game::Animated, public Game::Scored {
 	constexpr static float GRAB_TIME = 3000; // ms	
+	constexpr static unsigned int VALUE = 150;
 
 	sf::Clock grabClock;
 	bool grabbed = false;

@@ -75,6 +75,7 @@ Bullet::Bullet(const sf::Vector2f& _pos, const Game::Direction dir, unsigned sho
 	case Game::Direction::UP:    
 		d = directionality == 4 ? 1 : 0;
 		pos.x += (TILE_SIZE - size) / 2;
+		pos.y -= size;
 		break;
 	case Game::Direction::RIGHT:
 		d = directionality == 4 ? 2 : directionality == 2 ? 1 : 0; 
@@ -84,6 +85,7 @@ Bullet::Bullet(const sf::Vector2f& _pos, const Game::Direction dir, unsigned sho
 	case Game::Direction::LEFT: 
 		d = directionality == 4 ? 3 : directionality == 2 ? 1 : 0;
 		pos.y += (TILE_SIZE - size) / 2;
+		pos.x -= size;
 		break;
 	default: 
 		break;
@@ -103,7 +105,7 @@ Bullet::Bullet(const sf::Vector2f& _pos, const Game::Direction dir, unsigned sho
 
 	// destroy animations are non-directional
 	for (unsigned short i = j; i < j + nDestroyFrames && i < j + 5; ++i)
-		animations[ANIM_DEATH].addFrame(sf::IntRect(i * TILE_SIZE, (id-1) * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+		animations[ANIM_DEATH].addFrame(sf::IntRect((nMotionFrames * directionality + i) * TILE_SIZE, (id-1) * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
 	animatedSprite.setPosition(pos);
 	animatedSprite.setAnimation(animations[0]);
