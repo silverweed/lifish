@@ -179,7 +179,7 @@ void MovingEntity::prepareDeathAnimation() {
 
 bool MovingEntity::playDeathAnimation() {
 	animatedSprite.update(frameClock.restart());
-	return deathClock.getElapsedTime().asSeconds() > DEATH_TIME;
+	return deathClock.getElapsedTime().asMilliseconds() > DEATH_TIME;
 }
 
 void MovingEntity::draw(sf::RenderTarget& window) {

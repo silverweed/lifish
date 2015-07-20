@@ -8,6 +8,7 @@
 namespace Game {
 
 class Bullet : public Game::MovingEntity {
+protected:
 	/** If 1 => this bullet has the same animation for any direction, up to 8.
 	 *  If 2 => this bullet has 2 different animations when traveling UP/DOWN or
 	 *          LEFT/RIGHT, up to 4 per direction.
@@ -35,18 +36,22 @@ class Bullet : public Game::MovingEntity {
 
 	bool destroyed = false;
 
+	bool transparentToWalls = false;
+
 	bool _isTransparentTo(const Entity *const) const;
 public:
 	constexpr static float BASE_SPEED = 200.f;
 
+	/** This constructor is used by BossBullet */
+	Bullet(const sf::Vector2f& pos, const std::string& texture_name);
+	/** This is the constructor used by regular bullets */
 	Bullet(const sf::Vector2f& pos, const Game::Direction dir, unsigned short id,
 			float speed, unsigned short damage, short range = -1);
 
 	void setSource(const Game::Entity *e) { source = e; }
 	const Game::Entity* getSource() const { return source; }
 
-	void move() override;
-	void move(const Direction) override;
+	virtual void move() override;
 
 	void draw(sf::RenderTarget& window) override;
 
@@ -58,6 +63,8 @@ public:
 	bool isDestroyed() const { return destroyed && !animatedSprite.isPlaying(); }
 
 	unsigned short getSize() const { return size; }
+
+	bool isTransparentToWalls() const { return transparentToWalls; }
 };
 
 }

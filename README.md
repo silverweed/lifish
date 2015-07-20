@@ -22,7 +22,7 @@
   - [x] Enemies die when hit by explosions
 - [x] Bosses   
   - [x] Boss collisions
-  - [ ] Bosses shoot
+  - [x] Bosses shoot
   - [ ] Bosses are hit by explosions
   - [ ] Bosses die correctly
 - [x] Players   

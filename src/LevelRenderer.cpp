@@ -4,6 +4,7 @@
 #include "BreakableWall.hpp"
 #include "Coin.hpp"
 #include "Flash.hpp"
+#include "BossBullet.hpp"
 #include "Enemy.hpp"
 #include "Explosion.hpp"
 #include "Points.hpp"
@@ -62,6 +63,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 		_clearEntities();
 	}
 	level = _level;
+	bossShootClock.restart();
 
 	Game::Teleport *latest_teleport = nullptr;
 
@@ -312,6 +314,12 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		}
 	}
 
+	for (auto it = bosses.begin(); it != bosses.end(); ) {
+		// TODO
+		(*it)->draw(window);
+		++it;
+	}
+
 	for (auto it = bullets.begin(); it != bullets.end(); ) {
 		auto bullet = *it;
 		if (bullet->isDestroyed()) {
@@ -321,12 +329,6 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 			bullet->draw(window);
 			++it;
 		}
-	}
-	
-	for (auto it = bosses.begin(); it != bosses.end(); ) {
-		// TODO
-		(*it)->draw(window);
-		++it;
 	}
 }
 
@@ -580,25 +582,25 @@ void LevelRenderer::detectCollisions() {
 					}
 				}
 			}
-		
+		}
 
-			// Check for impacts with bosses
-			for (const auto& boss : bosses) {
-				if (boss->intersects(sf::FloatRect((next_tile.x+1)*TILE_SIZE, (next_tile.y+1)*TILE_SIZE, TILE_SIZE, TILE_SIZE))) {
-					if (is_player) {
-						if (!(entity->hasShield() || entity->isDying())) {
-							entity->kill();
-							break;
-						}
-					} else {
-						entity->colliding = true;
+		// Check for impacts with bosses
+		for (const auto& boss : bosses) {
+			if (boss->intersects(sf::FloatRect((next_tile.x+1)*TILE_SIZE, (next_tile.y+1)*TILE_SIZE, TILE_SIZE, TILE_SIZE))) {
+				if (is_player) {
+					if (!(entity->hasShield() || entity->isDying())) {
+						entity->kill();
 						break;
 					}
+				} else {
+					entity->colliding = true;
+					break;
 				}
 			}
 		}
 	}
 
+	// Check impact bullets - fixed/borders
 	for (auto& bullet : bullets) {
 		const auto pos = bullet->getPosition();
 		const auto szpos = pos + sf::Vector2f(bullet->getSize(), bullet->getSize());
@@ -607,20 +609,24 @@ void LevelRenderer::detectCollisions() {
 			bullet->destroy();
 			continue;
 		}
-		const auto tile = Game::tile(pos);
-		const unsigned short idx = (tile.y - 1) * LEVEL_WIDTH + tile.x - 1;
-		if (idx >= fixedEntities.size()) {
-			bullet->destroy();
-			continue;
-		}
-		FixedEntity *other = fixedEntities[idx];
-		if (other != nullptr && !other->transparentTo.bullets) {
-			bullet->destroy();
-			continue;
-		}
 
+		if (!bullet->isTransparentToWalls()) {
+			const auto tile = Game::tile(pos);
+			const unsigned short idx = (tile.y - 1) * LEVEL_WIDTH + tile.x - 1;
+			if (idx >= fixedEntities.size()) {
+				bullet->destroy();
+				continue;
+			}
+			FixedEntity *other = fixedEntities[idx];
+			if (other != nullptr && !other->transparentTo.bullets) {
+				bullet->destroy();
+				continue;
+			}
+		}
+		
 		for (const auto& boss : bosses) {
-			if (boss->intersects(sf::FloatRect(szpos.x, szpos.y, bullet->getSize(), bullet->getSize()))) {
+			if (boss != bullet->getSource()
+					&& boss->intersects(sf::FloatRect(szpos.x, szpos.y, bullet->getSize(), bullet->getSize()))) {
 				bullet->destroy();
 				break;	
 			}
@@ -797,6 +803,7 @@ void LevelRenderer::checkLinesOfSight() {
 	for (auto& e : movingEntities) {
 		if (isPlayer(e)) continue;
 		auto enemy = static_cast<Game::Enemy*>(e);
+		if (enemy->isDying() || enemy->isRecharging()) continue;
 
 		enemy->seeingPlayer = Direction::NONE;
 		const auto epos = Game::tile(e->getPosition());
@@ -908,4 +915,42 @@ void LevelRenderer::spawnPoints(const sf::Vector2f& pos, const int amount) {
 	}
 	auto width = Game::Points::CHARACTER_SIZE * nletters;
 	_pushTemporary(new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), amount));
+}
+
+void LevelRenderer::makeBossesShoot() {
+	if (bosses.size() == 0 || bossShootClock.getElapsedTime().asMilliseconds() < Game::Boss::SHOOT_INTERVAL) 
+		return;
+
+	bossShootClock.restart();
+	for (auto& boss: bosses) {
+		auto ppos = _findNearestPlayer(boss->getPosition());
+		if (ppos.x < 0) {
+			// no players found
+			return;
+		}
+		
+		const auto angles = boss->getShootingAngles(ppos);
+		for (unsigned short i = 0; i < angles.size(); ++i) {
+			const auto sp = boss->getShootingPoints()[i];
+			if (Game::distance(sp, ppos) > Game::Boss::MAX_RANGE)
+				continue;
+			auto bullet = new Game::BossBullet(sp, angles[i]);
+			bullet->setOrigin(origin);
+			bullet->setSource(boss);
+			bullets.push_back(bullet);
+		}
+	}
+}
+
+sf::Vector2f&& LevelRenderer::_findNearestPlayer(const sf::Vector2f& pos) const {
+	sf::Vector2f nearest(-1.f, -1.f);
+
+	for (const auto& player : players) {
+		if (player->isDying()) continue;
+		const auto ppos = player->getPosition();
+		if (nearest.x < 0 || Game::distance(pos, ppos) < Game::distance(pos, nearest)) {
+			nearest = ppos;
+		}
+	}
+	return std::move(nearest);
 }

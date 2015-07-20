@@ -61,4 +61,8 @@ inline std::ostream& operator<<(std::ostream& stream, const sf::Rect<T>& rect) {
 		<< " x " << rect.width << ", " << rect.height << ")";
 }
 
+inline double distance(const sf::Vector2f& a, const sf::Vector2f& b) {
+	return std::sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+}
+
 }

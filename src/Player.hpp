@@ -13,7 +13,7 @@ class Player : public Game::LifedMovingEntity {
 	constexpr static unsigned short DEATH_N_FRAMES = 3;
 	constexpr static unsigned short DEFAULT_MAX_BOMBS = 5;
 
-	constexpr static unsigned short DEATH_TIME = 5; // seconds
+	constexpr static unsigned short DEATH_TIME = 5000; // ms
 
 	bool _isTransparentTo(const Entity *const e) const override;
 public:
@@ -22,7 +22,8 @@ public:
 
 	struct {
 		unsigned short bombRadius = Game::Bomb::DEFAULT_RADIUS;
-		float bombFuseTime = Game::Bomb::DEFAULT_FUSE;
+		/** In ms */
+		unsigned short bombFuseTime = Game::Bomb::DEFAULT_FUSE;
 		unsigned short maxBombs = DEFAULT_MAX_BOMBS;
 	} powers;
 

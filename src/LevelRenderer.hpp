@@ -52,6 +52,7 @@ class LevelRenderer : private sf::NonCopyable {
 
 	/** The bosses, if any */
 	BossList bosses;
+	sf::Clock bossShootClock;
 
 	/** The first Teleport of the level, if any. Keeping the
 	 *  pointer to it allows us to traverse the Teleports'
@@ -71,6 +72,8 @@ class LevelRenderer : private sf::NonCopyable {
 	short _getDistance(const sf::Vector2i& src, const sf::Vector2i& target, bool axis_x);
 
 	short _getPlayerIndex(const Game::Entity *const) const;
+
+	sf::Vector2f&& _findNearestPlayer(const sf::Vector2f& pos) const;
 public:
 	LevelRenderer();
 	~LevelRenderer();
@@ -135,6 +138,8 @@ public:
 	bool removePlayer(const unsigned short id);
 
 	void spawnPoints(const sf::Vector2f& pos, const int amount);
+
+	void makeBossesShoot();
 };
 
 }

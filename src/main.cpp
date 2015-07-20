@@ -117,6 +117,8 @@ int main(int argc, char **argv) {
 
 		lr.selectEnemyMoves();
 
+		lr.makeBossesShoot();
+
 		lr.checkBombExplosions();
 
 		lr.checkExplosionHits();

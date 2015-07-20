@@ -4,6 +4,14 @@
 
 using Game::Bullet;
 
+Bullet::Bullet(const sf::Vector2f& _pos, const std::string& texture_name) :
+	Game::MovingEntity(_pos, texture_name),
+	shift(0.f, 0.f)
+{
+	animations[0].setSpriteSheet(texture);
+	animations[ANIM_DEATH].setSpriteSheet(texture);
+}
+
 Bullet::Bullet(const sf::Vector2f& _pos, const Game::Direction dir, unsigned short id,
 		float _speed, unsigned short _damage, short _range) :
 	Game::MovingEntity(_pos, Game::getAsset("test", "bullets.png")),
@@ -159,10 +167,6 @@ void Bullet::move() {
 	animatedSprite.update(frameTime);
 }
 
-void Bullet::move(const Direction) {
-	move();
-}
-
 void Bullet::draw(sf::RenderTarget& window) {
 	Game::Animated::draw(window);
 }
@@ -185,7 +189,7 @@ void Bullet::destroy() {
 				break; 
 			}
 			animatedSprite.setPosition(pos);
-			animatedSprite.play(*&animations[ANIM_DEATH]);
+			animatedSprite.play(animations[ANIM_DEATH]);
 		}
 		animatedSprite.setLooped(false);
 		destroyed = true;

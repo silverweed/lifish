@@ -86,7 +86,7 @@ bool Player::_isTransparentTo(const Entity *const e) const {
 
 void Player::resurrect() {
 	dead = false;
-	animatedSprite.setAnimation(*&animations[ANIM_DOWN]);
+	animatedSprite.setAnimation(animations[ANIM_DOWN]);
 	animatedSprite.pause();
 	life = MAX_LIFE;
 	frameClock.restart();
@@ -94,8 +94,8 @@ void Player::resurrect() {
 }
 
 bool Player::playDeathAnimation() {
-	float time = deathClock.getElapsedTime().asSeconds();
-	if (time > 3) {
+	float time = deathClock.getElapsedTime().asMilliseconds();
+	if (time > 3000) {
 		animatedSprite.setFrame(1);
 		animatedSprite.pause();
 	} else {

@@ -59,7 +59,7 @@ bool Enemy::isRecharging() const {
 
 void Enemy::shoot() {
 	attackClock.restart();
-	animatedSprite.setAnimation(*&animations[directionToUshort(direction)]);
+	animatedSprite.setAnimation(animations[directionToUshort(direction)]);
 	shooting = true;
 }
 

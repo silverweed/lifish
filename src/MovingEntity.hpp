@@ -43,7 +43,7 @@ protected:
 	float shieldTime = -1; // milliseconds; negative means "no shield"
 	sf::Clock shieldClock;
 
-	constexpr static unsigned short DEATH_TIME = 2; // seconds
+	constexpr static unsigned short DEATH_TIME = 2000; // ms
 	sf::Clock deathClock;
 
 	virtual bool _isTransparentTo(const Entity *const e) const = 0;

@@ -4,7 +4,7 @@
 using Game::Bomb;
 using Game::TILE_SIZE;
 
-Bomb::Bomb(const sf::Vector2f& pos, const float _fuseTime, const unsigned short _radius)
+Bomb::Bomb(const sf::Vector2f& pos, const unsigned short _fuseTime, const unsigned short _radius)
 	: FixedEntity(pos, Game::getAsset("test", "bomb.png")), fuseTime(_fuseTime), radius(_radius)
 {
 	animations[0].setSpriteSheet(texture);
@@ -21,7 +21,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const float _fuseTime, const unsigned short 
 }
 
 void Bomb::draw(sf::RenderTarget& window) {
-	if (ignited && fuseTime - fuseClock.getElapsedTime().asSeconds() < 2 && !isExploded()) {
+	if (ignited && fuseTime - fuseClock.getElapsedTime().asMilliseconds() < 2000 && !isExploded()) {
 		Animation *anim = &animations[1];
 		animatedSprite.play(*anim);
 	}
