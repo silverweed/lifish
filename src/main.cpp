@@ -138,7 +138,7 @@ int main(int argc, char **argv) {
 			} else if (players[i]->isDying()) {
 				players[i]->prepareDeathAnimation();
 				if (!players[i]->playDeathAnimation()) {
-					if (players[i]->getRemainingLives() < 0) {
+					if (players[i]->getRemainingLives() <= 0) {
 						lr.removePlayer(i + 1);
 						players[i] = nullptr;
 					} else {

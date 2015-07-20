@@ -6,8 +6,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System/NonCopyable.hpp>
 #include <vector>
-#include <forward_list>
-#include <list>
 #include <array>
 #include "Level.hpp"
 #include "FixedEntity.hpp"
@@ -24,10 +22,10 @@ namespace Game {
 class LevelRenderer : private sf::NonCopyable {
 	/** For Fixed Entities we use a fixed-size array for faster lookup */
 	using FixedEntityList = std::array<Game::FixedEntity*, LEVEL_WIDTH * LEVEL_HEIGHT>;
-	using MovingEntityList = std::list<Game::LifedMovingEntity*>;
-	using TemporaryEntityList = std::list<Game::Temporary*>;
-	using BulletsList = std::list<Game::Bullet*>;
-	using BossList = std::list<Game::Boss*>;
+	using MovingEntityList = std::vector<Game::LifedMovingEntity*>;
+	using TemporaryEntityList = std::vector<Game::Temporary*>;
+	using BulletsList = std::vector<Game::Bullet*>;
+	using BossList = std::vector<Game::Boss*>;
 
 	/** The level this object is rendering */
 	Game::Level *level = nullptr;

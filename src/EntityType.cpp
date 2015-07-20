@@ -2,9 +2,7 @@
 
 using Game::EntityType;
 
-namespace Game {
-
-EntityType entityFromLetter(const char c) {
+EntityType Game::entityFromLetter(const char c) {
 	switch (c) {
 	case '0': return EntityType::EMPTY;
 	case '1': return EntityType::FIXED;
@@ -28,9 +26,7 @@ EntityType entityFromLetter(const char c) {
 	return EntityType::UNKNOWN;
 }
 
-}
-
-std::ostream& operator<<(std::ostream& stream, const EntityType& et) {
+std::ostream& Game::operator<<(std::ostream& stream, const EntityType& et) {
 	switch (et) {
 	case EntityType::EMPTY:     stream << '0'; break;
 	case EntityType::FIXED:     stream << '1'; break;

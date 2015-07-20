@@ -4,6 +4,7 @@
 #include "Scored.hpp"
 #include "utils.hpp"
 #include <random>
+#include <list>
 
 using Game::Explosion;
 using Game::TILE_SIZE;
@@ -102,9 +103,13 @@ void Explosion::propagate(LevelRenderer *const lr) {
 }
 
 void Explosion::checkHit(LevelRenderer *const lr) {
-	std::array<std::list<Game::LifedMovingEntity*>, 5> moving;
+	std::array<std::vector<Game::LifedMovingEntity*>, 5> moving;
 
 	const auto allmoving = lr->getMovingEntities();
+
+	for (unsigned short i = 0; i < moving.size(); ++i)
+		moving[i].reserve(allmoving.size());
+
 	const sf::Vector2i m_tile = Game::tile(pos);
 	const sf::FloatRect origin_box(pos.x, pos.y, TILE_SIZE, TILE_SIZE),
 		            row_box(TILE_SIZE, pos.y, LEVEL_WIDTH * TILE_SIZE, TILE_SIZE),

@@ -28,6 +28,6 @@ enum class EntityType {
 
 EntityType entityFromLetter(const char c);
 
-}
-
 std::ostream& operator<<(std::ostream& stream, const Game::EntityType& et);
+
+}

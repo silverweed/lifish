@@ -59,20 +59,14 @@ bool Enemy::isRecharging() const {
 
 void Enemy::shoot() {
 	attackClock.restart();
+	animatedSprite.setAnimation(*&animations[directionToUshort(direction)]);
 	shooting = true;
 }
 
 void Enemy::draw(sf::RenderTarget& window) {
 	if (shooting) {
 		if (attackClock.getElapsedTime().asMilliseconds() < shootFrameTime) {
-			unsigned short d = ANIM_DOWN;
-			switch (direction) {
-			case Game::Direction::UP: d = ANIM_UP; break;
-			case Game::Direction::RIGHT: d = ANIM_RIGHT; break;
-			case Game::Direction::DOWN: d = ANIM_DOWN; break;
-			case Game::Direction::LEFT: d = ANIM_LEFT; break;
-			default: break;
-			}
+			const unsigned short d = Game::directionToUshort(direction);
 			shootFrame[d].setPosition(pos);
 			window.draw(shootFrame[d]);
 			return;
@@ -81,4 +75,15 @@ void Enemy::draw(sf::RenderTarget& window) {
 		}
 	}
 	Game::MovingEntity::draw(window);
+}
+
+void Enemy::move(const Direction dir) {
+	if (blocked) {
+		if (attackClock.getElapsedTime().asMilliseconds() < attack.blockTime) {
+			animatedSprite.update(frameClock.restart());
+			return;
+		}
+		blocked = false;
+	}
+	MovingEntity::move(dir);
 }

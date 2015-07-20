@@ -1,6 +1,7 @@
 #include "Level.hpp"
 #include "Game.hpp"
 #include "GameCache.hpp"
+#include "utils.hpp"
 #include <iostream>
 #include <sstream>
 

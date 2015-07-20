@@ -17,6 +17,11 @@ LevelRenderer::LevelRenderer() {
 	players.fill(nullptr);
 	for (unsigned short i = 0; i < bombs.size(); ++i)
 		bombs[i].fill(nullptr);
+
+	movingEntities.reserve(LEVEL_WIDTH * LEVEL_HEIGHT);
+	temporary.reserve(LEVEL_WIDTH * LEVEL_HEIGHT);
+	bosses.reserve(32);
+	bullets.reserve(1024);
 }
 
 LevelRenderer::~LevelRenderer() {
@@ -69,6 +74,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				float fireRate;
 				unsigned short id;
 				unsigned short damage;
+				unsigned short blockTime = 0;
 				float speed;
 				short range = -1;
 			} enemy_attack;	
@@ -196,6 +202,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				enemy_attack.type = AT::SIMPLE | AT::BLOCKING;
 				enemy_attack.damage = 4;
 				enemy_attack.fireRate = 0.7;
+				enemy_attack.blockTime = 650;
 				enemy_attack.speed = 1;
 				break;
 			default:
@@ -210,6 +217,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				enemy->attack.damage = enemy_attack.damage;
 				enemy->attack.speed = enemy_attack.speed;
 				enemy->attack.fireRate = enemy_attack.fireRate;
+				enemy->attack.blockTime = enemy_attack.blockTime;
 				enemy->attack.range = enemy_attack.range;
 				movingEntities.push_back(enemy);
 			}
@@ -352,10 +360,9 @@ void LevelRenderer::detectCollisions() {
 		}
 	};
 
-	unsigned short i = 0;
-	for (auto it = movingEntities.begin(); it != movingEntities.end(); ++it, ++i) {
+	for (unsigned short i = 0, len = movingEntities.size(); i < len; ++i) {
 		if (checked[i]) continue;
-		MovingEntity *entity = *it;
+		MovingEntity *entity = movingEntities[i];
 		if (entity->isDying()) continue;
 		sf::Vector2f pos = entity->getPosition();
 		const bool is_player = isPlayer(entity);
@@ -475,11 +482,10 @@ void LevelRenderer::detectCollisions() {
 
 		// Check for impacts with moving entities
 		bool collision_detected = false;
-		unsigned short j = 0;
-		for (auto jt = movingEntities.begin(); jt != movingEntities.end(); ++jt, ++j) {
+		for (unsigned short j = 0; j < len; ++j) {
 			if (i == j) continue;
 
-			MovingEntity *other = *jt;
+			MovingEntity *other = movingEntities[j];
 			sf::Vector2f opos = other->getPosition();
 
 			if (collide(pos, opos, dir)) {
@@ -647,7 +653,7 @@ void LevelRenderer::selectEnemyMoves() {
 			continue;
 		}
 		auto enemy = static_cast<Game::Enemy*>(entity);
-		if (enemy != nullptr) {
+		if (enemy != nullptr && !enemy->isBlocked()) {
 			enemy->setDirection(enemy->getAI()(this));
 		}
 	}
@@ -692,11 +698,16 @@ void LevelRenderer::applyEnemyMoves() {
 					bullets.push_back(bullet);
 
 					if (enemy->attack.type & Game::Enemy::AttackType::BLOCKING) {
-						enemy->stop();
-						continue;
+						if (enemy->attack.type & Game::Enemy::AttackType::SIMPLE)
+							enemy->block();
+						else {
+							enemy->stop();
+							continue;
+						}
 					}
 				}
-			} else if (enemy->attack.type & Game::Enemy::AttackType::BLOCKING) {
+			} else if (enemy->attack.type & Game::Enemy::AttackType::BLOCKING
+					&& !(enemy->attack.type & Game::Enemy::AttackType::SIMPLE)) {
 				enemy->stop();
 				continue;
 			}
@@ -871,7 +882,9 @@ bool LevelRenderer::isPlayer(const Entity *const e) const {
 }
 
 bool LevelRenderer::removePlayer(const unsigned short id) {
-	movingEntities.remove(players[id-1]);
+	//movingEntities.remove(players[id-1]);
+	movingEntities.erase(std::remove(movingEntities.begin(), 
+				movingEntities.end(), players[id-1]), movingEntities.end());
 	delete players[id-1];
 	players[id-1] = nullptr;
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)

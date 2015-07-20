@@ -18,8 +18,9 @@ class Enemy : public Game::LifedMovingEntity, public Game::Scored {
 	AIBoundFunction ai;
 
 	sf::Clock attackClock;
-
 	bool shooting = false;
+
+	bool blocked = false;
 
 	bool _isTransparentTo(const Entity *const e) const override;
 public:
@@ -35,6 +36,10 @@ public:
 		unsigned short type;
 		/** Cooldown is 1000/fireRate ms. */
 		float fireRate;
+		/** If attacktype is SIMPLE & BLOCKING, this is the time
+		 *  the enemy stops after shooting (in ms -- should be more than shootFrameTime)
+		 */
+		unsigned short blockTime;
 		unsigned short id;
 		unsigned short damage;
 		/** Projectile speed, in units of Bullet::BASE_SPEED */
@@ -63,11 +68,16 @@ public:
 
 	void draw(sf::RenderTarget& window) override;
 
+	void move(const Game::Direction dir) override;
+
 	void setOrigin(const sf::Vector2f& pos) override {
 		for (unsigned short i = 0; i < 4; ++i)
 			shootFrame[i].setOrigin(pos);
 		Game::MovingEntity::setOrigin(pos);
 	}
+
+	void block() { blocked = true; }
+	bool isBlocked() const { return blocked; }
 };
 
 }
