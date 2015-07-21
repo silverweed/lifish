@@ -52,6 +52,17 @@ void Explosion::propagate(LevelRenderer *const lr) {
 	const auto level = lr->getLevel();
 	const auto bosses = lr->getBosses();
 
+	// Check for boss at the explosion center
+	for (auto& boss : bosses) {
+		if (!boss->isDying() && boss->occupies(m_tile)) {
+			boss->decLife(1);
+			if (boss->getLife() <= 0)
+				boss->kill();
+			else
+				boss->hurt();
+		}
+	}
+
 	for (unsigned short dir = 0; dir < 4; ++dir) {	
 		for (unsigned short d = 1; d <= radius; ++d) {
 			if (!propagating[dir]) continue;
