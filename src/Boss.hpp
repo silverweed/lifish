@@ -41,7 +41,7 @@ public:
 		return shootingPoints;
 	}
 
-	std::array<double, N_SHOOTING_POINTS>&& getShootingAngles(const sf::Vector2f& pos) const;
+	std::array<double, N_SHOOTING_POINTS> getShootingAngles(const sf::Vector2f& pos) const;
 
 	void hurt();
 

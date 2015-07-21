@@ -79,7 +79,7 @@ class LevelRenderer : private sf::NonCopyable {
 
 	short _getPlayerIndex(const Game::Entity *const) const;
 
-	sf::Vector2f&& _findNearestPlayer(const sf::Vector2f& pos) const;
+	sf::Vector2f _findNearestPlayer(const sf::Vector2f& pos) const;
 public:
 	LevelRenderer();
 	~LevelRenderer();

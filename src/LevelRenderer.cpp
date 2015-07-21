@@ -317,13 +317,13 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 	for (auto it = bosses.begin(); it != bosses.end(); ) {
 		auto boss = *it;
 		if (boss->isDead()) {
-			delete boss;
-			it = bosses.erase(it);
 			for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 				if (players[i] == nullptr || players[i]->isDying())
 					continue;
 				Game::score[i] += boss->getPointsGiven();
 			}
+			delete boss;
+			it = bosses.erase(it);
 			spawnPoints(boss->getPosition(), boss->getPointsGiven(), true);
 			continue;
 		} if (boss->isDying()) {
@@ -968,7 +968,7 @@ void LevelRenderer::makeBossesShoot() {
 	bossShootClock.restart();
 	for (auto& boss : bosses) {
 		if (boss->isDying()) continue;
-		auto ppos = _findNearestPlayer(boss->getPosition());
+		const auto ppos = _findNearestPlayer(boss->getPosition());
 		if (ppos.x < 0) {
 			// no players found
 			return;
@@ -987,7 +987,7 @@ void LevelRenderer::makeBossesShoot() {
 	}
 }
 
-sf::Vector2f&& LevelRenderer::_findNearestPlayer(const sf::Vector2f& pos) const {
+sf::Vector2f LevelRenderer::_findNearestPlayer(const sf::Vector2f& pos) const {
 	sf::Vector2f nearest(-1.f, -1.f);
 
 	for (const auto& player : players) {
@@ -997,5 +997,5 @@ sf::Vector2f&& LevelRenderer::_findNearestPlayer(const sf::Vector2f& pos) const 
 			nearest = ppos;
 		}
 	}
-	return std::move(nearest);
+	return nearest;
 }
