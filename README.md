@@ -23,8 +23,8 @@
 - [x] Bosses   
   - [x] Boss collisions
   - [x] Bosses shoot
-  - [ ] Bosses are hit by explosions
-  - [ ] Bosses die correctly
+  - [x] Bosses are hit by explosions
+  - [x] Bosses die correctly
 - [x] Players   
   - [x] Players move
   - [x] Players drop bombs

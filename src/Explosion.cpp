@@ -91,9 +91,12 @@ void Explosion::propagate(LevelRenderer *const lr) {
 
 				// Check if boss
 				for (auto& boss : bosses) {
-					if (boss->occupies(new_tile)) {
+					if (!boss->isDying() && boss->occupies(new_tile)) {
 						boss->decLife(1);
-						boss->hurt();
+						if (boss->getLife() <= 0)
+							boss->kill();
+						else
+							boss->hurt();
 					}
 				}
 

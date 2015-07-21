@@ -16,6 +16,7 @@
 #include "Bomb.hpp"
 #include "Bullet.hpp"
 #include "Boss.hpp"
+#include "Explosion.hpp"
 
 namespace Game {
 
@@ -26,6 +27,7 @@ class LevelRenderer : private sf::NonCopyable {
 	using TemporaryEntityList = std::vector<Game::Temporary*>;
 	using BulletsList = std::vector<Game::Bullet*>;
 	using BossList = std::vector<Game::Boss*>;
+	using ExplosionsList = std::vector<Game::Explosion*>;
 
 	/** The level this object is rendering */
 	Game::Level *level = nullptr;
@@ -36,8 +38,11 @@ class LevelRenderer : private sf::NonCopyable {
 	/** The moving entities (except bullets) */
 	MovingEntityList movingEntities;
 
-	/** The temporary entities (flashes, explosions, ...) */
+	/** The temporary entities (flashes, boss explosions ...), except bomb explosions */
 	TemporaryEntityList temporary;
+
+	/** The bomb explosions */
+	ExplosionsList explosions;
 
 	/** The bullets */
 	BulletsList bullets;
@@ -139,7 +144,7 @@ public:
 	 */
 	bool removePlayer(const unsigned short id);
 
-	void spawnPoints(const sf::Vector2f& pos, const int amount);
+	void spawnPoints(const sf::Vector2f& pos, const int amount, bool large = false);
 
 	void makeBossesShoot();
 };

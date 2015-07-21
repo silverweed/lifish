@@ -4,7 +4,7 @@
 using Game::Flash;
 
 Flash::Flash(const sf::Vector2f& pos) 
-	: Temporary(pos, Game::getAsset("test", "flash.png"))
+	: Game::Temporary(pos, Game::getAsset("test", "flash.png"))
 {
 	animations[0].setSpriteSheet(texture);
 	animations[0].addFrame(sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE));

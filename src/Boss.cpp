@@ -29,7 +29,12 @@ std::array<double, Boss::N_SHOOTING_POINTS>&& Boss::getShootingAngles(const sf::
 }
 
 void Boss::draw(sf::RenderTarget& window) {
-	if (isHurt) {
+	if (dead) {
+		const float s = hurtClock.getElapsedTime().asSeconds();
+		const float diff = s - std::floor(s);
+		if (4*diff - std::floor(4*diff) < 0.5)
+			return;
+	} else if (isHurt) {
 		if (hurtClock.getElapsedTime().asMilliseconds() > 200) {
 			sprite.setColor(sf::Color(sf::Color::White));
 			isHurt = false;
@@ -44,4 +49,15 @@ bool Boss::occupies(const sf::Vector2i& tile) const {
 	const auto m_tile = Game::tile(pos);
 	return tile.x >= m_tile.x && tile.x < m_tile.x + SIZE
 		&& tile.y >= m_tile.y && tile.y < m_tile.y + SIZE;
+}
+
+void Boss::hurt() { 
+	isHurt = true;
+	hurtClock.restart(); 
+}
+
+void Boss::kill() {
+	dead = true;
+	sprite.setColor(sf::Color(sf::Color::White));
+	hurtClock.restart();
 }

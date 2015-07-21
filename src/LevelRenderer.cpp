@@ -4,9 +4,9 @@
 #include "BreakableWall.hpp"
 #include "Coin.hpp"
 #include "Flash.hpp"
+#include "BossExplosion.hpp"
 #include "BossBullet.hpp"
 #include "Enemy.hpp"
-#include "Explosion.hpp"
 #include "Points.hpp"
 #include "utils.hpp"
 #include <sstream>
@@ -303,6 +303,43 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		entity->draw(window);
 		++it;
 	}
+
+	for (auto it = explosions.begin(); it != explosions.end(); ) {
+		if (!(*it)->isPlaying()) {
+			delete *it;
+			it = explosions.erase(it);
+		} else {
+			(*it)->draw(window);
+			++it;
+		}
+	}
+
+	for (auto it = bosses.begin(); it != bosses.end(); ) {
+		auto boss = *it;
+		if (boss->isDead()) {
+			delete boss;
+			it = bosses.erase(it);
+			for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+				if (players[i] == nullptr || players[i]->isDying())
+					continue;
+				Game::score[i] += boss->getPointsGiven();
+			}
+			spawnPoints(boss->getPosition(), boss->getPointsGiven(), true);
+			continue;
+		} if (boss->isDying()) {
+			const int t = bossShootClock.getElapsedTime().asMilliseconds();
+			if (t % 300 == 0) {
+				// Calculate a random location inside the boss
+				const auto bpos = boss->getPosition();
+				std::uniform_real_distribution<float> dist(-0.5 * TILE_SIZE, TILE_SIZE * (Game::Boss::SIZE - 0.5));
+				const float x = dist(rng),
+				            y = dist(rng);
+				_pushTemporary(new Game::BossExplosion(sf::Vector2f(bpos.x + x, bpos.y + y)));
+			}
+		}
+		boss->draw(window);
+		++it;
+	}
 	
 	for (auto it = temporary.begin(); it != temporary.end(); ) {
 		if (!(*it)->isPlaying()) {
@@ -312,12 +349,6 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 			(*it)->draw(window);
 			++it;
 		}
-	}
-
-	for (auto it = bosses.begin(); it != bosses.end(); ) {
-		// TODO
-		(*it)->draw(window);
-		++it;
 	}
 
 	for (auto it = bullets.begin(); it != bullets.end(); ) {
@@ -585,7 +616,7 @@ void LevelRenderer::detectCollisions() {
 
 			// Check for impacts with bosses
 			for (const auto& boss : bosses) {
-				if (boss->occupies(next_tile + sf::Vector2i(1, 1))) {
+				if (!boss->isDying() && boss->occupies(next_tile + sf::Vector2i(1, 1))) {
 					if (is_player) {
 						if (!(entity->hasShield() || entity->isDying())) {
 							entity->kill();
@@ -625,7 +656,7 @@ void LevelRenderer::detectCollisions() {
 		}
 		
 		for (const auto& boss : bosses) {
-			if (boss != bullet->getSource()
+			if (!boss->isDying() && boss != bullet->getSource()
 					&& boss->intersects(sf::FloatRect(szpos.x, szpos.y, bullet->getSize(), bullet->getSize()))) {
 				bullet->destroy();
 				break;	
@@ -770,18 +801,17 @@ void LevelRenderer::checkBombExplosions() {
 			if (bombs[i][j] != nullptr && bombs[i][j]->isExploding()) {
 				auto expl = new Game::Explosion(bombs[i][j]->getPosition(), bombs[i][j]->getRadius());
 				expl->propagate(this);
-				_pushTemporary(expl);
+				expl->setOrigin(origin);
+				expl->play();
+				explosions.push_back(expl);
 				bombs[i][j]->blowUp();
 				expl->checkHit(this);
 			}
 }
 
 void LevelRenderer::checkExplosionHits() {
-	for (auto& tmp : temporary) {
-		auto *expl = dynamic_cast<Game::Explosion*>(tmp);
-		if (expl != nullptr)
-			expl->checkHit(this);
-	}
+	for (auto& expl : explosions)
+		expl->checkHit(this);
 }
 
 Game::Bomb* LevelRenderer::getBombAt(const unsigned short left, const unsigned short top) const {
@@ -905,7 +935,7 @@ short LevelRenderer::_getPlayerIndex(const Game::Entity *const e) const {
 	return -1;
 }
 
-void LevelRenderer::spawnPoints(const sf::Vector2f& pos, const int amount) {
+void LevelRenderer::spawnPoints(const sf::Vector2f& pos, const int amount, bool large) {
 	// center the points in the tile
 	short nletters = 1;
 	int a = amount;
@@ -914,7 +944,11 @@ void LevelRenderer::spawnPoints(const sf::Vector2f& pos, const int amount) {
 		++nletters;
 	}
 	auto width = Game::Points::CHARACTER_SIZE * nletters;
-	_pushTemporary(new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), amount));
+	if (large)
+		_pushTemporary(new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), amount,
+					sf::Color::Magenta, 20));
+	else
+		_pushTemporary(new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), amount));
 }
 
 void LevelRenderer::makeBossesShoot() {
@@ -932,7 +966,8 @@ void LevelRenderer::makeBossesShoot() {
 		bossClockCycle = 0;
 
 	bossShootClock.restart();
-	for (auto& boss: bosses) {
+	for (auto& boss : bosses) {
+		if (boss->isDying()) continue;
 		auto ppos = _findNearestPlayer(boss->getPosition());
 		if (ppos.x < 0) {
 			// no players found
