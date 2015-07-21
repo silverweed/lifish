@@ -39,11 +39,12 @@ protected:
 	bool transparentToWalls = false;
 
 	bool _isTransparentTo(const Entity *const) const;
-public:
-	constexpr static float BASE_SPEED = 200.f;
 
 	/** This constructor is used by BossBullet */
 	Bullet(const sf::Vector2f& pos, const std::string& texture_name);
+public:
+	constexpr static float BASE_SPEED = 200.f;
+
 	/** This is the constructor used by regular bullets */
 	Bullet(const sf::Vector2f& pos, const Game::Direction dir, unsigned short id,
 			float speed, unsigned short damage, short range = -1);
