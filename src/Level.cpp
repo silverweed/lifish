@@ -84,7 +84,7 @@ bool Level::init() {
 
 	// Load the levelnum text
 	levelnumtext = new Game::ShadedText(
-			Game::getAsset("fonts", LEVELNUM_FONT),
+			Game::getAsset("fonts", Game::Fonts::LEVELNUM),
 			std::to_string(levelnum),
 			sf::Vector2f(TILE_SIZE * (LEVEL_WIDTH+1), 0));
 	levelnumtext->setStyle(sf::Text::Bold);

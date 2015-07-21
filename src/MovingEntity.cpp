@@ -121,10 +121,18 @@ bool MovingEntity::canGo(const Direction dir, const Game::LevelRenderer *const l
 	if (iposx < 0 || iposx >= LEVEL_WIDTH || iposy < 0 || iposy >= LEVEL_HEIGHT)
 		return false;
 
-	short idx = iposy * LEVEL_WIDTH + iposx;
-	auto fixed = lr->getFixedEntities();
+	const short idx = iposy * LEVEL_WIDTH + iposx;
+	const auto fixed = lr->getFixedEntities();
 	
-	return (fixed[idx] == nullptr || _isTransparentTo(fixed[idx]));
+	if (fixed[idx] != nullptr && !_isTransparentTo(fixed[idx]))
+		return false;
+
+	const auto bosses = lr->getBosses();
+	const sf::FloatRect r(iposx, iposy, TILE_SIZE, TILE_SIZE);
+	for (auto& boss : bosses)
+		if (boss->intersects(r)) return false;
+
+	return true;
 }
 
 void MovingEntity::setDirection(const Direction dir) {
@@ -183,19 +191,18 @@ bool MovingEntity::playDeathAnimation() {
 }
 
 void MovingEntity::draw(sf::RenderTarget& window) {
-	Game::Animated::draw(window);
 	if (hasShield()) {
-		float s = shieldClock.getElapsedTime().asSeconds();
-		float diff = s - std::floor(s);
+		const float s = shieldClock.getElapsedTime().asSeconds();
+		const float diff = s - std::floor(s);
 		if (shieldTime - 1000*s > 3000 || 4*diff - std::floor(4*diff) < 0.5) {
-			AnimatedSprite shieldSprite(animatedSprite);
-			shieldSprite.setOrigin(shieldSprite.getOrigin() + sf::Vector2f(TILE_SIZE/2, TILE_SIZE/2));
-			shieldSprite.scale(1.1, 1.1);
-			shieldSprite.move(TILE_SIZE/7., TILE_SIZE/2.);
-			shieldSprite.setColor(sf::Color(50, 255, 0, 200));
-			window.draw(shieldSprite);
+			animatedSprite.setColor(sf::Color(50, 255, 0, 255));
+		} else {
+			animatedSprite.setColor(sf::Color::White);
 		}
+	} else if (animatedSprite.getColor() != sf::Color::White) {
+		animatedSprite.setColor(sf::Color::White);
 	}
+	Game::Animated::draw(window);
 }
 
 void MovingEntity::_ensureAlign() {

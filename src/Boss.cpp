@@ -1,5 +1,6 @@
 #include "Boss.hpp"
 #include "Game.hpp"
+#include "utils.hpp"
 
 using Game::Boss;
 
@@ -25,4 +26,22 @@ std::array<double, Boss::N_SHOOTING_POINTS>&& Boss::getShootingAngles(const sf::
 	}
 
 	return std::move(angles);
+}
+
+void Boss::draw(sf::RenderTarget& window) {
+	if (isHurt) {
+		if (hurtClock.getElapsedTime().asMilliseconds() > 200) {
+			sprite.setColor(sf::Color(sf::Color::White));
+			isHurt = false;
+		} else {
+			sprite.setColor(sf::Color(200, 0, 0, 255));
+		}
+	}
+	Game::Entity::draw(window);
+}
+
+bool Boss::occupies(const sf::Vector2i& tile) const {
+	const auto m_tile = Game::tile(pos);
+	return tile.x >= m_tile.x && tile.x < m_tile.x + SIZE
+		&& tile.y >= m_tile.y && tile.y < m_tile.y + SIZE;
 }

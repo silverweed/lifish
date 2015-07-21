@@ -48,54 +48,62 @@ void Explosion::propagate(LevelRenderer *const lr) {
 	sf::Vector2i m_tile = Game::tile(pos);
 	bool propagating[] = { true, true, true, true };
 
-	auto fixed = lr->getFixedEntities();
-	auto level = lr->getLevel();
+	const auto fixed = lr->getFixedEntities();
+	const auto level = lr->getLevel();
+	const auto bosses = lr->getBosses();
 
 	for (unsigned short dir = 0; dir < 4; ++dir) {	
 		for (unsigned short d = 1; d <= radius; ++d) {
-			if (propagating[dir]) {
-				sf::Vector2i new_tile = m_tile;
-				switch (dir) {
-				case ANIM_UP:
-					new_tile.y -= d;
-					break;
-				case ANIM_LEFT:
-					new_tile.x -= d;
-					break;
-				case ANIM_DOWN:
-					new_tile.y += d;
-					break;
-				case ANIM_RIGHT:
-					new_tile.x += d;
-					break;
-				}
-				
-				if (new_tile.x < 1 || new_tile.x > LEVEL_WIDTH 
-						|| new_tile.y < 1 || new_tile.y > LEVEL_HEIGHT) {
-					propagating[dir] = false;
+			if (!propagating[dir]) continue;
+
+			sf::Vector2i new_tile = m_tile;
+			switch (dir) {
+			case ANIM_UP:
+				new_tile.y -= d;
+				break;
+			case ANIM_LEFT:
+				new_tile.x -= d;
+				break;
+			case ANIM_DOWN:
+				new_tile.y += d;
+				break;
+			case ANIM_RIGHT:
+				new_tile.x += d;
+				break;
+			}
+			
+			if (new_tile.x < 1 || new_tile.x > LEVEL_WIDTH 
+					|| new_tile.y < 1 || new_tile.y > LEVEL_HEIGHT) {
+				propagating[dir] = false;
+				continue;
+			}
+
+			Entity *fxd = fixed[(new_tile.y - 1) * LEVEL_WIDTH + (new_tile.x - 1)];
+			if (fxd == nullptr || fxd->transparentTo.explosions) {
+				// Check if bomb
+				Game::Bomb *bomb = lr->getBombAt(new_tile.x, new_tile.y);
+				if (bomb != nullptr) {
+					bomb->setExploding();
 					continue;
 				}
 
-				Entity *fxd = fixed[(new_tile.y - 1) * LEVEL_WIDTH + (new_tile.x - 1)];
-				if (fxd == nullptr || fxd->transparentTo.explosions) {
-					// Check if bomb
-					Game::Bomb *bomb = lr->getBombAt(new_tile.x, new_tile.y);
-					if (bomb != nullptr)
-						bomb->setExploding();
-					else
-						++propagation[dir];
+				++propagation[dir];
 
-				} else {
-					// It's a wall
-					propagating[dir] = false; 
-
-					if (d == 1 && level->getTile(new_tile.x - 1, new_tile.y - 1) == Game::EntityType::BREAKABLE) {
-						auto bw = static_cast<Game::BreakableWall*>(fxd);
-						bw->destroy();
-						lr->spawnPoints(bw->getPosition(), bw->getPointsGiven());
-					} else {
-						// TODO: boss
+				// Check if boss
+				for (auto& boss : bosses) {
+					if (boss->occupies(new_tile)) {
+						boss->decLife(1);
+						boss->hurt();
 					}
+				}
+
+			} else {
+				// It's a wall 
+				propagating[dir] = false;
+				if (d == 1 && level->getTile(new_tile.x - 1, new_tile.y - 1) == Game::EntityType::BREAKABLE) {
+					auto bw = static_cast<Game::BreakableWall*>(fxd);
+					bw->destroy();
+					lr->spawnPoints(bw->getPosition(), bw->getPointsGiven());
 				}
 			}
 		}

@@ -3,11 +3,11 @@
 #include <iostream>
 #include <array>
 
-#if defined(IS_POSIX)
+#if defined(__unix__)
 #	include <unistd.h>
-#elif defined(IS_WINDOWS)
+#elif defined(SFML_SYSTEM_WINDOWS)
 #	include <stdlib.h>
-#elif defined(IS_APPLE)
+#elif defined(SFML_SYSTEM_MACOS)
 #	include <mach-o/dyld.h>
 #endif
 
@@ -19,7 +19,7 @@ using Game::pwd;
 bool Game::init() {
 	// Setup pwd variable
 	pwd[0] = '\0';
-#if defined(IS_POSIX)
+#if defined(__unix__)
 	ssize_t bytes = 0;
 	if (access("/proc/self/exe", F_OK) != -1) {
 		// Linux
@@ -33,11 +33,11 @@ bool Game::init() {
 	if (bytes < 1) return false;
 	pwd[bytes] = '\0';
 
-#elif defined(IS_WINDOWS)
+#elif defined(SFML_SYSTEM_WINDOWS)
 	if (_get_pgmptr(pwd) != 0)
 		return false;
 
-#elif defined(IS_APPLE)
+#elif defined(SFML_SYSTEM_MACOS)
 	auto bufsz = static_cast<uint32_t>(Game::PWD_BUFSIZE);
 	if (_NSGetExecutablePath(pwd, &bufsz) != 0)
 		return false;

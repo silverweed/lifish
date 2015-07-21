@@ -582,19 +582,19 @@ void LevelRenderer::detectCollisions() {
 					}
 				}
 			}
-		}
 
-		// Check for impacts with bosses
-		for (const auto& boss : bosses) {
-			if (boss->intersects(sf::FloatRect((next_tile.x+1)*TILE_SIZE, (next_tile.y+1)*TILE_SIZE, TILE_SIZE, TILE_SIZE))) {
-				if (is_player) {
-					if (!(entity->hasShield() || entity->isDying())) {
-						entity->kill();
+			// Check for impacts with bosses
+			for (const auto& boss : bosses) {
+				if (boss->occupies(next_tile + sf::Vector2i(1, 1))) {
+					if (is_player) {
+						if (!(entity->hasShield() || entity->isDying())) {
+							entity->kill();
+							break;
+						}
+					} else {
+						entity->colliding = true;
 						break;
 					}
-				} else {
-					entity->colliding = true;
-					break;
 				}
 			}
 		}
@@ -918,8 +918,18 @@ void LevelRenderer::spawnPoints(const sf::Vector2f& pos, const int amount) {
 }
 
 void LevelRenderer::makeBossesShoot() {
-	if (bosses.size() == 0 || bossShootClock.getElapsedTime().asMilliseconds() < Game::Boss::SHOOT_INTERVAL) 
+	if (bosses.size() == 0)
 		return;
+
+	unsigned short shootInterval = Game::Boss::SHOOT_INTERVAL;
+	if (bossClockCycle != 0)
+		shootInterval = Game::Boss::SHOOT_SHORT_INTERVAL;
+
+	if (bossShootClock.getElapsedTime().asMilliseconds() < shootInterval)
+		return;
+
+	if (++bossClockCycle == 3)
+		bossClockCycle = 0;
 
 	bossShootClock.restart();
 	for (auto& boss: bosses) {
@@ -946,7 +956,7 @@ sf::Vector2f&& LevelRenderer::_findNearestPlayer(const sf::Vector2f& pos) const 
 	sf::Vector2f nearest(-1.f, -1.f);
 
 	for (const auto& player : players) {
-		if (player->isDying()) continue;
+		if (player == nullptr || player->isDying()) continue;
 		const auto ppos = player->getPosition();
 		if (nearest.x < 0 || Game::distance(pos, ppos) < Game::distance(pos, nearest)) {
 			nearest = ppos;

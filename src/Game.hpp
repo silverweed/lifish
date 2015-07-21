@@ -12,19 +12,7 @@
 
 namespace Game {
 
-#if defined(__unix__) || defined(unix) || _BSD_SOURCE || _XOPEN_SOURCE >= 500 || _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED || _POSIX_C_SOURCE >= 200112L
-#	define IS_POSIX
-#elif defined(_WIN32) || defined(_WIN64)
-#	define IS_WINDOWS
-#elif defined(__APPLE__) && defined(__MACH__)
-#	define IS_APPLE
-#endif
-
-#ifdef IS_WINDOWS
-constexpr char DIRSEP = '\\';
-#else
 constexpr char DIRSEP = '/';
-#endif
 
 constexpr unsigned short TILE_SIZE = 32; // pixels
 /**
@@ -72,5 +60,11 @@ inline std::string getAsset(const std::string& dir, const std::string& file) {
 
 /** Initializes runtime variables */
 bool init();
+
+namespace Fonts {
+	constexpr auto POINTS = "pf_tempesta_seven_bold.ttf";
+	constexpr auto LEVELNUM = "pf_tempesta_seven.ttf";
+	constexpr auto DEBUG_INFO = "pf_tempesta_seven_condensed.ttf";
+}
 
 }

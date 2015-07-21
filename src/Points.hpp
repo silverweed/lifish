@@ -16,7 +16,7 @@ public:
 	Points(const sf::Vector2f& pos, int amount, sf::Color color = sf::Color::Blue) 
 		: Game::Temporary(pos),
 		  ShadedText(
-			Game::getAsset("fonts", "pf_tempesta_seven_bold.ttf"),
+			Game::getAsset("fonts", Game::Fonts::POINTS),
 			std::to_string(amount),
 			pos,
 			color,

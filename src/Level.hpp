@@ -22,9 +22,6 @@ namespace Game {
 class LevelSet;
 
 class Level : public Game::Drawable, private sf::NonCopyable {
-	/** Font for the level num text */
-	constexpr static const char* LEVELNUM_FONT = "pf_tempesta_seven.ttf";
-
 	/** Types of bg texture tiles */
 	enum : unsigned short {
 		TILE_REGULAR     = 0,

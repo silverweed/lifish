@@ -36,12 +36,12 @@ int main(int argc, char **argv) {
 
 	bool show_fps = false;
 	sf::Clock fps_clock, fps_update_clock;
-	Game::ShadedText fps_text(Game::getAsset("fonts", "pf_tempesta_seven_condensed.ttf"),
+	Game::ShadedText fps_text(Game::getAsset("fonts", Game::Fonts::DEBUG_INFO),
 			"-", sf::Vector2f(10, 10));
 	fps_text.setOrigin(-Game::MAIN_WINDOW_SHIFT);
 	fps_text.setStyle(sf::Text::Style::Bold);
 	fps_text.setCharacterSize(20);
-	Game::ShadedText vsync_text(Game::getAsset("fonts", "pf_tempesta_seven_condensed.ttf"),
+	Game::ShadedText vsync_text(Game::getAsset("fonts", Game::Fonts::DEBUG_INFO),
 			"vsync off", sf::Vector2f(6 * TILE_SIZE, 10));
 	vsync_text.setOrigin(-Game::MAIN_WINDOW_SHIFT);
 	vsync_text.setCharacterSize(16);

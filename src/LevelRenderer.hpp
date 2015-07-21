@@ -53,6 +53,7 @@ class LevelRenderer : private sf::NonCopyable {
 	/** The bosses, if any */
 	BossList bosses;
 	sf::Clock bossShootClock;
+	unsigned short bossClockCycle = 0;
 
 	/** The first Teleport of the level, if any. Keeping the
 	 *  pointer to it allows us to traverse the Teleports'
@@ -103,6 +104,7 @@ public:
 	
 	const FixedEntityList& getFixedEntities() const { return fixedEntities; }
 	const MovingEntityList& getMovingEntities() const { return movingEntities; }
+	const BossList& getBosses() const { return bosses; }
 
 	Game::Bomb* getBombAt(const unsigned short left, const unsigned short top) const;
 
