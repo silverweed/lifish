@@ -80,6 +80,16 @@ class LevelRenderer : private sf::NonCopyable {
 	short _getPlayerIndex(const Game::Entity *const) const;
 
 	sf::Vector2f _findNearestPlayer(const sf::Vector2f& pos) const;
+
+	/** Destroys all breakable walls in the level, giving points 
+	 *  to player `playerId` (starting from 0)
+	 */
+	void _destroyAllWalls(const unsigned short playerId);
+
+	/** Kills all enemies in the level and damages the bosses by 1; 
+	 *  give due points to player `playerId` (starting from 0)
+	 */
+	void _killAllEnemies(const unsigned short playerId);
 public:
 	LevelRenderer();
 	~LevelRenderer();
@@ -147,6 +157,8 @@ public:
 	void spawnPoints(const sf::Vector2f& pos, const int amount, bool large = false);
 
 	void makeBossesShoot();
+
+	void dropBonus(const sf::Vector2i& tile, const unsigned short type);
 };
 
 }

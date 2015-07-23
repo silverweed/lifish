@@ -12,6 +12,7 @@ class Bomb : public Game::FixedEntity, public Game::Animated {
 	sf::Clock fuseClock;
 	unsigned short fuseTime;
 	unsigned short radius;
+	/** `true` if this bomb was driven to explode by another explosion */
 	bool ignited = false;
 	/** `true` if this bomb already spawned its explosion. */
 	bool exploded = false;
@@ -25,10 +26,10 @@ public:
 	void draw(sf::RenderTarget& window) override;
 	void setOrigin(const sf::Vector2f& pos) override { Game::Animated::setOrigin(pos); }
 
-	void ignite() { fuseClock.restart(); ignited = true; }
+	bool isIgnited() const { return ignited; }
 
-	bool isExploding() const { return ignited && fuseClock.getElapsedTime().asMilliseconds() >= fuseTime; }
-	void setExploding() { fuseTime = 0.03; fuseClock.restart(); }
+	bool isExploding() const { return fuseClock.getElapsedTime().asMilliseconds() >= fuseTime; }
+	void setExploding() { fuseTime = 50; fuseClock.restart(); ignited = true; }
 
 	bool isExploded() const { return exploded; }
 	void blowUp() { exploded = true; }

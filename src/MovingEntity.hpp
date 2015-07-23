@@ -32,6 +32,7 @@ inline Direction oppositeDirection(const Direction dir) {
 
 class MovingEntity : public Game::Entity, public Game::Animated {
 protected:
+	/** This unit's base speed */
 	float speed = 0.f;
 	Game::Direction direction = Game::Direction::NONE, prevDirection = Game::Direction::NONE;
 	bool moving = false;
@@ -40,8 +41,11 @@ protected:
 	bool dead = false, deathAnimPrepared = false;
 	short remainingLives = 0;
 
-	float shieldTime = -1; // milliseconds; negative means "no shield"
+	int shieldTime = -1; // milliseconds; negative means "no shield"
 	sf::Clock shieldClock;
+
+	int speedyTime = -1; // milliseconds; negative means "no speedy"
+	sf::Clock speedyClock;
 
 	constexpr static unsigned short DEATH_TIME = 2000; // ms
 	sf::Clock deathClock;
@@ -95,11 +99,17 @@ public:
 	virtual void prepareDeathAnimation();
 	virtual bool playDeathAnimation();
 
-	void giveShield(const float shieldMs) {
+	void giveShield(const int shieldMs) {
 		shieldTime = shieldMs;
 		shieldClock.restart();
 	}
 	bool hasShield() const { return shieldTime > 0 && shieldClock.getElapsedTime().asMilliseconds() <= shieldTime; }
+
+	/** Doubles this unit's speed for `speedyMs` ms. */
+	void giveSpeedy(const int speedyMs) {
+		speedyTime = speedyMs;
+		speedyClock.restart();
+	}
 
 	bool isDying() const { return dead; }
 	void kill();

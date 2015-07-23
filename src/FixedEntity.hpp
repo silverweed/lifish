@@ -1,6 +1,6 @@
 #pragma once
 /**
- * Entities which can't move (walls, teleporters, powerups, coins, bosses)
+ * Entities which can't move (walls, teleporters, bonuses, coins, bosses)
  */
 #include "Entity.hpp"
 

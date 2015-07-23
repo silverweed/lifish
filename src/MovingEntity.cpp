@@ -32,6 +32,10 @@ void MovingEntity::move(const Direction dir) {
 	moving = true;
 	direction = dir;
 
+	float spd = speed;
+	if (speedyTime > 0 && speedyClock.getElapsedTime().asMilliseconds() < speedyTime)
+		spd *= 2;
+
 	sf::Vector2f shift(0.f, 0.f);
 	sf::Time frameTime = frameClock.restart();
 
@@ -40,19 +44,19 @@ void MovingEntity::move(const Direction dir) {
 	switch (direction) {
 	case Direction::UP:
 		anim = &animations[ANIM_UP];
-		shift.y -= speed;
+		shift.y -= spd;
 		break;
 	case Direction::LEFT:
 		anim = &animations[ANIM_LEFT];
-		shift.x -= speed;
+		shift.x -= spd;
 		break;
 	case Direction::DOWN:
 		anim = &animations[ANIM_DOWN];
-		shift.y += speed;
+		shift.y += spd;
 		break;
 	case Direction::RIGHT:
 		anim = &animations[ANIM_RIGHT];
-		shift.x += speed;
+		shift.x += spd;
 		break;
 	case Direction::NONE:
 		return;
@@ -61,7 +65,7 @@ void MovingEntity::move(const Direction dir) {
         animatedSprite.play(*anim);
 	if (!colliding) {
 		animatedSprite.move(shift * frameTime.asSeconds());
-		distTravelled += speed * frameTime.asSeconds();
+		distTravelled += spd * frameTime.asSeconds();
 		pos = animatedSprite.getPosition();
 		_ensureAlign();
 	} 

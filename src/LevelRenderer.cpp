@@ -6,6 +6,7 @@
 #include "Flash.hpp"
 #include "BossExplosion.hpp"
 #include "BossBullet.hpp"
+#include "Bonus.hpp"
 #include "Enemy.hpp"
 #include "Points.hpp"
 #include "utils.hpp"
@@ -250,12 +251,31 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 			switch (e_type) {
 			case EntityType::BREAKABLE:
 				{
-					auto bw = static_cast<Game::BreakableWall*>(entity);
-					if (bw->isDestroyed()) {
-						delete bw;
-						fixedEntities[idx] = nullptr;
+					if (!entity->transparentTo.enemies) {
+						// A breakable wall
+						auto bw = static_cast<Game::BreakableWall*>(entity);
+						if (bw->isDestroyed()) {
+							delete bw;
+							// Chance to drop bonus
+							const unsigned short bonus_type = Game::bonusTypeDistribution(rng);
+							if (bonus_type >= Game::Bonus::N_BONUS_TYPES) {
+								// no bonus
+								fixedEntities[idx] = nullptr;
+							} else {
+								dropBonus(Game::tile(entity->getPosition()), bonus_type);
+							}
+						} else {
+							bw->draw(window);
+						}
 					} else {
-						bw->draw(window);
+						// A bonus
+						auto bonus = static_cast<Game::Bonus*>(entity);
+						if (bonus->isExpired()) {
+							delete bonus;
+							fixedEntities[idx] = nullptr;
+						} else {
+							bonus->draw(window);
+						}
 					}
 					break;
 				}
@@ -271,7 +291,6 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 					break;
 				}
 			default:
-				// TODO: powerups
 				entity->draw(window);
 			}
 		}
@@ -590,13 +609,14 @@ void LevelRenderer::detectCollisions() {
 					// Colliding with a wall
 					entity->colliding = true;
 				} else {
-					// Either a coin, a powerup or a teleport. We can know for sure
+					// Either a coin, a bonus or a teleport. We can know for sure
 					// what this entity is with a single lookup to level->tiles:
 					// if we find a teleport or a coin, it means it's that entity;
-					// else, if we find a breakable, it's a powerup.
+					// else, if we find a breakable, it's a bonus.
 					switch (level->getTile(next_tile.x, next_tile.y)) {
 					case EntityType::COIN:
 						{
+							// Grab the coin
 							if (!is_player) break;
 							auto coin = static_cast<Game::Coin*>(other);
 							if (!coin->isBeingGrabbed()) {
@@ -607,7 +627,59 @@ void LevelRenderer::detectCollisions() {
 							break;
 						}
 					case EntityType::BREAKABLE:
-						// TODO: grab the powerup
+						{
+							// Grab the bonus
+							if (!is_player) break;
+							auto bonus = static_cast<Game::Bonus*>(other);
+							const unsigned short i = _getPlayerIndex(entity);
+							switch (bonus->getType()) {
+								using B = Game::Bonus::Type;
+							case B::ZAPPER:
+								_destroyAllWalls(i);
+								break;
+							case B::SUDDEN_DEATH:
+								_killAllEnemies(i);
+								break;
+							case B::MAX_BOMBS:
+								if (players[i]->powers.maxBombs < Game::Player::MAX_MAX_BOMBS)
+									players[i]->powers.maxBombs += 1;
+								// TODO: update side window
+								break;
+							case B::QUICK_FUSE:
+								if (players[i]->powers.bombFuseTime == Game::Bomb::DEFAULT_FUSE)
+									players[i]->powers.bombFuseTime /= 2.;
+								break;
+							case B::MAX_RANGE:
+								if (players[i]->powers.bombRadius < Game::Bomb::MAX_RADIUS)
+									players[i]->powers.bombRadius += 1;
+								break;
+							case B::HEALTH_SMALL:
+								if (players[i]->getLife() < Game::Player::MAX_LIFE)
+									players[i]->decLife(-1);
+								break;
+							case B::HEALTH_FULL:
+								if (players[i]->getLife() < Game::Player::MAX_LIFE)
+									players[i]->setLife(players[i]->getMaxLife());
+								break;
+							case B::SHIELD:
+								players[i]->giveShield(Game::Bonus::SHIELD_DURATION);
+								break;
+							case B::SPEEDY:
+								players[i]->giveSpeedy(Game::Bonus::SPEEDY_DURATION);
+								break;
+							default:
+								std::cerr << "[ LevelRenderer ] Warning: unknown bonus id "
+									<< bonus->getType() << std::endl;
+							}
+
+							Game::score[i] += bonus->getPointsGiven();
+							spawnPoints(bonus->getPosition(), bonus->getPointsGiven());
+
+							delete bonus;
+							fixedEntities[idx] = nullptr;
+
+							break;
+						}
 					default:
 						break;
 					}
@@ -792,7 +864,6 @@ void LevelRenderer::dropBomb(const unsigned short id) {
 			players[id]->powers.bombRadius);
 	bombs[id][idx] = bomb;
 	bomb->setOrigin(origin);
-	bomb->ignite();
 }
 
 void LevelRenderer::checkBombExplosions() {
@@ -881,12 +952,8 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 			if (idx >= fixedEntities.size()) 
 				return -1;
 
-			auto tile = level->getTile(i - 1, src.y - 1);
-			if (tile == EntityType::FIXED) 
-				return -1;
-
 			auto fxd = fixedEntities[idx];
-			if (fxd != nullptr && tile == EntityType::BREAKABLE)
+			if (fxd != nullptr && !fxd->transparentTo.enemies)
 				return -1;
 		}
 	} else {
@@ -900,12 +967,8 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 			if (idx >= fixedEntities.size()) 
 				return -1;
 			
-			auto tile = level->getTile(src.x - 1, i - 1);
-			if (tile == EntityType::FIXED)
-				return -1;
-
 			auto fxd = fixedEntities[idx];
-			if (fxd != nullptr && tile == EntityType::BREAKABLE)
+			if (fxd != nullptr && !fxd->transparentTo.enemies)
 				return -1; 
 		}
 	}
@@ -998,4 +1061,43 @@ sf::Vector2f LevelRenderer::_findNearestPlayer(const sf::Vector2f& pos) const {
 		}
 	}
 	return nearest;
+}
+
+void LevelRenderer::dropBonus(const sf::Vector2i& tile, const unsigned short type) {
+	const unsigned short idx = (tile.y - 1) * Game::LEVEL_WIDTH + tile.x - 1;
+	auto bonus = new Game::Bonus(sf::Vector2f(tile.x * TILE_SIZE, tile.y * TILE_SIZE), type);
+	bonus->setOrigin(origin);
+	fixedEntities[idx] = bonus;
+}
+
+void LevelRenderer::_destroyAllWalls(const unsigned short playerId) {
+	for (auto& fxd : fixedEntities) {
+		// Here it's acceptable to use dynamic_cast, since this function
+		// is called very rarely (only when the Zapper is found)
+		auto bw = dynamic_cast<Game::BreakableWall*>(fxd);
+		if (bw != nullptr) {
+			bw->destroy();
+			Game::score[playerId] += bw->getPointsGiven();
+			spawnPoints(bw->getPosition(), bw->getPointsGiven());
+		}
+	}
+}
+
+void LevelRenderer::_killAllEnemies(const unsigned short playerId) {
+	for (auto& e : movingEntities) {
+		if (isPlayer(e)) continue;
+		_pushTemporary(new Game::Explosion(e->getPosition(), 0));
+		e->kill();
+		auto se = dynamic_cast<Game::Scored*>(e);
+		Game::score[playerId] += se->getPointsGiven();
+		spawnPoints(e->getPosition(), se->getPointsGiven());
+	}
+
+	for (auto& b : bosses) {
+		if (!b->isDying()) {
+			_pushTemporary(new Game::Explosion(b->getPosition(), 0));
+			b->decLife(1);
+			b->hurt();
+		}
+	}
 }
