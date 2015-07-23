@@ -49,6 +49,13 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
 	animatedSprite.pause();
 }
 
+Enemy::~Enemy() {
+	if (alienSprite != nullptr) {
+		delete alienSprite;
+		alienSprite = nullptr;
+	}
+}
+
 bool Enemy::_isTransparentTo(const Entity *const e) const {
 	return e->transparentTo.enemies;
 }
@@ -73,6 +80,9 @@ void Enemy::draw(sf::RenderTarget& window) {
 		} else {
 			shooting = false;
 		}
+	} else if (morphed) {
+		alienSprite->draw(window, pos, dead ? Game::Direction::NONE : direction);
+		return;
 	}
 	Game::MovingEntity::draw(window);
 }
@@ -86,4 +96,15 @@ void Enemy::move(const Direction dir) {
 		blocked = false;
 	}
 	MovingEntity::move(dir);
+}
+
+void Enemy::setMorphed(bool b) {
+	morphed = b;
+	if (morphed) {
+		alienSprite = new Game::AlienSprite;
+		alienSprite->setOrigin(animatedSprite.getOrigin());
+	} else if (alienSprite != nullptr) {
+		delete alienSprite;
+		alienSprite = nullptr;
+	}
 }

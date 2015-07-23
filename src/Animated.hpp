@@ -29,6 +29,8 @@ protected:
 	AnimatedSprite animatedSprite;
 	sf::Clock frameClock;
 public:
+	virtual ~Animated() {}
+
 	virtual void draw(sf::RenderTarget& window) override;
 	virtual void setOrigin(const sf::Vector2f& _origin) {
 		animatedSprite.setOrigin(_origin);

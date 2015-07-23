@@ -115,6 +115,8 @@ int main(int argc, char **argv) {
 
 		lr.checkHurryUp();
 
+		lr.checkExtraGameEnd();
+
 		lr.checkLinesOfSight();
 
 		lr.selectEnemyMoves();
@@ -127,8 +129,12 @@ int main(int argc, char **argv) {
 
 		lr.detectCollisions();
 
-		for (unsigned int i = 0; i < 2; ++i) {
-			if (players[i] == nullptr) continue;
+		unsigned short dead_players = 0;
+		for (unsigned short i = 0; i < 2; ++i) {
+			if (players[i] == nullptr) {
+				++dead_players;
+				continue;
+			}
 			if (players[i]->isAligned()) {
 				players[i]->prevAlign = Game::tile(players[i]->getPosition());
 				if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::BOMB]))
@@ -156,6 +162,9 @@ int main(int argc, char **argv) {
 				players[i]->move();
 			}
 		}
+		
+		if (dead_players == Game::MAX_PLAYERS)
+			lr.triggerGameOver();
 
 		lr.moveBullets();
 
@@ -163,7 +172,7 @@ int main(int argc, char **argv) {
 		lr.applyEnemyMoves();
 
 		float cur_time = fps_clock.restart().asSeconds();
-		if (fps_update_clock.getElapsedTime().asSeconds() >= 1) {
+		if (show_fps && fps_update_clock.getElapsedTime().asSeconds() >= 1) {
 			int fps = (int)(1.f / cur_time);
 			std::stringstream ss;
 			ss << fps << " fps"; 
@@ -171,7 +180,6 @@ int main(int argc, char **argv) {
 			fps_update_clock.restart();
 		}
 
-		// XXX: can we avoid clearing and drawing the background each frame?
 		window.clear();
 		lr.renderFrame(window);
 		if (show_fps) {

@@ -33,7 +33,7 @@
 - [x] Bombs
 - [x] Coins   
   - [x] Coins can be taken
-  - [ ] Taking all coins causes Extra Game
+  - [x] Taking all coins causes Extra Game
 - [x] Bullets
   - [x] Directional bullets use correct sprites
 - [x] Hurry Up
@@ -41,4 +41,6 @@
 - [ ] Game Over
 - [x] Points
 - [ ] Extra
+  - [x] Enemies become harmless in EXTRA
+  - [ ] Enemies drop letters in EXTRA
 - [ ] Side panel

@@ -3,7 +3,7 @@
 using Game::DroppingText;
 
 DroppingText::DroppingText(const std::string& texture_name, const sf::Vector2i& texture_rect, float _speed) :
-	Game::Temporary(sf::Vector2f(0.f, -50.f), texture_name),
+	Game::Temporary(sf::Vector2f(0.f, -texture_rect.y), texture_name),
 	speed(_speed)
 {
 	pos.x = (Game::TILE_SIZE*(Game::LEVEL_WIDTH + 2) - texture_rect.x) / 2;
@@ -11,7 +11,7 @@ DroppingText::DroppingText(const std::string& texture_name, const sf::Vector2i& 
 }
 
 void DroppingText::draw(sf::RenderTarget& window) {
-	if (!stopped && pos.y >= Game::LEVEL_HEIGHT * Game::TILE_SIZE / 2) {
+	if (!stopped && (pos.y + sprite.getTextureRect().height/2) >= Game::LEVEL_HEIGHT * Game::TILE_SIZE / 2) {
 		stopped = true;
 		pauseClock.restart();
 	}

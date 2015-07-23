@@ -112,6 +112,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				break;
 			case EntityType::COIN:
 				fixedEntities[top * LEVEL_WIDTH + left] = new Game::Coin(curPos);
+				++coinsNum;
 				break;
 			case EntityType::PLAYER1: 
 				{
@@ -416,6 +417,15 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 			gameOverText = nullptr;
 		}
 	}
+
+	if (extraGameText != nullptr) {
+		if (extraGameText->isPlaying())
+			extraGameText->draw(window);
+		else {
+			delete extraGameText;
+			extraGameText = nullptr;
+		}
+	}
 }
 
 void LevelRenderer::detectCollisions() {
@@ -659,6 +669,9 @@ void LevelRenderer::detectCollisions() {
 								coin->grab();
 								Game::score[_getPlayerIndex(entity)] += coin->getPointsGiven();
 								spawnPoints(coin->getPosition(), coin->getPointsGiven());
+								if (--coinsNum == 0) {
+									_triggerExtraGame();
+								}
 							}
 							break;
 						}
@@ -823,7 +836,8 @@ void LevelRenderer::applyEnemyMoves() {
 		auto enemy = static_cast<Game::Enemy*>(entity);
 
 		// Check if this enemy should shoot
-		if (!(enemy->attack.type & Game::Enemy::AttackType::CONTACT)
+		if (!extraGame
+				&& !(enemy->attack.type & Game::Enemy::AttackType::CONTACT)
 				&& enemy->seeingPlayer == enemy->getDirection()) 
 		{
 			if (!enemy->isRecharging()) { 
@@ -1157,5 +1171,34 @@ void LevelRenderer::checkHurryUp() {
 		hurryUpText = new Game::DroppingText(Game::getAsset("test", "hurryup.png"), sf::Vector2i(161, 30), 300.f);
 		hurryUpText->setOrigin(origin);
 		hurryUpWarningGiven = true;
+	}
+}
+
+void LevelRenderer::triggerGameOver() {
+	gameOverText = new Game::DroppingText(Game::getAsset("test", "gameover.png"), sf::Vector2i(311, 59));
+	gameOverText->setOrigin(origin);
+}
+
+void LevelRenderer::_triggerExtraGame() {
+	extraGameText = new Game::DroppingText(Game::getAsset("test", "extragame.png"), sf::Vector2i(223, 156), 250.f);
+	extraGameText->setOrigin(origin);
+	for (auto& e : movingEntities) {
+		if (isPlayer(e)) continue;
+		auto enemy = static_cast<Game::Enemy*>(e);
+		enemy->setMorphed(true);
+	}
+	extraGame = true;
+	extraGameClock.restart();
+}
+
+void LevelRenderer::checkExtraGameEnd() {
+	if (!extraGame) return;
+	if (extraGameClock.getElapsedTime().asSeconds() > 30) {
+		extraGame = false;
+		for (auto& e : movingEntities) {
+			if (isPlayer(e)) continue;
+			auto enemy = static_cast<Game::Enemy*>(e);
+			enemy->setMorphed(false);
+		}
 	}
 }

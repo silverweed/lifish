@@ -18,6 +18,7 @@
 #include "Boss.hpp"
 #include "Explosion.hpp"
 #include "DroppingText.hpp"
+#include "AlienSprite.hpp"
 
 namespace Game {
 
@@ -38,6 +39,13 @@ class LevelRenderer : private sf::NonCopyable {
 
 	bool hurryUp = false;
 	bool hurryUpWarningGiven = false;
+
+	bool extraGame = false;
+	/** The number of coins in the level, used for EXTRA game. */
+	unsigned short coinsNum = 0;
+	sf::Clock extraGameClock;
+	/** The alien sprite displayed during EXTRA game */
+	Game::AlienSprite alienSprite;
 
 	Game::DroppingText *hurryUpText = nullptr;
 	Game::DroppingText *gameOverText = nullptr;
@@ -101,6 +109,11 @@ class LevelRenderer : private sf::NonCopyable {
 	 *  give due points to player `playerId` (starting from 0)
 	 */
 	void _killAllEnemies(const unsigned short playerId);
+
+	/** Transforms all enemies in harmless creatures which drop
+	 *  EXTRA letters for 30 seconds.
+	 */
+	void _triggerExtraGame();
 public:
 	LevelRenderer();
 	~LevelRenderer();
@@ -176,6 +189,10 @@ public:
 	 *  speed and fire rate)
 	 */
 	void checkHurryUp();
+
+	void triggerGameOver();
+
+	void checkExtraGameEnd();
 };
 
 }

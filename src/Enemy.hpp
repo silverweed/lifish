@@ -3,6 +3,7 @@
 #include "LifedMovingEntity.hpp"
 #include "AI.hpp"
 #include "Scored.hpp"
+#include "AlienSprite.hpp"
 
 namespace Game {
 
@@ -21,6 +22,9 @@ class Enemy : public Game::LifedMovingEntity, public Game::Scored {
 	bool shooting = false;
 
 	bool blocked = false;
+
+	bool morphed = false;
+	Game::AlienSprite *alienSprite = nullptr;
 
 	bool _isTransparentTo(const Entity *const e) const override;
 public:
@@ -55,6 +59,7 @@ public:
 	Game::Direction seeingPlayer = Game::Direction::NONE;
 
 	Enemy(sf::Vector2f pos, const unsigned short id);
+	~Enemy();
 
 	void setAI(AIFunction aifunc) { ai = aifunc(this); }
 	AIBoundFunction getAI() const { return ai; }
@@ -78,6 +83,8 @@ public:
 
 	void block() { blocked = true; }
 	bool isBlocked() const { return blocked; }
+
+	void setMorphed(bool b);
 };
 
 }
