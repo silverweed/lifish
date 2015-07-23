@@ -6,6 +6,7 @@
 #include "FixedEntity.hpp"
 #include "Lifed.hpp"
 #include "Scored.hpp"
+#include <array>
 
 namespace Game {
 

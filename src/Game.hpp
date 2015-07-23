@@ -62,9 +62,9 @@ inline std::string getAsset(const std::string& dir, const std::string& file) {
 bool init();
 
 namespace Fonts {
-	constexpr auto POINTS = "pf_tempesta_seven_bold.ttf";
-	constexpr auto LEVELNUM = "pf_tempesta_seven.ttf";
-	constexpr auto DEBUG_INFO = "pf_tempesta_seven_condensed.ttf";
+	static constexpr auto POINTS = "pf_tempesta_seven_bold.ttf";
+	static constexpr auto LEVELNUM = "pf_tempesta_seven.ttf";
+	static constexpr auto DEBUG_INFO = "pf_tempesta_seven_condensed.ttf";
 }
 
 }
