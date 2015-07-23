@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
 	if (argc > 1)
 		levelSet = std::string(argv[1]);
 
-	sf::RenderWindow window(sf::VideoMode(800, 600), "Level test");
+	sf::RenderWindow window(sf::VideoMode(800, 480), "Level test");
 	bool vsync = false;
 
 	Game::LevelSet levelset(levelSet);
@@ -112,6 +112,8 @@ int main(int argc, char **argv) {
 				players[i]->setDirection(dir[i]);
 			}
 		}
+
+		lr.checkHurryUp();
 
 		lr.checkLinesOfSight();
 

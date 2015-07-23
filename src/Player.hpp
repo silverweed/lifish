@@ -32,6 +32,7 @@ public:
 	virtual void move() override;
 	void move(const Direction dir) override;
 
+	void kill() override;
 	void resurrect();
 
 	bool playDeathAnimation() override;

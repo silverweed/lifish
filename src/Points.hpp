@@ -9,7 +9,7 @@
 namespace Game {
 
 class Points : public Game::Temporary, public Game::ShadedText {
-	sf::Vector2f initialPos;
+	const sf::Vector2f initialPos;
 	float speed = 30.f;
 public:
 	constexpr static unsigned short CHARACTER_SIZE = 10;

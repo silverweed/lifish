@@ -18,8 +18,8 @@ class Bonus : public Game::FixedEntity, public Game::Scored {
 	sf::Clock expireClock;
 public:
 	constexpr static unsigned short N_BONUS_TYPES = 9;
-	constexpr static unsigned short SHIELD_DURATION = 20; // s
-	constexpr static unsigned short SPEEDY_DURATION = 20; // s
+	constexpr static unsigned short SHIELD_DURATION = 20000; // ms
+	constexpr static unsigned short SPEEDY_DURATION = 20000; // ms
 
 	enum Type : unsigned short {
 		ZAPPER       = 0,

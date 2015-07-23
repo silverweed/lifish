@@ -112,7 +112,7 @@ public:
 	}
 
 	bool isDying() const { return dead; }
-	void kill();
+	virtual void kill();
 
 	short getRemainingLives() const { return remainingLives; }
 };

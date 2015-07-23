@@ -11,6 +11,7 @@
 #include "Points.hpp"
 #include "utils.hpp"
 #include <sstream>
+#include <limits>
 
 using Game::LevelRenderer;
 
@@ -48,6 +49,21 @@ void LevelRenderer::_clearEntities() {
 	for (auto it = bullets.begin(); it != bullets.end(); ++it)
 		delete *it;
 
+	if (hurryUpText != nullptr) {
+		delete hurryUpText;
+		hurryUpText = nullptr;
+	}
+
+	if (gameOverText != nullptr) {
+		delete gameOverText;
+		gameOverText = nullptr;
+	}
+
+	if (extraGameText != nullptr) {
+		delete extraGameText;
+		extraGameText = nullptr;
+	}
+
 	players.fill(nullptr);
 	fixedEntities.fill(nullptr);
 
@@ -65,6 +81,8 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 	}
 	level = _level;
 	bossShootClock.restart();
+	hurryUp = hurryUpWarningGiven = false;
+	levelTimeClock.restart();
 
 	Game::Teleport *latest_teleport = nullptr;
 
@@ -378,6 +396,24 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		} else {
 			bullet->draw(window);
 			++it;
+		}
+	}
+
+	if (hurryUpText != nullptr) {
+		if (hurryUpText->isPlaying())
+			hurryUpText->draw(window);
+		else {
+			delete hurryUpText;
+			hurryUpText = nullptr;
+		}
+	}
+
+	if (gameOverText != nullptr) {
+		if (gameOverText->isPlaying())
+			gameOverText->draw(window);
+		else {
+			delete gameOverText;
+			gameOverText = nullptr;
 		}
 	}
 }
@@ -1019,8 +1055,11 @@ void LevelRenderer::makeBossesShoot() {
 		return;
 
 	unsigned short shootInterval = Game::Boss::SHOOT_INTERVAL;
+
 	if (bossClockCycle != 0)
 		shootInterval = Game::Boss::SHOOT_SHORT_INTERVAL;
+	else if (hurryUp) 
+		shootInterval *= 0.6;
 
 	if (bossShootClock.getElapsedTime().asMilliseconds() < shootInterval)
 		return;
@@ -1099,5 +1138,24 @@ void LevelRenderer::_killAllEnemies(const unsigned short playerId) {
 			b->decLife(1);
 			b->hurt();
 		}
+	}
+}
+
+void LevelRenderer::checkHurryUp() {
+	if (hurryUp) return;
+	int diff = level->getTime() - static_cast<int>(levelTimeClock.getElapsedTime().asSeconds());
+	if (diff <= 0) {
+		// Trigger Hurry Up	
+		for (auto& e : movingEntities) {
+			if (isPlayer(e)) continue;
+			auto enemy = static_cast<Game::Enemy*>(e);
+			enemy->giveSpeedy(std::numeric_limits<int>::max());
+			enemy->attack.fireRate *= 2.;		
+		}
+		hurryUp = true;
+	} else if (!hurryUpWarningGiven && diff <= 30) {
+		hurryUpText = new Game::DroppingText(Game::getAsset("test", "hurryup.png"), sf::Vector2i(161, 30), 300.f);
+		hurryUpText->setOrigin(origin);
+		hurryUpWarningGiven = true;
 	}
 }

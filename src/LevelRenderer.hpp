@@ -17,6 +17,7 @@
 #include "Bullet.hpp"
 #include "Boss.hpp"
 #include "Explosion.hpp"
+#include "DroppingText.hpp"
 
 namespace Game {
 
@@ -31,6 +32,16 @@ class LevelRenderer : private sf::NonCopyable {
 
 	/** The level this object is rendering */
 	Game::Level *level = nullptr;
+
+	/** The time counter */
+	sf::Clock levelTimeClock;
+
+	bool hurryUp = false;
+	bool hurryUpWarningGiven = false;
+
+	Game::DroppingText *hurryUpText = nullptr;
+	Game::DroppingText *gameOverText = nullptr;
+	Game::DroppingText *extraGameText = nullptr;
 	
 	/** The fixed entities */
 	FixedEntityList fixedEntities;
@@ -159,6 +170,12 @@ public:
 	void makeBossesShoot();
 
 	void dropBonus(const sf::Vector2i& tile, const unsigned short type);
+
+	/** If level time is <= 30s, make the "Hurry Up!" text appear;
+	 *  if level time is <= 0, enter Hurry Up mode (double enemies'
+	 *  speed and fire rate)
+	 */
+	void checkHurryUp();
 };
 
 }

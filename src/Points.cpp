@@ -9,9 +9,9 @@ Points::Points(const sf::Vector2f& pos, int amount, sf::Color color, unsigned sh
 		std::to_string(amount),
 		pos,
 		color,
-		sf::Color::Black)
+		sf::Color::Black),
+	initialPos(pos)
 {
-	initialPos = pos;
 	setCharacterSize(charSize);
 }
 

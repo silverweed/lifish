@@ -51,7 +51,7 @@ class Level : public Game::Drawable, private sf::NonCopyable {
 	LoopingMusic *music = nullptr;
 
 	/** The music track data */
-	Track track;
+	Game::Track track;
 
 	/** Number of the level */
 	unsigned short levelnum = 0;
@@ -59,7 +59,7 @@ class Level : public Game::Drawable, private sf::NonCopyable {
 	/** The text containing the level number */
 	Game::ShadedText *levelnumtext = nullptr;
 
-	/** Time before "Hurry Up" */
+	/** Time before "Hurry Up" (in seconds) */
 	unsigned int time;
 
 	/** This level's static (initial) tilemap */

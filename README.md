@@ -10,9 +10,9 @@
 - [x] Fixed Walls
 - [x] Breakable Walls  
   - [x] Breakable Walls break on explosions
-  - [ ] Breakable Walls drop powerups
+  - [x] Breakable Walls drop powerups
 - [x] Collisions with walls
-- [ ] Powerups can be taken by players
+- [x] Powerups can be taken by players
 - [x] Enemies  
   - [x] Enemies move  
     - [x] Soldier/Sgt.Cool AI
@@ -36,7 +36,7 @@
   - [ ] Taking all coins causes Extra Game
 - [x] Bullets
   - [x] Directional bullets use correct sprites
-- [ ] Hurry Up
+- [x] Hurry Up
 - [ ] Victory
 - [ ] Game Over
 - [x] Points

@@ -107,3 +107,12 @@ bool Player::playDeathAnimation() {
 	}
 	return time < DEATH_TIME;
 }
+
+void Player::kill() {
+	MovingEntity::kill();
+	powers.bombRadius = Game::Bomb::DEFAULT_RADIUS;
+	powers.bombFuseTime = Game::Bomb::DEFAULT_FUSE;
+	powers.maxBombs = DEFAULT_MAX_BOMBS;
+	speedyTime = 0;
+	shieldTime = 0;
+}
