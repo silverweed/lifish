@@ -13,6 +13,7 @@ Points::Points(const sf::Vector2f& pos, int amount, sf::Color color, unsigned sh
 	initialPos(pos)
 {
 	setCharacterSize(charSize);
+	shadowSpacing = sf::Vector2f(1.5, 1);
 }
 
 void Points::draw(sf::RenderTarget& window) {

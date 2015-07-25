@@ -13,6 +13,7 @@ protected:
 	sf::Text fgtext, bgtext;
 	std::string str;
 	sf::Vector2f pos;
+	sf::Vector2f shadowSpacing;
 	sf::Color fgcol, bgcol;
 public:
 	ShadedText() {}
@@ -34,6 +35,8 @@ public:
 	void setCharacterSize(unsigned int size);
 
 	void setPosition(const sf::Vector2f& pos);
+
+	void setShadowSpacing(const sf::Vector2f& sp);
 
 	void draw(sf::RenderTarget& window) override;
 };
