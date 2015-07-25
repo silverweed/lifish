@@ -2,6 +2,10 @@
 /**
  * The harmless Extra-game alien sprite which is drawn
  * on screen instead of the enemies during Extra game.
+ * Each Enemy object has a private pointer to this class,
+ * whose draw() method is called by them instead of their own
+ * when they're morphed. Note that this class by itself isn't
+ * an Entity, thus cannot be used standalone.
  */
 
 #include "Animated.hpp"
@@ -14,6 +18,10 @@ class AlienSprite : public Game::Animated {
 	constexpr static unsigned short DEATH_N_FRAMES = 2;
 
 	sf::Texture texture;
+
+	// Suppress compiler's warnings and prevent using
+	// the base draw() function
+	using Game::Animated::draw;
 public:
 	AlienSprite();
 
