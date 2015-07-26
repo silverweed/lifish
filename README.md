@@ -25,6 +25,7 @@
   - [x] Bosses shoot
   - [x] Bosses are hit by explosions
   - [x] Bosses die correctly
+  - [ ] Final Boss
 - [x] Players   
   - [x] Players move
   - [x] Players drop bombs
@@ -44,3 +45,29 @@
   - [x] Enemies become harmless in EXTRA
   - [ ] Enemies drop letters in EXTRA
 - [ ] Side panel
+- [ ] Sounds
+- [ ] Music
+- [ ] Graphics
+  - [ ] Tilesets
+    - [x] #1
+    - [x] #2
+    - [x] #3
+    - [ ] #4
+    - [ ] #5
+    - [ ] #6
+    - [ ] #7
+    - [ ] #8
+  - [ ] Enemies
+    - [ ] #1
+    - [ ] #2
+    - [ ] #3
+    - [ ] #4
+    - [ ] #5
+    - [ ] #6
+    - [ ] #7
+    - [ ] #8
+    - [ ] #9
+    - [ ] #10
+  - [ ] Powerups
+  - [ ] Bosses
+  - [ ] Many other things
