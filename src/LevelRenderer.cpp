@@ -269,35 +269,33 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 			const auto e_type = level->getTile(left, top);
 			switch (e_type) {
 			case EntityType::BREAKABLE:
-				{
-					if (!entity->transparentTo.enemies) {
-						// A breakable wall
-						auto bw = static_cast<Game::BreakableWall*>(entity);
-						if (bw->isDestroyed()) {
-							delete bw;
-							// Chance to drop bonus
-							const unsigned short bonus_type = Game::bonusTypeDistribution(rng);
-							if (bonus_type >= Game::Bonus::N_BONUS_TYPES) {
-								// no bonus
-								fixedEntities[idx] = nullptr;
-							} else {
-								dropBonus(Game::tile(entity->getPosition()), bonus_type);
-							}
-						} else {
-							bw->draw(window);
-						}
-					} else {
-						// A bonus
-						auto bonus = static_cast<Game::Bonus*>(entity);
-						if (bonus->isExpired()) {
-							delete bonus;
+				if (!entity->transparentTo.enemies) {
+					// A breakable wall
+					auto bw = static_cast<Game::BreakableWall*>(entity);
+					if (bw->isDestroyed()) {
+						// Chance to drop bonus
+						const unsigned short bonus_type = Game::bonusTypeDistribution(rng);
+						if (bonus_type >= Game::Bonus::N_BONUS_TYPES) {
+							// no bonus
 							fixedEntities[idx] = nullptr;
 						} else {
-							bonus->draw(window);
+							dropBonus(Game::tile(entity->getPosition()), bonus_type);
 						}
+						delete bw;
+					} else {
+						bw->draw(window);
 					}
-					break;
+				} else {
+					// A bonus
+					auto bonus = static_cast<Game::Bonus*>(entity);
+					if (bonus->isExpired()) {
+						delete bonus;
+						fixedEntities[idx] = nullptr;
+					} else {
+						bonus->draw(window);
+					}
 				}
+				break;
 			case EntityType::COIN:
 				{
 					auto coin = static_cast<Game::Coin*>(entity);
@@ -360,11 +358,13 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 					continue;
 				Game::score[i] += boss->getPointsGiven();
 			}
+
+			spawnPoints(boss->getPosition(), boss->getPointsGiven(), true);
 			delete boss;
 			it = bosses.erase(it);
-			spawnPoints(boss->getPosition(), boss->getPointsGiven(), true);
+
 			continue;
-		} if (boss->isDying()) {
+		} else if (boss->isDying()) {
 			const int t = bossShootClock.getElapsedTime().asMilliseconds();
 			if (t % 300 == 0) {
 				// Calculate a random location inside the boss
@@ -1142,8 +1142,10 @@ void LevelRenderer::_killAllEnemies(const unsigned short playerId) {
 		_pushTemporary(new Game::Explosion(e->getPosition(), 0));
 		e->kill();
 		auto se = dynamic_cast<Game::Scored*>(e);
-		Game::score[playerId] += se->getPointsGiven();
-		spawnPoints(e->getPosition(), se->getPointsGiven());
+		if (se != nullptr) {
+			Game::score[playerId] += se->getPointsGiven();
+			spawnPoints(e->getPosition(), se->getPointsGiven());
+		}
 	}
 
 	for (auto& b : bosses) {
