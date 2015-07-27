@@ -1,12 +1,14 @@
 #pragma once
-/**
- * A bullet
- */
 
 #include "MovingEntity.hpp"
 
 namespace Game {
 
+/**
+ * A bullet can only travel towards a single direction until it
+ * impacts with another Entity which is not transparentTo.bullets.
+ * Cannot travel diagonally.
+ */
 class Bullet : public Game::MovingEntity {
 protected:
 	/** If 1 => this bullet has the same animation for any direction, up to 8.

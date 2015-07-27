@@ -1,7 +1,4 @@
 #pragma once
-/**
- * Base class for game entities (walls, enemies, players, ...)
- */
 
 #include <string>
 #include <SFML/Graphics.hpp>
@@ -10,6 +7,9 @@
 
 namespace Game {
 
+/**
+ * Base class for game entities (walls, enemies, players, ...)
+ */
 class Entity : public Game::Drawable {
 protected:
 	sf::Texture texture;

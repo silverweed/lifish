@@ -1,7 +1,4 @@
 #pragma once
-/**
- * The bonuses dropped by walls
- */
 
 #include "FixedEntity.hpp"
 #include "Scored.hpp"
@@ -9,6 +6,9 @@
 
 namespace Game {
 
+/**
+ * The bonuses dropped by walls
+ */
 class Bonus : public Game::FixedEntity, public Game::Scored {
 	constexpr static float EXPIRE_TIME = 10; // s
 	constexpr static int VALUE = 100; // FIXME

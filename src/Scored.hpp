@@ -1,10 +1,10 @@
 #pragma once
-/**
- * Something which is worth points
- */
 
 namespace Game {
 
+/**
+ * Something which is worth points
+ */
 class Scored {
 protected:
 	int pointsGiven;

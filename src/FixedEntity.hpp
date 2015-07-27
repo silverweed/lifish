@@ -1,11 +1,12 @@
 #pragma once
-/**
- * Entities which can't move (walls, teleporters, bonuses, coins, bosses)
- */
+
 #include "Entity.hpp"
 
 namespace Game {
 
+/**
+ * Entities which can't move (walls, teleporters, bonuses, coins, bosses)
+ */
 class FixedEntity : public Game::Entity {
 public:
 	FixedEntity(const sf::Vector2f& pos)

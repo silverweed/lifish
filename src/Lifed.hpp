@@ -1,10 +1,10 @@
 #pragma once
-/**
- * An object with a life
- */
 
 namespace Game {
 
+/**
+ * An object with a life
+ */
 class Lifed {
 protected:
 	short life;

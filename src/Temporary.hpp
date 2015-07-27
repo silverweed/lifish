@@ -5,6 +5,10 @@
 
 namespace Game {
 
+/**
+ * A Temporary is an animated entity which gets deleted by the
+ * Game::LevelRenderer as soon as isPlaying() == false.
+ */
 class Temporary : public Game::FixedEntity, public Game::Animated {
 public:
 	Temporary(const sf::Vector2f& pos)

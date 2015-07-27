@@ -1,13 +1,14 @@
 #pragma once
-/**
- * The players' bomb
- */
 
 #include "FixedEntity.hpp"
 #include "Animated.hpp"
 
 namespace Game {
 
+/**
+ * The players' bomb. Upon explosion, a Game::Explosion is spawned
+ * where the bomb was deployed.
+ */
 class Bomb : public Game::FixedEntity, public Game::Animated {
 	sf::Clock fuseClock;
 	unsigned short fuseTime;

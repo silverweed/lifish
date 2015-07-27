@@ -1,7 +1,4 @@
 #pragma once
-/**
- * A boss
- */
 
 #include "FixedEntity.hpp"
 #include "Lifed.hpp"
@@ -10,6 +7,11 @@
 
 namespace Game {
 
+/**
+ * A boss is a fixed entity occupying `SIZE` x `SIZE` tiles in the level.
+ * It is endued with `N_SHOOTING_POINTS` coordinates whence it fires
+ * its BossBullets.
+ */
 class Boss : public Game::FixedEntity, public Game::Lifed, public Game::Scored {
 	constexpr static unsigned int VALUE = 5000;
 	constexpr static unsigned short MAX_LIFE = 20; 

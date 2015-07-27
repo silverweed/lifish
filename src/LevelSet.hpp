@@ -17,6 +17,11 @@ struct EnemyInfo {
 	unsigned short speed;
 };
 
+/**
+ * A LevelSet groups information about a set of Levels, along with
+ * extra info about enemies, music, etc. Basically, it holds the
+ * customizable game configuration read from a JSON file.
+ */
 class LevelSet : private sf::NonCopyable {
 	std::vector<Game::Level*> levels;
 	std::vector<Game::Track> tracks;

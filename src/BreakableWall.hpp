@@ -1,7 +1,4 @@
 #pragma once
-/**
- * A breakable wall
- */
 
 #include "Wall.hpp"
 #include "Animated.hpp"
@@ -10,6 +7,9 @@
 
 namespace Game {
 
+/**
+ * A breakable wall
+ */
 class BreakableWall : public Game::Wall, public Game::Lifed, public Game::Animated, public Game::Scored {
 	bool destroyed = false;
 public:

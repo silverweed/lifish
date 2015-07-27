@@ -1,13 +1,13 @@
 #pragma once
-/**
- * A teleport
- */
 
 #include "FixedEntity.hpp"
 #include "Animated.hpp"
 
 namespace Game {
 
+/**
+ * A teleport can be used both by players and enemies.
+ */
 class Teleport : public Game::FixedEntity, public Game::Animated {
 	constexpr static unsigned int COOLDOWN_TIME = 1000; // milliseconds
 

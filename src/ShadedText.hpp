@@ -1,12 +1,13 @@
 #pragma once
-/**
- * A sf::Text container which draws a string with a shadow behind
- */
+
 #include <SFML/Graphics.hpp>
 #include "Drawable.hpp"
 
 namespace Game {
 
+/**
+ * A sf::Text container which draws a string with a shadow behind
+ */
 class ShadedText : public Game::Drawable {
 protected:
 	sf::Font font;

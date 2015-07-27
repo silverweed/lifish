@@ -1,7 +1,4 @@
 #pragma once
-/**
- * Entities which can move (enemies, players, bullets, ...)
- */
 
 #include <string>
 #include <array>
@@ -30,6 +27,9 @@ inline Direction oppositeDirection(const Direction dir) {
 	}
 }
 
+/**
+ * Entities which can move (enemies, players, bullets, ...)
+ */
 class MovingEntity : public Game::Entity, public Game::Animated {
 protected:
 	/** This unit's base speed */

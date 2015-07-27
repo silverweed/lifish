@@ -1,8 +1,4 @@
 #pragma once
-/**
- * Keeps the loaded textures in memory for faster loading;
- * works as an associative set texture_name => image
- */
 
 #include <map>
 #include <string>
@@ -11,6 +7,10 @@
 
 namespace Game {
 
+/**
+ * Keeps the loaded textures in memory for faster loading;
+ * works as an associative set texture_name => image
+ */
 class GameCache : private sf::NonCopyable {
 	std::map<std::string, sf::Image*> textures;
 public:

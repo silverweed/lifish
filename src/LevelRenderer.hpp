@@ -1,8 +1,5 @@
 #pragma once
-/**
- * The LevelRenderer manages a Level during the game, updating its
- * entities, time and so on.
- */
+
 #include <SFML/Graphics.hpp>
 #include <SFML/System/NonCopyable.hpp>
 #include <vector>
@@ -22,6 +19,10 @@
 
 namespace Game {
 
+/**
+ * The LevelRenderer manages a Level during the game, updating its
+ * entities, time and so on.
+ */
 class LevelRenderer : private sf::NonCopyable {
 	/** For Fixed Entities we use a fixed-size array for faster lookup */
 	using FixedEntityList = std::array<Game::FixedEntity*, LEVEL_WIDTH * LEVEL_HEIGHT>;

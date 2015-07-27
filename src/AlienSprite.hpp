@@ -1,4 +1,10 @@
 #pragma once
+
+#include "Animated.hpp"
+#include "MovingEntity.hpp"
+
+namespace Game {
+
 /**
  * The harmless Extra-game alien sprite which is drawn
  * on screen instead of the enemies during Extra game.
@@ -7,12 +13,6 @@
  * when they're morphed. Note that this class by itself isn't
  * an Entity, thus cannot be used standalone.
  */
-
-#include "Animated.hpp"
-#include "MovingEntity.hpp"
-
-namespace Game {
-
 class AlienSprite : public Game::Animated {
 	constexpr static unsigned short WALK_N_FRAMES = 4;
 	constexpr static unsigned short DEATH_N_FRAMES = 2;

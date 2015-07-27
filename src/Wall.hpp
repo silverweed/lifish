@@ -1,12 +1,13 @@
 #pragma once
-/**
- * Base class for walls.
- */
+
 #include <string>
 #include "FixedEntity.hpp"
 
 namespace Game {
 
+/**
+ * Base class for walls.
+ */
 class Wall : public Game::FixedEntity {
 public:
 	Wall(const sf::Vector2f& pos, const std::string& texture_name)

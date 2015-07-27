@@ -1,8 +1,4 @@
 #pragma once
-/**
- * An Animated is a drawable object whose sprite has a certain
- * number of associated animations.
- */
 
 #include <string>
 #include <SFML/Graphics.hpp>
@@ -22,6 +18,10 @@ enum : unsigned short {
 	ANIM_HURT  = 6
 };
 
+/**
+ * An Animated is a drawable object whose sprite has a certain
+ * number of associated animations.
+ */
 class Animated : public Game::Drawable {
 protected:
 	static constexpr unsigned short MAX_N_ANIMATIONS = 7;

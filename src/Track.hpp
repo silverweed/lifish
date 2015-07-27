@@ -1,13 +1,13 @@
 #pragma once
-/**
- * Class containing a track's data
- */
 
 #include <string>
 #include <sstream>
 
 namespace Game {
 
+/**
+ * Struct containing a track's data
+ */
 struct Track {
 	std::string name;
 	float loopstart, loopend, looplength;

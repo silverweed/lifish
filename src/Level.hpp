@@ -1,8 +1,5 @@
 #pragma once
-/**
- * The Level class contains the template of a level, with all the
- * static information about it.
- */
+
 #include <string>
 #include <array>
 #include <SFML/Graphics.hpp>
@@ -21,6 +18,11 @@ namespace Game {
 
 class LevelSet;
 
+/**
+ * The Level class contains the template of a level, with all the
+ * static information about it. Dynamic informations about the level
+ * during the game are managed by Game::LevelRenderer.
+ */
 class Level : public Game::Drawable, private sf::NonCopyable {
 	/** Types of bg texture tiles */
 	enum : unsigned short {

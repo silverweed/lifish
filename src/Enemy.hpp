@@ -7,6 +7,10 @@
 
 namespace Game {
 
+/** 
+ * An Enemy is a MovingEntity which (usually) shoots towards players 
+ * when they see them and is vulnerable to Bombs.
+ */
 class Enemy : public Game::LifedMovingEntity, public Game::Scored {
 	constexpr static unsigned short WALK_N_FRAMES = 4;
 	

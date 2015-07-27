@@ -1,13 +1,13 @@
 #pragma once
-/**
- * A temporary sprite showing the points given by something
- */
 
 #include "Temporary.hpp"
 #include "ShadedText.hpp"
 
 namespace Game {
 
+/**
+ * A temporary sprite showing the points given by something
+ */
 class Points : public Game::Temporary, public Game::ShadedText {
 	const sf::Vector2f initialPos;
 	float speed = 30.f;
