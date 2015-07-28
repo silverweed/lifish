@@ -54,6 +54,7 @@ public:
 		float speed;
 		short range;
 	} attack;
+	sf::Vector2i attackAlign;
 
 	unsigned short distanceWithNearestPlayer = 2 * Game::LEVEL_WIDTH * Game::TILE_SIZE;
 
@@ -74,6 +75,7 @@ public:
 	bool isRecharging() const;
 
 	void shoot();
+	bool isShooting() const { return shooting; }
 
 	void draw(sf::RenderTarget& window) override;
 

@@ -83,6 +83,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 	bossShootClock.restart();
 	hurryUp = hurryUpWarningGiven = false;
 	levelTimeClock.restart();
+	coinsNum = 0;
 
 	Game::Teleport *latest_teleport = nullptr;
 
@@ -518,6 +519,7 @@ void LevelRenderer::detectCollisions() {
 						// Damage player
 						auto player = static_cast<Game::Player*>(entity);
 						player->decLife(bullet->getDamage());
+						spawnDamage(player->getPosition(), bullet->getDamage());
 						if (!player->isHurt()) {
 							player->setHurt(true);
 							player->giveShield(Game::DAMAGE_SHIELD_TIME);
@@ -614,19 +616,27 @@ void LevelRenderer::detectCollisions() {
 					}
 				}
 
-				if (!opaque && !(enemy->isDying() || player->isDying() || player->hasShield())) {
+				if (!opaque && !(enemy->isDying() || player->isDying())) {
 					if (enemy->attack.type & Enemy::AttackType::CONTACT) {
-						// TODO: attack sprite
-						player->decLife(enemy->attack.damage);
-					} else {
-						player->decLife(1);
+						enemy->shoot();
+						enemy->attackAlign = Game::tile(player->getPosition());
 					}
-					if (!player->isHurt()) {
-						player->setHurt(true);
-						player->giveShield(Game::DAMAGE_SHIELD_TIME);
+
+					if (!player->hasShield()) {
+						if (enemy->attack.type & Enemy::AttackType::CONTACT) {
+							player->decLife(enemy->attack.damage);
+							spawnDamage(player->getPosition(), enemy->attack.damage);
+						} else {
+							player->decLife(1);
+							spawnDamage(player->getPosition(), 1);
+						}
+						if (!player->isHurt()) {
+							player->setHurt(true);
+							player->giveShield(Game::DAMAGE_SHIELD_TIME);
+						}
+						if (player->getLife() <= 0)
+							player->kill();
 					}
-					if (player->getLife() <= 0)
-						player->kill();
 				}
 
 				if (other->getDirection() == Game::oppositeDirection(dir)) {
@@ -1062,6 +1072,19 @@ void LevelRenderer::spawnPoints(const sf::Vector2f& pos, const int amount, bool 
 					sf::Color::Magenta, 20));
 	else
 		_pushTemporary(new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), amount));
+}
+
+void LevelRenderer::spawnDamage(const sf::Vector2f& pos, const int amount) {
+	short nletters = 2;
+	int a = amount;
+	while (a > 9) {
+		a /= 10;
+		++nletters;
+	}
+	auto width = Game::Points::CHARACTER_SIZE * nletters;
+	auto dmg = new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), -amount);
+	dmg->setColor(sf::Color::Red, sf::Color::White);
+	_pushTemporary(dmg);
 }
 
 void LevelRenderer::makeBossesShoot() {

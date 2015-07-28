@@ -180,6 +180,7 @@ public:
 	bool removePlayer(const unsigned short id);
 
 	void spawnPoints(const sf::Vector2f& pos, const int amount, bool large = false);
+	void spawnDamage(const sf::Vector2f& pos, const int amount);
 
 	void makeBossesShoot();
 

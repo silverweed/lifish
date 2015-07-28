@@ -50,6 +50,11 @@ void ShadedText::setShadowSpacing(const sf::Vector2f& sp) {
 	shadowSpacing = sp;
 	bgtext.setPosition(fgtext.getPosition() + shadowSpacing);
 }
+
+void ShadedText::setColor(const sf::Color& fg, const sf::Color& bg) {
+	fgtext.setColor(fg);
+	bgtext.setColor(bg);
+}
 	
 void ShadedText::draw(sf::RenderTarget& window) {
 	window.draw(bgtext);

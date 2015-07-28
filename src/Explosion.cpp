@@ -137,7 +137,7 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 		            row_box(TILE_SIZE, pos.y, LEVEL_WIDTH * TILE_SIZE, TILE_SIZE),
 		            col_box(pos.x, TILE_SIZE, TILE_SIZE, LEVEL_HEIGHT * TILE_SIZE);
 
-	// Skim moving entities and keep only those which may be hit by this originosion
+	// Skim moving entities and keep only those which may be hit by this explosion
 	for (auto& e : allmoving) {
 		const auto epos = e->getPosition();
 		const sf::FloatRect e_box(epos.x, epos.y, TILE_SIZE, TILE_SIZE);
@@ -161,19 +161,18 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 		}
 	}
 
-	auto calcDamage = [] (const unsigned short d) {
-		std::normal_distribution<double> dist(2/3.*Game::Player::MAX_LIFE - 2*d, Game::Player::MAX_LIFE / 3.);
-		return std::max(1, static_cast<int>(dist(Game::rng)));
-	};
-
-	auto tryHit = [lr, &calcDamage] (Game::LifedMovingEntity *const e, const unsigned short d, const sf::FloatRect& expl_box) {
+	auto tryHit = [lr] (Game::LifedMovingEntity *const e, const unsigned short d, const sf::FloatRect& expl_box) {
 		if (e->hasShield() || e->isDying()) return;
 
 		// Check if entity's bounding box intersects this tile
 		const sf::FloatRect e_box(e->getPosition().x, e->getPosition().y, TILE_SIZE, TILE_SIZE);
 		if (e_box.intersects(expl_box)) {
-			e->decLife(calcDamage(d));
+			// Bomb deals 13~16 damage
+			std::discrete_distribution<unsigned short> dist { 3, 2, 1 };
+			const unsigned short dmg = Game::Bomb::DAMAGE + dist(rng);
+			e->decLife(dmg);
 			if (lr->isPlayer(e)) {
+				lr->spawnDamage(e->getPosition(), dmg); 
 				e->setHurt(true);
 				e->giveShield(Game::DAMAGE_SHIELD_TIME);
 			} else {

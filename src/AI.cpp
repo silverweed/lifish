@@ -11,9 +11,12 @@ static D directions[] = { D::UP, D::RIGHT, D::DOWN, D::LEFT };
 AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
 	return [enemy] (const LevelRenderer *const lr) { 
 		if (!enemy->colliding) {
-			if (enemy->distTravelled < Game::TILE_SIZE) return enemy->getDirection();
+			if (enemy->distTravelled < Game::TILE_SIZE) 
+				return enemy->getDirection();
+
 			std::uniform_int_distribution<int> dist(0, 10);
-			if (enemy->distTravelled < 2 * Game::TILE_SIZE && dist(Game::rng) <= 4) return enemy->getDirection();
+			if (enemy->distTravelled < 2 * Game::TILE_SIZE && dist(Game::rng) <= 4)
+				return enemy->getDirection();
 		}
 		enemy->distTravelled = 0;
 		D dirs[4];
@@ -34,12 +37,15 @@ AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
 
 AIBoundFunction Game::ai_random_forward(Game::Enemy *const enemy) {
 	return [enemy] (const LevelRenderer *const lr) { 
-		D cur = enemy->getDirection();
-		auto cur_align = Game::tile(enemy->getPosition());
-		if (enemy->prevAlign == cur_align && !enemy->colliding) return cur;
-		D opp = oppositeDirection(cur);
+		const D cur = enemy->getDirection();
+		const auto cur_align = Game::tile(enemy->getPosition());
+		if (enemy->prevAlign == cur_align && !enemy->colliding) 
+			return cur;
+
+		const D opp = oppositeDirection(cur);
 		if (enemy->colliding && enemy->canGo(cur, lr))
 			return opp;
+
 		D dirs[4];
 		unsigned short n = 0;
 		for (const auto& d : directions)
@@ -51,16 +57,55 @@ AIBoundFunction Game::ai_random_forward(Game::Enemy *const enemy) {
 	};
 }
 
+AIBoundFunction Game::ai_random_forward_haunt(Game::Enemy *const enemy) {
+	return [enemy] (const LevelRenderer *const lr) {
+		if (enemy->isShooting()) {
+			const auto cur_align = Game::tile(enemy->getPosition());
+			const D cur = enemy->getDirection();
+			if (enemy->colliding && enemy->canGo(cur, lr)) 
+				return oppositeDirection(cur);
+
+			if (enemy->attackAlign == cur_align)
+				return cur;
+			
+			if (enemy->attackAlign.x < cur_align.x)
+				return D::LEFT;
+			else if (enemy->attackAlign.x > cur_align.x)
+				return D::RIGHT;
+			else if (enemy->attackAlign.y < cur_align.y)
+				return D::UP;
+			else
+				return D::DOWN;
+		} else if (enemy->attackAlign.x > 0) {
+			D dir = D::DOWN;
+			const auto cur_align = Game::tile(enemy->getPosition());
+			if (enemy->attackAlign.x < cur_align.x)
+				dir =  D::LEFT;
+			else if (enemy->attackAlign.x > cur_align.x)
+				dir =  D::RIGHT;
+			else if (enemy->attackAlign.y < cur_align.y)
+				dir =  D::UP;
+			enemy->attackAlign.x = -1;
+			return dir;
+		}
+		return ai_random_forward(enemy)(lr);
+	};
+}
+
 AIBoundFunction Game::ai_follow(Game::Enemy *const enemy) {
 	return [enemy] (const LevelRenderer *const lr) {
-		D cur = enemy->getDirection();
-		auto cur_align = Game::tile(enemy->getPosition());
-		if (enemy->prevAlign == cur_align && !enemy->colliding) return cur;
-		D opp = oppositeDirection(cur);
+		const D cur = enemy->getDirection();
+		const auto cur_align = Game::tile(enemy->getPosition());
+		if (enemy->prevAlign == cur_align && !enemy->colliding) 
+			return cur;
+
+		const D opp = oppositeDirection(cur);
 		if (enemy->colliding && enemy->canGo(cur, lr))
 			return opp;
+
 		if (enemy->seeingPlayer != Game::Direction::NONE)
 			return enemy->seeingPlayer;
+
 		D dirs[4];
 		unsigned short n = 0;
 		for (const auto& d : directions)

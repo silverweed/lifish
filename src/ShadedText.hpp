@@ -39,6 +39,8 @@ public:
 
 	void setShadowSpacing(const sf::Vector2f& sp);
 
+	void setColor(const sf::Color& fg, const sf::Color& bg);
+
 	void draw(sf::RenderTarget& window) override;
 };
 

@@ -22,6 +22,9 @@ AIBoundFunction ai_random(Game::Enemy *const);
  */
 AIBoundFunction ai_random_forward(Game::Enemy *const);
 
+/** Like ai_random_forward, but stick to the player while attacking. */
+AIBoundFunction ai_random_forward_haunt(Game::Enemy *const);
+
 /** Choose a random direction at each turn, unless player is in
  *  sight, in which case, follow him. (If more than 1 players are
  *  in sight, chase nearest one)
@@ -31,9 +34,10 @@ AIBoundFunction ai_follow(Game::Enemy *const enemy);
 /** Actively chase the nearest player */
 AIBoundFunction ai_chase(Game::Enemy *const enemy);
 
-static std::array<AIFunction, 4> ai_functions = {{
+static std::array<AIFunction, 5> ai_functions = {{
 	ai_random,
 	ai_random_forward,
+	ai_random_forward_haunt,
 	ai_follow,
 	ai_chase
 }};
