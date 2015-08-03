@@ -110,6 +110,7 @@ bool Player::playDeathAnimation() {
 
 void Player::kill() {
 	MovingEntity::kill();
+	life = 0;
 	powers.bombRadius = Game::Bomb::DEFAULT_RADIUS;
 	powers.bombFuseTime = Game::Bomb::DEFAULT_FUSE;
 	powers.maxBombs = DEFAULT_MAX_BOMBS;

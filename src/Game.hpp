@@ -9,6 +9,7 @@
 #include <random>
 #include <SFML/Graphics.hpp>
 #include "GameCache.hpp"
+#include "SidePanel.hpp"
 
 namespace Game {
 
@@ -33,7 +34,7 @@ constexpr unsigned short INITIAL_LIVES = 3;
 /** How much the main game window is shifted relative to the
  *  SFML window
  */
-const sf::Vector2f MAIN_WINDOW_SHIFT = sf::Vector2f(128.f, 0.f);
+const sf::Vector2f MAIN_WINDOW_SHIFT = sf::Vector2f(1 + Game::SidePanel::WIDTH, 0.f);
 
 constexpr unsigned short PWD_BUFSIZE = 512;
 /** The executable working directory */
@@ -65,6 +66,7 @@ namespace Fonts {
 	static constexpr auto POINTS = "pf_tempesta_seven_bold.ttf";
 	static constexpr auto LEVELNUM = "pf_tempesta_seven.ttf";
 	static constexpr auto DEBUG_INFO = "pf_tempesta_seven_condensed.ttf";
+	static constexpr auto SIDE_PANEL = "pf_tempesta_seven_bold.ttf";
 }
 
-}
+} // end namespace Game

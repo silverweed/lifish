@@ -10,7 +10,7 @@ protected:
 	int pointsGiven;
 
 public:
-	Scored(const int points) : pointsGiven(points) {}
+	constexpr Scored(const int points) : pointsGiven(points) {}
 
 	int getPointsGiven() const { return pointsGiven; }
 };

@@ -168,7 +168,7 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 		const sf::FloatRect e_box(e->getPosition().x, e->getPosition().y, TILE_SIZE, TILE_SIZE);
 		if (e_box.intersects(expl_box)) {
 			// Bomb deals 13~16 damage
-			std::discrete_distribution<unsigned short> dist { 3, 2, 1 };
+			std::discrete_distribution<unsigned short> dist { 3, 2, 1.5, 1.5 };
 			const unsigned short dmg = Game::Bomb::DAMAGE + dist(rng);
 			e->decLife(dmg);
 			if (lr->isPlayer(e)) {

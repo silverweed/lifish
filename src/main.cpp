@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 	if (argc > 1)
 		levelSet = std::string(argv[1]);
 
-	sf::RenderWindow window(sf::VideoMode(800, 480), "Level test");
+	sf::RenderWindow window(sf::VideoMode(640, 480), "Level test");
 	bool vsync = false;
 
 	Game::LevelSet levelset(levelSet);
@@ -52,6 +52,7 @@ int main(int argc, char **argv) {
 	lr.setOrigin(-Game::MAIN_WINDOW_SHIFT);
 	lr.loadLevel(level);
 	lr.renderFrame(window);
+	Game::SidePanel panel(&lr);
 
 	bool show_fps = false;
 	sf::Clock fps_clock, fps_update_clock;
@@ -66,8 +67,26 @@ int main(int argc, char **argv) {
 	vsync_text.setCharacterSize(16);
 
 	auto players = lr.getPlayers();
+	bool gameOverTriggered = false;
 
 	while (window.isOpen()) {
+		if (gameOverTriggered) {
+			if (lr.isGameOverEnded()) {
+				// TODO: end game
+				window.close();
+				break;
+			} else {
+				window.clear();
+				lr.renderFrame(window);
+				if (show_fps) {
+					fps_text.draw(window);
+					vsync_text.draw(window);
+				}
+				window.display();
+				continue;
+			}
+		}
+
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			switch (event.type) {
@@ -182,8 +201,11 @@ int main(int argc, char **argv) {
 			}
 		}
 		
-		if (dead_players == Game::MAX_PLAYERS)
+		if (dead_players == Game::MAX_PLAYERS && !gameOverTriggered) {
 			lr.triggerGameOver();
+			gameOverTriggered = true;
+			continue;
+		}
 
 		lr.moveBullets();
 
@@ -201,6 +223,7 @@ int main(int argc, char **argv) {
 
 		window.clear();
 		lr.renderFrame(window);
+		panel.draw(window);
 		if (show_fps) {
 			fps_text.draw(window);
 			vsync_text.draw(window);

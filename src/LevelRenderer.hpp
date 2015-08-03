@@ -86,6 +86,8 @@ class LevelRenderer : private sf::NonCopyable {
 	 */
 	Game::Teleport *firstTeleport = nullptr;
 
+	bool gameOverEnded = false;
+
 
 	/** Deletes all entities */
 	void _clearEntities();
@@ -138,6 +140,8 @@ public:
 	 */
 	void selectEnemyMoves();
 	void applyEnemyMoves();
+
+	float getLevelTime() const { return level->getTime() - levelTimeClock.getElapsedTime().asSeconds(); }
 
 	const std::array<Game::Player*, Game::MAX_PLAYERS>& getPlayers() const { return players; }
 	Player* getPlayer(const unsigned short i) const { return players[i-1]; }
@@ -193,6 +197,7 @@ public:
 	void checkHurryUp();
 
 	void triggerGameOver();
+	bool isGameOverEnded() const { return gameOverEnded; }
 
 	void checkExtraGameEnd();
 };

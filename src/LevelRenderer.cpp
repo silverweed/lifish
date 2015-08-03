@@ -411,11 +411,12 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 	}
 
 	if (gameOverText != nullptr) {
-		if (gameOverText->isPlaying())
+		if (gameOverText->isPlaying()) 
 			gameOverText->draw(window);
 		else {
 			delete gameOverText;
 			gameOverText = nullptr;
+			gameOverEnded = true;
 		}
 	}
 
@@ -1192,7 +1193,7 @@ void LevelRenderer::checkHurryUp() {
 			enemy->attack.fireRate *= 2.;		
 		}
 		hurryUp = true;
-	} else if (!hurryUpWarningGiven && diff <= 30) {
+	} else if (!hurryUpWarningGiven && diff <= 31) {
 		hurryUpText = new Game::DroppingText(Game::getAsset("test", "hurryup.png"), sf::Vector2i(161, 30), 300.f);
 		hurryUpText->setOrigin(origin);
 		hurryUpWarningGiven = true;
