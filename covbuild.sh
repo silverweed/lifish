@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Settings
 
-PROJECT_NAME=${PROJECT_NAME}
+PROJECT_NAME=lifish
 EMAIL=silverweed1991@gmail.com
 COVERITY_PATH=$HOME/Public/cov-analysis-linux64-7.6.0/bin
 
@@ -31,7 +31,7 @@ if [[ $? == 0 ]]; then
 	else
 		echo "[ OK ] ${R}% of the compilation units are ready."
 	fi
-	echo "Submit new build?"
+	echo "Submit new build? ($(du -sh ${PROJECT_NAME}.tgz | cut -f1))"
 	select ANS in "Submit" "Abort"; do
 		case $ANS in
 			Submit)

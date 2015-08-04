@@ -544,8 +544,6 @@ void LevelRenderer::detectCollisions() {
 					auto player = static_cast<Game::Player*>(entity);
 					player->extra[letter->getId()] = true;
 					spawnPoints(letter->getPosition(), letter->getPointsGiven());
-					delete letter;
-					it = letters.erase(it);
 
 					// Check if EXTRA
 					bool extra = true;
@@ -562,6 +560,9 @@ void LevelRenderer::detectCollisions() {
 								std::to_string(_getPlayerIndex(player) + 1) + "UP", sf::Color(77, 184, 255, 255), 15);
 						_pushTemporary(upText);
 					}
+
+					delete letter;
+					it = letters.erase(it);
 				} else {
 					++it;
 				}
