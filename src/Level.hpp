@@ -65,7 +65,7 @@ class Level : public Game::Drawable, private sf::NonCopyable {
 	unsigned int time;
 
 	/** This level's static (initial) tilemap */
-	Matrix<EntityType, LEVEL_HEIGHT, LEVEL_WIDTH> tiles;
+	Game::Matrix<EntityType, LEVEL_HEIGHT, LEVEL_WIDTH> tiles;
 
 	/** (Optional) LevelSet this level belongs to */
 	const LevelSet *const levelSet;

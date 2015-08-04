@@ -11,8 +11,11 @@
 #	include <mach-o/dyld.h>
 #endif
 
+// Define extern variables of Game.hpp
 char Game::pwd[Game::PWD_BUFSIZE];
 std::array<unsigned int, Game::MAX_PLAYERS> Game::score;
+Game::GameCache Game::cache;
+std::default_random_engine Game::rng;
 
 using Game::pwd;
 

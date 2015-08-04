@@ -22,6 +22,7 @@
 #include "Level.hpp"
 #include "LevelSet.hpp"
 #include "LevelRenderer.hpp"
+#include "SidePanel.hpp"
 #include "MovingEntity.hpp"
 #include "Controls.hpp"
 

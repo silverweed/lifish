@@ -8,16 +8,16 @@
 #include "MovingEntity.hpp"
 #include "Animated.hpp"
 
-template <class T, size_t ROWS, size_t COLS>
-using Matrix = std::array<std::array<T, COLS>, ROWS>;
-
 short keyToNumber(sf::Keyboard::Key key);
 
 namespace Game {
 
+template <class T, size_t ROWS, size_t COLS>
+using Matrix = std::array<std::array<T, COLS>, ROWS>;
+
 template<typename T> inline T abs(T num) {
 #ifdef IS_APPLE
-// Apple Clang is a "good" compiler...
+	// Apple Clang is a "good" compiler...
 	if (num < 0) return -num;
 	return num;
 #else
@@ -65,4 +65,4 @@ inline double distance(const sf::Vector2f& a, const sf::Vector2f& b) {
 	return std::sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
 
-}
+} // end namespace Game

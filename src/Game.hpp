@@ -1,6 +1,6 @@
 #pragma once
 /**
- * Game definitions
+ * Game definitions, global functions and variables
  */
 
 #include <string>
@@ -9,9 +9,12 @@
 #include <random>
 #include <SFML/Graphics.hpp>
 #include "GameCache.hpp"
-#include "SidePanel.hpp"
 
 namespace Game {
+
+/****************************************************************************/
+/*                         GLOBAL DEFINITIONS                               */
+/****************************************************************************/
 
 constexpr char DIRSEP = '/';
 
@@ -31,23 +34,45 @@ constexpr unsigned short MAX_PLAYERS = 2;
 
 constexpr unsigned short INITIAL_LIVES = 3;
 
+constexpr static unsigned short SIDE_PANEL_WIDTH = 96;
+constexpr static unsigned short SIDE_PANEL_HEIGHT = 480;
+
 /** How much the main game window is shifted relative to the
  *  SFML window
  */
-const sf::Vector2f MAIN_WINDOW_SHIFT = sf::Vector2f(1 + Game::SidePanel::WIDTH, 0.f);
+const sf::Vector2f MAIN_WINDOW_SHIFT = sf::Vector2f(1 + SIDE_PANEL_WIDTH, 0.f);
+
+/** The number of letters needed to get an extra life */
+constexpr static unsigned short N_EXTRA_LETTERS = 5;
 
 constexpr unsigned short PWD_BUFSIZE = 512;
+
+namespace Fonts {
+	static constexpr auto POINTS = "pf_tempesta_seven_bold.ttf";
+	static constexpr auto LEVELNUM = "pf_tempesta_seven.ttf";
+	static constexpr auto DEBUG_INFO = "pf_tempesta_seven_condensed.ttf";
+	static constexpr auto SIDE_PANEL = "pf_tempesta_seven_bold.ttf";
+}
+
+/****************************************************************************/
+/*                         GLOBAL VARIABLES                                 */
+/****************************************************************************/
+
 /** The executable working directory */
 extern char pwd[PWD_BUFSIZE];
 
 /** Global game cache (caches textures in memory for faster loading) */
-static GameCache cache;
+extern GameCache cache;
 
 /** Random number generator */
-static std::default_random_engine rng;
+extern std::default_random_engine rng;
 
 /** The players' score */
 extern std::array<unsigned int, MAX_PLAYERS> score;
+
+/****************************************************************************/
+/*                         GLOBAL FUNCTIONS                                 */
+/****************************************************************************/
 
 inline std::string getAssetDir(const std::string& dir) {
 	std::stringstream ss;
@@ -61,12 +86,5 @@ inline std::string getAsset(const std::string& dir, const std::string& file) {
 
 /** Initializes runtime variables */
 bool init();
-
-namespace Fonts {
-	static constexpr auto POINTS = "pf_tempesta_seven_bold.ttf";
-	static constexpr auto LEVELNUM = "pf_tempesta_seven.ttf";
-	static constexpr auto DEBUG_INFO = "pf_tempesta_seven_condensed.ttf";
-	static constexpr auto SIDE_PANEL = "pf_tempesta_seven_bold.ttf";
-}
 
 } // end namespace Game

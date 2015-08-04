@@ -12,6 +12,7 @@ Player::Player(sf::Vector2f pos, const unsigned short id) :
 	speed = 150.f;
 	transparentTo.players = false;
 	remainingLives = Game::INITIAL_LIVES;
+	extra.fill(false);
 
 	for (unsigned short i = 0; i < MAX_N_ANIMATIONS; ++i)
 		animations[i].setSpriteSheet(texture);
@@ -93,6 +94,7 @@ void Player::resurrect() {
 	animatedSprite.setAnimation(animations[ANIM_DOWN]);
 	animatedSprite.pause();
 	life = MAX_LIFE;
+	extra.fill(false);
 	frameClock.restart();
 	realign();
 }

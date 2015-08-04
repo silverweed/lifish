@@ -2,6 +2,7 @@
 
 #include "LifedMovingEntity.hpp"
 #include "Bomb.hpp"
+#include "Game.hpp"
 
 namespace Game {
 
@@ -26,6 +27,9 @@ public:
 		unsigned short bombFuseTime = Game::Bomb::DEFAULT_FUSE;
 		unsigned short maxBombs = DEFAULT_MAX_BOMBS;
 	} powers;
+
+	/** The EXTRA letters of this player */
+	std::array<bool, Game::N_EXTRA_LETTERS> extra;
 
 	Player(sf::Vector2f pos, const unsigned short id);
 
