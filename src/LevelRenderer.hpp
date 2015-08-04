@@ -16,6 +16,7 @@
 #include "Explosion.hpp"
 #include "DroppingText.hpp"
 #include "AlienSprite.hpp"
+#include "Letter.hpp"
 
 namespace Game {
 
@@ -24,13 +25,14 @@ namespace Game {
  * entities, time and so on.
  */
 class LevelRenderer : private sf::NonCopyable {
-	/** For Fixed Entities we use a fixed-size array for faster lookup */
+	// For Fixed Entities we use a fixed-size array for faster lookup
 	using FixedEntityList = std::array<Game::FixedEntity*, LEVEL_WIDTH * LEVEL_HEIGHT>;
 	using MovingEntityList = std::vector<Game::LifedMovingEntity*>;
 	using TemporaryEntityList = std::vector<Game::Temporary*>;
-	using BulletsList = std::vector<Game::Bullet*>;
+	using BulletList = std::vector<Game::Bullet*>;
 	using BossList = std::vector<Game::Boss*>;
-	using ExplosionsList = std::vector<Game::Explosion*>;
+	using ExplosionList = std::vector<Game::Explosion*>;
+	using LetterList = std::vector<Game::Letter*>;
 
 	/** The level this object is rendering */
 	Game::Level *level = nullptr;
@@ -62,10 +64,13 @@ class LevelRenderer : private sf::NonCopyable {
 	TemporaryEntityList temporary;
 
 	/** The bomb explosions */
-	ExplosionsList explosions;
+	ExplosionList explosions;
 
 	/** The bullets */
-	BulletsList bullets;
+	BulletList bullets;
+
+	/** The EXTRA letters */
+	LetterList letters;
 	
 	/** The players' bombs */
 	Matrix<Game::Bomb*, Game::MAX_PLAYERS, Game::Player::MAX_MAX_BOMBS> bombs;
@@ -117,6 +122,8 @@ class LevelRenderer : private sf::NonCopyable {
 	 *  EXTRA letters for 30 seconds.
 	 */
 	void _triggerExtraGame();
+
+	void _spawnLetter(const sf::Vector2f& pos);
 public:
 	LevelRenderer();
 	~LevelRenderer();
@@ -200,6 +207,11 @@ public:
 	bool isGameOverEnded() const { return gameOverEnded; }
 
 	void checkExtraGameEnd();
+
+	/** During Extra Game, check for letters transitions */
+	void cycleLetters();
+
+	bool isExtraGame() const { return extraGame; }
 };
 
 }

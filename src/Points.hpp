@@ -6,7 +6,7 @@
 namespace Game {
 
 /**
- * A temporary sprite showing the points given by something
+ * A temporary sprite showing a small text rising from a position
  */
 class Points : public Game::Temporary, public Game::ShadedText {
 	const sf::Vector2f initialPos;
@@ -14,7 +14,7 @@ class Points : public Game::Temporary, public Game::ShadedText {
 public:
 	constexpr static unsigned short CHARACTER_SIZE = 10;
 
-	Points(const sf::Vector2f& pos, int amount, 
+	Points(const sf::Vector2f& pos, const std::string& str, 
 		sf::Color color = sf::Color::Blue, 
 		unsigned short charSize = CHARACTER_SIZE);
 

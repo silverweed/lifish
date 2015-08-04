@@ -154,7 +154,10 @@ int main(int argc, char **argv) {
 
 		lr.checkHurryUp();
 
-		lr.checkExtraGameEnd();
+		if (lr.isExtraGame()) {
+			lr.checkExtraGameEnd();
+			lr.cycleLetters();
+		}
 
 		lr.checkLinesOfSight();
 

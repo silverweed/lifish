@@ -115,6 +115,7 @@ public:
 	virtual void kill();
 
 	short getRemainingLives() const { return remainingLives; }
+	void setRemainingLives(short r) { remainingLives = r; }
 };
 
 }

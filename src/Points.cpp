@@ -2,14 +2,11 @@
 
 using Game::Points;
 
-Points::Points(const sf::Vector2f& pos, int amount, sf::Color color, unsigned short charSize) :
+Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color, unsigned short charSize) :
 	Game::Temporary(pos),
 	Game::ShadedText(
 		Game::getAsset("fonts", Game::Fonts::POINTS),
-		std::to_string(amount),
-		pos,
-		color,
-		sf::Color::Black),
+		str, pos, color, sf::Color::Black),
 	initialPos(pos)
 {
 	setCharacterSize(charSize);

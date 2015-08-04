@@ -91,6 +91,7 @@ public:
 	bool isBlocked() const { return blocked; }
 
 	void setMorphed(bool b);
+	bool isMorphed() const { return morphed; }
 };
 
 }

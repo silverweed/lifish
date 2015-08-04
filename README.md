@@ -41,9 +41,9 @@
 - [ ] Victory
 - [ ] Game Over
 - [x] Points
-- [ ] Extra
+- [x] Extra
   - [x] Enemies become harmless in EXTRA
-  - [ ] Enemies drop letters in EXTRA
+  - [x] Enemies drop letters in EXTRA
 - [ ] Side panel
 - [ ] Sounds
 - [ ] Music

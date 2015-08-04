@@ -180,9 +180,8 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 				if (se != nullptr)
 					lr->spawnPoints(e->getPosition(), se->getPointsGiven());
 			}
-			if (e->getLife() <= 0) {
+			if (e->getLife() <= 0)
 				e->kill();
-			}
 		}
 	};
 
@@ -208,9 +207,8 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 			}
 
 			const sf::FloatRect expl_box(new_tile.x * TILE_SIZE, new_tile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-			for (auto& e : moving[dir]) {
+			for (auto& e : moving[dir])
 				tryHit(e, d, expl_box);
-			}
 		}
 	}
 }

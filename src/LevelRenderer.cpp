@@ -48,6 +48,8 @@ void LevelRenderer::_clearEntities() {
 		delete *it;
 	for (auto it = bullets.begin(); it != bullets.end(); ++it)
 		delete *it;
+	for (auto it = letters.begin(); it != letters.end(); ++it)
+		delete *it;
 
 	if (hurryUpText != nullptr) {
 		delete hurryUpText;
@@ -73,6 +75,7 @@ void LevelRenderer::_clearEntities() {
 	movingEntities.clear();
 	bullets.clear();
 	bosses.clear();
+	letters.clear();
 }
 
 void LevelRenderer::loadLevel(Game::Level *const _level) {
@@ -247,6 +250,8 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 		}
 	}
 	
+	letters.reserve(movingEntities.size() - 1);
+
 	level->setOrigin(origin);
 	for (auto& entity : fixedEntities) 
 		if (entity != nullptr)
@@ -261,6 +266,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 	if (level == nullptr) return;
 
 	level->draw(window);
+	// Draw fixed entities
 	for (unsigned short left = 0; left < LEVEL_WIDTH; ++left) {
 		for (unsigned short top = 0; top < LEVEL_HEIGHT; ++top) {
 			const unsigned short idx = top * LEVEL_WIDTH + left;
@@ -314,6 +320,12 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		}
 	}
 
+	// Draw letters
+	for (auto& letter : letters) {
+		letter->draw(window);
+	}
+
+	// Draw bombs
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 		for (unsigned short j = 0; j < bombs[i].size(); ++j) {
 			auto bomb = bombs[i][j];
@@ -327,11 +339,14 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		}
 	}
 	
+	// Draw moving entities
 	for (auto it = movingEntities.begin(); it != movingEntities.end(); ) {
 		auto entity = *it;
 		if (entity->isDying() && !isPlayer(entity)) {
 			entity->prepareDeathAnimation();
 			if (entity->playDeathAnimation()) {
+				if (extraGame)
+					_spawnLetter(entity->getPosition());
 				delete entity;
 				it = movingEntities.erase(it);
 				continue;
@@ -341,6 +356,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		++it;
 	}
 
+	// Draw bomb explosions
 	for (auto it = explosions.begin(); it != explosions.end(); ) {
 		if (!(*it)->isPlaying()) {
 			delete *it;
@@ -351,6 +367,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		}
 	}
 
+	// Draw bosses
 	for (auto it = bosses.begin(); it != bosses.end(); ) {
 		auto boss = *it;
 		if (boss->isDead()) {
@@ -380,6 +397,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		++it;
 	}
 	
+	// Draw other temporaries
 	for (auto it = temporary.begin(); it != temporary.end(); ) {
 		if (!(*it)->isPlaying()) {
 			delete *it;
@@ -390,6 +408,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		}
 	}
 
+	// Draw bullets
 	for (auto it = bullets.begin(); it != bullets.end(); ) {
 		auto bullet = *it;
 		if (bullet->isDestroyed()) {
@@ -400,6 +419,8 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 			++it;
 		}
 	}
+
+	// Draw dropping texts
 
 	if (hurryUpText != nullptr) {
 		if (hurryUpText->isPlaying())
@@ -507,6 +528,42 @@ void LevelRenderer::detectCollisions() {
 					// Disable both source and destination for a while
 					teleport->disable();
 					next->disable();
+				}
+			}
+		}
+		
+		// Check for letters
+		if (extraGame && is_player) {
+			for (auto it = letters.begin(); it != letters.end(); ) {
+				auto letter = *it;
+				sf::FloatRect letter_box(letter->getPosition().x, letter->getPosition().y,
+						TILE_SIZE, TILE_SIZE);
+				sf::FloatRect player_box(pos.x, pos.y, TILE_SIZE, TILE_SIZE);
+				if (player_box.intersects(letter_box)) {
+					// Grab the letter
+					auto player = static_cast<Game::Player*>(entity);
+					player->extra[letter->getId()] = true;
+					spawnPoints(letter->getPosition(), letter->getPointsGiven());
+					delete letter;
+					it = letters.erase(it);
+
+					// Check if EXTRA
+					bool extra = true;
+					for (unsigned short i = 0; i < player->extra.size(); ++i) {
+						if (!player->extra[i]) {
+							extra = false;
+							break;
+						}
+					}
+					if (extra) {
+						player->extra.fill(false);
+						player->setRemainingLives(player->getRemainingLives() + 1);
+						const auto upText = new Game::Points(letter->getPosition() + sf::Vector2f((TILE_SIZE - 45) / 2., 0.f),
+								std::to_string(_getPlayerIndex(player) + 1) + "UP", sf::Color(77, 184, 255, 255), 15);
+						_pushTemporary(upText);
+					}
+				} else {
+					++it;
 				}
 			}
 		}
@@ -618,7 +675,7 @@ void LevelRenderer::detectCollisions() {
 				}
 
 				if (!opaque && !(enemy->isDying() || player->isDying())) {
-					if (enemy->attack.type & Enemy::AttackType::CONTACT) {
+					if (!enemy->isMorphed() && (enemy->attack.type & Enemy::AttackType::CONTACT)) {
 						enemy->shoot();
 						enemy->attackAlign = Game::tile(player->getPosition());
 					}
@@ -1069,10 +1126,10 @@ void LevelRenderer::spawnPoints(const sf::Vector2f& pos, const int amount, bool 
 	}
 	auto width = Game::Points::CHARACTER_SIZE * nletters;
 	if (large)
-		_pushTemporary(new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), amount,
+		_pushTemporary(new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), std::to_string(amount),
 					sf::Color::Magenta, 20));
 	else
-		_pushTemporary(new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), amount));
+		_pushTemporary(new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), std::to_string(amount)));
 }
 
 void LevelRenderer::spawnDamage(const sf::Vector2f& pos, const int amount) {
@@ -1083,7 +1140,7 @@ void LevelRenderer::spawnDamage(const sf::Vector2f& pos, const int amount) {
 		++nletters;
 	}
 	auto width = Game::Points::CHARACTER_SIZE * nletters;
-	auto dmg = new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), -amount);
+	auto dmg = new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), std::to_string(-amount));
 	dmg->setColor(sf::Color::Red, sf::Color::White);
 	_pushTemporary(dmg);
 }
@@ -1170,6 +1227,8 @@ void LevelRenderer::_killAllEnemies(const unsigned short playerId) {
 			Game::score[playerId] += se->getPointsGiven();
 			spawnPoints(e->getPosition(), se->getPointsGiven());
 		}
+		if (extraGame)
+			_spawnLetter(e->getPosition());
 	}
 
 	for (auto& b : bosses) {
@@ -1221,10 +1280,29 @@ void LevelRenderer::checkExtraGameEnd() {
 	if (!extraGame) return;
 	if (extraGameClock.getElapsedTime().asSeconds() > 30) {
 		extraGame = false;
+
+		// Delete all letters
+		for (auto it = letters.begin(); it != letters.end(); ) {
+			delete *it;
+			it = letters.erase(it);
+		}
+
+		// Change back enemies
 		for (auto& e : movingEntities) {
 			if (isPlayer(e)) continue;
 			auto enemy = static_cast<Game::Enemy*>(e);
 			enemy->setMorphed(false);
 		}
 	}
+}
+
+void LevelRenderer::_spawnLetter(const sf::Vector2f& pos) {
+	auto letter = new Game::Letter(pos, Game::Letter::randomId());
+	letter->setOrigin(origin);
+	letters.push_back(letter);
+}
+
+void LevelRenderer::cycleLetters() {
+	for (auto& letter : letters)
+		letter->checkTransition();
 }
