@@ -32,6 +32,9 @@ public:
 	/** Maximum range of each shooting point */
 	constexpr static double MAX_RANGE = Game::TILE_SIZE * 9;
 
+	/** The clock used to spawn BossExplosions upon this boss's death */
+	sf::Clock explClock;
+
 	Boss(const sf::Vector2f& pos);
 
 	template<typename T> bool intersects(const sf::Rect<T>& rect) const {

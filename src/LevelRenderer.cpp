@@ -366,8 +366,8 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 
 			continue;
 		} else if (boss->isDying()) {
-			const int t = bossShootClock.getElapsedTime().asMilliseconds();
-			if (t % 300 == 0) {
+			if (boss->explClock.getElapsedTime().asMilliseconds() >= 100) {
+				boss->explClock.restart();
 				// Calculate a random location inside the boss
 				const auto bpos = boss->getPosition();
 				std::uniform_real_distribution<float> dist(-0.5 * TILE_SIZE, TILE_SIZE * (Game::Boss::SIZE - 0.5));
