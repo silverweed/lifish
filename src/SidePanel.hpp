@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <SFML/Graphics.hpp>
 #include "Drawable.hpp"
 #include "Game.hpp"
