@@ -47,16 +47,16 @@ lifish_hash = {
 		}
 	],
 	"enemies" => [
-		{ "ai" => 0, "speed" => 1 },
-		{ "ai" => 0, "speed" => 1 },
-		{ "ai" => 1, "speed" => 1 },
-		{ "ai" => 1, "speed" => 2 },
-		{ "ai" => 1, "speed" => 1 },
-		{ "ai" => 2, "speed" => 1 }, 
-		{ "ai" => 2, "speed" => 1 }, 
-		{ "ai" => 2, "speed" => 1 }, 
-		{ "ai" => 2, "speed" => 1 },
-		{ "ai" => 2, "speed" => 2 }
+		{ "ai" => 0, "speed" => 1 },  # soldier
+		{ "ai" => 0, "speed" => 1 },  # sgt. cool
+		{ "ai" => 1, "speed" => 1 },  # thick lizzy
+		{ "ai" => 2, "speed" => 2 },  # mean-o-taur
+		{ "ai" => 1, "speed" => 1 },  # gunner
+		{ "ai" => 3, "speed" => 1 },  # thing
+		{ "ai" => 4, "speed" => 1 },  # ghost
+		{ "ai" => 3, "speed" => 1 },  # smoulder
+		{ "ai" => 3, "speed" => 1 },  # skully
+		{ "ai" => 3, "speed" => 2 }   # h.r. giggler
 	],
 	"levels" => []
 }

@@ -204,6 +204,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				enemy_attack.type = AT::CONTACT;
 				enemy_attack.damage = 1;
 				enemy_attack.fireRate = 1.5;
+				enemy_attack.blockTime = 1000;
 				break;
 			case EntityType::ENEMY8: 
 				enemy_id = 8;

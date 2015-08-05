@@ -25,10 +25,18 @@ class Enemy : public Game::LifedMovingEntity, public Game::Scored {
 	sf::Clock attackClock;
 	bool shooting = false;
 
+	/** True when the enemy is shooting and atktype is BLOCKING */
 	bool blocked = false;
 
+	/** True when the enemy is morphed into a harmless Alien during EXTRA game */
 	bool morphed = false;
 	Game::AlienSprite *alienSprite = nullptr;
+
+	/** Only used when this enemy's AI is ai_follow_dash: true while
+	 *  the enemy is dashing towards the player
+	 */
+	bool dashing = false;
+	float originalSpeed;
 
 	bool _isTransparentTo(const Entity *const e) const override;
 public:
@@ -45,7 +53,8 @@ public:
 		/** Cooldown is 1000/fireRate ms. */
 		float fireRate;
 		/** If attacktype is SIMPLE & BLOCKING, this is the time
-		 *  the enemy stops after shooting (in ms -- should be more than shootFrameTime)
+		 *  the enemy stops after shooting (in ms -- should be more than shootFrameTime);
+		 *  if enemy AI is ai_follow_dash, it's the delay between two dashes.
 		 */
 		unsigned short blockTime;
 		unsigned short id;
@@ -62,6 +71,7 @@ public:
 	 *  it shares a coordinate with him and no walls are in the middle)
 	 */
 	Game::Direction seeingPlayer = Game::Direction::NONE;
+
 
 	Enemy(sf::Vector2f pos, const unsigned short id);
 	~Enemy();
@@ -92,6 +102,9 @@ public:
 
 	void setMorphed(bool b);
 	bool isMorphed() const { return morphed; }
+
+	void setDashing(bool b);
+	bool isDashing() const { return dashing; }
 };
 
 }

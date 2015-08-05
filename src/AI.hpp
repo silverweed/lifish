@@ -31,14 +31,22 @@ AIBoundFunction ai_random_forward_haunt(Game::Enemy *const);
  */
 AIBoundFunction ai_follow(Game::Enemy *const enemy);
 
+/** Like ai_follow, but as soon as a player is seen, turn towards
+ *  him, speed up and keep the same direction until an obstacle is
+ *  found; at which point, return to normal speed and resume "classic"
+ *  ai_follow behaviour.
+ */
+AIBoundFunction ai_follow_dash(Game::Enemy *const enemy);
+
 /** Actively chase the nearest player */
 AIBoundFunction ai_chase(Game::Enemy *const enemy);
 
-static std::array<AIFunction, 5> ai_functions = {{
+static std::array<AIFunction, 6> ai_functions = {{
 	ai_random,
 	ai_random_forward,
 	ai_random_forward_haunt,
 	ai_follow,
+	ai_follow_dash,
 	ai_chase
 }};
 

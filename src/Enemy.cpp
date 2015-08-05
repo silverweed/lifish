@@ -9,7 +9,7 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
 	Game::Scored(id * 100),
 	attackAlign(-1, -1)
 {
-	speed = BASE_SPEED;
+	originalSpeed = speed = BASE_SPEED;
 	transparentTo.enemies = false;
 	transparentTo.bullets = false;
 	direction = prevDirection = Game::Direction::DOWN;
@@ -72,7 +72,12 @@ void Enemy::shoot() {
 }
 
 void Enemy::draw(sf::RenderTarget& window) {
-	if (shooting) {
+	if (dashing) {
+		const unsigned short d = Game::directionToUshort(direction);
+		shootFrame[d].setPosition(pos);
+		window.draw(shootFrame[d]);
+		return;
+	} else if (shooting) {
 		if (attackClock.getElapsedTime().asMilliseconds() < shootFrameTime) {
 			const unsigned short d = Game::directionToUshort(direction);
 			shootFrame[d].setPosition(pos);
@@ -107,5 +112,14 @@ void Enemy::setMorphed(bool b) {
 	} else if (alienSprite != nullptr) {
 		delete alienSprite;
 		alienSprite = nullptr;
+	}
+}
+
+void Enemy::setDashing(bool b) {
+	dashing = b;
+	if (!dashing) {
+		speed = originalSpeed;
+	} else if (speed == originalSpeed) {
+		speed *= 2.5;
 	}
 }
