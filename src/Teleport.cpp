@@ -12,7 +12,7 @@ Teleport::Teleport(const sf::Vector2f& _pos)
 	animations[0].setSpriteSheet(texture);
 
 	// Teleports have 8 frames
-	for (unsigned short i = 0; i < 8; ++i)
+	for (auto i = 0; i < 8; ++i)
 		animations[0].addFrame(sf::IntRect(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 	
 	animatedSprite.setPosition(pos);

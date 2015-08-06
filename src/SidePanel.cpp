@@ -13,7 +13,7 @@ SidePanel::SidePanel(const Game::LevelRenderer *const _lr) : lr(_lr) {
 
 	// Load player heads
 	Game::cache.loadTexture(playerHeadsTexture, Game::getAsset("test", "playerheads.png"));
-	for (unsigned short i = 0; i < playerHeadsSprite.size(); ++i) {
+	for (auto i = 0; i < playerHeadsSprite.size(); ++i) {
 		playerHeadsSprite[i].setTexture(playerHeadsTexture);
 		playerHeadsSprite[i].setTextureRect(sf::IntRect(PLAYER_HEAD_WIDTH * i, 0,
 					PLAYER_HEAD_WIDTH, PLAYER_HEAD_HEIGHT));
@@ -24,7 +24,7 @@ SidePanel::SidePanel(const Game::LevelRenderer *const _lr) : lr(_lr) {
 	// Load health symbols
 	Game::cache.loadTexture(healthTexture, Game::getAsset("test", "health.png"));
 	healthTexture.setSmooth(true);
-	for (unsigned short i = 0; i < healthSprite.size(); ++i) {
+	for (auto i = 0; i < healthSprite.size(); ++i) {
 		healthSprite[i].setTexture(healthTexture);
 		healthSprite[i].setTextureRect(sf::IntRect(HEALTH_SYM_WIDTH * i, 0,
 					HEALTH_SYM_WIDTH, HEALTH_SYM_HEIGHT));
@@ -33,7 +33,7 @@ SidePanel::SidePanel(const Game::LevelRenderer *const _lr) : lr(_lr) {
 	// Load EXTRA letters
 	Game::cache.loadTexture(extraLettersTexture, Game::getAsset("test", "extra_icons.png"));
 	extraLettersTexture.setSmooth(true);
-	for (unsigned short i = 0; i < extraLettersSprite.size(); ++i) {
+	for (auto i = 0; i < extraLettersSprite.size(); ++i) {
 		extraLettersSprite[i].setTexture(extraLettersTexture);
 		extraLettersSprite[i].setTextureRect(sf::IntRect(EXTRA_LETTERS_WIDTH * i, 0,
 					EXTRA_LETTERS_WIDTH, EXTRA_LETTERS_HEIGHT));
@@ -46,7 +46,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 	window.draw(backgroundSprite);
 
 	std::stringstream ss;
-	for (unsigned short i = 0; i < playerHeadsSprite.size(); ++i) {
+	for (auto i = 0; i < playerHeadsSprite.size(); ++i) {
 		// Draw player head
 		_drawWithShadow(window, playerHeadsSprite[i]);
 	
@@ -86,7 +86,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 			const unsigned short n_full = player->getLife() / 2;
 			const unsigned short n_half = player->getLife() % 2;
 
-			for (unsigned short j = 0; j < n_tot; ++j) {
+			for (auto j = 0; j < n_tot; ++j) {
 				sf::Sprite& sprite = healthSprite[j < n_full 
 								? HEALTH_FULL : j < n_full + n_half
 								? HEALTH_HALF : HEALTH_EMPTY];
@@ -101,7 +101,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 			// Draw EXTRA letters
 			pos.x = EXTRA_LETTERS_POS_X;
 			pos.y = i == 0 ? EXTRA_LETTERS_POS_Y_1 : EXTRA_LETTERS_POS_Y_2;
-			for (unsigned short j = 0; j < player->extra.size(); ++j) {
+			for (auto j = 0; j < player->extra.size(); ++j) {
 				if (player->extra[j]) {
 					// Has j-th letter
 					extraLettersSprite[j + 1].setPosition(pos);

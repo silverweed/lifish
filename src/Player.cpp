@@ -14,10 +14,10 @@ Player::Player(sf::Vector2f pos, const unsigned short id) :
 	remainingLives = Game::INITIAL_LIVES;
 	extra.fill(false);
 
-	for (unsigned short i = 0; i < MAX_N_ANIMATIONS; ++i)
+	for (auto i = 0; i < MAX_N_ANIMATIONS; ++i)
 		animations[i].setSpriteSheet(texture);
 
-	for (unsigned short i = 0; i < WALK_N_FRAMES; ++i) {
+	for (auto i = 0; i < WALK_N_FRAMES; ++i) {
 		animations[ANIM_DOWN].addFrame(sf::IntRect(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 		animations[ANIM_UP].addFrame(sf::IntRect(i * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE));
 		animations[ANIM_RIGHT].addFrame(sf::IntRect(i * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));

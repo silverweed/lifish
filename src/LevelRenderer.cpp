@@ -18,7 +18,7 @@ using Game::LevelRenderer;
 LevelRenderer::LevelRenderer() {
 	fixedEntities.fill(nullptr);
 	players.fill(nullptr);
-	for (unsigned short i = 0; i < bombs.size(); ++i)
+	for (auto i = 0; i < bombs.size(); ++i)
 		bombs[i].fill(nullptr);
 
 	movingEntities.reserve(LEVEL_WIDTH * LEVEL_HEIGHT);
@@ -38,8 +38,8 @@ void LevelRenderer::_clearEntities() {
 		delete e;
 	for (auto& b : bosses)
 		delete b;
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
-		for (unsigned short j = 0; j < bombs[i].size(); ++j)
+	for (auto i = 0; i < Game::MAX_PLAYERS; ++i)
+		for (auto j = 0; j < bombs[i].size(); ++j)
 			if (bombs[i][j] != nullptr) {
 				delete bombs[i][j];
 				bombs[i][j] = nullptr;
@@ -90,8 +90,8 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 
 	Game::Teleport *latest_teleport = nullptr;
 
-	for (unsigned short top = 0; top < LEVEL_HEIGHT; ++top) {
-		for (unsigned short left = 0; left < LEVEL_WIDTH; ++left) {
+	for (auto top = 0; top < LEVEL_HEIGHT; ++top) {
+		for (auto left = 0; left < LEVEL_WIDTH; ++left) {
 			const sf::Vector2f curPos = sf::Vector2f((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
 			unsigned short enemy_id = 0;
 			struct {
@@ -268,8 +268,8 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 
 	level->draw(window);
 	// Draw fixed entities
-	for (unsigned short left = 0; left < LEVEL_WIDTH; ++left) {
-		for (unsigned short top = 0; top < LEVEL_HEIGHT; ++top) {
+	for (auto left = 0; left < LEVEL_WIDTH; ++left) {
+		for (auto top = 0; top < LEVEL_HEIGHT; ++top) {
 			const unsigned short idx = top * LEVEL_WIDTH + left;
 			const auto entity = fixedEntities[idx];
 			if (entity == nullptr) continue;
@@ -327,8 +327,8 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 	}
 
 	// Draw bombs
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
-		for (unsigned short j = 0; j < bombs[i].size(); ++j) {
+	for (auto i = 0; i < Game::MAX_PLAYERS; ++i) {
+		for (auto j = 0; j < bombs[i].size(); ++j) {
 			auto bomb = bombs[i][j];
 			if (bomb == nullptr) continue;
 			if (bomb->isExploded()) {
@@ -372,7 +372,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 	for (auto it = bosses.begin(); it != bosses.end(); ) {
 		auto boss = *it;
 		if (boss->isDead()) {
-			for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+			for (auto i = 0; i < Game::MAX_PLAYERS; ++i) {
 				if (players[i] == nullptr || players[i]->isDying())
 					continue;
 				Game::score[i] += boss->getPointsGiven();
@@ -482,7 +482,7 @@ void LevelRenderer::detectCollisions() {
 		}
 	};
 
-	for (unsigned short i = 0, len = movingEntities.size(); i < len; ++i) {
+	for (auto i = 0, len = movingEntities.size(); i < len; ++i) {
 		if (checked[i]) continue;
 		MovingEntity *entity = movingEntities[i];
 		if (entity->isDying()) continue;
@@ -548,7 +548,7 @@ void LevelRenderer::detectCollisions() {
 
 					// Check if EXTRA
 					bool extra = true;
-					for (unsigned short i = 0; i < player->extra.size(); ++i) {
+					for (auto i = 0; i < player->extra.size(); ++i) {
 						if (!player->extra[i]) {
 							extra = false;
 							break;
@@ -642,7 +642,7 @@ void LevelRenderer::detectCollisions() {
 
 		// Check for impacts with moving entities
 		bool collision_detected = false;
-		for (unsigned short j = 0; j < len; ++j) {
+		for (auto j = 0; j < len; ++j) {
 			if (i == j) continue;
 
 			MovingEntity *other = movingEntities[j];
@@ -965,8 +965,8 @@ void LevelRenderer::dropBomb(const unsigned short id) {
 	// Count how many bombs the player has already dropped
 	unsigned short n_bombs = 0, idx = 0;
 	const auto pl_tile = Game::tile(players[id]->getPosition());
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
-		for (unsigned short j = 0; j < Game::Player::MAX_MAX_BOMBS; ++j) {
+	for (auto i = 0; i < Game::MAX_PLAYERS; ++i) {
+		for (auto j = 0; j < Game::Player::MAX_MAX_BOMBS; ++j) {
 			if (bombs[i][j] == nullptr) {
 				if (i == id) idx = j;
 			} else {
@@ -987,8 +987,8 @@ void LevelRenderer::dropBomb(const unsigned short id) {
 }
 
 void LevelRenderer::checkBombExplosions() {
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
-		for (unsigned short j = 0; j < bombs[i].size(); ++j)
+	for (auto i = 0; i < Game::MAX_PLAYERS; ++i)
+		for (auto j = 0; j < bombs[i].size(); ++j)
 			if (bombs[i][j] != nullptr && bombs[i][j]->isExploding()) {
 				auto expl = new Game::Explosion(bombs[i][j]->getPosition(), bombs[i][j]->getRadius());
 				expl->propagate(this);
@@ -1006,8 +1006,8 @@ void LevelRenderer::checkExplosionHits() {
 }
 
 Game::Bomb* LevelRenderer::getBombAt(const unsigned short left, const unsigned short top) const {
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
-		for (unsigned short j = 0; j < bombs[i].size(); ++j) {
+	for (auto i = 0; i < Game::MAX_PLAYERS; ++i)
+		for (auto j = 0; j < bombs[i].size(); ++j) {
 			if (bombs[i][j] == nullptr) continue;
 			const auto tile = Game::tile(bombs[i][j]->getPosition());
 			if (tile.x == left && tile.y == top) return bombs[i][j];
@@ -1017,7 +1017,7 @@ Game::Bomb* LevelRenderer::getBombAt(const unsigned short left, const unsigned s
 
 void LevelRenderer::checkLinesOfSight() {
 	std::array<sf::Vector2i, Game::MAX_PLAYERS> pos;
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
+	for (auto i = 0; i < Game::MAX_PLAYERS; ++i)
 		if (players[i] != nullptr)
 			pos[i] = Game::tile(players[i]->getPosition());
 
@@ -1030,7 +1030,7 @@ void LevelRenderer::checkLinesOfSight() {
 		const auto epos = Game::tile(e->getPosition());
 		// set a distance greater than any possible one
 		enemy->distanceWithNearestPlayer = 2 * LEVEL_WIDTH; 
-		for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+		for (auto i = 0; i < Game::MAX_PLAYERS; ++i) {
 			if (players[i] == nullptr || players[i]->isDying()) continue;
 			if (pos[i].x == epos.x) {
 				const short dist = _getDistance(epos, pos[i], false);
@@ -1067,7 +1067,7 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 		else
 			start = target.x, end = src.x;
 
-		for (unsigned short i = start + 1; i < end; ++i) {
+		for (auto i = start + 1; i < end; ++i) {
 			const unsigned short idx = (src.y - 1) * LEVEL_WIDTH + i - 1;
 			if (idx >= fixedEntities.size()) 
 				return -1;
@@ -1082,7 +1082,7 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 		else
 			start = target.y, end = src.y;
 
-		for (unsigned short i = start + 1; i < end; ++i) {
+		for (auto i = start + 1; i < end; ++i) {
 			const unsigned short idx = (i - 1) * LEVEL_WIDTH + src.x - 1;
 			if (idx >= fixedEntities.size()) 
 				return -1;
@@ -1096,7 +1096,7 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 }
 
 bool LevelRenderer::isPlayer(const Entity *const e) const {
-	for (unsigned short i = 0; i < players.size(); ++i)
+	for (auto i = 0; i < players.size(); ++i)
 		if (e == players[i]) return true;
 	return false;
 }
@@ -1107,13 +1107,13 @@ bool LevelRenderer::removePlayer(const unsigned short id) {
 				movingEntities.end(), players[id-1]), movingEntities.end());
 	delete players[id-1];
 	players[id-1] = nullptr;
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
+	for (auto i = 0; i < Game::MAX_PLAYERS; ++i)
 		if (players[i] != nullptr) return true;
 	return false;
 }
 
 short LevelRenderer::_getPlayerIndex(const Game::Entity *const e) const {
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
+	for (auto i = 0; i < Game::MAX_PLAYERS; ++i)
 		if (e == players[i]) return i;
 	return -1;
 }
@@ -1174,7 +1174,7 @@ void LevelRenderer::makeBossesShoot() {
 		}
 		
 		const auto angles = boss->getShootingAngles(ppos);
-		for (unsigned short i = 0; i < angles.size(); ++i) {
+		for (auto i = 0; i < angles.size(); ++i) {
 			const auto sp = boss->getShootingPoints()[i];
 			if (Game::distance(sp, ppos) > Game::Boss::MAX_RANGE)
 				continue;

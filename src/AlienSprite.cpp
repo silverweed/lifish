@@ -9,7 +9,7 @@ using Game::Direction;
 AlienSprite::AlienSprite() {
 	Game::cache.loadTexture(texture, Game::getAsset("test", "aliensprite.png"));
 
-	for (unsigned short i = 0; i < 4; ++i)
+	for (auto i = 0; i < 4; ++i)
 		animations[i].setSpriteSheet(texture);
 	animations[ANIM_DEATH].setSpriteSheet(texture);
 

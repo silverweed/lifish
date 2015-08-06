@@ -19,7 +19,7 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius)
 	// An Explosion has 12 sprites: 4 central, 4 horizontal and 4 vertical
 	// Here, ANIM_UP is used for vertical, ANIM_LEFT for horizontal and
 	// ANIM_DEATH for central.
-	for (unsigned short i = 0; i < 4; ++i) {
+	for (auto i = 0; i < 4; ++i) {
 		animations[ANIM_DEATH].addFrame(sf::IntRect(i*TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 		animations[ANIM_UP].addFrame(sf::IntRect(i*TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE));
 		animations[ANIM_LEFT].addFrame(sf::IntRect(i*TILE_SIZE, 2*TILE_SIZE, TILE_SIZE, TILE_SIZE));
@@ -63,8 +63,8 @@ void Explosion::propagate(LevelRenderer *const lr) {
 		}
 	}
 
-	for (unsigned short dir = 0; dir < 4; ++dir) {	
-		for (unsigned short d = 1; d <= radius; ++d) {
+	for (auto dir = 0; dir < 4; ++dir) {	
+		for (auto d = 1; d <= radius; ++d) {
 			if (!propagating[dir]) continue;
 
 			sf::Vector2i new_tile = m_tile;
@@ -129,7 +129,7 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 
 	const auto allmoving = lr->getMovingEntities();
 
-	for (unsigned short i = 0; i < moving.size(); ++i)
+	for (auto i = 0; i < moving.size(); ++i)
 		moving[i].reserve(allmoving.size());
 
 	const sf::Vector2i m_tile = Game::tile(pos);
@@ -188,8 +188,8 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 	for (auto& e : moving[4]) {
 		tryHit(e, 0, origin_box);
 	}
-	for (unsigned short dir = 0; dir < 4; ++dir) {
-		for (unsigned short d = 1; d <= propagation[dir]; ++d) {
+	for (auto dir = 0; dir < 4; ++dir) {
+		for (auto d = 1; d <= propagation[dir]; ++d) {
 			sf::Vector2i new_tile = m_tile;
 			switch (dir) {
 			case ANIM_UP:
@@ -223,7 +223,7 @@ void Explosion::draw(sf::RenderTarget& window) {
 	const unsigned short h_start_tile = m_tile.x - propagation[ANIM_LEFT],
 	                     h_end_tile = m_tile.x + propagation[ANIM_RIGHT];
 	explosionH.update(frameTime);
-	for (unsigned short i = h_start_tile; i <= h_end_tile; ++i) {
+	for (auto i = h_start_tile; i <= h_end_tile; ++i) {
 		if (i == m_tile.x) continue;
 		explosionH.setPosition(i * TILE_SIZE, pos.y);
 		window.draw(explosionH);
@@ -232,7 +232,7 @@ void Explosion::draw(sf::RenderTarget& window) {
 	const unsigned short v_start_tile = m_tile.y - propagation[ANIM_UP],
 	                     v_end_tile = m_tile.y + propagation[ANIM_DOWN];
 	explosionV.update(frameTime);
-	for (unsigned short i = v_start_tile; i <= v_end_tile; ++i) {
+	for (auto i = v_start_tile; i <= v_end_tile; ++i) {
 		if (i == m_tile.y) continue;
 		explosionV.setPosition(pos.x, i * TILE_SIZE);
 		window.draw(explosionV);

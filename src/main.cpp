@@ -172,7 +172,7 @@ int main(int argc, char **argv) {
 		lr.detectCollisions();
 
 		unsigned short dead_players = 0;
-		for (unsigned short i = 0; i < 2; ++i) {
+		for (auto i = 0; i < 2; ++i) {
 			if (players[i] == nullptr) {
 				++dead_players;
 				continue;

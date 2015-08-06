@@ -108,11 +108,11 @@ Bullet::Bullet(const sf::Vector2f& _pos, const Game::Direction dir, unsigned sho
 	//	- if == 2, [up/down frames] [left/right frames] [destroy frames]
 	//	- if == 4, [down] [up] [right] [left] [destroy]
 	unsigned short j = 0;
-	for (unsigned short i = 0; i < nMotionFrames && i < 8 / directionality; ++i)
+	for (auto i = 0; i < nMotionFrames && i < 8 / directionality; ++i)
 		animations[0].addFrame(sf::IntRect((nMotionFrames * d + j++) * TILE_SIZE, (id-1) * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
 	// destroy animations are non-directional
-	for (unsigned short i = j; i < j + nDestroyFrames && i < j + 5; ++i)
+	for (auto i = j; i < j + nDestroyFrames && i < j + 5; ++i)
 		animations[ANIM_DEATH].addFrame(sf::IntRect((nMotionFrames * directionality + i) * TILE_SIZE, (id-1) * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
 	animatedSprite.setPosition(pos);

@@ -20,7 +20,7 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id) :
 	if (id > Game::N_EXTRA_LETTERS - 1) 
 		id = Game::N_EXTRA_LETTERS - 1;
 
-	for (unsigned short i = 0; i < Game::N_EXTRA_LETTERS; ++i) {
+	for (auto i = 0; i < Game::N_EXTRA_LETTERS; ++i) {
 		animations[i].setSpriteSheet(texture);
 		// Total different frames are 4 * N_EXTRA_LETTERS
 		// (full letter + 3 transitions to next, cyclic).
@@ -29,7 +29,7 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id) :
 		// where (i-th final letter) and ((i+1)-th initial letter) are the same
 		// frame. This way we can tell when the letter has ended its transition:
 		// that is when animations[i].isPlaying() == false.
-		for (unsigned short j = 0; j < 5; ++j) {
+		for (auto j = 0; j < 5; ++j) {
 			const unsigned short idx = i * 4 + j;
 			animations[i].addFrame(sf::IntRect(
 					(idx % 10) * TILE_SIZE,
