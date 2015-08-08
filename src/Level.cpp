@@ -34,7 +34,7 @@ void Level::_loadTiles() {
 	bgTexture.setSmooth(true);
 	bgTiles[TILE_REGULAR].setTextureRect(sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE));
 
-	for (auto i = 1; i < bgTiles.size(); ++i)
+	for (unsigned short i = 1; i < bgTiles.size(); ++i)
 		bgTiles[i].setTexture(borderTexture);
 
 	const unsigned short b = (tileIDs.border-1) * TILE_SIZE;
@@ -94,7 +94,7 @@ bool Level::init() {
 }
 
 void Level::setOrigin(const sf::Vector2f& origin) {
-	for (auto i = 0; i < bgTiles.size(); ++i)
+	for (unsigned short i = 0; i < bgTiles.size(); ++i)
 		bgTiles[i].setOrigin(origin);
 	levelnumtext->setOrigin(origin);
 }
@@ -107,31 +107,31 @@ void Level::draw(sf::RenderTarget& window) {
 
 	// Draw the borders
 	window.draw(bgTiles[TILE_UPPER_LEFT]);
-	for (auto i = 1; i < btn_x; ++i) {
+	for (unsigned short i = 1; i < btn_x; ++i) {
 		bgTiles[TILE_UPPER].setPosition(i * TILE_SIZE, 0);
 		window.draw(bgTiles[TILE_UPPER]);
 	}
-	for (auto i = 1; i < btn_y; ++i) {
+	for (unsigned short i = 1; i < btn_y; ++i) {
 		bgTiles[TILE_LEFT].setPosition(0, i * TILE_SIZE);
 		window.draw(bgTiles[TILE_LEFT]);
 	}
 	window.draw(bgTiles[TILE_UPPER_RIGHT]);
 
 	// Draw the level background
-	for (auto i = 0; i < btn_x; ++i) {
-		for (auto j = 0; j < btn_y; ++j) {
+	for (unsigned short i = 0; i < btn_x; ++i) {
+		for (unsigned short j = 0; j < btn_y; ++j) {
 			bgTiles[TILE_REGULAR].setPosition(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE + TILE_SIZE);
 			window.draw(bgTiles[TILE_REGULAR]);
 		}
 	}
 
-	for (auto i = 1; i < btn_y; ++i) {
+	for (unsigned short i = 1; i < (btn_y); ++i) {
 		bgTiles[TILE_RIGHT].setPosition(btn_x * TILE_SIZE, i * TILE_SIZE);
 		window.draw(bgTiles[TILE_RIGHT]);
 	}
 
 	window.draw(bgTiles[TILE_LOWER_RIGHT]);
-	for (auto i = 1; i < btn_x; ++i) {
+	for (unsigned short i = 1; i < btn_x; ++i) {
 		bgTiles[TILE_LOWER].setPosition(i * TILE_SIZE, btn_y * TILE_SIZE);
 		window.draw(bgTiles[TILE_LOWER]);
 	}
@@ -172,8 +172,8 @@ bool Level::setTilemap(const std::string& tilemap) {
 }
 
 void Level::printTilemap() const {
-	for (auto i = 0; i < LEVEL_HEIGHT; ++i) {
-		for (auto j = 0; j < LEVEL_WIDTH; ++j) {
+	for (unsigned short i = 0; i < LEVEL_HEIGHT; ++i) {
+		for (unsigned short j = 0; j < LEVEL_WIDTH; ++j) {
 			std::cout << tiles[i][j] << " ";
 		}
 		std::cout << std::endl;

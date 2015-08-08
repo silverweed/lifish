@@ -92,7 +92,7 @@ public:
 	void move(const Game::Direction dir) override;
 
 	void setOrigin(const sf::Vector2f& pos) override {
-		for (auto i = 0; i < 4; ++i)
+		for (unsigned short i = 0; i < 4; ++i)
 			shootFrame[i].setOrigin(pos);
 		Game::MovingEntity::setOrigin(pos);
 	}
