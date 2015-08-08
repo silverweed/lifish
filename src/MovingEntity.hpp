@@ -63,14 +63,14 @@ public:
 	MovingEntity(const sf::Vector2f& pos, const std::string& texture_name);
 
 	float getSpeed() const { return speed; }
-	void setSpeed(const float _speed) { speed = _speed; }
+	virtual void setSpeed(const float _speed) { speed = _speed; }
 
 	Game::Direction getDirection() const { return direction; }
-	void setDirection(const Game::Direction dir); 
+	virtual void setDirection(const Game::Direction dir); 
 
 	/** Use Animated::draw, not Entity's */
 	virtual void draw(sf::RenderTarget& window) override;
-	void setOrigin(const sf::Vector2f& _origin) override { Game::Animated::setOrigin(_origin); }
+	virtual void setOrigin(const sf::Vector2f& _origin) override { Game::Animated::setOrigin(_origin); }
 
 	virtual void move();
 	virtual void move(const Direction direction);
@@ -80,18 +80,18 @@ public:
 	 *  If direction != NONE, put the entity back to the tile whence it was moving,
 	 *  else just floor down x and y so that the coordinates are multiple of TILE_SIZE.
 	 */
-	void realign();
+	virtual void realign();
 
 	bool isMoving() const { return moving; }
 
-	bool canGo(const Game::Direction direction, const Game::LevelRenderer *const lr) const; 
+	virtual bool canGo(const Game::Direction direction, const Game::LevelRenderer *const lr) const; 
 
-	void setPosition(const sf::Vector2f& _pos) override {
+	virtual void setPosition(const sf::Vector2f& _pos) override {
 		Game::Animated::setPosition(_pos);
 		Game::Entity::setPosition(_pos);
 	}
 
-	void setHurt(const bool b);
+	virtual void setHurt(const bool b);
 	bool isHurt() const { return hurt; }
 
 	virtual void prepareHurtAnimation();
@@ -99,14 +99,14 @@ public:
 	virtual void prepareDeathAnimation();
 	virtual bool playDeathAnimation();
 
-	void giveShield(const int shieldMs) {
+	virtual void giveShield(const int shieldMs) {
 		shieldTime = shieldMs;
 		shieldClock.restart();
 	}
 	bool hasShield() const { return shieldTime > 0 && shieldClock.getElapsedTime().asMilliseconds() <= shieldTime; }
 
 	/** Doubles this unit's speed for `speedyMs` ms. */
-	void giveSpeedy(const int speedyMs) {
+	virtual void giveSpeedy(const int speedyMs) {
 		speedyTime = speedyMs;
 		speedyClock.restart();
 	}
@@ -116,7 +116,7 @@ public:
 	virtual void kill();
 
 	short getRemainingLives() const { return remainingLives; }
-	void setRemainingLives(short r) { remainingLives = r; }
+	virtual void setRemainingLives(short r) { remainingLives = r; }
 };
 
 }

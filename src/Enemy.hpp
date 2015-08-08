@@ -83,6 +83,8 @@ public:
 	void setAI(AIFunction aifunc) { ai = aifunc(this); }
 	AIBoundFunction getAI() const { return ai; }
 
+	void setSpeed(const float _speed) override { originalSpeed = speed = _speed; }
+
 	void stop() override { frameClock.restart(); }
 
 	/** Returns true if enemy has attacked and hasn't cooled down yet. */

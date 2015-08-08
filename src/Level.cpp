@@ -88,7 +88,7 @@ bool Level::init() {
 			std::to_string(levelnum),
 			sf::Vector2f(TILE_SIZE * (LEVEL_WIDTH+1), 0));
 	levelnumtext->setStyle(sf::Text::Bold);
-	levelnumtext->setCharacterSize(26);
+	levelnumtext->setCharacterSize(20);
 
 	return initialized;
 }
