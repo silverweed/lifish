@@ -46,8 +46,9 @@ void ShadedText::setPosition(const sf::Vector2f& _pos) {
 	bgtext.setPosition(_pos + shadowSpacing);
 }
 
-void ShadedText::setShadowSpacing(const sf::Vector2f& sp) {
-	shadowSpacing = sp;
+void ShadedText::setShadowSpacing(float spx, float spy) {
+	shadowSpacing.x = spx;
+	shadowSpacing.y = spy;
 	bgtext.setPosition(fgtext.getPosition() + shadowSpacing);
 }
 

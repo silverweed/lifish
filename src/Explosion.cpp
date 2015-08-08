@@ -2,6 +2,7 @@
 #include "LevelRenderer.hpp"
 #include "BreakableWall.hpp"
 #include "Scored.hpp"
+#include "Player.hpp"
 #include "utils.hpp"
 #include <random>
 #include <list>
@@ -9,8 +10,10 @@
 using Game::Explosion;
 using Game::TILE_SIZE;
 
-Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius)
-	: Temporary(pos, Game::getAsset("test", "explosion.png")), radius(_radius)
+Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game::Player *const source) :
+	Temporary(pos, Game::getAsset("test", "explosion.png")),
+	radius(_radius),
+	sourcePlayer(source)
 {
 	animations[ANIM_DEATH].setSpriteSheet(texture);
 	animations[ANIM_UP].setSpriteSheet(texture);
@@ -117,7 +120,7 @@ void Explosion::propagate(LevelRenderer *const lr) {
 				if (d == 1 && level->getTile(new_tile.x - 1, new_tile.y - 1) == Game::EntityType::BREAKABLE) {
 					auto bw = static_cast<Game::BreakableWall*>(fxd);
 					bw->destroy();
-					lr->spawnPoints(bw->getPosition(), bw->getPointsGiven());
+					lr->givePointsTo(sourcePlayer, bw->getPosition(), bw->getPointsGiven());
 				}
 			}
 		}
@@ -161,7 +164,7 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 		}
 	}
 
-	auto tryHit = [lr] (Game::LifedMovingEntity *const e, const unsigned short d, const sf::FloatRect& expl_box) {
+	auto tryHit = [this, lr] (Game::LifedMovingEntity *const e, const unsigned short d, const sf::FloatRect& expl_box) {
 		if (e->hasShield() || e->isDying()) return;
 
 		// Check if entity's bounding box intersects this tile
@@ -178,7 +181,7 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 			} else {
 				const auto se = dynamic_cast<Game::Scored*>(e);
 				if (se != nullptr)
-					lr->spawnPoints(e->getPosition(), se->getPointsGiven());
+					lr->givePointsTo(sourcePlayer, e->getPosition(), se->getPointsGiven());
 			}
 			if (e->getLife() <= 0)
 				e->kill();

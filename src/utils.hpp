@@ -46,8 +46,8 @@ inline sf::Vector2i tile(const sf::Vector2f& pos) {
 
 inline sf::Vector2f aligned(const sf::Vector2f& pos) {
 	return sf::Vector2f(
-		(float)(((unsigned short)pos.x/TILE_SIZE) * TILE_SIZE),
-		(float)(((unsigned short)pos.y/TILE_SIZE) * TILE_SIZE));
+		float(((unsigned short)pos.x/TILE_SIZE) * TILE_SIZE),
+		float(((unsigned short)pos.y/TILE_SIZE) * TILE_SIZE));
 }
 
 template<typename T>

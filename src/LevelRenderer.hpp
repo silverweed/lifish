@@ -109,14 +109,14 @@ class LevelRenderer : private sf::NonCopyable {
 	sf::Vector2f _findNearestPlayer(const sf::Vector2f& pos) const;
 
 	/** Destroys all breakable walls in the level, giving points 
-	 *  to player `playerId` (starting from 0)
+	 *  to all players
 	 */
-	void _destroyAllWalls(const unsigned short playerId);
+	void _destroyAllWalls();
 
 	/** Kills all enemies in the level and damages the bosses by 1; 
-	 *  give due points to player `playerId` (starting from 0)
+	 *  give due points to all players
 	 */
-	void _killAllEnemies(const unsigned short playerId);
+	void _killAllEnemies();
 
 	/** Transforms all enemies in harmless creatures which drop
 	 *  EXTRA letters for 30 seconds.
@@ -124,6 +124,7 @@ class LevelRenderer : private sf::NonCopyable {
 	void _triggerExtraGame();
 
 	void _spawnLetter(const sf::Vector2f& pos);
+	void _spawnPoints(const sf::Vector2f& pos, const int amount, bool large = false);
 public:
 	LevelRenderer();
 	~LevelRenderer();
@@ -190,7 +191,6 @@ public:
 	 */
 	bool removePlayer(const unsigned short id);
 
-	void spawnPoints(const sf::Vector2f& pos, const int amount, bool large = false);
 	void spawnDamage(const sf::Vector2f& pos, const int amount);
 
 	void makeBossesShoot();
@@ -212,6 +212,8 @@ public:
 	void cycleLetters();
 
 	bool isExtraGame() const { return extraGame; }
+
+	void givePointsTo(const Game::Player *const player, const sf::Vector2f& pos, const int amount);
 };
 
 }

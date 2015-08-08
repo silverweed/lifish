@@ -37,7 +37,7 @@ public:
 
 	void setPosition(const sf::Vector2f& pos);
 
-	void setShadowSpacing(const sf::Vector2f& sp);
+	void setShadowSpacing(float spx, float spy);
 
 	void setColor(const sf::Color& fg, const sf::Color& bg);
 

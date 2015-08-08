@@ -110,6 +110,7 @@ public:
 		speedyTime = speedyMs;
 		speedyClock.restart();
 	}
+	bool hasSpeedy() const { return speedyTime > 0 && speedyClock.getElapsedTime().asMilliseconds() <= speedyTime; }
 
 	bool isDying() const { return dead; }
 	virtual void kill();

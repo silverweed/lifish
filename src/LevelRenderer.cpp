@@ -377,7 +377,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 				Game::score[i] += boss->getPointsGiven();
 			}
 
-			spawnPoints(boss->getPosition(), boss->getPointsGiven(), true);
+			_spawnPoints(boss->getPosition(), boss->getPointsGiven(), true);
 			delete boss;
 			it = bosses.erase(it);
 
@@ -543,7 +543,7 @@ void LevelRenderer::detectCollisions() {
 					// Grab the letter
 					auto player = static_cast<Game::Player*>(entity);
 					player->extra[letter->getId()] = true;
-					spawnPoints(letter->getPosition(), letter->getPointsGiven());
+					_spawnPoints(letter->getPosition(), letter->getPointsGiven());
 
 					// Check if EXTRA
 					bool extra = true;
@@ -737,7 +737,7 @@ void LevelRenderer::detectCollisions() {
 							if (!coin->isBeingGrabbed()) {
 								coin->grab();
 								Game::score[_getPlayerIndex(entity)] += coin->getPointsGiven();
-								spawnPoints(coin->getPosition(), coin->getPointsGiven());
+								_spawnPoints(coin->getPosition(), coin->getPointsGiven());
 								if (--coinsNum == 0) {
 									_triggerExtraGame();
 								}
@@ -753,10 +753,10 @@ void LevelRenderer::detectCollisions() {
 							switch (bonus->getType()) {
 								using B = Game::Bonus::Type;
 							case B::ZAPPER:
-								_destroyAllWalls(i);
+								_destroyAllWalls();
 								break;
 							case B::SUDDEN_DEATH:
-								_killAllEnemies(i);
+								_killAllEnemies();
 								break;
 							case B::MAX_BOMBS:
 								if (players[i]->powers.maxBombs < Game::Player::MAX_MAX_BOMBS)
@@ -791,7 +791,7 @@ void LevelRenderer::detectCollisions() {
 							}
 
 							Game::score[i] += bonus->getPointsGiven();
-							spawnPoints(bonus->getPosition(), bonus->getPointsGiven());
+							_spawnPoints(bonus->getPosition(), bonus->getPointsGiven());
 
 							delete bonus;
 							fixedEntities[idx] = nullptr;
@@ -978,6 +978,7 @@ void LevelRenderer::dropBomb(const unsigned short id) {
 	if (n_bombs == players[id]->powers.maxBombs) return;
 	auto bomb = new Game::Bomb(
 			players[id]->getPosition(),
+			players[id],
 			players[id]->powers.bombFuseTime,
 			players[id]->powers.bombRadius);
 	bombs[id][idx] = bomb;
@@ -988,7 +989,7 @@ void LevelRenderer::checkBombExplosions() {
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
 		for (unsigned short j = 0; j < bombs[i].size(); ++j)
 			if (bombs[i][j] != nullptr && bombs[i][j]->isExploding()) {
-				auto expl = new Game::Explosion(bombs[i][j]->getPosition(), bombs[i][j]->getRadius());
+				auto expl = new Game::Explosion(bombs[i][j]->getPosition(), bombs[i][j]->getRadius(), bombs[i][j]->getSourcePlayer());
 				expl->propagate(this);
 				expl->setOrigin(origin);
 				expl->play();
@@ -1116,7 +1117,7 @@ short LevelRenderer::_getPlayerIndex(const Game::Entity *const e) const {
 	return -1;
 }
 
-void LevelRenderer::spawnPoints(const sf::Vector2f& pos, const int amount, bool large) {
+void LevelRenderer::_spawnPoints(const sf::Vector2f& pos, const int amount, bool large) {
 	// center the points in the tile
 	short nletters = 1;
 	int a = amount;
@@ -1204,28 +1205,32 @@ void LevelRenderer::dropBonus(const sf::Vector2i& tile, const unsigned short typ
 	fixedEntities[idx] = bonus;
 }
 
-void LevelRenderer::_destroyAllWalls(const unsigned short playerId) {
+void LevelRenderer::_destroyAllWalls() {
 	for (auto& fxd : fixedEntities) {
 		// Here it's acceptable to use dynamic_cast, since this function
 		// is called very rarely (only when the Zapper is found)
 		auto bw = dynamic_cast<Game::BreakableWall*>(fxd);
 		if (bw != nullptr) {
 			bw->destroy();
-			Game::score[playerId] += bw->getPointsGiven();
-			spawnPoints(bw->getPosition(), bw->getPointsGiven());
+			for (unsigned short i = 0; i < players.size(); ++i)
+				if (players[i] != nullptr && players[i]->getRemainingLives() > 0)
+					Game::score[i] += bw->getPointsGiven();
+			_spawnPoints(bw->getPosition(), bw->getPointsGiven());
 		}
 	}
 }
 
-void LevelRenderer::_killAllEnemies(const unsigned short playerId) {
+void LevelRenderer::_killAllEnemies() {
 	for (auto& e : movingEntities) {
 		if (isPlayer(e)) continue;
 		_pushTemporary(new Game::Explosion(e->getPosition(), 0));
 		e->kill();
 		auto se = dynamic_cast<Game::Scored*>(e);
 		if (se != nullptr) {
-			Game::score[playerId] += se->getPointsGiven();
-			spawnPoints(e->getPosition(), se->getPointsGiven());
+			for (unsigned short i = 0; i < players.size(); ++i)
+				if (players[i] != nullptr && players[i]->getRemainingLives() > 0)
+					Game::score[i] += se->getPointsGiven();
+			_spawnPoints(e->getPosition(), se->getPointsGiven());
 		}
 		if (extraGame)
 			_spawnLetter(e->getPosition());
@@ -1305,4 +1310,10 @@ void LevelRenderer::_spawnLetter(const sf::Vector2f& pos) {
 void LevelRenderer::cycleLetters() {
 	for (auto& letter : letters)
 		letter->checkTransition();
+}
+
+void LevelRenderer::givePointsTo(const Game::Player *const player, const sf::Vector2f& pos, const int amount) {
+	if (player == nullptr) return;
+	_spawnPoints(pos, amount);
+	Game::score[_getPlayerIndex(player)] += amount;
 }

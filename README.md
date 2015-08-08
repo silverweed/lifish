@@ -44,7 +44,7 @@
 - [x] Extra
   - [x] Enemies become harmless in EXTRA
   - [x] Enemies drop letters in EXTRA
-- [ ] Side panel
+- [x] Side panel
 - [ ] Sounds
 - [ ] Music
 - [ ] Graphics

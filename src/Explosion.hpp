@@ -6,6 +6,7 @@
 namespace Game {
 
 class LevelRenderer;
+class Player;
 
 /**
  * A bomb's explosion; like in original BOOM, the explosion
@@ -26,8 +27,16 @@ class Explosion : public Game::Temporary {
 	 *  distance in the 4 directions. The array is indexed with ANIM_UP etc
 	 */
 	std::array<unsigned short, 4> propagation;
+
+	/** The player who dropped the bomb this explosion originated from */
+	const Game::Player *const sourcePlayer;
 public:
-	Explosion(const sf::Vector2f& pos, unsigned short radius);
+	/** If sourcePlayer == nullptr, the explosion wasn't originated by a bomb.
+	 *  In this case, whenever points should be given to a player, no points
+	 *  are given at all.
+	 */
+	Explosion(const sf::Vector2f& pos, unsigned short radius, 
+			const Game::Player *const sourcePlayer = nullptr);
 
 	/** Calculate the tiles this explosion propagates to
 	 *  (fixed walls and borders stop the explosion). Also kills enemies and

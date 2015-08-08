@@ -3,6 +3,7 @@
 #include <array>
 #include <SFML/Graphics.hpp>
 #include "Drawable.hpp"
+#include "Bonus.hpp"
 #include "Game.hpp"
 
 namespace Game {
@@ -36,6 +37,14 @@ class SidePanel final : public Game::Drawable, private sf::NonCopyable {
 	constexpr static unsigned short EXTRA_LETTERS_POS_X = 12;
 	constexpr static unsigned short EXTRA_LETTERS_POS_Y_1 = 131;
 	constexpr static unsigned short EXTRA_LETTERS_POS_Y_2 = 339;
+	constexpr static unsigned short BONUS_ICON_WIDTH = 14;
+	constexpr static unsigned short BONUS_ICON_HEIGHT = 13;
+	constexpr static unsigned short BONUS_ICON_POS_X = 12;
+	constexpr static unsigned short BONUS_ICON_POS_Y_1 = 150;
+	constexpr static unsigned short BONUS_ICON_POS_Y_2 = 358;
+	constexpr static unsigned short SCORE_POS_X = 12;
+	constexpr static unsigned short SCORE_POS_Y_1 = 195;
+	constexpr static unsigned short SCORE_POS_Y_2 = 403;
 	const sf::Vector2f TIME_POS = sf::Vector2f(21, 233);
 
 	/** The LevelRenderer this panel is connected with */
@@ -62,8 +71,12 @@ class SidePanel final : public Game::Drawable, private sf::NonCopyable {
 	std::array<sf::Sprite, Game::N_EXTRA_LETTERS + 1> extraLettersSprite;
 	sf::Texture extraLettersTexture;
 
+	/** The Bonus icons */
+	std::array<sf::Sprite, Game::Bonus::N_PERMANENT_BONUS_TYPES> bonusesSprite;
+	sf::Texture bonusesTexture;
 
-	void _drawWithShadow(sf::RenderTarget& window, sf::Sprite& sprite);
+
+	void _drawWithShadow(sf::RenderTarget& window, sf::Sprite& sprite, const sf::Color& color = sf::Color::White);
 public:
 	SidePanel(const Game::LevelRenderer *const _lr);
 	~SidePanel();

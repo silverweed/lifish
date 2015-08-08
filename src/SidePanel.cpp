@@ -1,6 +1,7 @@
 #include "SidePanel.hpp"
 #include "GameCache.hpp"
 #include "LevelRenderer.hpp"
+#include <iomanip>
 
 using Game::SidePanel;
 
@@ -37,6 +38,15 @@ SidePanel::SidePanel(const Game::LevelRenderer *const _lr) : lr(_lr) {
 		extraLettersSprite[i].setTexture(extraLettersTexture);
 		extraLettersSprite[i].setTextureRect(sf::IntRect(EXTRA_LETTERS_WIDTH * i, 0,
 					EXTRA_LETTERS_WIDTH, EXTRA_LETTERS_HEIGHT));
+	}
+
+	// Load bonuses
+	Game::cache.loadTexture(bonusesTexture, Game::getAsset("test", "bonuses.png"));
+	for (unsigned short i = 0; i < bonusesSprite.size(); ++i) {
+		bonusesSprite[i].setTexture(bonusesTexture);
+		bonusesSprite[i].setTextureRect(sf::IntRect(TILE_SIZE * i, (i / 10) * TILE_SIZE,
+					TILE_SIZE, TILE_SIZE));
+		bonusesSprite[i].setScale(float(BONUS_ICON_WIDTH) / TILE_SIZE, float(BONUS_ICON_HEIGHT) / TILE_SIZE);
 	}
 }
 
@@ -113,6 +123,74 @@ void SidePanel::draw(sf::RenderTarget& window) {
 				}
 				pos.x += EXTRA_LETTERS_WIDTH;
 			}
+
+			// Draw bonuses
+			pos.x = BONUS_ICON_POS_X;
+			pos.y = i == 0 ? BONUS_ICON_POS_Y_1 : BONUS_ICON_POS_Y_2;
+			for (unsigned short j = 0; j < bonusesSprite.size(); ++j) {
+				bonusesSprite[j].setPosition(pos);
+				sf::Color color = sf::Color::White;
+				const sf::Color disabled(100, 100, 100, 255);
+
+				switch (j) {
+					using B = Game::Bonus::Type;
+				case B::MAX_BOMBS:
+					{
+						ss.str("");
+						ss << "x" << player->powers.maxBombs;
+						Game::ShadedText text(
+								Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),
+								ss.str(), sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 3));
+						text.setCharacterSize(7);
+						text.setShadowSpacing(1, 1);
+						text.draw(window);
+						break;
+					}
+				case B::MAX_RANGE:
+					{
+						ss.str("");
+						ss << "x" << player->powers.bombRadius;;
+						Game::ShadedText text(
+								Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),
+								ss.str(), sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 3));
+						text.setCharacterSize(7);
+						text.setShadowSpacing(1, 1);
+						text.draw(window);
+						break;
+					}
+					break;
+				case B::QUICK_FUSE:
+					if (player->powers.bombFuseTime == Game::Bomb::DEFAULT_FUSE)
+						color = disabled;
+					break;
+				case B::SHIELD:
+					if (!player->hasShield())
+						color = disabled;
+					break;
+				case B::SPEEDY:
+					if (!player->hasSpeedy())
+						color = disabled;
+					break;
+				default:
+					break;
+				}
+				_drawWithShadow(window, bonusesSprite[j], color);
+				pos.x += BONUS_ICON_WIDTH;
+				if (j != 0 && j % 10 == 0) 
+					pos.y += BONUS_ICON_HEIGHT;
+			}
+
+			// Draw score
+			ss.str("");
+			ss << std::setfill('0') << std::setw(6) << Game::score[i];
+			pos.x = SCORE_POS_X;
+			pos.y = i == 0 ? SCORE_POS_Y_1 : SCORE_POS_Y_2;
+			Game::ShadedText scoreText(
+					Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),
+					ss.str(), pos);
+			scoreText.setCharacterSize(14);
+			scoreText.setShadowSpacing(2, 2);
+			scoreText.draw(window);
 		}
 	}
 
@@ -142,12 +220,12 @@ void SidePanel::draw(sf::RenderTarget& window) {
 	timeText.draw(window);
 }
 
-void SidePanel::_drawWithShadow(sf::RenderTarget& window, sf::Sprite& sprite) {
+void SidePanel::_drawWithShadow(sf::RenderTarget& window, sf::Sprite& sprite, const sf::Color& color) {
 	sprite.setColor(sf::Color(0, 0, 0, 200));
 	auto pos = sprite.getPosition();
 	sprite.setPosition(pos + sf::Vector2f(3, 2));
 	window.draw(sprite);
-	sprite.setColor(sf::Color::White);
+	sprite.setColor(color);
 	sprite.setPosition(pos);
 	window.draw(sprite);
 }

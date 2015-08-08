@@ -5,16 +5,16 @@ using Game::TILE_SIZE;
 
 std::discrete_distribution<unsigned short> Game::bonusTypeDistribution
 { 
-	1, // zapper
-	1, // sudden death
 	5, // max bombs
 	4, // quick fuse
 	5, // max range
-	5, // health small
-	4, // health full
 	5, // shield
 	5, // speedy
-	665 // no bonus
+	1, // zapper
+	1, // sudden death
+	5, // health small
+	4, // health full
+	490 // no bonus
 };
 	
 Bonus::Bonus(const sf::Vector2f& pos, const unsigned short _type) :
@@ -22,7 +22,7 @@ Bonus::Bonus(const sf::Vector2f& pos, const unsigned short _type) :
 	Game::Scored(VALUE),
 	type(_type)
 {
-	sprite.setTextureRect(sf::IntRect(type * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
+	sprite.setTextureRect(sf::IntRect(type * TILE_SIZE, (type / 10) * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 }
 
 void Bonus::draw(sf::RenderTarget& window) {
