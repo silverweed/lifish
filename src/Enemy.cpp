@@ -116,10 +116,12 @@ void Enemy::setMorphed(bool b) {
 }
 
 void Enemy::setDashing(bool b) {
-	dashing = b;
-	if (!dashing) {
+	if (!b) {
+		dashing = false;
 		speed = originalSpeed;
-	} else if (speed == originalSpeed) {
-		speed *= 2.5;
+		dashClock.restart();
+	} else if (dashClock.getElapsedTime().asMilliseconds() >= 1000./attack.fireRate && speed == originalSpeed) {
+		dashing = true;
+		speed *= 3;
 	}
 }

@@ -203,8 +203,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				enemy_id = 7;
 				enemy_attack.type = AT::CONTACT;
 				enemy_attack.damage = 1;
-				enemy_attack.fireRate = 1.5;
-				enemy_attack.blockTime = 1000;
+				enemy_attack.fireRate = 2.5;
 				break;
 			case EntityType::ENEMY8: 
 				enemy_id = 8;
@@ -861,27 +860,26 @@ void LevelRenderer::selectEnemyMoves() {
 		if (isPlayer(entity) || entity->isDying())
 			continue;
 
-		if (!entity->isAligned()) {
-			if (entity->colliding) {
+		auto enemy = static_cast<Game::Enemy*>(entity);
+		if (!enemy->isAligned()) {
+			if (enemy->colliding) {
 				// Fix prevAligns
-				switch (entity->getDirection()) {
+				switch (enemy->getDirection()) {
 				case Direction::LEFT: case Direction::UP:
-					entity->prevAlign = Game::tile(entity->getPosition());
+					enemy->prevAlign = Game::tile(enemy->getPosition());
 					break;
 				case Direction::RIGHT:
-					entity->prevAlign = Game::tile(entity->getPosition()) + sf::Vector2i(1, 0);
+					enemy->prevAlign = Game::tile(enemy->getPosition()) + sf::Vector2i(1, 0);
 					break;
 				case Direction::DOWN:
-					entity->prevAlign = Game::tile(entity->getPosition()) + sf::Vector2i(0, 1);
+					enemy->prevAlign = Game::tile(enemy->getPosition()) + sf::Vector2i(0, 1);
 					break;
 				case Direction::NONE: break;
 				}
-				entity->setDirection(oppositeDirection(entity->getDirection()));
+				enemy->setDashing(false);
+				enemy->setDirection(oppositeDirection(entity->getDirection()));
 			}
-			continue;
-		}
-		auto enemy = static_cast<Game::Enemy*>(entity);
-		if (enemy != nullptr && !enemy->isBlocked()) {
+		} else if (enemy != nullptr && !enemy->isBlocked()) {
 			enemy->setDirection(enemy->getAI()(this));
 		}
 	}

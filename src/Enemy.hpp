@@ -36,25 +36,28 @@ class Enemy : public Game::LifedMovingEntity, public Game::Scored {
 	 *  the enemy is dashing towards the player
 	 */
 	bool dashing = false;
+	/** Used to keep a cooldown between two following dashes */
+	sf::Clock dashClock;
 	float originalSpeed;
 
 	bool _isTransparentTo(const Entity *const e) const override;
 public:
 	constexpr static float BASE_SPEED = 75.f;
 	enum AttackType : unsigned short {
-		SIMPLE      = 1,
-		CONTACT     = 1 << 1,
-		RANGED      = 1 << 2,
-		BLOCKING    = 1 << 3
+		SIMPLE   = 1,
+		CONTACT  = 1 << 1,
+		RANGED   = 1 << 2,
+		BLOCKING = 1 << 3
 	};
 
 	struct {
 		unsigned short type;
-		/** Cooldown is 1000/fireRate ms. */
+		/** Cooldown is 1000/fireRate ms. If AI is ai_follow_dash, determines
+		 *  the cooldown between two dashes.
+		 */
 		float fireRate;
 		/** If attacktype is SIMPLE & BLOCKING, this is the time
 		 *  the enemy stops after shooting (in ms -- should be more than shootFrameTime);
-		 *  if enemy AI is ai_follow_dash, it's the delay between two dashes.
 		 */
 		unsigned short blockTime;
 		unsigned short id;
@@ -63,6 +66,7 @@ public:
 		float speed;
 		short range;
 	} attack;
+	/** Used by CONTACT attack AI */
 	sf::Vector2i attackAlign;
 
 	unsigned short distanceWithNearestPlayer = 2 * Game::LEVEL_WIDTH * Game::TILE_SIZE;
