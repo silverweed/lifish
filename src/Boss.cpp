@@ -15,19 +15,6 @@ Boss::Boss(const sf::Vector2f& pos) :
 	shootingPoints[1] = pos + sf::Vector2f(63, 36);
 }
 
-std::array<double, Boss::N_SHOOTING_POINTS> Boss::getShootingAngles(const sf::Vector2f& pos) const {
-	std::array<double, N_SHOOTING_POINTS> angles;
-
-	for (unsigned short i = 0; i < shootingPoints.size(); ++i) {
-		// calculate angle with pos: a = pi - arctan(dy / dx)
-		double dx = shootingPoints[i].x - pos.x,
-		       dy = pos.y - shootingPoints[i].y;
-		angles[i] = M_PI - std::atan2(dy, dx);
-	}
-
-	return angles;
-}
-
 void Boss::draw(sf::RenderTarget& window) {
 	if (dead) {
 		const float s = hurtClock.getElapsedTime().asSeconds();

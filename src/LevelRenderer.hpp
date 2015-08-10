@@ -1,9 +1,10 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include <SFML/System/NonCopyable.hpp>
 #include <vector>
 #include <array>
+#include <initializer_list>
+#include <SFML/Graphics.hpp>
+#include <SFML/System/NonCopyable.hpp>
 #include "Level.hpp"
 #include "FixedEntity.hpp"
 #include "LifedMovingEntity.hpp"
@@ -126,7 +127,7 @@ class LevelRenderer : private sf::NonCopyable {
 	void _spawnLetter(const sf::Vector2f& pos);
 	void _spawnPoints(const sf::Vector2f& pos, const int amount, bool large = false);
 public:
-	LevelRenderer();
+	LevelRenderer(std::initializer_list<Game::Player*> players);
 	~LevelRenderer();
 
 	/** Creates the initial entities based on this level's tilemap. */

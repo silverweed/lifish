@@ -61,7 +61,10 @@ int main(int argc, char **argv) {
 	// Create the level renderer and side panel and attach the 1st level to them
 	Game::Level *level = levelset.getLevel(1);
 	level->printInfo();
-	Game::LevelRenderer lr;
+	Game::LevelRenderer lr {
+		new Game::Player(sf::Vector2f(0, 0), 1),
+		new Game::Player(sf::Vector2f(0, 0), 2)
+	};
 	lr.setOrigin(sf::Vector2f(-MAIN_WINDOW_SHIFT, 0.f));
 	lr.loadLevel(level);
 	lr.renderFrame(window);
@@ -258,6 +261,10 @@ int main(int argc, char **argv) {
 		}
 		window.display();
 	}
+
+	for (auto& p : players)
+		delete p;
+
 	return 0;
 }
 
@@ -295,7 +302,7 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 		// TODO: WIN!
 		return nullptr;
 	} else {
-		lr.loadLevel(levelSet->getLevel(++lvnum));
+		++lvnum;
 	}
 
 	std::stringstream ss;
@@ -315,6 +322,8 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 	window.display();
 
 	std::this_thread::sleep_for(std::chrono::seconds(3));
+
+	lr.loadLevel(levelSet->getLevel(lvnum));
 
 	return const_cast<Game::Level*>(lr.getLevel());
 }

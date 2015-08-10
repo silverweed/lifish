@@ -15,9 +15,13 @@
 
 using Game::LevelRenderer;
 
-LevelRenderer::LevelRenderer() {
+LevelRenderer::LevelRenderer(std::initializer_list<Game::Player*> _players) {
 	fixedEntities.fill(nullptr);
-	players.fill(nullptr);
+
+	unsigned short i = 0;
+	for (auto& player : _players)
+		players[i++] = player;
+
 	for (unsigned short i = 0; i < bombs.size(); ++i)
 		bombs[i].fill(nullptr);
 
@@ -35,7 +39,8 @@ void LevelRenderer::_clearEntities() {
 	for (auto& e : fixedEntities)
 		if (e != nullptr) delete e;
 	for (auto& e : movingEntities)
-		delete e;
+		if (!isPlayer(e))
+			delete e;
 	for (auto& b : bosses)
 		delete b;
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
@@ -45,6 +50,8 @@ void LevelRenderer::_clearEntities() {
 				bombs[i][j] = nullptr;
 			}
 	for (auto it = temporary.begin(); it != temporary.end(); ++it) 
+		delete *it;
+	for (auto it = explosions.begin(); it != explosions.end(); ++it) 
 		delete *it;
 	for (auto it = bullets.begin(); it != bullets.end(); ++it)
 		delete *it;
@@ -66,12 +73,12 @@ void LevelRenderer::_clearEntities() {
 		extraGameText = nullptr;
 	}
 
-	players.fill(nullptr);
 	fixedEntities.fill(nullptr);
 
 	firstTeleport = nullptr;
 
 	temporary.clear();
+	explosions.clear();
 	movingEntities.clear();
 	bullets.clear();
 	bosses.clear();
@@ -120,16 +127,14 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				break;
 			case EntityType::PLAYER1: 
 				{
-					auto player = new Game::Player(curPos, 1);
-					movingEntities.push_back(player);
-					players[0] = player;
+					players[0]->setPosition(curPos);
+					movingEntities.push_back(players[0]);
 					break;
 				}
 			case EntityType::PLAYER2: 
 				{
-					auto player = new Game::Player(curPos, 2);
-					movingEntities.push_back(player);
-					players[1] = player;
+					players[1]->setPosition(curPos);
+					movingEntities.push_back(players[1]);
 					break;
 				}
 			case EntityType::TELEPORT:
@@ -484,9 +489,9 @@ void LevelRenderer::detectCollisions() {
 	for (unsigned short i = 0, len = movingEntities.size(); i < len; ++i) {
 		if (checked[i]) continue;
 		MovingEntity *entity = movingEntities[i];
-		if (entity->isDying()) continue;
-		sf::Vector2f pos = entity->getPosition();
 		const bool is_player = isPlayer(entity);
+		if (!is_player && entity->isDying()) continue;
+		sf::Vector2f pos = entity->getPosition();
 
 		// Check for teleports
 		if (firstTeleport != nullptr && entity->canTeleport && entity->isAligned()) {
@@ -1155,18 +1160,22 @@ void LevelRenderer::makeBossesShoot() {
 	bossShootClock.restart();
 	for (auto& boss : bosses) {
 		if (boss->isDying()) continue;
-		const auto ppos = _findNearestPlayer(boss->getPosition());
-		if (ppos.x < 0) {
-			// no players found
-			return;
-		}
-		
-		const auto angles = boss->getShootingAngles(ppos);
-		for (unsigned short i = 0; i < angles.size(); ++i) {
-			const auto sp = boss->getShootingPoints()[i];
+		const auto shootingPts = boss->getShootingPoints();
+		for (auto sp : shootingPts) {
+			const auto ppos = _findNearestPlayer(sp);
+			if (ppos.x < 0) {
+				// no players found
+				return;
+			}
 			if (Game::distance(sp, ppos) > Game::Boss::MAX_RANGE)
 				continue;
-			auto bullet = new Game::BossBullet(sp, angles[i]);
+		
+			// calculate angle with ppos: a = pi - arctan(dy / dx)
+			const double dx = sp.x - ppos.x,
+			             dy = ppos.y - sp.y,
+				     angle = M_PI - std::atan2(dy, dx);
+
+			auto bullet = new Game::BossBullet(sp, angle);
 			bullet->setOrigin(origin);
 			bullet->setSource(boss);
 			bullets.push_back(bullet);
@@ -1178,7 +1187,7 @@ sf::Vector2f LevelRenderer::_findNearestPlayer(const sf::Vector2f& pos) const {
 	sf::Vector2f nearest(-1.f, -1.f);
 
 	for (const auto& player : players) {
-		if (player == nullptr || player->isDying()) continue;
+		if (player == nullptr) continue;
 		const auto ppos = player->getPosition();
 		if (nearest.x < 0 || Game::distance(pos, ppos) < Game::distance(pos, nearest)) {
 			nearest = ppos;

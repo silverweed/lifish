@@ -47,8 +47,6 @@ public:
 		return shootingPoints;
 	}
 
-	std::array<double, N_SHOOTING_POINTS> getShootingAngles(const sf::Vector2f& pos) const;
-
 	void hurt();
 
 	void draw(sf::RenderTarget& window) override;
