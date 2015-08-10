@@ -884,7 +884,7 @@ void LevelRenderer::selectEnemyMoves() {
 				enemy->setDashing(false);
 				enemy->setDirection(oppositeDirection(entity->getDirection()));
 			}
-		} else if (enemy != nullptr && !enemy->isBlocked()) {
+		} else if (!enemy->isBlocked()) {
 			enemy->setDirection(enemy->getAI()(this));
 		}
 	}
