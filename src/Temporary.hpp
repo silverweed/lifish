@@ -18,7 +18,10 @@ public:
 	virtual void play() { animatedSprite.play(); }
 	virtual bool isPlaying() const { return animatedSprite.isPlaying(); }
 
-	virtual void setOrigin(const sf::Vector2f& pos) override { Game::Animated::setOrigin(pos); }
+	virtual void setOrigin(const sf::Vector2f& pos) override { 
+		Game::Animated::setOrigin(pos);
+	}
+
 	virtual void draw(sf::RenderTarget& window) override {
 		animatedSprite.update(frameClock.restart());
 		Game::Animated::draw(window);

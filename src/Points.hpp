@@ -23,7 +23,20 @@ public:
 		return (initialPos - ShadedText::pos).y < 20;
 	}
 
-	void setOrigin(const sf::Vector2f& pos) { Game::ShadedText::setOrigin(pos); }
+	void setOrigin(const sf::Vector2f& pos) override { 
+		Game::ShadedText::setOrigin(pos); 
+	}
+
+	sf::Vector2f getPosition() const {
+		return Game::ShadedText::getPosition();
+	}
+	void setPosition(const sf::Vector2f& pos) override { 
+		Game::ShadedText::setPosition(pos); 
+	}
+
+	sf::FloatRect getGlobalBounds() const override { 
+		return Game::ShadedText::getGlobalBounds(); 
+	}
 
 	void draw(sf::RenderTarget& window) override;
 };

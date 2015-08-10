@@ -27,6 +27,8 @@ public:
 
 	virtual ~ShadedText() {}
 
+	virtual sf::FloatRect getGlobalBounds() const { return fgtext.getGlobalBounds(); }
+
 	void setStyle(sf::Text::Style style);
 
 	void setString(const std::string& str);
@@ -35,6 +37,7 @@ public:
 
 	void setCharacterSize(unsigned int size);
 
+	sf::Vector2f getPosition() const { return fgtext.getPosition(); }
 	void setPosition(const sf::Vector2f& pos);
 
 	void setShadowSpacing(float spx, float spy);

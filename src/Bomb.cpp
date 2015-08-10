@@ -33,3 +33,9 @@ void Bomb::draw(sf::RenderTarget& window) {
 	animatedSprite.update(frameClock.restart());
 	window.draw(animatedSprite);
 }
+
+void Bomb::setExploding() {
+	fuseTime = 50; 
+	fuseClock.restart();
+	ignited = true; 
+}

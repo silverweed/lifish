@@ -1119,30 +1119,19 @@ short LevelRenderer::_getPlayerIndex(const Game::Entity *const e) const {
 
 void LevelRenderer::_spawnPoints(const sf::Vector2f& pos, const int amount, bool large) {
 	// center the points in the tile
-	short nletters = 1;
-	int a = amount;
-	while (a > 9) {
-		a /= 10;
-		++nletters;
-	}
-	auto width = Game::Points::CHARACTER_SIZE * nletters;
-	if (large)
-		_pushTemporary(new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), std::to_string(amount),
-					sf::Color::Magenta, 20));
-	else
-		_pushTemporary(new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), std::to_string(amount)));
+	auto points = large
+			? new Game::Points(pos, std::to_string(amount), sf::Color::Magenta, 20)
+			: new Game::Points(pos, std::to_string(amount));
+	const auto bounds = points->getGlobalBounds();
+	points->setPosition(points->getPosition() + sf::Vector2f((TILE_SIZE - bounds.width) / 2., 0.f));
+	_pushTemporary(points);
 }
 
 void LevelRenderer::spawnDamage(const sf::Vector2f& pos, const int amount) {
-	short nletters = 2;
-	int a = amount;
-	while (a > 9) {
-		a /= 10;
-		++nletters;
-	}
-	auto width = Game::Points::CHARACTER_SIZE * nletters;
-	auto dmg = new Game::Points(pos + sf::Vector2f((TILE_SIZE - width) / 2., 0.f), std::to_string(-amount));
+	auto dmg = new Game::Points(pos, std::to_string(-amount));
+	const auto bounds = dmg->getGlobalBounds();
 	dmg->setColor(sf::Color::Red, sf::Color::White);
+	dmg->setPosition(dmg->getPosition() + sf::Vector2f((TILE_SIZE - bounds.width) / 2., 0.f));
 	_pushTemporary(dmg);
 }
 
@@ -1245,9 +1234,13 @@ void LevelRenderer::_killAllEnemies() {
 	}
 }
 
+int LevelRenderer::getTimeLeft() const { 
+	return level->getTime() - static_cast<int>(levelTimeClock.getElapsedTime().asSeconds());
+}
+
 void LevelRenderer::checkHurryUp() {
 	if (hurryUp) return;
-	int diff = level->getTime() - static_cast<int>(levelTimeClock.getElapsedTime().asSeconds());
+	int diff = getTimeLeft();
 	if (diff <= 0) {
 		// Trigger Hurry Up	
 		for (auto& e : movingEntities) {
@@ -1258,19 +1251,22 @@ void LevelRenderer::checkHurryUp() {
 		}
 		hurryUp = true;
 	} else if (!hurryUpWarningGiven && diff <= 31) {
-		hurryUpText = new Game::DroppingText(Game::getAsset("test", "hurryup.png"), sf::Vector2i(161, 30), 300.f);
+		hurryUpText = new Game::DroppingText(Game::getAsset("test", "hurryup.png"),
+				sf::Vector2i(161, 30), 300.f);
 		hurryUpText->setOrigin(origin);
 		hurryUpWarningGiven = true;
 	}
 }
 
 void LevelRenderer::triggerGameOver() {
-	gameOverText = new Game::DroppingText(Game::getAsset("test", "gameover.png"), sf::Vector2i(311, 59));
+	gameOverText = new Game::DroppingText(Game::getAsset("test", "gameover.png"),
+			sf::Vector2i(311, 59));
 	gameOverText->setOrigin(origin);
 }
 
 void LevelRenderer::_triggerExtraGame() {
-	extraGameText = new Game::DroppingText(Game::getAsset("test", "extragame.png"), sf::Vector2i(223, 156), 250.f);
+	extraGameText = new Game::DroppingText(Game::getAsset("test", "extragame.png"),
+			sf::Vector2i(223, 156), 250.f);
 	extraGameText->setOrigin(origin);
 	for (auto& e : movingEntities) {
 		if (isPlayer(e)) continue;
@@ -1312,8 +1308,17 @@ void LevelRenderer::cycleLetters() {
 		letter->checkTransition();
 }
 
-void LevelRenderer::givePointsTo(const Game::Player *const player, const sf::Vector2f& pos, const int amount) {
+void LevelRenderer::givePointsTo(const Game::Player *const player, 
+		const sf::Vector2f& pos, const int amount) {
 	if (player == nullptr) return;
 	_spawnPoints(pos, amount);
 	Game::score[_getPlayerIndex(player)] += amount;
+}
+
+bool LevelRenderer::isLevelClear() const {
+	if (bosses.size() > 0) return false;
+	for (const auto& m : movingEntities)
+		if (!isPlayer(m))
+			return false;
+	return true;
 }

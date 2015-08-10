@@ -35,12 +35,16 @@ public:
 			const unsigned short radius = DEFAULT_RADIUS);
 
 	void draw(sf::RenderTarget& window) override;
-	void setOrigin(const sf::Vector2f& pos) override { Game::Animated::setOrigin(pos); }
+	void setOrigin(const sf::Vector2f& pos) override { 
+		Game::Animated::setOrigin(pos);
+	}
 
 	bool isIgnited() const { return ignited; }
 
-	bool isExploding() const { return fuseClock.getElapsedTime().asMilliseconds() >= fuseTime; }
-	void setExploding() { fuseTime = 50; fuseClock.restart(); ignited = true; }
+	bool isExploding() const { 
+		return fuseClock.getElapsedTime().asMilliseconds() >= fuseTime;
+	}
+	void setExploding();
 
 	bool isExploded() const { return exploded; }
 	void blowUp() { exploded = true; }

@@ -37,10 +37,13 @@ constexpr unsigned short INITIAL_LIVES = 3;
 constexpr static unsigned short SIDE_PANEL_WIDTH = 96;
 constexpr static unsigned short SIDE_PANEL_HEIGHT = 480;
 
+constexpr static unsigned short WINDOW_WIDTH = SIDE_PANEL_WIDTH + (LEVEL_WIDTH + 2) * TILE_SIZE;
+constexpr static unsigned short WINDOW_HEIGHT = SIDE_PANEL_HEIGHT;
+
 /** How much the main game window is shifted relative to the
- *  SFML window
+ *  SFML window (horizontally)
  */
-const sf::Vector2f MAIN_WINDOW_SHIFT = sf::Vector2f(1 + SIDE_PANEL_WIDTH, 0.f);
+constexpr static float MAIN_WINDOW_SHIFT = 1 + SIDE_PANEL_WIDTH;
 
 /** The number of letters needed to get an extra life */
 constexpr static unsigned short N_EXTRA_LETTERS = 5;
@@ -49,6 +52,7 @@ constexpr unsigned short PWD_BUFSIZE = 512;
 
 namespace Fonts {
 	static constexpr auto POINTS = "pf_tempesta_seven_bold.ttf";
+	static constexpr auto INTERLEVEL = "pf_tempesta_seven_bold.ttf";
 	static constexpr auto LEVELNUM = "pf_tempesta_seven.ttf";
 	static constexpr auto DEBUG_INFO = "pf_tempesta_seven_condensed.ttf";
 	static constexpr auto SIDE_PANEL = "pf_tempesta_seven_bold.ttf";

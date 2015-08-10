@@ -38,6 +38,8 @@ public:
 
 	virtual const sf::Vector2f& getOrigin() const { return sprite.getOrigin(); }
 	virtual void setOrigin(const sf::Vector2f& origin);
+
+	virtual sf::FloatRect getGlobalBounds() const { return sprite.getGlobalBounds(); }
 };
 
 }

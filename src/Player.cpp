@@ -119,3 +119,11 @@ void Player::kill() {
 	speedyTime = 0;
 	shieldTime = 0;
 }
+
+void Player::stop() {
+	MovingEntity::stop();
+	if (winMode) {
+		animatedSprite.setAnimation(animations[ANIM_WIN]);
+		animatedSprite.update(frameClock.restart());
+	}
+}

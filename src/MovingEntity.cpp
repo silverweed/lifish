@@ -230,3 +230,21 @@ void MovingEntity::_ensureAlign() {
 		break;
 	}
 }
+
+void MovingEntity::giveShield(int shieldMs) {
+	shieldTime = shieldMs;
+	shieldClock.restart();
+}
+
+bool MovingEntity::hasShield() const {
+	return shieldTime > 0 && shieldClock.getElapsedTime().asMilliseconds() <= shieldTime;
+}
+
+void MovingEntity::giveSpeedy(int speedyMs) {
+	speedyTime = speedyMs;
+	speedyClock.restart();
+}
+
+bool MovingEntity::hasSpeedy() const {
+	return speedyTime > 0 && speedyClock.getElapsedTime().asMilliseconds() <= speedyTime;
+}

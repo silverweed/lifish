@@ -197,6 +197,8 @@ public:
 
 	void dropBonus(const sf::Vector2i& tile, const unsigned short type);
 
+	int getTimeLeft() const;
+
 	/** If level time is <= 30s, make the "Hurry Up!" text appear;
 	 *  if level time is <= 0, enter Hurry Up mode (double enemies'
 	 *  speed and fire rate)
@@ -214,6 +216,9 @@ public:
 	bool isExtraGame() const { return extraGame; }
 
 	void givePointsTo(const Game::Player *const player, const sf::Vector2f& pos, const int amount);
+
+	/** Returns true if all enemies and bosses are dead. */
+	bool isLevelClear() const;
 };
 
 }

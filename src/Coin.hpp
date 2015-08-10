@@ -20,10 +20,12 @@ public:
 	Coin(const sf::Vector2f& pos);
 
 	bool isBeingGrabbed() const { return grabbed; } 
-	bool isGrabbed() const { return grabbed && grabClock.getElapsedTime().asMilliseconds() > GRAB_TIME; }
+	bool isGrabbed() const;
 	void grab();
 
-	void setOrigin(const sf::Vector2f& pos) override { Game::Animated::setOrigin(pos); }
+	void setOrigin(const sf::Vector2f& pos) override { 
+		Game::Animated::setOrigin(pos); 
+	}
 
 	void draw(sf::RenderTarget& window) override;
 };

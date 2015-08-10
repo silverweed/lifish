@@ -37,3 +37,7 @@ void Coin::draw(sf::RenderTarget& window) {
 	}
 	window.draw(animatedSprite);
 }
+
+bool Coin::isGrabbed() const {
+	return grabbed && grabClock.getElapsedTime().asMilliseconds() > GRAB_TIME; 
+}

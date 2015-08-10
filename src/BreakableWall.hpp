@@ -17,7 +17,9 @@ public:
 
 	// Use animatedSprite, not the default sprite.
 	void draw(sf::RenderTarget& window) override;
-	void setOrigin(const sf::Vector2f& _origin) override { Game::Animated::setOrigin(_origin); }
+	void setOrigin(const sf::Vector2f& _origin) override {
+		Game::Animated::setOrigin(_origin);
+	}
 
 	void destroy();
 	bool isDestroyed() const { return destroyed && !animatedSprite.isPlaying(); }

@@ -21,7 +21,9 @@ public:
 	Teleport(const sf::Vector2f& pos);
 
 	void draw(sf::RenderTarget& window) override;
-	void setOrigin(const sf::Vector2f& origin) override { Game::Animated::setOrigin(origin); }
+	void setOrigin(const sf::Vector2f& origin) override { 
+		Game::Animated::setOrigin(origin);
+	}
 
 	Teleport* next() const { return next_t; }
 	void linkTo(Teleport *nxt) { next_t = nxt; }
