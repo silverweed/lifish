@@ -124,6 +124,6 @@ void Enemy::setDashing(bool b) {
 		dashClock.restart();
 	} else if (dashClock.getElapsedTime().asMilliseconds() >= 1000./attack.fireRate && speed == originalSpeed) {
 		dashing = true;
-		speed *= 3;
+		speed *= 4;
 	}
 }
