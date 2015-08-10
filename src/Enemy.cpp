@@ -72,25 +72,23 @@ void Enemy::shoot() {
 }
 
 void Enemy::draw(sf::RenderTarget& window) {
-	if (!dead) {
-		if (dashing) {
+	if (dashing && !dead) {
+		const unsigned short d = Game::directionToUshort(direction);
+		shootFrame[d].setPosition(pos);
+		window.draw(shootFrame[d]);
+		return;
+	} else if (shooting && !dead) {
+		if (attackClock.getElapsedTime().asMilliseconds() < shootFrameTime) {
 			const unsigned short d = Game::directionToUshort(direction);
 			shootFrame[d].setPosition(pos);
 			window.draw(shootFrame[d]);
 			return;
-		} else if (shooting) {
-			if (attackClock.getElapsedTime().asMilliseconds() < shootFrameTime) {
-				const unsigned short d = Game::directionToUshort(direction);
-				shootFrame[d].setPosition(pos);
-				window.draw(shootFrame[d]);
-				return;
-			} else {
-				shooting = false;
-			}
-		} else if (morphed) {
-			alienSprite->draw(window, pos, dead ? Game::Direction::NONE : direction);
-			return;
+		} else {
+			shooting = false;
 		}
+	} else if (morphed) {
+		alienSprite->draw(window, pos, dead ? Game::Direction::NONE : direction);
+		return;
 	}
 	Game::MovingEntity::draw(window);
 }
