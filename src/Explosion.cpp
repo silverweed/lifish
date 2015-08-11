@@ -4,7 +4,6 @@
 #include "Scored.hpp"
 #include "Player.hpp"
 #include "utils.hpp"
-#include <random>
 #include <list>
 
 using Game::Explosion;
@@ -47,8 +46,8 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game
 	propagation.fill(0);
 }
 
-void Explosion::propagate(LevelRenderer *const lr) {
-	sf::Vector2i m_tile = Game::tile(pos);
+void Explosion::propagate(Game::LevelRenderer *const lr) {
+	const sf::Vector2i m_tile = Game::tile(pos);
 	bool propagating[] = { true, true, true, true };
 
 	const auto fixed = lr->getFixedEntities();
@@ -127,7 +126,7 @@ void Explosion::propagate(LevelRenderer *const lr) {
 	}
 }
 
-void Explosion::checkHit(LevelRenderer *const lr) {
+void Explosion::checkHit(Game::LevelRenderer *const lr) {
 	std::array<std::vector<Game::LifedMovingEntity*>, 5> moving;
 
 	const auto allmoving = lr->getMovingEntities();
@@ -170,14 +169,13 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 		// Check if entity's bounding box intersects this tile
 		const sf::FloatRect e_box(e->getPosition().x, e->getPosition().y, TILE_SIZE, TILE_SIZE);
 		if (e_box.intersects(expl_box)) {
-			// Bomb deals 13~16 damage
-			std::discrete_distribution<unsigned short> dist { 3, 2, 1.5, 1.5 };
-			const unsigned short dmg = Game::Bomb::DAMAGE + dist(rng);
-			e->decLife(dmg);
+			e->decLife(1);
 			if (lr->isPlayer(e)) {
-				lr->spawnDamage(e->getPosition(), dmg); 
 				e->setHurt(true);
-				e->giveShield(Game::DAMAGE_SHIELD_TIME);
+				if (animatedSprite.getCurrentFrame() == animatedSprite.getAnimation()->getSize() - 1)
+					e->giveShield(Game::DAMAGE_SHIELD_TIME);
+				else
+					e->giveShield(Game::DAMAGE_SHIELD_TIME/40.);
 			} else {
 				const auto se = dynamic_cast<Game::Scored*>(e);
 				if (se != nullptr)
@@ -209,7 +207,8 @@ void Explosion::checkHit(LevelRenderer *const lr) {
 				break;
 			}
 
-			const sf::FloatRect expl_box(new_tile.x * TILE_SIZE, new_tile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+			const sf::FloatRect expl_box(new_tile.x * TILE_SIZE,
+					new_tile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 			for (auto& e : moving[dir])
 				tryHit(e, d, expl_box);
 		}

@@ -21,6 +21,8 @@
 //
 ////////////////////////////////////////////////////////////
 
+/// This is an altered version of the source, modified by Giacomo Parolini ///
+
 #include "AnimatedSprite.hpp"
 
 #include "utils.hpp"
@@ -190,4 +192,8 @@ void AnimatedSprite::draw(sf::RenderTarget& target, sf::RenderStates states) con
         states.texture = m_texture;
         target.draw(m_vertices, 4, sf::Quads, states);
     }
+}
+
+std::size_t AnimatedSprite::getCurrentFrame() const {
+	return m_currentFrame;
 }

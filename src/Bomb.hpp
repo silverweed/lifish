@@ -25,7 +25,6 @@ class Bomb : public Game::FixedEntity, public Game::Animated {
 	/** The player who dropped this bomb */
 	const Game::Player *const sourcePlayer;
 public:
-	constexpr static unsigned short DAMAGE = 13;
 	constexpr static unsigned short DEFAULT_FUSE = 5000; // ms
 	constexpr static unsigned short DEFAULT_RADIUS = 2;
 	constexpr static unsigned short MAX_RADIUS = 4;
