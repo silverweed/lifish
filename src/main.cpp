@@ -34,7 +34,10 @@ using Game::LEVEL_WIDTH;
 using Game::LEVEL_HEIGHT;
 
 sf::Vector2f center(const sf::FloatRect& bounds);
+void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum);
 Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Game::SidePanel& panel);
+
+static sf::Font interlevel_font;
 
 int main(int argc, char **argv) {
 	std::clog << "lifish v." << VERSION << " rev." << COMMIT << std::endl;	
@@ -67,8 +70,15 @@ int main(int argc, char **argv) {
 	};
 	lr.setOrigin(sf::Vector2f(-MAIN_WINDOW_SHIFT, 0.f));
 	lr.loadLevel(level);
-	lr.renderFrame(window);
 	Game::SidePanel panel(&lr);
+
+	// Load the interlevel font
+	const std::string fontname = Game::getAsset("fonts", Game::Fonts::INTERLEVEL);
+	interlevel_font.loadFromFile(fontname);
+
+	displayGetReady(window, panel, 1);
+	auto music = level->getMusic();
+	music->play();
 
 	// Create fps text
 	bool show_fps = false;
@@ -100,14 +110,17 @@ int main(int argc, char **argv) {
 		} else if (levelClearTriggered) {
 			const auto time = levelClearClock.getElapsedTime().asSeconds();
 			if (time >= 4) {
+				music->stop();	
 				level = advanceLevel(window, lr, panel);
+				music = level->getMusic();
+				music->play();
 				players = lr.getPlayers();
 				levelClearTriggered = false;
 				for (auto& player : players)
-					player->setWinMode(false);
+					player->setWinning(false);
 			} else if (time >= 1) {	
 				for (auto& player : players)
-					player->setWinMode(true);
+					player->setWinning(true);
 			}
 		}
 
@@ -268,46 +281,10 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Game::SidePanel& panel) {
-	// Display the time bonus on screen
-	static sf::Font font;
-	static bool loaded = false;
-	if (!loaded) {
-		const std::string fontname = Game::getAsset("fonts", Game::Fonts::INTERLEVEL);
-		loaded = font.loadFromFile(fontname);
-	}
-	sf::Text text("LEVEL COMPLETE!", font, 13);
-	text.setPosition(center(text.getGlobalBounds()));
-
-	window.clear();
-	window.draw(text);
-
-	const auto timeBonus = lr.getTimeLeft();
-	if (timeBonus > 0) {
-		// TODO: draw
-	}
-	
-	panel.draw(window);
-	window.display();
-
-	std::this_thread::sleep_for(std::chrono::seconds(3));
-
-	// TODO: assign points
-
-	const auto level = lr.getLevel();
-	const auto levelSet = level->getLevelSet();
-	short lvnum = level->getLevelNum();
-
-	if (lvnum == levelSet->getLevelsNum()) {
-		// TODO: WIN!
-		return nullptr;
-	} else {
-		++lvnum;
-	}
-
+void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum) {
 	std::stringstream ss;
 	ss << "LEVEL " << lvnum;
-	text.setString(ss.str());
+	sf::Text text(ss.str(), interlevel_font, 13);
 	text.setPosition(center(text.getGlobalBounds()));
 
 	window.clear();
@@ -322,6 +299,40 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 	window.display();
 
 	std::this_thread::sleep_for(std::chrono::seconds(3));
+}
+
+Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Game::SidePanel& panel) {
+	// Display the time bonus on screen
+	const auto timeBonus = lr.getTimeLeft();
+	
+	sf::Text text("TIME BONUS!", interlevel_font, 13);
+	if (timeBonus > 0) {
+		const auto bounds = text.getGlobalBounds();
+		text.setPosition(center(bounds));
+
+		window.clear();
+		window.draw(text);
+	
+		panel.draw(window);
+		window.display();
+
+		std::this_thread::sleep_for(std::chrono::seconds(3));
+
+		// TODO: assign points
+	}
+
+	const auto level = lr.getLevel();
+	const auto levelSet = level->getLevelSet();
+	short lvnum = level->getLevelNum();
+
+	if (lvnum == levelSet->getLevelsNum()) {
+		// TODO: WIN!
+		return nullptr;
+	} else {
+		++lvnum;
+	}
+
+	displayGetReady(window, panel, lvnum);
 
 	lr.loadLevel(levelSet->getLevel(lvnum));
 

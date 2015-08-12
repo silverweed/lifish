@@ -122,7 +122,7 @@ void Player::kill() {
 
 void Player::stop() {
 	MovingEntity::stop();
-	if (winMode) {
+	if (winning) {
 		animatedSprite.setAnimation(animations[ANIM_WIN]);
 		animatedSprite.update(frameClock.restart());
 	}

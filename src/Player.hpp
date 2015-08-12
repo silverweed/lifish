@@ -17,7 +17,7 @@ class Player : public Game::LifedMovingEntity {
 	constexpr static unsigned short DEATH_TIME = 5000; // ms
 
 	/** If true, the idle pose becomes ANIM_WIN */
-	bool winMode = false;
+	bool winning = false;
 
 	bool _isTransparentTo(const Entity *const e) const override;
 public:
@@ -46,7 +46,7 @@ public:
 
 	bool playDeathAnimation() override;
 
-	void setWinMode(bool b) { winMode = b; }
+	void setWinning(bool b) { winning = b; }
 };
 
 }

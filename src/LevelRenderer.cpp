@@ -265,6 +265,9 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 		entity->setOrigin(origin);
 	for (auto& boss : bosses)
 		boss->setOrigin(origin);
+
+	for (const auto& player : players)
+		_pushTemporary(new Game::Flash(player->getPosition()));
 }
 
 void LevelRenderer::renderFrame(sf::RenderWindow& window) {
