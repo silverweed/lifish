@@ -38,6 +38,10 @@ public:
 	virtual void setPosition(const sf::Vector2f& _pos) {
 		animatedSprite.setPosition(_pos);
 	}
+
+	void resetFrameClock() {
+		frameClock.restart();
+	}
 };
 
 }

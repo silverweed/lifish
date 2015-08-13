@@ -2,6 +2,7 @@
 
 #include <array>
 #include "Temporary.hpp"
+#include "Sounded.hpp"
 
 namespace Game {
 
@@ -13,7 +14,7 @@ class Player;
  * doesn't propagate in time: rather, it blossoms in all involved
  * tiles at once and has a duration of ~200 ms (framerate: 0.05)
  */
-class Explosion : public Game::Temporary {
+class Explosion : public Game::Temporary, public Game::Sounded {
 	/** The additional sprites for horizontal and vertical
 	 *  explosions (the central one is animatedSprite)
 	 */

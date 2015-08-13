@@ -8,6 +8,7 @@ using Game::TILE_SIZE;
 Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source, 
 		const unsigned short _fuseTime, const unsigned short _radius) :
 	FixedEntity(pos, Game::getAsset("test", "bomb.png")), 
+	Sounded(Game::getAsset("sounds", "fuse.ogg")),
 	fuseTime(_fuseTime), 
 	radius(_radius),
 	sourcePlayer(source)

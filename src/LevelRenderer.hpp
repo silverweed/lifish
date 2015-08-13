@@ -220,6 +220,9 @@ public:
 
 	/** Returns true if all enemies and bosses are dead. */
 	bool isLevelClear() const;
+
+	/** Resets all self and children's internal clocks */
+	void resetClocks();
 };
 
 }

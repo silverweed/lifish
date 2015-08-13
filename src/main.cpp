@@ -98,6 +98,9 @@ int main(int argc, char **argv) {
 	bool levelClearTriggered = false;
 	sf::Clock levelClearClock;
 
+	int cycle = 0;
+	lr.resetClocks();
+
 	// Main game cycle
 	while (window.isOpen()) {
 		// If all players are dead, scroll down the GAME OVER text
@@ -114,6 +117,7 @@ int main(int argc, char **argv) {
 				level = advanceLevel(window, lr, panel);
 				music = level->getMusic();
 				music->play();
+				lr.resetClocks();
 				players = lr.getPlayers();
 				levelClearTriggered = false;
 				for (auto& player : players)
@@ -273,6 +277,11 @@ int main(int argc, char **argv) {
 			vsync_text.draw(window);
 		}
 		window.display();
+
+		if (++cycle >= Game::GameCache::SOUNDS_GC_DELAY) {
+			cycle = 0;
+			Game::cache.gcSounds();
+		}
 	}
 
 	for (auto& p : players)

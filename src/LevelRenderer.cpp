@@ -974,12 +974,14 @@ void LevelRenderer::dropBomb(const unsigned short id) {
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 		for (unsigned short j = 0; j < Game::Player::MAX_MAX_BOMBS; ++j) {
 			if (bombs[i][j] == nullptr) {
-				if (i == id) idx = j;
+				if (i == id) 
+					idx = j;
 			} else {
 				// Don't drop 2 bombs in the same tile
 				if (Game::tile(bombs[i][j]->getPosition()) == pl_tile)
 					return;
-				if (i == id) ++n_bombs;
+				if (i == id) 
+					++n_bombs;
 			}
 		}
 	}
@@ -989,8 +991,10 @@ void LevelRenderer::dropBomb(const unsigned short id) {
 			players[id],
 			players[id]->powers.bombFuseTime,
 			players[id]->powers.bombRadius);
+	Game::cache.playSound(bomb->getSoundFile());
 	bombs[id][idx] = bomb;
 	bomb->setOrigin(origin);
+
 }
 
 void LevelRenderer::checkBombExplosions() {
@@ -998,6 +1002,7 @@ void LevelRenderer::checkBombExplosions() {
 		for (unsigned short j = 0; j < bombs[i].size(); ++j)
 			if (bombs[i][j] != nullptr && bombs[i][j]->isExploding()) {
 				auto expl = new Game::Explosion(bombs[i][j]->getPosition(), bombs[i][j]->getRadius(), bombs[i][j]->getSourcePlayer());
+				Game::cache.playSound(expl->getSoundFile());
 				expl->propagate(this);
 				expl->setOrigin(origin);
 				expl->play();
@@ -1333,4 +1338,12 @@ bool LevelRenderer::isLevelClear() const {
 		if (!isPlayer(m))
 			return false;
 	return true;
+}
+
+void LevelRenderer::resetClocks() {
+	bossShootClock.restart();
+	levelTimeClock.restart();
+	for (auto& e : movingEntities) {
+		e->resetFrameClock();
+	}
 }

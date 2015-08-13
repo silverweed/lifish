@@ -2,6 +2,7 @@
 
 #include "FixedEntity.hpp"
 #include "Animated.hpp"
+#include "Sounded.hpp"
 
 namespace Game {
 
@@ -11,7 +12,7 @@ class Player;
  * The players' bomb. Upon explosion, a Game::Explosion is spawned
  * where the bomb was deployed.
  */
-class Bomb : public Game::FixedEntity, public Game::Animated {
+class Bomb : public Game::FixedEntity, public Game::Animated, public Game::Sounded {
 	sf::Clock fuseClock;
 	unsigned short fuseTime;
 	unsigned short radius;
