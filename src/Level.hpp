@@ -67,7 +67,7 @@ class Level : public Game::Drawable, private sf::NonCopyable {
 	/** This level's static (initial) tilemap */
 	Game::Matrix<EntityType, LEVEL_HEIGHT, LEVEL_WIDTH> tiles;
 
-	/** (Optional) LevelSet this level belongs to */
+	/** The LevelSet this level belongs to */
 	const LevelSet *const levelSet;
 
 
@@ -113,7 +113,7 @@ public:
 	void setTime(const unsigned int _time) { time = _time; }
 
 	/** Given a string representation of the level, sets its static tilemap
-	 *  by filling the <entities> vector.
+	 *  by filling the `entities` vector.
 	 */
 	EntityType getTile(unsigned short left, unsigned short top) const;
 	bool setTilemap(const std::string& tilemap);

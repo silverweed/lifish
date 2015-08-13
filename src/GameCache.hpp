@@ -12,7 +12,7 @@ namespace Game {
  * Keeps the loaded textures and sounds in memory for faster loading;
  * works as an associative set name => pointer-to-resource 
  */
-class GameCache : private sf::NonCopyable {
+class GameCache final : private sf::NonCopyable {
 	std::map<std::string, sf::Texture*> textures;
 	std::map<std::string, sf::SoundBuffer*> soundBuffers;
 	/** The queue of sound being played, which gets "garbage collected"

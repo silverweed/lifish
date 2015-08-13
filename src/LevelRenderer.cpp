@@ -744,6 +744,7 @@ void LevelRenderer::detectCollisions() {
 							auto coin = static_cast<Game::Coin*>(other);
 							if (!coin->isBeingGrabbed()) {
 								coin->grab();
+								Game::cache.playSound(coin->getSoundFile());
 								Game::score[_getPlayerIndex(entity)] += coin->getPointsGiven();
 								_spawnPoints(coin->getPosition(), coin->getPointsGiven());
 								if (--coinsNum == 0) {

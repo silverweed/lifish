@@ -3,6 +3,7 @@
 #include "FixedEntity.hpp"
 #include "Animated.hpp"
 #include "Scored.hpp"
+#include "Sounded.hpp"
 
 namespace Game {
 
@@ -10,7 +11,12 @@ namespace Game {
  * A coin can be taken by any player. Taking all coins triggers
  * EXTRA game, which morphs all enemies into harmless Aliens.
  */
-class Coin : public Game::FixedEntity, public Game::Animated, public Game::Scored {
+class Coin :
+	public Game::FixedEntity,
+	public Game::Animated, 
+	public Game::Scored, 
+	public Game::Sounded 
+{
 	constexpr static float GRAB_TIME = 3000; // ms	
 	constexpr static unsigned int VALUE = 150;
 
