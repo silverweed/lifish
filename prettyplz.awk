@@ -1,5 +1,8 @@
 #!/usr/bin/awk -f
-# Prettifies a JSON file
+# Prettifies a JSON file: use like:
+#     cat myfile.json | ./prettyplz
+# Author: Giacomo Parolini
+# License: WTFPL
 
 function print_indent(ind,    i) {
 	for (i = 0; i < ind; ++i)
