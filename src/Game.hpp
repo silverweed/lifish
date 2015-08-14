@@ -50,6 +50,8 @@ constexpr static unsigned short N_EXTRA_LETTERS = 5;
 
 constexpr unsigned short PWD_BUFSIZE = 512;
 
+constexpr auto PI = 3.141592653589793238L;
+
 namespace Fonts {
 	static constexpr auto POINTS = "pf_tempesta_seven_bold.ttf";
 	static constexpr auto INTERLEVEL = "pf_tempesta_seven_bold.ttf";

@@ -57,7 +57,7 @@ Enemy::~Enemy() {
 	}
 }
 
-bool Enemy::_isTransparentTo(const Entity *const e) const {
+bool Enemy::_isTransparentTo(const Game::Entity *const e) const {
 	return e->transparentTo.enemies;
 }
 
@@ -93,7 +93,7 @@ void Enemy::draw(sf::RenderTarget& window) {
 	Game::MovingEntity::draw(window);
 }
 
-void Enemy::move(const Direction dir) {
+void Enemy::move(const Game::Direction dir) {
 	if (blocked) {
 		if (attackClock.getElapsedTime().asMilliseconds() < attack.blockTime) {
 			animatedSprite.update(frameClock.restart());

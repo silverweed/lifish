@@ -6,7 +6,7 @@
 #if defined(__unix__)
 #	include <unistd.h>
 #elif defined(SFML_SYSTEM_WINDOWS)
-#	include <stdlib.h>
+#	include <Windows.h> 
 #elif defined(SFML_SYSTEM_MACOS)
 #	include <mach-o/dyld.h>
 #endif
@@ -37,8 +37,7 @@ bool Game::init() {
 	pwd[bytes] = '\0';
 
 #elif defined(SFML_SYSTEM_WINDOWS)
-	if (_get_pgmptr(pwd) != 0)
-		return false;
+	GetModuleFileName(NULL, pwd, Game::PWD_BUFSIZE);
 
 #elif defined(SFML_SYSTEM_MACOS)
 	auto bufsz = static_cast<uint32_t>(Game::PWD_BUFSIZE);

@@ -10,7 +10,7 @@ using Game::pwd;
 using Game::DIRSEP;
 using Game::EntityType;
 
-Level::Level(const LevelSet *const _levelSet) : levelSet(_levelSet) {}
+Level::Level(const Game::LevelSet *const _levelSet) : levelSet(_levelSet) {}
 
 bool Level::_loadTexture() {
 	// Load background texture

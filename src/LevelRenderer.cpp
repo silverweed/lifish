@@ -962,7 +962,7 @@ bool LevelRenderer::isEntityTouching(const sf::Vector2f& tile) const {
 	return false;
 }
 
-void LevelRenderer::_pushTemporary(Temporary *const tmp) {
+void LevelRenderer::_pushTemporary(Game::Temporary *const tmp) {
 	temporary.push_back(tmp);
 	tmp->setOrigin(origin);
 	tmp->play();
@@ -1108,7 +1108,7 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 	return end - start;
 }
 
-bool LevelRenderer::isPlayer(const Entity *const e) const {
+bool LevelRenderer::isPlayer(const Game::Entity *const e) const {
 	for (unsigned short i = 0; i < players.size(); ++i)
 		if (e == players[i]) return true;
 	return false;
@@ -1182,7 +1182,7 @@ void LevelRenderer::makeBossesShoot() {
 			// calculate angle with ppos: a = pi - arctan(dy / dx)
 			const double dx = sp.x - ppos.x,
 			             dy = ppos.y - sp.y,
-				     angle = M_PI - std::atan2(dy, dx);
+				     angle = Game::PI - std::atan2(dy, dx);
 
 			auto bullet = new Game::BossBullet(sp, angle);
 			bullet->setOrigin(origin);

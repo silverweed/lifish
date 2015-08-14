@@ -6,7 +6,7 @@ using Game::Player;
 
 Player::Player(sf::Vector2f pos, const unsigned short id) :
 	// TODO: player sprites
-	//MovingEntity(pos, Game::getAsset("graphics", std::string("player") + std::to_string(id) + std::string(".png"))), 
+	//MovingEntity(pos, Game::getAsset("graphics", std::string("player") + Game::to_string(id) + std::string(".png"))), 
 	LifedMovingEntity(pos, Game::getAsset("test", std::string("player") + std::to_string(id) + std::string(".png")), MAX_LIFE)
 {
 	speed = 150.f;
@@ -40,7 +40,7 @@ void Player::move() {
 	move(direction);
 }
 
-void Player::move(const Direction dir) {
+void Player::move(const Game::Direction dir) {
 	moving = true;
 	direction = dir;
 

@@ -1,6 +1,5 @@
 #include "BossBullet.hpp"
 #include "Game.hpp"
-#include <cmath>
 
 using Game::BossBullet;
 using Game::TILE_SIZE;
