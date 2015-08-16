@@ -1,0 +1,92 @@
+# NOTE: this makefile was an ad-hoc one to compile on MSYS;
+# now it should work well with cmake, so this Makefile is
+# pretty useless, but let's keep it for insurance.
+CC = g++
+CFLAGS = -I/usr/local/include -L/usr/local/lib -std=c++11 -DVERSION=0.0 -DCOMMIT="\"unknown (MSYS build)\"" -DSFML_DYNAMIC=1 -shared-libstdc++ -shared-libgcc
+LFLAGS = -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system -lstdc++
+DBG = -ggdb -O0 
+WARNS = -pedantic -Wall
+
+all: lifish
+
+DEPS = src/AI.hpp src/AlienSprite.hpp src/Animated.hpp src/AnimatedSprite.hpp src/Animation.hpp src/Bomb.hpp src/Bonus.hpp src/Boss.hpp src/BossBullet.hpp src/BossExplosion.hpp src/BreakableWall.hpp src/Bullet.hpp src/Coin.hpp src/DroppingText.hpp src/Enemy.hpp src/Entity.hpp src/EntityType.hpp src/Explosion.hpp src/FixedWall.hpp src/Flash.hpp src/Game.hpp src/GameCache.hpp src/Letter.hpp src/Level.hpp src/LevelRenderer.hpp src/LevelSet.hpp src/MovingEntity.hpp src/Player.hpp src/Points.hpp src/ShadedText.hpp src/SidePanel.hpp src/Teleport.hpp src/Track.hpp src/utils.hpp src/json.hpp
+
+lifish: src/AI.o src/AlienSprite.o src/Animated.o src/AnimatedSprite.o src/Animation.o src/Bomb.o src/Bonus.o src/Boss.o src/BossBullet.o src/BossExplosion.o src/BreakableWall.o src/Bullet.o src/Coin.o src/DroppingText.o src/Enemy.o src/Entity.o src/EntityType.o src/Explosion.o src/FixedWall.o src/Flash.o src/Game.o src/GameCache.o src/Letter.o src/Level.o src/LevelRenderer.o src/LevelSet.o src/MovingEntity.o src/Player.o src/Points.o src/ShadedText.o src/SidePanel.o src/Teleport.o src/Track.o src/main.o src/utils.o
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $^ -o lifish.exe $(LFLAGS)
+
+
+src/AI.o: src/AI.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/AlienSprite.o: src/AlienSprite.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Animated.o: src/Animated.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/AnimatedSprite.o: src/AnimatedSprite.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Animation.o: src/Animation.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Bomb.o: src/Bomb.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Bonus.o: src/Bonus.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Boss.o: src/Boss.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/BossBullet.o: src/BossBullet.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/BossExplosion.o: src/BossExplosion.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/BreakableWall.o: src/BreakableWall.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Bullet.o: src/Bullet.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Coin.o: src/Coin.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/DroppingText.o: src/DroppingText.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Enemy.o: src/Enemy.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Entity.o: src/Entity.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/EntityType.o: src/EntityType.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Explosion.o: src/Explosion.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/FixedWall.o: src/FixedWall.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Flash.o: src/Flash.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Game.o: src/Game.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/GameCache.o: src/GameCache.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Letter.o: src/Letter.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Level.o: src/Level.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/LevelRenderer.o: src/LevelRenderer.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/LevelSet.o: src/LevelSet.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/MovingEntity.o: src/MovingEntity.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Player.o: src/Player.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Points.o: src/Points.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/ShadedText.o: src/ShadedText.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/SidePanel.o: src/SidePanel.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Teleport.o: src/Teleport.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/Track.o: src/Track.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/main.o: src/main.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+src/utils.o: src/utils.cpp $(DEPS)
+	$(CC) $(CFLAGS) $(DBG) $(WARNS) $< -c -o $@
+
+
+.PHONY: clean
+clean:
+	rm -f src/*.o lifish.exe

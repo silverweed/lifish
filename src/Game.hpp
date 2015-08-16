@@ -16,7 +16,11 @@ namespace Game {
 /*                         GLOBAL DEFINITIONS                               */
 /****************************************************************************/
 
+#ifdef SFML_SYSTEM_WINDOWS
+constexpr char DIRSEP = '\\';
+#else
 constexpr char DIRSEP = '/';
+#endif
 
 constexpr unsigned short TILE_SIZE = 32; // pixels
 /**

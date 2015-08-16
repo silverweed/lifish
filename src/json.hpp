@@ -33,6 +33,7 @@
 #ifdef __GNUC__
     #ifdef __MINGW32__
         #include <sys/types.h>
+	#include <cstdlib>
     #endif
 #endif
 
@@ -4600,8 +4601,13 @@ basic_json_parser_59:
         {
             // conversion
             typename string_t::value_type* endptr;
+#ifdef __MINGW32__
+            const auto float_val = strtold(reinterpret_cast<typename string_t::const_pointer>(m_start),
+                                                &endptr);
+#else
             const auto float_val = std::strtold(reinterpret_cast<typename string_t::const_pointer>(m_start),
                                                 &endptr);
+#endif
 
             // return float_val if the whole number was translated and NAN
             // otherwise

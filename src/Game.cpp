@@ -3,12 +3,14 @@
 #include <iostream>
 #include <array>
 
-#if defined(__unix__)
+#if defined(SFML_SYSTEM_MACOS)
+#	include <mach-o/dyld.h>
+#elif defined(__unix__)
 #	include <unistd.h>
 #elif defined(SFML_SYSTEM_WINDOWS)
 #	include <Windows.h> 
-#elif defined(SFML_SYSTEM_MACOS)
-#	include <mach-o/dyld.h>
+#else
+#	error "Unsupported platform."
 #endif
 
 // Define extern variables of Game.hpp
@@ -22,7 +24,16 @@ using Game::pwd;
 bool Game::init() {
 	// Setup pwd variable
 	pwd[0] = '\0';
-#if defined(__unix__)
+
+#if defined(SFML_SYSTEM_WINDOWS)
+	GetModuleFileName(NULL, pwd, Game::PWD_BUFSIZE);
+
+#elif defined(SFML_SYSTEM_MACOS)
+	auto bufsz = static_cast<uint32_t>(Game::PWD_BUFSIZE);
+	if (_NSGetExecutablePath(pwd, &bufsz) != 0)
+		return false;
+
+#elif defined(__unix__)
 	ssize_t bytes = 0;
 	if (access("/proc/self/exe", F_OK) != -1) {
 		// Linux
@@ -35,15 +46,6 @@ bool Game::init() {
 
 	if (bytes < 1) return false;
 	pwd[bytes] = '\0';
-
-#elif defined(SFML_SYSTEM_WINDOWS)
-	GetModuleFileName(NULL, pwd, Game::PWD_BUFSIZE);
-
-#elif defined(SFML_SYSTEM_MACOS)
-	auto bufsz = static_cast<uint32_t>(Game::PWD_BUFSIZE);
-	if (_NSGetExecutablePath(pwd, &bufsz) != 0)
-		return false;
-
 #endif
 	
 	int len = strlen(pwd);

@@ -565,7 +565,7 @@ void LevelRenderer::detectCollisions() {
 						player->extra.fill(false);
 						player->setRemainingLives(player->getRemainingLives() + 1);
 						const auto upText = new Game::Points(letter->getPosition() + sf::Vector2f((TILE_SIZE - 45) / 2., 0.f),
-								std::to_string(_getPlayerIndex(player) + 1) + "UP", sf::Color(77, 184, 255, 255), 15);
+								Game::to_string(_getPlayerIndex(player) + 1) + "UP", sf::Color(77, 184, 255, 255), 15);
 						_pushTemporary(upText);
 					}
 
@@ -1134,15 +1134,15 @@ short LevelRenderer::_getPlayerIndex(const Game::Entity *const e) const {
 void LevelRenderer::_spawnPoints(const sf::Vector2f& pos, const int amount, bool large) {
 	// center the points in the tile
 	auto points = large
-			? new Game::Points(pos, std::to_string(amount), sf::Color::Magenta, 20)
-			: new Game::Points(pos, std::to_string(amount));
+			? new Game::Points(pos, Game::to_string(amount), sf::Color::Magenta, 20)
+			: new Game::Points(pos, Game::to_string(amount));
 	const auto bounds = points->getGlobalBounds();
 	points->setPosition(points->getPosition() + sf::Vector2f((TILE_SIZE - bounds.width) / 2., 0.f));
 	_pushTemporary(points);
 }
 
 void LevelRenderer::spawnDamage(const sf::Vector2f& pos, const int amount) {
-	auto dmg = new Game::Points(pos, std::to_string(-amount));
+	auto dmg = new Game::Points(pos, Game::to_string(-amount));
 	const auto bounds = dmg->getGlobalBounds();
 	dmg->setColor(sf::Color::Red, sf::Color::White);
 	dmg->setPosition(dmg->getPosition() + sf::Vector2f((TILE_SIZE - bounds.width) / 2., 0.f));

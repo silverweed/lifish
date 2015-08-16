@@ -12,16 +12,28 @@ short keyToNumber(sf::Keyboard::Key key);
 
 namespace Game {
 
-template <class T, size_t ROWS, size_t COLS>
+template<class T, size_t ROWS, size_t COLS>
 using Matrix = std::array<std::array<T, COLS>, ROWS>;
 
-template<typename T> inline T abs(T num) {
+template<typename T> 
+inline T abs(T num) {
 #ifdef IS_APPLE
 	// Apple Clang is a "good" compiler...
 	if (num < 0) return -num;
 	return num;
 #else
 	return std::abs(num);
+#endif
+}
+
+template<typename T>
+inline std::string to_string(T val) {
+#ifdef __MINGW32__
+	std::stringstream ss;
+	ss << val;
+	return ss.str();
+#else
+	return std::to_string(val);
 #endif
 }
 

@@ -23,7 +23,7 @@ endif()
 
 add_definitions (-DVERSION="${MAJOR}.${MINOR}" -DCOMMIT="${CURRENTREV}")
 
-find_package(SFML REQUIRED system window graphics network audio)
+find_package(SFML REQUIRED graphics window audio system)
 include_directories(${SFML_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES})
 

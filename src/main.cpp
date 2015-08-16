@@ -18,8 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <iostream>
-#include <thread>
-#include <chrono>
+#if defined(SFML_SYSTEM_WINDOWS) || defined(__MINGW32__)
+#	include <windows.h>
+
+#	define SLEEP_SECONDS(sec) \
+		Sleep(sec * 1000)
+#else
+#	include <thread>
+#	include <chrono>
+
+#	define SLEEP_SECONDS(sec) \
+		std::this_thread::sleep_for(std::chrono::seconds(sec))
+#endif
 #include <SFML/Graphics.hpp>
 #include "Level.hpp"
 #include "LevelSet.hpp"
@@ -307,7 +317,7 @@ void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 	panel.draw(window);
 	window.display();
 
-	std::this_thread::sleep_for(std::chrono::seconds(3));
+	SLEEP_SECONDS(3);
 }
 
 Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Game::SidePanel& panel) {
@@ -325,7 +335,7 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 		panel.draw(window);
 		window.display();
 
-		std::this_thread::sleep_for(std::chrono::seconds(3));
+		SLEEP_SECONDS(3);
 
 		// TODO: assign points
 	}
