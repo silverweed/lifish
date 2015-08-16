@@ -770,7 +770,6 @@ void LevelRenderer::detectCollisions() {
 							case B::MAX_BOMBS:
 								if (players[i]->powers.maxBombs < Game::Player::MAX_MAX_BOMBS)
 									players[i]->powers.maxBombs += 1;
-								// TODO: update side window
 								break;
 							case B::QUICK_FUSE:
 								if (players[i]->powers.bombFuseTime == Game::Bomb::DEFAULT_FUSE)
@@ -782,7 +781,7 @@ void LevelRenderer::detectCollisions() {
 								break;
 							case B::HEALTH_SMALL:
 								if (players[i]->getLife() < Game::Player::MAX_LIFE)
-									players[i]->decLife(-1);
+									players[i]->decLife(-2);
 								break;
 							case B::HEALTH_FULL:
 								if (players[i]->getLife() < Game::Player::MAX_LIFE)
