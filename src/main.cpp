@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
 	const std::string fontname = Game::getAsset("fonts", Game::Fonts::INTERLEVEL);
 	interlevel_font.loadFromFile(fontname);
 
-	displayGetReady(window, panel, 1);
+	//displayGetReady(window, panel, 1);
 	auto music = level->getMusic();
 	music->play();
 

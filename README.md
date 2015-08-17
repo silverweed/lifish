@@ -38,7 +38,8 @@
 - [x] Bullets
   - [x] Directional bullets use correct sprites
 - [x] Hurry Up
-- [ ] Victory
+- [x] Level-wise Victory
+  - [ ] FINAL VICTORY
 - [ ] Game Over
 - [x] Points
 - [x] Extra
