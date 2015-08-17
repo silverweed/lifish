@@ -15,6 +15,7 @@ namespace Game {
 template<class T, size_t ROWS, size_t COLS>
 using Matrix = std::array<std::array<T, COLS>, ROWS>;
 
+/// Polyfill ///
 template<typename T> 
 inline T abs(T num) {
 #ifdef IS_APPLE
@@ -36,6 +37,7 @@ inline std::string to_string(T val) {
 	return std::to_string(val);
 #endif
 }
+//////////////
 
 inline unsigned short directionToUshort(const Direction dir) {
 	switch (dir) {

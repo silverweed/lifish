@@ -1,4 +1,6 @@
 #include "ShadedText.hpp"
+#include "Game.hpp"
+#include "GameCache.hpp"
 #include <iostream>
 
 using Game::ShadedText;
@@ -7,7 +9,7 @@ ShadedText::ShadedText(const std::string& fontname, const std::string& _str,
 		sf::Vector2f _pos, sf::Color fg, sf::Color bg)
 	: str(_str), pos(_pos), shadowSpacing(3.5, 3), fgcol(fg), bgcol(bg)
 {
-	if (!font.loadFromFile(fontname)) {
+	if (!Game::cache.loadFont(font, fontname)) {
 		std::cerr << "[ShadedFont.cpp] Error loading font " << fontname << std::endl;
 	} else {
 		fgtext.setFont(font);

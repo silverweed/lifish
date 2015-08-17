@@ -67,8 +67,6 @@ bool Level::_loadMusic(const std::string& music_name) {
 	music = new LoopingMusic(musicInput);
 	music->setLoopPoints(sf::seconds(track.loopstart), sf::seconds(track.loopend));
 	music->setLoop(true);
-	std::clog << "[Level.cpp] Loaded music " << music_name << "; loop: (" << music->getLoopBegin().asSeconds()
-		<< ", " << music->getLoopEnd().asSeconds() << ")" << std::endl;
 	return true;
 }
 
@@ -149,17 +147,17 @@ EntityType Level::getTile(unsigned short left, unsigned short top) const {
 
 bool Level::setTilemap(const std::string& tilemap) {
 	unsigned short x = 0, y = 0;
-	bool playerSet[] = { false, false };
+	bool player_set[] = { false, false };
 	for (unsigned int i = 0; i < tilemap.length(); ++i) {
 		EntityType et = Game::entityFromLetter(tilemap[i]);
 		if (et == EntityType::UNKNOWN) return false;
 		if (et == EntityType::PLAYER1) {
-			if (playerSet[0]) return false;
-			playerSet[0] = true;
+			if (player_set[0]) return false;
+			player_set[0] = true;
 		}
 		if (et == EntityType::PLAYER2) {
-			if (playerSet[1]) return false;
-			playerSet[1] = true;
+			if (player_set[1]) return false;
+			player_set[1] = true;
 		}
 		tiles[y][x] = et;
 		if (++x == LEVEL_WIDTH) {

@@ -8,20 +8,23 @@ GameCache::GameCache() {
 }
 
 GameCache::~GameCache() {
-	for (auto& it : textures) {
+	for (auto& it : textures)
 		if (it.second != nullptr)
 			delete it.second;
-	}
-	for (auto& it : soundBuffers) {
+
+	for (auto& it : soundBuffers)
 		if (it.second != nullptr)
 			delete it.second;
-	}
-	for (auto& sound : sounds) {
+
+	for (auto& it : fonts)
+		if (it.second != nullptr)
+			delete it.second;
+
+	for (auto& sound : sounds)
 		delete sound;
-	}
 }
 
-sf::Texture* GameCache::getTexture(const std::string& name) const {
+sf::Texture* GameCache::_getTexture(const std::string& name) const {
 	auto it = textures.find(name);
 	if (it == textures.end())
 		return nullptr;
@@ -30,7 +33,7 @@ sf::Texture* GameCache::getTexture(const std::string& name) const {
 
 bool GameCache::loadTexture(sf::Texture& texture, const std::string& texture_name) {
 	// Check if image is already in cache
-	auto txt = getTexture(texture_name);
+	auto txt = _getTexture(texture_name);
 	if (txt != nullptr) {
 		texture = *txt;
 		return true;
@@ -41,12 +44,12 @@ bool GameCache::loadTexture(sf::Texture& texture, const std::string& texture_nam
 		std::cerr << "[GameCache.cpp] Error: couldn't load texture " << texture_name << " from file!" << std::endl;
 		return false;
 	}
-	putTexture(texture_name, txt);
 	texture = *txt;
+	textures[texture_name] = txt;
 	return true;
 }
 
-sf::SoundBuffer* GameCache::getSound(const std::string& name) const {
+sf::SoundBuffer* GameCache::_getSound(const std::string& name) const {
 	auto it = soundBuffers.find(name);
 	if (it == soundBuffers.end())
 		return nullptr;
@@ -55,7 +58,7 @@ sf::SoundBuffer* GameCache::getSound(const std::string& name) const {
 
 bool GameCache::loadSound(sf::Sound& sound, const std::string& sound_name) {
 	// Check if sound buffer is already in cache
-	auto buf = getSound(sound_name);
+	auto buf = _getSound(sound_name);
 	if (buf != nullptr) {
 		sound.setBuffer(*buf);
 		return true;
@@ -67,7 +70,7 @@ bool GameCache::loadSound(sf::Sound& sound, const std::string& sound_name) {
 		return false;
 	}
 	sound.setBuffer(*buf);
-	putSound(sound_name, buf);
+	soundBuffers[sound_name] = buf;
 	return true;
 }
 
@@ -90,4 +93,28 @@ void GameCache::gcSounds() {
 			++it;
 		}
 	}
+}
+
+sf::Font* GameCache::_getFont(const std::string& name) const {
+	auto it = fonts.find(name);
+	if (it == fonts.end())
+		return nullptr;
+	return it->second;
+}
+
+bool GameCache::loadFont(sf::Font& font, const std::string& font_name) {
+	auto buf = _getFont(font_name);
+	if (buf != nullptr) {
+		font = *buf;
+		return true;
+	}
+	// Load from file and update the cache
+	buf = new sf::Font;
+	if (!buf->loadFromFile(font_name)) {
+		std::cerr << "[GameCache.cpp] Error: couldn't load font " << font_name << " from file!" << std::endl;
+		return false;
+	}
+	font = *buf;
+	fonts[font_name] = buf;
+	return true;
 }

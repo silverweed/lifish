@@ -21,14 +21,14 @@
 #if defined(SFML_SYSTEM_WINDOWS) || defined(__MINGW32__)
 #	include <windows.h>
 
-#	define SLEEP_SECONDS(sec) \
-		Sleep(sec * 1000)
+#	define SLEEP_MS(ms) \
+		Sleep(ms)
 #else
 #	include <thread>
 #	include <chrono>
 
-#	define SLEEP_SECONDS(sec) \
-		std::this_thread::sleep_for(std::chrono::seconds(sec))
+#	define SLEEP_MS(ms) \
+		std::this_thread::sleep_for(std::chrono::milliseconds(ms))
 #endif
 #include <SFML/Graphics.hpp>
 #include "Level.hpp"
@@ -37,6 +37,14 @@
 #include "SidePanel.hpp"
 #include "MovingEntity.hpp"
 #include "Controls.hpp"
+
+// Fallback in case the game wasn't compiled properly with cmake
+#ifndef VERSION
+#	define VERSION "unknown"
+#endif
+#ifndef COMMIT
+#	define COMMIT "unknown"
+#endif
 
 using Game::TILE_SIZE;
 using Game::MAIN_WINDOW_SHIFT;
@@ -73,7 +81,7 @@ int main(int argc, char **argv) {
 
 	// Create the level renderer and side panel and attach the 1st level to them
 	Game::Level *level = levelset.getLevel(1);
-	level->printInfo();
+	levelset.printInfo();
 	Game::LevelRenderer lr {
 		new Game::Player(sf::Vector2f(0, 0), 1),
 		new Game::Player(sf::Vector2f(0, 0), 2)
@@ -317,27 +325,65 @@ void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 	panel.draw(window);
 	window.display();
 
-	SLEEP_SECONDS(3);
+	SLEEP_MS(3000);
 }
 
 Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Game::SidePanel& panel) {
 	// Display the time bonus on screen
-	const auto timeBonus = lr.getTimeLeft();
+	auto time_bonus = lr.getTimeLeft();
 	
-	sf::Text text("TIME BONUS!", interlevel_font, 13);
-	if (timeBonus > 0) {
-		const auto bounds = text.getGlobalBounds();
-		text.setPosition(center(bounds));
+	sf::Text time_bonus_text("TIME BONUS!", interlevel_font, 13);
+	if (time_bonus > 0) {
+		auto bounds = time_bonus_text.getGlobalBounds();
+		time_bonus_text.setPosition(center(bounds));
 
 		window.clear();
-		window.draw(text);
-	
+		window.draw(time_bonus_text);
+		
+		sf::Text points_text("0", interlevel_font, 13);
+		bounds = points_text.getGlobalBounds();
+		points_text.setPosition(center(bounds) + sf::Vector2f(0.f, 2 * bounds.height));
+
+		window.draw(points_text);
 		panel.draw(window);
 		window.display();
 
-		SLEEP_SECONDS(3);
+		SLEEP_MS(2000);
 
-		// TODO: assign points
+		// Assign time bonus points
+		unsigned int points = 0;
+		auto givePoints = [&lr] (int amount) {
+			auto players = lr.getPlayers();
+			for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
+				if (players[i] != nullptr)
+					Game::score[i] += amount;
+		};
+		auto level = lr.getLevel();
+		while (time_bonus > 0) {
+			if (time_bonus > 60) {
+				time_bonus -= 60;
+				level->setTime(time_bonus);
+				points += 1000;
+				givePoints(1000);
+			} else {
+				--time_bonus;
+				level->setTime(time_bonus);
+				points += 100;
+				givePoints(100);
+			}
+			points_text.setString(Game::to_string(points));
+			points_text.setPosition(center(points_text.getGlobalBounds()) + sf::Vector2f(0.f, 2 * bounds.height));
+
+			window.clear();
+			window.draw(time_bonus_text);
+			window.draw(points_text);
+			lr.resetClocks();
+			panel.draw(window);
+			window.display();
+			SLEEP_MS(50);
+		}
+
+		SLEEP_MS(2000);
 	}
 
 	const auto level = lr.getLevel();

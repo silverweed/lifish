@@ -170,7 +170,7 @@ public:
 
 	bool isPlayer(const Entity *const) const;
 
-	const Level* getLevel() const { return level; }
+	Level* getLevel() const { return level; }
 
 	void dropBomb(const unsigned short player_id);
 
@@ -216,6 +216,7 @@ public:
 
 	bool isExtraGame() const { return extraGame; }
 
+	/** Gives points to player `player` and spawns a Game::Points text above it. */
 	void givePointsTo(const Game::Player *const player, const sf::Vector2f& pos, const int amount);
 
 	/** Returns true if all enemies and bosses are dead. */
