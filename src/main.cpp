@@ -139,10 +139,12 @@ int main(int argc, char **argv) {
 				players = lr.getPlayers();
 				levelClearTriggered = false;
 				for (auto& player : players)
-					player->setWinning(false);
+					if (player != nullptr)
+						player->setWinning(false);
 			} else if (time >= 1) {	
 				for (auto& player : players)
-					player->setWinning(true);
+					if (player != nullptr)
+						player->setWinning(true);
 			}
 		}
 
@@ -163,6 +165,10 @@ int main(int argc, char **argv) {
 						short n = level->getLevelNum() + 1;
 						if (n > levelset.getLevelsNum())
 							n = 1;
+						levelClearTriggered = false;
+						for (auto& player : players)
+							if (player != nullptr)
+								player->setWinning(false);
 						lr.loadLevel(level = levelset.getLevel(n));
 						players = lr.getPlayers();
 						break;
@@ -172,6 +178,10 @@ int main(int argc, char **argv) {
 						short n = level->getLevelNum() - 1;
 						if (n < 1)
 							n = levelset.getLevelsNum();
+						levelClearTriggered = false;
+						for (auto& player : players)
+							if (player != nullptr)
+								player->setWinning(false);
 						lr.loadLevel(level = levelset.getLevel(n));
 						players = lr.getPlayers();
 						break;
@@ -301,9 +311,6 @@ int main(int argc, char **argv) {
 			Game::cache.gcSounds();
 		}
 	}
-
-	for (auto& p : players)
-		delete p;
 
 	return 0;
 }

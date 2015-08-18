@@ -157,11 +157,13 @@ void MovingEntity::setDirection(const Direction dir) {
 void MovingEntity::setHurt(const bool b) {
 	hurt = b;
 	hurtAnimPrepared = false;
+	animatedSprite.setFrameTime(sf::seconds(0.06));
 }
 
 void MovingEntity::prepareHurtAnimation() {
 	if (!hurtAnimPrepared) {
 		animatedSprite.play(*&animations[ANIM_HURT]);
+		animatedSprite.setFrameTime(sf::seconds(0.12));
 		animatedSprite.setLooped(false);
 		hurtAnimPrepared = true;
 	}

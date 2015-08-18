@@ -15,12 +15,12 @@
 
 using Game::LevelRenderer;
 
-LevelRenderer::LevelRenderer(std::initializer_list<Game::Player*> _players) {
+LevelRenderer::LevelRenderer(std::initializer_list<Game::Player*> the_players) {
 	fixedEntities.fill(nullptr);
 
 	unsigned short i = 0;
-	for (auto& player : _players)
-		players[i++] = player;
+	for (auto& player : the_players)
+		_players[i++] = player;
 
 	for (unsigned short i = 0; i < bombs.size(); ++i)
 		bombs[i].fill(nullptr);
@@ -33,6 +33,9 @@ LevelRenderer::LevelRenderer(std::initializer_list<Game::Player*> _players) {
 
 LevelRenderer::~LevelRenderer() {
 	_clearEntities();
+	for (auto& player : _players)
+		if (player != nullptr)
+			delete player;
 }
 
 void LevelRenderer::_clearEntities() {
@@ -74,6 +77,7 @@ void LevelRenderer::_clearEntities() {
 	}
 
 	fixedEntities.fill(nullptr);
+	players.fill(nullptr);
 
 	firstTeleport = nullptr;
 
@@ -126,17 +130,15 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				++coinsNum;
 				break;
 			case EntityType::PLAYER1: 
-				{
-					players[0]->setPosition(curPos);
-					movingEntities.push_back(players[0]);
-					break;
-				}
+				_players[0]->setPosition(curPos);
+				players[0] = _players[0];
+				movingEntities.push_back(players[0]);
+				break;
 			case EntityType::PLAYER2: 
-				{
-					players[1]->setPosition(curPos);
-					movingEntities.push_back(players[1]);
-					break;
-				}
+				_players[1]->setPosition(curPos);
+				players[1] = _players[1];
+				movingEntities.push_back(players[1]);
+				break;
 			case EntityType::TELEPORT:
 				{
 					auto teleport = new Game::Teleport(curPos);
@@ -267,7 +269,8 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 		boss->setOrigin(origin);
 
 	for (const auto& player : players)
-		_pushTemporary(new Game::Flash(player->getPosition()));
+		if (player != nullptr)
+			_pushTemporary(new Game::Flash(player->getPosition()));
 }
 
 void LevelRenderer::renderFrame(sf::RenderWindow& window) {

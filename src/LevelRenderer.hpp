@@ -78,8 +78,14 @@ class LevelRenderer : private sf::NonCopyable {
 
 	sf::Vector2f origin;
 
-	/** The players */
+	/** The players belonging to a Level */
 	std::array<Game::Player*, Game::MAX_PLAYERS> players;
+
+	/** The players' pointers, guaranteed to always point to the players
+	 *  given to the constructor, even if the level tilemap doesn't contain all
+	 *  players, or a player is currently dead.
+	 */
+	std::array<Game::Player*, Game::MAX_PLAYERS> _players;
 
 	/** The bosses, if any */
 	BossList bosses;
