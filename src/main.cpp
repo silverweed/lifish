@@ -18,15 +18,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <iostream>
+#include <cstdlib>
 #if defined(SFML_SYSTEM_WINDOWS) || defined(__MINGW32__)
 #	include <windows.h>
-
 #	define SLEEP_MS(ms) \
 		Sleep(ms)
 #else
 #	include <thread>
 #	include <chrono>
-
 #	define SLEEP_MS(ms) \
 		std::this_thread::sleep_for(std::chrono::milliseconds(ms))
 #endif
@@ -59,15 +58,45 @@ static sf::Font interlevel_font;
 
 int main(int argc, char **argv) {
 	std::clog << "lifish v." << VERSION << " rev." << COMMIT << std::endl;	
+
+	// Argument parsing
+	std::string levelSet = "";
+	bool args_ended = false;
+	unsigned short start_level = 1;
+	int i = 1;
+	while (i < argc) {
+		if (!args_ended && argv[i][0] == '-') {
+			switch (argv[i][1]) {
+			case '-':
+				args_ended = true;
+				break;
+			case 'l':
+				start_level = std::atoi(argv[++i]);
+				break;
+			case 'v':
+				return 0;
+			default:
+				std::cout << "Usage: " << argv[0] << " [-l <levelnum>] [-v] [levelset.json]\n"
+					  << "\t-l: start at level <levelnum>\n"
+					  << "\t-v: print version and exit" << std::endl;
+				return 1;
+			}
+		} else {
+			levelSet = std::string(argv[i]);
+		}
+		++i;
+	}
+
+	// Initialize game global variables
 	if (Game::init())
 		std::clog << "Game successfully initialized. pwd = " << Game::pwd << std::endl;
 	else {
 		std::cerr << "Game failed to initialize!" << std::endl;
 		return 1;
 	}
-	std::string levelSet = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
-	if (argc > 1)
-		levelSet = std::string(argv[1]);
+
+	if (levelSet.length() < 1)
+		levelSet = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
 
 	// Create the rendering window
 	sf::RenderWindow window(sf::VideoMode(
@@ -80,7 +109,7 @@ int main(int argc, char **argv) {
 	std::clog << "Loaded " << levelset.getLevelsNum() << " levels." << std::endl;
 
 	// Create the level renderer and side panel and attach the 1st level to them
-	Game::Level *level = levelset.getLevel(1);
+	Game::Level *level = levelset.getLevel(start_level);
 	levelset.printInfo();
 	Game::LevelRenderer lr {
 		new Game::Player(sf::Vector2f(0, 0), 1),

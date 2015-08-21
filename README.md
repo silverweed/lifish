@@ -3,6 +3,19 @@
 * [SFML](https://github.com/SFML/SFML)
 * [nlohmann/json](https://github.com/nlohmann/json)
 
+### Building ###
+The game can be compiled on *nix (tested on Linux and OSX) via `cmake . && make`
+(you need to have SFML >=2 installed).
+
+On Windows, I'm able to compile the game via gcc under MinGW-w64 (I use the TDM-GCC compiler).
+Avoid the Visual Studio compiler, as it lacks decent C++11 support (it can't compile nlohmann/json).
+
+To get a working build environment, you can follow the steps on
+[this guide](http://ascend4.org/Setting_up_a_MinGW-w64_build_environment) until the *MinGW-w64*
+chapter (included -- you can skip the *First steps* section, as all the listed dependencies like Python etc
+aren't required).
+If you manage to build the game in some other way or on some other platform, let me know!
+
 ### Current Status ###
 
 - [x] Levels BG / Borders display
