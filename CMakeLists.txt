@@ -28,7 +28,7 @@ include_directories(${SFML_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES})
 
 target_compile_features(lifish PRIVATE cxx_range_for)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -Wall -pedantic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -Wall -pedantic -fuse-ld=gold")
 if(MSYS)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows")
 endif()
