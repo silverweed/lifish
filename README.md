@@ -53,7 +53,7 @@ If you manage to build the game in some other way or on some other platform, let
 - [x] Hurry Up
 - [x] Level-wise Victory
   - [ ] FINAL VICTORY
-- [ ] Game Over
+- [x] Game Over
 - [x] Points
 - [x] Extra
   - [x] Enemies become harmless in EXTRA
@@ -66,7 +66,7 @@ If you manage to build the game in some other way or on some other platform, let
     - [x] #1
     - [x] #2
     - [x] #3
-    - [ ] #4
+    - [x] #4
     - [ ] #5
     - [ ] #6
     - [ ] #7

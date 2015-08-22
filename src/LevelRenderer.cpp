@@ -32,10 +32,10 @@ LevelRenderer::LevelRenderer(std::initializer_list<Game::Player*> the_players) {
 }
 
 LevelRenderer::~LevelRenderer() {
+	for (unsigned short i = 0; i < players.size(); ++i)
+		if (players[i] != nullptr)
+			delete players[i];
 	_clearEntities();
-	for (auto& player : _players)
-		if (player != nullptr)
-			delete player;
 }
 
 void LevelRenderer::_clearEntities() {

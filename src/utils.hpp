@@ -79,4 +79,25 @@ inline double distance(const sf::Vector2f& a, const sf::Vector2f& b) {
 	return std::sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
 
+inline float centerX(const sf::FloatRect& bounds, const sf::FloatRect& rect) {
+	return rect.left + (rect.width - bounds.width) / 2.;
+}
+
+inline float centerY(const sf::FloatRect& bounds, const sf::FloatRect& rect) {
+	return rect.top + (rect.height - bounds.height) / 2.;
+}
+
+/** Given the bounding box of something, returns the coordinates
+ *  which center that thing relatively to the given rectangle.
+ *  bounds = object to center
+ *  rect = container to center the object within (default: main game window)
+ */
+inline sf::Vector2f center(const sf::FloatRect& bounds, const sf::FloatRect& rect = 
+		sf::FloatRect(Game::MAIN_WINDOW_SHIFT, 0, 
+			Game::LEVEL_WIDTH * Game::TILE_SIZE,
+			Game::LEVEL_HEIGHT * Game::TILE_SIZE))
+{
+	return sf::Vector2f(centerX(bounds, rect), centerY(bounds, rect));
+}
+
 } // end namespace Game

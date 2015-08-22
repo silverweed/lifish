@@ -13,7 +13,7 @@ class DroppingText : public Game::Temporary {
 	sf::Clock pauseClock;
 	bool stopped = false;
 public:
-	DroppingText(const std::string& texture_name, const sf::Vector2i& texture_rect, float speed = 200.f);
+	DroppingText(const std::string& texture_name, const sf::Vector2i& texture_rect, float speed = 230.f);
 
 	void play() override {}
 	bool isPlaying() const override {

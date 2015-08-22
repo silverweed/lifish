@@ -102,19 +102,16 @@ sf::Font* GameCache::_getFont(const std::string& name) const {
 	return it->second;
 }
 
-bool GameCache::loadFont(sf::Font& font, const std::string& font_name) {
+sf::Font* GameCache::loadFont(const std::string& font_name) {
 	auto buf = _getFont(font_name);
 	if (buf != nullptr) {
-		font = *buf;
-		return true;
+		return buf;
 	}
 	// Load from file and update the cache
 	buf = new sf::Font;
 	if (!buf->loadFromFile(font_name)) {
 		std::cerr << "[GameCache.cpp] Error: couldn't load font " << font_name << " from file!" << std::endl;
-		return false;
+		return nullptr;
 	}
-	font = *buf;
-	fonts[font_name] = buf;
-	return true;
+	return fonts[font_name] = buf;
 }

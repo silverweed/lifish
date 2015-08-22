@@ -10,7 +10,6 @@ namespace Game {
  */
 class ShadedText : public Game::Drawable {
 protected:
-	sf::Font font;
 	sf::Text fgtext, bgtext;
 	std::string str;
 	sf::Vector2f pos;
@@ -42,6 +41,8 @@ public:
 
 	void setShadowSpacing(float spx, float spy);
 
+	void setFGColor(const sf::Color& fg) { fgtext.setColor(fgcol = fg); }
+	void setBGColor(const sf::Color& bg) { bgtext.setColor(bgcol = bg); }
 	void setColor(const sf::Color& fg, const sf::Color& bg);
 
 	void draw(sf::RenderTarget& window) override;

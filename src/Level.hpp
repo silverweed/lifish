@@ -43,7 +43,7 @@ class Level : public Game::Drawable, private sf::NonCopyable {
 	/** The borders' texture */
 	sf::Texture borderTexture;
 
-	/** The sprites for the background tiles */
+	/** The sprites for the background tiles (8 border + background) */
 	std::array<sf::Sprite, 9> bgTiles;
 
 	/** The input sound file for the BGM */

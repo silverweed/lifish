@@ -63,7 +63,10 @@ public:
 	/** Removes from `sounds` all the sounds which are not playing. */
 	void gcSounds();
 
-	bool loadFont(sf::Font& font, const std::string& font_name);
+	/** Loads the font `font_name` (either from the cache or from file)
+	 *  and returns a pointer to it.
+	 */
+	sf::Font* loadFont(const std::string& font_name);
 };
 
 }

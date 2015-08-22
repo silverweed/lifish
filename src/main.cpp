@@ -36,6 +36,8 @@
 #include "SidePanel.hpp"
 #include "MovingEntity.hpp"
 #include "Controls.hpp"
+#include "HomeScreen.hpp"
+#include "utils.hpp"
 
 // Fallback in case the game wasn't compiled properly with cmake
 #ifndef VERSION
@@ -50,15 +52,13 @@ using Game::MAIN_WINDOW_SHIFT;
 using Game::LEVEL_WIDTH;
 using Game::LEVEL_HEIGHT;
 
-sf::Vector2f center(const sf::FloatRect& bounds);
+void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned short start_level = 1);
 void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum);
 Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Game::SidePanel& panel);
 
 static sf::Font interlevel_font;
 
 int main(int argc, char **argv) {
-	std::clog << "lifish v." << VERSION << " rev." << COMMIT << std::endl;	
-
 	// Argument parsing
 	std::string levelSet = "";
 	bool args_ended = false;
@@ -74,6 +74,7 @@ int main(int argc, char **argv) {
 				start_level = std::atoi(argv[++i]);
 				break;
 			case 'v':
+				std::cout << "lifish v." << VERSION << " rev." << COMMIT << std::endl;	
 				return 0;
 			default:
 				std::cout << "Usage: " << argv[0] << " [-l <levelnum>] [-v] [levelset.json]\n"
@@ -101,11 +102,44 @@ int main(int argc, char **argv) {
 	// Create the rendering window
 	sf::RenderWindow window(sf::VideoMode(
 				Game::WINDOW_WIDTH, 
-				Game::WINDOW_HEIGHT), "Level test");
+				Game::WINDOW_HEIGHT), "Lifish v." VERSION );
+
+	// Home screen
+	Game::HomeScreen home;
+	while (window.isOpen()) {
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			switch (event.type) {
+			case sf::Event::MouseMoved:
+				home.triggerMouseOver(sf::Mouse::getPosition(window));
+				break;
+			case sf::Event::MouseButtonReleased:
+				{
+					const auto clicked = home.triggerMouseClick(sf::Mouse::getPosition(window));
+					if (clicked == "start") {
+						play_game(window, levelSet, start_level);
+						break;
+					} else if (clicked == "exit") {
+						return 0;
+					}
+				}
+			default:
+				break;
+			}
+		}
+		window.clear();
+		home.draw(window);
+		window.display();
+	}
+
+	return 0;
+}
+
+void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned short start_level) {
 	bool vsync = false;
 
 	// Parse the level set
-	Game::LevelSet levelset(levelSet);
+	Game::LevelSet levelset(level_set);
 	std::clog << "Loaded " << levelset.getLevelsNum() << " levels." << std::endl;
 
 	// Create the level renderer and side panel and attach the 1st level to them
@@ -123,7 +157,9 @@ int main(int argc, char **argv) {
 	const std::string fontname = Game::getAsset("fonts", Game::Fonts::INTERLEVEL);
 	interlevel_font.loadFromFile(fontname);
 
-	//displayGetReady(window, panel, 1);
+#ifdef RELEASE
+	displayGetReady(window, panel, 1);
+#endif
 	auto music = level->getMusic();
 	music->play();
 
@@ -153,9 +189,7 @@ int main(int argc, char **argv) {
 		// If all players are dead, scroll down the GAME OVER text
 		if (gameOverTriggered) {
 			if (lr.isGameOverEnded()) {
-				// TODO: end game
-				window.close();
-				break;
+				return;
 			}
 		} else if (levelClearTriggered) {
 			const auto time = levelClearClock.getElapsedTime().asSeconds();
@@ -186,7 +220,11 @@ int main(int argc, char **argv) {
 			case sf::Event::KeyPressed:
 				switch (event.key.code) {
 				case sf::Keyboard::Key::Escape:
-					window.close();
+					for (auto& player : players)
+						if (player != nullptr) {
+							player->kill();
+							player->setRemainingLives(0);
+						}
 					break;
 #ifndef RELEASE
 				case sf::Keyboard::Key::Add:
@@ -340,22 +378,20 @@ int main(int argc, char **argv) {
 			Game::cache.gcSounds();
 		}
 	}
-
-	return 0;
 }
 
 void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum) {
 	std::stringstream ss;
 	ss << "LEVEL " << lvnum;
 	sf::Text text(ss.str(), interlevel_font, 13);
-	text.setPosition(center(text.getGlobalBounds()));
+	text.setPosition(Game::center(text.getGlobalBounds()));
 
 	window.clear();
 	window.draw(text);
 
 	text.setString("GET READY!");
 	const auto bounds = text.getGlobalBounds();
-	text.setPosition(center(bounds) + sf::Vector2f(0.f, 2 * bounds.height));
+	text.setPosition(Game::center(bounds) + sf::Vector2f(0.f, 2 * bounds.height));
 
 	window.draw(text);
 	panel.draw(window);
@@ -371,14 +407,14 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 	sf::Text time_bonus_text("TIME BONUS!", interlevel_font, 13);
 	if (time_bonus > 0) {
 		auto bounds = time_bonus_text.getGlobalBounds();
-		time_bonus_text.setPosition(center(bounds));
+		time_bonus_text.setPosition(Game::center(bounds));
 
 		window.clear();
 		window.draw(time_bonus_text);
 		
 		sf::Text points_text("0", interlevel_font, 13);
 		bounds = points_text.getGlobalBounds();
-		points_text.setPosition(center(bounds) + sf::Vector2f(0.f, 2 * bounds.height));
+		points_text.setPosition(Game::center(bounds) + sf::Vector2f(0.f, 2 * bounds.height));
 
 		window.draw(points_text);
 		panel.draw(window);
@@ -408,7 +444,7 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 				givePoints(100);
 			}
 			points_text.setString(Game::to_string(points));
-			points_text.setPosition(center(points_text.getGlobalBounds()) + sf::Vector2f(0.f, 2 * bounds.height));
+			points_text.setPosition(Game::center(points_text.getGlobalBounds()) + sf::Vector2f(0.f, 2 * bounds.height));
 
 			window.clear();
 			window.draw(time_bonus_text);
@@ -438,12 +474,4 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 	lr.loadLevel(levelSet->getLevel(lvnum));
 
 	return const_cast<Game::Level*>(lr.getLevel());
-}
-
-/** Given the bounding box of something, returns the coordinates
- *  which center that thing relatively to the main window.
- */
-sf::Vector2f center(const sf::FloatRect& bounds) {
-	return sf::Vector2f(MAIN_WINDOW_SHIFT + (LEVEL_WIDTH * TILE_SIZE - bounds.width) / 2.,
-			(LEVEL_HEIGHT * TILE_SIZE - bounds.height) / 2.);
 }

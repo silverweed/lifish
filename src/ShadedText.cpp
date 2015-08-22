@@ -9,11 +9,12 @@ ShadedText::ShadedText(const std::string& fontname, const std::string& _str,
 		sf::Vector2f _pos, sf::Color fg, sf::Color bg)
 	: str(_str), pos(_pos), shadowSpacing(3.5, 3), fgcol(fg), bgcol(bg)
 {
-	if (!Game::cache.loadFont(font, fontname)) {
+	auto font = Game::cache.loadFont(fontname);
+	if (font == nullptr) {
 		std::cerr << "[ShadedFont.cpp] Error loading font " << fontname << std::endl;
 	} else {
-		fgtext.setFont(font);
-		bgtext.setFont(font);
+		fgtext.setFont(*font);
+		bgtext.setFont(*font);
 		fgtext.setString(str);
 		bgtext.setString(str);
 		fgtext.setPosition(pos);
@@ -56,8 +57,8 @@ void ShadedText::setShadowSpacing(float spx, float spy) {
 }
 
 void ShadedText::setColor(const sf::Color& fg, const sf::Color& bg) {
-	fgtext.setColor(fg);
-	bgtext.setColor(bg);
+	fgtext.setColor(fgcol = fg);
+	bgtext.setColor(bgcol = bg);
 }
 	
 void ShadedText::draw(sf::RenderTarget& window) {

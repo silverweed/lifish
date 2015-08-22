@@ -62,6 +62,7 @@ namespace Fonts {
 	static constexpr auto LEVELNUM = "pf_tempesta_seven.ttf";
 	static constexpr auto DEBUG_INFO = "pf_tempesta_seven_condensed.ttf";
 	static constexpr auto SIDE_PANEL = "pf_tempesta_seven_bold.ttf";
+	static constexpr auto SCREEN = "pf_tempesta_seven_bold.ttf";
 }
 
 /****************************************************************************/
