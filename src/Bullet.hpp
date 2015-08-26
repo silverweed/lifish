@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MovingEntity.hpp"
+#include "Sounded.hpp"
 
 namespace Game {
 
@@ -9,7 +10,7 @@ namespace Game {
  * impacts with another Entity which is not transparentTo.bullets.
  * Cannot travel diagonally.
  */
-class Bullet : public Game::MovingEntity {
+class Bullet : public Game::MovingEntity, public Game::Sounded {
 protected:
 	/** If 1 => this bullet has the same animation for any direction, up to 8.
 	 *  If 2 => this bullet has 2 different animations when traveling UP/DOWN or
@@ -63,6 +64,7 @@ public:
 	unsigned short getDamage() const { return damage; }
 
 	void destroy();
+	bool isBeingDestroyed() const { return destroyed; }
 	bool isDestroyed() const { return destroyed && !animatedSprite.isPlaying(); }
 
 	unsigned short getSize() const { return size; }

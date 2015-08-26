@@ -4,14 +4,16 @@
 #include "Scored.hpp"
 #include "Player.hpp"
 #include "utils.hpp"
+#include "Game.hpp"
+#include "GameCache.hpp"
 #include <list>
 
 using Game::Explosion;
 using Game::TILE_SIZE;
 
 Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game::Player *const source) :
-	Temporary(pos, Game::getAsset("test", "explosion.png")),
-	Sounded(Game::getAsset("sounds", "explosion.ogg")),
+	Game::Temporary(pos, Game::getAsset("test", "explosion.png")),
+	Game::Sounded({ Game::getAsset("sounds", "explosion.ogg") }),
 	radius(_radius),
 	sourcePlayer(source)
 {
@@ -120,6 +122,7 @@ void Explosion::propagate(Game::LevelRenderer *const lr) {
 				if (d == 1 && level->getTile(new_tile.x - 1, new_tile.y - 1) == Game::EntityType::BREAKABLE) {
 					auto bw = static_cast<Game::BreakableWall*>(fxd);
 					bw->destroy();
+					Game::cache.playSound(bw->getSoundFile());
 					lr->givePointsTo(sourcePlayer, bw->getPosition(), bw->getPointsGiven());
 				}
 			}
@@ -182,8 +185,10 @@ void Explosion::checkHit(Game::LevelRenderer *const lr) {
 				if (se != nullptr)
 					lr->givePointsTo(sourcePlayer, e->getPosition(), se->getPointsGiven());
 			}
-			if (e->getLife() <= 0)
+			if (e->getLife() <= 0) {
 				e->kill();
+				Game::cache.playSound(e->getSoundFile(Game::Sounds::DEATH));
+			}
 		}
 	};
 

@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "LoopingMusic.hpp"
 #include <cstring>
 #include <iostream>
 #include <array>
@@ -18,6 +19,7 @@ char Game::pwd[Game::PWD_BUFSIZE];
 std::array<unsigned int, Game::MAX_PLAYERS> Game::score;
 Game::GameCache Game::cache;
 std::default_random_engine Game::rng;
+LoopingMusic *Game::music = nullptr;
 
 using Game::pwd;
 

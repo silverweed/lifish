@@ -554,6 +554,7 @@ void LevelRenderer::detectCollisions() {
 					// Grab the letter
 					auto player = static_cast<Game::Player*>(entity);
 					player->extra[letter->getId()] = true;
+					Game::cache.playSound(letter->getSoundFile());
 					_spawnPoints(letter->getPosition(), letter->getPointsGiven());
 
 					// Check if EXTRA
@@ -570,6 +571,7 @@ void LevelRenderer::detectCollisions() {
 						const auto upText = new Game::Points(letter->getPosition() + sf::Vector2f((TILE_SIZE - 45) / 2., 0.f),
 								Game::to_string(_getPlayerIndex(player) + 1) + "UP", sf::Color(77, 184, 255, 255), 15);
 						_pushTemporary(upText);
+						Game::cache.playSound(Game::getAsset("test", Game::EXTRA_LIFE_SOUND));
 					}
 
 					delete letter;
@@ -593,11 +595,18 @@ void LevelRenderer::detectCollisions() {
 						if (!player->isHurt()) {
 							player->setHurt(true);
 							player->giveShield(Game::DAMAGE_SHIELD_TIME);
+							Game::cache.playSound(player->getSoundFile(Game::Sounds::HURT));
 						}
-						if (player->getLife() <= 0)
+						if (player->getLife() <= 0) {
 							player->kill();
+							Game::cache.playSound(player->getSoundFile(Game::Sounds::DEATH));
+						}
 					} 
-					bullet->destroy();	
+
+					if (!bullet->isBeingDestroyed()) {
+						Game::cache.playSound(bullet->getSoundFile(Game::Sounds::DEATH));
+						bullet->destroy();	
+					}
 				}
 			}
 		}
@@ -690,6 +699,7 @@ void LevelRenderer::detectCollisions() {
 					if (!enemy->isMorphed() && (enemy->attack.type & Enemy::AttackType::CONTACT)) {
 						enemy->shoot();
 						enemy->attackAlign = Game::tile(player->getPosition());
+						// TODO: fix contact attack and add sound
 					}
 
 					if (!player->hasShield()) {
@@ -703,9 +713,12 @@ void LevelRenderer::detectCollisions() {
 						if (!player->isHurt()) {
 							player->setHurt(true);
 							player->giveShield(Game::DAMAGE_SHIELD_TIME);
+							Game::cache.playSound(player->getSoundFile(Game::Sounds::HURT));
 						}
-						if (player->getLife() <= 0)
+						if (player->getLife() <= 0) {
 							player->kill();
+							Game::cache.playSound(player->getSoundFile(Game::Sounds::DEATH));
+						}
 					}
 				}
 
@@ -802,6 +815,7 @@ void LevelRenderer::detectCollisions() {
 							}
 
 							Game::score[i] += bonus->getPointsGiven();
+							Game::cache.playSound(bonus->getSoundFile());
 							_spawnPoints(bonus->getPosition(), bonus->getPointsGiven());
 
 							delete bonus;
@@ -934,6 +948,7 @@ void LevelRenderer::applyEnemyMoves() {
 					bullet->setOrigin(origin);
 					bullet->setSource(enemy);
 					bullets.push_back(bullet);
+					Game::cache.playSound(bullet->getSoundFile(Game::Sounds::SHOT));
 
 					if (enemy->attack.type & Game::Enemy::AttackType::BLOCKING) {
 						if (enemy->attack.type & Game::Enemy::AttackType::SIMPLE)
@@ -1221,6 +1236,7 @@ void LevelRenderer::_destroyAllWalls() {
 		auto bw = dynamic_cast<Game::BreakableWall*>(fxd);
 		if (bw != nullptr) {
 			bw->destroy();
+			Game::cache.playSound(bw->getSoundFile());
 			for (unsigned short i = 0; i < players.size(); ++i)
 				if (players[i] != nullptr && players[i]->getRemainingLives() > 0)
 					Game::score[i] += bw->getPointsGiven();
@@ -1241,6 +1257,8 @@ void LevelRenderer::_killAllEnemies() {
 					Game::score[i] += se->getPointsGiven();
 			_spawnPoints(e->getPosition(), se->getPointsGiven());
 		}
+		Game::cache.playSound(e->getSoundFile(Game::Sounds::DEATH));
+
 		if (extraGame)
 			_spawnLetter(e->getPosition());
 	}
@@ -1274,19 +1292,24 @@ void LevelRenderer::checkHurryUp() {
 		hurryUpText = new Game::DroppingText(Game::getAsset("test", "hurryup.png"),
 				sf::Vector2i(161, 30), 300.f);
 		hurryUpText->setOrigin(origin);
+		Game::cache.playSound(Game::getAsset("test", Game::HURRY_UP_SOUND));
 		hurryUpWarningGiven = true;
 	}
 }
 
 void LevelRenderer::triggerGameOver() {
+	if (Game::music != nullptr)
+		Game::music->stop();
 	gameOverText = new Game::DroppingText(Game::getAsset("test", "gameover.png"),
 			sf::Vector2i(311, 59));
+	Game::cache.playSound(Game::getAsset("test", Game::GAME_OVER_SOUND));
 	gameOverText->setOrigin(origin);
 }
 
 void LevelRenderer::_triggerExtraGame() {
 	extraGameText = new Game::DroppingText(Game::getAsset("test", "extragame.png"),
 			sf::Vector2i(223, 156), 250.f);
+	Game::cache.playSound(Game::getAsset("test", Game::EXTRA_GAME_SOUND));
 	extraGameText->setOrigin(origin);
 	for (auto& e : movingEntities) {
 		if (isPlayer(e)) continue;

@@ -6,6 +6,7 @@ using Game::Bullet;
 
 Bullet::Bullet(const sf::Vector2f& _pos, const std::string& texture_name) :
 	Game::MovingEntity(_pos, texture_name),
+	Game::Sounded({}),
 	shift(0.f, 0.f)
 {
 	animations[0].setSpriteSheet(texture);
@@ -15,6 +16,8 @@ Bullet::Bullet(const sf::Vector2f& _pos, const std::string& texture_name) :
 Bullet::Bullet(const sf::Vector2f& _pos, const Game::Direction dir, unsigned short id,
 		float _speed, unsigned short _damage, short _range) :
 	Game::MovingEntity(_pos, Game::getAsset("test", "bullets.png")),
+	Game::Sounded({ Game::getAsset("test", std::string("bullet") + Game::to_string(id) + std::string("_hit.ogg")),
+			Game::getAsset("test", std::string("bullet") + Game::to_string(id) + std::string("_shot.ogg")) }),
 	range(_range),
 	origin(_pos),
 	damage(_damage),

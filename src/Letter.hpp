@@ -3,11 +3,12 @@
 #include "Animated.hpp"
 #include "FixedEntity.hpp"
 #include "Scored.hpp"
+#include "Sounded.hpp"
 
 namespace Game {
 
 /** An EXTRA letter. */
-class Letter : public Game::FixedEntity, public Game::Animated, public Game::Scored {
+class Letter : public Game::FixedEntity, public Game::Animated, public Game::Scored, public Game::Sounded {
 	constexpr static unsigned short TRANSITION_DELAY = 3000; // ms
 
 	/** What letter is this (currently) */

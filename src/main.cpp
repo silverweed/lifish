@@ -163,8 +163,9 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 #ifdef RELEASE
 	displayGetReady(window, panel, 1);
 #endif
-	auto music = level->getMusic();
-	music->play();
+	Game::music = level->getMusic();
+	if (Game::music != nullptr)
+		Game::music->play();
 
 	// Create fps text
 	bool show_fps = false;
@@ -181,7 +182,9 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 
 	auto players = lr.getPlayers();
 	bool gameOverTriggered = false;
-	bool levelClearTriggered = false;
+	bool levelClearTriggered = false, 
+	     levelClearSoundPlayed = false,
+	     playerWinSoundPlayed = false;
 	sf::Clock levelClearClock;
 
 	int cycle = 0;
@@ -197,20 +200,35 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 		} else if (levelClearTriggered) {
 			const auto time = levelClearClock.getElapsedTime().asSeconds();
 			if (time >= 4) {
-				music->stop();	
 				level = advanceLevel(window, lr, panel);
-				music = level->getMusic();
-				music->play();
+				Game::music = level->getMusic();
+				if (Game::music != nullptr)
+					Game::music->play();
 				lr.resetClocks();
 				players = lr.getPlayers();
 				levelClearTriggered = false;
+				levelClearSoundPlayed = false;
+				playerWinSoundPlayed = false;
 				for (auto& player : players)
 					if (player != nullptr)
 						player->setWinning(false);
-			} else if (time >= 1) {	
+
+			} else if (time >= 1.8 && !playerWinSoundPlayed) {
 				for (auto& player : players)
-					if (player != nullptr)
+					if (player != nullptr) {
+						Game::cache.playSound(player->getSoundFile(Game::Sounds::WIN));
 						player->setWinning(true);
+					}
+
+				playerWinSoundPlayed = true;
+
+			} else if (time >= 1 && !levelClearSoundPlayed) {
+				if (Game::music != nullptr)
+					Game::music->stop();
+
+				Game::cache.playSound(Game::getAsset("test", Game::LEVEL_CLEAR_SOUND));
+
+				levelClearSoundPlayed = true;
 			}
 		}
 
@@ -226,6 +244,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 					for (auto& player : players)
 						if (player != nullptr) {
 							player->kill();
+							Game::cache.playSound(player->getSoundFile(Game::Sounds::DEATH));
 							player->setRemainingLives(0);
 						}
 					break;
@@ -236,6 +255,8 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 						if (n > levelset.getLevelsNum())
 							n = 1;
 						levelClearTriggered = false;
+						levelClearSoundPlayed = false;
+						playerWinSoundPlayed = false;
 						for (auto& player : players)
 							if (player != nullptr)
 								player->setWinning(false);
@@ -249,6 +270,8 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 						if (n < 1)
 							n = levelset.getLevelsNum();
 						levelClearTriggered = false;
+						levelClearSoundPlayed = false;
+						playerWinSoundPlayed = false;
 						for (auto& player : players)
 							if (player != nullptr)
 								player->setWinning(false);
@@ -434,6 +457,7 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 					Game::score[i] += amount;
 		};
 		auto level = lr.getLevel();
+		const auto time_bonus_sound = Game::getAsset("test", Game::TIME_BONUS_SOUND);
 		while (time_bonus > 0) {
 			if (time_bonus > 60) {
 				time_bonus -= 60;
@@ -448,6 +472,7 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 			}
 			points_text.setString(Game::to_string(points));
 			points_text.setPosition(Game::center(points_text.getGlobalBounds()) + sf::Vector2f(0.f, 2 * bounds.height));
+			Game::cache.playSound(time_bonus_sound);
 
 			window.clear();
 			window.draw(time_bonus_text);

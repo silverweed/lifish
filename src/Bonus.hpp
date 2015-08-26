@@ -1,15 +1,16 @@
 #pragma once
 
+#include <random>
 #include "FixedEntity.hpp"
 #include "Scored.hpp"
-#include <random>
+#include "Sounded.hpp"
 
 namespace Game {
 
 /**
  * The bonuses dropped by walls
  */
-class Bonus : public Game::FixedEntity, public Game::Scored {
+class Bonus : public Game::FixedEntity, public Game::Scored, public Game::Sounded {
 	constexpr static float EXPIRE_TIME = 10; // s
 	constexpr static int VALUE = 100; // FIXME
 

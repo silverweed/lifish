@@ -14,6 +14,7 @@ unsigned short Letter::randomId() {
 Letter::Letter(const sf::Vector2f& pos, unsigned short _id) :
 	Game::FixedEntity(pos, Game::getAsset("test", "extra_letters.png")),
 	Game::Scored(100),
+	Game::Sounded({ Game::getAsset("test", "letter_grab.ogg") }),
 	id(_id)
 {
 	// Letters are indexed 0 to N_EXTRA_LETTERS - 1.

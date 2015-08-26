@@ -1,20 +1,22 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 /**
- * An object which has a sound associated with it. Note that
- * this class is only used for objects which have a single 
- * associated sound, not multiple ones.
+ * An object which has one or more sounds associated with it. 
  */
 namespace Game {
 
 class Sounded {
-	std::string soundFile;
+	std::vector<std::string> soundFiles;
 public:
-	Sounded(const std::string& _soundFile) : soundFile(_soundFile) {}
+	Sounded(std::initializer_list<std::string> _soundFiles) {
+		for (auto& s : _soundFiles)
+			soundFiles.push_back(s);
+	}
 
-	const std::string& getSoundFile() const { return soundFile; }
+	const std::string& getSoundFile(unsigned short n = 0) const { return soundFiles[n]; }
 };
 
 }

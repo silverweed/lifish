@@ -10,6 +10,8 @@
 #include <SFML/Graphics.hpp>
 #include "GameCache.hpp"
 
+class LoopingMusic;
+
 namespace Game {
 
 /****************************************************************************/
@@ -65,6 +67,29 @@ namespace Fonts {
 	static constexpr auto SCREEN = "pf_tempesta_seven_bold.ttf";
 }
 
+/** Indexing convention for Game::Sounded entities */
+namespace Sounds {
+	/** Enemy's, player's, boss's death, bullet's hit */
+	static constexpr unsigned short DEATH  = 0;
+	/** Bullet's shooting sound */
+	static constexpr unsigned short SHOT   = 1;
+	/** Enemy's yell */
+	static constexpr unsigned short YELL   = 1;
+	/** Boss's / Player's hurt sound */
+	static constexpr unsigned short HURT   = 1;
+	/** Player's win sound */
+	static constexpr unsigned short WIN    = 2;
+	/** Enemy's attack sound */
+	static constexpr unsigned short ATTACK = 2;
+}
+
+constexpr auto HURRY_UP_SOUND    = "hurryup.ogg";
+constexpr auto GAME_OVER_SOUND   = "gameover.ogg";
+constexpr auto EXTRA_GAME_SOUND  = "extragame.ogg";
+constexpr auto EXTRA_LIFE_SOUND  = "extralife.ogg";
+constexpr auto LEVEL_CLEAR_SOUND = "levelclear.ogg";
+constexpr auto TIME_BONUS_SOUND  = "timebonus.ogg";
+
 /****************************************************************************/
 /*                         GLOBAL VARIABLES                                 */
 /****************************************************************************/
@@ -80,6 +105,9 @@ extern std::default_random_engine rng;
 
 /** The players' score */
 extern std::array<unsigned int, MAX_PLAYERS> score;
+
+/** The music */
+extern LoopingMusic *music;
 
 /****************************************************************************/
 /*                         GLOBAL FUNCTIONS                                 */

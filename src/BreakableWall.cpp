@@ -8,7 +8,8 @@ using Game::TILE_SIZE;
 BreakableWall::BreakableWall(const sf::Vector2f& pos, const unsigned short id, unsigned short _life) :
 	Game::Wall(pos, Game::getAsset("graphics", "breakable.png")),
 	Game::Lifed(_life),
-	Game::Scored(10)
+	Game::Scored(10),
+	Game::Sounded({ Game::getAsset("sounds", "wall_break.ogg") })
 {
 	// Breakable walls have 4 sprites: the "animatedSprites" array is used
 	// to keep these sprites, and the animation starts when the wall is being destroyed.
