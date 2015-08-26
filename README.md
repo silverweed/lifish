@@ -1,3 +1,7 @@
+<a href="https://scan.coverity.com/projects/lifish">
+	<img alt="Coverity Scan Build Status"
+	     src="https://scan.coverity.com/projects/5674/badge.svg"/>
+</a>
 ## DEPENDENCIES ##
 
 * [SFML](https://github.com/SFML/SFML)
