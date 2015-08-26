@@ -457,7 +457,7 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 					Game::score[i] += amount;
 		};
 		auto level = lr.getLevel();
-		const auto time_bonus_sound = Game::getAsset("test", Game::TIME_BONUS_SOUND);
+		const auto time_bonus_sound = Game::getAsset("sounds", Game::TIME_BONUS_SOUND);
 		while (time_bonus > 0) {
 			if (time_bonus > 60) {
 				time_bonus -= 60;
@@ -480,7 +480,7 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 			lr.resetClocks();
 			panel.draw(window);
 			window.display();
-			SLEEP_MS(50);
+			SLEEP_MS(60);
 		}
 
 		SLEEP_MS(2000);
