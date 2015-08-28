@@ -3,8 +3,8 @@
 #include <string>
 #include <unordered_map>
 #include <SFML/System.hpp>
-#include "Drawable.hpp"
 #include "ShadedText.hpp"
+#include "Drawable.hpp"
 
 namespace Game {
 
@@ -29,19 +29,19 @@ protected:
 	std::vector<sf::Drawable*> elements;
 public:
 	Screen();
-	~Screen();
+	virtual ~Screen();
 
-	void draw(sf::RenderTarget& window) override;
+	virtual void draw(sf::RenderTarget& window) override;
 
 	/** Checks if mouse is over a text and, if so, changes
 	 *  its color.
 	 */
-	void triggerMouseOver(const sf::Vector2i& mousePos);
+	void triggerMouseOver(const sf::Vector2f& mousePos);
 
 	/** If the mouse was clicked on a clickable element, return the
 	 *  name of that element; else, return the empty string.
 	 */
-	virtual std::string triggerMouseClick(const sf::Vector2i& mousePos);
+	virtual std::string triggerMouseClick(const sf::Vector2f& mousePos);
 };
 
 }

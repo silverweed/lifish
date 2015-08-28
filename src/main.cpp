@@ -37,6 +37,7 @@
 #include "MovingEntity.hpp"
 #include "Controls.hpp"
 #include "HomeScreen.hpp"
+#include "PreferencesScreen.hpp"
 #include "utils.hpp"
 
 // Fallback in case the game wasn't compiled properly with cmake
@@ -104,8 +105,14 @@ int main(int argc, char **argv) {
 				Game::WINDOW_WIDTH, 
 				Game::WINDOW_HEIGHT), "Lifish v." VERSION );
 
-	// Home screen
-	Game::HomeScreen home;
+	// Game screens
+	struct {
+		Game::HomeScreen        &home = Game::HomeScreen::getInstance();
+		Game::PreferencesScreen &preferences = Game::PreferencesScreen::getInstance();
+	} screens;
+
+	Game::Screen *cur_screen = &screens.home;
+
 	while (window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -114,24 +121,52 @@ int main(int argc, char **argv) {
 				window.close();
 				break;
 			case sf::Event::MouseMoved:
-				home.triggerMouseOver(sf::Mouse::getPosition(window));
+				cur_screen->triggerMouseOver(
+						window.mapPixelToCoords(sf::Mouse::getPosition(window)));
 				break;
 			case sf::Event::MouseButtonReleased:
 				{
-					const auto clicked = home.triggerMouseClick(sf::Mouse::getPosition(window));
+					const auto clicked = cur_screen->triggerMouseClick(
+							window.mapPixelToCoords(sf::Mouse::getPosition(window)));
 					if (clicked == "start") {
 						play_game(window, levelSet, start_level);
 						break;
+					} else if (clicked == "load") {
+						// TODO
+						break;
+					} else if (clicked == "preferences") {
+						// TODO
+						cur_screen = &screens.preferences;
+						break;
+					} else if (clicked == "music_volume_down") {
+						screens.preferences.changeMusicVolume(false);
+						break;
+					} else if (clicked == "music_volume_up") {
+						screens.preferences.changeMusicVolume(true);
+						break;
+					} else if (clicked == "sounds_volume_down") {
+						screens.preferences.changeSoundsVolume(false);
+						break;
+					} else if (clicked == "sounds_volume_up") {
+						screens.preferences.changeSoundsVolume(true);
+						break;
+					} else if (clicked == "about") {
+						// TODO
+						break;
 					} else if (clicked == "exit") {
-						return 0;
+						if (cur_screen == &screens.home)
+							return 0;
+						else
+							cur_screen = &screens.home;
 					}
+					break;
 				}
 			default:
 				break;
 			}
 		}
 		window.clear();
-		home.draw(window);
+		cur_screen->draw(window);
 		window.display();
 	}
 
@@ -164,8 +199,10 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 	displayGetReady(window, panel, 1);
 #endif
 	Game::music = level->getMusic();
-	if (Game::music != nullptr)
+	if (Game::music != nullptr) {
+		Game::music->setVolume(Game::music_volume);
 		Game::music->play();
+	}
 
 	// Create fps text
 	bool show_fps = false;
@@ -394,8 +431,8 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 		lr.renderFrame(window);
 		panel.draw(window);
 		if (show_fps) {
-			fps_text.draw(window);
-			vsync_text.draw(window);
+			window.draw(fps_text);
+			window.draw(vsync_text);
 		}
 		window.display();
 

@@ -16,14 +16,20 @@
 
 // Define extern variables of Game.hpp
 char Game::pwd[Game::PWD_BUFSIZE];
-std::array<unsigned int, Game::MAX_PLAYERS> Game::score;
-Game::GameCache Game::cache;
-std::default_random_engine Game::rng;
-LoopingMusic *Game::music = nullptr;
 
-using Game::pwd;
+std::array<unsigned int, Game::MAX_PLAYERS> Game::score;
+
+Game::GameCache Game::cache;
+
+std::default_random_engine Game::rng;
+
+LoopingMusic *Game::music = nullptr;
+float Game::music_volume = 100,
+      Game::sounds_volume = 100;
 
 bool Game::init() {
+	using Game::pwd;
+
 	// Setup pwd variable
 	pwd[0] = '\0';
 

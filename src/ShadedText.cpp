@@ -60,8 +60,13 @@ void ShadedText::setColor(const sf::Color& fg, const sf::Color& bg) {
 	fgtext.setColor(fgcol = fg);
 	bgtext.setColor(bgcol = bg);
 }
-	
+
 void ShadedText::draw(sf::RenderTarget& window) {
 	window.draw(bgtext);
 	window.draw(fgtext);
+}
+
+void ShadedText::draw(sf::RenderTarget& window, sf::RenderStates states) const {
+	window.draw(bgtext, states);
+	window.draw(fgtext, states);
 }

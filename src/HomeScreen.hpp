@@ -4,9 +4,17 @@
 
 namespace Game {
 
+/**
+ * Singleton class for the home screen
+ */
 class HomeScreen : public Game::Screen {
-public:
+	/** Private constructor */
 	HomeScreen();
+public:
+	static HomeScreen& getInstance() {
+		static HomeScreen instance;
+		return instance;
+	}
 };
 
 }

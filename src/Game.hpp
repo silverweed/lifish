@@ -59,28 +59,28 @@ constexpr unsigned short PWD_BUFSIZE = 512;
 constexpr auto PI = 3.141592653589793238L;
 
 namespace Fonts {
-	static constexpr auto POINTS = "pf_tempesta_seven_bold.ttf";
-	static constexpr auto INTERLEVEL = "pf_tempesta_seven_bold.ttf";
-	static constexpr auto LEVELNUM = "pf_tempesta_seven.ttf";
-	static constexpr auto DEBUG_INFO = "pf_tempesta_seven_condensed.ttf";
-	static constexpr auto SIDE_PANEL = "pf_tempesta_seven_bold.ttf";
-	static constexpr auto SCREEN = "pf_tempesta_seven_bold.ttf";
+	constexpr static auto POINTS = "pf_tempesta_seven_bold.ttf";
+	constexpr static auto INTERLEVEL = "pf_tempesta_seven_bold.ttf";
+	constexpr static auto LEVELNUM = "pf_tempesta_seven.ttf";
+	constexpr static auto DEBUG_INFO = "pf_tempesta_seven_condensed.ttf";
+	constexpr static auto SIDE_PANEL = "pf_tempesta_seven_bold.ttf";
+	constexpr static auto SCREEN = "pf_tempesta_seven_bold.ttf";
 }
 
 /** Indexing convention for Game::Sounded entities */
 namespace Sounds {
 	/** Enemy's, player's, boss's death, bullet's hit */
-	static constexpr unsigned short DEATH  = 0;
+	constexpr static unsigned short DEATH  = 0;
 	/** Bullet's shooting sound */
-	static constexpr unsigned short SHOT   = 1;
+	constexpr static unsigned short SHOT   = 1;
 	/** Enemy's yell */
-	static constexpr unsigned short YELL   = 1;
+	constexpr static unsigned short YELL   = 1;
 	/** Boss's / Player's hurt sound */
-	static constexpr unsigned short HURT   = 1;
+	constexpr static unsigned short HURT   = 1;
 	/** Player's win sound */
-	static constexpr unsigned short WIN    = 2;
+	constexpr static unsigned short WIN    = 2;
 	/** Enemy's attack sound */
-	static constexpr unsigned short ATTACK = 2;
+	constexpr static unsigned short ATTACK = 2;
 }
 
 constexpr auto HURRY_UP_SOUND    = "hurryup.ogg";
@@ -108,6 +108,12 @@ extern std::array<unsigned int, MAX_PLAYERS> score;
 
 /** The music */
 extern LoopingMusic *music;
+
+/** The music volume */
+extern float music_volume;
+
+/** The FX volume */
+extern float sounds_volume;
 
 /****************************************************************************/
 /*                         GLOBAL FUNCTIONS                                 */

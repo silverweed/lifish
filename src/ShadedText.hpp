@@ -8,7 +8,7 @@ namespace Game {
 /**
  * A sf::Text container which draws a string with a shadow behind
  */
-class ShadedText : public Game::Drawable {
+class ShadedText : public Game::Drawable, public sf::Drawable {
 protected:
 	sf::Text fgtext, bgtext;
 	std::string str;
@@ -45,7 +45,8 @@ public:
 	void setBGColor(const sf::Color& bg) { bgtext.setColor(bgcol = bg); }
 	void setColor(const sf::Color& fg, const sf::Color& bg);
 
-	void draw(sf::RenderTarget& window) override;
+	void draw(sf::RenderTarget& target) override;
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
 }

@@ -13,6 +13,7 @@ HomeScreen::HomeScreen() : Screen() {
 	 * Start game
 	 * Load game
 	 * Preferences
+	 * About
 	 * Exit game
 	 * -------
 	 * FOOTER
@@ -24,7 +25,8 @@ HomeScreen::HomeScreen() : Screen() {
 	const auto font = Game::getAsset("fonts", Game::Fonts::SCREEN);
 	const auto win_bounds = sf::FloatRect(0, 0, Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
 
-	auto size = 24;
+	const auto size = 24;
+	const float spacing = 1.8;
 	auto text = new Game::ShadedText(font, "Start Game", sf::Vector2f(0, 0));
 
 	text->setCharacterSize(size);
@@ -34,17 +36,22 @@ HomeScreen::HomeScreen() : Screen() {
 
 	text = new Game::ShadedText(font, "Load Game", pos);
 	text->setCharacterSize(size);
-	text->setPosition(sf::Vector2f(Game::centerX(text->getGlobalBounds(), win_bounds), pos.y + 2*size));
+	text->setPosition(sf::Vector2f(Game::centerX(text->getGlobalBounds(), win_bounds), pos.y + spacing*size));
 	texts["load"] = text;
 
 	text = new Game::ShadedText(font, "Preferences", pos);
 	text->setCharacterSize(size);
-	text->setPosition(sf::Vector2f(Game::centerX(text->getGlobalBounds(), win_bounds), pos.y + 4*size));
+	text->setPosition(sf::Vector2f(Game::centerX(text->getGlobalBounds(), win_bounds), pos.y + 2*spacing*size));
 	texts["preferences"] = text;
+
+	text = new Game::ShadedText(font, "About", pos);
+	text->setCharacterSize(size);
+	text->setPosition(sf::Vector2f(Game::centerX(text->getGlobalBounds(), win_bounds), pos.y + 3*spacing*size));
+	texts["about"] = text;
 
 	text = new Game::ShadedText(font, "Exit Game", pos);
 	text->setCharacterSize(size);
-	text->setPosition(sf::Vector2f(Game::centerX(text->getGlobalBounds(), win_bounds), pos.y + 6*size));
+	text->setPosition(sf::Vector2f(Game::centerX(text->getGlobalBounds(), win_bounds), pos.y + 4*spacing*size));
 	texts["exit"] = text;
 
 	// Footer
@@ -54,5 +61,4 @@ HomeScreen::HomeScreen() : Screen() {
 	txt->setString("lifish v." VERSION " rev." COMMIT );
 	txt->setPosition(5, win_bounds.height - 18);
 	elements.push_back(txt);
-	
 }

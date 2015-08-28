@@ -1,4 +1,5 @@
 #include "GameCache.hpp"
+#include "Game.hpp"
 #include <iostream>
 
 using Game::GameCache;
@@ -81,6 +82,7 @@ void GameCache::playSound(const std::string& sound_name) {
 		return;
 	}
 	sounds.push_back(sound);
+	sound->setVolume(Game::sounds_volume);
 	sound->play();
 }
 

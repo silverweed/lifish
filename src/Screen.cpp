@@ -43,7 +43,7 @@ void Screen::draw(sf::RenderTarget& window) {
 		pair.second->draw(window);
 }
 
-void Screen::triggerMouseOver(const sf::Vector2i& mousePos) {
+void Screen::triggerMouseOver(const sf::Vector2f& mousePos) {
 	for (auto& pair : texts) {
 		auto text = pair.second;
 		if (text->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
@@ -54,7 +54,7 @@ void Screen::triggerMouseOver(const sf::Vector2i& mousePos) {
 	}
 }
 
-std::string Screen::triggerMouseClick(const sf::Vector2i& mousePos) {
+std::string Screen::triggerMouseClick(const sf::Vector2f& mousePos) {
 	for (auto& pair : texts) {
 		if (pair.second->getGlobalBounds().contains(mousePos.x, mousePos.y))
 			return pair.first;

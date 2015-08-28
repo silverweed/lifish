@@ -13,7 +13,7 @@ SidePanel::SidePanel(const Game::LevelRenderer *const _lr) : lr(_lr) {
 	backgroundSprite.setPosition(0, 0);
 
 	// Load player heads
-	Game::cache.loadTexture(playerHeadsTexture, Game::getAsset("test", "playerheads.png"));
+	Game::cache.loadTexture(playerHeadsTexture, Game::getAsset("graphics", "playerheads.png"));
 	for (unsigned short i = 0; i < playerHeadsSprite.size(); ++i) {
 		playerHeadsSprite[i].setTexture(playerHeadsTexture);
 		playerHeadsSprite[i].setTextureRect(sf::IntRect(PLAYER_HEAD_WIDTH * i, 0,
@@ -75,7 +75,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 				ss.str(),
 				sf::Vector2f(N_LIVES_X, i == 0 ? N_LIVES_Y_1 : N_LIVES_Y_2));
 		nLivesText.setCharacterSize(14);
-		nLivesText.draw(window);
+		window.draw(nLivesText);
 
 
 		pos.x = HEALTH_SYM_POS_X;
@@ -89,7 +89,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 					sf::Vector2f(HEALTH_SYM_POS_X, i == 0 
 						? HEALTH_SYM_POS_Y_1 : HEALTH_SYM_POS_Y_2));
 			gameOverText.setCharacterSize(HEALTH_SYM_HEIGHT);
-			gameOverText.draw(window);
+			window.draw(gameOverText);
 		} else {
 			// Draw health
 			const unsigned short n_tot = player->getMaxLife() / 2;
@@ -143,7 +143,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 								ss.str(), sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 3));
 						text.setCharacterSize(7);
 						text.setShadowSpacing(1, 1);
-						text.draw(window);
+						window.draw(text);
 						break;
 					}
 				case B::MAX_RANGE:
@@ -155,7 +155,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 								ss.str(), sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 3));
 						text.setCharacterSize(7);
 						text.setShadowSpacing(1, 1);
-						text.draw(window);
+						window.draw(text);
 						break;
 					}
 					break;
@@ -190,7 +190,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 					ss.str(), pos);
 			scoreText.setCharacterSize(14);
 			scoreText.setShadowSpacing(2, 2);
-			scoreText.draw(window);
+			window.draw(scoreText);
 		}
 	}
 
@@ -217,7 +217,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 	timeText.setCharacterSize(14);
 	if (seconds <= 30)
 		timeText.setColor(sf::Color(220, 0, 0, 255), sf::Color::Black);
-	timeText.draw(window);
+	window.draw(timeText);
 }
 
 void SidePanel::_drawWithShadow(sf::RenderTarget& window, sf::Sprite& sprite, const sf::Color& color) {
