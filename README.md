@@ -4,11 +4,11 @@
 </a>
 ## DEPENDENCIES ##
 
-* [SFML](https://github.com/SFML/SFML)
+* [SFML](https://github.com/SFML/SFML) >= 2.3
 * [nlohmann/json](https://github.com/nlohmann/json)
 
 ### Building ###
-The game can be compiled on *nix (tested on Linux and OSX) via `cmake . && make`
+The game can be compiled on *nix (tested on Linux, OSX and FreeBSD) via `cmake . && make`
 (you need to have SFML >=2 installed).
 
 On Windows, I'm able to compile the game via gcc under MinGW-w64 (I use the TDM-GCC compiler).

@@ -18,8 +18,7 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 	const auto win_bounds = sf::FloatRect(0, 0, Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
 
 	const auto size = 24;
-	const float spacing = 1.8, 
-	            ipadx = 25,
+	const float ipadx = 25,
 		    ipady = 15;
 	auto text = new Game::ShadedText(font, "Music:", sf::Vector2f(ipadx, ipady));
 	text->setCharacterSize(size);
