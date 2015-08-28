@@ -88,7 +88,7 @@ void PreferencesScreen::changeSoundsVolume(bool raise) {
 }
 
 void PreferencesScreen::_changeVolume(bool raise, bool music) {
-	short vol = music ? relMusicVolume : relSoundVolume; 
+	short &vol = music ? relMusicVolume : relSoundVolume; 
 
 	if ((raise && vol == MAX_VOLUME) || (!raise && vol == 0))
 		return;
