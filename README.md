@@ -2,6 +2,7 @@
 	<img alt="Coverity Scan Build Status"
 	     src="https://scan.coverity.com/projects/5674/badge.svg"/>
 </a>
+<img alt="License: GNU/GPL v3" src="https://img.shields.io/badge/license-gpl-blue.svg"/>
 ## DEPENDENCIES ##
 
 * [SFML](https://github.com/SFML/SFML) >= 2.3
@@ -89,3 +90,8 @@ If you manage to build the game in some other way or on some other platform, let
   - [ ] Powerups
   - [ ] Bosses
   - [ ] Many other things
+
+### LICENSE ###
+Lifish is free software licensed under the GNU GPL v3.
+See [LICENSE.txt](https://github.com/silverweed/lifish/blob/master/LICENSE.txt)
+for more information.
