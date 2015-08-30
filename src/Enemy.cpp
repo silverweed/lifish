@@ -136,3 +136,9 @@ void Enemy::setDashing(bool b) {
 		speed *= 4;
 	}
 }
+
+const std::string& Enemy::getSoundFile(unsigned short n) const {
+	if (alienSprite != nullptr)
+		return alienSprite->getSoundFile();
+	return Game::Sounded::getSoundFile(n);
+}

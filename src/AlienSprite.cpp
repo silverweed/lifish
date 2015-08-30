@@ -6,7 +6,9 @@
 using Game::AlienSprite;
 using Game::Direction;
 
-AlienSprite::AlienSprite() {
+AlienSprite::AlienSprite() : 
+	Game::Sounded({ Game::getAsset("test", "alien_death.ogg") })
+{
 	Game::cache.loadTexture(texture, Game::getAsset("test", "aliensprite.png"));
 
 	for (unsigned short i = 0; i < 4; ++i)

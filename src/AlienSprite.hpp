@@ -2,6 +2,7 @@
 
 #include "Animated.hpp"
 #include "MovingEntity.hpp"
+#include "Sounded.hpp"
 
 namespace Game {
 
@@ -13,7 +14,7 @@ namespace Game {
  * when they're morphed. Note that this class by itself isn't
  * an Entity, thus cannot be used standalone.
  */
-class AlienSprite : public Game::Animated {
+class AlienSprite : public Game::Animated, public Game::Sounded {
 	constexpr static unsigned short WALK_N_FRAMES = 4;
 	constexpr static unsigned short DEATH_N_FRAMES = 2;
 

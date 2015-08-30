@@ -111,6 +111,8 @@ public:
 
 	void setDashing(bool b);
 	bool isDashing() const { return dashing; }
+
+	const std::string& getSoundFile(unsigned short n = 0) const override;
 };
 
 }

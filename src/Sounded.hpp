@@ -16,7 +16,7 @@ public:
 			soundFiles.push_back(s);
 	}
 
-	const std::string& getSoundFile(unsigned short n = 0) const { return soundFiles[n]; }
+	virtual const std::string& getSoundFile(unsigned short n = 0) const { return soundFiles[n]; }
 };
 
 }
