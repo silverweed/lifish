@@ -208,7 +208,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				break;
 			case EntityType::ENEMY7: 
 				enemy_id = 7;
-				enemy_attack.type = AT::CONTACT;
+				enemy_attack.type = AT::CONTACT | AT::RANGED;
 				enemy_attack.damage = 1;
 				enemy_attack.fireRate = 2.5;
 				break;
@@ -697,9 +697,15 @@ void LevelRenderer::detectCollisions() {
 
 				if (!opaque && !(enemy->isDying() || player->isDying())) {
 					if (!enemy->isMorphed() && (enemy->attack.type & Enemy::AttackType::CONTACT)) {
-						enemy->shoot();
+						if (!enemy->isShooting()) {
+							enemy->shoot();
+							if (!(enemy->attack.type & Enemy::AttackType::RANGED)) {
+								// Play the sound only if the attack is not "dashing"
+								// (see Enemy.hpp#AttackType)
+								Game::cache.playSound(enemy->getSoundFile(Game::Sounds::ATTACK));
+							}
+						}
 						enemy->attackAlign = Game::tile(player->getPosition());
-						// TODO: fix contact attack and add sound
 					}
 
 					if (!player->hasShield()) {
@@ -1019,7 +1025,10 @@ void LevelRenderer::checkBombExplosions() {
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
 		for (unsigned short j = 0; j < bombs[i].size(); ++j)
 			if (bombs[i][j] != nullptr && bombs[i][j]->isExploding()) {
-				auto expl = new Game::Explosion(bombs[i][j]->getPosition(), bombs[i][j]->getRadius(), bombs[i][j]->getSourcePlayer());
+				auto expl = new Game::Explosion(
+						bombs[i][j]->getPosition(), 
+						bombs[i][j]->getRadius(), 
+						bombs[i][j]->getSourcePlayer());
 				Game::cache.playSound(expl->getSoundFile());
 				expl->propagate(this);
 				expl->setOrigin(origin);

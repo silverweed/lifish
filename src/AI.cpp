@@ -1,6 +1,8 @@
 #include "AI.hpp"
 #include "Enemy.hpp"
 #include "utils.hpp"
+#include "Game.hpp"
+#include "GameCache.hpp"
 #include <random>
 
 using Game::AIBoundFunction;
@@ -135,7 +137,8 @@ AIBoundFunction Game::ai_follow_dash(Game::Enemy *const enemy) {
 			return cur;
 
 		if (enemy->seeingPlayer != Game::Direction::NONE) {
-			enemy->setDashing(true);
+			if (enemy->setDashing(true))
+				Game::cache.playSound(enemy->getSoundFile(Game::Sounds::ATTACK));
 			return enemy->seeingPlayer;
 		}
 

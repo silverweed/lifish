@@ -126,7 +126,7 @@ void Enemy::setMorphed(bool b) {
 	}
 }
 
-void Enemy::setDashing(bool b) {
+bool Enemy::setDashing(bool b) {
 	if (!b) {
 		dashing = false;
 		speed = originalSpeed;
@@ -134,7 +134,9 @@ void Enemy::setDashing(bool b) {
 	} else if (dashClock.getElapsedTime().asMilliseconds() >= 1000./attack.fireRate && speed == originalSpeed) {
 		dashing = true;
 		speed *= 4;
+		return true;
 	}
+	return false;
 }
 
 const std::string& Enemy::getSoundFile(unsigned short n) const {

@@ -43,6 +43,23 @@ class Enemy : public Game::LifedMovingEntity, public Game::Scored {
 	bool _isTransparentTo(const Entity *const e) const override;
 public:
 	constexpr static float BASE_SPEED = 75.f;
+	/** The different types of attacks.
+	 *  SIMPLE: the enemy shoots a single bullet at a time
+	 *  CONTACT: the enemy doesn't shoot, but hurts on contact.
+	 *  RANGED: the enemy's attack has a limited range. If paired
+	 *          with CONTACT, means the attack is "dashing", and
+	 *          the dash triggers withing range (use -1 for "infinite").
+	 *          __Note__: the "dashing" attack is actually performed 
+	 *          by ai_follow_dash, independently from attack.type;
+	 *          however, one must also specify this in attack.type so
+	 *          that the attack sound is played correctly (i.e. when
+	 *          the enemy starts dashing rather than when he contacts
+	 *          the player).
+	 *  BLOCKING: standalone, means that the enemy shoots continuously
+	 *            and stops moving while shooting; paired with SIMPLE,
+	 *            means the enemy shoots a single bullet and stops for
+	 *            `attack.blockTime` after shooting.
+	 */
 	enum AttackType : unsigned short {
 		SIMPLE   = 1,
 		CONTACT  = 1 << 1,
@@ -56,7 +73,7 @@ public:
 		 *  the cooldown between two dashes.
 		 */
 		float fireRate;
-		/** If attacktype is SIMPLE & BLOCKING, this is the time
+		/** If attacktype is SIMPLE | BLOCKING, this is the time
 		 *  the enemy stops after shooting (in ms -- should be more than shootFrameTime);
 		 */
 		unsigned short blockTime;
@@ -109,7 +126,8 @@ public:
 	void setMorphed(bool b);
 	bool isMorphed() const { return morphed; }
 
-	void setDashing(bool b);
+	/** Returns true if enemy wasn't already dashing and now is, else false. */
+	bool setDashing(bool b);
 	bool isDashing() const { return dashing; }
 
 	const std::string& getSoundFile(unsigned short n = 0) const override;
