@@ -202,9 +202,15 @@ void SidePanel::draw(sf::RenderTarget& window) {
 		ss << "0";
 	ss << minutes << ":";
 	seconds -= minutes * 60;
-	if (seconds < 10)
+	if (seconds < 10) {
 		ss << "0";
-	ss << seconds;
+		if (seconds >= 0)
+			ss << seconds;
+		else
+			ss << "0";
+	} else {
+		ss << seconds;
+	}
 
 	Game::ShadedText timeText(
 			Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),

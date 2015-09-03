@@ -15,8 +15,16 @@
 			"name": "Spirit Party",
 			"author": "Luca Barazzetta",
 			"loop": {
-				"start": 3.427,
+				"start": 3.428,
 				"length": 106.3
+			}
+		},
+		{
+			"name": "Tick Tock",
+			"author": "Luca Barazzetta",
+			"loop": {
+				"start": 3.428,
+				"length": 96.0
 			}
 		}
 	],
@@ -65,7 +73,7 @@
 	"levels": [
 		{
 			"time": 60,
-			"music": 1,
+			"music": 3,
 			"tileIDs": {
 				"bg": 1,
 				"border": 1,

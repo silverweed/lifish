@@ -19,3 +19,10 @@ seconds 3.427
 
 looplength
 seconds 106.3
+
+----
+Tick Tock
+author l.barazzetta
+-----
+loopstart 3.428
+looplength=96.0
