@@ -159,7 +159,7 @@ public:
 	float getLevelTime() const { return level->getTime() - levelTimeClock.getElapsedTime().asSeconds(); }
 
 	const std::array<Game::Player*, Game::MAX_PLAYERS>& getPlayers() const { return players; }
-	Player* getPlayer(const unsigned short i) const { return players[i-1]; }
+	Game::Player* getPlayer(const unsigned short i) const { return players[i-1]; }
 	
 	const FixedEntityList& getFixedEntities() const { return fixedEntities; }
 	const MovingEntityList& getMovingEntities() const { return movingEntities; }
@@ -176,7 +176,7 @@ public:
 
 	bool isPlayer(const Entity *const) const;
 
-	Level* getLevel() const { return level; }
+	Game::Level* getLevel() const { return level; }
 
 	void dropBomb(const unsigned short player_id);
 
