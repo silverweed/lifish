@@ -195,21 +195,16 @@ void SidePanel::draw(sf::RenderTarget& window) {
 	}
 
 	// Draw the time remaining in format MM:SS
-	const short seconds = lr->getLevelTime();
+	short seconds = lr->getLevelTime();
 	const short minutes = seconds < 0 ? 0 : seconds / 60;
 	ss.str("");
 	if (minutes < 10)
 		ss << "0";
 	ss << minutes << ":";
-	if (seconds > 9)
-		ss << (seconds - minutes * 60);
-	else {
+	seconds -= minutes * 60;
+	if (seconds < 10)
 		ss << "0";
-		if (seconds >= 0)
-			ss << seconds;
-		else
-			ss << "0";
-	}
+	ss << seconds;
 
 	Game::ShadedText timeText(
 			Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),

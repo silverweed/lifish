@@ -338,14 +338,16 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 		for (unsigned int i = 0; i < 2; ++i) {
 			if (players[i] == nullptr) continue;
 
-			if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::UP]))
-				dir[i] = Game::Direction::UP;
-			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::LEFT]))
-				dir[i] = Game::Direction::LEFT;
-			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::DOWN]))
-				dir[i] = Game::Direction::DOWN;
-			else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::RIGHT]))
-				dir[i] = Game::Direction::RIGHT;
+			if (window.hasFocus()) {
+				if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::UP]))
+					dir[i] = Game::Direction::UP;
+				else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::LEFT]))
+					dir[i] = Game::Direction::LEFT;
+				else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::DOWN]))
+					dir[i] = Game::Direction::DOWN;
+				else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::RIGHT]))
+					dir[i] = Game::Direction::RIGHT;
+			}
 
 			if (players[i]->isAligned())
 				players[i]->setDirection(dir[i]);
@@ -378,7 +380,9 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 			}
 			if (players[i]->isAligned()) {
 				players[i]->prevAlign = Game::tile(players[i]->getPosition());
-				if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::BOMB]))
+				if (window.hasFocus() && !players[i]->isDying()
+						&& sf::Keyboard::isKeyPressed(
+							Game::playerControls[i][Game::Control::BOMB]))
 					lr.dropBomb(i);
 			}
 

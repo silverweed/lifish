@@ -4,9 +4,19 @@
 	"difficulty": "average",
 	"tracks": [
 		{
+			"name": "DMZ beat",
+			"author": "Giacomo Parolini",
 			"loop": {
 				"start": 7.386,
 				"length": 44.279
+			}
+		},
+		{
+			"name": "Spirit Party",
+			"author": "Luca Barazzetta",
+			"loop": {
+				"start": 3.427,
+				"length": 106.3
 			}
 		}
 	],
