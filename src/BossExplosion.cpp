@@ -2,8 +2,9 @@
 
 using Game::BossExplosion;
 
-BossExplosion::BossExplosion(const sf::Vector2f& pos) 
-	: Game::Temporary(pos, Game::getAsset("test", "bossbullet.png"))
+BossExplosion::BossExplosion(const sf::Vector2f& pos) :
+	Game::Temporary(pos, Game::getAsset("test", "bossbullet.png")),
+	Game::Sounded({ Game::getAsset("test", "bossbullet_hit.ogg") })
 {
 	animations[0].setSpriteSheet(texture);
 	animations[0].addFrame(sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));

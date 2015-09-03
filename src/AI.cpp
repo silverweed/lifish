@@ -111,8 +111,10 @@ AIBoundFunction Game::ai_follow(Game::Enemy *const enemy) {
 		if (enemy->colliding && enemy->canGo(cur, lr))
 			return opp;
 
-		if (enemy->seeingPlayer != Game::Direction::NONE)
+		if (enemy->seeingPlayer != Game::Direction::NONE) {
+			enemy->yell();
 			return enemy->seeingPlayer;
+		}
 
 		return selectRandomViable(enemy, lr, opp);
 	};

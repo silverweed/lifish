@@ -6,7 +6,6 @@
 #include "Flash.hpp"
 #include "BossExplosion.hpp"
 #include "BossBullet.hpp"
-#include "Bonus.hpp"
 #include "Enemy.hpp"
 #include "Points.hpp"
 #include "utils.hpp"
@@ -239,7 +238,7 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				enemy_attack.speed = 1;
 				break;
 			default:
-				  break;
+				break;
 			}
 			if (enemy_id > 0) {
 				auto enemy = new Game::Enemy(curPos, enemy_id);
@@ -401,7 +400,9 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 				std::uniform_real_distribution<float> dist(-0.5 * TILE_SIZE, TILE_SIZE * (Game::Boss::SIZE - 0.5));
 				const float x = dist(rng),
 				            y = dist(rng);
-				_pushTemporary(new Game::BossExplosion(sf::Vector2f(bpos.x + x, bpos.y + y)));
+				auto expl = new Game::BossExplosion(sf::Vector2f(bpos.x + x, bpos.y + y));
+				_pushTemporary(expl);
+				Game::cache.playSound(expl->getSoundFile());
 			}
 		}
 		boss->draw(window);
@@ -776,59 +777,10 @@ void LevelRenderer::detectCollisions() {
 							break;
 						}
 					case EntityType::BREAKABLE:
-						{
-							// Grab the bonus
-							if (!is_player) break;
-							auto bonus = static_cast<Game::Bonus*>(other);
-							const unsigned short i = _getPlayerIndex(entity);
-							switch (bonus->getType()) {
-								using B = Game::Bonus::Type;
-							case B::ZAPPER:
-								_destroyAllWalls();
-								break;
-							case B::SUDDEN_DEATH:
-								_killAllEnemies();
-								break;
-							case B::MAX_BOMBS:
-								if (players[i]->powers.maxBombs < Game::Player::MAX_MAX_BOMBS)
-									players[i]->powers.maxBombs += 1;
-								break;
-							case B::QUICK_FUSE:
-								if (players[i]->powers.bombFuseTime == Game::Bomb::DEFAULT_FUSE)
-									players[i]->powers.bombFuseTime /= 2.;
-								break;
-							case B::MAX_RANGE:
-								if (players[i]->powers.bombRadius < Game::Bomb::MAX_RADIUS)
-									players[i]->powers.bombRadius += 1;
-								break;
-							case B::HEALTH_SMALL:
-								if (players[i]->getLife() < Game::Player::MAX_LIFE)
-									players[i]->decLife(-2);
-								break;
-							case B::HEALTH_FULL:
-								if (players[i]->getLife() < Game::Player::MAX_LIFE)
-									players[i]->setLife(players[i]->getMaxLife());
-								break;
-							case B::SHIELD:
-								players[i]->giveShield(Game::Bonus::SHIELD_DURATION);
-								break;
-							case B::SPEEDY:
-								players[i]->giveSpeedy(Game::Bonus::SPEEDY_DURATION);
-								break;
-							default:
-								std::cerr << "[ LevelRenderer ] Warning: unknown bonus id "
-									<< bonus->getType() << std::endl;
-							}
-
-							Game::score[i] += bonus->getPointsGiven();
-							Game::cache.playSound(bonus->getSoundFile());
-							_spawnPoints(bonus->getPosition(), bonus->getPointsGiven());
-
-							delete bonus;
-							fixedEntities[idx] = nullptr;
-
-							break;
-						}
+						// Grab the bonus
+						if (!is_player) break;
+						_grabBonus(entity, static_cast<Game::Bonus*>(other), idx);
+						break;
 					default:
 						break;
 					}
@@ -854,11 +806,13 @@ void LevelRenderer::detectCollisions() {
 
 	// Check impact bullets - fixed/borders
 	for (auto& bullet : bullets) {
+		if (bullet->isBeingDestroyed()) continue;
 		const auto pos = bullet->getPosition();
 		const auto szpos = pos + sf::Vector2f(bullet->getSize(), bullet->getSize());
 		if (szpos.x < TILE_SIZE || szpos.x >= (LEVEL_WIDTH + 1) * TILE_SIZE
 				|| szpos.y < TILE_SIZE || szpos.y >= (LEVEL_HEIGHT + 1) * TILE_SIZE) {
 			bullet->destroy();
+			Game::cache.playSound(bullet->getSoundFile(Game::Sounds::DEATH));
 			continue;
 		}
 
@@ -867,11 +821,13 @@ void LevelRenderer::detectCollisions() {
 			const unsigned short idx = (tile.y - 1) * LEVEL_WIDTH + tile.x - 1;
 			if (idx >= fixedEntities.size()) {
 				bullet->destroy();
+				Game::cache.playSound(bullet->getSoundFile(Game::Sounds::DEATH));
 				continue;
 			}
 			FixedEntity *other = fixedEntities[idx];
 			if (other != nullptr && !other->transparentTo.bullets) {
 				bullet->destroy();
+				Game::cache.playSound(bullet->getSoundFile(Game::Sounds::DEATH));
 				continue;
 			}
 		}
@@ -880,6 +836,7 @@ void LevelRenderer::detectCollisions() {
 			if (!boss->isDying() && boss != bullet->getSource()
 					&& boss->intersects(sf::FloatRect(szpos.x, szpos.y, bullet->getSize(), bullet->getSize()))) {
 				bullet->destroy();
+				Game::cache.playSound(bullet->getSoundFile(Game::Sounds::DEATH));
 				break;	
 			}
 		}
@@ -1214,6 +1171,7 @@ void LevelRenderer::makeBossesShoot() {
 			bullet->setOrigin(origin);
 			bullet->setSource(boss);
 			bullets.push_back(bullet);
+			Game::cache.playSound(bullet->getSoundFile(Game::Sounds::SHOT));
 		}
 	}
 }
@@ -1381,4 +1339,53 @@ void LevelRenderer::resetClocks() {
 	for (auto& e : movingEntities) {
 		e->resetFrameClock();
 	}
+}
+
+void LevelRenderer::_grabBonus(Game::MovingEntity *const entity, Game::Bonus *bonus, unsigned short idx) {
+	const unsigned short i = _getPlayerIndex(entity);
+	switch (bonus->getType()) {
+		using B = Game::Bonus::Type;
+	case B::ZAPPER:
+		_destroyAllWalls();
+		break;
+	case B::SUDDEN_DEATH:
+		_killAllEnemies();
+		break;
+	case B::MAX_BOMBS:
+		if (players[i]->powers.maxBombs < Game::Player::MAX_MAX_BOMBS)
+			players[i]->powers.maxBombs += 1;
+		break;
+	case B::QUICK_FUSE:
+		if (players[i]->powers.bombFuseTime == Game::Bomb::DEFAULT_FUSE)
+			players[i]->powers.bombFuseTime /= 2.;
+		break;
+	case B::MAX_RANGE:
+		if (players[i]->powers.bombRadius < Game::Bomb::MAX_RADIUS)
+			players[i]->powers.bombRadius += 1;
+		break;
+	case B::HEALTH_SMALL:
+		if (players[i]->getLife() < Game::Player::MAX_LIFE)
+			players[i]->decLife(-2);
+		break;
+	case B::HEALTH_FULL:
+		if (players[i]->getLife() < Game::Player::MAX_LIFE)
+			players[i]->setLife(players[i]->getMaxLife());
+		break;
+	case B::SHIELD:
+		players[i]->giveShield(Game::Bonus::SHIELD_DURATION);
+		break;
+	case B::SPEEDY:
+		players[i]->giveSpeedy(Game::Bonus::SPEEDY_DURATION);
+		break;
+	default:
+		std::cerr << "[ LevelRenderer ] Warning: unknown bonus id "
+			<< bonus->getType() << std::endl;
+	}
+
+	Game::score[i] += bonus->getPointsGiven();
+	Game::cache.playSound(bonus->getSoundFile());
+	_spawnPoints(bonus->getPosition(), bonus->getPointsGiven());
+
+	delete bonus;
+	fixedEntities[idx] = nullptr;
 }

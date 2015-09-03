@@ -3,6 +3,7 @@
 #include "FixedEntity.hpp"
 #include "Lifed.hpp"
 #include "Scored.hpp"
+#include "Sounded.hpp"
 #include <array>
 
 namespace Game {
@@ -12,7 +13,12 @@ namespace Game {
  * It is endued with `N_SHOOTING_POINTS` coordinates whence it fires
  * its BossBullets.
  */
-class Boss : public Game::FixedEntity, public Game::Lifed, public Game::Scored {
+class Boss :
+	public Game::FixedEntity, 
+	public Game::Lifed,
+	public Game::Scored,
+	public Game::Sounded
+{
 	constexpr static unsigned int VALUE = 5000;
 	constexpr static unsigned short MAX_LIFE = 20; 
 	constexpr static unsigned short N_SHOOTING_POINTS = 2;

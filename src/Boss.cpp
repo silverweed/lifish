@@ -7,7 +7,9 @@ using Game::Boss;
 Boss::Boss(const sf::Vector2f& pos) :
 	Game::FixedEntity(pos, Game::getAsset("test", "boss.png")),
 	Game::Lifed(MAX_LIFE),
-	Game::Scored(VALUE)
+	Game::Scored(VALUE),
+	Game::Sounded({ Game::getAsset("test", "boss_death.ogg"),
+			Game::getAsset("test", "boss_hurt.ogg") })
 {
 	sprite.setTextureRect(sf::IntRect(0, 0, SIZE * Game::TILE_SIZE, SIZE * Game::TILE_SIZE));
 

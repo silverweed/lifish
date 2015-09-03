@@ -103,6 +103,14 @@ void Level::draw(sf::RenderTarget& window) {
 	// Border tiles number on y axis
 	const unsigned short btn_y = LEVEL_HEIGHT + 1;
 
+	// Draw the level background
+	for (unsigned short i = 0; i < btn_x + 1; ++i) {
+		for (unsigned short j = 0; j < btn_y + 1; ++j) {
+			bgTiles[TILE_REGULAR].setPosition(i * TILE_SIZE, j * TILE_SIZE);
+			window.draw(bgTiles[TILE_REGULAR]);
+		}
+	}
+
 	// Draw the borders
 	window.draw(bgTiles[TILE_UPPER_LEFT]);
 	for (unsigned short i = 1; i < btn_x; ++i) {
@@ -114,14 +122,6 @@ void Level::draw(sf::RenderTarget& window) {
 		window.draw(bgTiles[TILE_LEFT]);
 	}
 	window.draw(bgTiles[TILE_UPPER_RIGHT]);
-
-	// Draw the level background
-	for (unsigned short i = 0; i < btn_x; ++i) {
-		for (unsigned short j = 0; j < btn_y; ++j) {
-			bgTiles[TILE_REGULAR].setPosition(i * TILE_SIZE + TILE_SIZE, j * TILE_SIZE + TILE_SIZE);
-			window.draw(bgTiles[TILE_REGULAR]);
-		}
-	}
 
 	for (unsigned short i = 1; i < (btn_y); ++i) {
 		bgTiles[TILE_RIGHT].setPosition(btn_x * TILE_SIZE, i * TILE_SIZE);

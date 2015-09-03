@@ -2,7 +2,6 @@
 	<img alt="Coverity Scan Build Status"
 	     src="https://scan.coverity.com/projects/5674/badge.svg"/>
 </a>
-<img alt="License: GNU/GPL v3" src="https://img.shields.io/badge/license-gpl-blue.svg"/>
 ## DEPENDENCIES ##
 
 * [SFML](https://github.com/SFML/SFML) >= 2.3

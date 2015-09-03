@@ -13,6 +13,7 @@ namespace Game {
  */
 class Enemy : public Game::LifedMovingEntity, public Game::Scored {
 	constexpr static unsigned short WALK_N_FRAMES = 4;
+	constexpr static int YELL_DELAY = 1000;
 	
 	/** Indexed with ANIM_UP etc */
 	sf::Sprite shootFrame[4];
@@ -21,6 +22,9 @@ class Enemy : public Game::LifedMovingEntity, public Game::Scored {
 
 	/** The function determining this enemy's movements */
 	AIBoundFunction ai;
+
+	/** Keep track of the time past since last yell */
+	sf::Clock yellClock;
 
 	sf::Clock attackClock;
 	bool shooting = false;
@@ -131,6 +135,8 @@ public:
 	bool isDashing() const { return dashing; }
 
 	const std::string& getSoundFile(unsigned short n = 0) const override;
+
+	void yell();
 };
 
 }

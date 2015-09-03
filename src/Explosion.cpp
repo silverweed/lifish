@@ -61,10 +61,13 @@ void Explosion::propagate(Game::LevelRenderer *const lr) {
 	for (auto& boss : bosses) {
 		if (!boss->isDying() && boss->occupies(m_tile)) {
 			boss->decLife(1);
-			if (boss->getLife() <= 0)
+			if (boss->getLife() <= 0) {
 				boss->kill();
-			else
+				Game::cache.playSound(boss->getSoundFile(Game::Sounds::DEATH));
+			} else {
 				boss->hurt();
+				Game::cache.playSound(boss->getSoundFile(Game::Sounds::HURT));
+			}
 		}
 	}
 
@@ -109,10 +112,13 @@ void Explosion::propagate(Game::LevelRenderer *const lr) {
 				for (auto& boss : bosses) {
 					if (!boss->isDying() && boss->occupies(new_tile)) {
 						boss->decLife(1);
-						if (boss->getLife() <= 0)
+						if (boss->getLife() <= 0) {
 							boss->kill();
-						else
+							Game::cache.playSound(boss->getSoundFile(Game::Sounds::DEATH));
+						} else {
 							boss->hurt();
+							Game::cache.playSound(boss->getSoundFile(Game::Sounds::HURT));
+						}
 					}
 				}
 

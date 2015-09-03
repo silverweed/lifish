@@ -131,7 +131,8 @@ bool Enemy::setDashing(bool b) {
 		dashing = false;
 		speed = originalSpeed;
 		dashClock.restart();
-	} else if (dashClock.getElapsedTime().asMilliseconds() >= 1000./attack.fireRate && speed == originalSpeed) {
+	} else if (dashClock.getElapsedTime().asMilliseconds() >= 1000./attack.fireRate
+			&& speed == originalSpeed) {
 		dashing = true;
 		speed *= 4;
 		return true;
@@ -143,4 +144,11 @@ const std::string& Enemy::getSoundFile(unsigned short n) const {
 	if (alienSprite != nullptr)
 		return alienSprite->getSoundFile();
 	return Game::Sounded::getSoundFile(n);
+}
+
+void Enemy::yell() {
+	if (yellClock.getElapsedTime().asMilliseconds() >= YELL_DELAY) {
+		Game::cache.playSound(getSoundFile(Game::Sounds::YELL));
+		yellClock.restart();
+	}
 }

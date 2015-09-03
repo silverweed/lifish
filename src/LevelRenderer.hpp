@@ -18,6 +18,7 @@
 #include "DroppingText.hpp"
 #include "AlienSprite.hpp"
 #include "Letter.hpp"
+#include "Bonus.hpp"
 
 namespace Game {
 
@@ -132,6 +133,8 @@ class LevelRenderer : private sf::NonCopyable {
 
 	void _spawnLetter(const sf::Vector2f& pos);
 	void _spawnPoints(const sf::Vector2f& pos, const int amount, bool large = false);
+
+	void _grabBonus(Game::MovingEntity *const entity, Game::Bonus *bonus, unsigned short idx);
 public:
 	LevelRenderer(std::initializer_list<Game::Player*> players);
 	~LevelRenderer();
