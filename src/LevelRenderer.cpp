@@ -1341,8 +1341,9 @@ void LevelRenderer::resetClocks() {
 	}
 }
 
-void LevelRenderer::_grabBonus(Game::MovingEntity *const entity, Game::Bonus *bonus, unsigned short idx) {
-	const unsigned short i = _getPlayerIndex(entity);
+void LevelRenderer::_grabBonus(Game::MovingEntity *const entity, 
+		Game::Bonus *bonus, unsigned short idx) {
+	const auto i = _getPlayerIndex(entity);
 	switch (bonus->getType()) {
 		using B = Game::Bonus::Type;
 	case B::ZAPPER:
