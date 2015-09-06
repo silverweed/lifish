@@ -73,7 +73,7 @@
 	"levels": [
 		{
 			"time": 60,
-			"music": 3,
+			"music": 1,
 			"tileIDs": {
 				"bg": 1,
 				"border": 1,

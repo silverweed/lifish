@@ -201,7 +201,7 @@ void MovingEntity::draw(sf::RenderTarget& window) {
 		const float s = shieldClock.getElapsedTime().asSeconds();
 		const float diff = s - std::floor(s);
 		if (shieldTime - 1000*s > 3000 || 4*diff - std::floor(4*diff) < 0.5) {
-			animatedSprite.setColor(sf::Color(50, 255, 0, 255));
+			animatedSprite.setColor(sf::Color(0, 255, 0, 180));
 		} else {
 			animatedSprite.setColor(sf::Color::White);
 		}
