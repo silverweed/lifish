@@ -23,7 +23,7 @@ SidePanel::SidePanel(const Game::LevelRenderer *const _lr) : lr(_lr) {
 	playerHeadsSprite[1].setPosition(16, 268);
 
 	// Load health symbols
-	Game::cache.loadTexture(healthTexture, Game::getAsset("test", "health.png"));
+	Game::cache.loadTexture(healthTexture, Game::getAsset("graphics", "health.png"));
 	healthTexture.setSmooth(true);
 	for (unsigned short i = 0; i < healthSprite.size(); ++i) {
 		healthSprite[i].setTexture(healthTexture);

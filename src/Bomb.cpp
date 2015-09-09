@@ -17,7 +17,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source,
 	animations[1].setSpriteSheet(texture);
 	animations[0].addFrame(sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE));
 	animations[0].addFrame(sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
-	animations[1].addFrame(sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE));
+	animations[1].addFrame(sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 	animations[1].addFrame(sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 	animatedSprite.setAnimation(animations[0]);
 	animatedSprite.setPosition(pos);
