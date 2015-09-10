@@ -10,6 +10,8 @@ Bullet::Bullet(const sf::Vector2f& _pos, const std::string& texture_name) :
 			Game::getAsset("test", "bossbullet_shot.ogg") }),
 	shift(0.f, 0.f)
 {
+	transparentTo.bullets = true;
+
 	animations[0].setSpriteSheet(texture);
 	animations[ANIM_DEATH].setSpriteSheet(texture);
 }
@@ -27,6 +29,7 @@ Bullet::Bullet(const sf::Vector2f& _pos, const Game::Direction dir, unsigned sho
 	direction = dir;
 	speed = BASE_SPEED * _speed;
 	canTeleport = false;
+	transparentTo.bullets = true;
 
 	// Bullets have a variable number of frames, up to 13:
 	// motion frames: 1 ~ 8 (max 8 / directional per direction)

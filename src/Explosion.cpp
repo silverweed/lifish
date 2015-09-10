@@ -12,7 +12,7 @@ using Game::Explosion;
 using Game::TILE_SIZE;
 
 Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game::Player *const source) :
-	Game::Temporary(pos, Game::getAsset("test", "explosion.png")),
+	Game::Temporary(pos, Game::getAsset("graphics", "explosion.png")),
 	Game::Sounded({ Game::getAsset("sounds", "explosion.ogg") }),
 	radius(_radius),
 	sourcePlayer(source)
