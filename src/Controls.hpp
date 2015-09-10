@@ -9,21 +9,14 @@ enum class Control {
 	UP, DOWN, LEFT, RIGHT, BOMB
 };
 
-std::map<Control, sf::Keyboard::Key> playerControls[] = {
-	{
-		{ Control::UP,    sf::Keyboard::Key::Up },
-		{ Control::DOWN,  sf::Keyboard::Key::Down },
-		{ Control::LEFT,  sf::Keyboard::Key::Left },
-		{ Control::RIGHT, sf::Keyboard::Key::Right },
-		{ Control::BOMB,  sf::Keyboard::Key::RControl }
-	},
-	{
-		{ Control::UP,    sf::Keyboard::Key::W },
-		{ Control::DOWN,  sf::Keyboard::Key::S },
-		{ Control::LEFT,  sf::Keyboard::Key::A },
-		{ Control::RIGHT, sf::Keyboard::Key::D },
-		{ Control::BOMB,  sf::Keyboard::Key::LControl }
-	}
-};
+extern std::map<Control, sf::Keyboard::Key> playerControls[];
+
+inline Control controlFromString(const std::string& name) {
+	if (name == "up" || name == "UP") return Control::UP;
+	else if (name == "down" || name == "DOWN") return Control::DOWN;
+	else if (name == "left" || name == "LEFT") return Control::LEFT;
+	else if (name == "right" || name == "RIGHT") return Control::RIGHT;
+	return Control::BOMB;
+}
 
 }

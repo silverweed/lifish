@@ -19,16 +19,6 @@
  */
 #include <iostream>
 #include <cstdlib>
-#if defined(SFML_SYSTEM_WINDOWS) || defined(__MINGW32__)
-#	include <windows.h>
-#	define SLEEP_MS(ms) \
-		Sleep(ms)
-#else
-#	include <thread>
-#	include <chrono>
-#	define SLEEP_MS(ms) \
-		std::this_thread::sleep_for(std::chrono::milliseconds(ms))
-#endif
 #include <SFML/Graphics.hpp>
 #include "Level.hpp"
 #include "LevelSet.hpp"
@@ -38,6 +28,7 @@
 #include "Controls.hpp"
 #include "HomeScreen.hpp"
 #include "PreferencesScreen.hpp"
+#include "ControlsScreen.hpp"
 #include "utils.hpp"
 
 // Fallback in case the game wasn't compiled properly with cmake
@@ -110,6 +101,7 @@ int main(int argc, char **argv) {
 	struct {
 		Game::HomeScreen        &home = Game::HomeScreen::getInstance();
 		Game::PreferencesScreen &preferences = Game::PreferencesScreen::getInstance();
+		Game::ControlsScreen    &controls = Game::ControlsScreen::getInstance();
 	} screens;
 
 	Game::Screen *cur_screen = &screens.home;
@@ -125,6 +117,12 @@ int main(int argc, char **argv) {
 				cur_screen->triggerMouseOver(
 						window.mapPixelToCoords(sf::Mouse::getPosition(window)));
 				break;
+			case sf::Event::KeyPressed:
+				if (event.key.code == sf::Keyboard::Key::Escape) {
+					if (cur_screen->getParent() != nullptr)
+						cur_screen = cur_screen->getParent();
+				}
+				break;
 			case sf::Event::MouseButtonReleased:
 				{
 					const auto clicked = cur_screen->triggerMouseClick(
@@ -136,29 +134,44 @@ int main(int argc, char **argv) {
 						// TODO
 						break;
 					} else if (clicked == "preferences") {
-						// TODO
 						cur_screen = &screens.preferences;
 						break;
-					} else if (clicked == "music_volume_down") {
+					} else if (clicked == "preferences::music_volume_down") {
 						screens.preferences.changeMusicVolume(false);
+						Game::testMusic();
 						break;
-					} else if (clicked == "music_volume_up") {
+					} else if (clicked == "preferences::music_volume_up") {
 						screens.preferences.changeMusicVolume(true);
+						Game::testMusic();
 						break;
-					} else if (clicked == "sounds_volume_down") {
+					} else if (clicked == "preferences::sounds_volume_down") {
 						screens.preferences.changeSoundsVolume(false);
+						Game::cache.playSound(Game::getAsset("sounds", Game::TIME_BONUS_SOUND));
 						break;
-					} else if (clicked == "sounds_volume_up") {
+					} else if (clicked == "preferences::sounds_volume_up") {
 						screens.preferences.changeSoundsVolume(true);
+						Game::cache.playSound(Game::getAsset("sounds", Game::TIME_BONUS_SOUND));
+						break;
+					} else if (clicked == "preferences::controls") {
+						cur_screen = &screens.controls;
+						break;
+					} else if (clicked == "controls::p1") {
+						screens.controls.selectPlayer(1);
+						break;
+					} else if (clicked == "controls::p2") {
+						screens.controls.selectPlayer(2);
+						break;
+					} else if (Game::startsWith(clicked, "controls::change_")) {
+						screens.controls.changeControl(window, clicked);
 						break;
 					} else if (clicked == "about") {
 						// TODO
 						break;
 					} else if (clicked == "exit") {
-						if (cur_screen == &screens.home)
+						if (cur_screen->getParent() == nullptr)
 							return 0;
 						else
-							cur_screen = &screens.home;
+							cur_screen = cur_screen->getParent();
 					}
 					break;
 				}
@@ -176,6 +189,9 @@ int main(int argc, char **argv) {
 
 void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned short start_level) {
 	bool vsync = false;
+
+	for (unsigned short i = 0; i < Game::playerContinues.size(); ++i)
+		Game::playerContinues[i] = Game::INITIAL_CONTINUES;
 
 	// Parse the level set
 	Game::LevelSet levelset(level_set);
@@ -279,12 +295,15 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 			case sf::Event::KeyPressed:
 				switch (event.key.code) {
 				case sf::Keyboard::Key::Escape:
-					for (auto& player : players)
+					for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+						auto player = players[i];
 						if (player != nullptr) {
 							player->kill();
 							Game::cache.playSound(player->getSoundFile(Game::Sounds::DEATH));
 							player->setRemainingLives(0);
 						}
+						Game::playerContinues[i] = 0;
+					}
 					break;
 #ifndef RELEASE
 				case sf::Keyboard::Key::Add:

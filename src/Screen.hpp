@@ -27,6 +27,7 @@ protected:
 
 	/** The static elements which don't interact */
 	std::vector<sf::Drawable*> elements;
+
 public:
 	Screen();
 	virtual ~Screen();
@@ -36,12 +37,14 @@ public:
 	/** Checks if mouse is over a text and, if so, changes
 	 *  its color.
 	 */
-	void triggerMouseOver(const sf::Vector2f& mousePos);
+	virtual void triggerMouseOver(const sf::Vector2f& mousePos);
 
 	/** If the mouse was clicked on a clickable element, return the
 	 *  name of that element; else, return the empty string.
 	 */
 	virtual std::string triggerMouseClick(const sf::Vector2f& mousePos);
+
+	virtual Game::Screen* getParent() { return nullptr; }
 };
 
 }

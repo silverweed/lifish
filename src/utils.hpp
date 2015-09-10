@@ -8,7 +8,16 @@
 #include "MovingEntity.hpp"
 #include "Animated.hpp"
 
-short keyToNumber(sf::Keyboard::Key key);
+#if defined(SFML_SYSTEM_WINDOWS) || defined(__MINGW32__)
+#	include <windows.h>
+#	define SLEEP_MS(ms) \
+		Sleep(ms)
+#else
+#	include <thread>
+#	include <chrono>
+#	define SLEEP_MS(ms) \
+		std::this_thread::sleep_for(std::chrono::milliseconds(ms))
+#endif
 
 namespace Game {
 
@@ -98,6 +107,25 @@ inline sf::Vector2f center(const sf::FloatRect& bounds, const sf::FloatRect& rec
 			Game::LEVEL_HEIGHT * Game::TILE_SIZE))
 {
 	return sf::Vector2f(centerX(bounds, rect), centerY(bounds, rect));
+}
+
+inline bool startsWith(const std::string& haystack, const std::string& needle) {
+	return haystack.substr(0, needle.size()) == needle;
+}
+
+inline void testMusic() {
+	sf::Music sample;
+	sample.openFromFile(Game::getAsset("music", "music1.ogg"));
+	sample.play();
+	sample.setVolume(Game::music_volume);
+	SLEEP_MS(200);
+	sample.stop();
+}
+
+namespace KeyUtils {
+	short keyToNumber(sf::Keyboard::Key key);
+
+	std::string keyToString(sf::Keyboard::Key key);
 }
 
 } // end namespace Game

@@ -29,7 +29,7 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 
 	text = new Game::ShadedText(font, "-", sf::Vector2f(ipadx + 150, ipady - 8));
 	text->setCharacterSize(32);
-	texts["music_volume_down"] = text;
+	texts["preferences::music_volume_down"] = text;
 
 	text = new Game::ShadedText(font, "placeholder", sf::Vector2f(ipadx + 200, ipady));
 	// Draw the full volume bar to get the measure of this element's max width
@@ -46,7 +46,7 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 	auto bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font, "+", sf::Vector2f(ipadx + 200 + bounds.width + 40, ipady - 6));
 	text->setCharacterSize(30);
-	texts["music_volume_up"] = text;
+	texts["preferences::music_volume_up"] = text;
 
 	// FX Volume
 	text = new Game::ShadedText(font, "FX:", sf::Vector2f(ipadx, ipady + bounds.height + 20));
@@ -56,7 +56,7 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 	pos = text->getPosition();
 	text = new Game::ShadedText(font, "-", sf::Vector2f(ipadx + 150, pos.y - 8));
 	text->setCharacterSize(32);
-	texts["sounds_volume_down"] = text;
+	texts["preferences::sounds_volume_down"] = text;
 
 	text = new Game::ShadedText(font, ss.str(), sf::Vector2f(ipadx + 200, pos.y));
 	text->setCharacterSize(20);
@@ -66,15 +66,16 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 	bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font, "+", sf::Vector2f(ipadx + 200 + bounds.width + 40, pos.y));
 	text->setCharacterSize(30);
-	texts["sounds_volume_up"] = text;
+	texts["preferences::sounds_volume_up"] = text;
 
 	text = new Game::ShadedText(font, "Controls", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
 	text->setCharacterSize(size);
-	texts["controls"] = text;
+	texts["preferences::controls"] = text;
 	
 	text = new Game::ShadedText(font, "Exit", pos);
 	text->setCharacterSize(size);
-	text->setPosition(Game::center(text->getGlobalBounds(), win_bounds));
+	bounds = text->getGlobalBounds();
+	text->setPosition(sf::Vector2f(Game::center(bounds, win_bounds).x, win_bounds.height - 2 * bounds.height));
 	texts["exit"] = text;
 }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Screen.hpp"
+#include "HomeScreen.hpp"
 
 namespace Game {
 
@@ -31,6 +31,10 @@ public:
 
 	void changeMusicVolume(bool raise);
 	void changeSoundsVolume(bool raise);
+
+	Game::Screen* getParent() override {
+		return &Game::HomeScreen::getInstance();
+	}
 };
 
 }
