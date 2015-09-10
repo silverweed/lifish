@@ -114,13 +114,13 @@ void ControlsScreen::selectPlayer(unsigned short id) {
 	texts["controls::p" + Game::to_string(selectedPlayer)]->setFGColor(sf::Color::White);
 	selectedPlayer = id;
 	
-	const std::array<std::pair<const char*, Game::Control>, 5> pairs = {
+	const std::array<std::pair<const char*, Game::Control>, 5> pairs = {{
 		std::make_pair("up", Control::UP),
 		std::make_pair("down", Control::DOWN),
 		std::make_pair("left", Control::LEFT),
 		std::make_pair("right", Control::RIGHT),
 		std::make_pair("bomb", Control::BOMB)
-	};
+	}};
 
 	for (auto it = pairs.begin(); it != pairs.end(); ++it) {
 		std::stringstream ss;

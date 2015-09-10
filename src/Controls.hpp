@@ -2,6 +2,7 @@
 
 #include <map>
 #include <SFML/Window/Keyboard.hpp>
+#include <string>
 
 namespace Game {
 
