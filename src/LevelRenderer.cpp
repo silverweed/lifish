@@ -129,14 +129,18 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				++coinsNum;
 				break;
 			case EntityType::PLAYER1: 
-				_players[0]->setPosition(curPos);
-				players[0] = _players[0];
-				movingEntities.push_back(players[0]);
+				if (_players[0] != nullptr) {
+					_players[0]->setPosition(curPos);
+					players[0] = _players[0];
+					movingEntities.push_back(players[0]);
+				}
 				break;
 			case EntityType::PLAYER2: 
-				_players[1]->setPosition(curPos);
-				players[1] = _players[1];
-				movingEntities.push_back(players[1]);
+				if (_players[1] != nullptr) {
+					_players[1]->setPosition(curPos);
+					players[1] = _players[1];
+					movingEntities.push_back(players[1]);
+				}
 				break;
 			case EntityType::TELEPORT:
 				{
@@ -1098,14 +1102,19 @@ bool LevelRenderer::isPlayer(const Game::Entity *const e) const {
 }
 
 bool LevelRenderer::removePlayer(const unsigned short id) {
-	//movingEntities.remove(players[id-1]);
 	movingEntities.erase(std::remove(movingEntities.begin(), 
 				movingEntities.end(), players[id-1]), movingEntities.end());
 	delete players[id-1];
-	players[id-1] = nullptr;
+	_players[id-1] = players[id-1] = nullptr;
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
 		if (players[i] != nullptr) return true;
 	return false;
+}
+
+void LevelRenderer::setPlayer(const unsigned short id, Game::Player *player) {
+	if (_players[id-1] != nullptr)
+		delete _players[id-1];
+	players[id-1] = _players[id-1] = player;
 }
 
 short LevelRenderer::_getPlayerIndex(const Game::Entity *const e) const {

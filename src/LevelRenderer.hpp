@@ -84,7 +84,8 @@ class LevelRenderer : private sf::NonCopyable {
 
 	/** The players' pointers, guaranteed to always point to the players
 	 *  given to the constructor, even if the level tilemap doesn't contain all
-	 *  players, or a player is currently dead.
+	 *  players, or a player is currently dead. This pointers become invalid
+	 *  after a call to removePlayer(), since that method deletes the i-th player.
 	 */
 	std::array<Game::Player*, Game::MAX_PLAYERS> _players;
 
@@ -200,6 +201,7 @@ public:
 	 *  true if at least another player is still in game, false otherwise.
 	 */
 	bool removePlayer(const unsigned short id);
+	void setPlayer(const unsigned short id, Game::Player *player);
 
 	void spawnDamage(const sf::Vector2f& pos, const int amount);
 

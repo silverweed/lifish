@@ -27,8 +27,12 @@ LoopingMusic *Game::music = nullptr;
 float Game::music_volume = 100,
       Game::sounds_volume = 100;
 
+std::array<unsigned short, Game::MAX_PLAYERS> Game::playerContinues;
+
 bool Game::init() {
 	using Game::pwd;
+
+	Game::playerContinues.fill(INITIAL_CONTINUES);
 
 	// Setup pwd variable
 	pwd[0] = '\0';

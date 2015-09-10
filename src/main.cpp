@@ -55,6 +55,7 @@ using Game::LEVEL_HEIGHT;
 
 void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned short start_level = 1);
 void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum);
+bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short playernum);
 Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Game::SidePanel& panel);
 
 static sf::Font interlevel_font;
@@ -372,10 +373,9 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 
 		lr.detectCollisions();
 
-		unsigned short dead_players = 0;
+		bool maybe_all_dead = false;
 		for (unsigned short i = 0; i < 2; ++i) {
 			if (players[i] == nullptr) {
-				++dead_players;
 				continue;
 			}
 			if (players[i]->isAligned()) {
@@ -391,10 +391,11 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 				if (!players[i]->playHurtAnimation())
 					players[i]->setHurt(false);
 			} else if (players[i]->isDying()) {
+
 				players[i]->prepareDeathAnimation();
 				if (!players[i]->playDeathAnimation()) {
 					if (players[i]->getRemainingLives() <= 0) {
-						lr.removePlayer(i + 1);
+						maybe_all_dead = !lr.removePlayer(i + 1);
 						players[i] = nullptr;
 					} else {
 						players[i]->resurrect();
@@ -409,9 +410,39 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 		}
 		
 		// Check game over / win
-		if (dead_players == Game::MAX_PLAYERS && !gameOverTriggered) {
-			lr.triggerGameOver();
-			gameOverTriggered = true;
+		if (maybe_all_dead) {
+			bool all_dead = true;
+			if (Game::music != nullptr) {
+				Game::music->stop();
+			}
+			for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+				if (Game::playerContinues[i] > 0) {
+					if (displayContinue(window, panel, i+1)) {
+						all_dead = false;
+						players[i] = new Game::Player(sf::Vector2f(0, 0), i+1);
+						lr.setPlayer(i+1, players[i]);
+						--Game::playerContinues[i];
+					} else {
+						Game::playerContinues[i] = 0;
+					}
+				}
+			}
+			if (!all_dead) {
+				// Restart level
+				displayGetReady(window, panel, level->getLevelNum());
+				lr.resetClocks();
+				lr.loadLevel(level);
+				levelClearTriggered = false;
+				levelClearSoundPlayed = false;
+				playerWinSoundPlayed = false;
+				if (Game::music != nullptr) {
+					Game::music->play();
+				}
+				continue;
+			} else if (!gameOverTriggered) {
+				lr.triggerGameOver();
+				gameOverTriggered = true;
+			}
 		} else if (!levelClearTriggered && lr.isLevelClear()) {
 			levelClearTriggered = true;
 			levelClearClock.restart();
@@ -465,6 +496,89 @@ void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 	window.display();
 
 	SLEEP_MS(3000);
+}
+
+bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short playernum) {
+	std::stringstream ss;
+	ss << "PLAYER " << playernum << " CONTINUE?";
+	sf::Text text(ss.str(), interlevel_font, 13);
+	text.setPosition(Game::center(text.getGlobalBounds()));
+
+	window.clear();
+	window.draw(text);
+	
+	ss.str("");
+	ss << "(" << Game::playerContinues[playernum-1] << " remaining)";
+	text.setString(ss.str());
+	auto bounds = text.getGlobalBounds();
+	text.setPosition(Game::center(bounds) + sf::Vector2f(0.f, 2 * bounds.height));
+
+	window.draw(text);
+
+	// Dummy text to get the correct bounds
+	text.setString("YES / NO");
+	text.setCharacterSize(15);
+	bounds = text.getGlobalBounds();
+	
+	sf::Text yesText("YES", interlevel_font, 15);
+	yesText.setPosition(Game::center(bounds) + sf::Vector2f(0.f, 4 * bounds.height));
+	yesText.setColor(sf::Color::Red);
+	window.draw(yesText);
+
+	bounds = yesText.getGlobalBounds();
+	text.setString(" / ");
+	text.setPosition(sf::Vector2f(bounds.left + bounds.width, bounds.top));
+	window.draw(text);
+
+	bounds = text.getGlobalBounds();
+	sf::Text noText("NO", interlevel_font, 15);
+	noText.setPosition(sf::Vector2f(bounds.left + bounds.width, bounds.top));
+	window.draw(noText);
+
+	panel.draw(window);
+	window.display();
+
+	bool yesSelected = true;
+
+	while (window.isOpen()) {
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			switch (event.type) {
+			case sf::Event::Closed:
+				window.close();
+				return false;
+			case sf::Event::KeyPressed:
+				switch (event.key.code) {
+				case sf::Keyboard::Left:
+					yesSelected = true;
+					break;
+				case sf::Keyboard::Right:
+					yesSelected = false;
+					break;
+				case sf::Keyboard::Return:
+					return yesSelected;
+				default:
+					break;
+				}
+			default:
+				break;
+			}
+		}
+
+		if (yesSelected) {
+			yesText.setColor(sf::Color::Red);
+			noText.setColor(sf::Color::White);
+		} else {
+			yesText.setColor(sf::Color::White);
+			noText.setColor(sf::Color::Red);
+		}
+
+		window.draw(yesText);
+		window.draw(noText);
+		window.display();	
+	}
+
+	return false;
 }
 
 Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Game::SidePanel& panel) {
@@ -536,6 +650,18 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 		return nullptr;
 	} else {
 		++lvnum;
+	}
+
+	// Resurrect any dead player which has a 'continue' left
+	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+		if (lr.getPlayer(i+1) == nullptr && Game::playerContinues[i] > 0) {
+			if (displayContinue(window, panel, i+1)) {
+				--Game::playerContinues[i];
+				lr.setPlayer(i+1, new Game::Player(sf::Vector2f(0, 0), i+1));
+			} else {
+				Game::playerContinues[i] = 0;
+			}
+		}
 	}
 
 	displayGetReady(window, panel, lvnum);

@@ -38,7 +38,8 @@ constexpr float RESURRECT_SHIELD_TIME = 5000; // ms
 
 constexpr unsigned short MAX_PLAYERS = 2;
 
-constexpr unsigned short INITIAL_LIVES = 3;
+constexpr unsigned short INITIAL_LIVES = 1;
+constexpr unsigned short INITIAL_CONTINUES = 3;
 
 constexpr static unsigned short SIDE_PANEL_WIDTH = 96;
 constexpr static unsigned short SIDE_PANEL_HEIGHT = 480;
@@ -114,6 +115,9 @@ extern float music_volume;
 
 /** The FX volume */
 extern float sounds_volume;
+
+/** The remaining of 'continues' per player */
+extern std::array<unsigned short, MAX_PLAYERS> playerContinues;
 
 /****************************************************************************/
 /*                         GLOBAL FUNCTIONS                                 */
