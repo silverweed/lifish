@@ -38,7 +38,7 @@ constexpr float RESURRECT_SHIELD_TIME = 5000; // ms
 
 constexpr unsigned short MAX_PLAYERS = 2;
 
-constexpr unsigned short INITIAL_LIVES = 1;
+constexpr unsigned short INITIAL_LIVES = 3;
 constexpr unsigned short INITIAL_CONTINUES = 3;
 
 constexpr static unsigned short SIDE_PANEL_WIDTH = 96;

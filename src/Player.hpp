@@ -21,7 +21,7 @@ class Player : public Game::LifedMovingEntity {
 
 	bool _isTransparentTo(const Entity *const e) const override;
 public:
-	constexpr static unsigned short MAX_LIFE = 1;
+	constexpr static unsigned short MAX_LIFE = 16;
 	constexpr static unsigned short MAX_MAX_BOMBS = 8;
 
 	struct {
