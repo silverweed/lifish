@@ -20,6 +20,9 @@ chapter (included -- you can skip the *First steps* section, as all the listed d
 aren't required).
 If you manage to build the game in some other way or on some other platform, let me know!
 
+**IMPORTANT**: currently, many sprites are missing. If you see white rectangles where
+sprites should be, it means that asset hasn't been created yet.
+
 ### Current Status ###
 
 - [x] Levels BG / Borders display
@@ -79,7 +82,7 @@ If you manage to build the game in some other way or on some other platform, let
     - [ ] #1
     - [ ] #2
     - [ ] #3
-    - [ ] #4
+    - [x] #4
     - [ ] #5
     - [ ] #6
     - [ ] #7
