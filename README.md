@@ -98,5 +98,5 @@ Lifish is free software licensed under the GNU GPL v3.
 See [LICENSE.txt](https://github.com/silverweed/lifish/blob/master/LICENSE.txt)
 for more information.
 
-All the files in the `assets` directory, except those in `assets/sounds`,
+All the files in the `assets` directory, except those in `assets/sounds` and `assets/fonts`,
 are licensed under the [Creative Commons - Attribution / Non Commercial / Share Alike](http://creativecommons.org/licenses/by-nc-sa/4.0/) License.
