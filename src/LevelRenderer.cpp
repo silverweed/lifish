@@ -182,10 +182,11 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 			case EntityType::ENEMY3: 
 				enemy_id = 3;
 				enemy_attack.id = 2;
-				enemy_attack.type = AT::SIMPLE;
+				enemy_attack.type = AT::SIMPLE | AT::BLOCKING;
 				enemy_attack.damage = 2;
-				enemy_attack.speed = 0.5;
+				enemy_attack.speed = 0.66;
 				enemy_attack.fireRate = 1;
+				enemy_attack.blockTime = 200;
 				break;
 			case EntityType::ENEMY4:
 				enemy_id = 4;
@@ -204,10 +205,11 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 			case EntityType::ENEMY6: 
 				enemy_id = 6;
 				enemy_attack.id = 4;
-				enemy_attack.type = AT::SIMPLE;
+				enemy_attack.type = AT::SIMPLE | AT::BLOCKING;
 				enemy_attack.damage = 3;
 				enemy_attack.fireRate = 1;
-				enemy_attack.speed = 0.6;
+				enemy_attack.speed = 0.66;
+				enemy_attack.blockTime = 250;
 				break;
 			case EntityType::ENEMY7: 
 				enemy_id = 7;

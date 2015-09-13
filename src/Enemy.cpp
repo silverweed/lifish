@@ -6,7 +6,7 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
 	Game::LifedMovingEntity(
 			pos, 
 			// Texture
-			Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string(".png")), 
+			Game::getAsset("graphics", std::string("enemy") + Game::to_string(id) + std::string(".png")), 
 			// Life
 			1,
 			// Sounds

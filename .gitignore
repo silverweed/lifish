@@ -17,3 +17,5 @@ gmon.out
 lifish.tgz
 *.dll
 Lifish.app
+tests
+test.json
