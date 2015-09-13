@@ -19,6 +19,10 @@ class BreakableWall :
 	public Game::Sounded	
 {
 	bool destroyed = false;
+
+protected:
+	/** Constructor used by TransparentWall */
+	BreakableWall(const sf::Vector2f& pos, const std::string& texture_name, unsigned short life = 1);
 public:
 	BreakableWall(const sf::Vector2f& pos, const unsigned short id, unsigned short life = 1);
 

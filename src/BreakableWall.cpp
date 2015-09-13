@@ -5,6 +5,23 @@
 using Game::BreakableWall;
 using Game::TILE_SIZE;
 
+BreakableWall::BreakableWall(const sf::Vector2f& pos, const std::string& texture_name, unsigned short _life) :
+	Game::Wall(pos, texture_name),
+	Game::Lifed(_life),
+	Game::Scored(10),
+	Game::Sounded({ Game::getAsset("sounds", "wall_break.ogg") })
+{
+	animations[0].setSpriteSheet(texture);
+	for (unsigned short i = 0; i < 4; ++i)
+		animations[0].addFrame(sf::IntRect(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
+
+	animatedSprite.setPosition(pos);
+	animatedSprite.setAnimation(animations[0]);
+	animatedSprite.setLooped(false);
+	animatedSprite.setFrameTime(sf::seconds(0.2));
+	animatedSprite.pause();
+}
+
 BreakableWall::BreakableWall(const sf::Vector2f& pos, const unsigned short id, unsigned short _life) :
 	Game::Wall(pos, Game::getAsset("graphics", "breakable.png")),
 	Game::Lifed(_life),

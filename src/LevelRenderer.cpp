@@ -2,6 +2,7 @@
 #include "EntityType.hpp"
 #include "FixedWall.hpp"
 #include "BreakableWall.hpp"
+#include "TransparentWall.hpp"
 #include "Coin.hpp"
 #include "Flash.hpp"
 #include "BossExplosion.hpp"
@@ -123,6 +124,10 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 			case EntityType::BREAKABLE:
 				fixedEntities[top * LEVEL_WIDTH + left] = 
 					new Game::BreakableWall(curPos, level->tileIDs.breakable);
+				break;
+			case EntityType::TRANSPARENT_WALL:
+				fixedEntities[top * LEVEL_WIDTH + left] =
+					new Game::TransparentWall(curPos);
 				break;
 			case EntityType::COIN:
 				fixedEntities[top * LEVEL_WIDTH + left] = new Game::Coin(curPos);
@@ -292,6 +297,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 			const auto e_type = level->getTile(left, top);
 			switch (e_type) {
 			case EntityType::BREAKABLE:
+			case EntityType::TRANSPARENT_WALL:
 				if (!entity->transparentTo.enemies) {
 					// A breakable wall
 					auto bw = static_cast<Game::BreakableWall*>(entity);
@@ -783,6 +789,7 @@ void LevelRenderer::detectCollisions() {
 							break;
 						}
 					case EntityType::BREAKABLE:
+					case EntityType::TRANSPARENT_WALL:
 						// Grab the bonus
 						if (!is_player) break;
 						_grabBonus(entity, static_cast<Game::Bonus*>(other), idx);
@@ -1075,7 +1082,7 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 				return -1;
 
 			auto fxd = fixedEntities[idx];
-			if (fxd != nullptr && !fxd->transparentTo.enemies)
+			if (fxd != nullptr && !fxd->transparentTo.bullets)
 				return -1;
 		}
 	} else {
@@ -1090,7 +1097,7 @@ short LevelRenderer::_getDistance(const sf::Vector2i& src, const sf::Vector2i& t
 				return -1;
 			
 			auto fxd = fixedEntities[idx];
-			if (fxd != nullptr && !fxd->transparentTo.enemies)
+			if (fxd != nullptr && !fxd->transparentTo.bullets)
 				return -1; 
 		}
 	}

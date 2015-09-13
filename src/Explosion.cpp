@@ -125,7 +125,9 @@ void Explosion::propagate(Game::LevelRenderer *const lr) {
 			} else {
 				// It's a wall 
 				propagating[dir] = false;
-				if (d == 1 && level->getTile(new_tile.x - 1, new_tile.y - 1) == Game::EntityType::BREAKABLE) {
+				const auto tile = level->getTile(new_tile.x - 1, new_tile.y - 1);
+				if (d == 1 && (tile == Game::EntityType::BREAKABLE 
+						 || tile == Game::EntityType::TRANSPARENT_WALL)) {
 					auto bw = static_cast<Game::BreakableWall*>(fxd);
 					bw->destroy();
 					Game::cache.playSound(bw->getSoundFile());
