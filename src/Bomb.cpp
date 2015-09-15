@@ -34,7 +34,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source,
 
 void Bomb::draw(sf::RenderTarget& window) {
 	if (fuseTime - fuseClock.getElapsedTime().asMilliseconds() < 2000 && !isExploded()) {
-		Animation *anim = &animations[fuseTime < DEFAULT_FUSE ? 3 : 1];
+		Animation *anim = &animations[fuseTime < DEFAULT_FUSE && !ignited ? 3 : 1];
 		animatedSprite.play(*anim);
 	}
 	animatedSprite.update(frameClock.restart());
