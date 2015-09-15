@@ -4,26 +4,32 @@
 # The lifish executable MUST already exist.
 
 APPNAME=Lifish
-MACOS=(lifish assets levels.json)
+MACOS=(lifish)
+RESOURCES=(assets levels.json)
 FRAMEWORK_PATH=/Library/Frameworks
+FRAMEWORKS=(SFML.framework)
 
-for i in ${MACOS[@]}; do
+for i in ${MACOS[@]} ${RESOURCES[@]}; do
 	[[ -e $i ]] || {
 		echo "$i not found in this directory." >&2
 		exit 1
 	}
 done
 
-[[ -d "$FRAMEWORK_PATH/SFML.framework" ]] || {
-	echo "SFML.framework not found in $FRAMEWORK_PATH". >&2
-	exit 1
-}
+for i in ${FRAMEWORKS[@]}; do
+	[[ -d "$FRAMEWORK_PATH/$i" ]] || {
+		echo "$i not found in $FRAMEWORK_PATH". >&2
+		exit 1
+	}
+done
 
 set -x
 
 rm -rf "$APPNAME.app"
-mkdir -p "$APPNAME.app"/Contents/{MacOS,Resources}
-cp -R "$FRAMEWORK_PATH/SFML.framework" "$APPNAME.app"/Contents/Resources/.
+mkdir -p "$APPNAME.app"/Contents/{MacOS,Resources,Frameworks}
+for i in ${FRAMEWORKS[@]}; do
+	cp -R "$FRAMEWORK_PATH/$i" "$APPNAME.app"/Contents/Frameworks/.
+done
 
 cat > "$APPNAME.app"/Contents/Info.plist <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -42,8 +48,16 @@ cat > "$APPNAME.app"/Contents/Info.plist <<EOF
         <string>Lifish</string>
         <key>CFBundlePackageType</key>
         <string>APPL</string>
+	<key>CFBundleIconFile</key>
+	<string>Lifish.icns</string>
     </dict>
 </plist>
 EOF
 
 cp -r ${MACOS[@]} "$APPNAME.app"/Contents/MacOS/.
+cp -r ${RESOURCES[@]} "$APPNAME.app"/Contents/Resources/.
+cp osx/Lifish.icns Lifish.app/Contents/Resources/.
+
+pushd "$APPNAME.app"/Contents/MacOS
+ln -s ../Resources/assets
+ln -s ../Resources/levels.json
