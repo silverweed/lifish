@@ -671,15 +671,20 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 		++lvnum;
 	}
 
-	// Resurrect any dead player which has a 'continue' left
+	// Resurrect any dead player which has a 'continue' left and
+	// remove shield and speedy effects
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
-		if (lr.getPlayer(i+1) == nullptr && Game::playerContinues[i] > 0) {
+		auto player = lr.getPlayer(i+1);
+		if (player == nullptr && Game::playerContinues[i] > 0) {
 			if (displayContinue(window, panel, i+1)) {
 				--Game::playerContinues[i];
 				lr.setPlayer(i+1, new Game::Player(sf::Vector2f(0, 0), i+1));
 			} else {
 				Game::playerContinues[i] = 0;
 			}
+		} else {
+			player->giveShield(0);
+			player->giveSpeedy(0);
 		}
 	}
 

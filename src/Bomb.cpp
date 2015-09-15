@@ -7,7 +7,7 @@ using Game::TILE_SIZE;
 
 Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source, 
 		const unsigned short _fuseTime, const unsigned short _radius) :
-	Game::FixedEntity(pos, Game::getAsset("test", "bomb.png")), 
+	Game::FixedEntity(pos, Game::getAsset("graphics", "bomb.png")), 
 	Game::Sounded({ Game::getAsset("sounds", "fuse.ogg") }),
 	fuseTime(_fuseTime), 
 	radius(_radius),
@@ -15,11 +15,17 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source,
 {
 	animations[0].setSpriteSheet(texture);
 	animations[1].setSpriteSheet(texture);
+	animations[2].setSpriteSheet(texture);
+	animations[3].setSpriteSheet(texture);
 	animations[0].addFrame(sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE));
 	animations[0].addFrame(sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 	animations[1].addFrame(sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 	animations[1].addFrame(sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
-	animatedSprite.setAnimation(animations[0]);
+	animations[2].addFrame(sf::IntRect(0, TILE_SIZE, TILE_SIZE, TILE_SIZE));
+	animations[2].addFrame(sf::IntRect(TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE));
+	animations[3].addFrame(sf::IntRect(TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE));
+	animations[3].addFrame(sf::IntRect(2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE));
+	animatedSprite.setAnimation(animations[fuseTime < DEFAULT_FUSE ? 2 : 0]);
 	animatedSprite.setPosition(pos);
 	animatedSprite.setLooped(true);
 	animatedSprite.setFrameTime(sf::seconds(0.05));
@@ -28,7 +34,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source,
 
 void Bomb::draw(sf::RenderTarget& window) {
 	if (fuseTime - fuseClock.getElapsedTime().asMilliseconds() < 2000 && !isExploded()) {
-		Animation *anim = &animations[1];
+		Animation *anim = &animations[fuseTime < DEFAULT_FUSE ? 3 : 1];
 		animatedSprite.play(*anim);
 	}
 	animatedSprite.update(frameClock.restart());

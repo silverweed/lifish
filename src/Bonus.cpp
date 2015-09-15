@@ -18,12 +18,13 @@ std::discrete_distribution<unsigned short> Game::bonusTypeDistribution
 };
 	
 Bonus::Bonus(const sf::Vector2f& pos, const unsigned short _type) :
-	Game::FixedEntity(pos, Game::getAsset("test", "bonuses.png")),
+	Game::FixedEntity(pos, Game::getAsset("graphics", "bonuses.png")),
 	Game::Scored(VALUE),
 	Game::Sounded({ Game::getAsset("test", "bonus_grab.ogg") }),
 	type(_type)
 {
-	sprite.setTextureRect(sf::IntRect(type * TILE_SIZE, (type / 10) * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+	sprite.setTextureRect(sf::IntRect(type * TILE_SIZE, 
+				(type / 10) * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 }
 
 void Bonus::draw(sf::RenderTarget& window) {

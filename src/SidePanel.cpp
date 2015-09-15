@@ -41,7 +41,7 @@ SidePanel::SidePanel(const Game::LevelRenderer *const _lr) : lr(_lr) {
 	}
 
 	// Load bonuses
-	Game::cache.loadTexture(bonusesTexture, Game::getAsset("test", "bonuses.png"));
+	Game::cache.loadTexture(bonusesTexture, Game::getAsset("graphics", "bonuses.png"));
 	for (unsigned short i = 0; i < bonusesSprite.size(); ++i) {
 		bonusesSprite[i].setTexture(bonusesTexture);
 		bonusesSprite[i].setTextureRect(sf::IntRect(TILE_SIZE * i, (i / 10) * TILE_SIZE,
