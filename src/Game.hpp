@@ -91,6 +91,9 @@ constexpr auto EXTRA_LIFE_SOUND  = "extralife.ogg";
 constexpr auto LEVEL_CLEAR_SOUND = "levelclear.ogg";
 constexpr auto TIME_BONUS_SOUND  = "timebonus.ogg";
 
+/** Threshold value to consider an input from joystick getAxisPosition(). */
+constexpr short JOYSTICK_INPUT_THRESHOLD = 50;
+
 /****************************************************************************/
 /*                         GLOBAL VARIABLES                                 */
 /****************************************************************************/
@@ -118,6 +121,9 @@ extern float sounds_volume;
 
 /** The remaining of 'continues' per player */
 extern std::array<unsigned short, MAX_PLAYERS> playerContinues;
+
+/** Whether we should take input from joystick or not (player-wise) */
+extern std::array<bool, MAX_PLAYERS> useJoystick;
 
 /****************************************************************************/
 /*                         GLOBAL FUNCTIONS                                 */

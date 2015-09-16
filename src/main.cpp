@@ -164,6 +164,9 @@ int main(int argc, char **argv) {
 					} else if (Game::startsWith(clicked, "controls::change_")) {
 						screens.controls.changeControl(window, clicked);
 						break;
+					} else if (clicked == "controls::joystick_toggle") {
+						screens.controls.toggleJoystick();
+						break;
 					} else if (clicked == "about") {
 						// TODO
 						break;
@@ -359,14 +362,30 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 			if (players[i] == nullptr) continue;
 
 			if (window.hasFocus()) {
-				if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::UP]))
-					dir[i] = Game::Direction::UP;
-				else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::LEFT]))
-					dir[i] = Game::Direction::LEFT;
-				else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::DOWN]))
-					dir[i] = Game::Direction::DOWN;
-				else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::RIGHT]))
-					dir[i] = Game::Direction::RIGHT;
+				if (Game::useJoystick[i]) {
+					// FIXME: this currently assumes that the i-th joystick is always associated with
+					// i-th player, but this may not be the case (e.g. if P1 uses the keyboard and
+					// P2 the joystick)
+					const auto horizontal = sf::Joystick::getAxisPosition(i, sf::Joystick::X),
+					           vertical = sf::Joystick::getAxisPosition(i, sf::Joystick::Y);
+					if (vertical < -Game::JOYSTICK_INPUT_THRESHOLD) 
+						dir[i] = Game::Direction::UP;
+					else if (vertical > Game::JOYSTICK_INPUT_THRESHOLD)
+						dir[i] = Game::Direction::DOWN;
+					else if (horizontal < -Game::JOYSTICK_INPUT_THRESHOLD)
+						dir[i] = Game::Direction::LEFT;
+					else if (horizontal > Game::JOYSTICK_INPUT_THRESHOLD)
+						dir[i] = Game::Direction::RIGHT;
+				} else {
+					if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::UP]))
+						dir[i] = Game::Direction::UP;
+					else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::LEFT]))
+						dir[i] = Game::Direction::LEFT;
+					else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::DOWN]))
+						dir[i] = Game::Direction::DOWN;
+					else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::RIGHT]))
+						dir[i] = Game::Direction::RIGHT;
+				}
 			}
 
 			if (players[i]->isAligned())
@@ -399,10 +418,14 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 			}
 			if (players[i]->isAligned()) {
 				players[i]->prevAlign = Game::tile(players[i]->getPosition());
-				if (window.hasFocus() && !players[i]->isDying()
-						&& sf::Keyboard::isKeyPressed(
-							Game::playerControls[i][Game::Control::BOMB]))
-					lr.dropBomb(i);
+				if (window.hasFocus() && !players[i]->isDying())
+					// FIXME: this currently assumes the "comfy" button has ID 2; this is true for the
+					// DualShock (where 2 is the X button), but is untested on other controllers, most
+					// notably the XBox joystick. In future, this will probably be configurable.
+					if ((Game::useJoystick[i] && sf::Joystick::isButtonPressed(i, 2))
+							|| sf::Keyboard::isKeyPressed(
+								Game::playerControls[i][Game::Control::BOMB]))
+						lr.dropBomb(i);
 			}
 
 			if (players[i]->isHurt()) {

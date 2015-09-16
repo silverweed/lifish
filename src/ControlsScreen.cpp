@@ -58,7 +58,6 @@ ControlsScreen::ControlsScreen() : Screen () {
 	text->setCharacterSize(small_size);
 	elements.push_back(text);
 
-	bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font,
 			Game::KeyUtils::keyToString(Game::playerControls[selectedPlayer-1][Control::DOWN]),
 			sf::Vector2f(x, y));
@@ -70,7 +69,6 @@ ControlsScreen::ControlsScreen() : Screen () {
 	text->setCharacterSize(small_size);
 	elements.push_back(text);
 
-	bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font,
 			Game::KeyUtils::keyToString(Game::playerControls[selectedPlayer-1][Control::LEFT]),
 			sf::Vector2f(x, y));
@@ -82,7 +80,6 @@ ControlsScreen::ControlsScreen() : Screen () {
 	text->setCharacterSize(small_size);
 	elements.push_back(text);
 
-	bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font,
 			Game::KeyUtils::keyToString(Game::playerControls[selectedPlayer-1][Control::RIGHT]),
 			sf::Vector2f(x, y));
@@ -94,15 +91,24 @@ ControlsScreen::ControlsScreen() : Screen () {
 	text->setCharacterSize(small_size);
 	elements.push_back(text);
 
-	bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font,
 			Game::KeyUtils::keyToString(Game::playerControls[selectedPlayer-1][Control::BOMB]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	texts["controls::change_bomb"] = text;
 
+	y += 3 * bounds.height;
+	text = new Game::ShadedText(font, "Use Joystick?", sf::Vector2f(ipadx, y));
+	text->setCharacterSize(small_size);
+	elements.push_back(text);
+
+	bounds = text->getGlobalBounds();
+	text = new Game::ShadedText(font, "NO", sf::Vector2f(bounds.left + bounds.width + 20, y));
+	text->setCharacterSize(small_size);
+	texts["controls::joystick_toggle"] = text;
+
 	const auto win_bounds = sf::FloatRect(0, 0, Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
-	text = new Game::ShadedText(font, "Exit", sf::Vector2f(0, 0));
+	text = new Game::ShadedText(font, "OK", sf::Vector2f(0, 0));
 	text->setCharacterSize(size);
 	bounds = text->getGlobalBounds();
 	text->setPosition(sf::Vector2f(Game::center(bounds, win_bounds).x, win_bounds.height - 2 * bounds.height));
@@ -128,6 +134,9 @@ void ControlsScreen::selectPlayer(unsigned short id) {
 		texts[ss.str()]->setString(Game::KeyUtils::keyToString(
 				Game::playerControls[selectedPlayer-1][it->second]));
 	}
+
+	const bool use = Game::useJoystick[selectedPlayer-1];
+	texts["controls::joystick_toggle"]->setString(use ? "YES" : "NO");
 }
 
 void ControlsScreen::_highlightSelectedPlayer() {
@@ -187,4 +196,10 @@ void ControlsScreen::changeControl(sf::RenderWindow& window, const std::string& 
 		draw(window);
 		window.display();
 	}
+}
+
+void ControlsScreen::toggleJoystick() {
+	const bool use = !Game::useJoystick[selectedPlayer-1];
+	Game::useJoystick[selectedPlayer-1] = use;
+	texts["controls::joystick_toggle"]->setString(use ? "YES" : "NO");
 }

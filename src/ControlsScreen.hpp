@@ -23,8 +23,12 @@ public:
 	}
 
 	void selectPlayer(unsigned short id);
+	unsigned short getSelectedPlayer() const { return selectedPlayer; }
 
 	void changeControl(sf::RenderWindow& window, const std::string& textKey);
+
+	/** Toggles the Game::useJoystick variable for the selected player */
+	void toggleJoystick();
 
 	void draw(sf::RenderTarget& window) override;
 	void triggerMouseOver(const sf::Vector2f& mousePos) override;
