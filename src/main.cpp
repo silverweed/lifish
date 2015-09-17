@@ -804,9 +804,28 @@ void pause_game(sf::RenderWindow& window) {
 					} else if (clicked == "preferences::controls") {
 						cur_screen = &screens.controls;
 						break;
+					} else if (clicked == "controls::p1") {
+						screens.controls.selectPlayer(1);
+						break;
+					} else if (clicked == "controls::p2") {
+						screens.controls.selectPlayer(2);
+						break;
+					} else if (Game::startsWith(clicked, "controls::change_")) {
+						screens.controls.changeControl(window, clicked);
+						break;
+					} else if (clicked == "controls::joystick_toggle") {
+						screens.controls.toggleJoystick();
+						break;
+					} else if (clicked == "exit") {
+						if (cur_screen->getParent() == &Game::HomeScreen::getInstance())
+							return;
+						else
+							cur_screen = cur_screen->getParent();
 					}
 					break;
 				}
+			default:
+				break;
 			}
 		}
 		window.clear();
