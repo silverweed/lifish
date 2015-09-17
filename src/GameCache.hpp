@@ -40,9 +40,17 @@ public:
 	GameCache();
 	~GameCache();
 
-	/** Tries to load `texture_name` into `texture`; if `texture_name` is already
-	 *  in the cache, load it from there; else, load from file and put the
-	 *  loaded image into the cache.
+	/** If the texture loaded from `texture_name` already exists in the cache,
+	 *  return its pointer; else try to load it from `texture_name` and return either
+	 *  a pointer to it, or nullptr if the loading failed.
+	 */
+	sf::Texture* loadTexture(const std::string& texture_name);
+
+	/** Shortcut of:
+	 *  sf::Texture* ptr = loadTexture(texture_name);
+	 *  if (ptr != nullptr)
+	 *          texture = *ptr;
+	 * Returns whether the loading was successful or not.
 	 */
 	bool loadTexture(sf::Texture& texture, const std::string& texture_name);
 

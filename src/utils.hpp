@@ -113,14 +113,9 @@ inline bool startsWith(const std::string& haystack, const std::string& needle) {
 	return haystack.substr(0, needle.size()) == needle;
 }
 
-inline void testMusic() {
-	sf::Music sample;
-	sample.openFromFile(Game::getAsset("music", "music1.ogg"));
-	sample.play();
-	sample.setVolume(Game::music_volume);
-	SLEEP_MS(200);
-	sample.stop();
-}
+void playMusic();
+void stopMusic();
+void testMusic();
 
 namespace KeyUtils {
 	short keyToNumber(sf::Keyboard::Key key);

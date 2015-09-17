@@ -24,6 +24,10 @@ Screen::~Screen() {
 		if (pair.second != nullptr)
 			delete pair.second;
 
+	for (auto& pair : images)
+		if (pair.second != nullptr)
+			delete pair.second;
+
 	for (auto& el : elements)
 		delete el;
 }
@@ -40,7 +44,10 @@ void Screen::draw(sf::RenderTarget& window) {
 		window.draw(*el);
 	
 	for (auto& pair : texts)
-		pair.second->draw(window);
+		window.draw(*pair.second);
+
+	for (auto& pair : images)
+		window.draw(*pair.second);
 }
 
 void Screen::triggerMouseOver(const sf::Vector2f& mousePos) {
@@ -52,10 +59,23 @@ void Screen::triggerMouseOver(const sf::Vector2f& mousePos) {
 			text->setFGColor(sf::Color::White);
 		}
 	}
+
+	for (auto& pair : images) {
+		auto image = pair.second;
+		if (image->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+			image->setColor(sf::Color::Red);
+		} else {
+			image->setColor(sf::Color::White);
+		}
+	}
 }
 
 std::string Screen::triggerMouseClick(const sf::Vector2f& mousePos) {
 	for (auto& pair : texts) {
+		if (pair.second->getGlobalBounds().contains(mousePos.x, mousePos.y))
+			return pair.first;
+	}
+	for (auto& pair : images) {
 		if (pair.second->getGlobalBounds().contains(mousePos.x, mousePos.y))
 			return pair.first;
 	}

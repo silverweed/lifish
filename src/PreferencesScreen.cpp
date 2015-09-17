@@ -1,4 +1,5 @@
 #include "PreferencesScreen.hpp"
+#include "LoopingMusic.hpp"
 #include "utils.hpp"
 #include <sstream>
 
@@ -48,6 +49,14 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 	text->setCharacterSize(30);
 	texts["preferences::music_volume_up"] = text;
 
+	bounds = text->getGlobalBounds();
+	auto image = new sf::Sprite;
+	Game::cache.loadTexture(speakerTexture, Game::getAsset("graphics", "speaker.png"));
+	image->setTexture(speakerTexture);
+	image->setTextureRect(sf::IntRect(prevMusicVolume >= 0 ? 25 : 0, 0, 25, 25));
+	image->setPosition(sf::Vector2f(bounds.left + bounds.width + 20, ipady));
+	images["preferences::music_mute_toggle"] = image;
+
 	// FX Volume
 	text = new Game::ShadedText(font, "FX:", sf::Vector2f(ipadx, ipady + bounds.height + 20));
 	text->setCharacterSize(size);
@@ -68,6 +77,15 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 	text->setCharacterSize(30);
 	texts["preferences::sounds_volume_up"] = text;
 
+	bounds = text->getGlobalBounds();
+	image = new sf::Sprite;
+	Game::cache.loadTexture(speakerTexture, Game::getAsset("graphics", "speaker.png"));
+	image->setTexture(speakerTexture);
+	image->setTextureRect(sf::IntRect(Game::sounds_mute ? SPEAKER_SPRITE_SIZE : 0,
+				0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
+	image->setPosition(sf::Vector2f(bounds.left + bounds.width + 20, bounds.top));
+	images["preferences::sounds_mute_toggle"] = image;
+
 	text = new Game::ShadedText(font, "Controls", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
 	text->setCharacterSize(size);
 	texts["preferences::controls"] = text;
@@ -79,16 +97,37 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 	texts["exit"] = text;
 }
 
-void PreferencesScreen::changeMusicVolume(bool raise) {
-	_changeVolume(raise, true);
-}
-
-void PreferencesScreen::changeSoundsVolume(bool raise) {
-	_changeVolume(raise, false);
-}
-
-void PreferencesScreen::_changeVolume(bool raise, bool music) {
-	short &vol = music ? relMusicVolume : relSoundVolume; 
+void PreferencesScreen::changeVolume(VolumeType which, VolumeAction what) {
+	if (what == VolumeAction::MUTE_TOGGLE) {
+		switch (which) {
+		case VolumeType::MUSIC: 
+			if (prevMusicVolume < 0) {
+				// unmute->mute
+				prevMusicVolume = Game::music_volume;
+				Game::music_volume = 0;
+			} else {
+				//mute->unmute
+				Game::music_volume = prevMusicVolume;
+				prevMusicVolume = -1;
+			}
+			images["preferences::music_mute_toggle"]->setTextureRect(
+					sf::IntRect(prevMusicVolume >= 0 ? SPEAKER_SPRITE_SIZE : 0,
+						0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
+			if (Game::music != nullptr)
+				Game::music->setVolume(Game::music_volume);
+			return;
+		case VolumeType::SOUND:
+			Game::sounds_mute = !Game::sounds_mute;
+			images["preferences::sounds_mute_toggle"]->setTextureRect(
+					sf::IntRect(Game::sounds_mute ? SPEAKER_SPRITE_SIZE : 0,
+						0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
+			return;
+		default: 
+			return;
+		}
+	}
+	short &vol = which == VolumeType::MUSIC ? relMusicVolume : relSoundVolume; 
+	const bool raise = what == VolumeAction::RAISE;
 
 	if ((raise && vol == MAX_VOLUME) || (!raise && vol == 0))
 		return;
@@ -100,7 +139,7 @@ void PreferencesScreen::_changeVolume(bool raise, bool music) {
 		ss << "|";	
 	}
 
-	if (music) {
+	if (which == VolumeType::MUSIC) {
 		Game::music_volume = vol * 100 / MAX_VOLUME;
 		musicVolumeBar->setString(ss.str());
 	} else {

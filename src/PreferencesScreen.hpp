@@ -9,6 +9,7 @@ namespace Game {
  */
 class PreferencesScreen : public Game::Screen {
 	constexpr static unsigned short MAX_VOLUME = 15;
+	constexpr static unsigned short SPEAKER_SPRITE_SIZE = 25;
 
 	/** Hook for the music volume bar (used in draw()) */
 	Game::ShadedText *musicVolumeBar = nullptr;
@@ -18,19 +19,23 @@ class PreferencesScreen : public Game::Screen {
 	short relMusicVolume = MAX_VOLUME,
 	      relSoundVolume = MAX_VOLUME;
 
+	/** Used to toggle music muteness */
+	float prevMusicVolume = -1;
+
+	sf::Texture speakerTexture;
+
 
 	PreferencesScreen();
-
-	/** If music == true, changes the music volume, else the FX volume. */
-	void _changeVolume(bool raise, bool music);
 public:
+	enum class VolumeType { MUSIC, SOUND };
+	enum class VolumeAction { RAISE, LOWER, MUTE_TOGGLE };
+
 	static PreferencesScreen& getInstance() {
 		static PreferencesScreen instance;
 		return instance;
 	}
 
-	void changeMusicVolume(bool raise);
-	void changeSoundsVolume(bool raise);
+	void changeVolume(VolumeType which, VolumeAction what);
 
 	Game::Screen* getParent() override {
 		return &Game::HomeScreen::getInstance();

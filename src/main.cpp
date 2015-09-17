@@ -45,6 +45,7 @@ using Game::LEVEL_WIDTH;
 using Game::LEVEL_HEIGHT;
 
 void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned short start_level = 1);
+void pause_game(sf::RenderWindow& window);
 void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum);
 bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short playernum);
 Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Game::SidePanel& panel);
@@ -137,19 +138,39 @@ int main(int argc, char **argv) {
 						cur_screen = &screens.preferences;
 						break;
 					} else if (clicked == "preferences::music_volume_down") {
-						screens.preferences.changeMusicVolume(false);
+						screens.preferences.changeVolume(
+								Game::PreferencesScreen::VolumeType::MUSIC,
+								Game::PreferencesScreen::VolumeAction::LOWER);
 						Game::testMusic();
 						break;
 					} else if (clicked == "preferences::music_volume_up") {
-						screens.preferences.changeMusicVolume(true);
+						screens.preferences.changeVolume(
+								Game::PreferencesScreen::VolumeType::MUSIC,
+								Game::PreferencesScreen::VolumeAction::RAISE);
+						Game::testMusic();
+						break;
+					} else if (clicked == "preferences::music_mute_toggle") {
+						screens.preferences.changeVolume(
+								Game::PreferencesScreen::VolumeType::MUSIC,
+								Game::PreferencesScreen::VolumeAction::MUTE_TOGGLE);
 						Game::testMusic();
 						break;
 					} else if (clicked == "preferences::sounds_volume_down") {
-						screens.preferences.changeSoundsVolume(false);
+						screens.preferences.changeVolume(
+								Game::PreferencesScreen::VolumeType::SOUND,
+								Game::PreferencesScreen::VolumeAction::LOWER);
 						Game::cache.playSound(Game::getAsset("sounds", Game::TIME_BONUS_SOUND));
 						break;
 					} else if (clicked == "preferences::sounds_volume_up") {
-						screens.preferences.changeSoundsVolume(true);
+						screens.preferences.changeVolume(
+								Game::PreferencesScreen::VolumeType::SOUND,
+								Game::PreferencesScreen::VolumeAction::RAISE);
+						Game::cache.playSound(Game::getAsset("sounds", Game::TIME_BONUS_SOUND));
+						break;
+					} else if (clicked == "preferences::sounds_mute_toggle") {
+						screens.preferences.changeVolume(
+								Game::PreferencesScreen::VolumeType::SOUND,
+								Game::PreferencesScreen::VolumeAction::MUTE_TOGGLE);
 						Game::cache.playSound(Game::getAsset("sounds", Game::TIME_BONUS_SOUND));
 						break;
 					} else if (clicked == "preferences::controls") {
@@ -219,10 +240,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 	displayGetReady(window, panel, 1);
 #endif
 	Game::music = level->getMusic();
-	if (Game::music != nullptr) {
-		Game::music->setVolume(Game::music_volume);
-		Game::music->play();
-	}
+	Game::playMusic();
 
 	// Create fps text
 	bool show_fps = false;
@@ -259,8 +277,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 			if (time >= 4) {
 				level = advanceLevel(window, lr, panel);
 				Game::music = level->getMusic();
-				if (Game::music != nullptr)
-					Game::music->play();
+				Game::playMusic();
 				lr.resetClocks();
 				players = lr.getPlayers();
 				levelClearTriggered = false;
@@ -280,11 +297,8 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 				playerWinSoundPlayed = true;
 
 			} else if (time >= 1 && !levelClearSoundPlayed) {
-				if (Game::music != nullptr)
-					Game::music->stop();
-
+				Game::stopMusic();
 				Game::cache.playSound(Game::getAsset("test", Game::LEVEL_CLEAR_SOUND));
-
 				levelClearSoundPlayed = true;
 			}
 		}
@@ -347,6 +361,10 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 					vsync = !vsync;
 					vsync_text.setString(vsync ? "vsync on" : "vsync off");
 					window.setVerticalSyncEnabled(vsync);
+					break;
+				case sf::Keyboard::P:
+					pause_game(window);
+					lr.resetFrameClocks();
 					break;
 				default:
 					break; 
@@ -454,9 +472,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 		// Check game over / win
 		if (maybe_all_dead) {
 			bool all_dead = true;
-			if (Game::music != nullptr) {
-				Game::music->stop();
-			}
+			Game::stopMusic();
 			for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 				if (Game::playerContinues[i] > 0) {
 					if (displayContinue(window, panel, i+1)) {
@@ -477,9 +493,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 				levelClearTriggered = false;
 				levelClearSoundPlayed = false;
 				playerWinSoundPlayed = false;
-				if (Game::music != nullptr) {
-					Game::music->play();
-				}
+				Game::playMusic();
 				continue;
 			} else if (!gameOverTriggered) {
 				lr.triggerGameOver();
@@ -716,4 +730,87 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 	lr.loadLevel(levelSet->getLevel(lvnum));
 
 	return const_cast<Game::Level*>(lr.getLevel());
+}
+
+void pause_game(sf::RenderWindow& window) {
+	// TODO
+	struct {
+		Game::PreferencesScreen &preferences = Game::PreferencesScreen::getInstance();
+		Game::ControlsScreen &controls = Game::ControlsScreen::getInstance();
+	} screens;
+	Game::Screen *cur_screen = &screens.preferences;
+	window.clear();
+	cur_screen->draw(window);
+
+	while (window.isOpen()) {
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			switch (event.type) {
+			case sf::Event::Closed:
+				window.close();
+				break;
+			case sf::Event::MouseMoved:
+				cur_screen->triggerMouseOver(
+						window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+				break;
+			case sf::Event::KeyPressed:
+				return;
+				if (event.key.code == sf::Keyboard::Key::Escape) {
+					if (cur_screen->getParent() != nullptr)
+						cur_screen = cur_screen->getParent();
+					else
+						return;
+				}
+				break;
+			case sf::Event::MouseButtonReleased:
+				{
+					const auto clicked = cur_screen->triggerMouseClick(
+							window.mapPixelToCoords(sf::Mouse::getPosition(window)));
+					if (clicked == "preferences::music_volume_down") {
+						screens.preferences.changeVolume(
+								Game::PreferencesScreen::VolumeType::MUSIC,
+								Game::PreferencesScreen::VolumeAction::LOWER);
+						Game::testMusic();
+						break;
+					} else if (clicked == "preferences::music_volume_up") {
+						screens.preferences.changeVolume(
+								Game::PreferencesScreen::VolumeType::MUSIC,
+								Game::PreferencesScreen::VolumeAction::RAISE);
+						Game::testMusic();
+						break;
+					} else if (clicked == "preferences::music_mute_toggle") {
+						screens.preferences.changeVolume(
+								Game::PreferencesScreen::VolumeType::MUSIC,
+								Game::PreferencesScreen::VolumeAction::MUTE_TOGGLE);
+						break;
+					} else if (clicked == "preferences::sounds_volume_down") {
+						screens.preferences.changeVolume(
+								Game::PreferencesScreen::VolumeType::SOUND,
+								Game::PreferencesScreen::VolumeAction::LOWER);
+						Game::cache.playSound(Game::getAsset("sounds", Game::TIME_BONUS_SOUND));
+						break;
+					} else if (clicked == "preferences::sounds_volume_up") {
+						screens.preferences.changeVolume(
+								Game::PreferencesScreen::VolumeType::SOUND,
+								Game::PreferencesScreen::VolumeAction::RAISE);
+						Game::cache.playSound(Game::getAsset("sounds", Game::TIME_BONUS_SOUND));
+						break;
+					} else if (clicked == "preferences::sounds_mute_toggle") {
+						screens.preferences.changeVolume(
+								Game::PreferencesScreen::VolumeType::SOUND,
+								Game::PreferencesScreen::VolumeAction::MUTE_TOGGLE);
+						Game::cache.playSound(Game::getAsset("sounds", Game::TIME_BONUS_SOUND));
+						break;
+					} else if (clicked == "preferences::controls") {
+						cur_screen = &screens.controls;
+						break;
+					}
+					break;
+				}
+			}
+		}
+		window.clear();
+		cur_screen->draw(window);
+		window.display();
+	}
 }

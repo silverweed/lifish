@@ -32,22 +32,29 @@ sf::Texture* GameCache::_getTexture(const std::string& name) const {
 	return it->second;
 }
 
-bool GameCache::loadTexture(sf::Texture& texture, const std::string& texture_name) {
+sf::Texture* GameCache::loadTexture(const std::string& texture_name) {
 	// Check if image is already in cache
 	auto txt = _getTexture(texture_name);
 	if (txt != nullptr) {
-		texture = *txt;
-		return true;
+		return txt;
 	}
 	// Not in cache: load from file
 	txt = new sf::Texture;
 	if (!txt->loadFromFile(texture_name)) {
-		std::cerr << "[GameCache.cpp] Error: couldn't load texture " << texture_name << " from file!" << std::endl;
-		return false;
+		std::cerr << "[GameCache.cpp] Error: couldn't load texture " 
+			<< texture_name << " from file!" << std::endl;
+		return nullptr;
 	}
-	texture = *txt;
-	textures[texture_name] = txt;
-	return true;
+	return textures[texture_name] = txt;
+}
+
+bool GameCache::loadTexture(sf::Texture& texture, const std::string& texture_name) {
+	auto ptr = loadTexture(texture_name);
+	if (ptr != nullptr) {
+		texture = *ptr;
+		return true;
+	}
+	return false;
 }
 
 sf::SoundBuffer* GameCache::_getSound(const std::string& name) const {
@@ -76,6 +83,7 @@ bool GameCache::loadSound(sf::Sound& sound, const std::string& sound_name) {
 }
 
 void GameCache::playSound(const std::string& sound_name) {
+	if (Game::sounds_mute) return;
 	auto sound = new sf::Sound;
 	if (!loadSound(*sound, sound_name)) {
 		delete sound;

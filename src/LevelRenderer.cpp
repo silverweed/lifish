@@ -1283,8 +1283,7 @@ void LevelRenderer::checkHurryUp() {
 }
 
 void LevelRenderer::triggerGameOver() {
-	if (Game::music != nullptr)
-		Game::music->stop();
+	Game::stopMusic();
 	gameOverText = new Game::DroppingText(Game::getAsset("test", "gameover.png"),
 			sf::Vector2i(311, 59));
 	Game::cache.playSound(Game::getAsset("test", Game::GAME_OVER_SOUND));
@@ -1351,12 +1350,16 @@ bool LevelRenderer::isLevelClear() const {
 	return true;
 }
 
-void LevelRenderer::resetClocks() {
-	bossShootClock.restart();
-	levelTimeClock.restart();
+void LevelRenderer::resetFrameClocks() {
 	for (auto& e : movingEntities) {
 		e->resetFrameClock();
 	}
+}
+	
+void LevelRenderer::resetClocks() {
+	bossShootClock.restart();
+	levelTimeClock.restart();
+	resetFrameClocks();
 }
 
 void LevelRenderer::_grabBonus(Game::MovingEntity *const entity, 

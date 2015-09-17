@@ -27,6 +27,8 @@ LoopingMusic *Game::music = nullptr;
 float Game::music_volume = 100,
       Game::sounds_volume = 100;
 
+bool Game::sounds_mute = false;
+
 std::array<unsigned short, Game::MAX_PLAYERS> Game::playerContinues;
 
 std::array<bool, Game::MAX_PLAYERS> Game::useJoystick;

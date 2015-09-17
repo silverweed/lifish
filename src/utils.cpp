@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include "LoopingMusic.hpp"
 
 short Game::KeyUtils::keyToNumber(sf::Keyboard::Key key) {
 	switch (key) {
@@ -122,5 +123,27 @@ std::string Game::KeyUtils::keyToString(sf::Keyboard::Key key) {
 	case K::F15: return "F15";
 	case K::Pause: return "Pause";
 	default: return "Unknown";
+	}
+}
+
+void Game::testMusic() {
+	sf::Music sample;
+	sample.openFromFile(Game::getAsset("music", "music1.ogg"));
+	sample.play();
+	sample.setVolume(Game::music_volume);
+	SLEEP_MS(200);
+	sample.stop();
+}
+
+void Game::playMusic() {
+	if (Game::music != nullptr) {
+		Game::music->setVolume(Game::music_volume);
+		Game::music->play();
+	}
+}
+
+void Game::stopMusic() {
+	if (Game::music != nullptr) {
+		Game::music->stop();
 	}
 }

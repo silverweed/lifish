@@ -25,6 +25,9 @@ protected:
 	 */
 	std::unordered_map<std::string, Game::ShadedText*> texts;
 
+	/** The clickable images */
+	std::unordered_map<std::string, sf::Sprite*> images;
+
 	/** The static elements which don't interact */
 	std::vector<sf::Drawable*> elements;
 

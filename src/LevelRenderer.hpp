@@ -233,6 +233,9 @@ public:
 	/** Returns true if all enemies and bosses are dead. */
 	bool isLevelClear() const;
 
+	/** Resets frame clocks of all moving entities */
+	void resetFrameClocks();
+
 	/** Resets all self and children's internal clocks */
 	void resetClocks();
 };
