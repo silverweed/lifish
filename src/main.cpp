@@ -19,6 +19,7 @@
  */
 #include <iostream>
 #include <cstdlib>
+#include <unordered_set>
 #include <SFML/Graphics.hpp>
 #include "Level.hpp"
 #include "LevelSet.hpp"
@@ -44,11 +45,28 @@ using Game::MAIN_WINDOW_SHIFT;
 using Game::LEVEL_WIDTH;
 using Game::LEVEL_HEIGHT;
 
-void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned short start_level = 1);
-void pause_game(sf::RenderWindow& window);
-void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum);
-bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short playernum);
-Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Game::SidePanel& panel);
+/** Bitmask used for handleScreenEvents() */
+enum {
+	HOME_SCREEN        = 1,
+	PREFERENCES_SCREEN = 1 << 1,
+	CONTROLS_SCREEN    = 1 << 2
+};
+
+enum class GameAction {
+	START_GAME,
+	EXIT,
+	DO_NOTHING
+};
+
+/** Starts the game on `window`, using `level_set` and starting at level `start_level` */
+static void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned short start_level = 1);
+/** Displays the menu, starting with `rootScreen` and exiting when it should change to a
+ *  screen which is not enabled. All screens are enabled by default.
+ */
+static GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enabledScreens = ~0);
+static void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum);
+static bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short playernum);
+static Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Game::SidePanel& panel);
 
 static sf::Font interlevel_font;
 
@@ -98,114 +116,12 @@ int main(int argc, char **argv) {
 				Game::WINDOW_WIDTH, 
 				Game::WINDOW_HEIGHT), "Lifish v." VERSION );
 
-	// Game screens
-	struct {
-		Game::HomeScreen        &home = Game::HomeScreen::getInstance();
-		Game::PreferencesScreen &preferences = Game::PreferencesScreen::getInstance();
-		Game::ControlsScreen    &controls = Game::ControlsScreen::getInstance();
-	} screens;
-
-	Game::Screen *cur_screen = &screens.home;
-
-	while (window.isOpen()) {
-		sf::Event event;
-		while (window.pollEvent(event)) {
-			switch (event.type) {
-			case sf::Event::Closed:
-				window.close();
-				break;
-			case sf::Event::MouseMoved:
-				cur_screen->triggerMouseOver(
-						window.mapPixelToCoords(sf::Mouse::getPosition(window)));
-				break;
-			case sf::Event::KeyPressed:
-				if (event.key.code == sf::Keyboard::Key::Escape) {
-					if (cur_screen->getParent() != nullptr)
-						cur_screen = cur_screen->getParent();
-				}
-				break;
-			case sf::Event::MouseButtonReleased:
-				{
-					const auto clicked = cur_screen->triggerMouseClick(
-							window.mapPixelToCoords(sf::Mouse::getPosition(window)));
-					if (clicked == "start") {
-						play_game(window, levelSet, start_level);
-						break;
-					} else if (clicked == "load") {
-						// TODO
-						break;
-					} else if (clicked == "preferences") {
-						cur_screen = &screens.preferences;
-						break;
-					} else if (clicked == "preferences::music_volume_down") {
-						screens.preferences.changeVolume(
-								Game::PreferencesScreen::VolumeType::MUSIC,
-								Game::PreferencesScreen::VolumeAction::LOWER);
-						Game::testMusic();
-						break;
-					} else if (clicked == "preferences::music_volume_up") {
-						screens.preferences.changeVolume(
-								Game::PreferencesScreen::VolumeType::MUSIC,
-								Game::PreferencesScreen::VolumeAction::RAISE);
-						Game::testMusic();
-						break;
-					} else if (clicked == "preferences::music_mute_toggle") {
-						screens.preferences.changeVolume(
-								Game::PreferencesScreen::VolumeType::MUSIC,
-								Game::PreferencesScreen::VolumeAction::MUTE_TOGGLE);
-						Game::testMusic();
-						break;
-					} else if (clicked == "preferences::sounds_volume_down") {
-						screens.preferences.changeVolume(
-								Game::PreferencesScreen::VolumeType::SOUND,
-								Game::PreferencesScreen::VolumeAction::LOWER);
-						Game::cache.playSound(Game::getAsset("sounds", Game::TIME_BONUS_SOUND));
-						break;
-					} else if (clicked == "preferences::sounds_volume_up") {
-						screens.preferences.changeVolume(
-								Game::PreferencesScreen::VolumeType::SOUND,
-								Game::PreferencesScreen::VolumeAction::RAISE);
-						Game::cache.playSound(Game::getAsset("sounds", Game::TIME_BONUS_SOUND));
-						break;
-					} else if (clicked == "preferences::sounds_mute_toggle") {
-						screens.preferences.changeVolume(
-								Game::PreferencesScreen::VolumeType::SOUND,
-								Game::PreferencesScreen::VolumeAction::MUTE_TOGGLE);
-						Game::cache.playSound(Game::getAsset("sounds", Game::TIME_BONUS_SOUND));
-						break;
-					} else if (clicked == "preferences::controls") {
-						cur_screen = &screens.controls;
-						break;
-					} else if (clicked == "controls::p1") {
-						screens.controls.selectPlayer(1);
-						break;
-					} else if (clicked == "controls::p2") {
-						screens.controls.selectPlayer(2);
-						break;
-					} else if (Game::startsWith(clicked, "controls::change_")) {
-						screens.controls.changeControl(window, clicked);
-						break;
-					} else if (clicked == "controls::joystick_toggle") {
-						screens.controls.toggleJoystick();
-						break;
-					} else if (clicked == "about") {
-						// TODO
-						break;
-					} else if (clicked == "exit") {
-						if (cur_screen->getParent() == nullptr)
-							return 0;
-						else
-							cur_screen = cur_screen->getParent();
-					}
-					break;
-				}
-			default:
-				break;
-			}
-		}
-		window.clear();
-		cur_screen->draw(window);
-		window.display();
+	switch (handleScreenEvents(window, HOME_SCREEN)) {
+	case GameAction::START_GAME:
+		play_game(window, levelSet, start_level);
+		break;
+	default:
+		break;
 	}
 
 	return 0;
@@ -363,7 +279,8 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 					window.setVerticalSyncEnabled(vsync);
 					break;
 				case sf::Keyboard::P:
-					pause_game(window);
+					// Pause
+					handleScreenEvents(window, PREFERENCES_SCREEN, PREFERENCES_SCREEN | CONTROLS_SCREEN);
 					lr.resetFrameClocks();
 					break;
 				default:
@@ -732,13 +649,40 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 	return const_cast<Game::Level*>(lr.getLevel());
 }
 
-void pause_game(sf::RenderWindow& window) {
-	// TODO
-	struct {
+GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enabledScreens) {
+	// All possible screens
+	static struct {
+		Game::HomeScreen        &home = Game::HomeScreen::getInstance();
 		Game::PreferencesScreen &preferences = Game::PreferencesScreen::getInstance();
-		Game::ControlsScreen &controls = Game::ControlsScreen::getInstance();
+		Game::ControlsScreen    &controls = Game::ControlsScreen::getInstance();
 	} screens;
-	Game::Screen *cur_screen = &screens.preferences;
+
+	// The currently displayed screen
+	Game::Screen *cur_screen = nullptr;
+	
+	switch (rootScreen) {
+	case HOME_SCREEN:
+		cur_screen = &screens.home;
+		break;
+	case PREFERENCES_SCREEN: 
+		cur_screen = &screens.preferences;
+		break;
+	case CONTROLS_SCREEN: 
+		cur_screen = &screens.controls;
+		break;
+	default:
+		throw "Called handleScreenEvents with non-existing screen!";
+	}
+
+	// The enabled screens
+	std::unordered_set<Game::Screen*> enabled_screens;
+	if (enabledScreens & HOME_SCREEN) 
+		enabled_screens.insert(&screens.home);
+	if (enabledScreens & PREFERENCES_SCREEN)
+		enabled_screens.insert(&screens.preferences);
+	if (enabledScreens & CONTROLS_SCREEN) 
+		enabled_screens.insert(&screens.controls);
+
 	window.clear();
 	cur_screen->draw(window);
 
@@ -754,19 +698,29 @@ void pause_game(sf::RenderWindow& window) {
 						window.mapPixelToCoords(sf::Mouse::getPosition(window)));
 				break;
 			case sf::Event::KeyPressed:
-				return;
 				if (event.key.code == sf::Keyboard::Key::Escape) {
-					if (cur_screen->getParent() != nullptr)
-						cur_screen = cur_screen->getParent();
+					const auto parent = cur_screen->getParent();
+					if (parent != nullptr && enabled_screens.find(parent)
+							!= enabled_screens.end())
+						cur_screen = parent;
 					else
-						return;
+						return GameAction::EXIT;
 				}
 				break;
 			case sf::Event::MouseButtonReleased:
 				{
 					const auto clicked = cur_screen->triggerMouseClick(
 							window.mapPixelToCoords(sf::Mouse::getPosition(window)));
-					if (clicked == "preferences::music_volume_down") {
+					if (clicked == "start") {
+						return GameAction::START_GAME;
+					} else if (clicked == "load") {
+						// TODO
+						break;
+					} else if (clicked == "preferences") {
+						if (enabledScreens & PREFERENCES_SCREEN)
+							cur_screen = &screens.preferences;
+						break;
+					} else if (clicked == "preferences::music_volume_down") {
 						screens.preferences.changeVolume(
 								Game::PreferencesScreen::VolumeType::MUSIC,
 								Game::PreferencesScreen::VolumeAction::LOWER);
@@ -782,6 +736,7 @@ void pause_game(sf::RenderWindow& window) {
 						screens.preferences.changeVolume(
 								Game::PreferencesScreen::VolumeType::MUSIC,
 								Game::PreferencesScreen::VolumeAction::MUTE_TOGGLE);
+						Game::testMusic();
 						break;
 					} else if (clicked == "preferences::sounds_volume_down") {
 						screens.preferences.changeVolume(
@@ -802,7 +757,8 @@ void pause_game(sf::RenderWindow& window) {
 						Game::cache.playSound(Game::getAsset("sounds", Game::TIME_BONUS_SOUND));
 						break;
 					} else if (clicked == "preferences::controls") {
-						cur_screen = &screens.controls;
+						if (enabledScreens & CONTROLS_SCREEN)
+							cur_screen = &screens.controls;
 						break;
 					} else if (clicked == "controls::p1") {
 						screens.controls.selectPlayer(1);
@@ -816,11 +772,16 @@ void pause_game(sf::RenderWindow& window) {
 					} else if (clicked == "controls::joystick_toggle") {
 						screens.controls.toggleJoystick();
 						break;
+					} else if (clicked == "about") {
+						// TODO
+						break;
 					} else if (clicked == "exit") {
-						if (cur_screen->getParent() == &Game::HomeScreen::getInstance())
-							return;
+						const auto parent = cur_screen->getParent();
+						if (parent != nullptr && enabled_screens.find(parent)
+								!= enabled_screens.end())
+							cur_screen = parent;
 						else
-							cur_screen = cur_screen->getParent();
+							return GameAction::EXIT;
 					}
 					break;
 				}
@@ -832,4 +793,5 @@ void pause_game(sf::RenderWindow& window) {
 		cur_screen->draw(window);
 		window.display();
 	}
+	return GameAction::DO_NOTHING;
 }
