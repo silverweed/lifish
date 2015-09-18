@@ -116,12 +116,17 @@ int main(int argc, char **argv) {
 				Game::WINDOW_WIDTH, 
 				Game::WINDOW_HEIGHT), "Lifish v." VERSION );
 
-	switch (handleScreenEvents(window, HOME_SCREEN)) {
-	case GameAction::START_GAME:
-		play_game(window, levelSet, start_level);
-		break;
-	default:
-		break;
+	while (window.isOpen()) {
+		switch (handleScreenEvents(window, HOME_SCREEN)) {
+		case GameAction::START_GAME:
+			play_game(window, levelSet, start_level);
+			break;
+		case GameAction::EXIT:
+			window.close();
+			break;
+		default:
+			break;
+		}
 	}
 
 	return 0;
@@ -280,8 +285,11 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 					break;
 				case sf::Keyboard::P:
 					// Pause
+					if (Game::music != nullptr)
+						Game::music->pause();
 					handleScreenEvents(window, PREFERENCES_SCREEN, PREFERENCES_SCREEN | CONTROLS_SCREEN);
 					lr.resetFrameClocks();
+					Game::playMusic();
 					break;
 				default:
 					break; 
@@ -704,7 +712,7 @@ GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enab
 							!= enabled_screens.end())
 						cur_screen = parent;
 					else
-						return GameAction::EXIT;
+						return GameAction::DO_NOTHING;
 				}
 				break;
 			case sf::Event::MouseButtonReleased:

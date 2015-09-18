@@ -142,6 +142,8 @@ void PreferencesScreen::changeVolume(VolumeType which, VolumeAction what) {
 	if (which == VolumeType::MUSIC) {
 		Game::music_volume = vol * 100 / MAX_VOLUME;
 		musicVolumeBar->setString(ss.str());
+		if (Game::music != nullptr)
+			Game::music->setVolume(Game::music_volume);
 	} else {
 		Game::sounds_volume = vol * 100 / MAX_VOLUME;
 		soundsVolumeBar->setString(ss.str());
