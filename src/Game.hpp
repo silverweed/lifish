@@ -123,8 +123,8 @@ extern bool sounds_mute;
 /** The remaining of 'continues' per player */
 extern std::array<unsigned short, MAX_PLAYERS> playerContinues;
 
-/** Whether we should take input from joystick or not (player-wise) */
-extern std::array<bool, MAX_PLAYERS> useJoystick;
+/** -1 if i-th player doesn't use joystick, else the joystick index. */
+extern std::array<short, MAX_PLAYERS> useJoystick;
 
 /****************************************************************************/
 /*                         GLOBAL FUNCTIONS                                 */

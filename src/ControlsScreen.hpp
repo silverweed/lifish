@@ -10,6 +10,7 @@ class ControlsScreen : public Game::Screen {
 
 
 	void _highlightSelectedPlayer();
+	void _changeJoystickBomb(sf::RenderWindow& window);
 
 	ControlsScreen();
 public:

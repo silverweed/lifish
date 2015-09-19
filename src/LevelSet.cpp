@@ -81,16 +81,17 @@ LevelSet::LevelSet(const std::string& path) {
 	 */
 	for (const auto& lvinfo : levelsdata) {
 		Level *level = new Level(this);
-		level->setLevelNum(lvnum);
-		level->setTime((unsigned int)lvinfo["time"]);
-		level->setTrack(tracks[(unsigned short)lvinfo["music"]-1]);
-		level->tileIDs.border = (unsigned short)lvinfo["tileIDs"]["border"];
-		level->tileIDs.bg = (unsigned short)lvinfo["tileIDs"]["bg"];
-		level->tileIDs.fixed = (unsigned short)lvinfo["tileIDs"]["fixed"];
-		level->tileIDs.breakable = (unsigned short)lvinfo["tileIDs"]["breakable"];
-		if (!level->setTilemap(lvinfo["tilemap"]))
+		if (!level->setTilemap(lvinfo["tilemap"])) {
 			std::cerr << "[LevelSet.cpp] Level " << lvnum << " has invalid tilemap: skipping." << std::endl;
-		else {
+			delete level;
+		} else {
+			level->setLevelNum(lvnum);
+			level->setTime((unsigned int)lvinfo["time"]);
+			level->setTrack(tracks[(unsigned short)lvinfo["music"]-1]);
+			level->tileIDs.border    = (unsigned short)lvinfo["tileIDs"]["border"];
+			level->tileIDs.bg        = (unsigned short)lvinfo["tileIDs"]["bg"];
+			level->tileIDs.fixed     = (unsigned short)lvinfo["tileIDs"]["fixed"];
+			level->tileIDs.breakable = (unsigned short)lvinfo["tileIDs"]["breakable"];
 			++lvnum;
 			levels.push_back(level);
 		}

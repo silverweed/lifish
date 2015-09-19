@@ -20,6 +20,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <unordered_set>
+#include <stdexcept>
 #include <SFML/Graphics.hpp>
 #include "Level.hpp"
 #include "LevelSet.hpp"
@@ -305,12 +306,10 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 			if (players[i] == nullptr) continue;
 
 			if (window.hasFocus()) {
-				if (Game::useJoystick[i]) {
-					// FIXME: this currently assumes that the i-th joystick is always associated with
-					// i-th player, but this may not be the case (e.g. if P1 uses the keyboard and
-					// P2 the joystick)
-					const auto horizontal = sf::Joystick::getAxisPosition(i, sf::Joystick::X),
-					           vertical = sf::Joystick::getAxisPosition(i, sf::Joystick::Y);
+				if (Game::useJoystick[i] >= 0) {
+					const short joystick = Game::useJoystick[i];
+					const auto horizontal = sf::Joystick::getAxisPosition(joystick, sf::Joystick::X),
+					           vertical = sf::Joystick::getAxisPosition(joystick, sf::Joystick::Y);
 					if (vertical < -Game::JOYSTICK_INPUT_THRESHOLD) 
 						dir[i] = Game::Direction::UP;
 					else if (vertical > Game::JOYSTICK_INPUT_THRESHOLD)
@@ -365,7 +364,8 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 					// FIXME: this currently assumes the "comfy" button has ID 2; this is true for the
 					// DualShock (where 2 is the X button), but is untested on other controllers, most
 					// notably the XBox joystick. In future, this will probably be configurable.
-					if ((Game::useJoystick[i] && sf::Joystick::isButtonPressed(i, 2))
+					if ((Game::useJoystick[i] >= 0 
+							&& sf::Joystick::isButtonPressed(Game::useJoystick[i], Game::joystickBombKey[i]))
 							|| sf::Keyboard::isKeyPressed(
 								Game::playerControls[i][Game::Control::BOMB]))
 						lr.dropBomb(i);
@@ -644,7 +644,7 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 			} else {
 				Game::playerContinues[i] = 0;
 			}
-		} else {
+		} else if (player != nullptr) {
 			player->giveShield(0);
 			player->giveSpeedy(0);
 		}
@@ -679,7 +679,7 @@ GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enab
 		cur_screen = &screens.controls;
 		break;
 	default:
-		throw "Called handleScreenEvents with non-existing screen!";
+		throw std::invalid_argument("Called handleScreenEvents with non-existing screen!");
 	}
 
 	// The enabled screens

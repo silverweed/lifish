@@ -4,7 +4,7 @@
 
 PROJECT_NAME=lifish
 EMAIL=silverweed1991@gmail.com
-COVERITY_PATH=$HOME/Public/cov-analysis-linux64-7.6.0/bin
+COVERITY_PATH=$HOME/Public/cov-analysis-linux64-7.7.0/bin
 
 ###########
 
@@ -19,7 +19,7 @@ getreadiness() {
 PATH=$PATH:$COVERITY_PATH
 make clean
 rm -f ${PROJECT_NAME}.tgz
-if (cov-build --dir cov-int make -j); then
+if (cov-build --dir cov-int make -j 4); then
 	tar cvfz ${PROJECT_NAME}.tgz cov-int
 fi
 

@@ -19,3 +19,5 @@ std::map<Control, sf::Keyboard::Key> Game::playerControls[] =
 		{ Control::BOMB,  sf::Keyboard::Key::LControl }
 	}
 };
+
+std::array<unsigned int, Game::MAX_PLAYERS> Game::joystickBombKey = { 0, 0 };

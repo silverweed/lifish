@@ -31,13 +31,13 @@ bool Game::sounds_mute = false;
 
 std::array<unsigned short, Game::MAX_PLAYERS> Game::playerContinues;
 
-std::array<bool, Game::MAX_PLAYERS> Game::useJoystick;
+std::array<short, Game::MAX_PLAYERS> Game::useJoystick;
 
 bool Game::init() {
 	using Game::pwd;
 
 	Game::playerContinues.fill(INITIAL_CONTINUES);
-	Game::useJoystick.fill(false);
+	Game::useJoystick.fill(-1);
 
 	// Setup pwd variable
 	pwd[0] = '\0';
