@@ -11,6 +11,8 @@ Boss::Boss(const sf::Vector2f& pos) :
 	Game::Sounded({ Game::getAsset("test", "boss_death.ogg"),
 			Game::getAsset("test", "boss_hurt.ogg") })
 {
+	transparentTo.bullets = true;
+
 	sprite.setTextureRect(sf::IntRect(0, 0, SIZE * Game::TILE_SIZE, SIZE * Game::TILE_SIZE));
 
 	shootingPoints[0] = pos + sf::Vector2f(34, 36);

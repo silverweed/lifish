@@ -40,9 +40,27 @@ lifish_hash = {
 	"difficulty" => "average",
 	"tracks" => [
 		{
+			"name" => "DMZ beat",
+			"author" => "Giacomo Parolini",
 			"loop" => {
 				"start" => 7.386,
 				"length" => 44.279
+			}
+		},
+		{
+			"name" => "Spirit Party",
+			"author" => "Luca Barazzetta",
+			"loop" => {
+				"start" => 3.428,
+				"length" => 106.3
+			}
+		},
+		{
+			"name" => "Tick Tock",
+			"author" => "Luca Barazzetta",
+			"loop" => {
+				"start" => 3.428,
+				"length" => 96.0
 			}
 		}
 	],
@@ -64,7 +82,7 @@ lifish_hash = {
 boom_levels.each_with_index do |level, i|
 	lv = {
 		"time" => level["Time"],
-		"music" => 1, #(i / 10).floor + 1,
+		"music" => [3, (i / 10).floor + 1].min, # TODO: all tracks
 		"tileIDs" => {
 			"bg" => (i / 10).floor + 1,
 			"border" => (i / 10).floor + 1,

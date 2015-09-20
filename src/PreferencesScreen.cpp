@@ -73,7 +73,7 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 	elements.push_back(text);
 
 	bounds = text->getGlobalBounds();
-	text = new Game::ShadedText(font, "+", sf::Vector2f(ipadx + 200 + bounds.width + 40, pos.y));
+	text = new Game::ShadedText(font, "+", sf::Vector2f(ipadx + 200 + bounds.width + 40, pos.y - 6));
 	text->setCharacterSize(30);
 	texts["preferences::sounds_volume_up"] = text;
 

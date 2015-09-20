@@ -216,7 +216,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 			Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),
 			ss.str(), TIME_POS);
 	timeText.setCharacterSize(14);
-	if (seconds <= 30)
+	if (minutes < 1 && seconds <= 30)
 		timeText.setColor(sf::Color(220, 0, 0, 255), sf::Color::Black);
 	window.draw(timeText);
 }
