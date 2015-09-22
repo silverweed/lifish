@@ -79,7 +79,7 @@ sprites should be, it means that asset hasn't been created yet.
     - [ ] #7
     - [ ] #8
   - [ ] Enemies
-    - [ ] #1
+    - [x] #1
     - [ ] #2
     - [ ] #3
     - [x] #4
@@ -89,7 +89,7 @@ sprites should be, it means that asset hasn't been created yet.
     - [ ] #8
     - [ ] #9
     - [ ] #10
-  - [ ] Powerups
+  - [x] Powerups
   - [ ] Bosses
   - [ ] Many other things
 

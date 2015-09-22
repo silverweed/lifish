@@ -8,11 +8,12 @@ Bullet::Bullet(const sf::Vector2f& _pos, const std::string& texture_name) :
 	Game::MovingEntity(_pos, texture_name),
 	Game::Sounded({ Game::getAsset("test", "bossbullet_hit.ogg"),
 			Game::getAsset("test", "bossbullet_shot.ogg") }),
+	range(-1),
+	damage(0),
 	shift(0.f, 0.f)
 {
 	transparentTo.bullets = true;
 	canTeleport = false;
-	range = -1;
 
 	animations[0].setSpriteSheet(texture);
 	animations[ANIM_DEATH].setSpriteSheet(texture);
