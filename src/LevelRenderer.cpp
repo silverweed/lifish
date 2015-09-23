@@ -401,7 +401,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 				Game::score[i] += boss->getPointsGiven();
 			}
 
-			_spawnPoints(boss->getPosition(), boss->getPointsGiven(), true);
+			_spawnPoints(boss->getPosition() + sf::Vector2f(TILE_SIZE, 0), boss->getPointsGiven(), true);
 			delete boss;
 			it = bosses.erase(it);
 
