@@ -8,6 +8,19 @@ COVERITY_PATH=$HOME/Public/cov-analysis-linux64-7.7.0/bin
 
 ###########
 
+while [[ $# > 1 ]]; do
+	case $1 in
+	-s, --skip-build)
+		SKIP_BUILD=true
+		shift
+		;;
+	*)
+		echo "Usage: $0 [-s, --skip-build]" >&2
+		exit 1
+		;;
+	esac
+done
+
 getbuild() {
 	git describe --always --long --dirty
 }
@@ -17,10 +30,12 @@ getreadiness() {
 }
 
 PATH=$PATH:$COVERITY_PATH
-make clean
-rm -f ${PROJECT_NAME}.tgz
-if (cov-build --dir cov-int make -j 4); then
-	tar cvfz ${PROJECT_NAME}.tgz cov-int
+if ! $SKIP_BUILD; then
+	make clean
+	rm -f ${PROJECT_NAME}.tgz
+	if (cov-build --dir cov-int make -j 4); then
+		tar cvfz ${PROJECT_NAME}.tgz cov-int
+	fi
 fi
 
 if [[ $? == 0 ]]; then
