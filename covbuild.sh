@@ -11,7 +11,7 @@ COVERITY_PATH=$HOME/Public/cov-analysis-linux64-7.7.0/bin
 while [[ $# > 1 ]]; do
 	case $1 in
 	-s, --skip-build)
-		SKIP_BUILD=true
+		SKIP_BUILD=1
 		shift
 		;;
 	*)
@@ -30,7 +30,7 @@ getreadiness() {
 }
 
 PATH=$PATH:$COVERITY_PATH
-if ! $SKIP_BUILD; then
+if [[ $SKIP_BUILD != 1 ]]; then
 	make clean
 	rm -f ${PROJECT_NAME}.tgz
 	if (cov-build --dir cov-int make -j 4); then
