@@ -4,12 +4,13 @@
 
 using Game::Boss;
 
-Boss::Boss(const sf::Vector2f& pos) :
-	Game::FixedEntity(pos, Game::getAsset("test", "boss.png")),
-	Game::Lifed(MAX_LIFE),
-	Game::Scored(VALUE),
-	Game::Sounded({ Game::getAsset("test", "boss_death.ogg"),
+Boss::Boss(const sf::Vector2f& pos)
+	: Game::NonAnimated(pos, Game::getAsset("test", "boss.png"))
+	, Game::Lifed(MAX_LIFE)
+	, Game::Scored(VALUE)
+	, Game::Sounded({ Game::getAsset("test", "boss_death.ogg"),
 			Game::getAsset("test", "boss_hurt.ogg") })
+	, Game::Clocked({ &explClock, &hurtClock })
 {
 	transparentTo.bullets = true;
 
@@ -33,7 +34,7 @@ void Boss::draw(sf::RenderTarget& window) {
 			sprite.setColor(sf::Color(200, 0, 0, 255));
 		}
 	}
-	Game::Entity::draw(window);
+	Game::NonAnimated::draw(window);
 }
 
 bool Boss::occupies(const sf::Vector2i& tile) const {

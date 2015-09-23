@@ -11,6 +11,7 @@ namespace Game {
 class Points : public Game::Temporary, public Game::ShadedText {
 	const sf::Vector2f initialPos;
 	float speed = 30.f;
+
 public:
 	constexpr static unsigned short CHARACTER_SIZE = 10;
 
@@ -21,10 +22,6 @@ public:
 	void play() override {}
 	bool isPlaying() const override {
 		return (initialPos - ShadedText::pos).y < 20;
-	}
-
-	void setOrigin(const sf::Vector2f& pos) override { 
-		Game::ShadedText::setOrigin(pos); 
 	}
 
 	sf::Vector2f getPosition() const {
@@ -39,6 +36,8 @@ public:
 	}
 
 	void draw(sf::RenderTarget& window) override;
+
+	using Game::ShadedText::setOrigin;
 };
 
 }

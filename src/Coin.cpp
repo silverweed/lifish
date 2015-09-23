@@ -5,10 +5,10 @@
 using Game::Coin;
 using Game::TILE_SIZE;
 
-Coin::Coin(const sf::Vector2f& pos) :
-	Game::FixedEntity(pos, Game::getAsset("test", "coin.png")),
-	Game::Scored(VALUE),
-	Game::Sounded({ Game::getAsset("sounds", "coin.ogg") })
+Coin::Coin(const sf::Vector2f& pos)
+	: Game::Animated(pos, Game::getAsset("test", "coin.png"))
+	, Game::Scored(VALUE)
+	, Game::Sounded({ Game::getAsset("sounds", "coin.ogg") })
 {
 	texture.setSmooth(true);
 
@@ -22,6 +22,8 @@ Coin::Coin(const sf::Vector2f& pos) :
 	animatedSprite.setLooped(true);
 	animatedSprite.setFrameTime(sf::seconds(0.02));
 	animatedSprite.pause();
+
+	_addClock(&grabClock);
 }
 
 void Coin::grab() {

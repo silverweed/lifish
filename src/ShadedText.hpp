@@ -34,6 +34,8 @@ public:
 
 	void setOrigin(const sf::Vector2f& origin);
 
+	void moveSprites(const sf::Vector2f& offset);
+
 	void setCharacterSize(unsigned int size);
 
 	sf::Vector2f getPosition() const { return fgtext.getPosition(); }

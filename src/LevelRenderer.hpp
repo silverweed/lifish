@@ -6,7 +6,6 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System/NonCopyable.hpp>
 #include "Level.hpp"
-#include "FixedEntity.hpp"
 #include "LifedMovingEntity.hpp"
 #include "Player.hpp"
 #include "Teleport.hpp"
@@ -19,6 +18,7 @@
 #include "AlienSprite.hpp"
 #include "Letter.hpp"
 #include "Bonus.hpp"
+#include "Clocked.hpp"
 
 namespace Game {
 
@@ -26,9 +26,9 @@ namespace Game {
  * The LevelRenderer manages a Level during the game, updating its
  * entities, time and so on.
  */
-class LevelRenderer : private sf::NonCopyable {
+class LevelRenderer final : public Game::Clocked, private sf::NonCopyable {
 	// For Fixed Entities we use a fixed-size array for faster lookup
-	using FixedEntityList = std::array<Game::FixedEntity*, LEVEL_WIDTH * LEVEL_HEIGHT>;
+	using FixedEntityList = std::array<Game::Entity*, LEVEL_WIDTH * LEVEL_HEIGHT>;
 	using MovingEntityList = std::vector<Game::LifedMovingEntity*>;
 	using TemporaryEntityList = std::vector<Game::Temporary*>;
 	using BulletList = std::vector<Game::Bullet*>;
@@ -40,7 +40,7 @@ class LevelRenderer : private sf::NonCopyable {
 	Game::Level *level = nullptr;
 
 	/** The time counter */
-	sf::Clock levelTimeClock;
+	sftools::Chronometer levelTimeClock;
 
 	bool hurryUp = false;
 	bool hurryUpWarningGiven = false;
@@ -48,7 +48,7 @@ class LevelRenderer : private sf::NonCopyable {
 	bool extraGame = false;
 	/** The number of coins in the level, used for EXTRA game. */
 	unsigned short coinsNum = 0;
-	sf::Clock extraGameClock;
+	sftools::Chronometer extraGameClock;
 	/** The alien sprite displayed during EXTRA game */
 	Game::AlienSprite alienSprite;
 
@@ -91,7 +91,7 @@ class LevelRenderer : private sf::NonCopyable {
 
 	/** The bosses, if any */
 	BossList bosses;
-	sf::Clock bossShootClock;
+	sftools::Chronometer bossShootClock;
 	unsigned short bossClockCycle = 0;
 
 	/** The first Teleport of the level, if any. Keeping the

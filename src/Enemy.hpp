@@ -24,9 +24,9 @@ class Enemy : public Game::LifedMovingEntity, public Game::Scored {
 	AIBoundFunction ai;
 
 	/** Keep track of the time past since last yell */
-	sf::Clock yellClock;
+	sftools::Chronometer yellClock;
 
-	sf::Clock attackClock;
+	sftools::Chronometer attackClock;
 	bool shooting = false;
 
 	/** True when the enemy is shooting and atktype is BLOCKING */
@@ -41,10 +41,11 @@ class Enemy : public Game::LifedMovingEntity, public Game::Scored {
 	 */
 	bool dashing = false;
 	/** Used to keep a cooldown between two following dashes */
-	sf::Clock dashClock;
+	sftools::Chronometer dashClock;
 	float originalSpeed;
 
 	bool _isTransparentTo(const Entity *const e) const override;
+
 public:
 	constexpr static float BASE_SPEED = 75.f;
 	/** The different types of attacks.
@@ -118,12 +119,6 @@ public:
 
 	void move(const Game::Direction dir) override;
 
-	void setOrigin(const sf::Vector2f& pos) override {
-		for (unsigned short i = 0; i < 4; ++i)
-			shootFrame[i].setOrigin(pos);
-		Game::MovingEntity::setOrigin(pos);
-	}
-
 	void block() { blocked = true; }
 	bool isBlocked() const { return blocked; }
 
@@ -137,6 +132,12 @@ public:
 	const std::string& getSoundFile(unsigned short n = 0) const override;
 
 	void yell();
+
+	void setOrigin(const sf::Vector2f& origin) override {
+		Game::MovingEntity::setOrigin(origin);
+		for (auto& frame : shootFrame)
+			frame.setOrigin(origin);
+	}
 };
 
 }

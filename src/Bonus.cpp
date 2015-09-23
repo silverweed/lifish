@@ -17,11 +17,12 @@ std::discrete_distribution<unsigned short> Game::bonusTypeDistribution
 	490 // no bonus
 };
 	
-Bonus::Bonus(const sf::Vector2f& pos, const unsigned short _type) :
-	Game::FixedEntity(pos, Game::getAsset("graphics", "bonuses.png")),
-	Game::Scored(VALUE),
-	Game::Sounded({ Game::getAsset("test", "bonus_grab.ogg") }),
-	type(_type)
+Bonus::Bonus(const sf::Vector2f& pos, const unsigned short _type)
+	: Game::NonAnimated(pos, Game::getAsset("graphics", "bonuses.png"))
+	, Game::Scored(VALUE)
+	, Game::Sounded({ Game::getAsset("test", "bonus_grab.ogg") })
+	, Game::Clocked(&expireClock)
+	, type(_type)
 {
 	sprite.setTextureRect(sf::IntRect(type * TILE_SIZE, 
 				(type / 10) * TILE_SIZE, TILE_SIZE, TILE_SIZE));
@@ -34,5 +35,5 @@ void Bonus::draw(sf::RenderTarget& window) {
 		if (5*diff - std::floor(5*diff) < 0.5)
 			return;
 	}
-	Game::FixedEntity::draw(window);
+	Game::NonAnimated::draw(window);
 }

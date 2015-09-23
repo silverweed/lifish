@@ -35,7 +35,6 @@ Player::Player(sf::Vector2f pos, const unsigned short id) :
 		animations[k].addFrame(sf::IntRect(i * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 	}
 
-	animatedSprite.setPosition(pos);
 	animatedSprite.setAnimation(animations[ANIM_DOWN]);
 	animatedSprite.setLooped(true);
 	animatedSprite.setFrameTime(sf::seconds(0.06));

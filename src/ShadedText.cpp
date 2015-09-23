@@ -39,6 +39,11 @@ void ShadedText::setOrigin(const sf::Vector2f& origin) {
 	fgtext.setOrigin(origin);
 }
 
+void ShadedText::moveSprites(const sf::Vector2f& offset) {
+	bgtext.move(offset);
+	fgtext.move(offset);
+}
+
 void ShadedText::setCharacterSize(unsigned int size) {
 	bgtext.setCharacterSize(size);
 	fgtext.setCharacterSize(size);

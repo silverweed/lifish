@@ -91,10 +91,10 @@ bool Level::init() {
 	return initialized;
 }
 
-void Level::setOrigin(const sf::Vector2f& origin) {
+void Level::setOrigin(const sf::Vector2f& offset) {
 	for (unsigned short i = 0; i < bgTiles.size(); ++i)
-		bgTiles[i].setOrigin(origin);
-	levelnumtext->setOrigin(origin);
+		bgTiles[i].setOrigin(offset);
+	levelnumtext->setOrigin(offset);
 }
 
 void Level::draw(sf::RenderTarget& window) {

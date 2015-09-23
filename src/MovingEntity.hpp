@@ -30,7 +30,7 @@ inline Direction oppositeDirection(const Direction dir) {
 /**
  * Entities which can move (enemies, players, bullets, ...)
  */
-class MovingEntity : public Game::Entity, public Game::Animated {
+class MovingEntity : public Game::Animated {
 protected:
 	constexpr static unsigned short DEATH_TIME = 2000; // ms
 
@@ -47,15 +47,16 @@ protected:
 	short remainingLives = 0;
 
 	int shieldTime = -1; // milliseconds; negative means "no shield"
-	sf::Clock shieldClock;
+	sftools::Chronometer shieldClock;
 
 	int speedyTime = -1; // milliseconds; negative means "no speedy"
-	sf::Clock speedyClock;
+	sftools::Chronometer speedyClock;
 
-	sf::Clock deathClock;
+	sftools::Chronometer deathClock;
 
 	virtual bool _isTransparentTo(const Entity *const e) const = 0;
 	virtual void _ensureAlign();
+
 public:
 	bool colliding = false;
 	/** Whether this entity is affected by Teleports or not */
@@ -74,9 +75,6 @@ public:
 
 	/** Use Animated::draw, not Entity's */
 	virtual void draw(sf::RenderTarget& window) override;
-	virtual void setOrigin(const sf::Vector2f& _origin) override { 
-		Game::Animated::setOrigin(_origin);
-	}
 
 	virtual void move();
 	virtual void move(const Direction direction);
@@ -92,11 +90,6 @@ public:
 
 	virtual bool canGo(const Game::Direction direction, 
 			const Game::LevelRenderer *const lr) const; 
-
-	virtual void setPosition(const sf::Vector2f& _pos) override {
-		Game::Animated::setPosition(_pos);
-		Game::Entity::setPosition(_pos);
-	}
 
 	virtual void setHurt(bool b);
 	bool isHurt() const { return hurt; }

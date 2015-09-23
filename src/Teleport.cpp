@@ -6,7 +6,7 @@ using Game::Teleport;
 using Game::TILE_SIZE;
 
 Teleport::Teleport(const sf::Vector2f& _pos) 
-	: FixedEntity(_pos, Game::getAsset("graphics", "teleport.png"))
+	: Game::Animated(_pos, Game::getAsset("graphics", "teleport.png"))
 {
 	animations[0].setSpriteSheet(texture);
 
@@ -14,11 +14,12 @@ Teleport::Teleport(const sf::Vector2f& _pos)
 	for (unsigned short i = 0; i < 8; ++i)
 		animations[0].addFrame(sf::IntRect(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 	
-	animatedSprite.setPosition(pos);
 	animatedSprite.setAnimation(animations[0]);
 	animatedSprite.setLooped(true);
 	animatedSprite.setFrameTime(sf::seconds(0.15));
 	animatedSprite.play();
+
+	_addClock(&disableClock);
 }
 
 void Teleport::draw(sf::RenderTarget& window) {

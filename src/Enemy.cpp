@@ -2,8 +2,8 @@
 
 using Game::Enemy;
 
-Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
-	Game::LifedMovingEntity(
+Enemy::Enemy(sf::Vector2f pos, const unsigned short id)
+	: Game::LifedMovingEntity(
 			pos, 
 			// Texture
 			Game::getAsset("graphics", std::string("enemy") + Game::to_string(id) + std::string(".png")), 
@@ -16,9 +16,9 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
 				// Note: this is an invalid sound if enemy.attackType is not CONTACT. This is not an issue,
 				// since in that case, the sound never gets played, so the cache doesn't even load it.
 				Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_attack.ogg"))
-			}), 
-	Game::Scored(id * 100),
-	attackAlign(-1, -1)
+			}) 
+	, Game::Scored(id * 100)
+	, attackAlign(-1, -1)
 {
 	originalSpeed = speed = BASE_SPEED;
 	transparentTo.enemies = false;
@@ -54,11 +54,15 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id) :
 	for (unsigned short i = 0; i < death_n_frames; ++i) 
 		animations[ANIM_DEATH].addFrame(sf::IntRect((WALK_N_FRAMES + i) * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
-	animatedSprite.setPosition(pos);
 	animatedSprite.setAnimation(animations[ANIM_DOWN]);
 	animatedSprite.setLooped(true);
 	animatedSprite.setFrameTime(sf::seconds(0.12));
 	animatedSprite.pause();
+
+	_addClock(&attackClock);
+	_addClock(&yellClock);
+	_addClock(&dashClock);
+	attackClock.reset(true);
 }
 
 Enemy::~Enemy() {
@@ -77,6 +81,7 @@ bool Enemy::isRecharging() const {
 }
 
 void Enemy::shoot() {
+	std::cerr<<"shoot"<<std::endl;
 	attackClock.restart();
 	animatedSprite.setAnimation(animations[directionToUshort(direction)]);
 	shooting = true;

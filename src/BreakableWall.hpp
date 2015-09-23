@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Wall.hpp"
 #include "Animated.hpp"
 #include "Lifed.hpp"
 #include "Scored.hpp"
@@ -11,12 +10,11 @@ namespace Game {
 /**
  * A breakable wall
  */
-class BreakableWall : 
-	public Game::Wall,
-	public Game::Lifed,
-	public Game::Animated,
-	public Game::Scored,
-	public Game::Sounded	
+class BreakableWall
+	: public Game::Animated
+	, public Game::Lifed
+	, public Game::Scored
+	, public Game::Sounded
 {
 	bool destroyed = false;
 
@@ -28,9 +26,6 @@ public:
 
 	// Use animatedSprite, not the default sprite.
 	void draw(sf::RenderTarget& window) override;
-	void setOrigin(const sf::Vector2f& _origin) override {
-		Game::Animated::setOrigin(_origin);
-	}
 
 	void destroy();
 	bool isDestroyed() const { return destroyed && !animatedSprite.isPlaying(); }

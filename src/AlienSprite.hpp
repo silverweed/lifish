@@ -23,6 +23,7 @@ class AlienSprite : public Game::Animated, public Game::Sounded {
 	// Suppress compiler's warnings and prevent using
 	// the base draw() function
 	using Game::Animated::draw;
+
 public:
 	AlienSprite();
 

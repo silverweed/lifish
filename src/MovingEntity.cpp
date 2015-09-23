@@ -19,9 +19,13 @@ std::ostream& Game::operator<<(std::ostream& stream, const Direction& dir) {
 }
 
 MovingEntity::MovingEntity(const sf::Vector2f& pos, const std::string& texture_name) 
-	: Entity(pos, texture_name)
+	: Game::Animated(pos, texture_name)
 {
 	transparentTo.bullets = false;
+
+	_addClock(&speedyClock);
+	_addClock(&shieldClock);
+	_addClock(&deathClock);
 }
 
 void MovingEntity::move() {

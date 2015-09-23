@@ -4,20 +4,11 @@
 
 using Game::Entity;
 
-Entity::Entity(const sf::Vector2f& _pos) : pos(_pos) {
-	sprite.setPosition(pos);
-}
-
 Entity::Entity(const sf::Vector2f& _pos, const std::string& texture_name)
 	: pos(_pos)
 {
-	Game::cache.loadTexture(texture, texture_name); 
-	sprite.setTexture(texture);
-	sprite.setPosition(pos);
-}
-
-void Entity::draw(sf::RenderTarget& window) {
-	window.draw(sprite);
+	if (texture_name.length() > 0)
+		Game::cache.loadTexture(texture, texture_name); 
 }
 
 bool Entity::isAligned(const char axis) const {
@@ -27,8 +18,4 @@ bool Entity::isAligned(const char axis) const {
 	}
 	return (unsigned short)pos.x % Game::TILE_SIZE == 0 
 		&& (unsigned short)pos.y % Game::TILE_SIZE == 0;
-}
-
-void Entity::setOrigin(const sf::Vector2f& _origin) {
-	sprite.setOrigin(_origin);
 }

@@ -11,11 +11,11 @@ unsigned short Letter::randomId() {
 	return dist(Game::rng);
 }
 
-Letter::Letter(const sf::Vector2f& pos, unsigned short _id) :
-	Game::FixedEntity(pos, Game::getAsset("test", "extra_letters.png")),
-	Game::Scored(100),
-	Game::Sounded({ Game::getAsset("test", "letter_grab.ogg") }),
-	id(_id)
+Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
+	: Game::Animated(pos, Game::getAsset("test", "extra_letters.png"))
+	, Game::Scored(100)
+	, Game::Sounded({ Game::getAsset("test", "letter_grab.ogg") })
+	, id(_id)
 {
 	// Letters are indexed 0 to N_EXTRA_LETTERS - 1.
 	if (id > Game::N_EXTRA_LETTERS - 1) 
@@ -40,10 +40,11 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id) :
 	}
 
 	animatedSprite.setAnimation(animations[id]);
-	animatedSprite.setPosition(pos);
 	animatedSprite.setLooped(false);
 	animatedSprite.setFrameTime(sf::seconds(0.1));
 	animatedSprite.pause();
+
+	_addClock(&transitionClock);
 }
 
 void Letter::checkTransition() {

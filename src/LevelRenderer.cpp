@@ -15,7 +15,9 @@
 
 using Game::LevelRenderer;
 
-LevelRenderer::LevelRenderer(std::initializer_list<Game::Player*> the_players) {
+LevelRenderer::LevelRenderer(std::initializer_list<Game::Player*> the_players)
+	: Game::Clocked({ &bossShootClock, &levelTimeClock, &extraGameClock })
+{
 	fixedEntities.fill(nullptr);
 
 	unsigned short i = 0;
@@ -759,7 +761,7 @@ void LevelRenderer::detectCollisions() {
 				entity->colliding = true;
 				continue;
 			}
-			FixedEntity *other = fixedEntities[idx];
+			Game::Entity *other = fixedEntities[idx];
 			if (other != nullptr) {
 				if ((is_player && !other->transparentTo.players) 
 						|| (!is_player && !other->transparentTo.enemies))
@@ -837,7 +839,7 @@ void LevelRenderer::detectCollisions() {
 				Game::cache.playSound(bullet->getSoundFile(Game::Sounds::DEATH));
 				continue;
 			}
-			FixedEntity *other = fixedEntities[idx];
+			Game::Entity *other = fixedEntities[idx];
 			if (other != nullptr && !other->transparentTo.bullets) {
 				bullet->destroy();
 				Game::cache.playSound(bullet->getSoundFile(Game::Sounds::DEATH));
@@ -1139,6 +1141,7 @@ void LevelRenderer::_spawnPoints(const sf::Vector2f& pos, const int amount, bool
 			: new Game::Points(pos, Game::to_string(amount));
 	const auto bounds = points->getGlobalBounds();
 	points->setPosition(points->getPosition() + sf::Vector2f((TILE_SIZE - bounds.width) / 2., 0.f));
+	points->setOrigin(origin);
 	_pushTemporary(points);
 }
 
@@ -1147,6 +1150,7 @@ void LevelRenderer::spawnDamage(const sf::Vector2f& pos, const int amount) {
 	const auto bounds = dmg->getGlobalBounds();
 	dmg->setColor(sf::Color::Red, sf::Color::White);
 	dmg->setPosition(dmg->getPosition() + sf::Vector2f((TILE_SIZE - bounds.width) / 2., 0.f));
+	dmg->setOrigin(origin);
 	_pushTemporary(dmg);
 }
 
@@ -1352,7 +1356,7 @@ bool LevelRenderer::isLevelClear() const {
 
 void LevelRenderer::resetFrameClocks() {
 	for (auto& e : movingEntities) {
-		e->resetFrameClock();
+		e->resetClock();
 	}
 }
 	

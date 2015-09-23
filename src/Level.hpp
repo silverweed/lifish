@@ -84,6 +84,7 @@ class Level : public Game::Drawable, private sf::NonCopyable {
 
 	/** Whether this level has been initialized or not */
 	bool initialized = false;
+
 public:
 	/** This is public for convenience */
 	struct {

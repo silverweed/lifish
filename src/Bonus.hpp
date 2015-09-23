@@ -1,22 +1,28 @@
 #pragma once
 
 #include <random>
-#include "FixedEntity.hpp"
 #include "Scored.hpp"
 #include "Sounded.hpp"
+#include "NonAnimated.hpp"
+#include "Clocked.hpp"
 
 namespace Game {
 
 /**
  * The bonuses dropped by walls
  */
-class Bonus : public Game::FixedEntity, public Game::Scored, public Game::Sounded {
+class Bonus 
+	: public Game::NonAnimated
+	, public Game::Scored
+	, public Game::Sounded
+	, public Game::Clocked
+{
 	constexpr static float EXPIRE_TIME = 10; // s
 	constexpr static int VALUE = 100; // FIXME
 
 	const unsigned short type;
 
-	sf::Clock expireClock;
+	sftools::Chronometer expireClock;
 public:
 	constexpr static unsigned short N_BONUS_TYPES = 9;
 	constexpr static unsigned short N_PERMANENT_BONUS_TYPES = 5;

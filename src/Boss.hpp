@@ -1,9 +1,10 @@
 #pragma once
 
-#include "FixedEntity.hpp"
+#include "NonAnimated.hpp"
 #include "Lifed.hpp"
 #include "Scored.hpp"
 #include "Sounded.hpp"
+#include "Clocked.hpp"
 #include <array>
 
 namespace Game {
@@ -13,11 +14,12 @@ namespace Game {
  * It is endued with `N_SHOOTING_POINTS` coordinates whence it fires
  * its BossBullets.
  */
-class Boss :
-	public Game::FixedEntity, 
-	public Game::Lifed,
-	public Game::Scored,
-	public Game::Sounded
+class Boss
+	: public Game::NonAnimated
+	, public Game::Lifed
+	, public Game::Scored
+	, public Game::Sounded
+	, public Game::Clocked
 {
 	constexpr static unsigned int VALUE = 5000;
 	constexpr static unsigned short MAX_LIFE = 20; 
@@ -27,9 +29,10 @@ class Boss :
 	std::array<sf::Vector2f, N_SHOOTING_POINTS> shootingPoints;
 
 	bool isHurt = false;
-	sf::Clock hurtClock;
+	sftools::Chronometer hurtClock;
 
 	bool dead = false;
+
 public:
 	/** A Boss is 3x3 tiles */
 	constexpr static unsigned short SIZE = 3;
@@ -39,7 +42,7 @@ public:
 	constexpr static double MAX_RANGE = Game::TILE_SIZE * 9;
 
 	/** The clock used to spawn BossExplosions upon this boss's death */
-	sf::Clock explClock;
+	sftools::Chronometer explClock;
 
 	Boss(const sf::Vector2f& pos);
 

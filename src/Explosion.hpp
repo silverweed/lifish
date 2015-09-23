@@ -49,7 +49,7 @@ public:
 
 	void draw(sf::RenderTarget& window) override;
 	
-	void setOrigin(const sf::Vector2f& pos) override {
+	void setOrigin(const sf::Vector2f& pos) {
 		animatedSprite.setOrigin(pos);
 		explosionH.setOrigin(pos);
 		explosionV.setOrigin(pos);

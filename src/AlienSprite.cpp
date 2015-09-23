@@ -6,8 +6,9 @@
 using Game::AlienSprite;
 using Game::Direction;
 
-AlienSprite::AlienSprite() : 
-	Game::Sounded({ Game::getAsset("test", "alien_death.ogg") })
+AlienSprite::AlienSprite()
+	: Game::Animated(sf::Vector2f(0, 0))
+	, Game::Sounded({ Game::getAsset("test", "alien_death.ogg") })
 {
 	Game::cache.loadTexture(texture, Game::getAsset("test", "aliensprite.png"));
 
