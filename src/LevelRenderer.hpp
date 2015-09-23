@@ -238,6 +238,10 @@ public:
 
 	/** Resets all self and children's internal clocks */
 	void resetClocks();
+
+	/** Pauses all entities' and self clocks */
+	void pauseClocks();
+	void resumeClocks();
 };
 
 }

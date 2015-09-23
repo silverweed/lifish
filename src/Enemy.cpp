@@ -81,7 +81,6 @@ bool Enemy::isRecharging() const {
 }
 
 void Enemy::shoot() {
-	std::cerr<<"shoot"<<std::endl;
 	attackClock.restart();
 	animatedSprite.setAnimation(animations[directionToUshort(direction)]);
 	shooting = true;

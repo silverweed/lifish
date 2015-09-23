@@ -1415,3 +1415,80 @@ void LevelRenderer::_grabBonus(Game::MovingEntity *const entity,
 	delete bonus;
 	fixedEntities[idx] = nullptr;
 }
+
+void LevelRenderer::pauseClocks() {
+	// Pause our own clocks
+	pauseClock();
+
+	for (auto& entity : fixedEntities) {
+		auto ce = dynamic_cast<Game::Clocked*>(entity);
+		if (ce != nullptr)
+			ce->pauseClock();
+	}
+	for (auto& entity : movingEntities)
+		entity->pauseClock();
+
+	for (auto& boss : bosses)
+		boss->pauseClock();
+
+	for (auto& tmp : temporary)
+		tmp->pauseClock();
+
+	for (auto& expl : explosions)
+		expl->pauseClock();
+
+	for (unsigned short i = 0; i < bombs.size(); ++i)
+		for (auto& bomb : bombs[i])
+			if (bomb != nullptr)
+				bomb->pauseClock();
+
+	for (auto& bullet : bullets)
+		bullet->pauseClock();
+
+	if (gameOverText != nullptr)
+		gameOverText->Clocked::pauseClock();
+
+	if (extraGameText != nullptr)
+		extraGameText->Clocked::pauseClock();
+	
+	if (hurryUpText != nullptr)
+		hurryUpText->Clocked::pauseClock();
+}
+
+void LevelRenderer::resumeClocks() {
+	resumeClock();
+
+	for (auto& entity : fixedEntities) {
+		auto ce = dynamic_cast<Game::Clocked*>(entity);
+		if (ce != nullptr)
+			ce->resumeClock();
+	}
+	for (auto& entity : movingEntities)
+		entity->resumeClock();
+
+	for (auto& boss : bosses)
+		boss->resumeClock();
+
+	for (auto& tmp : temporary)
+		tmp->resumeClock();
+
+	for (auto& expl : explosions)
+		expl->resumeClock();
+
+	for (unsigned short i = 0; i < bombs.size(); ++i)
+		for (auto& bomb : bombs[i])
+			if (bomb != nullptr)
+				bomb->resumeClock();
+
+	for (auto& bullet : bullets)
+		bullet->resumeClock();
+
+	if (gameOverText != nullptr)
+		gameOverText->Clocked::resumeClock();
+
+	if (extraGameText != nullptr)
+		extraGameText->Clocked::resumeClock();
+	
+	if (hurryUpText != nullptr)
+		hurryUpText->Clocked::resumeClock();
+}

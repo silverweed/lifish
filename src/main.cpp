@@ -288,8 +288,9 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 					// Pause
 					if (Game::music != nullptr)
 						Game::music->pause();
+					lr.pauseClocks();
 					handleScreenEvents(window, PREFERENCES_SCREEN, PREFERENCES_SCREEN | CONTROLS_SCREEN);
-					lr.resetFrameClocks();
+					lr.resumeClocks();
 					Game::playMusic();
 					break;
 				default:
