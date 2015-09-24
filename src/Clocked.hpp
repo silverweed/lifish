@@ -3,11 +3,11 @@
 #include <initializer_list>
 #include "Chronometer.hpp"
 
+namespace Game {
+
 /**
  * An object with one or more pausable clocks
  */
-namespace Game {
-
 class Clocked {
 	std::vector<sftools::Chronometer*> clocks;
 
@@ -17,11 +17,11 @@ protected:
 	}
 
 public:
-	Clocked(sftools::Chronometer* clock) {
+	explicit Clocked(sftools::Chronometer* clock) {
 		clocks.push_back(clock);
 	}
 
-	Clocked(std::initializer_list<sftools::Chronometer*> _clocks) {
+	explicit Clocked(std::initializer_list<sftools::Chronometer*> _clocks) {
 		for (auto& c : _clocks)
 			clocks.push_back(c);
 	}
@@ -30,6 +30,7 @@ public:
 		for (auto& clock : clocks)
 			clock->pause();
 	}
+
 	virtual void resumeClock() {
 		for (auto& clock : clocks)
 			clock->resume();

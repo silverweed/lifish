@@ -27,8 +27,8 @@ HomeScreen::HomeScreen() : Screen() {
 
 	const auto size = 24;
 	const float spacing = 1.8;
-	auto text = new Game::ShadedText(font, "Start Game", sf::Vector2f(0, 0));
 
+	auto text = new Game::ShadedText(font, "Start Game", sf::Vector2f(0, 0));
 	text->setCharacterSize(size);
 	auto pos = Game::center(text->getGlobalBounds(), win_bounds);
 	text->setPosition(pos);
@@ -55,10 +55,7 @@ HomeScreen::HomeScreen() : Screen() {
 	texts["exit"] = text;
 
 	// Footer
-	auto txt = new sf::Text;
-	txt->setFont(*Game::cache.loadFont(font));
-	txt->setCharacterSize(10);
-	txt->setString("lifish v." VERSION " rev." COMMIT );
+	auto txt = new sf::Text("lifish v." VERSION " rev." COMMIT, *Game::cache.loadFont(font), 10);
 	txt->setPosition(5, win_bounds.height - 18);
 	elements.push_back(txt);
 }

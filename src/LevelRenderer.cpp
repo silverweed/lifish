@@ -34,9 +34,9 @@ LevelRenderer::LevelRenderer(std::initializer_list<Game::Player*> the_players)
 }
 
 LevelRenderer::~LevelRenderer() {
-	for (unsigned short i = 0; i < players.size(); ++i)
-		if (players[i] != nullptr)
-			delete players[i];
+	for (unsigned short i = 0; i < _players.size(); ++i)
+		if (_players[i] != nullptr)
+			delete _players[i];
 	_clearEntities();
 }
 
@@ -1112,13 +1112,19 @@ bool LevelRenderer::isPlayer(const Game::Entity *const e) const {
 	return false;
 }
 
-bool LevelRenderer::removePlayer(const unsigned short id) {
+bool LevelRenderer::removePlayer(const unsigned short id, bool overrideInternal) {
 	movingEntities.erase(std::remove(movingEntities.begin(), 
 				movingEntities.end(), players[id-1]), movingEntities.end());
-	delete players[id-1];
-	_players[id-1] = players[id-1] = nullptr;
+
+	players[id-1] = nullptr;
+	if (overrideInternal) {
+		delete _players[id-1];
+		_players[id-1] = nullptr;
+	}
+
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
 		if (players[i] != nullptr) return true;
+
 	return false;
 }
 
@@ -1382,12 +1388,20 @@ void LevelRenderer::_grabBonus(Game::MovingEntity *const entity,
 			players[i]->powers.maxBombs += 1;
 		break;
 	case B::QUICK_FUSE:
-		if (players[i]->powers.bombFuseTime == Game::Bomb::DEFAULT_FUSE)
+		if (players[i]->powers.bombFuseTime == Game::Bomb::DEFAULT_FUSE) {
 			players[i]->powers.bombFuseTime /= 2.;
+			for (auto& b : bombs[i])
+				if (b != nullptr && !b->isIgnited() && !b->isExploding())
+					b->setFuseTime(players[i]->powers.bombFuseTime);
+		}
 		break;
 	case B::MAX_RANGE:
-		if (players[i]->powers.bombRadius < Game::Bomb::MAX_RADIUS)
+		if (players[i]->powers.bombRadius < Game::Bomb::MAX_RADIUS) {
 			players[i]->powers.bombRadius += 1;
+			for (auto& b : bombs[i])
+				if (b != nullptr && !b->isIgnited() && !b->isExploding())
+					b->setRadius(players[i]->powers.bombRadius);
+		}
 		break;
 	case B::HEALTH_SMALL:
 		if (players[i]->getLife() < Game::Player::MAX_LIFE)

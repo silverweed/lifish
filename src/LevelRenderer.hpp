@@ -22,6 +22,8 @@
 
 namespace Game {
 
+class SaveManager;
+
 /**
  * The LevelRenderer manages a Level during the game, updating its
  * entities, time and so on.
@@ -35,6 +37,8 @@ class LevelRenderer final : public Game::Clocked, private sf::NonCopyable {
 	using BossList = std::vector<Game::Boss*>;
 	using ExplosionList = std::vector<Game::Explosion*>;
 	using LetterList = std::vector<Game::Letter*>;
+
+	friend class Game::SaveManager;
 
 	/** The level this object is rendering */
 	Game::Level *level = nullptr;
@@ -85,7 +89,8 @@ class LevelRenderer final : public Game::Clocked, private sf::NonCopyable {
 	/** The players' pointers, guaranteed to always point to the players
 	 *  given to the constructor, even if the level tilemap doesn't contain all
 	 *  players, or a player is currently dead. This pointers become invalid
-	 *  after a call to removePlayer(), since that method deletes the i-th player.
+	 *  after a call to removePlayer(), or setPlayer(), since those methods delete
+	 *  the i-th player.
 	 */
 	std::array<Game::Player*, Game::MAX_PLAYERS> _players;
 
@@ -199,8 +204,10 @@ public:
 
 	/** Removes id-th player (starting from 1) from game and returns
 	 *  true if at least another player is still in game, false otherwise.
+	 *  If `overrideInternal` is true (default), also change _player, else
+	 *  just remove the "external" one.
 	 */
-	bool removePlayer(const unsigned short id);
+	bool removePlayer(const unsigned short id, bool overrideInternal = true);
 	void setPlayer(const unsigned short id, Game::Player *player);
 
 	void spawnDamage(const sf::Vector2f& pos, const int amount);

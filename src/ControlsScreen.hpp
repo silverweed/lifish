@@ -19,8 +19,8 @@ public:
 		return instance;
 	}
 
-	Game::Screen* getParent() override {
-		return &Game::PreferencesScreen::getInstance();
+	std::set<Game::Screen*> getParents() override {
+		return { &Game::PreferencesScreen::getInstance() };
 	}
 
 	void selectPlayer(unsigned short id);

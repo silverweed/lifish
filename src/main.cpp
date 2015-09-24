@@ -22,6 +22,7 @@
 #include <unordered_set>
 #include <stdexcept>
 #include <SFML/Graphics.hpp>
+#include "nfd.h"
 #include "Level.hpp"
 #include "LevelSet.hpp"
 #include "LevelRenderer.hpp"
@@ -31,6 +32,9 @@
 #include "HomeScreen.hpp"
 #include "PreferencesScreen.hpp"
 #include "ControlsScreen.hpp"
+#include "AboutScreen.hpp"
+#include "PauseScreen.hpp"
+#include "SaveManager.hpp"
 #include "utils.hpp"
 
 // Fallback in case the game wasn't compiled properly with cmake
@@ -50,17 +54,29 @@ using Game::LEVEL_HEIGHT;
 enum {
 	HOME_SCREEN        = 1,
 	PREFERENCES_SCREEN = 1 << 1,
-	CONTROLS_SCREEN    = 1 << 2
+	CONTROLS_SCREEN    = 1 << 2,
+	ABOUT_SCREEN       = 1 << 3,
+	PAUSE_SCREEN       = 1 << 4,
 };
 
 enum class GameAction {
 	START_GAME,
+	LOAD_GAME,
+	SAVE_GAME,
 	EXIT,
 	DO_NOTHING
 };
 
 /** Starts the game on `window`, using `level_set` and starting at level `start_level` */
-static void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned short start_level = 1);
+static void play_game(sf::RenderWindow& window, const std::string& level_set,
+		Game::LevelRenderer& lr, unsigned short start_level = 1);
+
+/** Displays a file browser to locate a lifish save file. Returns either the file name or ""
+ *  if the loading was canceled / had errors.
+ */
+static std::string display_load_dialog();
+static std::string display_save_dialog();
+
 /** Displays the menu, starting with `rootScreen` and exiting when it should change to a
  *  screen which is not enabled. All screens are enabled by default.
  */
@@ -88,6 +104,11 @@ int main(int argc, char **argv) {
 				break;
 			case 'v':
 				std::cout << "lifish v." << VERSION << " rev." << COMMIT << std::endl;	
+#if defined(__unix__) && defined(HAVE_GTK)
+				std::cout << "    | GTK support: yes" << std::endl;
+#elif defined(__unix__)
+				std::cout << "    | GTK support: no" << std::endl;
+#endif
 				return 0;
 			default:
 				std::cout << "Usage: " << argv[0] << " [-l <levelnum>] [-v] [levelset.json]\n"
@@ -118,10 +139,33 @@ int main(int argc, char **argv) {
 				Game::WINDOW_HEIGHT), "Lifish v." VERSION );
 
 	while (window.isOpen()) {
-		switch (handleScreenEvents(window, HOME_SCREEN)) {
+		switch (handleScreenEvents(window, HOME_SCREEN, ~0 & ~PAUSE_SCREEN)) {
 		case GameAction::START_GAME:
-			play_game(window, levelSet, start_level);
-			break;
+			{
+				Game::LevelRenderer lr {
+					new Game::Player(sf::Vector2f(0, 0), 1),
+					new Game::Player(sf::Vector2f(0, 0), 2)
+				};
+				play_game(window, levelSet, lr, start_level);
+				break;
+			}
+		case GameAction::LOAD_GAME:
+			{
+				const auto fname = display_load_dialog();
+				if (fname.length() > 0) {
+					Game::LevelRenderer lr {
+						new Game::Player(sf::Vector2f(0, 0), 1),
+						new Game::Player(sf::Vector2f(0, 0), 2)
+					};
+
+					if (Game::SaveManager::loadGame(fname, lr, start_level))
+						play_game(window, levelSet, lr, start_level);
+					else
+						std::cerr << "Couldn't load game from " << fname 
+							  << ": the save file is probably corrupt." << std::endl;
+				}
+				break;
+			}
 		case GameAction::EXIT:
 			window.close();
 			break;
@@ -133,7 +177,9 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned short start_level) {
+void play_game(sf::RenderWindow& window, const std::string& level_set,
+		Game::LevelRenderer& lr, unsigned short start_level)
+{
 	bool vsync = false;
 
 	for (unsigned short i = 0; i < Game::playerContinues.size(); ++i)
@@ -146,10 +192,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 	// Create the level renderer and side panel and attach the 1st level to them
 	Game::Level *level = levelset.getLevel(start_level);
 	levelset.printInfo();
-	Game::LevelRenderer lr {
-		new Game::Player(sf::Vector2f(0, 0), 1),
-		new Game::Player(sf::Vector2f(0, 0), 2)
-	};
+
 	lr.setOrigin(sf::Vector2f(-MAIN_WINDOW_SHIFT, 0.f));
 	lr.loadLevel(level);
 	Game::SidePanel panel(&lr);
@@ -285,14 +328,27 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 					window.setVerticalSyncEnabled(vsync);
 					break;
 				case sf::Keyboard::P:
-					// Pause
-					if (Game::music != nullptr)
-						Game::music->pause();
-					lr.pauseClocks();
-					handleScreenEvents(window, PREFERENCES_SCREEN, PREFERENCES_SCREEN | CONTROLS_SCREEN);
-					lr.resumeClocks();
-					Game::playMusic();
-					break;
+					{
+						// Pause
+						if (Game::music != nullptr)
+							Game::music->pause();
+						lr.pauseClocks();
+						auto action = GameAction::DO_NOTHING;
+						do {
+							action = handleScreenEvents(window, PAUSE_SCREEN,
+									PAUSE_SCREEN | PREFERENCES_SCREEN | CONTROLS_SCREEN);
+							if (action == GameAction::SAVE_GAME) {
+								const auto fname = display_save_dialog();
+								if (fname.length() > 0) {
+									Game::SaveManager::saveGame(fname, lr);
+								}
+								// TODO: display some confirm screen
+							};
+						} while (action == GameAction::SAVE_GAME);
+						lr.resumeClocks();
+						Game::playMusic();
+						break;
+					}
 				default:
 					break; 
 				}
@@ -678,6 +734,8 @@ GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enab
 		Game::HomeScreen        &home = Game::HomeScreen::getInstance();
 		Game::PreferencesScreen &preferences = Game::PreferencesScreen::getInstance();
 		Game::ControlsScreen    &controls = Game::ControlsScreen::getInstance();
+		Game::AboutScreen       &about = Game::AboutScreen::getInstance();
+		Game::PauseScreen       &pause = Game::PauseScreen::getInstance();
 	} screens;
 
 	// The currently displayed screen
@@ -693,6 +751,12 @@ GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enab
 	case CONTROLS_SCREEN: 
 		cur_screen = &screens.controls;
 		break;
+	case ABOUT_SCREEN:
+		cur_screen = &screens.about;
+		break;
+	case PAUSE_SCREEN:
+		cur_screen = &screens.pause;
+		break;
 	default:
 		throw std::invalid_argument("Called handleScreenEvents with non-existing screen!");
 	}
@@ -705,9 +769,21 @@ GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enab
 		enabled_screens.insert(&screens.preferences);
 	if (enabledScreens & CONTROLS_SCREEN) 
 		enabled_screens.insert(&screens.controls);
+	if (enabledScreens & ABOUT_SCREEN)
+		enabled_screens.insert(&screens.about);
+	if (enabledScreens & PAUSE_SCREEN)
+		enabled_screens.insert(&screens.pause);
 
 	window.clear();
 	cur_screen->draw(window);
+
+	auto find_parent = [&enabled_screens] (Game::Screen *screen) -> Game::Screen* {
+		for (const auto& parent : screen->getParents()) {
+			if (enabled_screens.find(parent) != enabled_screens.end())
+				return parent;
+		}
+		return nullptr;
+	};
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -722,9 +798,8 @@ GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enab
 				break;
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::Key::Escape) {
-					const auto parent = cur_screen->getParent();
-					if (parent != nullptr && enabled_screens.find(parent)
-							!= enabled_screens.end())
+					const auto parent = find_parent(cur_screen);
+					if (parent != nullptr)
 						cur_screen = parent;
 					else
 						return GameAction::DO_NOTHING;
@@ -737,8 +812,9 @@ GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enab
 					if (clicked == "start") {
 						return GameAction::START_GAME;
 					} else if (clicked == "load") {
-						// TODO
-						break;
+						return GameAction::LOAD_GAME;
+					} else if (clicked == "save") {
+						return GameAction::SAVE_GAME;
 					} else if (clicked == "preferences") {
 						if (enabledScreens & PREFERENCES_SCREEN)
 							cur_screen = &screens.preferences;
@@ -796,12 +872,12 @@ GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enab
 						screens.controls.toggleJoystick();
 						break;
 					} else if (clicked == "about") {
-						// TODO
+						if (enabledScreens & ABOUT_SCREEN)
+							cur_screen = &screens.about;
 						break;
 					} else if (clicked == "exit") {
-						const auto parent = cur_screen->getParent();
-						if (parent != nullptr && enabled_screens.find(parent)
-								!= enabled_screens.end())
+						const auto parent = find_parent(cur_screen);
+						if (parent != nullptr)
 							cur_screen = parent;
 						else
 							return GameAction::EXIT;
@@ -817,4 +893,55 @@ GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enab
 		window.display();
 	}
 	return GameAction::DO_NOTHING;
+}
+
+std::string display_load_dialog() {
+#if defined(__unix__) && !defined(HAVE_GTK)
+	std::cerr << "[ WARNING ] lifish was compiled without GTK support:\n"
+		     "if you want to load a game, place a file named `save.lifish`\n"
+		     "in the directory where the lifish executable resides."
+		  << std::endl;
+	return "save.lifish";
+#else
+	nfdchar_t *outPath = nullptr;
+	nfdresult_t result = NFD_OpenDialog("lifish", Game::pwd, &outPath);
+	switch (result) {
+	case NFD_OKAY:
+		{
+			std::string path(outPath);
+			free(outPath);
+			return path;
+		}
+	case NFD_ERROR:
+		std::cerr << "Error opening file: " << NFD_GetError() << std::endl;
+		// fallthrough
+	default:
+		return "";
+	}
+#endif
+}
+
+std::string display_save_dialog() {
+#if defined(__unix__) && !defined(HAVE_GTK)
+	std::cerr << "[ WARNING ] lifish was compiled without GTK support:\n"
+		     "the game will be saved in `" << Game::pwd << Game::DIRSEP << "save.lifish`."
+		  << std::endl;
+	return "save.lifish";
+#else
+	nfdchar_t *outPath = nullptr;
+	nfdresult_t result = NFD_SaveDialog("lifish", Game::pwd, &outPath);
+	switch (result) {
+	case NFD_OKAY:
+		{
+			std::string path(outPath);
+			free(outPath);
+			return path;
+		}
+	case NFD_ERROR:
+		std::cerr << "Error opening file: " << NFD_GetError() << std::endl;
+		// fallthrough
+	default:
+		return "";
+	}
+#endif
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "HomeScreen.hpp"
+#include "PauseScreen.hpp"
 
 namespace Game {
 
@@ -37,8 +38,11 @@ public:
 
 	void changeVolume(VolumeType which, VolumeAction what);
 
-	Game::Screen* getParent() override {
-		return &Game::HomeScreen::getInstance();
+	std::set<Game::Screen*> getParents() override {
+		return {
+			&Game::HomeScreen::getInstance(),
+			&Game::PauseScreen::getInstance()
+		};
 	}
 };
 

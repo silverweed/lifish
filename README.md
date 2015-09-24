@@ -5,7 +5,9 @@
 ## DEPENDENCIES ##
 
 * [SFML](https://github.com/SFML/SFML) >= 2.3
-* [nlohmann/json](https://github.com/nlohmann/json)
+* [GTK3](http://www.gtk.org/) (optional)
+* [nlohmann/json](https://github.com/nlohmann/json) (included in the source)
+* [mlabbe/nativefiledialog](https://github.com/mlabbe/nativefiledialog) (optional, included in the source)
 
 ### Building ###
 The game can be compiled on *nix (tested on Linux, OSX and FreeBSD) via `cmake . && make`
@@ -94,7 +96,9 @@ sprites should be, it means that asset hasn't been created yet.
   - [ ] Many other things
 
 ### LICENSE ###
-Lifish is free software licensed under the GNU GPL v3.
+Lifish is free software and its source code is licensed under the GNU GPL v3,
+unless otherwise specified (in particular, the dependencies specified above
+are under different licenses).
 See [LICENSE.txt](https://github.com/silverweed/lifish/blob/master/LICENSE.txt)
 for more information.
 

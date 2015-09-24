@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <set>
 #include <unordered_map>
 #include <SFML/System.hpp>
 #include "ShadedText.hpp"
@@ -47,7 +48,7 @@ public:
 	 */
 	virtual std::string triggerMouseClick(const sf::Vector2f& mousePos);
 
-	virtual Game::Screen* getParent() { return nullptr; }
+	virtual std::set<Game::Screen*> getParents() { return {}; }
 };
 
 }

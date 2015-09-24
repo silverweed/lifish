@@ -47,6 +47,9 @@ public:
 	void blowUp() { exploded = true; }
 
 	unsigned short getRadius() const { return radius; }
+	void setRadius(unsigned short r) { radius = r; }
+
+	void setFuseTime(unsigned short ft) { fuseTime = ft; }
 
 	const Game::Player *const getSourcePlayer() const { return sourcePlayer; }
 };
