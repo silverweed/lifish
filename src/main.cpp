@@ -297,6 +297,14 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 					break; 
 				}
 				break;
+			case sf::Event::JoystickDisconnected:
+				{
+					const auto id = event.joystickConnect.joystickId;
+					for (auto& use : Game::useJoystick)
+						if (use == short(id))
+							use = -1;
+					break;
+				}
 			default:
 				break;
 			}
@@ -362,11 +370,10 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 			if (players[i]->isAligned()) {
 				players[i]->prevAlign = Game::tile(players[i]->getPosition());
 				if (window.hasFocus() && !players[i]->isDying())
-					// FIXME: this currently assumes the "comfy" button has ID 2; this is true for the
-					// DualShock (where 2 is the X button), but is untested on other controllers, most
-					// notably the XBox joystick. In future, this will probably be configurable.
 					if ((Game::useJoystick[i] >= 0 
-							&& sf::Joystick::isButtonPressed(Game::useJoystick[i], Game::joystickBombKey[i]))
+							&& sf::Joystick::isButtonPressed(
+								Game::useJoystick[i], 
+								Game::joystickBombKey[i]))
 							|| sf::Keyboard::isKeyPressed(
 								Game::playerControls[i][Game::Control::BOMB]))
 						lr.dropBomb(i);
@@ -374,10 +381,10 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 
 			if (players[i]->isHurt()) {
 				players[i]->prepareHurtAnimation();
-				if (!players[i]->playHurtAnimation())
+				if (!players[i]->playHurtAnimation()) {
 					players[i]->setHurt(false);
+				}
 			} else if (players[i]->isDying()) {
-
 				players[i]->prepareDeathAnimation();
 				if (!players[i]->playDeathAnimation()) {
 					if (players[i]->getRemainingLives() <= 0) {
@@ -399,6 +406,8 @@ void play_game(sf::RenderWindow& window, const std::string& level_set, unsigned 
 		if (maybe_all_dead) {
 			bool all_dead = true;
 			Game::stopMusic();
+			// If all players are currently dead, resurrect any player
+			// which has spare Continues.
 			for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 				if (Game::playerContinues[i] > 0) {
 					if (displayContinue(window, panel, i+1)) {
@@ -516,6 +525,11 @@ bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 	sf::Text noText("NO", interlevel_font, 15);
 	noText.setPosition(sf::Vector2f(bounds.left + bounds.width, bounds.top));
 	window.draw(noText);
+
+	text.setString("Arrows / Enter to select");
+	text.setCharacterSize(10);
+	text.setPosition(Game::center(text.getGlobalBounds()) + sf::Vector2f(0.f, 6 * bounds.height));
+	window.draw(text);
 
 	panel.draw(window);
 	window.display();
