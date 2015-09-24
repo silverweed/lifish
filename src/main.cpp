@@ -104,10 +104,10 @@ int main(int argc, char **argv) {
 				break;
 			case 'v':
 				std::cout << "lifish v." << VERSION << " rev." << COMMIT << std::endl;	
-#if defined(__unix__) && defined(HAVE_GTK)
-				std::cout << "    | GTK support: yes" << std::endl;
-#elif defined(__unix__)
-				std::cout << "    | GTK support: no" << std::endl;
+#ifdef HAVE_NFD
+				std::cout << "    | NFD support: yes" << std::endl;
+#else
+				std::cout << "    | NFD support: no" << std::endl;
 #endif
 				return 0;
 			default:
@@ -896,7 +896,7 @@ GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enab
 }
 
 std::string display_load_dialog() {
-#if defined(__unix__) && !defined(HAVE_GTK)
+#ifndef HAVE_NFD
 	std::cerr << "[ WARNING ] lifish was compiled without GTK support:\n"
 		     "if you want to load a game, place a file named `save.lifish`\n"
 		     "in the directory where the lifish executable resides."
@@ -922,7 +922,7 @@ std::string display_load_dialog() {
 }
 
 std::string display_save_dialog() {
-#if defined(__unix__) && !defined(HAVE_GTK)
+#ifndef HAVE_NFD
 	std::cerr << "[ WARNING ] lifish was compiled without GTK support:\n"
 		     "the game will be saved in `" << Game::pwd << Game::DIRSEP << "save.lifish`."
 		  << std::endl;
