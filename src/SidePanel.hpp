@@ -26,8 +26,8 @@ class SidePanel final : public Game::Drawable, private sf::NonCopyable {
 	constexpr static unsigned short PLAYER_HEAD_WIDTH = 32,
 	                                PLAYER_HEAD_HEIGHT = 23,
 	                                N_LIVES_X = 55,
-	                                N_LIVES_Y_1 = 63,
-	                                N_LIVES_Y_2 = 271,
+	                                N_LIVES_Y_1 = 57,
+	                                N_LIVES_Y_2 = 265,
 	                                HEALTH_SYM_WIDTH = 17,
 	                                HEALTH_SYM_HEIGHT = 18,
 	                                HEALTH_SYM_POS_X = 15,
@@ -46,7 +46,7 @@ class SidePanel final : public Game::Drawable, private sf::NonCopyable {
 	                                SCORE_POS_X = 12,
 	                                SCORE_POS_Y_1 = 195,
 	                                SCORE_POS_Y_2 = 403;
-	const sf::Vector2f TIME_POS = sf::Vector2f(21, 233);
+	const sf::Vector2f TIME_POS = sf::Vector2f(21, 230);
 
 	/** The LevelRenderer this panel is connected with */
 	const Game::LevelRenderer *const lr;

@@ -74,7 +74,9 @@ void SidePanel::draw(sf::RenderTarget& window) {
 				Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),
 				ss.str(),
 				sf::Vector2f(N_LIVES_X, i == 0 ? N_LIVES_Y_1 : N_LIVES_Y_2));
-		nLivesText.setCharacterSize(14);
+		nLivesText.setCharacterSize(20);
+		nLivesText.setStyle(sf::Text::Bold);
+		nLivesText.setShadowSpacing(2, 2);
 		window.draw(nLivesText);
 
 
@@ -140,8 +142,8 @@ void SidePanel::draw(sf::RenderTarget& window) {
 						ss << "x" << player->powers.maxBombs;
 						Game::ShadedText text(
 								Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),
-								ss.str(), sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 3));
-						text.setCharacterSize(7);
+								ss.str(), sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 2));
+						text.setCharacterSize(11);
 						text.setShadowSpacing(1, 1);
 						window.draw(text);
 						break;
@@ -152,8 +154,8 @@ void SidePanel::draw(sf::RenderTarget& window) {
 						ss << "x" << player->powers.bombRadius;;
 						Game::ShadedText text(
 								Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),
-								ss.str(), sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 3));
-						text.setCharacterSize(7);
+								ss.str(), sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 2));
+						text.setCharacterSize(11);
 						text.setShadowSpacing(1, 1);
 						window.draw(text);
 						break;
@@ -182,13 +184,13 @@ void SidePanel::draw(sf::RenderTarget& window) {
 
 			// Draw score
 			ss.str("");
-			ss << std::setfill('0') << std::setw(6) << Game::score[i];
+			ss << std::setfill('0') << std::setw(7) << Game::score[i];
 			pos.x = SCORE_POS_X;
 			pos.y = i == 0 ? SCORE_POS_Y_1 : SCORE_POS_Y_2;
 			Game::ShadedText scoreText(
 					Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),
 					ss.str(), pos);
-			scoreText.setCharacterSize(14);
+			scoreText.setCharacterSize(16);
 			scoreText.setShadowSpacing(2, 2);
 			window.draw(scoreText);
 		}
@@ -215,9 +217,12 @@ void SidePanel::draw(sf::RenderTarget& window) {
 	Game::ShadedText timeText(
 			Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),
 			ss.str(), TIME_POS);
-	timeText.setCharacterSize(14);
-	if (minutes < 1 && seconds <= 30)
+	timeText.setCharacterSize(16);
+	timeText.setShadowSpacing(2, 2);
+	if (minutes < 1 && seconds <= 30) {
 		timeText.setColor(sf::Color(220, 0, 0, 255), sf::Color::Black);
+		timeText.setStyle(sf::Text::Bold);
+	}
 	window.draw(timeText);
 }
 

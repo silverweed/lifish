@@ -89,7 +89,7 @@ namespace Fonts {
 	constexpr auto INTERLEVEL = "pf_tempesta_seven_bold.ttf";
 	constexpr auto LEVELNUM = "pf_tempesta_seven.ttf";
 	constexpr auto DEBUG_INFO = "pf_tempesta_seven_condensed.ttf";
-	constexpr auto SIDE_PANEL = "pf_tempesta_seven_bold.ttf";
+	constexpr auto SIDE_PANEL = "Hack-Regular.ttf";//"pf_tempesta_seven_bold.ttf";
 	constexpr auto SCREEN = "pf_tempesta_seven_bold.ttf";
 }
 

@@ -1498,11 +1498,11 @@ void LevelRenderer::resumeClocks() {
 		bullet->resumeClock();
 
 	if (gameOverText != nullptr)
-		gameOverText->Clocked::resumeClock();
+		gameOverText->resumeClock();
 
 	if (extraGameText != nullptr)
-		extraGameText->Clocked::resumeClock();
+		extraGameText->resumeClock();
 	
 	if (hurryUpText != nullptr)
-		hurryUpText->Clocked::resumeClock();
+		hurryUpText->resumeClock();
 }
