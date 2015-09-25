@@ -32,6 +32,14 @@
 #include <SFML/Graphics.hpp>
 #include "GameCache.hpp"
 
+// Fallback in case the game wasn't compiled properly with cmake
+#ifndef VERSION
+#	define VERSION "unknown"
+#endif
+#ifndef COMMIT
+#	define COMMIT "unknown"
+#endif
+
 class LoopingMusic;
 
 /**

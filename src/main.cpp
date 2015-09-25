@@ -37,14 +37,6 @@
 #include "SaveManager.hpp"
 #include "utils.hpp"
 
-// Fallback in case the game wasn't compiled properly with cmake
-#ifndef VERSION
-#	define VERSION "unknown"
-#endif
-#ifndef COMMIT
-#	define COMMIT "unknown"
-#endif
-
 using Game::TILE_SIZE;
 using Game::MAIN_WINDOW_SHIFT;
 using Game::LEVEL_WIDTH;
