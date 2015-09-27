@@ -70,6 +70,10 @@ Class @ref nlohmann::basic_json is a good entry point for the documentation.
     using ssize_t = SSIZE_T;
 #endif
 
+// Edit by G.Parolini:
+// Provide Game::to_string, as TDM 4.8.1 doesn't have std::to_string
+#include "utils.hpp"
+
 /*!
 @brief namespace for Niels Lohmann
 @see https://github.com/nlohmann
@@ -5760,7 +5764,7 @@ class basic_json
                     /// use integer array index as key
                     case (value_t::array):
                     {
-                        return std::to_string(array_index);
+                        return Game::to_string(array_index);
                     }
 
                     /// use key from the object

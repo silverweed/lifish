@@ -43,7 +43,9 @@ bool Game::init() {
 	pwd[0] = '\0';
 
 #if defined(SFML_SYSTEM_WINDOWS)
-	GetModuleFileName(NULL, pwd, Game::PWD_BUFSIZE);
+	TCHAR _pwd[Game::PWD_BUFSIZE];
+	DWORD _sz = GetModuleFileName(NULL, _pwd, Game::PWD_BUFSIZE);
+	wcstombs(pwd, _pwd, _sz);
 
 #elif defined(SFML_SYSTEM_MACOS)
 	auto bufsz = static_cast<uint32_t>(Game::PWD_BUFSIZE);
