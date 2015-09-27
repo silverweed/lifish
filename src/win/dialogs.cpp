@@ -1,52 +1,75 @@
 #include "dialogs.hpp"
+#include <wchar.h>
 #include <iostream>
 
-std::wstring Game::Dialog::openFile() {
-	std::wstring path;
-
+static std::string _showDialog(bool open) {
 	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 					
 	if (!SUCCEEDED(hr)) {
 		std::cerr << "[ ERROR ] Couldn't initialize COM" << std::endl;
-		return path;
+		return "";
 	}
 
-	IFileOpenDialog *pFileOpen;
+	IFileDialog *fileDialog;
 
 	// Create the FileOpenDialog object.
-	hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, 
-		IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+	hr = CoCreateInstance(
+		open ? CLSID_FileOpenDialog : CLSID_FileSaveDialog, NULL, CLSCTX_ALL, 
+		open ? IID_IFileOpenDialog : IID_IFileSaveDialog,
+		reinterpret_cast<void**>(&fileDialog));
 
 	if (!SUCCEEDED(hr)) {
-		std::cerr << "[ ERROR ] Couldn't create FileOpenDialog instance" << std::endl;
-		return path;
+		std::cerr << "[ ERROR ] Couldn't create FileDialog instance" << std::endl;
+		return "";
 	}
-
-	hr = pFileOpen->Show(NULL);
+	
+	// TODO: set default folder = pwd
+	_COMDLG_FILTERSPEC filters[] = {
+		{ L"Lifish save file", L"*.lifish" }, 
+		{ L"All files", L"*.*" }
+	};
+	fileDialog->SetFileTypes(2, filters); 
+	fileDialog->SetDefaultExtension(L"lifish");
+	hr = fileDialog->Show(NULL);
 
 	if (!SUCCEEDED(hr)) {
-		std::cerr << "[ ERROR ] Failed to show file dialog." << std::endl;
-		return path;
+		return "";
 	}
 
-	IShellItem *pItem;
-	hr = pFileOpen->GetResult(&pItem);
+	IShellItem *item;
+	hr = fileDialog->GetResult(&item);
 
 	if (!SUCCEEDED(hr)) {
 		std::cerr << "[ ERROR ] Failed to get result from dialog." << std::endl;
-		return path;
+		return "";
 	}
 
-	PWSTR pszFilePath;
-	hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+	PWSTR filePath;
+	hr = item->GetDisplayName(SIGDN_FILESYSPATH, &filePath);
+	
+	if (!SUCCEEDED(hr)) {
+		std::cerr << "[ ERROR ] Failed to get file display name." << std::endl;
+		return "";
+	}
 
-	path = std::wstring(pszFilePath);
+	size_t len = wcslen(filePath);
+	char *str = new char[len];
+	wcstombs(str, filePath, len);
 
-	pItem->Release();
-	pFileOpen->Release();
+	std::string path(str);
+	delete str;
+
+	item->Release();
+	fileDialog->Release();
 	CoUninitialize();
 
 	return path;
 }
 
-std::string Game::Dialog::saveFile() { return ""; }
+std::string Game::Dialog::openFile() {
+	return _showDialog(true);
+}
+
+std::string Game::Dialog::saveFile() { 
+	return _showDialog(false);
+}

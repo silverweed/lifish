@@ -7,7 +7,7 @@ namespace Game {
 
 namespace Dialog {
 
-std::wstring openFile();
+std::string openFile();
 std::string saveFile();
 
 } // end namespace Dialog

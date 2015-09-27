@@ -36,6 +36,9 @@
 #include "PauseScreen.hpp"
 #include "SaveManager.hpp"
 #include "utils.hpp"
+#ifdef SFML_SYSTEM_WINDOWS
+#	include "win/dialogs.hpp"
+#endif
 
 using Game::TILE_SIZE;
 using Game::MAIN_WINDOW_SHIFT;
@@ -887,8 +890,11 @@ GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enab
 	return GameAction::DO_NOTHING;
 }
 
+
 std::string display_load_dialog() {
-#ifndef HAVE_NFD
+#if defined(SFML_SYSTEM_WINDOWS)
+	return Game::Dialog::openFile();
+#elif !defined(HAVE_NFD)
 	std::cerr << "[ WARNING ] lifish was compiled without GTK support:\n"
 		     "if you want to load a game, place a file named `save.lifish`\n"
 		     "in the directory where the lifish executable resides."
@@ -914,7 +920,9 @@ std::string display_load_dialog() {
 }
 
 std::string display_save_dialog() {
-#ifndef HAVE_NFD
+#if defined(SFML_SYSTEM_WINDOWS)
+	return Game::Dialog::saveFile();
+#elif !defined(HAVE_NFD)
 	std::cerr << "[ WARNING ] lifish was compiled without GTK support:\n"
 		     "the game will be saved in `" << Game::pwd << Game::DIRSEP << "save.lifish`."
 		  << std::endl;
