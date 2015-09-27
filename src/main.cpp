@@ -22,7 +22,6 @@
 #include <unordered_set>
 #include <stdexcept>
 #include <SFML/Graphics.hpp>
-#include "nfd.h"
 #include "Level.hpp"
 #include "LevelSet.hpp"
 #include "LevelRenderer.hpp"
@@ -38,6 +37,8 @@
 #include "utils.hpp"
 #ifdef SFML_SYSTEM_WINDOWS
 #	include "win/dialogs.hpp"
+#else
+#	include "nfd.h"
 #endif
 
 using Game::TILE_SIZE;
