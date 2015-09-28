@@ -2,6 +2,38 @@
 	<img alt="Coverity Scan Build Status"
 	     src="https://scan.coverity.com/projects/5674/badge.svg"/>
 </a>
+## ABOUT ##
+Lifish is an open source clone of the game [BOOM](http://www.factor-software.com/boom.php)
+by Federico Filipponi, originally available only on MacOS. It's an arcade game with similar
+mechanics as Bomberman, featuring 80 levels, 10 different enemies, bosses, powerups, 
+local multiplayer and a final boss fight.
+
+Lifish aims to be completely "backward compatible" with BOOM, while introducing new elements
+and different enemies and stages. In particular, these are the differences with the
+original BOOM:
+
+* all the game sprites are (going to be) totally remade from scratch;
+* the game will be 100% free without any paid content;
+* several game features can be modded directly from the configuration files,
+  which are plain JSON; in particular the enemies' AI and stats, the levels'
+  tilesets, textures, configuration and music can be modded this way;
+* a new type of wall has been added (TransparentWall) which is transparent to
+  enemies' bullets but opaque to other entities;
+* new powerups are planned;
+* online multiplayer *may* be added in future.
+
+### Planned release ###
+Once the main work is done (read: the assets), the game will be released 
+for the current platforms:
+
+* Windows Vista or later 64 bit (if you want 32 bit, you can build it yourself)
+* Linux (somewhat recent versions of `libc` and `libstdc++` are needed; to be precise,
+  your distro must support `GLIBC_2.17` and `GLIBCXX_3.4.20`.)
+* OS X
+* Probably FreeBSD
+
+See later for instructions on how to build the game from the sources.
+
 ## DEPENDENCIES ##
 
 * [SFML](https://github.com/SFML/SFML) >= 2.3
