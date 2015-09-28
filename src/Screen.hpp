@@ -48,7 +48,10 @@ public:
 	 */
 	virtual std::string triggerMouseClick(const sf::Vector2f& mousePos);
 
-	virtual std::set<Game::Screen*> getParents() { return {}; }
+	virtual std::set<Game::Screen*> getParents() {
+		std::set<Game::Screen*> empty;
+		return empty; 
+	}
 };
 
 }
