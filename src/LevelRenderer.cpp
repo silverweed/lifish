@@ -31,6 +31,7 @@ LevelRenderer::LevelRenderer(std::initializer_list<Game::Player*> the_players)
 	temporary.reserve(LEVEL_WIDTH * LEVEL_HEIGHT);
 	bosses.reserve(32);
 	bullets.reserve(1024);
+	players.fill(nullptr);
 }
 
 LevelRenderer::~LevelRenderer() {

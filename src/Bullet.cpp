@@ -8,6 +8,7 @@ Bullet::Bullet(const sf::Vector2f& _pos, const std::string& texture_name) :
 	Game::MovingEntity(_pos, texture_name),
 	Game::Sounded({ Game::getAsset("test", "bossbullet_hit.ogg"),
 			Game::getAsset("test", "bossbullet_shot.ogg") }),
+	size(0),
 	range(-1),
 	damage(0),
 	shift(0.f, 0.f)

@@ -107,7 +107,6 @@ public:
 	 * after changing them. Returns false if there were errors, true otherwise.
 	 */
 	bool init();
-
 	bool isInitialized() const { return initialized; }
 
 	unsigned int getTime() const { return time; }

@@ -78,6 +78,8 @@ Level::~Level() {
 }
 
 bool Level::init() {
+	if (initialized) return true;
+
 	initialized = _loadTexture() && _loadMusic(track.name);
 
 	// Load the levelnum text
