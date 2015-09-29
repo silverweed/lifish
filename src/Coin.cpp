@@ -6,7 +6,7 @@ using Game::Coin;
 using Game::TILE_SIZE;
 
 Coin::Coin(const sf::Vector2f& pos)
-	: Game::Animated(pos, Game::getAsset("test", "coin.png"))
+	: Game::Animated(pos, Game::getAsset("graphics", "coin.png"))
 	, Game::Scored(VALUE)
 	, Game::Sounded({ Game::getAsset("sounds", "coin.ogg") })
 {
