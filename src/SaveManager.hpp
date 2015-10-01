@@ -11,7 +11,7 @@ namespace Game {
  * deserializes those data from a file.
  * Save file format: {
  *     level: int,
- *      players: [
+ *     players: [
  *        {
  *            continues: int,
  *            remainingLives: int,

@@ -10,7 +10,7 @@ using Game::WINDOW_WIDTH;
 using Game::WINDOW_HEIGHT;
 
 Screen::Screen() {
-	Game::cache.loadTexture(bgTexture, Game::getAsset("test", "screenbg1.png"));
+	Game::cache.loadTexture(bgTexture, Game::getAsset("graphics", "screenbg1.png"));
 
 	bgTexture.setRepeated(true);
 	bgTexture.setSmooth(true);
