@@ -52,9 +52,8 @@ static std::string _showDialog(bool open) {
 		return "";
 	}
 
-	size_t len = wcslen(filePath);
-	char *str = new char[len];
-	wcstombs(str, filePath, len);
+	char *str = new char[2048];
+	wcstombs(str, filePath, 2048);
 
 	std::string path(str);
 	delete str;
