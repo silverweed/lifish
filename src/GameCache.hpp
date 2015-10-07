@@ -34,6 +34,7 @@ class GameCache final : private sf::NonCopyable {
 	sf::SoundBuffer* _getSound(const std::string& name) const;
 
 	sf::Font* _getFont(const std::string& name) const;
+	
 public:
 	constexpr static int SOUNDS_GC_DELAY = 1024;
 

@@ -130,7 +130,7 @@ bool MovingEntity::canGo(const Direction dir, const Game::LevelRenderer *const l
 		return false;
 
 	const short idx = iposy * LEVEL_WIDTH + iposx;
-	const auto fixed = lr->getFixedEntities();
+	const auto& fixed = lr->getFixedEntities();
 	
 	if (fixed[idx] != nullptr && !_isTransparentTo(fixed[idx]))
 		return false;

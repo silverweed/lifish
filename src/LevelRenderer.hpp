@@ -29,7 +29,7 @@ class SaveManager;
  * entities, time and so on.
  */
 class LevelRenderer final : public Game::Clocked, private sf::NonCopyable {
-	// For Fixed Entities we use a fixed-size array for faster lookup
+	// This is a fixed-size array for faster lookup
 	using FixedEntityList = std::array<Game::Entity*, LEVEL_WIDTH * LEVEL_HEIGHT>;
 	using MovingEntityList = std::vector<Game::LifedMovingEntity*>;
 	using TemporaryEntityList = std::vector<Game::Temporary*>;
