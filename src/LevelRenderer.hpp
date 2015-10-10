@@ -3,6 +3,7 @@
 #include <vector>
 #include <array>
 #include <initializer_list>
+#include <memory>
 #include <SFML/Graphics.hpp>
 #include <SFML/System/NonCopyable.hpp>
 #include "Level.hpp"
@@ -56,9 +57,9 @@ class LevelRenderer final : public Game::Clocked, private sf::NonCopyable {
 	/** The alien sprite displayed during EXTRA game */
 	Game::AlienSprite alienSprite;
 
-	Game::DroppingText *hurryUpText = nullptr;
-	Game::DroppingText *gameOverText = nullptr;
-	Game::DroppingText *extraGameText = nullptr;
+	Game::DroppingText hurryUpText,
+	                   gameOverText,
+	                   extraGameText;
 	
 	/** The fixed entities */
 	FixedEntityList fixedEntities;
@@ -92,7 +93,7 @@ class LevelRenderer final : public Game::Clocked, private sf::NonCopyable {
 	 *  after a call to removePlayer(), or setPlayer(), since those methods delete
 	 *  the i-th player.
 	 */
-	std::array<Game::Player*, Game::MAX_PLAYERS> _players;
+	std::array<std::unique_ptr<Game::Player>, Game::MAX_PLAYERS> _players;
 
 	/** The bosses, if any */
 	BossList bosses;
@@ -141,7 +142,9 @@ class LevelRenderer final : public Game::Clocked, private sf::NonCopyable {
 	void _spawnPoints(const sf::Vector2f& pos, const int amount, bool large = false);
 
 	void _grabBonus(Game::MovingEntity *const entity, Game::Bonus *bonus, unsigned short idx);
+
 public:
+	/** Create the LevelRenderer and hand it the ownership of the players */
 	LevelRenderer(std::initializer_list<Game::Player*> players);
 	~LevelRenderer();
 

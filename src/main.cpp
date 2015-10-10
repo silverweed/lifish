@@ -542,21 +542,20 @@ void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 }
 
 bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short playernum) {
+	std::vector<sf::Text> texts;
+
 	std::stringstream ss;
 	ss << "PLAYER " << playernum << " CONTINUE?";
 	sf::Text text(ss.str(), interlevel_font, 13);
 	text.setPosition(Game::center(text.getGlobalBounds()));
+	texts.push_back(text);
 
-	window.clear();
-	window.draw(text);
-	
 	ss.str("");
 	ss << "(" << Game::playerContinues[playernum-1] << " remaining)";
 	text.setString(ss.str());
 	auto bounds = text.getGlobalBounds();
 	text.setPosition(Game::center(bounds) + sf::Vector2f(0.f, 2 * bounds.height));
-
-	window.draw(text);
+	texts.push_back(text);
 
 	// Dummy text to get the correct bounds
 	text.setString("YES / NO");
@@ -566,23 +565,27 @@ bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 	sf::Text yesText("YES", interlevel_font, 15);
 	yesText.setPosition(Game::center(bounds) + sf::Vector2f(0.f, 4 * bounds.height));
 	yesText.setColor(sf::Color::Red);
-	window.draw(yesText);
 
 	bounds = yesText.getGlobalBounds();
 	text.setString(" / ");
 	text.setPosition(sf::Vector2f(bounds.left + bounds.width, bounds.top));
-	window.draw(text);
+	texts.push_back(text);
 
 	bounds = text.getGlobalBounds();
 	sf::Text noText("NO", interlevel_font, 15);
 	noText.setPosition(sf::Vector2f(bounds.left + bounds.width, bounds.top));
-	window.draw(noText);
 
 	text.setString("Arrows / Enter to select");
 	text.setCharacterSize(10);
 	text.setPosition(Game::center(text.getGlobalBounds()) + sf::Vector2f(0.f, 6 * bounds.height));
-	window.draw(text);
+	texts.push_back(text);
 
+	auto drawTexts = [&texts, &window] {
+		for (const auto& text : texts)
+			window.draw(text);
+	};
+
+	drawTexts();
 	panel.draw(window);
 	window.display();
 
@@ -621,6 +624,9 @@ bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 			noText.setColor(sf::Color::Red);
 		}
 
+		window.clear();
+		panel.draw(window);
+		drawTexts();
 		window.draw(yesText);
 		window.draw(noText);
 		window.display();	

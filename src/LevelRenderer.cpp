@@ -17,12 +17,16 @@ using Game::LevelRenderer;
 
 LevelRenderer::LevelRenderer(std::initializer_list<Game::Player*> the_players)
 	: Game::Clocked({ &bossShootClock, &levelTimeClock, &extraGameClock })
+	, hurryUpText(Game::getAsset("test", "hurryup.png"), sf::Vector2i(161, 30), 300.f)
+	, gameOverText(Game::getAsset("test", "gameover.png"), sf::Vector2i(311, 59))
+	, extraGameText(Game::getAsset("test", "extragame.png"), sf::Vector2i(223, 156), 250.f)
 {
 	fixedEntities.fill(nullptr);
 
 	unsigned short i = 0;
-	for (auto& player : the_players)
-		_players[i++] = player;
+	for (auto& player : the_players) {
+		_players[i++] = std::unique_ptr<Game::Player>(player);
+	}
 
 	for (unsigned short i = 0; i < bombs.size(); ++i)
 		bombs[i].fill(nullptr);
@@ -35,9 +39,6 @@ LevelRenderer::LevelRenderer(std::initializer_list<Game::Player*> the_players)
 }
 
 LevelRenderer::~LevelRenderer() {
-	for (unsigned short i = 0; i < _players.size(); ++i)
-		if (_players[i] != nullptr)
-			delete _players[i];
 	_clearEntities();
 }
 
@@ -63,21 +64,6 @@ void LevelRenderer::_clearEntities() {
 		delete *it;
 	for (auto it = letters.begin(); it != letters.end(); ++it)
 		delete *it;
-
-	if (hurryUpText != nullptr) {
-		delete hurryUpText;
-		hurryUpText = nullptr;
-	}
-
-	if (gameOverText != nullptr) {
-		delete gameOverText;
-		gameOverText = nullptr;
-	}
-
-	if (extraGameText != nullptr) {
-		delete extraGameText;
-		extraGameText = nullptr;
-	}
 
 	fixedEntities.fill(nullptr);
 	players.fill(nullptr);
@@ -139,14 +125,14 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 			case EntityType::PLAYER1: 
 				if (_players[0] != nullptr) {
 					_players[0]->setPosition(curPos);
-					players[0] = _players[0];
+					players[0] = _players[0].get();
 					movingEntities.push_back(players[0]);
 				}
 				break;
 			case EntityType::PLAYER2: 
 				if (_players[1] != nullptr) {
 					_players[1]->setPosition(curPos);
-					players[1] = _players[1];
+					players[1] = _players[1].get();
 					movingEntities.push_back(players[1]);
 				}
 				break;
@@ -448,33 +434,22 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 	}
 
 	// Draw dropping texts
-
-	if (hurryUpText != nullptr) {
-		if (hurryUpText->isPlaying())
-			hurryUpText->draw(window);
-		else {
-			delete hurryUpText;
-			hurryUpText = nullptr;
-		}
+	if (hurryUpText.isPlaying()) {
+		hurryUpText.move();
+		window.draw(hurryUpText);
 	}
 
-	if (gameOverText != nullptr) {
-		if (gameOverText->isPlaying()) 
-			gameOverText->draw(window);
-		else {
-			delete gameOverText;
-			gameOverText = nullptr;
-			gameOverEnded = true;
-		}
+	if (gameOverText.isPlaying()) {
+		gameOverText.move();
+		window.draw(gameOverText);
+	} else if (gameOverText.getPosition().y > 0) {
+		// Game over just finished playing
+		gameOverEnded = true;
 	}
 
-	if (extraGameText != nullptr) {
-		if (extraGameText->isPlaying())
-			extraGameText->draw(window);
-		else {
-			delete extraGameText;
-			extraGameText = nullptr;
-		}
+	if (extraGameText.isPlaying()) {
+		extraGameText.move();
+		window.draw(extraGameText);
 	}
 }
 
@@ -1118,10 +1093,8 @@ bool LevelRenderer::removePlayer(const unsigned short id, bool overrideInternal)
 				movingEntities.end(), players[id-1]), movingEntities.end());
 
 	players[id-1] = nullptr;
-	if (overrideInternal) {
-		delete _players[id-1];
-		_players[id-1] = nullptr;
-	}
+	if (overrideInternal)
+		_players[id-1].reset(nullptr);
 
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
 		if (players[i] != nullptr) return true;
@@ -1130,9 +1103,8 @@ bool LevelRenderer::removePlayer(const unsigned short id, bool overrideInternal)
 }
 
 void LevelRenderer::setPlayer(const unsigned short id, Game::Player *player) {
-	if (_players[id-1] != nullptr)
-		delete _players[id-1];
-	players[id-1] = _players[id-1] = player;
+	_players[id-1].reset(player);
+	players[id-1] = _players[id-1].get();
 }
 
 short LevelRenderer::_getPlayerIndex(const Game::Entity *const e) const {
@@ -1285,9 +1257,8 @@ void LevelRenderer::checkHurryUp() {
 		}
 		hurryUp = true;
 	} else if (!hurryUpWarningGiven && diff <= 31) {
-		hurryUpText = new Game::DroppingText(Game::getAsset("test", "hurryup.png"),
-				sf::Vector2i(161, 30), 300.f);
-		hurryUpText->setOrigin(origin);
+		hurryUpText.play();
+		hurryUpText.setOrigin(origin);
 		Game::cache.playSound(Game::getAsset("test", Game::HURRY_UP_SOUND));
 		hurryUpWarningGiven = true;
 	}
@@ -1295,17 +1266,15 @@ void LevelRenderer::checkHurryUp() {
 
 void LevelRenderer::triggerGameOver() {
 	Game::stopMusic();
-	gameOverText = new Game::DroppingText(Game::getAsset("test", "gameover.png"),
-			sf::Vector2i(311, 59));
+	gameOverText.play(); 
+	gameOverText.setOrigin(origin); 
 	Game::cache.playSound(Game::getAsset("test", Game::GAME_OVER_SOUND));
-	gameOverText->setOrigin(origin);
 }
 
 void LevelRenderer::_triggerExtraGame() {
-	extraGameText = new Game::DroppingText(Game::getAsset("test", "extragame.png"),
-			sf::Vector2i(223, 156), 250.f);
+	extraGameText.play(); 
+	extraGameText.setOrigin(origin);
 	Game::cache.playSound(Game::getAsset("test", Game::EXTRA_GAME_SOUND));
-	extraGameText->setOrigin(origin);
 	for (auto& e : movingEntities) {
 		if (isPlayer(e)) continue;
 		auto enemy = static_cast<Game::Enemy*>(e);
@@ -1460,14 +1429,9 @@ void LevelRenderer::pauseClocks() {
 	for (auto& bullet : bullets)
 		bullet->pauseClock();
 
-	if (gameOverText != nullptr)
-		gameOverText->Clocked::pauseClock();
-
-	if (extraGameText != nullptr)
-		extraGameText->Clocked::pauseClock();
-	
-	if (hurryUpText != nullptr)
-		hurryUpText->Clocked::pauseClock();
+	gameOverText.Clocked::pauseClock();
+	extraGameText.Clocked::pauseClock();
+	hurryUpText.Clocked::pauseClock();
 }
 
 void LevelRenderer::resumeClocks() {
@@ -1498,12 +1462,7 @@ void LevelRenderer::resumeClocks() {
 	for (auto& bullet : bullets)
 		bullet->resumeClock();
 
-	if (gameOverText != nullptr)
-		gameOverText->resumeClock();
-
-	if (extraGameText != nullptr)
-		extraGameText->resumeClock();
-	
-	if (hurryUpText != nullptr)
-		hurryUpText->resumeClock();
+	gameOverText.resumeClock();
+	extraGameText.resumeClock();
+	hurryUpText.resumeClock();
 }

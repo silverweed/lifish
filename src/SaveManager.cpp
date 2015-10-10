@@ -12,7 +12,7 @@ bool SaveManager::saveGame(const std::string& filename, const Game::LevelRendere
 	// Current level
 	save["level"] = lr.getLevel()->getLevelNum();
 	
-	const auto players = lr._players;
+	const auto& players = lr._players;
 	for (unsigned short i = 0; i < players.size(); ++i) {
 		const auto& player = players[i];
 		if (player == nullptr) {
@@ -58,7 +58,7 @@ bool SaveManager::loadGame(const std::string& filename,
 		
 		start_level = load["level"];
 		
-		const auto players = lr._players;
+		const auto& players = lr._players;
 		for (unsigned short i = 0; i < players.size(); ++i) {
 			const auto& player = players[i];
 			const auto pldata = load["players"][i];

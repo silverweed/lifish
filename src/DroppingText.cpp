@@ -8,6 +8,7 @@ DroppingText::DroppingText(const std::string& texture_name,
 	, speed(_speed)
 {
 	pos.x = (Game::TILE_SIZE*(Game::LEVEL_WIDTH + 2) - texture_rect.x) / 2;
+	pos.y = -Game::TILE_SIZE;
 	animations[0].setSpriteSheet(texture);
 	animations[0].addFrame(sf::IntRect(0, 0, texture_rect.x, texture_rect.y));	
 	animatedSprite.setAnimation(animations[0]);
@@ -16,18 +17,28 @@ DroppingText::DroppingText(const std::string& texture_name,
 	_addClock(&pauseClock);
 }
 
-void DroppingText::draw(sf::RenderTarget& window) {
-	if (!stopped && (pos.y + animatedSprite.getAnimation()->getFrame(0).height/2) 
+void DroppingText::play() {
+	pos.y = -Game::TILE_SIZE;
+	playing = true;
+	stoppedAtMiddle = false;
+	frameClock.restart();
+}
+
+void DroppingText::move() {
+	if (pos.y > (Game::LEVEL_HEIGHT + 2) * Game::TILE_SIZE) {
+		playing = false;
+		return;
+	}
+	if (!stoppedAtMiddle && (pos.y + animatedSprite.getAnimation()->getFrame(0).height/2) 
 			>= Game::LEVEL_HEIGHT * Game::TILE_SIZE / 2) {
-		stopped = true;
+		stoppedAtMiddle = true;
 		pauseClock.restart();
 	}
-	if (!stopped || pauseClock.getElapsedTime().asSeconds() >= 1.) {
+	if (!stoppedAtMiddle || pauseClock.getElapsedTime().asSeconds() >= 1.) {
 		sf::Time frameTime = frameClock.restart();
 		pos.y += speed * frameTime.asSeconds();
 		animatedSprite.setPosition(pos);
 	} else {
 		frameClock.restart();
 	}
-	window.draw(animatedSprite);
 }
