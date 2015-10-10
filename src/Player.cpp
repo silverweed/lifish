@@ -17,7 +17,7 @@ Player::Player(sf::Vector2f pos, const unsigned short id) :
 {
 	speed = 150.f;
 	transparentTo.players = false;
-	remainingLives = Game::INITIAL_LIVES;
+	remainingLives = INITIAL_LIVES;
 	extra.fill(false);
 
 	for (unsigned short i = 0; i < MAX_N_ANIMATIONS; ++i)

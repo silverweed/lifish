@@ -71,7 +71,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 			ss << "X" << player->getRemainingLives();
 
 		Game::ShadedText nLivesText(
-				Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),
+				Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO),
 				ss.str(),
 				sf::Vector2f(N_LIVES_X, i == 0 ? N_LIVES_Y_1 : N_LIVES_Y_2));
 		nLivesText.setCharacterSize(20);
@@ -141,7 +141,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 						ss.str("");
 						ss << "x" << player->powers.maxBombs;
 						Game::ShadedText text(
-								Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),
+								Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO),
 								ss.str(), sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 2));
 						text.setCharacterSize(11);
 						text.setShadowSpacing(1, 1);
@@ -153,7 +153,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 						ss.str("");
 						ss << "x" << player->powers.bombRadius;;
 						Game::ShadedText text(
-								Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),
+								Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO),
 								ss.str(), sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 2));
 						text.setCharacterSize(11);
 						text.setShadowSpacing(1, 1);
@@ -188,7 +188,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 			pos.x = SCORE_POS_X;
 			pos.y = i == 0 ? SCORE_POS_Y_1 : SCORE_POS_Y_2;
 			Game::ShadedText scoreText(
-					Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),
+					Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO),
 					ss.str(), pos);
 			scoreText.setCharacterSize(16);
 			scoreText.setShadowSpacing(2, 2);
@@ -215,7 +215,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 	}
 
 	Game::ShadedText timeText(
-			Game::getAsset("fonts", Game::Fonts::SIDE_PANEL),
+			Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO),
 			ss.str(), TIME_POS);
 	timeText.setCharacterSize(16);
 	timeText.setShadowSpacing(2, 2);

@@ -54,6 +54,9 @@ protected:
 
 	sftools::Chronometer deathClock;
 
+	/** Check if this Entity is transparent to 'e'. Used when we don't
+	 *  know which kind of entity *we* are at compile time.
+	 */
 	virtual bool _isTransparentTo(const Entity *const e) const = 0;
 	virtual void _ensureAlign();
 

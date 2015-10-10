@@ -41,7 +41,7 @@ protected:
 
 	bool transparentToWalls = false;
 
-	bool _isTransparentTo(const Entity *const) const;
+	bool _isTransparentTo(const Entity *const) const override;
 
 	/** This constructor is used by BossBullet */
 	Bullet(const sf::Vector2f& pos, const std::string& texture_name);

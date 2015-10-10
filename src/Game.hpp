@@ -71,7 +71,6 @@ constexpr float RESURRECT_SHIELD_TIME = 5000; // ms
 
 constexpr unsigned short MAX_PLAYERS = 2;
 
-constexpr unsigned short INITIAL_LIVES = 3;
 constexpr unsigned short INITIAL_CONTINUES = 3;
 
 constexpr unsigned short SIDE_PANEL_WIDTH = 96;
@@ -97,7 +96,8 @@ namespace Fonts {
 	constexpr auto INTERLEVEL = "pf_tempesta_seven_bold.ttf";
 	constexpr auto LEVELNUM = "pf_tempesta_seven.ttf";
 	constexpr auto DEBUG_INFO = "pf_tempesta_seven_condensed.ttf";
-	constexpr auto SIDE_PANEL = "Hack-Regular.ttf";//"pf_tempesta_seven_bold.ttf";
+	constexpr auto SIDE_PANEL = "pf_tempesta_seven_bold.ttf";
+	constexpr auto SIDE_PANEL_MONO = "Hack-Regular.ttf";
 	constexpr auto SCREEN = "pf_tempesta_seven_bold.ttf";
 }
 

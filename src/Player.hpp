@@ -13,16 +13,17 @@ class Player : public Game::LifedMovingEntity {
 	constexpr static unsigned short WALK_N_FRAMES = 8;
 	constexpr static unsigned short DEATH_N_FRAMES = 3;
 	constexpr static unsigned short DEFAULT_MAX_BOMBS = 5;
-
 	constexpr static unsigned short DEATH_TIME = 5000; // ms
 
 	/** If true, the idle pose becomes ANIM_WIN */
 	bool winning = false;
 
 	bool _isTransparentTo(const Entity *const e) const override;
+
 public:
-	constexpr static unsigned short MAX_LIFE = 16;
+	constexpr static unsigned short MAX_LIFE = 1;
 	constexpr static unsigned short MAX_MAX_BOMBS = 8;
+	constexpr static unsigned short INITIAL_LIVES = 1;
 
 	struct {
 		unsigned short bombRadius = Game::Bomb::DEFAULT_RADIUS;
