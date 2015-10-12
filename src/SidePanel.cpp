@@ -7,7 +7,7 @@ using Game::SidePanel;
 
 SidePanel::SidePanel(const Game::LevelRenderer *const _lr) : lr(_lr) {
 	// Load background
-	Game::cache.loadTexture(bgTexture, Game::getAsset("test", "panel.png"));
+	Game::cache.loadTexture(bgTexture, Game::getAsset("graphics", "panel.png"));
 	backgroundSprite.setTexture(bgTexture);
 	backgroundSprite.setTextureRect(sf::IntRect(0, 0, Game::SIDE_PANEL_WIDTH, Game::SIDE_PANEL_HEIGHT));	
 	backgroundSprite.setPosition(0, 0);
