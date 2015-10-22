@@ -99,7 +99,12 @@ int main(int argc, char **argv) {
 				start_level = std::atoi(argv[++i]);
 				break;
 			case 'v':
-				std::cout << "lifish v." << VERSION << " rev." << COMMIT << std::endl;	
+				std::cout << "lifish v." VERSION " rev." COMMIT;
+#ifndef ARCH
+				std::cout << " (unknown arch)" << std::endl;
+#else
+				std::cout << " (" ARCH " bit)" << std::endl;
+#endif
 #ifdef HAVE_NFD
 				std::cout << "    | NFD support: yes" << std::endl;
 #else
