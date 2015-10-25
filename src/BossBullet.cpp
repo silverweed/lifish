@@ -4,9 +4,9 @@
 using Game::BossBullet;
 using Game::TILE_SIZE;
 
-BossBullet::BossBullet(const sf::Vector2f& pos, double _angle) :
-	Bullet(pos, Game::getAsset("test", "bossbullet.png")),
-	angle(_angle)
+BossBullet::BossBullet(const sf::Vector2f& pos, double _angle)
+	: Bullet(pos, Game::getAsset("test", "bossbullet.png"))
+	, angle(_angle)
 {
 	directionality = 1;
 	nMotionFrames = 2;

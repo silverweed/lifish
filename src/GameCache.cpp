@@ -8,120 +8,72 @@ GameCache::GameCache() {
 	sounds.reserve(1024);
 }
 
-GameCache::~GameCache() {
-	for (auto& it : textures)
-		if (it.second != nullptr)
-			delete it.second;
-
-	for (auto& it : soundBuffers)
-		if (it.second != nullptr)
-			delete it.second;
-
-	for (auto& it : fonts)
-		if (it.second != nullptr)
-			delete it.second;
-
-	for (auto& sound : sounds)
-		delete sound;
-}
-
-sf::Texture* GameCache::_getTexture(const std::string& name) const {
-	auto it = textures.find(name);
-	if (it == textures.end())
-		return nullptr;
-	return it->second;
-}
-
-sf::Texture* GameCache::loadTexture(const std::string& texture_name) {
+const sf::Texture& GameCache::loadTexture(const std::string& texture_name) {
 	// Check if image is already in cache
-	auto txt = _getTexture(texture_name);
-	if (txt != nullptr) {
-		return txt;
-	}
+	auto it = textures.find(texture_name);
+	if (it != textures.end()) 
+		return it->second;
+
 	// Not in cache: load from file
-	txt = new sf::Texture;
-	if (!txt->loadFromFile(texture_name)) {
+	textures[texture_name] = sf::Texture();
+	auto& txt = textures[texture_name];
+	if (!txt.loadFromFile(texture_name)) {
 		std::cerr << "[GameCache.cpp] Error: couldn't load texture " 
 			<< texture_name << " from file!" << std::endl;
-		return nullptr;
 	}
-	return textures[texture_name] = txt;
-}
-
-bool GameCache::loadTexture(sf::Texture& texture, const std::string& texture_name) {
-	auto ptr = loadTexture(texture_name);
-	if (ptr != nullptr) {
-		texture = *ptr;
-		return true;
-	}
-	return false;
-}
-
-sf::SoundBuffer* GameCache::_getSound(const std::string& name) const {
-	auto it = soundBuffers.find(name);
-	if (it == soundBuffers.end())
-		return nullptr;
-	return it->second;
+	return txt;
 }
 
 bool GameCache::loadSound(sf::Sound& sound, const std::string& sound_name) {
 	// Check if sound buffer is already in cache
-	auto buf = _getSound(sound_name);
-	if (buf != nullptr) {
-		sound.setBuffer(*buf);
+	auto it = soundBuffers.find(sound_name);
+	if (it != soundBuffers.end()) {
+		sound.setBuffer(it->second);
 		return true;
 	}
 	// Load from file and update the cache
-	buf = new sf::SoundBuffer;
-	if (!buf->loadFromFile(sound_name)) {
+	soundBuffers[sound_name] = sf::SoundBuffer();
+	auto& buf = soundBuffers[sound_name];
+	if (!buf.loadFromFile(sound_name)) {
 		std::cerr << "[GameCache.cpp] Error: couldn't load sound " << sound_name << " from file!" << std::endl;
 		return false;
 	}
-	sound.setBuffer(*buf);
-	soundBuffers[sound_name] = buf;
+	sound.setBuffer(buf);
 	return true;
 }
 
 void GameCache::playSound(const std::string& sound_name) {
 	if (Game::sounds_mute) return;
-	auto sound = new sf::Sound;
-	if (!loadSound(*sound, sound_name)) {
-		delete sound;
+	sounds.push_back(sf::Sound());
+	auto& sound = sounds.back();
+	if (!loadSound(sound, sound_name))
 		return;
-	}
-	sounds.push_back(sound);
-	sound->setVolume(Game::sounds_volume);
-	sound->play();
+
+	sound.setVolume(Game::sounds_volume);
+	sound.play();
 }
 
 void GameCache::gcSounds() {
 	for (auto it = sounds.begin(); it != sounds.end(); ) {
-		if ((*it)->getStatus() != sf::Sound::Status::Playing) {
-			delete *it;
+		if (it->getStatus() != sf::Sound::Status::Playing)
 			it = sounds.erase(it);
-		} else {
+		else
 			++it;
-		}
 	}
 }
 
-sf::Font* GameCache::_getFont(const std::string& name) const {
-	auto it = fonts.find(name);
-	if (it == fonts.end())
-		return nullptr;
-	return it->second;
-}
 
-sf::Font* GameCache::loadFont(const std::string& font_name) {
-	auto buf = _getFont(font_name);
-	if (buf != nullptr) {
-		return buf;
-	}
+const sf::Font& GameCache::loadFont(const std::string& font_name) {
+	auto it = fonts.find(font_name);
+	if (it != fonts.end())
+		return it->second;
+
 	// Load from file and update the cache
-	buf = new sf::Font;
-	if (!buf->loadFromFile(font_name)) {
-		std::cerr << "[GameCache.cpp] Error: couldn't load font " << font_name << " from file!" << std::endl;
-		return nullptr;
+	fonts[font_name] = sf::Font();
+	auto& font = fonts[font_name];
+	if (!font.loadFromFile(font_name)) {
+		std::cerr << "[GameCache.cpp] Error: couldn't load font " 
+			<< font_name << " from file!" << std::endl;
 	}
-	return fonts[font_name] = buf;
+	return font;
 }

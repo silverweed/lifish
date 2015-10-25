@@ -55,7 +55,7 @@ HomeScreen::HomeScreen() : Screen() {
 	texts["exit"] = text;
 
 	// Footer
-	auto txt = new sf::Text("lifish v." VERSION " rev." COMMIT, *Game::cache.loadFont(font), 10);
+	auto txt = new sf::Text("lifish v." VERSION " rev." COMMIT, Game::cache.loadFont(font), 10);
 	txt->setPosition(5, win_bounds.height - 18);
 	elements.push_back(txt);
 }

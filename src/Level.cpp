@@ -16,14 +16,8 @@ bool Level::_loadTexture() {
 	// Load background texture
 	std::stringstream ss;
 	ss << "bg" << tileIDs.bg << ".png";
-	if (!Game::cache.loadTexture(bgTexture, Game::getAsset("graphics", ss.str()))) {
-		std::cerr << "[Level.cpp] Could not load background texture!" << std::endl;
-		return false;
-	}
-	if (!Game::cache.loadTexture(borderTexture, Game::getAsset("graphics", "border.png"))) {
-		std::cerr << "[Level.cpp] Could not load border texture!" << std::endl;
-		return false;
-	}
+	bgTexture = Game::cache.loadTexture(Game::getAsset("graphics", ss.str()));
+	borderTexture = Game::cache.loadTexture(Game::getAsset("graphics", "border.png"));
 	_loadTiles();
 	return true;
 }

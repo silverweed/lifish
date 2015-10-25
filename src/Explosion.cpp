@@ -179,7 +179,8 @@ void Explosion::checkHit(Game::LevelRenderer *const lr) {
 		if (e->hasShield() || e->isDying()) return;
 
 		// Check if entity's bounding box intersects this tile
-		const sf::FloatRect e_box(e->getPosition().x, e->getPosition().y, TILE_SIZE, TILE_SIZE);
+		const auto epos = e->getPosition();
+		const sf::FloatRect e_box(epos.x, epos.y, TILE_SIZE, TILE_SIZE);
 		if (e_box.intersects(expl_box)) {
 			e->decLife(1);
 			if (lr->isPlayer(e)) {
@@ -191,7 +192,7 @@ void Explosion::checkHit(Game::LevelRenderer *const lr) {
 			} else {
 				const auto se = dynamic_cast<Game::Scored*>(e);
 				if (se != nullptr)
-					lr->givePointsTo(sourcePlayer, e->getPosition(), se->getPointsGiven());
+					lr->givePointsTo(sourcePlayer, epos, se->getPointsGiven());
 			}
 			if (e->getLife() <= 0) {
 				e->kill();

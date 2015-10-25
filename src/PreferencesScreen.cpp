@@ -51,7 +51,7 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 
 	bounds = text->getGlobalBounds();
 	auto image = new sf::Sprite;
-	Game::cache.loadTexture(speakerTexture, Game::getAsset("graphics", "speaker.png"));
+	speakerTexture = Game::cache.loadTexture(Game::getAsset("graphics", "speaker.png"));
 	image->setTexture(speakerTexture);
 	image->setTextureRect(sf::IntRect(prevMusicVolume >= 0 ? 25 : 0, 0, 25, 25));
 	image->setPosition(sf::Vector2f(bounds.left + bounds.width + 20, ipady));
@@ -79,7 +79,7 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 
 	bounds = text->getGlobalBounds();
 	image = new sf::Sprite;
-	Game::cache.loadTexture(speakerTexture, Game::getAsset("graphics", "speaker.png"));
+	speakerTexture = Game::cache.loadTexture(Game::getAsset("graphics", "speaker.png"));
 	image->setTexture(speakerTexture);
 	image->setTextureRect(sf::IntRect(Game::sounds_mute ? SPEAKER_SPRITE_SIZE : 0,
 				0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));

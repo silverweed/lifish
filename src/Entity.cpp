@@ -8,7 +8,7 @@ Entity::Entity(const sf::Vector2f& _pos, const std::string& texture_name)
 	: pos(_pos)
 {
 	if (texture_name.length() > 0)
-		Game::cache.loadTexture(texture, texture_name); 
+		texture = Game::cache.loadTexture(texture_name); 
 }
 
 bool Entity::isAligned(const char axis) const {

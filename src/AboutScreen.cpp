@@ -23,7 +23,7 @@ AboutScreen::AboutScreen() : Screen() {
 	text->setPosition(pos);
 	elements.push_back(text);
 
-	const sf::Font& font = *Game::cache.loadFont(fontname);
+	const sf::Font& font = Game::cache.loadFont(fontname);
 	auto txt = new sf::Text("Lifish - (c) 2015 Giacomo Parolini", font, 14);
 	txt->setPosition(sf::Vector2f(Game::centerX(txt->getGlobalBounds(), win_bounds), pos.y + 2*spacing*size));
 	elements.push_back(txt);

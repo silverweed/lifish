@@ -10,7 +10,7 @@ AlienSprite::AlienSprite()
 	: Game::Animated(sf::Vector2f(0, 0))
 	, Game::Sounded({ Game::getAsset("test", "alien_death.ogg") })
 {
-	Game::cache.loadTexture(texture, Game::getAsset("test", "aliensprite.png"));
+	texture = Game::cache.loadTexture(Game::getAsset("test", "aliensprite.png"));
 
 	for (unsigned short i = 0; i < 4; ++i)
 		animations[i].setSpriteSheet(texture);

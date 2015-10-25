@@ -181,7 +181,8 @@ int main(int argc, char **argv) {
 void play_game(sf::RenderWindow& window, const std::string& level_set,
 		Game::LevelRenderer& lr, unsigned short start_level)
 {
-	bool vsync = false;
+	// Set this on by default to use less CPU cycles
+	bool vsync = true;
 
 	for (unsigned short i = 0; i < Game::playerContinues.size(); ++i)
 		Game::playerContinues[i] = Game::INITIAL_CONTINUES;
