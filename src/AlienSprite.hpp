@@ -20,6 +20,8 @@ class AlienSprite : public Game::Animated, public Game::Sounded {
 
 	sf::Texture texture;
 
+	// Disable parent's draw() function
+	using Game::Animated::draw;
 public:
 	AlienSprite();
 
