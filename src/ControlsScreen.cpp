@@ -1,6 +1,7 @@
 #include "ControlsScreen.hpp"
 #include "Controls.hpp"
 #include "Game.hpp"
+#include "Options.hpp"
 #include "utils.hpp"
 
 using Game::ControlsScreen;
@@ -135,7 +136,7 @@ void ControlsScreen::selectPlayer(unsigned short id) {
 				Game::playerControls[selectedPlayer-1][it->second]));
 	}
 
-	const short used = Game::useJoystick[selectedPlayer-1];
+	const short used = Game::options.useJoystick[selectedPlayer-1];
 	texts["controls::joystick_toggle"]->setString(used == -1 ? "NO" :
 			std::string("Joystick") + Game::to_string(used));
 }
@@ -160,7 +161,7 @@ void ControlsScreen::triggerMouseOver(const sf::Vector2f& mousePos) {
 
 void ControlsScreen::changeControl(sf::RenderWindow& window, const std::string& textKey) {
 	Control control = Game::controlFromString(textKey.substr(17));
-	if (Game::useJoystick[selectedPlayer-1] >= 0) {
+	if (Game::options.useJoystick[selectedPlayer-1] >= 0) {
 		if (control == Control::BOMB) {
 			_changeJoystickBomb(window);
 			return;
@@ -228,7 +229,7 @@ void ControlsScreen::_changeJoystickBomb(sf::RenderWindow& window) {
 				return;
 			case sf::Event::JoystickButtonPressed:
 				{
-					if (short(event.joystickButton.joystickId) != Game::useJoystick[selectedPlayer-1])
+					if (short(event.joystickButton.joystickId) != Game::options.useJoystick[selectedPlayer-1])
 						break;
 					Game::joystickBombKey[selectedPlayer-1] = event.joystickButton.button;
 					std::stringstream ss;
@@ -264,7 +265,7 @@ void ControlsScreen::toggleJoystick() {
 	// Index of the currently used joystick, or -1 if no joystick is in use
 	short idx = -1;
 	// Currently used joystick (-1 if none)
-	short current = Game::useJoystick[selectedPlayer-1];
+	short current = Game::options.useJoystick[selectedPlayer-1];
 
 	for (auto i = 0; i < sf::Joystick::Count; ++i) {
 		if (sf::Joystick::isConnected(i)) {
@@ -281,7 +282,7 @@ void ControlsScreen::toggleJoystick() {
 	else
 		current = -1;
 
-	Game::useJoystick[selectedPlayer-1] = current;
+	Game::options.useJoystick[selectedPlayer-1] = current;
 	if (current == -1) {
 		texts["controls::joystick_toggle"]->setString("NO");
 		texts["controls::change_up"]->setString(Game::KeyUtils::keyToString(

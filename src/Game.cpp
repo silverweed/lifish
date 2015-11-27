@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include "LoopingMusic.hpp"
+#include "Options.hpp"
 #include <cstring>
 #include <iostream>
 #include <array>
@@ -24,20 +25,19 @@ Game::GameCache Game::cache;
 std::default_random_engine Game::rng;
 
 LoopingMusic *Game::music = nullptr;
-float Game::music_volume = 100,
-      Game::sounds_volume = 100;
 
-bool Game::sounds_mute = false;
+Game::Options Game::options;
 
 std::array<unsigned short, Game::MAX_PLAYERS> Game::playerContinues;
-
-std::array<short, Game::MAX_PLAYERS> Game::useJoystick;
 
 bool Game::init() {
 	using Game::pwd;
 
 	Game::playerContinues.fill(INITIAL_CONTINUES);
-	Game::useJoystick.fill(-1);
+	Game::options.music_volume = 100;
+	Game::options.sounds_volume = 100;
+	Game::options.sounds_mute = false;
+	Game::options.useJoystick.fill(-1);
 
 	// Setup pwd variable
 	pwd[0] = '\0';

@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include "Options.hpp"
 #include "LoopingMusic.hpp"
 
 short Game::KeyUtils::keyToNumber(sf::Keyboard::Key key) {
@@ -130,14 +131,14 @@ void Game::testMusic() {
 	sf::Music sample;
 	sample.openFromFile(Game::getAsset("music", "music1.ogg"));
 	sample.play();
-	sample.setVolume(Game::music_volume);
+	sample.setVolume(Game::options.music_volume);
 	SLEEP_MS(200);
 	sample.stop();
 }
 
 void Game::playMusic() {
 	if (Game::music != nullptr) {
-		Game::music->setVolume(Game::music_volume);
+		Game::music->setVolume(Game::options.music_volume);
 		Game::music->play();
 	}
 }

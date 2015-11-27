@@ -47,6 +47,8 @@ class LoopingMusic;
  */
 namespace Game {
 
+class Options;
+
 /****************************************************************************/
 /*                         GLOBAL DEFINITIONS                               */
 /****************************************************************************/
@@ -146,18 +148,11 @@ extern std::array<unsigned int, MAX_PLAYERS> score;
 /** The music */
 extern LoopingMusic *music;
 
-/** The music volume */
-extern float music_volume;
-
-/** The FX volume */
-extern float sounds_volume;
-extern bool sounds_mute;
+/** The game options */
+extern Options options;
 
 /** The remaining of 'continues' per player */
 extern std::array<unsigned short, MAX_PLAYERS> playerContinues;
-
-/** -1 if i-th player doesn't use joystick, else the joystick index. */
-extern std::array<short, MAX_PLAYERS> useJoystick;
 
 /****************************************************************************/
 /*                         GLOBAL FUNCTIONS                                 */

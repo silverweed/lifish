@@ -1,5 +1,6 @@
 #include "PreferencesScreen.hpp"
 #include "LoopingMusic.hpp"
+#include "Options.hpp"
 #include "utils.hpp"
 #include <sstream>
 
@@ -81,7 +82,7 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 	image = new sf::Sprite;
 	speakerTexture = Game::cache.loadTexture(Game::getAsset("graphics", "speaker.png"));
 	image->setTexture(speakerTexture);
-	image->setTextureRect(sf::IntRect(Game::sounds_mute ? SPEAKER_SPRITE_SIZE : 0,
+	image->setTextureRect(sf::IntRect(Game::options.sounds_mute ? SPEAKER_SPRITE_SIZE : 0,
 				0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
 	image->setPosition(sf::Vector2f(bounds.left + bounds.width + 20, bounds.top));
 	images["preferences::sounds_mute_toggle"] = image;
@@ -103,23 +104,23 @@ void PreferencesScreen::changeVolume(VolumeType which, VolumeAction what) {
 		case VolumeType::MUSIC: 
 			if (prevMusicVolume < 0) {
 				// unmute->mute
-				prevMusicVolume = Game::music_volume;
-				Game::music_volume = 0;
+				prevMusicVolume = Game::options.music_volume;
+				Game::options.music_volume = 0;
 			} else {
 				//mute->unmute
-				Game::music_volume = prevMusicVolume;
+				Game::options.music_volume = prevMusicVolume;
 				prevMusicVolume = -1;
 			}
 			images["preferences::music_mute_toggle"]->setTextureRect(
 					sf::IntRect(prevMusicVolume >= 0 ? SPEAKER_SPRITE_SIZE : 0,
 						0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
 			if (Game::music != nullptr)
-				Game::music->setVolume(Game::music_volume);
+				Game::music->setVolume(Game::options.music_volume);
 			return;
 		case VolumeType::SOUND:
-			Game::sounds_mute = !Game::sounds_mute;
+			Game::options.sounds_mute = !Game::options.sounds_mute;
 			images["preferences::sounds_mute_toggle"]->setTextureRect(
-					sf::IntRect(Game::sounds_mute ? SPEAKER_SPRITE_SIZE : 0,
+					sf::IntRect(Game::options.sounds_mute ? SPEAKER_SPRITE_SIZE : 0,
 						0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
 			return;
 		default: 
@@ -140,12 +141,12 @@ void PreferencesScreen::changeVolume(VolumeType which, VolumeAction what) {
 	}
 
 	if (which == VolumeType::MUSIC) {
-		Game::music_volume = vol * 100 / MAX_VOLUME;
+		Game::options.music_volume = vol * 100 / MAX_VOLUME;
 		musicVolumeBar->setString(ss.str());
 		if (Game::music != nullptr)
-			Game::music->setVolume(Game::music_volume);
+			Game::music->setVolume(Game::options.music_volume);
 	} else {
-		Game::sounds_volume = vol * 100 / MAX_VOLUME;
+		Game::options.sounds_volume = vol * 100 / MAX_VOLUME;
 		soundsVolumeBar->setString(ss.str());
 	}
 }

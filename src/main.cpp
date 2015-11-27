@@ -34,6 +34,7 @@
 #include "AboutScreen.hpp"
 #include "PauseScreen.hpp"
 #include "SaveManager.hpp"
+#include "Options.hpp"
 #include "utils.hpp"
 #ifdef SFML_SYSTEM_WINDOWS
 #	include "win/dialogs.hpp"
@@ -358,7 +359,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 			case sf::Event::JoystickDisconnected:
 				{
 					const auto id = event.joystickConnect.joystickId;
-					for (auto& use : Game::useJoystick)
+					for (auto& use : Game::options.useJoystick)
 						if (use == short(id))
 							use = -1;
 					break;
@@ -373,8 +374,8 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 			if (players[i] == nullptr) continue;
 
 			if (window.hasFocus()) {
-				if (Game::useJoystick[i] >= 0) {
-					const short joystick = Game::useJoystick[i];
+				if (Game::options.useJoystick[i] >= 0) {
+					const short joystick = Game::options.useJoystick[i];
 					const auto horizontal = sf::Joystick::getAxisPosition(joystick, sf::Joystick::X),
 					           vertical = sf::Joystick::getAxisPosition(joystick, sf::Joystick::Y);
 					if (vertical < -Game::JOYSTICK_INPUT_THRESHOLD) 
@@ -428,9 +429,9 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 			if (players[i]->isAligned()) {
 				players[i]->prevAlign = Game::tile(players[i]->getPosition());
 				if (window.hasFocus() && !players[i]->isDying())
-					if ((Game::useJoystick[i] >= 0 
+					if ((Game::options.useJoystick[i] >= 0 
 							&& sf::Joystick::isButtonPressed(
-								Game::useJoystick[i], 
+								Game::options.useJoystick[i], 
 								Game::joystickBombKey[i]))
 							|| sf::Keyboard::isKeyPressed(
 								Game::playerControls[i][Game::Control::BOMB]))

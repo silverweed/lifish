@@ -1,5 +1,6 @@
 #include "GameCache.hpp"
 #include "Game.hpp"
+#include "Options.hpp"
 #include <iostream>
 
 using Game::GameCache;
@@ -43,13 +44,13 @@ bool GameCache::loadSound(sf::Sound& sound, const std::string& sound_name) {
 }
 
 void GameCache::playSound(const std::string& sound_name) {
-	if (Game::sounds_mute) return;
+	if (Game::options.sounds_mute) return;
 	sounds.push_back(sf::Sound());
 	auto& sound = sounds.back();
 	if (!loadSound(sound, sound_name))
 		return;
 
-	sound.setVolume(Game::sounds_volume);
+	sound.setVolume(Game::options.sounds_volume);
 	sound.play();
 }
 
