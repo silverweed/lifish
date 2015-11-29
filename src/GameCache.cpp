@@ -44,13 +44,13 @@ bool GameCache::loadSound(sf::Sound& sound, const std::string& sound_name) {
 }
 
 void GameCache::playSound(const std::string& sound_name) {
-	if (Game::options.sounds_mute) return;
+	if (Game::options.soundsMute) return;
 	sounds.push_back(sf::Sound());
 	auto& sound = sounds.back();
 	if (!loadSound(sound, sound_name))
 		return;
 
-	sound.setVolume(Game::options.sounds_volume);
+	sound.setVolume(Game::options.soundsVolume);
 	sound.play();
 }
 

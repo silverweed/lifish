@@ -1,120 +1,54 @@
-#include <SFML/Graphics.hpp>
-#include "AnimatedSprite.hpp"
-#include <iostream>
+////////////////////////////////////////////////////////////
+//
+// Copyright (C) 2014 Maximilian Wagenbach (aka. Foaly) (foaly.f@web.de)
+//
+// This software is provided 'as-is', without any express or implied warranty.
+// In no event will the authors be held liable for any damages arising from the use of this software.
+//
+// Permission is granted to anyone to use this software for any purpose,
+// including commercial applications, and to alter it and redistribute it freely,
+// subject to the following restrictions:
+//
+// 1. The origin of this software must not be misrepresented;
+// you must not claim that you wrote the original software.
+// If you use this software in a product, an acknowledgment
+// in the product documentation would be appreciated but is not required.
+//
+// 2. Altered source versions must be plainly marked as such,
+// and must not be misrepresented as being the original software.
+//
+// 3. This notice may not be removed or altered from any source distribution.
+//
+////////////////////////////////////////////////////////////
 
-int main()
+#include "Animation.hpp"
+
+Animation::Animation() : m_texture(NULL)
 {
-    // setup window
-    sf::Vector2i screenDimensions(800,600);
-    sf::RenderWindow window(sf::VideoMode(screenDimensions.x, screenDimensions.y), "Animations!");
-    window.setFramerateLimit(60);
 
-    // load texture (spritesheet)
-    sf::Texture texture;
-    if (!texture.loadFromFile("player.png"))
-    {
-        std::cout << "Failed to load player spritesheet!" << std::endl;
-        return 1;
-    }
-
-    // set up the animations for all four directions (set spritesheet and push frames)
-    Animation walkingAnimationDown;
-    walkingAnimationDown.setSpriteSheet(texture);
-    walkingAnimationDown.addFrame(sf::IntRect(32, 0, 32, 32));
-    walkingAnimationDown.addFrame(sf::IntRect(64, 0, 32, 32));
-    walkingAnimationDown.addFrame(sf::IntRect(32, 0, 32, 32));
-    walkingAnimationDown.addFrame(sf::IntRect( 0, 0, 32, 32));
-
-    Animation walkingAnimationLeft;
-    walkingAnimationLeft.setSpriteSheet(texture);
-    walkingAnimationLeft.addFrame(sf::IntRect(32, 32, 32, 32));
-    walkingAnimationLeft.addFrame(sf::IntRect(64, 32, 32, 32));
-    walkingAnimationLeft.addFrame(sf::IntRect(32, 32, 32, 32));
-    walkingAnimationLeft.addFrame(sf::IntRect( 0, 32, 32, 32));
-
-    Animation walkingAnimationRight;
-    walkingAnimationRight.setSpriteSheet(texture);
-    walkingAnimationRight.addFrame(sf::IntRect(32, 64, 32, 32));
-    walkingAnimationRight.addFrame(sf::IntRect(64, 64, 32, 32));
-    walkingAnimationRight.addFrame(sf::IntRect(32, 64, 32, 32));
-    walkingAnimationRight.addFrame(sf::IntRect( 0, 64, 32, 32));
-
-    Animation walkingAnimationUp;
-    walkingAnimationUp.setSpriteSheet(texture);
-    walkingAnimationUp.addFrame(sf::IntRect(32, 96, 32, 32));
-    walkingAnimationUp.addFrame(sf::IntRect(64, 96, 32, 32));
-    walkingAnimationUp.addFrame(sf::IntRect(32, 96, 32, 32));
-    walkingAnimationUp.addFrame(sf::IntRect( 0, 96, 32, 32));
-
-    Animation* currentAnimation = &walkingAnimationDown;
-
-    // set up AnimatedSprite
-    AnimatedSprite animatedSprite(sf::seconds(0.2), true, false);
-    animatedSprite.setPosition(sf::Vector2f(screenDimensions / 2));
-
-    sf::Clock frameClock;
-
-    float speed = 80.f;
-    bool noKeyWasPressed = true;
-
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-                window.close();
-        }
-
-        sf::Time frameTime = frameClock.restart();
-
-        // if a key was pressed set the correct animation and move correctly
-        sf::Vector2f movement(0.f, 0.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-        {
-            currentAnimation = &walkingAnimationUp;
-            movement.y -= speed;
-            noKeyWasPressed = false;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-        {
-            currentAnimation = &walkingAnimationDown;
-            movement.y += speed;
-            noKeyWasPressed = false;
-        }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-        {
-            currentAnimation = &walkingAnimationLeft;
-            movement.x -= speed;
-            noKeyWasPressed = false;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-        {
-            currentAnimation = &walkingAnimationRight;
-            movement.x += speed;
-            noKeyWasPressed = false;
-        }
-        animatedSprite.play(*currentAnimation);
-        animatedSprite.move(movement * frameTime.asSeconds());
-
-        // if no key was pressed stop the animation
-        if (noKeyWasPressed)
-        {
-            animatedSprite.stop();
-        }
-        noKeyWasPressed = true;
-
-        // update AnimatedSprite
-        animatedSprite.update(frameTime);
-
-        // draw
-        window.clear();
-        window.draw(animatedSprite);
-        window.display();
-    }
-
-    return 0;
 }
 
+void Animation::addFrame(sf::IntRect rect)
+{
+    m_frames.push_back(rect);
+}
+
+void Animation::setSpriteSheet(const sf::Texture& texture)
+{
+    m_texture = &texture;
+}
+
+const sf::Texture* Animation::getSpriteSheet() const
+{
+    return m_texture;
+}
+
+std::size_t Animation::getSize() const
+{
+    return m_frames.size();
+}
+
+const sf::IntRect& Animation::getFrame(std::size_t n) const
+{
+    return m_frames[n];
+}

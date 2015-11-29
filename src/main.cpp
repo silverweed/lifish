@@ -140,6 +140,8 @@ int main(int argc, char **argv) {
 				Game::WINDOW_WIDTH, 
 				Game::WINDOW_HEIGHT), "Lifish v." VERSION );
 
+	window.setVerticalSyncEnabled(true);
+
 	while (window.isOpen()) {
 		switch (handleScreenEvents(window, HOME_SCREEN, ~0 & ~PAUSE_SCREEN)) {
 		case GameAction::START_GAME:
@@ -182,9 +184,6 @@ int main(int argc, char **argv) {
 void play_game(sf::RenderWindow& window, const std::string& level_set,
 		Game::LevelRenderer& lr, unsigned short start_level)
 {
-	// Set this on by default to use less CPU cycles
-	bool vsync = true;
-
 	for (unsigned short i = 0; i < Game::playerContinues.size(); ++i)
 		Game::playerContinues[i] = Game::INITIAL_CONTINUES;
 
@@ -209,19 +208,6 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 #endif
 	Game::music = level->getMusic();
 	Game::playMusic();
-
-	// Create fps text
-	bool show_fps = false;
-	sf::Clock fps_clock, fps_update_clock;
-	Game::ShadedText fps_text(Game::getAsset("fonts", Game::Fonts::DEBUG_INFO),
-			"-", sf::Vector2f(10, 10));
-	fps_text.setOrigin(sf::Vector2f(-MAIN_WINDOW_SHIFT, 0.f));
-	fps_text.setStyle(sf::Text::Style::Bold);
-	fps_text.setCharacterSize(20);
-	Game::ShadedText vsync_text(Game::getAsset("fonts", Game::Fonts::DEBUG_INFO),
-			"vsync off", sf::Vector2f(6 * TILE_SIZE, 10));
-	vsync_text.setOrigin(sf::Vector2f(-MAIN_WINDOW_SHIFT, 0.f));
-	vsync_text.setCharacterSize(16);
 
 	auto players = lr.getPlayers();
 	bool gameOverTriggered = false;
@@ -323,12 +309,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 					}
 #endif
 				case sf::Keyboard::Key::F:
-					show_fps = !show_fps;
-					break;
-				case sf::Keyboard::Key::V:
-					vsync = !vsync;
-					vsync_text.setString(vsync ? "vsync on" : "vsync off");
-					window.setVerticalSyncEnabled(vsync);
+					Game::options.showFPS = !Game::options.showFPS;
 					break;
 				case sf::Keyboard::P:
 					{
@@ -503,22 +484,10 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 		// Actually move enemies
 		lr.applyEnemyMoves();
 
-		float cur_time = fps_clock.restart().asSeconds();
-		if (show_fps && fps_update_clock.getElapsedTime().asSeconds() >= 1) {
-			int fps = (int)(1.f / cur_time);
-			std::stringstream ss;
-			ss << fps << " fps"; 
-			fps_text.setString(ss.str());
-			fps_update_clock.restart();
-		}
-
 		window.clear();
 		lr.renderFrame(window);
 		panel.draw(window);
-		if (show_fps) {
-			window.draw(fps_text);
-			window.draw(vsync_text);
-		}
+		Game::maybeShowFPS(window);
 		window.display();
 
 		if (++cycle >= Game::GameCache::SOUNDS_GC_DELAY) {
@@ -615,6 +584,9 @@ bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 					break;
 				case sf::Keyboard::Return:
 					return yesSelected;
+				case sf::Keyboard::Key::F:
+					Game::options.showFPS = !Game::options.showFPS;
+					break;
 				default:
 					break;
 				}
@@ -636,6 +608,7 @@ bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 		drawTexts();
 		window.draw(yesText);
 		window.draw(noText);
+		Game::maybeShowFPS(window);
 		window.display();	
 	}
 
@@ -793,7 +766,6 @@ GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enab
 		}
 		return nullptr;
 	};
-
 	while (window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -812,6 +784,8 @@ GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enab
 						cur_screen = parent;
 					else
 						return GameAction::DO_NOTHING;
+				} else if (event.key.code == sf::Keyboard::Key::F) {
+					Game::options.showFPS = !Game::options.showFPS;
 				}
 				break;
 			case sf::Event::MouseButtonReleased:
@@ -899,6 +873,7 @@ GameAction handleScreenEvents(sf::RenderWindow& window, int rootScreen, int enab
 		}
 		window.clear();
 		cur_screen->draw(window);
+		Game::maybeShowFPS(window);
 		window.display();
 	}
 	return GameAction::DO_NOTHING;

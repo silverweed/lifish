@@ -117,6 +117,9 @@ void playMusic();
 void stopMusic();
 void testMusic();
 
+/** If Game::options.showFPS == true, then display FPS on screen */
+void maybeShowFPS(sf::RenderWindow& window);
+
 namespace KeyUtils {
 	short keyToNumber(sf::Keyboard::Key key);
 

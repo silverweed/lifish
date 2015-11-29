@@ -34,9 +34,11 @@ bool Game::init() {
 	using Game::pwd;
 
 	Game::playerContinues.fill(INITIAL_CONTINUES);
-	Game::options.music_volume = 100;
-	Game::options.sounds_volume = 100;
-	Game::options.sounds_mute = false;
+
+	// Setup default options
+	Game::options.musicVolume = 100;
+	Game::options.soundsVolume = 100;
+	Game::options.soundsMute = false;
 	Game::options.useJoystick.fill(-1);
 
 	// Setup pwd variable

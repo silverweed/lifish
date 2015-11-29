@@ -1,6 +1,7 @@
 #include "utils.hpp"
 #include "Options.hpp"
 #include "LoopingMusic.hpp"
+#include "ShadedText.hpp"
 
 short Game::KeyUtils::keyToNumber(sf::Keyboard::Key key) {
 	switch (key) {
@@ -131,14 +132,14 @@ void Game::testMusic() {
 	sf::Music sample;
 	sample.openFromFile(Game::getAsset("music", "music1.ogg"));
 	sample.play();
-	sample.setVolume(Game::options.music_volume);
+	sample.setVolume(Game::options.musicVolume);
 	SLEEP_MS(200);
 	sample.stop();
 }
 
 void Game::playMusic() {
 	if (Game::music != nullptr) {
-		Game::music->setVolume(Game::options.music_volume);
+		Game::music->setVolume(Game::options.musicVolume);
 		Game::music->play();
 	}
 }
@@ -146,5 +147,33 @@ void Game::playMusic() {
 void Game::stopMusic() {
 	if (Game::music != nullptr) {
 		Game::music->stop();
+	}
+}
+
+void Game::maybeShowFPS(sf::RenderWindow& window) {
+	static float cur_time;
+	static sf::Clock fps_clock, fps_update_clock;
+	static Game::ShadedText fps_text(Game::getAsset("fonts", Game::Fonts::DEBUG_INFO),
+			"-", sf::Vector2f(Game::LEVEL_WIDTH * Game::TILE_SIZE - 20, 
+					(Game::LEVEL_HEIGHT + 1) * Game::TILE_SIZE + 2));
+	static bool textSetUp = false;
+
+	if (!textSetUp) {
+		fps_text.setOrigin(sf::Vector2f(-MAIN_WINDOW_SHIFT, 0.f));
+		fps_text.setStyle(sf::Text::Style::Bold);
+		fps_text.setCharacterSize(20);
+		textSetUp = true;
+	}	
+
+	cur_time = fps_clock.restart().asSeconds();
+	if (Game::options.showFPS) {
+		if (fps_update_clock.getElapsedTime().asSeconds() >= 1) {
+			int fps = (int)(1.f / cur_time);
+			std::stringstream ss;
+			ss << fps << " fps"; 
+			fps_text.setString(ss.str());
+			fps_update_clock.restart();
+		}	
+		window.draw(fps_text);
 	}
 }
