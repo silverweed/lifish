@@ -538,18 +538,18 @@ bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 	text.setCharacterSize(15);
 	bounds = text.getGlobalBounds();
 	
-	sf::Text yesText("YES", interlevel_font, 15);
-	yesText.setPosition(Game::center(bounds) + sf::Vector2f(0.f, 4 * bounds.height));
-	yesText.setColor(sf::Color::Red);
+	sf::Text yes_text("YES", interlevel_font, 15);
+	yes_text.setPosition(Game::center(bounds) + sf::Vector2f(0.f, 4 * bounds.height));
+	yes_text.setColor(sf::Color::Red);
 
-	bounds = yesText.getGlobalBounds();
+	bounds = yes_text.getGlobalBounds();
 	text.setString(" / ");
 	text.setPosition(sf::Vector2f(bounds.left + bounds.width, bounds.top));
 	texts.push_back(text);
 
 	bounds = text.getGlobalBounds();
-	sf::Text noText("NO", interlevel_font, 15);
-	noText.setPosition(sf::Vector2f(bounds.left + bounds.width, bounds.top));
+	sf::Text no_text("NO", interlevel_font, 15);
+	no_text.setPosition(sf::Vector2f(bounds.left + bounds.width, bounds.top));
 
 	text.setString("Arrows / Enter to select");
 	text.setCharacterSize(10);
@@ -565,7 +565,7 @@ bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 	panel.draw(window);
 	window.display();
 
-	bool yesSelected = true;
+	bool yes_selected = true;
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -577,13 +577,13 @@ bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 			case sf::Event::KeyPressed:
 				switch (event.key.code) {
 				case sf::Keyboard::Left:
-					yesSelected = true;
+					yes_selected = true;
 					break;
 				case sf::Keyboard::Right:
-					yesSelected = false;
+					yes_selected = false;
 					break;
 				case sf::Keyboard::Return:
-					return yesSelected;
+					return yes_selected;
 				case sf::Keyboard::Key::F:
 					Game::options.showFPS = !Game::options.showFPS;
 					break;
@@ -595,19 +595,19 @@ bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 			}
 		}
 
-		if (yesSelected) {
-			yesText.setColor(sf::Color::Red);
-			noText.setColor(sf::Color::White);
+		if (yes_selected) {
+			yes_text.setColor(sf::Color::Red);
+			no_text.setColor(sf::Color::White);
 		} else {
-			yesText.setColor(sf::Color::White);
-			noText.setColor(sf::Color::Red);
+			yes_text.setColor(sf::Color::White);
+			no_text.setColor(sf::Color::Red);
 		}
 
 		window.clear();
 		panel.draw(window);
 		drawTexts();
-		window.draw(yesText);
-		window.draw(noText);
+		window.draw(yes_text);
+		window.draw(no_text);
 		Game::maybeShowFPS(window);
 		window.display();	
 	}
