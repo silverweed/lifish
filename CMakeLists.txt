@@ -66,7 +66,7 @@ else()
 	target_compile_features(lifish PRIVATE cxx_range_for)
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -Wall -pedantic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -Wall -pedantic -Wextra")
 if(UNIX AND NOT APPLE)
 	execute_process(
 		COMMAND ${CMAKE_C_COMPILER} -fuse-ld=gold -Wl,--version

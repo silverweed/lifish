@@ -135,7 +135,7 @@ public:
 	/** Draws this level's background in the target window */
 	void draw(sf::RenderTarget& window) override;
 
-	const LevelSet *const getLevelSet() const { return levelSet; }
+	const LevelSet* getLevelSet() const { return levelSet; }
 };
 
 }

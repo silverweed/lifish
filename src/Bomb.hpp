@@ -51,7 +51,7 @@ public:
 
 	void setFuseTime(unsigned short ft) { fuseTime = ft; }
 
-	const Game::Player *const getSourcePlayer() const { return sourcePlayer; }
+	const Game::Player* getSourcePlayer() const { return sourcePlayer; }
 };
 
 }

@@ -175,7 +175,7 @@ void Explosion::checkHit(Game::LevelRenderer *const lr) {
 		}
 	}
 
-	auto tryHit = [this, lr] (Game::LifedMovingEntity *const e, const unsigned short d, const sf::FloatRect& expl_box) {
+	auto tryHit = [this, lr] (Game::LifedMovingEntity *const e, const sf::FloatRect& expl_box) {
 		if (e->hasShield() || e->isDying()) return;
 
 		// Check if entity's bounding box intersects this tile
@@ -202,7 +202,7 @@ void Explosion::checkHit(Game::LevelRenderer *const lr) {
 	};
 
 	for (auto& e : moving[4]) {
-		tryHit(e, 0, origin_box);
+		tryHit(e, origin_box);
 	}
 	for (unsigned short dir = 0; dir < 4; ++dir) {
 		for (unsigned short d = 1; d <= propagation[dir]; ++d) {
@@ -225,7 +225,7 @@ void Explosion::checkHit(Game::LevelRenderer *const lr) {
 			const sf::FloatRect expl_box(new_tile.x * TILE_SIZE,
 					new_tile.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 			for (auto& e : moving[dir])
-				tryHit(e, d, expl_box);
+				tryHit(e, expl_box);
 		}
 	}
 }
