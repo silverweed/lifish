@@ -44,7 +44,8 @@ LevelRenderer::~LevelRenderer() {
 
 void LevelRenderer::_clearEntities() {
 	for (auto& e : fixedEntities)
-		if (e != nullptr) delete e;
+		if (e != nullptr) 
+			delete e;
 	for (auto& e : movingEntities)
 		if (!isPlayer(e))
 			delete e;
@@ -64,7 +65,9 @@ void LevelRenderer::_clearEntities() {
 		delete *it;
 	for (auto it = letters.begin(); it != letters.end(); ++it)
 		delete *it;
-
+	if (finalBoss != nullptr) {
+		finalBoss.reset();
+	}
 	fixedEntities.fill(nullptr);
 	players.fill(nullptr);
 
@@ -105,7 +108,9 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 			} enemy_attack;	
 
 			switch (level->getTile(left, top)) {
+
 				using AT = Game::Enemy::AttackType;
+
 			case EntityType::FIXED: 
 				fixedEntities[top * LEVEL_WIDTH + left] = 
 					new Game::FixedWall(curPos, level->tileIDs.fixed);
@@ -154,7 +159,10 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 					break;
 				}
 			case EntityType::BOSS:
-				bosses.push_back(new Game::Boss(curPos));
+				if (_isFinalLevel())
+					finalBoss = std::unique_ptr<Game::FinalBoss>(new Game::FinalBoss(curPos));
+				else
+					bosses.push_back(new Game::Boss(curPos));
 				break;
 			case EntityType::ENEMY1: 
 				// TODO: make enemy_attack configurable from levels.json
@@ -391,14 +399,15 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 			_spawnPoints(boss->getPosition() + sf::Vector2f(TILE_SIZE, 0), boss->getPointsGiven(), true);
 			delete boss;
 			it = bosses.erase(it);
-
 			continue;
+
 		} else if (boss->isDying()) {
 			if (boss->explClock.getElapsedTime().asMilliseconds() >= 100) {
 				boss->explClock.restart();
 				// Calculate a random location inside the boss
 				const auto bpos = boss->getPosition();
-				std::uniform_real_distribution<float> dist(-0.5 * TILE_SIZE, TILE_SIZE * (Game::Boss::SIZE - 0.5));
+				std::uniform_real_distribution<float> dist(-0.5 * TILE_SIZE,
+						TILE_SIZE * (Game::Boss::SIZE - 0.5));
 				const float x = dist(rng),
 				            y = dist(rng);
 				auto expl = new Game::BossExplosion(sf::Vector2f(bpos.x + x, bpos.y + y));
@@ -408,6 +417,40 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 		}
 		boss->draw(window);
 		++it;
+	}
+
+	// Draw final boss
+	if (_isFinalLevel() && finalBoss != nullptr) {
+		finalBoss->draw(window);
+		if (finalBoss->isDead()) {
+			for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+				if (players[i] == nullptr || players[i]->isDying())
+					continue;
+				Game::score[i] += finalBoss->getPointsGiven();
+			}
+
+			_spawnPoints(finalBoss->getPosition() + sf::Vector2f(
+					Game::FinalBoss::SIZE / 2 * TILE_SIZE, 0), finalBoss->getPointsGiven(), true);
+
+			finalBoss.reset();
+
+		} else if (finalBoss->isDying()) {
+			if (finalBoss->explClock.getElapsedTime().asMilliseconds() >= 100) {
+				finalBoss->explClock.restart();
+				// Calculate a random location inside the finalBoss
+				const auto bpos = finalBoss->getPosition();
+				std::uniform_real_distribution<float> dist(-0.5 * TILE_SIZE, 
+						TILE_SIZE * (Game::Boss::SIZE - 0.5));
+				const float x = dist(rng),
+				            y = dist(rng);
+				auto expl = new Game::BossExplosion(sf::Vector2f(bpos.x + x, bpos.y + y));
+				_pushTemporary(expl);
+				Game::cache.playSound(expl->getSoundFile());
+			}
+			finalBoss->draw(window);
+		} else {
+			finalBoss->draw(window);
+		}
 	}
 	
 	// Draw other temporaries
@@ -483,6 +526,7 @@ void LevelRenderer::detectCollisions() {
 		}
 	};
 
+	// Collision detection loop
 	for (unsigned short i = 0, len = movingEntities.size(); i < len; ++i) {
 		if (checked[i]) continue;
 		MovingEntity *entity = movingEntities[i];
@@ -559,8 +603,10 @@ void LevelRenderer::detectCollisions() {
 					if (extra) {
 						player->extra.fill(false);
 						player->setRemainingLives(player->getRemainingLives() + 1);
-						const auto upText = new Game::Points(letter->getPosition() + sf::Vector2f((TILE_SIZE - 45) / 2., 0.f),
-								Game::to_string(_getPlayerIndex(player) + 1) + "UP", sf::Color(77, 184, 255, 255), 15);
+						const auto upText = new Game::Points(letter->getPosition() 
+								+ sf::Vector2f((TILE_SIZE - 45) / 2., 0.f),
+								Game::to_string(_getPlayerIndex(player) + 1) + "UP",
+								sf::Color(77, 184, 255, 255), 15);
 						_pushTemporary(upText);
 						Game::cache.playSound(Game::getAsset("test", Game::EXTRA_LIFE_SOUND));
 					}
@@ -825,7 +871,8 @@ void LevelRenderer::detectCollisions() {
 		
 		for (const auto& boss : bosses) {
 			if (!boss->isDying() && boss != bullet->getSource()
-					&& boss->intersects(sf::FloatRect(szpos.x, szpos.y, bullet->getSize(), bullet->getSize()))) {
+					&& boss->intersects(sf::FloatRect(szpos.x, szpos.y, 
+							bullet->getSize(), bullet->getSize()))) {
 				bullet->destroy();
 				Game::cache.playSound(bullet->getSoundFile(Game::Sounds::DEATH));
 				break;	
@@ -1094,7 +1141,7 @@ bool LevelRenderer::removePlayer(const unsigned short id, bool overrideInternal)
 
 	players[id-1] = nullptr;
 	if (overrideInternal)
-		_players[id-1].reset(nullptr);
+		_players[id-1].reset();
 
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
 		if (players[i] != nullptr) return true;
@@ -1327,6 +1374,7 @@ bool LevelRenderer::isLevelClear() const {
 	for (const auto& m : movingEntities)
 		if (!isPlayer(m))
 			return false;
+	if (finalBoss != nullptr) return false;
 	return true;
 }
 
@@ -1465,4 +1513,8 @@ void LevelRenderer::resumeClocks() {
 	gameOverText.resumeClock();
 	extraGameText.resumeClock();
 	hurryUpText.resumeClock();
+}
+
+bool LevelRenderer::_isFinalLevel() const {
+	return level != nullptr && level->getLevelNum() == level->getLevelSet()->getLevelsNum();
 }

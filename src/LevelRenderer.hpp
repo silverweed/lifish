@@ -20,6 +20,7 @@
 #include "Letter.hpp"
 #include "Bonus.hpp"
 #include "Clocked.hpp"
+#include "FinalBoss.hpp"
 
 namespace Game {
 
@@ -100,6 +101,9 @@ class LevelRenderer final : public Game::Clocked, private sf::NonCopyable {
 	sftools::Chronometer bossShootClock;
 	unsigned short bossClockCycle = 0;
 
+	/** The Final Boss, if this is the last level */
+	std::unique_ptr<Game::FinalBoss> finalBoss;
+
 	/** The first Teleport of the level, if any. Keeping the
 	 *  pointer to it allows us to traverse the Teleports'
 	 *  linked list.
@@ -142,6 +146,8 @@ class LevelRenderer final : public Game::Clocked, private sf::NonCopyable {
 	void _spawnPoints(const sf::Vector2f& pos, const int amount, bool large = false);
 
 	void _grabBonus(Game::MovingEntity *const entity, Game::Bonus *bonus, unsigned short idx);
+
+	bool _isFinalLevel() const;
 
 public:
 	/** Create the LevelRenderer and hand it the ownership of the players */

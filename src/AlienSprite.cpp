@@ -43,9 +43,7 @@ AlienSprite::AlienSprite()
 
 void AlienSprite::draw(sf::RenderTarget& window, const sf::Vector2f& pos, const Direction dir) {
 	animatedSprite.setPosition(pos);
-	const unsigned short d = dir == Direction::NONE
-					? ANIM_DEATH
-					: Game::directionToUshort(dir);
+	const unsigned short d = Game::directionToUshort(dir);
 
 	animatedSprite.play(animations[d]);
 	animatedSprite.update(frameClock.restart());

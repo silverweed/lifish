@@ -1,11 +1,11 @@
 #pragma once
 
+#include <array>
 #include "NonAnimated.hpp"
 #include "Lifed.hpp"
 #include "Scored.hpp"
 #include "Sounded.hpp"
 #include "Clocked.hpp"
-#include <array>
 
 namespace Game {
 

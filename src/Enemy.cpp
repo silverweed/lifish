@@ -4,19 +4,19 @@ using Game::Enemy;
 
 Enemy::Enemy(sf::Vector2f pos, const unsigned short id)
 	: Game::LifedMovingEntity(
-			pos, 
-			// Texture
-			Game::getAsset("graphics", std::string("enemy") + Game::to_string(id) + std::string(".png")), 
-			// Life
-			1,
-			// Sounds
-			{
-				Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_death.ogg")),
-				Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_yell.ogg")),
-				// Note: this is an invalid sound if enemy.attackType is not CONTACT. This is not an issue,
-				// since in that case, the sound never gets played, so the cache doesn't even load it.
-				Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_attack.ogg"))
-			}) 
+		pos, 
+		// Texture
+		Game::getAsset("graphics", std::string("enemy") + Game::to_string(id) + std::string(".png")), 
+		// Life
+		1,
+		// Sounds
+		{
+			Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_death.ogg")),
+			Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_yell.ogg")),
+			// Note: this is an invalid sound if enemy.attackType is not CONTACT. This is not an issue,
+			// since in that case, the sound never gets played, so the cache doesn't even load it.
+			Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_attack.ogg"))
+		}) 
 	, Game::Scored(id * 100)
 	, attackAlign(-1, -1)
 {
