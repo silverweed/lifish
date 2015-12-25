@@ -42,6 +42,9 @@ void MovingEntity::move(const Direction dir) {
 
 	sf::Vector2f shift(0.f, 0.f);
 	sf::Time frameTime = frameClock.restart();
+	// Cap frameTime to a maximum to avoid excessive "jumps" due to lag.
+	if (frameTime.asSeconds() > MAX_FRAME_TIME)
+		frameTime = sf::seconds(MAX_FRAME_TIME);
 
 	Animation *anim;
 		 

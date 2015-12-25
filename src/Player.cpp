@@ -46,48 +46,9 @@ void Player::move() {
 }
 
 void Player::move(const Game::Direction dir) {
-	moving = true;
-	direction = dir;
-
-	float spd = speed;
-	if (speedyTime > 0 && speedyClock.getElapsedTime().asMilliseconds() < speedyTime)
-		spd *= 2;
-
-	sf::Vector2f shift(0.f, 0.f);
-	sf::Time frameTime = frameClock.restart();
-
-	Animation *anim;
-		 
-	switch (direction) {
-	case Direction::UP:
-		anim = &animations[ANIM_UP];
-		shift.y -= spd;
-		break;
-	case Direction::LEFT:
-		anim = &animations[ANIM_LEFT];
-		shift.x -= spd;
-		break;
-	case Direction::DOWN:
-		anim = &animations[ANIM_DOWN];
-		shift.y += spd;
-		break;
-	case Direction::RIGHT:
-		anim = &animations[ANIM_RIGHT];
-		shift.x += spd;
-		break;
-	case Direction::NONE:
-		return;
-	}
-
-        animatedSprite.play(*anim);
-	if (!colliding) {
-		animatedSprite.move(shift * frameTime.asSeconds());
-		pos = animatedSprite.getPosition();
-		_ensureAlign();
-	} else {
+	MovingEntity::move(dir);
+	if (colliding)
 		realign();
-	}
-	animatedSprite.update(frameTime);
 }
 
 bool Player::_isTransparentTo(const Entity *const e) const {

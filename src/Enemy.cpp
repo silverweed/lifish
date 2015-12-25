@@ -95,8 +95,10 @@ void Enemy::draw(sf::RenderTarget& window) {
 	} else if (shooting && !dead) {
 		if (attackClock.getElapsedTime().asMilliseconds() < shootFrameTime) {
 			const unsigned short d = Game::directionToUshort(direction);
-			shootFrame[d].setPosition(pos);
-			window.draw(shootFrame[d]);
+			if (d < ANIM_DEATH) {
+				shootFrame[d].setPosition(pos);
+				window.draw(shootFrame[d]);
+			}
 			return;
 		} else {
 			shooting = false;

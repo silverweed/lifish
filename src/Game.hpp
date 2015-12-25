@@ -79,7 +79,7 @@ constexpr unsigned short SIDE_PANEL_WIDTH = 96;
 constexpr unsigned short SIDE_PANEL_HEIGHT = 480;
 
 constexpr unsigned short WINDOW_WIDTH = SIDE_PANEL_WIDTH + (LEVEL_WIDTH + 2) * TILE_SIZE;
-constexpr unsigned short WINDOW_HEIGHT = SIDE_PANEL_HEIGHT;
+constexpr unsigned short WINDOW_HEIGHT = (LEVEL_HEIGHT + 2) * TILE_SIZE;
 
 /** How much the main game window is shifted relative to the
  *  SFML window (horizontally)

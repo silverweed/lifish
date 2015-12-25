@@ -33,6 +33,7 @@ inline Direction oppositeDirection(const Direction dir) {
 class MovingEntity : public Game::Animated {
 protected:
 	constexpr static unsigned short DEATH_TIME = 2000; // ms
+	constexpr static float MAX_FRAME_TIME = 1. / 60; // s
 
 	/** This unit's base speed */
 	float speed = 0.f;
