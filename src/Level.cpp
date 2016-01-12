@@ -8,6 +8,9 @@
 using Game::Level;
 using Game::pwd;
 using Game::DIRSEP;
+using Game::LEVEL_WIDTH;
+using Game::LEVEL_HEIGHT;
+using Game::TILE_SIZE;
 using Game::EntityType;
 
 Level::Level(const Game::LevelSet *const _levelSet) : levelSet(_levelSet) {}
@@ -26,7 +29,7 @@ void Level::_loadTiles() {
 	bgTiles[TILE_REGULAR].setTexture(bgTexture);
 	bgTexture.setRepeated(true);
 	bgTexture.setSmooth(true);
-	bgTiles[TILE_REGULAR].setTextureRect(sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE));
+	bgTiles[TILE_REGULAR].setTextureRect(sf::IntRect(0, 0, TILE_SIZE * LEVEL_WIDTH, TILE_SIZE * LEVEL_HEIGHT));
 
 	for (unsigned short i = 1; i < bgTiles.size(); ++i)
 		bgTiles[i].setTexture(borderTexture);
@@ -100,12 +103,8 @@ void Level::draw(sf::RenderTarget& window) {
 	const unsigned short btn_y = LEVEL_HEIGHT + 1;
 
 	// Draw the level background
-	for (unsigned short i = 0; i < btn_x + 1; ++i) {
-		for (unsigned short j = 0; j < btn_y + 1; ++j) {
-			bgTiles[TILE_REGULAR].setPosition(i * TILE_SIZE, j * TILE_SIZE);
-			window.draw(bgTiles[TILE_REGULAR]);
-		}
-	}
+	bgTiles[TILE_REGULAR].setPosition(TILE_SIZE, TILE_SIZE);
+	window.draw(bgTiles[TILE_REGULAR]);
 
 	// Draw the borders
 	window.draw(bgTiles[TILE_UPPER_LEFT]);
@@ -137,7 +136,8 @@ void Level::draw(sf::RenderTarget& window) {
 }
 
 EntityType Level::getTile(unsigned short left, unsigned short top) const {
-	if (left >= LEVEL_WIDTH || top >= LEVEL_HEIGHT) return EntityType::UNKNOWN;
+	if (left >= LEVEL_WIDTH || top >= LEVEL_HEIGHT) 
+		return EntityType::UNKNOWN;
 	return tiles[top][left];
 }
 
