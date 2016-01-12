@@ -67,6 +67,17 @@ else()
 endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -Wall -pedantic -Wextra")
+if(${GPROF})
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
+	message(STATUS "Compiling with gprof support")
+endif()
+if (${PPROF})
+	find_package(Gperftools)
+	if(GPERFTOOLS_FOUND)
+		target_link_libraries(${PROJECT_NAME} ${GPERFTOOLS_LIBRARIES})
+		message(STATUS "Compiling with gperftools")
+	endif()
+endif()
 if(UNIX AND NOT APPLE)
 	execute_process(
 		COMMAND ${CMAKE_C_COMPILER} -fuse-ld=gold -Wl,--version
