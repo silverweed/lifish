@@ -20,3 +20,4 @@ Lifish.app
 tests
 test.json
 *.lifish
+*.pyc

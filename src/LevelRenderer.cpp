@@ -275,6 +275,9 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 	for (auto& boss : bosses)
 		boss->setOrigin(origin);
 
+	if (finalBoss != nullptr)
+		finalBoss->setOrigin(origin);
+
 	for (const auto& player : players)
 		if (player != nullptr)
 			_pushTemporary(new Game::Flash(player->getPosition()));
@@ -655,41 +658,26 @@ void LevelRenderer::detectCollisions() {
 		const unsigned short iposx = (unsigned short)pos.x,
 		                     iposy = (unsigned short)pos.y;
 		sf::Vector2i next_tile(iposx / TILE_SIZE - 1, iposy / TILE_SIZE - 1);
-		bool at_limit = false;
 
+		if (entity->isOverBoundaries(dir)) {
+			entity->colliding = true;
+			continue;
+		}
+
+		const bool at_limit = entity->isAtLimit(dir);
+		
 		// Check for impacts with the borders
 		switch (dir) {
 		case Direction::UP:
-			if (pos.y <= TILE_SIZE) {
-				// Reached the top
-				entity->colliding = true;
-				continue;
-			}
-			at_limit = iposy % TILE_SIZE == 0;
 			--next_tile.y;
 			break;
 		case Direction::LEFT:
-			if (pos.x <= TILE_SIZE) {
-				entity->colliding = true;
-				continue;
-			}
-			at_limit = iposx % TILE_SIZE == 0;
 			--next_tile.x;
 			break;
 		case Direction::DOWN:
-			if (pos.y >= TILE_SIZE * LEVEL_HEIGHT) {
-				entity->colliding = true;
-				continue;
-			}
-			at_limit = iposy % TILE_SIZE == 0;
 			++next_tile.y;
 			break;
 		case Direction::RIGHT:
-			if (pos.x >= TILE_SIZE * LEVEL_WIDTH) {
-				entity->colliding = true;
-				continue;
-			}
-			at_limit = iposx % TILE_SIZE == 0;
 			++next_tile.x;
 			break;
 		case Direction::NONE:
@@ -838,8 +826,26 @@ void LevelRenderer::detectCollisions() {
 					}
 				}
 			}
+
+			if (finalBoss != nullptr && !finalBoss->isDying() 
+					&& finalBoss->occupies(next_tile + sf::Vector2i(1, 1))) {
+				if (is_player) {
+					if (!(entity->hasShield() || entity->isDying())) {
+						entity->kill();
+						break;
+					}
+				} else {
+					entity->colliding = true;
+					break;
+				}
+			}
 		}
 	}
+
+	// Check final boss vs walls
+	if (finalBoss != nullptr)
+		finalBoss->detectCollisions(this);
+		
 
 	// Check impact bullets - fixed/borders
 	for (auto& bullet : bullets) {
@@ -882,6 +888,10 @@ void LevelRenderer::detectCollisions() {
 }
 
 void LevelRenderer::selectEnemyMoves() {
+	if (finalBoss != nullptr) {
+		finalBoss->chooseDirection(this);
+	}
+
 	for (auto& entity : movingEntities) {
 		if (isPlayer(entity) || entity->isDying())
 			continue;
@@ -891,7 +901,8 @@ void LevelRenderer::selectEnemyMoves() {
 			if (enemy->colliding) {
 				// Fix prevAligns
 				switch (enemy->getDirection()) {
-				case Direction::LEFT: case Direction::UP:
+				case Direction::LEFT: 
+				case Direction::UP:
 					enemy->prevAlign = Game::tile(enemy->getPosition());
 					break;
 				case Direction::RIGHT:
@@ -900,7 +911,8 @@ void LevelRenderer::selectEnemyMoves() {
 				case Direction::DOWN:
 					enemy->prevAlign = Game::tile(enemy->getPosition()) + sf::Vector2i(0, 1);
 					break;
-				case Direction::NONE: break;
+				case Direction::NONE:
+					break;
 				}
 				enemy->setDashing(false);
 				enemy->setDirection(oppositeDirection(entity->getDirection()));
@@ -918,6 +930,12 @@ void LevelRenderer::moveBullets() {
 }
 
 void LevelRenderer::applyEnemyMoves() {
+	if (finalBoss != nullptr && !finalBoss->isDying()) {
+		if (finalBoss->isAligned())
+			finalBoss->prevAlign = Game::tile(finalBoss->getPosition());
+		finalBoss->move();
+	}
+
 	for (auto& entity : movingEntities) {
 		if (isPlayer(entity) || entity->isDying()) 
 			continue;

@@ -391,15 +391,10 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 		}
 
 		lr.checkLinesOfSight();
-
 		lr.selectEnemyMoves();
-
 		lr.makeBossesShoot();
-
 		lr.checkBombExplosions();
-
 		lr.checkExplosionHits();
-
 		lr.detectCollisions();
 
 		bool maybe_all_dead = false;

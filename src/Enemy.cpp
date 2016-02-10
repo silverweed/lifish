@@ -41,15 +41,47 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id)
 	}
 
 	for (unsigned short i = 0; i < WALK_N_FRAMES; ++i) {
-		animations[ANIM_DOWN].addFrame(sf::IntRect(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
-		animations[ANIM_UP].addFrame(sf::IntRect((WALK_N_FRAMES + i) * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
-		animations[ANIM_RIGHT].addFrame(sf::IntRect(i * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE));
-		animations[ANIM_LEFT].addFrame(sf::IntRect((WALK_N_FRAMES + i) * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE));
+		animations[ANIM_DOWN].addFrame(sf::IntRect(
+					i * TILE_SIZE, 
+					0,
+					TILE_SIZE, 
+					TILE_SIZE));
+		animations[ANIM_UP].addFrame(sf::IntRect(
+					(WALK_N_FRAMES + i) * TILE_SIZE, 
+					0, 
+					TILE_SIZE, 
+					TILE_SIZE));
+		animations[ANIM_RIGHT].addFrame(sf::IntRect(
+					i * TILE_SIZE, 
+					TILE_SIZE, 
+					TILE_SIZE,
+					TILE_SIZE));
+		animations[ANIM_LEFT].addFrame(sf::IntRect(
+					(WALK_N_FRAMES + i) * TILE_SIZE, 
+					TILE_SIZE, 
+					TILE_SIZE, 
+					TILE_SIZE));
 	}
-	shootFrame[ANIM_DOWN].setTextureRect(sf::IntRect(0, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
-	shootFrame[ANIM_UP].setTextureRect(sf::IntRect(TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
-	shootFrame[ANIM_RIGHT].setTextureRect(sf::IntRect(2 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
-	shootFrame[ANIM_LEFT].setTextureRect(sf::IntRect(3 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+	shootFrame[ANIM_DOWN].setTextureRect(sf::IntRect(
+				0,
+				2 * TILE_SIZE, 
+				TILE_SIZE, 
+				TILE_SIZE));
+	shootFrame[ANIM_UP].setTextureRect(sf::IntRect(
+				TILE_SIZE, 
+				2 * TILE_SIZE, 
+				TILE_SIZE, 
+				TILE_SIZE));
+	shootFrame[ANIM_RIGHT].setTextureRect(sf::IntRect(
+				2 * TILE_SIZE, 
+				2 * TILE_SIZE, 
+				TILE_SIZE, 
+				TILE_SIZE));
+	shootFrame[ANIM_LEFT].setTextureRect(sf::IntRect(
+				3 * TILE_SIZE, 
+				2 * TILE_SIZE, 
+				TILE_SIZE, 
+				TILE_SIZE));
 
 	for (unsigned short i = 0; i < death_n_frames; ++i) 
 		animations[ANIM_DEATH].addFrame(sf::IntRect((WALK_N_FRAMES + i) * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));

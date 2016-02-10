@@ -116,6 +116,9 @@ public:
 
 	short getRemainingLives() const { return remainingLives; }
 	virtual void setRemainingLives(short r) { remainingLives = r; }
+
+	bool isOverBoundaries(const Game::Direction dir) const;
+	bool isAtLimit(const Game::Direction dir) const;
 };
 
 }

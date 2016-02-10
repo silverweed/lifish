@@ -8,20 +8,6 @@
 using Game::AIBoundFunction;
 using D = Game::Direction;
 
-static D directions[] = { D::UP, D::RIGHT, D::DOWN, D::LEFT };
-
-static D selectRandomViable(const Game::Enemy *const enemy, const Game::LevelRenderer *const lr, const D opp) {
-	D dirs[4];
-	unsigned short n = 0;
-	for (const auto& d : directions)
-		if (enemy->canGo(d, lr) && d != opp) dirs[n++] = d;
-	if (n == 0)
-		dirs[n++] = opp;
-	std::uniform_int_distribution<int> dist(0, n - 1);
-	return dirs[dist(Game::rng)];
-}
-
-
 AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
 	return [enemy] (const Game::LevelRenderer *const lr) { 
 		if (!enemy->colliding) {

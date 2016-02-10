@@ -127,8 +127,10 @@ bool MovingEntity::canGo(const Direction dir, const Game::LevelRenderer *const l
 	case Direction::RIGHT:
 		++iposx;
 		break;
-	default: return true;
+	default:
+		return true;
 	}
+
 	if (iposx < 0 || iposx >= LEVEL_WIDTH || iposy < 0 || iposy >= LEVEL_HEIGHT)
 		return false;
 
@@ -256,4 +258,45 @@ void MovingEntity::giveSpeedy(int speedyMs) {
 
 bool MovingEntity::hasSpeedy() const {
 	return speedyTime > 0 && speedyClock.getElapsedTime().asMilliseconds() <= speedyTime;
+}
+
+bool MovingEntity::isOverBoundaries(const Game::Direction dir) const {
+	switch (dir) {
+	case Direction::UP:
+		if (pos.y <= TILE_SIZE)
+			return true;
+	case Direction::LEFT:
+		if (pos.x <= TILE_SIZE)
+			return true;
+	case Direction::DOWN:
+		if (pos.y >= TILE_SIZE * LEVEL_HEIGHT)
+			return true;
+	case Direction::RIGHT:
+		if (pos.x >= TILE_SIZE * LEVEL_WIDTH)
+			return true;
+	default:
+		break;
+	}
+
+	return false;
+}
+
+bool MovingEntity::isAtLimit(const Game::Direction dir) const {
+	const unsigned short iposx = (unsigned short)pos.x,
+			     iposy = (unsigned short)pos.y;
+
+	switch (dir) {
+	case Direction::UP:
+		return iposy % TILE_SIZE == 0;
+	case Direction::LEFT:
+		return iposx % TILE_SIZE == 0;
+	case Direction::DOWN:
+		return iposy % TILE_SIZE == 0;
+	case Direction::RIGHT:
+		return iposx % TILE_SIZE == 0;
+	default:
+		break;
+	}
+
+	return false;
 }

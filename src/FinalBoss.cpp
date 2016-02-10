@@ -1,6 +1,7 @@
 #include "FinalBoss.hpp"
 #include "Game.hpp"
 #include "utils.hpp"
+#include "LevelRenderer.hpp"
 
 using Game::FinalBoss;
 using Game::TILE_SIZE;
@@ -8,22 +9,36 @@ using Game::TILE_SIZE;
 FinalBoss::FinalBoss(const sf::Vector2f& pos)
 	: Game::LifedMovingEntity(pos, 
 			Game::getAsset("test", "final_boss.png"), MAX_LIFE,
-			{ Game::getAsset("test", "boss_death.ogg"), 
-			Game::getAsset("test", "boss_hurt.ogg") })
+			{ Game::getAsset("test", "boss_death.ogg") 
+			, Game::getAsset("test", "boss_hurt.ogg") })
 	, Game::Scored(VALUE)
 {
 	transparentTo.bullets = true;
 
+	speed = 150.f;
+
 	for (unsigned short i = 0; i < 4; ++i) {
 		animations[i].setSpriteSheet(texture);
-		animations[i].addFrame(sf::IntRect(SIZE * TILE_SIZE, SIZE * TILE_SIZE * i,
-				SIZE * TILE_SIZE, SIZE * TILE_SIZE));
-		animations[i].addFrame(sf::IntRect(2 * SIZE * TILE_SIZE, SIZE * TILE_SIZE * i,
-				SIZE * TILE_SIZE, SIZE * TILE_SIZE));
-		animations[i].addFrame(sf::IntRect(3 * SIZE * TILE_SIZE, SIZE * TILE_SIZE * i,
-				SIZE * TILE_SIZE, SIZE * TILE_SIZE));
-		animations[i].addFrame(sf::IntRect(4 * SIZE * TILE_SIZE, SIZE * TILE_SIZE * i,
-				SIZE * TILE_SIZE, SIZE * TILE_SIZE));
+		animations[ANIM_DOWN].addFrame(sf::IntRect(
+				i * SIZE * TILE_SIZE,
+				0, 
+				SIZE * TILE_SIZE, 
+				SIZE * TILE_SIZE));
+		animations[ANIM_UP].addFrame(sf::IntRect(
+				i * SIZE * TILE_SIZE, 
+				SIZE * TILE_SIZE, 
+				SIZE * TILE_SIZE, 
+				SIZE * TILE_SIZE));
+		animations[ANIM_RIGHT].addFrame(sf::IntRect(
+				i * SIZE * TILE_SIZE, 
+				2 * SIZE * TILE_SIZE,
+				SIZE * TILE_SIZE, 
+				SIZE * TILE_SIZE));
+		animations[ANIM_LEFT].addFrame(sf::IntRect(
+				i * SIZE * TILE_SIZE, 
+				3 * SIZE * TILE_SIZE,
+				SIZE * TILE_SIZE, 
+				SIZE * TILE_SIZE));
 	}
 	animatedSprite.setAnimation(animations[ANIM_LEFT]);
 	animatedSprite.setLooped(true);
@@ -32,6 +47,8 @@ FinalBoss::FinalBoss(const sf::Vector2f& pos)
 
 	_addClock(&explClock);
 	_addClock(&hurtClock);
+
+	direction = Game::Direction::LEFT;
 }
 
 void FinalBoss::draw(sf::RenderTarget& window) {
@@ -66,4 +83,78 @@ void FinalBoss::kill() {
 	dead = true;
 	animatedSprite.setColor(sf::Color(sf::Color::White));
 	hurtClock.restart();
+}
+
+void FinalBoss::chooseDirection(const Game::LevelRenderer *const lr) {
+	const auto cur_align = Game::tile(pos);
+	if ((prevAlign == cur_align || distTravelled < MIN_DIST_BEFORE_CHANGE_DIR) && !colliding) 
+		return;
+
+	distTravelled = 0;
+	const Game::Direction opp = Game::oppositeDirection(direction);
+
+	// colliding with a moving entity
+	std::cerr << "colliding: " << colliding << ", canGo(" << direction << ") = " << canGo(direction, lr) << std::endl;
+	if (colliding && canGo(direction, lr)) {
+		direction = opp;
+		return;
+	}
+
+	direction = Game::selectRandomViable(this, lr, opp);
+	std::cout << "direction: " << direction << std::endl;
+}
+
+bool FinalBoss::canGo(const Game::Direction dir, const Game::LevelRenderer *const lr) const {
+	short iposx = (short)(pos.x / TILE_SIZE) - 1,
+	      iposy = (short)(pos.y / TILE_SIZE) - 1;
+
+	switch (dir) {
+	case Direction::UP:
+		--iposy;
+		break;
+	case Direction::LEFT:
+		--iposx;
+		break;
+	case Direction::DOWN:
+		++iposy;
+		break;
+	case Direction::RIGHT:
+		++iposx;
+		break;
+	default: 
+		return true;
+	}
+
+	if (iposx < 0 || iposx + SIZE >= LEVEL_WIDTH 
+			|| iposy < 0 || iposy + SIZE >= LEVEL_HEIGHT)
+		return false;
+
+	const auto& fixed = lr->getFixedEntities();
+	// Check all the appropriate side
+	for (int i = 0; i < SIZE; ++i) {
+		const short idx = 
+			dir == Direction::UP ? iposy * LEVEL_WIDTH + iposx + i :
+			dir == Direction::LEFT ? (iposy + i) * LEVEL_WIDTH + iposx :
+			dir == Direction::DOWN ? (iposy + SIZE) * LEVEL_WIDTH + iposx + i :
+			(iposy + i ) * LEVEL_WIDTH + iposx + SIZE;
+
+		if (fixed[idx] != nullptr && !_isTransparentTo(fixed[idx]))
+			return false;
+	}
+
+	// We don't treat the intersection with other bosses, as the game doesn't expect this case.
+	return true;
+}
+
+void FinalBoss::detectCollisions(const Game::LevelRenderer *const lr) {
+	colliding = false;
+
+	if (isOverBoundaries(direction)) {
+		colliding = true;
+		return;
+	}
+
+	if (isAtLimit(direction)) {
+		colliding = !canGo(direction, lr);
+	}
 }

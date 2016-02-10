@@ -2,6 +2,26 @@
 #include "Options.hpp"
 #include "LoopingMusic.hpp"
 #include "ShadedText.hpp"
+#include <random>
+
+static Game::Direction directions[] = { 
+	Game::Direction::UP,
+	Game::Direction::RIGHT,
+	Game::Direction::DOWN, 
+	Game::Direction::LEFT 
+};
+
+Game::Direction Game::selectRandomViable(const Game::MovingEntity *const entity,
+		const Game::LevelRenderer *const lr, const Game::Direction opp) {
+	Game::Direction dirs[4];
+	unsigned short n = 0;
+	for (const auto& d : directions)
+		if (entity->canGo(d, lr) && d != opp) dirs[n++] = d;
+	if (n == 0)
+		dirs[n++] = opp;
+	std::uniform_int_distribution<int> dist(0, n - 1);
+	return dirs[dist(Game::rng)];
+}
 
 short Game::KeyUtils::keyToNumber(sf::Keyboard::Key key) {
 	switch (key) {

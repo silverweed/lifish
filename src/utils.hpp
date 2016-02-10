@@ -21,6 +21,8 @@
 
 namespace Game {
 
+class LevelRenderer;
+
 template<class T, size_t ROWS, size_t COLS>
 using Matrix = std::array<std::array<T, COLS>, ROWS>;
 
@@ -119,6 +121,12 @@ void testMusic();
 
 /** If Game::options.showFPS == true, then display FPS on screen */
 void maybeShowFPS(sf::RenderWindow& window);
+
+/** Selects a random direction which the entity can go to; only choose
+ * `opp` if no other directions are viable.
+ */
+Game::Direction selectRandomViable(const Game::MovingEntity *const entity,
+			const Game::LevelRenderer *const lr, const Game::Direction opp);
 
 namespace KeyUtils {
 	short keyToNumber(sf::Keyboard::Key key);

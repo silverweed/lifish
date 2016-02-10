@@ -15,6 +15,8 @@ class FinalBoss : public Game::LifedMovingEntity, public Game::Scored {
 	constexpr static unsigned int VALUE = 100000;
 	constexpr static unsigned short MAX_LIFE = 100; // FIXME
 	constexpr static unsigned short DEATH_TIME = 6000; // ms
+	constexpr static unsigned short WALK_N_FRAMES = 4;
+	constexpr static unsigned short MIN_DIST_BEFORE_CHANGE_DIR = Game::TILE_SIZE * 3;
 
 	bool isHurt = false;
 	sftools::Chronometer hurtClock;
@@ -44,10 +46,15 @@ public:
 
 	void draw(sf::RenderTarget& window) override;
 
+	bool canGo(const Game::Direction dir, const Game::LevelRenderer *const lr) const override;
+
 	/** Initiates kill animation */
 	void kill();
 	bool isDying() const { return dead; }
 	bool isDead() const { return dead && hurtClock.getElapsedTime().asMilliseconds() > DEATH_TIME; }
+
+	void chooseDirection(const Game::LevelRenderer *const lr);
+	void detectCollisions(const Game::LevelRenderer *const lr);
 };
 
 }
