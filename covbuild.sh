@@ -10,7 +10,7 @@ COVERITY_PATH=$HOME/Public/cov-analysis-linux64-7.7.0/bin
 
 while [[ $# > 1 ]]; do
 	case $1 in
-	-s, --skip-build)
+	-s|--skip-build)
 		SKIP_BUILD=1
 		shift
 		;;
