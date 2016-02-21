@@ -107,6 +107,11 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				short range = -1;
 			} enemy_attack;	
 
+			auto is_game_over = [this] (unsigned short id) {
+				return _players[id] == nullptr || (_players[id]->getRemainingLives() <= 0
+						&& _players[id]->getLife() <= 0 && Game::playerContinues[id] <= 0);
+			};
+
 			switch (level->getTile(left, top)) {
 
 				using AT = Game::Enemy::AttackType;
@@ -128,14 +133,14 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				++coinsNum;
 				break;
 			case EntityType::PLAYER1: 
-				if (_players[0] != nullptr) {
+				if (!is_game_over(0)) {
 					_players[0]->setPosition(curPos);
 					players[0] = _players[0].get();
 					movingEntities.push_back(players[0]);
 				}
 				break;
 			case EntityType::PLAYER2: 
-				if (_players[1] != nullptr) {
+				if (!is_game_over(1)) {
 					_players[1]->setPosition(curPos);
 					players[1] = _players[1].get();
 					movingEntities.push_back(players[1]);
@@ -264,7 +269,8 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 		}
 	}
 	
-	letters.reserve(movingEntities.size() - 1);
+	if (movingEntities.size() > 0)
+		letters.reserve(movingEntities.size() - 1);
 
 	level->setOrigin(origin);
 	for (auto& entity : fixedEntities) 

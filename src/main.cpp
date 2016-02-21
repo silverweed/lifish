@@ -150,6 +150,10 @@ int main(int argc, char **argv) {
 					new Game::Player(sf::Vector2f(0, 0), 1),
 					new Game::Player(sf::Vector2f(0, 0), 2)
 				};
+				
+				for (unsigned short i = 0; i < Game::playerContinues.size(); ++i)
+					Game::playerContinues[i] = Game::INITIAL_CONTINUES;
+
 				play_game(window, levelSet, lr, start_level);
 				break;
 			}
@@ -184,16 +188,12 @@ int main(int argc, char **argv) {
 void play_game(sf::RenderWindow& window, const std::string& level_set,
 		Game::LevelRenderer& lr, unsigned short start_level)
 {
-	for (unsigned short i = 0; i < Game::playerContinues.size(); ++i)
-		Game::playerContinues[i] = Game::INITIAL_CONTINUES;
-
 	// Parse the level set
 	Game::LevelSet levelset(level_set);
 	std::clog << "Loaded " << levelset.getLevelsNum() << " levels." << std::endl;
 
 	// Create the level renderer and side panel and attach the 1st level to them
 	Game::Level *level = levelset.getLevel(start_level);
-	levelset.printInfo();
 
 	lr.setOrigin(sf::Vector2f(-MAIN_WINDOW_SHIFT, 0.f));
 	lr.loadLevel(level);
@@ -397,11 +397,13 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 		lr.checkExplosionHits();
 		lr.detectCollisions();
 
-		bool maybe_all_dead = false;
+		bool maybe_all_dead = true;
 		for (unsigned short i = 0; i < 2; ++i) {
 			if (players[i] == nullptr) {
 				continue;
 			}
+			maybe_all_dead = false;
+
 			if (players[i]->isAligned()) {
 				players[i]->prevAlign = Game::tile(players[i]->getPosition());
 				if (window.hasFocus() && !players[i]->isDying())

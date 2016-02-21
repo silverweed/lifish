@@ -215,6 +215,7 @@ public:
 	 *  true if at least another player is still in game, false otherwise.
 	 *  If `overrideInternal` is true (default), also change _player, else
 	 *  just remove the "external" one.
+	 *  @return true if at least 1 player is non-null, false otherwise.
 	 */
 	bool removePlayer(const unsigned short id, bool overrideInternal = true);
 	void setPlayer(const unsigned short id, Game::Player *player);

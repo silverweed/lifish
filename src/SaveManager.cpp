@@ -51,7 +51,7 @@ bool SaveManager::saveGame(const std::string& filename, const Game::LevelRendere
 bool SaveManager::loadGame(const std::string& filename, 
 		Game::LevelRenderer& lr, unsigned short& start_level)
 {
-	std::ifstream saveFile(filename, std::ofstream::binary);
+	std::ifstream saveFile(filename);
 
 	try {
 		nlohmann::json load = nlohmann::json::parse(saveFile);
@@ -64,12 +64,6 @@ bool SaveManager::loadGame(const std::string& filename,
 			const auto pldata = load["players"][i];
 			// Continues
 			Game::playerContinues[i] = pldata["continues"];
-
-			if (Game::playerContinues[i] == 0) {
-				Game::score[i] = pldata["score"];
-				lr.removePlayer(i+1, false);
-				continue;
-			}
 
 			// Remaining Lives
 			player->setRemainingLives(pldata["remainingLives"]);
