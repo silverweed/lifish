@@ -263,17 +263,13 @@ bool MovingEntity::hasSpeedy() const {
 bool MovingEntity::isOverBoundaries(const Game::Direction dir) const {
 	switch (dir) {
 	case Direction::UP:
-		if (pos.y <= TILE_SIZE)
-			return true;
+		return pos.y <= TILE_SIZE;
 	case Direction::LEFT:
-		if (pos.x <= TILE_SIZE)
-			return true;
+		return pos.x <= TILE_SIZE;
 	case Direction::DOWN:
-		if (pos.y >= TILE_SIZE * LEVEL_HEIGHT)
-			return true;
+		return pos.y > TILE_SIZE * LEVEL_HEIGHT;
 	case Direction::RIGHT:
-		if (pos.x >= TILE_SIZE * LEVEL_WIDTH)
-			return true;
+		return pos.x > TILE_SIZE * LEVEL_WIDTH;
 	default:
 		break;
 	}
