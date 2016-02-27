@@ -54,7 +54,7 @@ public:
 	 *  RANGED: the enemy's attack has a limited range. If paired
 	 *          with CONTACT, means the attack is "dashing", and
 	 *          the dash triggers withing range (use -1 for "infinite").
-	 *          __Note__: the "dashing" attack is actually performed 
+	 *          __Note__: the "dashing" attack logic is actually performed 
 	 *          by ai_follow_dash, independently from attack.type;
 	 *          however, one must also specify this in attack.type so
 	 *          that the attack sound is played correctly (i.e. when

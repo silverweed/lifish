@@ -94,14 +94,12 @@ void FinalBoss::chooseDirection(const Game::LevelRenderer *const lr) {
 	const Game::Direction opp = Game::oppositeDirection(direction);
 
 	// colliding with a moving entity
-	std::cerr << "colliding: " << colliding << ", canGo(" << direction << ") = " << canGo(direction, lr) << std::endl;
 	if (colliding && canGo(direction, lr)) {
 		direction = opp;
 		return;
 	}
 
 	direction = Game::selectRandomViable(this, lr, opp);
-	std::cout << "direction: " << direction << std::endl;
 }
 
 bool FinalBoss::canGo(const Game::Direction dir, const Game::LevelRenderer *const lr) const {
@@ -157,4 +155,10 @@ void FinalBoss::detectCollisions(const Game::LevelRenderer *const lr) {
 	if (isAtLimit(direction)) {
 		colliding = !canGo(direction, lr);
 	}
+}
+
+void FinalBoss::breed() {
+	breedClock.reset();
+	
+	// TODO
 }

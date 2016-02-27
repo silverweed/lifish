@@ -46,31 +46,39 @@ void LevelRenderer::_clearEntities() {
 	for (auto& e : fixedEntities)
 		if (e != nullptr) 
 			delete e;
+	
 	for (auto& e : movingEntities)
 		if (!isPlayer(e))
 			delete e;
+	
 	for (auto& b : bosses)
 		delete b;
+	
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
 		for (unsigned short j = 0; j < bombs[i].size(); ++j)
 			if (bombs[i][j] != nullptr) {
 				delete bombs[i][j];
 				bombs[i][j] = nullptr;
 			}
+
 	for (auto it = temporary.begin(); it != temporary.end(); ++it) 
 		delete *it;
+	
 	for (auto it = explosions.begin(); it != explosions.end(); ++it) 
 		delete *it;
+	
 	for (auto it = bullets.begin(); it != bullets.end(); ++it)
 		delete *it;
+	
 	for (auto it = letters.begin(); it != letters.end(); ++it)
 		delete *it;
+
 	if (finalBoss != nullptr) {
 		finalBoss.reset();
 	}
+
 	fixedEntities.fill(nullptr);
 	players.fill(nullptr);
-
 	firstTeleport = nullptr;
 
 	temporary.clear();
@@ -164,10 +172,15 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 					break;
 				}
 			case EntityType::BOSS:
-				if (_isFinalLevel())
-					finalBoss = std::unique_ptr<Game::FinalBoss>(new Game::FinalBoss(curPos));
-				else
+				if (_isFinalLevel()) {
+					if (finalBoss == nullptr) {
+						finalBoss = std::unique_ptr<Game::FinalBoss>(new Game::FinalBoss(curPos));
+					} else {
+						std::cerr << "[ WARNING ] Duplicate Final Boss! Not adding more..." << std::endl;
+					}
+				} else {
 					bosses.push_back(new Game::Boss(curPos));
+				}
 				break;
 			case EntityType::ENEMY1: 
 				// TODO: make enemy_attack configurable from levels.json
@@ -1204,6 +1217,15 @@ void LevelRenderer::spawnDamage(const sf::Vector2f& pos, const int amount) {
 	_pushTemporary(dmg);
 }
 
+void LevelRenderer::makeFinalBossShoot() {
+	if (finalBoss == nullptr || finalBoss->isDying())
+		return;
+
+	if (finalBoss->shouldBreed()) {
+		finalBoss->breed();
+	}
+}
+
 void LevelRenderer::makeBossesShoot() {
 	if (bosses.size() == 0)
 		return;
@@ -1406,6 +1428,8 @@ void LevelRenderer::resetFrameClocks() {
 	for (auto& e : movingEntities) {
 		e->resetClock();
 	}
+	if (finalBoss != nullptr)
+		finalBoss->resetClock();
 }
 	
 void LevelRenderer::resetClocks() {
@@ -1416,9 +1440,13 @@ void LevelRenderer::resetClocks() {
 
 void LevelRenderer::_grabBonus(Game::MovingEntity *const entity, 
 		Game::Bonus *bonus, unsigned short idx) {
+	
 	const auto i = _getPlayerIndex(entity);
+
 	switch (bonus->getType()) {
+
 		using B = Game::Bonus::Type;
+
 	case B::ZAPPER:
 		_destroyAllWalls();
 		break;
@@ -1487,6 +1515,9 @@ void LevelRenderer::pauseClocks() {
 	for (auto& boss : bosses)
 		boss->pauseClock();
 
+	if (finalBoss != nullptr)
+		finalBoss->pauseClock();
+
 	for (auto& tmp : temporary)
 		tmp->pauseClock();
 
@@ -1519,6 +1550,9 @@ void LevelRenderer::resumeClocks() {
 
 	for (auto& boss : bosses)
 		boss->resumeClock();
+
+	if (finalBoss != nullptr)
+		finalBoss->resumeClock();
 
 	for (auto& tmp : temporary)
 		tmp->resumeClock();

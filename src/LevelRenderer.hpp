@@ -223,6 +223,7 @@ public:
 	void spawnDamage(const sf::Vector2f& pos, const int amount);
 
 	void makeBossesShoot();
+	void makeFinalBossShoot();
 
 	void dropBonus(const sf::Vector2i& tile, const unsigned short type);
 

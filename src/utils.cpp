@@ -171,13 +171,15 @@ void Game::stopMusic() {
 }
 
 void Game::maybeShowFPS(sf::RenderWindow& window) {
-	static float cur_time;
+	static double cur_time;
+	static int n_updates = 0;
 	static sf::Clock fps_clock, fps_update_clock;
 	static Game::ShadedText fps_text(Game::getAsset("fonts", Game::Fonts::DEBUG_INFO),
 			"-", sf::Vector2f(Game::LEVEL_WIDTH * Game::TILE_SIZE - 20, 
 					(Game::LEVEL_HEIGHT + 1) * Game::TILE_SIZE + 2));
 	static bool textSetUp = false;
 
+	// Setup text once
 	if (!textSetUp) {
 		fps_text.setOrigin(sf::Vector2f(-MAIN_WINDOW_SHIFT, 0.f));
 		fps_text.setStyle(sf::Text::Style::Bold);
@@ -185,14 +187,18 @@ void Game::maybeShowFPS(sf::RenderWindow& window) {
 		textSetUp = true;
 	}	
 
-	cur_time = fps_clock.restart().asSeconds();
+	float t = fps_clock.restart().asSeconds();
 	if (Game::options.showFPS) {
+		cur_time += t;
+		++n_updates;
 		if (fps_update_clock.getElapsedTime().asSeconds() >= 1) {
-			int fps = (int)(1.f / cur_time);
+			int fps = (int)(n_updates / cur_time);
 			std::stringstream ss;
 			ss << fps << " fps"; 
 			fps_text.setString(ss.str());
 			fps_update_clock.restart();
+			n_updates = 0;
+			cur_time = 0.;
 		}	
 		window.draw(fps_text);
 	}
