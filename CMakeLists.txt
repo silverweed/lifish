@@ -66,7 +66,16 @@ else()
 	target_compile_features(lifish PRIVATE cxx_range_for)
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -Wall -pedantic -Wextra")
+# Debug flags
+if(${RELEASE})
+	message(STATUS "Compiling in RELEASE mode")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -pedantic -Wextra")
+else()
+	message(STATUS "Compiling in DEBUG mode")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -Wall -pedantic -Wextra")
+endif()
+
+# Profiling tools
 if(${GPROF})
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
 	message(STATUS "Compiling with gprof support")
@@ -78,6 +87,8 @@ if (${PPROF})
 		message(STATUS "Compiling with gperftools")
 	endif()
 endif()
+
+# Linker / platform-specific flags
 if(UNIX AND NOT APPLE)
 	execute_process(
 		COMMAND ${CMAKE_C_COMPILER} -fuse-ld=gold -Wl,--version
