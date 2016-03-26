@@ -9,7 +9,7 @@ DroppingText::DroppingText(const std::string& texture_name,
 {
 	pos.x = (Game::TILE_SIZE*(Game::LEVEL_WIDTH + 2) - texture_rect.x) / 2;
 	pos.y = -Game::TILE_SIZE;
-	animations[0].setSpriteSheet(texture);
+	animations[0].setSpriteSheet(*texture);
 	animations[0].addFrame(sf::IntRect(0, 0, texture_rect.x, texture_rect.y));	
 	animatedSprite.setAnimation(animations[0]);
 	animatedSprite.stop();

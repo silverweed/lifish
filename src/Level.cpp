@@ -26,13 +26,13 @@ bool Level::_loadTexture() {
 }
 
 void Level::_loadTiles() {
-	bgTiles[TILE_REGULAR].setTexture(bgTexture);
-	bgTexture.setRepeated(true);
-	bgTexture.setSmooth(true);
+	bgTiles[TILE_REGULAR].setTexture(*bgTexture);
+	bgTexture->setRepeated(true);
+	bgTexture->setSmooth(true);
 	bgTiles[TILE_REGULAR].setTextureRect(sf::IntRect(0, 0, TILE_SIZE * LEVEL_WIDTH, TILE_SIZE * LEVEL_HEIGHT));
 
 	for (unsigned short i = 1; i < bgTiles.size(); ++i)
-		bgTiles[i].setTexture(borderTexture);
+		bgTiles[i].setTexture(*borderTexture);
 
 	const unsigned short b = (tileIDs.border-1) * TILE_SIZE;
 

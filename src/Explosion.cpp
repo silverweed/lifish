@@ -17,9 +17,9 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game
 	radius(_radius),
 	sourcePlayer(source)
 {
-	animations[ANIM_DEATH].setSpriteSheet(texture);
-	animations[ANIM_UP].setSpriteSheet(texture);
-	animations[ANIM_LEFT].setSpriteSheet(texture);
+	animations[ANIM_DEATH].setSpriteSheet(*texture);
+	animations[ANIM_UP].setSpriteSheet(*texture);
+	animations[ANIM_LEFT].setSpriteSheet(*texture);
 
 	// An Explosion has 12 sprites: 4 central, 4 horizontal and 4 vertical
 	// Here, ANIM_UP is used for vertical, ANIM_LEFT for horizontal and

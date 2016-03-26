@@ -12,7 +12,7 @@ public:
 	NonAnimated(const sf::Vector2f& pos, const std::string& texture_name = "") 
 		: Game::Entity(pos, texture_name)
 	{
-		sprite.setTexture(texture);
+		sprite.setTexture(*texture);
 		sprite.setPosition(pos);
 	}
 

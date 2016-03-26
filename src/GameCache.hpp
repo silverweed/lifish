@@ -36,7 +36,7 @@ public:
 	 *  return its pointer; else try to load it from `texture_name` and return either
 	 *  a pointer to it, or nullptr if the loading failed.
 	 */
-	const sf::Texture& loadTexture(const std::string& texture_name);
+	sf::Texture* loadTexture(const std::string& texture_name);
 
 	/** Tries to load `sound_name` into `sound`; if `sound_name` is already
 	 *  in the cache, load it from there; else, load from file and put the
@@ -58,7 +58,7 @@ public:
 	/** Loads the font `font_name` (either from the cache or from file)
 	 *  and returns a pointer to it.
 	 */
-	const sf::Font& loadFont(const std::string& font_name);
+	sf::Font* loadFont(const std::string& font_name);
 };
 
 }

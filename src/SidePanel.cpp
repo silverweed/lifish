@@ -8,14 +8,14 @@ using Game::SidePanel;
 SidePanel::SidePanel(const Game::LevelRenderer *const _lr) : lr(_lr) {
 	// Load background
 	bgTexture = Game::cache.loadTexture(Game::getAsset("graphics", "panel.png"));
-	backgroundSprite.setTexture(bgTexture);
+	backgroundSprite.setTexture(*bgTexture);
 	backgroundSprite.setTextureRect(sf::IntRect(0, 0, Game::SIDE_PANEL_WIDTH, Game::SIDE_PANEL_HEIGHT));	
 	backgroundSprite.setPosition(0, 0);
 
 	// Load player heads
 	playerHeadsTexture = Game::cache.loadTexture(Game::getAsset("graphics", "playerheads.png"));
 	for (unsigned short i = 0; i < playerHeadsSprite.size(); ++i) {
-		playerHeadsSprite[i].setTexture(playerHeadsTexture);
+		playerHeadsSprite[i].setTexture(*playerHeadsTexture);
 		playerHeadsSprite[i].setTextureRect(sf::IntRect(PLAYER_HEAD_WIDTH * i, 0,
 					PLAYER_HEAD_WIDTH, PLAYER_HEAD_HEIGHT));
 	}
@@ -24,18 +24,18 @@ SidePanel::SidePanel(const Game::LevelRenderer *const _lr) : lr(_lr) {
 
 	// Load health symbols
 	healthTexture = Game::cache.loadTexture(Game::getAsset("graphics", "health.png"));
-	healthTexture.setSmooth(true);
+	healthTexture->setSmooth(true);
 	for (unsigned short i = 0; i < healthSprite.size(); ++i) {
-		healthSprite[i].setTexture(healthTexture);
+		healthSprite[i].setTexture(*healthTexture);
 		healthSprite[i].setTextureRect(sf::IntRect(HEALTH_SYM_WIDTH * i, 0,
 					HEALTH_SYM_WIDTH, HEALTH_SYM_HEIGHT));
 	}
 
 	// Load EXTRA letters
 	extraLettersTexture = Game::cache.loadTexture(Game::getAsset("test", "extra_icons.png"));
-	extraLettersTexture.setSmooth(true);
+	extraLettersTexture->setSmooth(true);
 	for (unsigned short i = 0; i < extraLettersSprite.size(); ++i) {
-		extraLettersSprite[i].setTexture(extraLettersTexture);
+		extraLettersSprite[i].setTexture(*extraLettersTexture);
 		extraLettersSprite[i].setTextureRect(sf::IntRect(EXTRA_LETTERS_WIDTH * i, 0,
 					EXTRA_LETTERS_WIDTH, EXTRA_LETTERS_HEIGHT));
 	}
@@ -43,7 +43,7 @@ SidePanel::SidePanel(const Game::LevelRenderer *const _lr) : lr(_lr) {
 	// Load bonuses
 	bonusesTexture = Game::cache.loadTexture(Game::getAsset("graphics", "bonuses.png"));
 	for (unsigned short i = 0; i < bonusesSprite.size(); ++i) {
-		bonusesSprite[i].setTexture(bonusesTexture);
+		bonusesSprite[i].setTexture(*bonusesTexture);
 		bonusesSprite[i].setTextureRect(sf::IntRect(TILE_SIZE * i, (i / 10) * TILE_SIZE,
 					TILE_SIZE, TILE_SIZE));
 		bonusesSprite[i].setScale(float(BONUS_ICON_WIDTH) / TILE_SIZE, float(BONUS_ICON_HEIGHT) / TILE_SIZE);

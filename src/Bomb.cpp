@@ -13,10 +13,10 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source,
 	, radius(_radius)
 	, sourcePlayer(source)
 {
-	animations[0].setSpriteSheet(texture);
-	animations[1].setSpriteSheet(texture);
-	animations[2].setSpriteSheet(texture);
-	animations[3].setSpriteSheet(texture);
+	animations[0].setSpriteSheet(*texture);
+	animations[1].setSpriteSheet(*texture);
+	animations[2].setSpriteSheet(*texture);
+	animations[3].setSpriteSheet(*texture);
 	animations[0].addFrame(sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE));
 	animations[0].addFrame(sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 	animations[1].addFrame(sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));

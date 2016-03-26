@@ -17,7 +17,7 @@ BreakableWall::BreakableWall(const sf::Vector2f& pos,
 	transparentTo.bullets = false;
 	transparentTo.explosions = false;
 
-	animations[0].setSpriteSheet(texture);
+	animations[0].setSpriteSheet(*texture);
 	for (unsigned short i = 0; i < 4; ++i)
 		animations[0].addFrame(sf::IntRect(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 
@@ -41,7 +41,7 @@ BreakableWall::BreakableWall(const sf::Vector2f& pos,
 
 	// Breakable walls have 4 sprites: the "animatedSprites" array is used
 	// to keep these sprites, and the animation starts when the wall is being destroyed.
-	animations[0].setSpriteSheet(texture);
+	animations[0].setSpriteSheet(*texture);
 	for (unsigned short i = 0; i < 4; ++i)
 		animations[0].addFrame(sf::IntRect(i * TILE_SIZE, (id-1) * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 

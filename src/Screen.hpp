@@ -16,7 +16,7 @@ namespace Game {
 class Screen : public Game::Drawable, protected sf::NonCopyable {
 protected:
 	/** The background texture */
-	sf::Texture bgTexture;
+	sf::Texture *bgTexture;
 
 	/** The background tile */
 	sf::Sprite bgSprite;

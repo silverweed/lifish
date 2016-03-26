@@ -53,11 +53,11 @@ class SidePanel final : public Game::Drawable, private sf::NonCopyable {
 
 	/** The background image */
 	sf::Sprite backgroundSprite;
-	sf::Texture bgTexture;
+	sf::Texture *bgTexture;
 
 	/** The players' heads sprites */
 	std::array<sf::Sprite, 2> playerHeadsSprite;
-	sf::Texture playerHeadsTexture;
+	sf::Texture *playerHeadsTexture;
 
 	/** The health symbols' sprites: empty, half, full */
 	enum : unsigned short {
@@ -66,15 +66,15 @@ class SidePanel final : public Game::Drawable, private sf::NonCopyable {
 		HEALTH_FULL  = 2
 	};
 	std::array<sf::Sprite, 3> healthSprite;
-	sf::Texture healthTexture;
+	sf::Texture *healthTexture;
 
 	/** The EXTRA letters icons: (empty, E, X, T, R, A) */
 	std::array<sf::Sprite, Game::N_EXTRA_LETTERS + 1> extraLettersSprite;
-	sf::Texture extraLettersTexture;
+	sf::Texture *extraLettersTexture;
 
 	/** The Bonus icons */
 	std::array<sf::Sprite, Game::Bonus::N_PERMANENT_BONUS_TYPES> bonusesSprite;
-	sf::Texture bonusesTexture;
+	sf::Texture *bonusesTexture;
 
 
 	void _drawWithShadow(sf::RenderTarget& window, sf::Sprite& sprite, 

@@ -35,9 +35,9 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id)
 	}
 
 	for (unsigned short i = 0; i < MAX_N_ANIMATIONS; ++i) {
-		animations[i].setSpriteSheet(texture);
+		animations[i].setSpriteSheet(*texture);
 		if (i < 4)
-			shootFrame[i].setTexture(texture);
+			shootFrame[i].setTexture(*texture);
 	}
 
 	for (unsigned short i = 0; i < WALK_N_FRAMES; ++i) {

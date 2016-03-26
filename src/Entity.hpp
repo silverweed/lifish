@@ -12,7 +12,7 @@ namespace Game {
  */
 class Entity : public Game::Drawable {
 protected:
-	sf::Texture texture;
+	sf::Texture *texture;
 	sf::Vector2f pos;
 	
 public:

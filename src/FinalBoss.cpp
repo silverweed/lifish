@@ -18,7 +18,7 @@ FinalBoss::FinalBoss(const sf::Vector2f& pos)
 	speed = 150.f;
 
 	for (unsigned short i = 0; i < 4; ++i) {
-		animations[i].setSpriteSheet(texture);
+		animations[i].setSpriteSheet(*texture);
 		animations[ANIM_DOWN].addFrame(sf::IntRect(
 				i * SIZE * TILE_SIZE,
 				0, 

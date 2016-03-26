@@ -12,10 +12,10 @@ using Game::WINDOW_HEIGHT;
 Screen::Screen() {
 	bgTexture = Game::cache.loadTexture(Game::getAsset("graphics", "screenbg1.png"));
 
-	bgTexture.setRepeated(true);
-	bgTexture.setSmooth(true);
+	bgTexture->setRepeated(true);
+	bgTexture->setSmooth(true);
 
-	bgSprite.setTexture(bgTexture);
+	bgSprite.setTexture(*bgTexture);
 	bgSprite.setTextureRect(sf::IntRect(0, 0, 2*TILE_SIZE, 2*TILE_SIZE));
 }
 

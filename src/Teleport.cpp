@@ -8,7 +8,7 @@ using Game::TILE_SIZE;
 Teleport::Teleport(const sf::Vector2f& _pos) 
 	: Game::Animated(_pos, Game::getAsset("graphics", "teleport.png"))
 {
-	animations[0].setSpriteSheet(texture);
+	animations[0].setSpriteSheet(*texture);
 
 	// Teleports have 8 frames
 	for (unsigned short i = 0; i < 8; ++i)

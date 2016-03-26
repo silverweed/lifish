@@ -18,7 +18,7 @@ class AlienSprite : public Game::Animated, public Game::Sounded {
 	constexpr static unsigned short WALK_N_FRAMES = 4;
 	constexpr static unsigned short DEATH_N_FRAMES = 2;
 
-	sf::Texture texture;
+	sf::Texture *texture;
 
 	// Disable parent's draw() function
 	using Game::Animated::draw;

@@ -10,9 +10,9 @@ Coin::Coin(const sf::Vector2f& pos)
 	, Game::Scored(VALUE)
 	, Game::Sounded({ Game::getAsset("sounds", "coin.ogg") })
 {
-	texture.setSmooth(true);
+	texture->setSmooth(true);
 
-	animations[0].setSpriteSheet(texture);
+	animations[0].setSpriteSheet(*texture);
 	// Coins have 10 sprites
 	for (unsigned short i = 0; i < 10; ++i)
 		animations[0].addFrame(sf::IntRect(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));

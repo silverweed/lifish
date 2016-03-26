@@ -13,8 +13,8 @@ AlienSprite::AlienSprite()
 	texture = Game::cache.loadTexture(Game::getAsset("test", "aliensprite.png"));
 
 	for (unsigned short i = 0; i < 4; ++i)
-		animations[i].setSpriteSheet(texture);
-	animations[ANIM_DEATH].setSpriteSheet(texture);
+		animations[i].setSpriteSheet(*texture);
+	animations[ANIM_DEATH].setSpriteSheet(*texture);
 
 	animations[ANIM_DOWN].addFrame(sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE));
 	animations[ANIM_DOWN].addFrame(sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));

@@ -23,7 +23,7 @@ class PreferencesScreen : public Game::Screen {
 	/** Used to toggle music muteness */
 	float prevMusicVolume = -1;
 
-	sf::Texture speakerTexture;
+	sf::Texture *speakerTexture;
 
 
 	PreferencesScreen();

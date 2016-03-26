@@ -23,24 +23,24 @@ AboutScreen::AboutScreen() : Screen() {
 	text->setPosition(pos);
 	elements.push_back(text);
 
-	const sf::Font& font = Game::cache.loadFont(fontname);
-	auto txt = new sf::Text("Lifish - (c) 2015 Giacomo Parolini", font, 14);
+	auto font = Game::cache.loadFont(fontname);
+	auto txt = new sf::Text("Lifish - (c) 2015 Giacomo Parolini", *font, 14);
 	txt->setPosition(sf::Vector2f(Game::centerX(txt->getGlobalBounds(), win_bounds), pos.y + 2*spacing*size));
 	elements.push_back(txt);
 
-	txt = new sf::Text("Lifish is free software, licensed under", font, 14);
+	txt = new sf::Text("Lifish is free software, licensed under", *font, 14);
 	txt->setPosition(Game::centerX(txt->getGlobalBounds(), win_bounds), pos.y + 3*spacing*size);
 	elements.push_back(txt);
 
-	txt = new sf::Text("the GNU GPL v.3 or later.", font, 14);
+	txt = new sf::Text("the GNU GPL v.3 or later.", *font, 14);
 	txt->setPosition(Game::centerX(txt->getGlobalBounds(), win_bounds), pos.y + 4*spacing*size);
 	elements.push_back(txt);
 
-	txt = new sf::Text("This is a pre-release! A lot of content", font, 14);
+	txt = new sf::Text("This is a pre-release! A lot of content", *font, 14);
 	txt->setPosition(Game::centerX(txt->getGlobalBounds(), win_bounds), pos.y + 5*spacing*size);
 	elements.push_back(txt);
 
-	txt = new sf::Text("is missing and there may be bugs.", font, 14);
+	txt = new sf::Text("is missing and there may be bugs.", *font, 14);
 	txt->setPosition(Game::centerX(txt->getGlobalBounds(), win_bounds), pos.y + 6*spacing*size);
 	elements.push_back(txt);
 

@@ -16,8 +16,8 @@ Bullet::Bullet(const sf::Vector2f& _pos, const std::string& texture_name) :
 	transparentTo.bullets = true;
 	canTeleport = false;
 
-	animations[0].setSpriteSheet(texture);
-	animations[ANIM_DEATH].setSpriteSheet(texture);
+	animations[0].setSpriteSheet(*texture);
+	animations[ANIM_DEATH].setSpriteSheet(*texture);
 }
 
 Bullet::Bullet(const sf::Vector2f& _pos, const Game::Direction dir, unsigned short id,
@@ -38,8 +38,8 @@ Bullet::Bullet(const sf::Vector2f& _pos, const Game::Direction dir, unsigned sho
 	// Bullets have a variable number of frames, up to 13:
 	// motion frames: 1 ~ 8 (max 8 / directional per direction)
 	// destroy frames: 0 ~ 5
-	animations[0].setSpriteSheet(texture);
-	animations[ANIM_DEATH].setSpriteSheet(texture);
+	animations[0].setSpriteSheet(*texture);
+	animations[ANIM_DEATH].setSpriteSheet(*texture);
 	switch (id) {
 	case 1:
 		// shot

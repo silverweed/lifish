@@ -38,10 +38,10 @@ class Level : public Game::Drawable, private sf::NonCopyable {
 	};
 
 	/** The background texture */
-	sf::Texture bgTexture;
+	sf::Texture *bgTexture;
 
 	/** The borders' texture */
-	sf::Texture borderTexture;
+	sf::Texture *borderTexture;
 
 	/** The sprites for the background tiles (8 border + background) */
 	std::array<sf::Sprite, 9> bgTiles;

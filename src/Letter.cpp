@@ -22,7 +22,7 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 		id = Game::N_EXTRA_LETTERS - 1;
 
 	for (unsigned short i = 0; i < Game::N_EXTRA_LETTERS; ++i) {
-		animations[i].setSpriteSheet(texture);
+		animations[i].setSpriteSheet(*texture);
 		// Total different frames are 4 * N_EXTRA_LETTERS
 		// (full letter + 3 transitions to next, cyclic).
 		// Here, animations[i] is _5_ frames long, because it contains:

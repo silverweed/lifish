@@ -9,9 +9,9 @@ ShadedText::ShadedText(const std::string& fontname, const std::string& _str,
 		sf::Vector2f _pos, sf::Color fg, sf::Color bg)
 	: str(_str), pos(_pos), shadowSpacing(3.5, 3), fgcol(fg), bgcol(bg)
 {
-	auto& font = Game::cache.loadFont(fontname);
-	fgtext.setFont(font);
-	bgtext.setFont(font);
+	auto font = Game::cache.loadFont(fontname);
+	fgtext.setFont(*font);
+	bgtext.setFont(*font);
 	fgtext.setString(str);
 	bgtext.setString(str);
 	fgtext.setPosition(pos);
