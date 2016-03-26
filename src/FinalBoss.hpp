@@ -52,7 +52,7 @@ public:
 	bool canGo(const Game::Direction dir, const Game::LevelRenderer *const lr) const override;
 
 	/** Initiates kill animation */
-	void kill();
+	void kill() override;
 	bool isDying() const { return dead; }
 	bool isDead() const { return dead && hurtClock.getElapsedTime().asMilliseconds() > DEATH_TIME; }
 
