@@ -25,7 +25,7 @@ struct EnemyInfo {
 class LevelSet : private sf::NonCopyable {
 	std::vector<Game::Level*> levels;
 	std::vector<Game::Track> tracks;
-	std::array<EnemyInfo, 10> enemies;
+	std::array<EnemyInfo, Game::N_ENEMIES> enemies;
 	std::unordered_map<std::string, std::string> metadata;
 
 public:
