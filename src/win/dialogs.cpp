@@ -52,11 +52,11 @@ static std::string _showDialog(bool open) {
 		return "";
 	}
 
-	char *str = new char[2048];
-	wcstombs(str, filePath, 2048);
+	char str[2048];
+	str[2047] = '\0';
+	wcstombs(str, filePath, 2047);
 
 	std::string path(str);
-	delete str;
 
 	item->Release();
 	fileDialog->Release();

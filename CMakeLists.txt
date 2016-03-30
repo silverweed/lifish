@@ -66,10 +66,16 @@ else()
 	target_compile_features(lifish PRIVATE cxx_range_for)
 endif()
 
+set(SEC_CXX_FLAGS "-fstack-protector-all")
+if(UNIX)
+	set(SEC_LD_FLAGS "${SEC_LD_FLAGS} -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now")
+endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEC_CXX_FLAGS} ${SEC_LD_FLAGS}")
+
 # Debug flags
 if(${RELEASE})
 	message(STATUS "Compiling in RELEASE mode")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -pedantic -Wextra")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wall -pedantic -Wextra")
 else()
 	message(STATUS "Compiling in DEBUG mode")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -Wall -pedantic -Wextra")
