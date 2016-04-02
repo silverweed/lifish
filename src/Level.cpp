@@ -15,6 +15,22 @@ using Game::EntityType;
 
 Level::Level(const Game::LevelSet *const _levelSet) : levelSet(_levelSet) {}
 
+bool Level::init() {
+	if (initialized) return true;
+
+	initialized = _loadTexture() && _loadMusic(track.name);
+
+	// Load the levelnum text
+	levelnumtext = new Game::ShadedText(
+			Game::getAsset("fonts", Game::Fonts::LEVELNUM),
+			Game::to_string(levelnum),
+			sf::Vector2f(TILE_SIZE * (LEVEL_WIDTH+1), 0));
+	levelnumtext->setStyle(sf::Text::Bold);
+	levelnumtext->setCharacterSize(20);
+
+	return initialized;
+}
+
 bool Level::_loadTexture() {
 	// Load background texture
 	std::stringstream ss;
@@ -72,22 +88,6 @@ Level::~Level() {
 		delete music;
 	if (levelnumtext != nullptr)
 		delete levelnumtext;
-}
-
-bool Level::init() {
-	if (initialized) return true;
-
-	initialized = _loadTexture() && _loadMusic(track.name);
-
-	// Load the levelnum text
-	levelnumtext = new Game::ShadedText(
-			Game::getAsset("fonts", Game::Fonts::LEVELNUM),
-			Game::to_string(levelnum),
-			sf::Vector2f(TILE_SIZE * (LEVEL_WIDTH+1), 0));
-	levelnumtext->setStyle(sf::Text::Bold);
-	levelnumtext->setCharacterSize(20);
-
-	return initialized;
 }
 
 void Level::setOrigin(const sf::Vector2f& offset) {

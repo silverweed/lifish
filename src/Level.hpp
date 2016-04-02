@@ -38,10 +38,10 @@ class Level : public Game::Drawable, private sf::NonCopyable {
 	};
 
 	/** The background texture */
-	sf::Texture *bgTexture;
+	sf::Texture *bgTexture = nullptr;
 
 	/** The borders' texture */
-	sf::Texture *borderTexture;
+	sf::Texture *borderTexture = nullptr;
 
 	/** The sprites for the background tiles (8 border + background) */
 	std::array<sf::Sprite, 9> bgTiles;
@@ -62,7 +62,7 @@ class Level : public Game::Drawable, private sf::NonCopyable {
 	Game::ShadedText *levelnumtext = nullptr;
 
 	/** Time before "Hurry Up" (in seconds) */
-	unsigned int time;
+	unsigned int time = 0;
 
 	/** This level's static (initial) tilemap */
 	Game::Matrix<EntityType, LEVEL_HEIGHT, LEVEL_WIDTH> tiles;
