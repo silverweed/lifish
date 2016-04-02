@@ -16,7 +16,6 @@ sf::Texture* GameCache::loadTexture(const std::string& texture_name) {
 		return &it->second;
 
 	// Not in cache: load from file
-	textures[texture_name] = sf::Texture();
 	auto& txt = textures[texture_name];
 	if (!txt.loadFromFile(texture_name)) {
 		std::cerr << "[GameCache.cpp] Error: couldn't load texture " 
@@ -33,7 +32,6 @@ bool GameCache::loadSound(sf::Sound& sound, const std::string& sound_name) {
 		return true;
 	}
 	// Load from file and update the cache
-	soundBuffers[sound_name] = sf::SoundBuffer();
 	auto& buf = soundBuffers[sound_name];
 	if (!buf.loadFromFile(sound_name)) {
 		std::cerr << "[GameCache.cpp] Error: couldn't load sound " << sound_name << " from file!" << std::endl;
@@ -70,7 +68,6 @@ sf::Font* GameCache::loadFont(const std::string& font_name) {
 		return &it->second;
 
 	// Load from file and update the cache
-	fonts[font_name] = sf::Font();
 	auto& font = fonts[font_name];
 	if (!font.loadFromFile(font_name)) {
 		std::cerr << "[GameCache.cpp] Error: couldn't load font " 
