@@ -2,6 +2,7 @@
 #include "Game.hpp"
 #include "GameCache.hpp"
 #include "LevelRenderer.hpp"
+#include <cassert>
 
 using Game::MovingEntity;
 using Game::TILE_SIZE;
@@ -46,7 +47,7 @@ void MovingEntity::move(const Direction dir) {
 	if (frameTime.asSeconds() > MAX_FRAME_TIME)
 		frameTime = sf::seconds(MAX_FRAME_TIME);
 
-	Animation *anim;
+	Animation *anim = nullptr;
 		 
 	switch (direction) {
 	case Direction::UP:
@@ -69,6 +70,7 @@ void MovingEntity::move(const Direction dir) {
 		return;
 	}
 
+	assert(anim != nullptr);
         animatedSprite.play(*anim);
 	if (!colliding) {
 		animatedSprite.move(shift * frameTime.asSeconds());

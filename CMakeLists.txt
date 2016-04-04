@@ -4,6 +4,9 @@ set(PROJECT_NAME lifish)
 set(MAJOR 0)
 set(MINOR 0)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+
+include(CheckCXXCompilerFlag OPTIONAL RESULT_VARIABLE HAS_CHECK_CXX)
+
 # detect architecture
 if(CMAKE_SIZEOF_VOID_P MATCHES 8)
 	set(TARGET_ARCH 64)
@@ -39,15 +42,32 @@ find_package(SFML 2.3 REQUIRED graphics window audio system)
 include_directories(${SFML_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES})
 
+# Check if we have support for PIE
+if(NOT ${HAS_CHECK_CXX} STREQUAL "")
+	check_cxx_compiler_flag("-pie -fPIE -Wl,-fPIE" SUPPORTS_PIE)
+	if(${SUPPORTS_PIE})
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pie -fPIE -Wl,-pie")
+	endif()
+endif()
+
+
 # On Linux / OSX we use NFD
 if(UNIX AND NOT APPLE)
 	find_package(GTK3 3.0 OPTIONAL_COMPONENTS gtk)
 	if(GTK3_FOUND)
 		add_definitions(-DHAVE_NFD="true")
 		if(TARGET_ARCH EQUAL 64)
-			target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/lib/libnfd.a)
+			if(${SUPPORTS_PIE})
+				target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/lib/libnfd_linux_x86_64_pie.a)
+			else()
+				target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/lib/libnfd.a)
+			endif()
 		else()
-			target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/lib/libnfd-32.a)
+			if(${SUPPORTS_PIE})
+				target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/lib/libnfd_linux_i386_pie.a)
+			else()
+				target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/lib/libnfd-32.a)
+			endif()
 		endif()
 		target_link_libraries(${PROJECT_NAME} ${GTK3_LIBRARIES})
 	else()
@@ -69,9 +89,22 @@ endif()
 # Debug flags
 if(${RELEASE})
 	message(STATUS "Compiling in RELEASE mode")
+
 	# Disable assertions
 	add_definitions(-DNDEBUG=1)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wall -pedantic -Wextra")
+
+	# Hardening
+	if(NOT ${HAS_CHECK_CXX} STREQUAL "")
+		check_cxx_compiler_flag("-fstack-protector-strong" SUPPORTS_STACK_PROTECTOR_STRONG)
+		if(${SUPPORTS_STACK_PROTECTOR_STRONG})
+			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fstack-protector-strong")
+		endif()
+		check_cxx_compiler_flag("-Wl,-z,relro,-z,now" SUPPORTS_RELRO)
+		if(${SUPPORTS_RELRO})
+			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-z,relro,-z,now")
+		endif()
+	endif()
 else()
 	message(STATUS "Compiling in DEBUG mode")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -Wall -pedantic -Wextra")
