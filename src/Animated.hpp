@@ -1,10 +1,12 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <SFML/Graphics.hpp>
 #include "AnimatedSprite.hpp"
-#include "Entity.hpp"
-#include "Clocked.hpp"
+#include "Animation.hpp"
+#include "Clock.hpp"
+#include "Texture.hpp"
 
 namespace Game {
 
@@ -23,7 +25,19 @@ enum : unsigned short {
  * An Animated is a drawable object whose sprite has a certain
  * number of associated animations.
  */
-class Animated : public Game::Entity, public Game::Clocked {
+class Animated : public Game::Component, public sf::Drawable {
+protected:
+	Game::Texture *texture;
+	Game::Clock<1> *clock;
+	std::vector<Animation> animations;
+	AnimatedSprite animatedSprite;
+
+public:
+	explicit Animated(Game::Entity *const owner, const std::string& texture_name);
+	
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+	/*
 protected:
 	static constexpr unsigned short MAX_N_ANIMATIONS = 7;
 	Animation animations[MAX_N_ANIMATIONS];
@@ -51,6 +65,7 @@ public:
 	virtual void setOrigin(const sf::Vector2f& origin) override {
 		animatedSprite.setOrigin(origin);
 	}
+	*/
 };
 
 }
