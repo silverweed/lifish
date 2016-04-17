@@ -1,22 +1,30 @@
 #pragma once
 
-#include "Chronometer.hpp"
+#include "Clock.hpp"
+#include "Entity.hpp"
 
 namespace Game {
 
-class Shieldable {
+class Shieldable : public Game::Component {
 protected:
 	int shieldTime = -1; // milliseconds; negative means "no shield"
-	sftools::Chronometer shieldClock;
+	Game::Clock<1> *shieldClock;
 
 public:
-	virtual void giveShield(int shieldMs) {
-		shieldTime = shieldMs;
-		shieldClock.restart();
+	explicit Shieldable(Game::Entity *const owner)
+		: Game::Component(owner)
+	{
+		shieldClock = addComponent(new Game::Clock<1>(this));
 	}
 
-	bool MovingEntity::hasShield() const {
-		return shieldTime > 0 && shieldClock.getElapsedTime().asMilliseconds() <= shieldTime;
+
+	void giveShield(int shieldMs) {
+		shieldTime = shieldMs;
+		shieldClock->restart();
+	}
+
+	bool hasShield() const {
+		return shieldTime > 0 && shieldClock->get()->getElapsedTime().asMilliseconds() <= shieldTime;
 	}
 };
 

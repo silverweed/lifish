@@ -32,6 +32,10 @@ public:
 			clockNames[i++] = name;
 	}
 
+	sftools::Chronometer* get(const std::string& name) {
+		return _getClock(name);
+	}
+
 	void pause() {
 		for (auto& clock : clocks)
 			clock.pause();
@@ -50,13 +54,13 @@ public:
 		_getClock(name)->resume();
 	}
 
-	void reset() {
+	void restart() {
 		for (auto& clock : clocks)
-			clock.reset(true);
+			clock.restart(true);
 	}
 
-	void reset(const std::string& name) {
-		_getClock(name)->reset();
+	void restart(const std::string& name) {
+		_getClock(name)->restart();
 	}
 };
 
@@ -69,6 +73,10 @@ public:
 		: Game::Component(owner)
 	{}
 
+	sftools::Chronometer* get() {
+		return &clock;
+	}
+
 	void pause(const std::string& name = "") {
 		clock.pause();
 	}
@@ -77,8 +85,8 @@ public:
 		clock.resume();
 	}
 
-	void reset(const std::string& name = "") {
-		clock.reset();
+	void restart(const std::string& name = "") {
+		clock.restart();
 	}
 };
 
