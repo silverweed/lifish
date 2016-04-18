@@ -24,7 +24,7 @@ public:
 	}
 
 	bool hasShield() const {
-		return shieldTime > 0 && shieldClock->get()->getElapsedTime().asMilliseconds() <= shieldTime;
+		return shieldTime > 0 && shieldClock->getClock()->getElapsedTime().asMilliseconds() <= shieldTime;
 	}
 };
 

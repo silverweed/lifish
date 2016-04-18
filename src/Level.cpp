@@ -15,30 +15,22 @@ using Game::EntityType;
 
 Level::Level(const Game::LevelSet *const _levelSet) : levelSet(_levelSet) {}
 
-bool Level::init() {
+void Level::init() {
 	if (initialized) return true;
+	
+	music = addComponent(new Game::Music(this, track));
+	_loadTextures();
 
-	initialized = _loadTexture() && _loadMusic(track.name);
-
-	// Load the levelnum text
-	levelnumtext = new Game::ShadedText(
-			Game::getAsset("fonts", Game::Fonts::LEVELNUM),
-			Game::to_string(levelnum),
-			sf::Vector2f(TILE_SIZE * (LEVEL_WIDTH+1), 0));
-	levelnumtext->setStyle(sf::Text::Bold);
-	levelnumtext->setCharacterSize(20);
-
-	return initialized;
+	levelnumtext = addComponent(new Game::LevelNumText(this, levelnum));
 }
 
-bool Level::_loadTexture() {
+void Level::_loadTextures() {
 	// Load background texture
 	std::stringstream ss;
 	ss << "bg" << tileIDs.bg << ".png";
-	bgTexture = Game::cache.loadTexture(Game::getAsset("graphics", ss.str()));
-	borderTexture = Game::cache.loadTexture(Game::getAsset("graphics", "border.png"));
+	bgTexture = addComponent(new Game::Texture(Game::getAsset("graphics", ss.str())));
+	borderTexture = addComponent(new Game::Texture(Game::getAsset("graphics", "border.png")));
 	_loadTiles();
-	return true;
 }
 
 void Level::_loadTiles() {

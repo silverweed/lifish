@@ -12,6 +12,9 @@
 #include "EntityType.hpp"
 #include "LevelSet.hpp"
 #include "ShadedText.hpp"
+#include "Music.hpp"
+#include "Texture.hpp"
+#include "LevelNumText.hpp"
 #include "utils.hpp"
 
 namespace Game {
@@ -23,7 +26,7 @@ class LevelSet;
  * static information about it. Dynamic informations about the level
  * during the game are managed by Game::LevelRenderer.
  */
-class Level : public Game::Drawable, private sf::NonCopyable {
+class Level : public Game::Entity, private sf::NonCopyable {
 	/** Types of bg texture tiles */
 	enum : unsigned short {
 		TILE_REGULAR     = 0,
@@ -38,28 +41,21 @@ class Level : public Game::Drawable, private sf::NonCopyable {
 	};
 
 	/** The background texture */
-	sf::Texture *bgTexture = nullptr;
+	Game::Texture *bgTexture = nullptr;
 
 	/** The borders' texture */
-	sf::Texture *borderTexture = nullptr;
+	Game::Texture *borderTexture = nullptr;
 
 	/** The sprites for the background tiles (8 border + background) */
 	std::array<sf::Sprite, 9> bgTiles;
-
-	/** The input sound file for the BGM */
-	sf::InputSoundFile musicInput;
-
-	/** The music for this level */
-	LoopingMusic *music = nullptr;
-
-	/** The music track data */
-	Game::Track track;
+	
+	Game::Music *music = nullptr;
 
 	/** Number of the level */
 	unsigned short levelnum = 0;
 
 	/** The text containing the level number */
-	Game::ShadedText *levelnumtext = nullptr;
+	Game::LevelNumText *levelnumtext = nullptr;
 
 	/** Time before "Hurry Up" (in seconds) */
 	unsigned int time = 0;
@@ -74,10 +70,7 @@ class Level : public Game::Drawable, private sf::NonCopyable {
 	/** Loads the background/border textures from the file (or from memory, if
 	 *  texture has already been cached)
 	 */
-	bool _loadTexture();
-
-	/** Loads the music from the file <music_name> */
-	bool _loadMusic(const std::string& music_name);
+	void _loadTextures();
 
 	/** Loads the content of bgTiles (bgTexture must already be set) */
 	void _loadTiles();
@@ -106,7 +99,7 @@ public:
 	 *  usable. Must be called either after constructing it without parameters or 
 	 * after changing them. Returns false if there were errors, true otherwise.
 	 */
-	bool init();
+	void init();
 	bool isInitialized() const { return initialized; }
 
 	unsigned int getTime() const { return time; }

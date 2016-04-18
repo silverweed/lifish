@@ -1,16 +1,19 @@
 #pragma once
 
+#include "Component.hpp"
+
 namespace Game {
 
 /**
  * Something which is worth points
  */
-class Scored {
+class Scored : public Game::Component {
 protected:
-	int pointsGiven;
+	const int pointsGiven;
 
 public:
-	constexpr Scored(const int points) : pointsGiven(points) {}
+	explicit Scored(Game::Entity *const owner, const int points) 
+		: pointsGiven(points), Game::Component(owner) {}
 
 	int getPointsGiven() const { return pointsGiven; }
 };

@@ -32,7 +32,7 @@ public:
 			clockNames[i++] = name;
 	}
 
-	sftools::Chronometer* get(const std::string& name) {
+	sftools::Chronometer* getClock(const std::string& name) {
 		return _getClock(name);
 	}
 
