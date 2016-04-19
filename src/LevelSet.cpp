@@ -28,10 +28,10 @@ LevelSet::LevelSet(const std::string& path) {
 	const auto tracksdata = levelJSON["tracks"];
 	unsigned short tracknum = 1;
 	/* trackinfo = {
-	 *		"loop": {
-	 *			"start": float,
-	 *			"end": float
-	 *		}
+	 *	"loop": {
+	 *		"start": float,
+	 *		"end": float
+	 *	}
 	 * }
 	 */
 	for (const auto& trackinfo : tracksdata) {
@@ -52,8 +52,8 @@ LevelSet::LevelSet(const std::string& path) {
 	const auto enemydata = levelJSON["enemies"];
 	unsigned short enemynum = 0;
 	/* enemyinfo = {
-	 *		"ai": ushort,
-	 *		"speed": ushort
+	 *	"ai": ushort,
+	 *	"speed": ushort
 	 * }
 	 */
 	for (const auto& enemyinfo : enemydata) {
@@ -68,55 +68,50 @@ LevelSet::LevelSet(const std::string& path) {
 
 	unsigned short lvnum = 1;
 	/* lvinfo = {
-	 *		"time": uint,
-	 *		"tilemap": string,
-	 *		"music": ushort,
-	 *		"tileIDs": {
-	 *			"border": ushort,
-	 *			"bg": ushort,
-	 *			"fixed": ushort,
-	 *			"breakable": ushort
-	 *		}
+	 *	"time": uint,
+	 *	"tilemap": string,
+	 *	"music": ushort,
+	 *	"tileIDs": {
+	 *		"border": ushort,
+	 *		"bg": ushort,
+	 *		"fixed": ushort,
+	 *		"breakable": ushort
+	 *	}
 	 * }
 	 */
 	for (const auto& lvinfo : levelsdata) {
-		Level *level = new Level(this);
-		if (!level->setTilemap(lvinfo["tilemap"])) {
-			std::cerr << "[LevelSet.cpp] Level " << lvnum << " has invalid tilemap: skipping." << std::endl;
-			delete level;
-		} else {
-			level->setLevelNum(lvnum);
-			level->setTime((unsigned int)lvinfo["time"]);
-			level->setTrack(tracks[(unsigned short)lvinfo["music"]-1]);
-			level->tileIDs.border    = (unsigned short)lvinfo["tileIDs"]["border"];
-			level->tileIDs.bg        = (unsigned short)lvinfo["tileIDs"]["bg"];
-			level->tileIDs.fixed     = (unsigned short)lvinfo["tileIDs"]["fixed"];
-			level->tileIDs.breakable = (unsigned short)lvinfo["tileIDs"]["breakable"];
-			++lvnum;
-			levels.push_back(level);
-		}
+		LevelInfo info;
+		info.levelnum          = lvnum;
+		info.time              = (unsigned int)lvinfo["time"];
+		info.track             = tracks[(unsigned short)lvinfo["music"]-1];
+		info.tilemap           = lvinfo["tilemap"];
+		info.tileIDs.border    = (unsigned short)lvinfo["tileIDs"]["border"];
+		info.tileIDs.bg        = (unsigned short)lvinfo["tileIDs"]["bg"];
+		info.tileIDs.fixed     = (unsigned short)lvinfo["tileIDs"]["fixed"];
+		info.tileIDs.breakable = (unsigned short)lvinfo["tileIDs"]["breakable"];
+		levels.push_back(info);
 	}
-}
-
-LevelSet::~LevelSet() {
-	for (auto& it : levels) 
-		if (it != nullptr)
-			delete it;
 }
 
 Level* LevelSet::getLevel(unsigned short num) const {
 	if (num == 0 || num > levels.size()) return nullptr;
-	if (!levels[num-1]->isInitialized())
-		levels[num-1]->init();
-	return levels[num-1];
+	Level *lv = new Level(this);
+	lv.levelInfo = levels[num - 1];
+	if (!lv.init()) {
+		delete lv;
+		return nullptr;
+	}
+	return lv;
 }
 
-void LevelSet::printInfo() const {
-	std::cout << "Level Set: " << metadata.find("name")->second << "\n"
-		  << "Tracks: " << tracks.size() << "\n"
-		  << "Levels: " << levels.size() << "\n";
+std::string LevelSet::toString() const {
+	std::stringstream ss;
+	ss << "Level Set: " << metadata.find("name")->second << "\r\n"
+	   << "Tracks: " << tracks.size() << "\r\n"
+	   << "Levels: " << levels.size() << "\r\n";
 	for (const auto& pair : metadata) {
 		if (pair.first == "name") continue;
-		std::cout << pair.first << ": " << pair.second << "\n";
+		ss << pair.first << ": " << pair.second << "\r\n";
 	}
+	return ss.str();
 }

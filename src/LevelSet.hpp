@@ -7,10 +7,9 @@
 #include "Level.hpp"
 #include "Track.hpp"
 #include "Game.hpp"
+#include "Stringable.hpp"
 
 namespace Game {
-
-class Level;
 
 struct EnemyInfo {
 	unsigned short ai = 0;
@@ -22,8 +21,8 @@ struct EnemyInfo {
  * extra info about enemies, music, etc. Basically, it holds the
  * customizable game configuration read from a JSON file.
  */
-class LevelSet : private sf::NonCopyable {
-	std::vector<Game::Level*> levels;
+class LevelSet final : public Game::Stringable, private sf::NonCopyable {
+	std::vector<Game::LevelInfo> levels;
 	std::vector<Game::Track> tracks;
 	std::array<EnemyInfo, Game::N_ENEMIES> enemies;
 	std::unordered_map<std::string, std::string> metadata;
@@ -32,15 +31,15 @@ public:
 	LevelSet(const std::string& jsonPath);
 	~LevelSet();
 
-	/** Gets i-th level (numbering starts from 1), initializing
-	 *  it if necessary.
+	/** Constructs the i-th level and returns it if init() is successful.
+	 *  Callee MUST take care of deleting the returned Level.
 	 */
 	Level* getLevel(unsigned short i) const;
 	unsigned short getLevelsNum() const { return levels.size(); }
 
 	const EnemyInfo& getEnemyInfo(const unsigned short id) const { return enemies[id-1]; }
 
-	void printInfo() const;
+	std::string toString() const override;
 };
 
 }

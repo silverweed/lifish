@@ -5,7 +5,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/System/Vector2.hpp>
 #include "Game.hpp"
-#include "MovingEntity.hpp"
+#include "Direction.hpp"
 #include "Animated.hpp"
 
 #if defined(SFML_SYSTEM_WINDOWS) || defined(__MINGW32__)
@@ -121,12 +121,6 @@ void testMusic();
 
 /** If Game::options.showFPS == true, then display FPS on screen */
 void maybeShowFPS(sf::RenderWindow& window);
-
-/** Selects a random direction which the entity can go to; only choose
- * `opp` if no other directions are viable.
- */
-Game::Direction selectRandomViable(const Game::MovingEntity *const entity,
-			const Game::LevelRenderer *const lr, const Game::Direction opp);
 
 namespace KeyUtils {
 	short keyToNumber(sf::Keyboard::Key key);

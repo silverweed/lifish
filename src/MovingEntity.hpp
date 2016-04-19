@@ -6,26 +6,17 @@
 #include "Entity.hpp"
 #include "Animated.hpp"
 #include "Teleport.hpp"
+#include "Direction.hpp"
 
 namespace Game {
 
 class LevelRenderer;
 
-enum class Direction {
-	UP, LEFT, DOWN, RIGHT, NONE
-};
-
-std::ostream& operator<<(std::ostream& stream, const Direction& dir);
-
-inline Direction oppositeDirection(const Direction dir) {
-	switch (dir) {
-	case Direction::UP:    return Direction::DOWN;
-	case Direction::DOWN:  return Direction::UP;
-	case Direction::LEFT:  return Direction::RIGHT;
-	case Direction::RIGHT: return Direction::LEFT;
-	default:               return Direction::NONE;
-	}
-}
+/** Selects a random direction which the entity can go to; only choose
+ * `opp` if no other directions are viable.
+ */
+Game::Direction selectRandomViable(const Game::MovingEntity *const entity,
+			const Game::LevelRenderer *const lr, const Game::Direction opp);
 
 /**
  * Entities which can move (enemies, players, bullets, ...)
@@ -33,7 +24,7 @@ inline Direction oppositeDirection(const Direction dir) {
 class MovingEntity : public Game::Animated {
 protected:
 	constexpr static unsigned short DEATH_TIME = 2000; // ms
-	constexpr static float MAX_FRAME_TIME = 1. / 60; // s
+	constexpr static float MAX_FRAME_TIME = 1. / 60;   // s
 
 	/** This unit's base speed */
 	float speed = 0.f;

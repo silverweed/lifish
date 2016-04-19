@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.hpp"
+#include "Track.hpp"
 
 namespace Game {
 
@@ -15,7 +16,7 @@ class Music : public Game::Component {
 	Game::Track track;
 
 public:
-	explicit Music(Game::Entity *const owner, const std::string& music_name);
+	explicit Music(Game::Entity *const owner, const Game::Track& track);
 	
 	LoopingMusic* getMusic() const { return music; }
 	const Game::Track& getTrack() const { return track; }

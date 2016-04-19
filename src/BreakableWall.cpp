@@ -7,21 +7,26 @@ using Game::TILE_SIZE;
 
 BreakableWall::BreakableWall(const sf::Vector2f& pos, 
 		const std::string& texture_name, unsigned short _life)
-	: Game::Animated(pos, texture_name)
-	, Game::Lifed(_life)
-	, Game::Scored(10)
-	, Game::Sounded({ Game::getAsset("sounds", "wall_break.ogg") })
+	//: Game::Animated(pos, texture_name)
+	//, Game::Lifed(_life)
+	//, Game::Scored(10)
+	//, Game::Sounded({ Game::getAsset("sounds", "wall_break.ogg") })
 {
-	transparentTo.players = false;
-	transparentTo.enemies = false;
-	transparentTo.bullets = false;
-	transparentTo.explosions = false;
+	// TODO
+	//transparentTo.players = false;
+	//transparentTo.enemies = false;
+	//transparentTo.bullets = false;
+	//transparentTo.explosions = false;
 
-	animations[0].setSpriteSheet(*texture);
+	auto animated = addComponent(new Game::Animated(this, texture_name));
+	auto animation = animated->addAnimation("break");
+
+	animations.setSpriteSheet(*texture);
 	for (unsigned short i = 0; i < 4; ++i)
-		animations[0].addFrame(sf::IntRect(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
+		animations.addFrame(sf::IntRect(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 
-	animatedSprite.setAnimation(animations[0]);
+	auto animatedSprite = animated->getSprite();
+	animatedSprite.setAnimation(animations);
 	animatedSprite.setLooped(false);
 	animatedSprite.setFrameTime(sf::seconds(0.2));
 	animatedSprite.pause();

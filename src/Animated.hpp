@@ -29,12 +29,14 @@ class Animated : public Game::Component, public sf::Drawable {
 protected:
 	Game::Texture *texture;
 	Game::Clock<1> *clock;
-	std::vector<Animation> animations;
+	std::map<std::string, Animation> animations;
 	AnimatedSprite animatedSprite;
 
 public:
 	explicit Animated(Game::Entity *const owner, const std::string& texture_name);
 	
+	Animation& addAnimation(const std::string& name);
+	AnimatedSprite& getSprite() { return animatedSprite; }
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	/*

@@ -15,8 +15,12 @@ protected:
 
 public:
 	explicit Sprite(Game::Entity *const owner, const std::string& texture_name);
+	explicit Sprite(Game::Entity *const owner, const std::string& texture_name,
+			const sf::IntRect& textureDivision);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+	sf::Sprite& getSprite() { return sprite; }
 };
 
 }

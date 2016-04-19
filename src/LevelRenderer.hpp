@@ -30,15 +30,15 @@ class SaveManager;
  * The LevelRenderer manages a Level during the game, updating its
  * entities, time and so on.
  */
-class LevelRenderer final : public Game::Clocked, private sf::NonCopyable {
+class LevelRenderer final : public Game::Entity, private sf::NonCopyable {
 	// This is a fixed-size array for faster lookup
-	using FixedEntityList = std::array<Game::Entity*, LEVEL_WIDTH * LEVEL_HEIGHT>;
-	using MovingEntityList = std::vector<Game::LifedMovingEntity*>;
+	using FixedEntityList     = std::array<Game::Entity*, LEVEL_WIDTH * LEVEL_HEIGHT>;
+	using MovingEntityList    = std::vector<Game::LifedMovingEntity*>;
 	using TemporaryEntityList = std::vector<Game::Temporary*>;
-	using BulletList = std::vector<Game::Bullet*>;
-	using BossList = std::vector<Game::Boss*>;
-	using ExplosionList = std::vector<Game::Explosion*>;
-	using LetterList = std::vector<Game::Letter*>;
+	using BulletList          = std::vector<Game::Bullet*>;
+	using BossList            = std::vector<Game::Boss*>;
+	using ExplosionList       = std::vector<Game::Explosion*>;
+	using LetterList          = std::vector<Game::Letter*>;
 
 	friend class Game::SaveManager;
 
@@ -46,7 +46,8 @@ class LevelRenderer final : public Game::Clocked, private sf::NonCopyable {
 	Game::Level *level = nullptr;
 
 	/** The time counter */
-	sftools::Chronometer levelTimeClock;
+	Game::LevelTime *levelTime = nullptr;
+	sftools::Chronometer *levelTimeClock;
 
 	bool hurryUp = false;
 	bool hurryUpWarningGiven = false;
@@ -54,34 +55,37 @@ class LevelRenderer final : public Game::Clocked, private sf::NonCopyable {
 	bool extraGame = false;
 	/** The number of coins in the level, used for EXTRA game. */
 	unsigned short coinsNum = 0;
-	sftools::Chronometer extraGameClock;
+	sftools::Chronometer *extraGameClock;
 	/** The alien sprite displayed during EXTRA game */
 	Game::AlienSprite alienSprite;
 
 	Game::DroppingText hurryUpText,
 	                   gameOverText,
 	                   extraGameText;
-	
+
+	/** All the entities */
+	std::list<Game::Entity*> entities;
+
 	/** The fixed entities */
-	FixedEntityList fixedEntities;
+	//FixedEntityList fixedEntities;
 
-	/** The moving entities (except bullets) */
-	MovingEntityList movingEntities;
+	//[>* The moving entities (except bullets) <]
+	//MovingEntityList movingEntities;
 
-	/** The temporary entities (flashes, boss explosions ...), except bomb explosions */
-	TemporaryEntityList temporary;
+	//[>* The temporary entities (flashes, boss explosions ...), except bomb explosions <]
+	//TemporaryEntityList temporary;
 
-	/** The bomb explosions */
-	ExplosionList explosions;
+	//[>* The bomb explosions <]
+	//ExplosionList explosions;
 
-	/** The bullets */
-	BulletList bullets;
+	//[>* The bullets <]
+	//BulletList bullets;
 
-	/** The EXTRA letters */
-	LetterList letters;
+	//[>* The EXTRA letters <]
+	//LetterList letters;
 	
-	/** The players' bombs */
-	Matrix<Game::Bomb*, Game::MAX_PLAYERS, Game::Player::MAX_MAX_BOMBS> bombs;
+	//[>* The players' bombs <]
+	//Matrix<Game::Bomb*, Game::MAX_PLAYERS, Game::Player::MAX_MAX_BOMBS> bombs;
 
 	sf::Vector2f origin;
 
@@ -98,7 +102,7 @@ class LevelRenderer final : public Game::Clocked, private sf::NonCopyable {
 
 	/** The bosses, if any */
 	BossList bosses;
-	sftools::Chronometer bossShootClock;
+	sftools::Chronometer *bossShootClock;
 	unsigned short bossClockCycle = 0;
 
 	/** The Final Boss, if this is the last level */
@@ -166,15 +170,13 @@ public:
 	/** Cycles through enemies and calls each one's AI function.
 	 *  To actually move enemies, `applyEnemyMoves` must be called
 	 *  after this (better yet, after `detectCollisions`). The
-	 *  proper way to move enemies in fact is:
+	 *  proper way to move enemies is in fact:
 	 *  	selectEnemyMoves();
 	 *  	detectCollisions();
 	 *	applyEnemyMoves();
 	 */
 	void selectEnemyMoves();
 	void applyEnemyMoves();
-
-	float getLevelTime() const { return level->getTime() - levelTimeClock.getElapsedTime().asSeconds(); }
 
 	const std::array<Game::Player*, Game::MAX_PLAYERS>& getPlayers() const { return players; }
 	Game::Player* getPlayer(const unsigned short i) const { return players[i-1]; }
@@ -226,8 +228,6 @@ public:
 	void makeFinalBossShoot();
 
 	void dropBonus(const sf::Vector2i& tile, const unsigned short type);
-
-	int getTimeLeft() const;
 
 	/** If level time is <= 30s, make the "Hurry Up!" text appear;
 	 *  if level time is <= 0, enter Hurry Up mode (double enemies'

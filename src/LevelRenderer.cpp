@@ -16,77 +16,85 @@
 using Game::LevelRenderer;
 
 LevelRenderer::LevelRenderer(std::initializer_list<Game::Player*> the_players)
-	: Game::Clocked({ &bossShootClock, &levelTimeClock, &extraGameClock })
-	, hurryUpText(Game::getAsset("test", "hurryup.png"), sf::Vector2i(161, 30), 300.f)
+	: hurryUpText(Game::getAsset("test", "hurryup.png"), sf::Vector2i(161, 30), 300.f)
 	, gameOverText(Game::getAsset("test", "gameover.png"), sf::Vector2i(311, 59))
 	, extraGameText(Game::getAsset("test", "extragame.png"), sf::Vector2i(223, 156), 250.f)
 {
 	fixedEntities.fill(nullptr);
+
+	auto clock = addComponent(new Game::Clock<3>(this, { "bossShoot", "levelTime", "extraGame" }));
+	bossShootClock = clock->getClock("bossShoot");
+	levelTimeClock = clock->getClock("levelTime");
+	extraGameClock = clock->getClock("extraGame");
 
 	unsigned short i = 0;
 	for (auto& player : the_players) {
 		_players[i++] = std::unique_ptr<Game::Player>(player);
 	}
 
-	for (unsigned short i = 0; i < bombs.size(); ++i)
-		bombs[i].fill(nullptr);
+	//for (unsigned short i = 0; i < bombs.size(); ++i)
+		//bombs[i].fill(nullptr);
 
-	movingEntities.reserve(LEVEL_WIDTH * LEVEL_HEIGHT);
-	temporary.reserve(LEVEL_WIDTH * LEVEL_HEIGHT);
-	bosses.reserve(32);
-	bullets.reserve(1024);
-	players.fill(nullptr);
+	//movingEntities.reserve(LEVEL_WIDTH * LEVEL_HEIGHT);
+	//temporary.reserve(LEVEL_WIDTH * LEVEL_HEIGHT);
+	//bosses.reserve(32);
+	//bullets.reserve(1024);
+	//players.fill(nullptr);
 }
 
 LevelRenderer::~LevelRenderer() {
 	_clearEntities();
+	if (level != nullptr)
+		delete level;
 }
 
 void LevelRenderer::_clearEntities() {
-	for (auto& e : fixedEntities)
-		if (e != nullptr) 
-			delete e;
-	
-	for (auto& e : movingEntities)
-		if (!isPlayer(e))
-			delete e;
-	
-	for (auto& b : bosses)
-		delete b;
-	
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
-		for (unsigned short j = 0; j < bombs[i].size(); ++j)
-			if (bombs[i][j] != nullptr) {
-				delete bombs[i][j];
-				bombs[i][j] = nullptr;
-			}
+	// TODO
 
-	for (auto it = temporary.begin(); it != temporary.end(); ++it) 
-		delete *it;
+	//for (auto& e : fixedEntities)
+		//if (e != nullptr) 
+			//delete e;
 	
-	for (auto it = explosions.begin(); it != explosions.end(); ++it) 
-		delete *it;
+	//for (auto& e : movingEntities)
+		//if (!isPlayer(e))
+			//delete e;
 	
-	for (auto it = bullets.begin(); it != bullets.end(); ++it)
-		delete *it;
+	//for (auto& b : bosses)
+		//delete b;
 	
-	for (auto it = letters.begin(); it != letters.end(); ++it)
-		delete *it;
+	//for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
+		//for (unsigned short j = 0; j < bombs[i].size(); ++j)
+			//if (bombs[i][j] != nullptr) {
+				//delete bombs[i][j];
+				//bombs[i][j] = nullptr;
+			//}
 
-	if (finalBoss != nullptr) {
-		finalBoss.reset();
-	}
+	//for (auto it = temporary.begin(); it != temporary.end(); ++it) 
+		//delete *it;
+	
+	//for (auto it = explosions.begin(); it != explosions.end(); ++it) 
+		//delete *it;
+	
+	//for (auto it = bullets.begin(); it != bullets.end(); ++it)
+		//delete *it;
+	
+	//for (auto it = letters.begin(); it != letters.end(); ++it)
+		//delete *it;
 
-	fixedEntities.fill(nullptr);
-	players.fill(nullptr);
-	firstTeleport = nullptr;
+	//if (finalBoss != nullptr) {
+		//finalBoss.reset();
+	//}
 
-	temporary.clear();
-	explosions.clear();
-	movingEntities.clear();
-	bullets.clear();
-	bosses.clear();
-	letters.clear();
+	//fixedEntities.fill(nullptr);
+	//players.fill(nullptr);
+	//firstTeleport = nullptr;
+
+	//temporary.clear();
+	//explosions.clear();
+	//movingEntities.clear();
+	//bullets.clear();
+	//bosses.clear();
+	//letters.clear();
 }
 
 void LevelRenderer::loadLevel(Game::Level *const _level) {
@@ -94,9 +102,9 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 		_clearEntities();
 	}
 	level = _level;
-	bossShootClock.restart();
+	bossShootClock->restart();
 	hurryUp = hurryUpWarningGiven = false;
-	levelTimeClock.restart();
+	levelTimeClock->restart();
 	coinsNum = 0;
 
 	Game::Teleport *latest_teleport = nullptr;
@@ -125,13 +133,15 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				using AT = Game::Enemy::AttackType;
 
 			case EntityType::FIXED: 
-				fixedEntities[top * LEVEL_WIDTH + left] = 
-					new Game::FixedWall(curPos, level->tileIDs.fixed);
+				//fixedEntities[top * LEVEL_WIDTH + left] = 
+				entities.push_back(new Game::FixedWall(curPos, level->getInfo().tileIDs.fixed));
 				break;
+
 			case EntityType::BREAKABLE:
 				fixedEntities[top * LEVEL_WIDTH + left] = 
-					new Game::BreakableWall(curPos, level->tileIDs.breakable);
+					new Game::BreakableWall(curPos, level->getInfo().tileIDs.breakable);
 				break;
+
 			case EntityType::TRANSPARENT_WALL:
 				fixedEntities[top * LEVEL_WIDTH + left] =
 					new Game::TransparentWall(curPos);
@@ -425,7 +435,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 
 		} else if (boss->isDying()) {
 			if (boss->explClock.getElapsedTime().asMilliseconds() >= 100) {
-				boss->explClock.restart();
+				boss->explClock->restart();
 				// Calculate a random location inside the boss
 				const auto bpos = boss->getPosition();
 				std::uniform_real_distribution<float> dist(-0.5 * TILE_SIZE,
@@ -458,7 +468,7 @@ void LevelRenderer::renderFrame(sf::RenderWindow& window) {
 
 		} else if (finalBoss->isDying()) {
 			if (finalBoss->explClock.getElapsedTime().asMilliseconds() >= 100) {
-				finalBoss->explClock.restart();
+				finalBoss->explClock->restart();
 				// Calculate a random location inside the finalBoss
 				const auto bpos = finalBoss->getPosition();
 				std::uniform_real_distribution<float> dist(-0.5 * TILE_SIZE, 
@@ -1243,7 +1253,7 @@ void LevelRenderer::makeBossesShoot() {
 	if (++bossClockCycle == 3)
 		bossClockCycle = 0;
 
-	bossShootClock.restart();
+	bossShootClock->restart();
 	for (auto& boss : bosses) {
 		if (boss->isDying()) continue;
 		const auto shootingPts = boss->getShootingPoints();
@@ -1333,14 +1343,13 @@ void LevelRenderer::_killAllEnemies() {
 	}
 }
 
-int LevelRenderer::getTimeLeft() const { 
-	return level->getTime() - static_cast<int>(levelTimeClock.getElapsedTime().asSeconds());
-}
-
 void LevelRenderer::checkHurryUp() {
 	if (hurryUp) return;
-	int diff = getTimeLeft();
-	if (diff <= 0) {
+	
+	levelTime->update();
+
+	switch (levelTime->isHurryUp()) {
+	case LevelTime::HurryUpResponse::ON:
 		// Trigger Hurry Up	
 		for (auto& e : movingEntities) {
 			if (isPlayer(e)) continue;
@@ -1349,11 +1358,15 @@ void LevelRenderer::checkHurryUp() {
 			enemy->attack.fireRate *= 2.;		
 		}
 		hurryUp = true;
-	} else if (!hurryUpWarningGiven && diff <= 31) {
+		break;
+	case LevelTime::HurryUpResponse::HURRY_UP_NEAR:
 		hurryUpText.play();
 		hurryUpText.setOrigin(origin);
 		Game::cache.playSound(Game::getAsset("test", Game::HURRY_UP_SOUND));
 		hurryUpWarningGiven = true;
+		break;
+	default:
+		break;
 	}
 }
 
@@ -1374,7 +1387,7 @@ void LevelRenderer::_triggerExtraGame() {
 		enemy->setMorphed(true);
 	}
 	extraGame = true;
-	extraGameClock.restart();
+	extraGameClock->restart();
 }
 
 void LevelRenderer::checkExtraGameEnd() {
@@ -1433,8 +1446,8 @@ void LevelRenderer::resetFrameClocks() {
 }
 	
 void LevelRenderer::resetClocks() {
-	bossShootClock.restart();
-	levelTimeClock.restart();
+	bossShootClock->restart();
+	levelTimeClock->restart();
 	resetFrameClocks();
 }
 

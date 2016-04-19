@@ -51,12 +51,14 @@ static void play_game(sf::RenderWindow& window, const std::string& level_set,
 static void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum);
 static bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short playernum);
 static Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Game::SidePanel& panel);
+static Game::Direction[] get_directions(sf::RenderWindow& window, 
+		const std::array<Game::Player*, Game::MAX_PLAYERS>& players);
 
 static sf::Font interlevel_font;
 
 int main(int argc, char **argv) {
 	// Argument parsing
-	std::string levelSet = "";
+	std::string levelSetName = "";
 	bool args_ended = false;
 	unsigned short start_level = 1;
 	int i = 1;
@@ -89,7 +91,7 @@ int main(int argc, char **argv) {
 				return 1;
 			}
 		} else {
-			levelSet = std::string(argv[i]);
+			levelSetName = std::string(argv[i]);
 		}
 		++i;
 	}
@@ -102,31 +104,28 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	if (levelSet.length() < 1)
-		levelSet = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
+	if (levelSetName.length() < 1)
+		levelSetName = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
 
 	// Create the rendering window
 	sf::RenderWindow window(sf::VideoMode(
 				Game::WINDOW_WIDTH, 
-				Game::WINDOW_HEIGHT), "Lifish v." VERSION );
+				Game::WINDOW_HEIGHT), "Lifish v." VERSION);
 
 	window.setVerticalSyncEnabled(true);
 
-	Game::ScreenHandler screenHandler;
-
 	while (window.isOpen()) {
-		switch (screenHandler.handleScreenEvents(window, HOME_SCREEN, ~0 & ~PAUSE_SCREEN)) {
+		switch (ScreenHandler::handleScreenEvents(window, HOME_SCREEN, ~0 & ~PAUSE_SCREEN)) {
 		case Game::Action::START_GAME:
 			{
 				Game::LevelRenderer lr {
 					new Game::Player(sf::Vector2f(0, 0), 1),
 					new Game::Player(sf::Vector2f(0, 0), 2)
 				};
-				
-				for (unsigned short i = 0; i < Game::playerContinues.size(); ++i)
-					Game::playerContinues[i] = Game::INITIAL_CONTINUES;
+				Game::playerContinues.fill(Game::INITIAL_CONTINUES);
 
-				play_game(window, levelSet, lr, start_level);
+				play_game(window, levelSetName, lr, start_level);
+
 				break;
 			}
 		case Game::Action::LOAD_GAME:
@@ -139,11 +138,12 @@ int main(int argc, char **argv) {
 					};
 
 					if (Game::SaveManager::loadGame(fname, lr, start_level))
-						play_game(window, levelSet, lr, start_level);
+						play_game(window, levelSetName, lr, start_level);
 					else
 						std::cerr << "Couldn't load game from " << fname 
 							  << ": the save file is probably corrupt." << std::endl;
 				}
+
 				break;
 			}
 		case Game::Action::EXIT:
@@ -157,13 +157,11 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-void play_game(sf::RenderWindow& window, const std::string& level_set,
+void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 		Game::LevelRenderer& lr, unsigned short start_level)
 {
-	Game::ScreenHandler screenHandler;
-
 	// Parse the level set
-	Game::LevelSet levelset(level_set);
+	Game::LevelSet levelset(levelSetName);
 	std::clog << "Loaded " << levelset.getLevelsNum() << " levels." << std::endl;
 
 	// Create the level renderer and side panel and attach the 1st level to them
@@ -171,16 +169,19 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 
 	lr.setOrigin(sf::Vector2f(-MAIN_WINDOW_SHIFT, 0.f));
 	lr.loadLevel(level);
+
+	// Create the side panel
 	Game::SidePanel panel(&lr);
 
-	// Load the interlevel font
+	// Load the interlevel font (FIXME)
 	const std::string fontname = Game::getAsset("fonts", Game::Fonts::INTERLEVEL);
 	interlevel_font.loadFromFile(fontname);
+
 
 #ifdef RELEASE
 	displayGetReady(window, panel, 1);
 #endif
-	Game::music = level->getMusic();
+	Game::music = level->get<Game::Music>()->getMusic();
 	Game::playMusic();
 
 	auto players = lr.getPlayers();
@@ -204,7 +205,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 			const auto time = levelClearClock.getElapsedTime().asSeconds();
 			if (time >= 4) {
 				level = advanceLevel(window, lr, panel);
-				Game::music = level->getMusic();
+				Game::music = level->get<Game::Music>()->getMusic();
 				Game::playMusic();
 				lr.resetClocks();
 				players = lr.getPlayers();
@@ -231,6 +232,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 			}
 		}
 
+		// Event loop
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			switch (event.type) {
@@ -262,6 +264,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 						for (auto& player : players)
 							if (player != nullptr)
 								player->setWinning(false);
+						delete level;
 						lr.loadLevel(level = levelset.getLevel(n));
 						players = lr.getPlayers();
 						break;
@@ -277,6 +280,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 						for (auto& player : players)
 							if (player != nullptr)
 								player->setWinning(false);
+						delete level;
 						lr.loadLevel(level = levelset.getLevel(n));
 						players = lr.getPlayers();
 						break;
@@ -293,7 +297,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 						lr.pauseClocks();
 						auto action = Game::Action::DO_NOTHING;
 						do {
-							action = screenHandler.handleScreenEvents(window, PAUSE_SCREEN,
+							action = ScreenHandler::handleScreenEvents(window, PAUSE_SCREEN,
 									PAUSE_SCREEN | PREFERENCES_SCREEN | CONTROLS_SCREEN);
 							if (action == Game::Action::SAVE_GAME) {
 								const auto fname = Game::display_save_dialog();
@@ -324,39 +328,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 			}
 		}
 
-		Game::Direction dir[] = { Game::Direction::NONE, Game::Direction::NONE };
-		for (unsigned int i = 0; i < 2; ++i) {
-			if (players[i] == nullptr) continue;
-
-			if (window.hasFocus()) {
-				if (Game::options.useJoystick[i] >= 0) {
-					const short joystick = Game::options.useJoystick[i];
-					const auto horizontal = sf::Joystick::getAxisPosition(joystick, sf::Joystick::X),
-					           vertical = sf::Joystick::getAxisPosition(joystick, sf::Joystick::Y);
-					if (vertical < -Game::JOYSTICK_INPUT_THRESHOLD) 
-						dir[i] = Game::Direction::UP;
-					else if (vertical > Game::JOYSTICK_INPUT_THRESHOLD)
-						dir[i] = Game::Direction::DOWN;
-					else if (horizontal < -Game::JOYSTICK_INPUT_THRESHOLD)
-						dir[i] = Game::Direction::LEFT;
-					else if (horizontal > Game::JOYSTICK_INPUT_THRESHOLD)
-						dir[i] = Game::Direction::RIGHT;
-				} else {
-					if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::UP]))
-						dir[i] = Game::Direction::UP;
-					else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::LEFT]))
-						dir[i] = Game::Direction::LEFT;
-					else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::DOWN]))
-						dir[i] = Game::Direction::DOWN;
-					else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::RIGHT]))
-						dir[i] = Game::Direction::RIGHT;
-				}
-			}
-
-			if (players[i]->isAligned())
-				players[i]->setDirection(dir[i]);
-		}
-
+		auto dir = get_directions(window, players);
 		lr.checkHurryUp();
 
 		if (lr.isExtraGame()) {
@@ -371,6 +343,7 @@ void play_game(sf::RenderWindow& window, const std::string& level_set,
 		lr.checkExplosionHits();
 		lr.detectCollisions();
 
+		// Check players hurt / death; make players move
 		bool maybe_all_dead = true;
 		for (unsigned short i = 0; i < 2; ++i) {
 			if (players[i] == nullptr) {
@@ -676,7 +649,48 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Gam
 
 	displayGetReady(window, panel, lvnum);
 
+	delete level;
 	lr.loadLevel(levelSet->getLevel(lvnum));
 
 	return const_cast<Game::Level*>(lr.getLevel());
+}
+
+Game::Direction[] get_directions(sf::RenderWindow& window,
+		const std::array<Game::Player*, Game::MAX_PLAYERS>& players)
+{
+	Game::Direction dir[] = { Game::Direction::NONE, Game::Direction::NONE };
+
+	for (unsigned int i = 0; i < 2; ++i) {
+		if (players[i] == nullptr) continue;
+
+		if (window.hasFocus()) {
+			if (Game::options.useJoystick[i] >= 0) {
+				const short joystick = Game::options.useJoystick[i];
+				const auto horizontal = sf::Joystick::getAxisPosition(joystick, sf::Joystick::X),
+					   vertical = sf::Joystick::getAxisPosition(joystick, sf::Joystick::Y);
+				if (vertical < -Game::JOYSTICK_INPUT_THRESHOLD) 
+					dir[i] = Game::Direction::UP;
+				else if (vertical > Game::JOYSTICK_INPUT_THRESHOLD)
+					dir[i] = Game::Direction::DOWN;
+				else if (horizontal < -Game::JOYSTICK_INPUT_THRESHOLD)
+					dir[i] = Game::Direction::LEFT;
+				else if (horizontal > Game::JOYSTICK_INPUT_THRESHOLD)
+					dir[i] = Game::Direction::RIGHT;
+			} else {
+				if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::UP]))
+					dir[i] = Game::Direction::UP;
+				else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::LEFT]))
+					dir[i] = Game::Direction::LEFT;
+				else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::DOWN]))
+					dir[i] = Game::Direction::DOWN;
+				else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::RIGHT]))
+					dir[i] = Game::Direction::RIGHT;
+			}
+		}
+
+		if (players[i]->isAligned())
+			players[i]->setDirection(dir[i]);
+	}
+
+	return dir;
 }

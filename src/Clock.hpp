@@ -73,7 +73,7 @@ public:
 		: Game::Component(owner)
 	{}
 
-	sftools::Chronometer* get() {
+	sftools::Chronometer* getClock() {
 		return &clock;
 	}
 

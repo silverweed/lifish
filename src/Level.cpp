@@ -1,6 +1,7 @@
 #include "Level.hpp"
 #include "Game.hpp"
 #include "GameCache.hpp"
+#include "LevelSet.hpp"
 #include "utils.hpp"
 #include <iostream>
 #include <sstream>
@@ -13,36 +14,46 @@ using Game::LEVEL_HEIGHT;
 using Game::TILE_SIZE;
 using Game::EntityType;
 
-Level::Level(const Game::LevelSet *const _levelSet) : levelSet(_levelSet) {}
+Level::Level(const Game::LevelSet *const _levelSet) 
+	: levelSet(_levelSet) 
+	, Game::Entity()
+{}
 
-void Level::init() {
+bool Level::init() {
 	if (initialized) return true;
 	
-	music = addComponent(new Game::Music(this, track));
+	if (!_setTilemap(levelInfo.tilemap))
+		return false;
+
+	music = addComponent(new Game::Music(this, levelInfo.track));
 	_loadTextures();
 
-	levelnumtext = addComponent(new Game::LevelNumText(this, levelnum));
+	levelnumtext = addComponent(new Game::LevelNumText(this, levelInfo.levelnum));
+
+	return initialized = true;
 }
 
 void Level::_loadTextures() {
-	// Load background texture
 	std::stringstream ss;
-	ss << "bg" << tileIDs.bg << ".png";
-	bgTexture = addComponent(new Game::Texture(Game::getAsset("graphics", ss.str())));
-	borderTexture = addComponent(new Game::Texture(Game::getAsset("graphics", "border.png")));
+	ss << "bg" << levelInfo.tileIDs.bg << ".png";
+	// Load background texture
+	bgTexture = addComponent(new Game::Texture(this, Game::getAsset("graphics", ss.str())));
+	// Load borderTexture
+	borderTexture = addComponent(new Game::Texture(this, Game::getAsset("graphics", "border.png")));
 	_loadTiles();
 }
 
+// FIXME: move to texture components?
 void Level::_loadTiles() {
-	bgTiles[TILE_REGULAR].setTexture(*bgTexture);
-	bgTexture->setRepeated(true);
-	bgTexture->setSmooth(true);
+	bgTiles[TILE_REGULAR].setTexture(*bgTexture->getTexture());
+	bgTexture->getTexture()->setRepeated(true);
+	bgTexture->getTexture()->setSmooth(true);
 	bgTiles[TILE_REGULAR].setTextureRect(sf::IntRect(0, 0, TILE_SIZE * LEVEL_WIDTH, TILE_SIZE * LEVEL_HEIGHT));
 
 	for (unsigned short i = 1; i < bgTiles.size(); ++i)
-		bgTiles[i].setTexture(*borderTexture);
+		bgTiles[i].setTexture(*borderTexture->getTexture());
 
-	const unsigned short b = (tileIDs.border-1) * TILE_SIZE;
+	const unsigned short b = (levelInfo.tileIDs.border-1) * TILE_SIZE;
 
 	bgTiles[TILE_UPPER].setTextureRect(sf::IntRect(0, b, TILE_SIZE, TILE_SIZE));
 	// TILE_UPPER y-mirrored
@@ -64,67 +75,34 @@ void Level::_loadTiles() {
 	bgTiles[TILE_LOWER_LEFT].setPosition(0, TILE_SIZE * (LEVEL_HEIGHT+1));
 }
 
-bool Level::_loadMusic(const std::string& music_name) {
-	if (!musicInput.openFromFile(music_name)) {
-		std::cerr << "[Level.cpp] Error: couldn't load music " << music_name << " from file!" << std::endl;
-		return false;
-	}
-	music = new LoopingMusic(musicInput);
-	music->setLoopPoints(sf::seconds(track.loopstart), sf::seconds(track.loopend));
-	music->setLoop(true);
-	return true;
-}
-
-Level::~Level() {
-	if (music != nullptr)
-		delete music;
-	if (levelnumtext != nullptr)
-		delete levelnumtext;
-}
-
 void Level::setOrigin(const sf::Vector2f& offset) {
 	for (unsigned short i = 0; i < bgTiles.size(); ++i)
 		bgTiles[i].setOrigin(offset);
 	levelnumtext->setOrigin(offset);
 }
 
-void Level::draw(sf::RenderTarget& window) {
+void Level::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	// Border tiles number on x axis
 	const unsigned short btn_x = LEVEL_WIDTH + 1;
 	// Border tiles number on y axis
 	const unsigned short btn_y = LEVEL_HEIGHT + 1;
 
 	// Draw the level background
-	bgTiles[TILE_REGULAR].setPosition(TILE_SIZE, TILE_SIZE);
-	window.draw(bgTiles[TILE_REGULAR]);
+	window.draw(bgTiles[TILE_REGULAR], states);
 
 	// Draw the borders
-	window.draw(bgTiles[TILE_UPPER_LEFT]);
-	for (unsigned short i = 1; i < btn_x; ++i) {
-		bgTiles[TILE_UPPER].setPosition(i * TILE_SIZE, 0);
-		window.draw(bgTiles[TILE_UPPER]);
-	}
-	for (unsigned short i = 1; i < btn_y; ++i) {
-		bgTiles[TILE_LEFT].setPosition(0, i * TILE_SIZE);
-		window.draw(bgTiles[TILE_LEFT]);
-	}
-	window.draw(bgTiles[TILE_UPPER_RIGHT]);
-
-	for (unsigned short i = 1; i < (btn_y); ++i) {
-		bgTiles[TILE_RIGHT].setPosition(btn_x * TILE_SIZE, i * TILE_SIZE);
-		window.draw(bgTiles[TILE_RIGHT]);
-	}
-
-	window.draw(bgTiles[TILE_LOWER_RIGHT]);
-	for (unsigned short i = 1; i < btn_x; ++i) {
-		bgTiles[TILE_LOWER].setPosition(i * TILE_SIZE, btn_y * TILE_SIZE);
-		window.draw(bgTiles[TILE_LOWER]);
-	}
-	window.draw(bgTiles[TILE_LOWER_LEFT]);
+	window.draw(bgTiles[TILE_UPPER_LEFT], states);
+	window.draw(bgTiles[TILE_UPPER], states);
+	window.draw(bgTiles[TILE_LEFT], states);
+	window.draw(bgTiles[TILE_UPPER_RIGHT], states);
+	window.draw(bgTiles[TILE_RIGHT], states);
+	window.draw(bgTiles[TILE_LOWER_RIGHT], states);
+	window.draw(bgTiles[TILE_LOWER], states);
+	window.draw(bgTiles[TILE_LOWER_LEFT], states);
 
 	// Draw the level number
 	if (levelnumtext != nullptr)
-		levelnumtext->draw(window);
+		window.draw(*levelnumtext, states);
 }
 
 EntityType Level::getTile(unsigned short left, unsigned short top) const {
@@ -133,7 +111,7 @@ EntityType Level::getTile(unsigned short left, unsigned short top) const {
 	return tiles[top][left];
 }
 
-bool Level::setTilemap(const std::string& tilemap) {
+bool Level::_setTilemap(const std::string& tilemap) {
 	unsigned short x = 0, y = 0;
 	bool player_set[] = { false, false };
 	for (unsigned int i = 0; i < tilemap.length(); ++i) {
@@ -157,31 +135,49 @@ bool Level::setTilemap(const std::string& tilemap) {
 	return true;
 }
 
-void Level::printTilemap() const {
+std::string Level::getTilemap() const {
+	static bool called = false;
+	static std::stringstream ss;
+
+	if (called)
+		return ss.str();
+
 	for (unsigned short i = 0; i < LEVEL_HEIGHT; ++i) {
 		for (unsigned short j = 0; j < LEVEL_WIDTH; ++j) {
-			std::cout << tiles[i][j] << " ";
+			ss << tiles[i][j] << " ";
 		}
-		std::cout << std::endl;
+		ss << std::endl;
 	}
+
+	called = true;
+	return ss.str();
 }
 
-void Level::printInfo() const {
-	std::cout << "Level Info:\n" 
-		  << "-----------\n"
-		  << "Level " << levelnum << "\n"
-		  << "Time: " << time << " s\n"
-		  << "Tiles: {\n"
-		  << "    bg: " << tileIDs.bg << "\n"
-		  << "    border: " << tileIDs.border << "\n"
-		  << "    fixed: " << tileIDs.fixed << "\n"
-		  << "    breakable: " << tileIDs.breakable << "\n}\n"
-		  << "Music: " << track.name << "\n";
+std::string Level::toString() const {
+	static bool called = false;
+	static std::stringstream ss;
+
+	if (called)
+		return ss.str();
+
+	ss << "Level Info:\r\n" 
+	   << "-----------\r\n"
+	   << "Level " << levelInfo.levelnum << "\r\n"
+	   << "Time: " << levelInfo.time << " s\r\n"
+	   << "Tiles: {\r\n"
+	   << "    bg: " << levelInfo.tileIDs.bg << "\r\n"
+	   << "    border: " << levelInfo.tileIDs.border << "\r\n"
+	   << "    fixed: " << levelInfo.tileIDs.fixed << "\r\n"
+	   << "    breakable: " << levelInfo.tileIDs.breakable << "\r\n}\r\n"
+	   << "Music: " << music->getTrack().name << "\r\n";
 	if (levelSet != nullptr) {
-		std::cout << "Belongs to: >>>\n";
-		levelSet->printInfo();
-		std::cout << "<<<\n";
+		ss << "Belongs to: >>>\r\n";
+		ss << levelSet->toString();
+		ss << "<<<\r\n";
 	}
-	std::cout << "Tilemap:\n";
-	printTilemap();
+	ss << "Tilemap:\r\n";
+	ss << getTilemap();
+
+	called = true;
+	return ss.str();
 }

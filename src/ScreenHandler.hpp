@@ -28,7 +28,7 @@ enum class Action {
 
 class ScreenHandler final {
 	// All possible screens
-	struct {
+	static struct {
 		Game::HomeScreen& home = Game::HomeScreen::getInstance();
 		Game::PreferencesScreen& preferences = Game::PreferencesScreen::getInstance();
 		Game::ControlsScreen& controls = Game::ControlsScreen::getInstance();
@@ -39,7 +39,7 @@ public:
 	/** Displays the menu, starting with `rootScreen` and exiting when it should change to a
 	 *  screen which is not enabled. All screens are enabled by default.
 	 */
-	Game::Action handleScreenEvents(sf::RenderWindow& window, ScreenType rootScreen, int enabledScreens);
+	static Game::Action handleScreenEvents(sf::RenderWindow& window, ScreenType rootScreen, int enabledScreens);
 };
 
 }

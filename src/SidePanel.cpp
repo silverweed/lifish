@@ -197,7 +197,7 @@ void SidePanel::draw(sf::RenderTarget& window) {
 	}
 
 	// Draw the time remaining in format MM:SS
-	short seconds = lr->getLevelTime();
+	short seconds = short(lr->getLevel()->get<Game::LevelTime>()->getTime());
 	const short minutes = seconds < 0 ? 0 : seconds / 60;
 	ss.str("");
 	if (minutes < 10)

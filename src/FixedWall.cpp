@@ -1,16 +1,20 @@
 #include "FixedWall.hpp"
 #include "Game.hpp"
+#include "Position.hpp"
+#include "Sprite.hpp"
 
 using Game::FixedWall;
+using Game::TILE_SIZE;
 
-FixedWall::FixedWall(sf::Vector2f pos, const unsigned short id) 
-	: Game::NonAnimated(pos, Game::getAsset("graphics", "fixed.png"))
+FixedWall::FixedWall(const sf::Vector2f& pos, const unsigned short id) 
 {
-	transparentTo.players = false;
-	transparentTo.enemies = false;
-	transparentTo.bullets = false;
-	transparentTo.explosions = false;
+	addComponent(new Game::Position<float>(this, pos));
+	addComponent(new Game::Sprite(this, Game::getAsset("graphics", "fixed.png"),
+				sf::IntRect((id-1) * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE)));
 
-	// Fixed walls only have 1 sprite
-	sprite.setTextureRect(sf::IntRect((id-1) * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
+	// TODO collision layers
+	//transparentTo.players = false;
+	//transparentTo.enemies = false;
+	//transparentTo.bullets = false;
+	//transparentTo.explosions = false;
 }

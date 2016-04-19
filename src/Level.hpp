@@ -10,23 +10,52 @@
 #include "Game.hpp"
 #include "Track.hpp"
 #include "EntityType.hpp"
-#include "LevelSet.hpp"
 #include "ShadedText.hpp"
 #include "Music.hpp"
 #include "Texture.hpp"
 #include "LevelNumText.hpp"
+#include "Stringable.hpp"
 #include "utils.hpp"
 
 namespace Game {
 
 class LevelSet;
 
+/** Holds the data used in Level initialization. */
+struct LevelInfo {
+	struct {
+		unsigned short bg        = 1,
+			       border    = 1,
+			       fixed     = 1,
+			       breakable = 1;
+	} tileIDs;
+	
+	/** This game's track info */
+	Game::Track track;
+
+	/** Number of the level */
+	unsigned short levelnum = 0;
+
+	/** Time before "Hurry Up" (in seconds) */
+	unsigned int time = 0;
+
+	/** String representation of the tilemap */
+	const char *tilemap;
+};
+
 /**
  * The Level class contains the template of a level, with all the
  * static information about it. Dynamic informations about the level
  * during the game are managed by Game::LevelRenderer.
  */
-class Level : public Game::Entity, private sf::NonCopyable {
+class Level final 
+	: public Game::Entity
+	, public Game::Stringable
+	, public sf::Drawable
+	, private sf::NonCopyable
+{
+	friend class Game::LevelSet;
+
 	/** Types of bg texture tiles */
 	enum : unsigned short {
 		TILE_REGULAR     = 0,
@@ -40,31 +69,36 @@ class Level : public Game::Entity, private sf::NonCopyable {
 		TILE_RIGHT       = 8,
 	};
 
+	/** This ought to be set before calling level.init(); */
+	Game::LevelInfo levelInfo;
+
+	////////////////////////// COMPONENTS ////////////////////////////
+
 	/** The background texture */
 	Game::Texture *bgTexture = nullptr;
 
 	/** The borders' texture */
 	Game::Texture *borderTexture = nullptr;
-
-	/** The sprites for the background tiles (8 border + background) */
-	std::array<sf::Sprite, 9> bgTiles;
 	
+	/** The level's BGM */
 	Game::Music *music = nullptr;
-
-	/** Number of the level */
-	unsigned short levelnum = 0;
 
 	/** The text containing the level number */
 	Game::LevelNumText *levelnumtext = nullptr;
-
-	/** Time before "Hurry Up" (in seconds) */
-	unsigned int time = 0;
+	
+	///////////////////////////////////////////////////////////////////
 
 	/** This level's static (initial) tilemap */
-	Game::Matrix<EntityType, LEVEL_HEIGHT, LEVEL_WIDTH> tiles;
+	Game::Matrix<Game::EntityType, LEVEL_HEIGHT, LEVEL_WIDTH> tiles;
+
+	/** The sprites for the background tiles (8 border + background) */
+	std::array<sf::Sprite, 9> bgTiles;
 
 	/** The LevelSet this level belongs to */
-	const LevelSet *const levelSet;
+	const Game::LevelSet *const levelSet;
+
+	/** Whether this level has been initialized or not */
+	bool initialized = false;
 
 
 	/** Loads the background/border textures from the file (or from memory, if
@@ -75,60 +109,42 @@ class Level : public Game::Entity, private sf::NonCopyable {
 	/** Loads the content of bgTiles (bgTexture must already be set) */
 	void _loadTiles();
 
-	/** Whether this level has been initialized or not */
-	bool initialized = false;
+	/** Given a string representation of the level, sets its static tilemap
+	 *  by filling the `entities` vector.
+	 */
+	bool _setTilemap(const std::string& tilemap);
 
 public:
-	/** This is public for convenience */
-	struct {
-		unsigned short bg        = 1,
-			       border    = 1,
-			       fixed     = 1,
-			       breakable = 1;
-	} tileIDs;
-
-
 	/** Constructs a level without a specified time and tileset. init() must
 	 *  be called before using this level. You need to specify a LevelSet
 	 *  this Level belongs to.
 	 */
 	Level(const LevelSet *const levelSet);
-	virtual ~Level();
 
 	/** Loads the appropriate bgTexture, fills the bgTiles and makes this level
-	 *  usable. Must be called either after constructing it without parameters or 
-	 * after changing them. Returns false if there were errors, true otherwise.
+	 *  usable. Must be called after setting levelInfo.
+	 *  Returns false if there were errors, true otherwise.
 	 */
-	void init();
+	bool init();
 	bool isInitialized() const { return initialized; }
 
-	unsigned int getTime() const { return time; }
-	void setTime(const unsigned int _time) { time = _time; }
+	const LevelInfo& getInfo() const { return levelInfo; }
 
-	/** Given a string representation of the level, sets its static tilemap
-	 *  by filling the `entities` vector.
-	 */
+	void setTime(const unsigned int _time) { levelInfo.time = _time; }
+
+	/** Gets tile[left][top] */
 	EntityType getTile(unsigned short left, unsigned short top) const;
-	bool setTilemap(const std::string& tilemap);
-
-	const Track& getTrack() const { return track; }
-	void setTrack(const Track& _track) { track = _track; }
-
-	LoopingMusic* getMusic() const { return music; }
-
-	unsigned short getLevelNum() const { return levelnum; }
-	void setLevelNum(const unsigned short num) { levelnum = num; }
-
-	void printInfo() const;
-	void printTilemap() const;
 
 	/** Changes the origin of all tiles */
 	void setOrigin(const sf::Vector2f& origin);
 
 	/** Draws this level's background in the target window */
-	void draw(sf::RenderTarget& window) override;
+	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 
-	const LevelSet* getLevelSet() const { return levelSet; }
+	const Game::LevelSet* getLevelSet() const { return levelSet; }
+
+	std::string toString() const override;
+	std::string getTilemap() const;
 };
 
 }
