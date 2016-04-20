@@ -9,7 +9,8 @@ namespace Game {
  */
 class TransparentWall : public Game::BreakableWall {
 public:
-	TransparentWall(const sf::Vector2f& pos);
+	constexpr static unsigned int SCORE = 20;
+	explicit TransparentWall(const sf::Vector2f& pos);
 };
 
 }

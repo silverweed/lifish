@@ -1,35 +1,25 @@
 #pragma once
 
 #include "Animated.hpp"
-#include "Lifed.hpp"
-#include "Scored.hpp"
-#include "Sounded.hpp"
 
 namespace Game {
 
 /**
  * A breakable wall
  */
-class BreakableWall
-	: public Game::Entity
-	//: public Game::Animated
-	//, public Game::Lifed
-	//, public Game::Scored
-	//, public Game::Sounded
-{
-	bool destroyed = false;
-
+class BreakableWall : public Game::Entity {
 protected:
 	/** Constructor used by TransparentWall */
-	//BreakableWall(const sf::Vector2f& pos, const std::string& texture_name, unsigned short life = 1);
+	BreakableWall(const sf::Vector2f& pos, const std::string& texture_name, 
+			unsigned short life, unsigned int score);
+
+	Animation& _setupAnimations(const std::string& texture_name);
+	void _setupComponents(unsigned short life, unsigned int score);
+
 public:
+	constexpr static unsigned int SCORE = 10;
+
 	explicit BreakableWall(const sf::Vector2f& pos, const unsigned short id, unsigned short life = 1);
-
-	// Use animatedSprite, not the default sprite.
-	//void draw(sf::RenderTarget& window) override;
-
-	void destroy();
-	bool isDestroyed() const { return destroyed && !animatedSprite.isPlaying(); }
 };
 
 }

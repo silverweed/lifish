@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -14,13 +14,13 @@ namespace Game {
  */
 class GameCache final : private sf::NonCopyable {
 	/** The game textures */
-	std::map<std::string, sf::Texture> textures;
+	std::unordered_map<std::string, sf::Texture> textures;
 	
 	/** The sound buffers used by sounds */
-	std::map<std::string, sf::SoundBuffer> soundBuffers;
+	std::unordered_map<std::string, sf::SoundBuffer> soundBuffers;
 
 	/** The game fonts */
-	std::map<std::string, sf::Font> fonts;
+	std::unordered_map<std::string, sf::Font> fonts;
 	
 	/** The queue of sound being played, which gets "garbage collected"
 	 *  by the game cache each SOUNDS_GC_DELAY game cycles.

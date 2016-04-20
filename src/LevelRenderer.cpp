@@ -138,14 +138,15 @@ void LevelRenderer::loadLevel(Game::Level *const _level) {
 				break;
 
 			case EntityType::BREAKABLE:
-				fixedEntities[top * LEVEL_WIDTH + left] = 
-					new Game::BreakableWall(curPos, level->getInfo().tileIDs.breakable);
+				//fixedEntities[top * LEVEL_WIDTH + left] = 
+				entities.push_back(new Game::BreakableWall(curPos, level->getInfo().tileIDs.breakable));
 				break;
 
 			case EntityType::TRANSPARENT_WALL:
-				fixedEntities[top * LEVEL_WIDTH + left] =
-					new Game::TransparentWall(curPos);
+				//fixedEntities[top * LEVEL_WIDTH + left] =
+				entities.push_back(new Game::TransparentWall(curPos));
 				break;
+
 			case EntityType::COIN:
 				fixedEntities[top * LEVEL_WIDTH + left] = new Game::Coin(curPos);
 				++coinsNum;
