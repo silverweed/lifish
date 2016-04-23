@@ -50,7 +50,7 @@ public:
 
 	bool isExpired() const { return expireClock->getElapsedTime() >= EXPIRE_TIME; }
 
-	void update();
+	void update() override;
 };
 
 }

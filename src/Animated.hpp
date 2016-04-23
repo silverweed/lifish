@@ -37,11 +37,11 @@ public:
 	explicit Animated(Game::Entity *const owner, const std::string& texture_name);
 	
 	Animation& addAnimation(const std::string& name, bool set = false);
-	Animation* getAnimation(const std::string& name) const;
+	Animation* getAnimation(const std::string& name);
 	void setAnimation(const std::string& name);
 	AnimatedSprite& getSprite() { return animatedSprite; }
 	void setSmooth(bool s) { texture->getTexture()->setSmooth(s); }
-	void update();
+	void update() override;
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 

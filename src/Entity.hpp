@@ -26,6 +26,8 @@ public:
 
 	template <class T>
 	T* get() const;
+
+	virtual void update() {}
 };
 
 }

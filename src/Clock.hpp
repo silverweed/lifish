@@ -68,8 +68,8 @@ public:
 			clock.restart(true);
 	}
 
-	void restart(const std::string& name) {
-		_getClock(name)->restart();
+	sf::Time restart(const std::string& name) {
+		return _getClock(name)->restart();
 	}
 
 	sf::Time getElapsedTime(const std::string& name) const {
@@ -98,8 +98,8 @@ public:
 		clock.resume();
 	}
 
-	void restart(const std::string& name = "") {
-		clock.restart();
+	sf::Time restart(const std::string& name = "") {
+		return clock.restart();
 	}
 
 	sf::Time getElapsedTime() const {

@@ -36,7 +36,7 @@ public:
 			const sf::Time& fuseTime = DEFAULT_FUSE, 
 			const unsigned short radius = DEFAULT_RADIUS);
 
-	void update();
+	void update() override;
 
 	/** `true` if this bomb was driven to explode by another explosion */
 	bool isIgnited() const { return ignited; }

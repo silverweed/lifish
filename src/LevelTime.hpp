@@ -24,7 +24,7 @@ public:
 	explicit LevelTime(Game::Entity *const owner, unsigned int time);
 
 	float getTime() const;
-	void update();
+	void update() override;
 	HurryUpResponse checkHurryUp() const;
 	void pause();
 	void resume();

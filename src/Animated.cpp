@@ -11,7 +11,7 @@ Animated::Animated(Game::Entity *const owner, const std::string& texture_name)
 
 Animation& Animated::addAnimation(const std::string& name, bool set) {
 	auto& anim = animations[name];
-	anim.setSpriteSheet(texture);
+	anim.setSpriteSheet(*texture->getTexture());
 	if (set)
 		animatedSprite.setAnimation(anim);
 
@@ -22,12 +22,12 @@ void Animated::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(animatedSprite, states);
 }
 
-Animation* Animated::getAnimation(const std::string& name) const {
+Animation* Animated::getAnimation(const std::string& name) {
 	auto it = animations.find(name);
 	if (it == animations.end())
 		return nullptr;
 
-	return &(*it);
+	return &it->second;
 }
 
 void Animated::setAnimation(const std::string& name) {

@@ -26,7 +26,7 @@ public:
 	bool isBeingGrabbed() const { return grabbed; } 
 	bool isGrabbed() const;
 	void grab();
-	void update();
+	void update() override;
 };
 
 }
