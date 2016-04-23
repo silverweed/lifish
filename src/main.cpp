@@ -48,9 +48,9 @@ using Game::PAUSE_SCREEN;
 static void play_game(sf::RenderWindow& window, const std::string& level_set,
 		Game::LevelManager& lr, unsigned short start_level = 1);
 
-static void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum);
-static bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short playernum);
-static Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelManager& lr, Game::SidePanel& panel);
+static void display_get_ready(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum);
+static bool display_continue(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short playernum);
+static Game::Level* advance_level(sf::RenderWindow& window, Game::LevelManager& lr, Game::SidePanel& panel);
 static Game::Direction[] get_directions(sf::RenderWindow& window, 
 		const std::array<Game::Player*, Game::MAX_PLAYERS>& players);
 
@@ -179,7 +179,7 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 
 
 #ifdef RELEASE
-	displayGetReady(window, panel, 1);
+	display_get_ready(window, panel, 1);
 #endif
 	Game::music = level->get<Game::Music>()->getMusic();
 	Game::playMusic();
@@ -204,7 +204,7 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 		} else if (levelClearTriggered) {
 			const auto time = levelClearClock.getElapsedTime().asSeconds();
 			if (time >= 4) {
-				level = advanceLevel(window, lr, panel);
+				level = advance_level(window, lr, panel);
 				Game::music = level->get<Game::Music>()->getMusic();
 				Game::playMusic();
 				lr.resetClocks();
@@ -394,7 +394,7 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 			// which has spare Continues.
 			for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 				if (Game::playerContinues[i] > 0) {
-					if (displayContinue(window, panel, i+1)) {
+					if (display_continue(window, panel, i+1)) {
 						all_dead = false;
 						players[i] = new Game::Player(sf::Vector2f(0, 0), i+1);
 						lr.setPlayer(i+1, players[i]);
@@ -406,7 +406,7 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 			}
 			if (!all_dead) {
 				// Restart level
-				displayGetReady(window, panel, level->getLevelNum());
+				display_get_ready(window, panel, level->getLevelNum());
 				lr.resetClocks();
 				lr.loadLevel(level);
 				levelClearTriggered = false;
@@ -441,7 +441,7 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 	}
 }
 
-void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum) {
+void display_get_ready(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum) {
 	std::stringstream ss;
 	ss << "LEVEL " << lvnum;
 	sf::Text text(ss.str(), interlevel_font, 13);
@@ -461,7 +461,7 @@ void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 	SLEEP_MS(3000);
 }
 
-bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short playernum) {
+bool display_continue(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short playernum) {
 	std::vector<sf::Text> texts;
 
 	std::stringstream ss;
@@ -559,7 +559,7 @@ bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 	return false;
 }
 
-Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelManager& lr, Game::SidePanel& panel) {
+Game::Level* advance_level(sf::RenderWindow& window, Game::LevelManager& lr, Game::SidePanel& panel) {
 	// Display the time bonus on screen
 	auto time_bonus = lr.getTimeLeft();
 	
@@ -635,7 +635,7 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelManager& lr, Game
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 		auto player = lr.getPlayer(i+1);
 		if (player == nullptr && Game::playerContinues[i] > 0) {
-			if (displayContinue(window, panel, i+1)) {
+			if (display_continue(window, panel, i+1)) {
 				--Game::playerContinues[i];
 				lr.setPlayer(i+1, new Game::Player(sf::Vector2f(0, 0), i+1));
 			} else {
@@ -647,7 +647,7 @@ Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelManager& lr, Game
 		}
 	}
 
-	displayGetReady(window, panel, lvnum);
+	display_get_ready(window, panel, lvnum);
 
 	delete level;
 	lr.loadLevel(levelSet->getLevel(lvnum));
