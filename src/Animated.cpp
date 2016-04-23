@@ -6,7 +6,7 @@ Animated::Animated(Game::Entity *const owner, const std::string& texture_name)
 	: Game::Component(owner)
 {
 	texture = addComponent(new Game::Texture(this, texture_name));
-	clock = addComponent(new Game::Clock<1>(this));
+	frameClock = addComponent(new Game::Clock<1>(this));
 }
 
 Animation& Animated::addAnimation(const std::string& name, bool set) {
@@ -34,4 +34,8 @@ void Animated::setAnimation(const std::string& name) {
 	auto anim = getAnimation(name);
 	if (anim != nullptr)
 		animatedSprite.setAnimation(*anim);
+}
+
+void Animated::update() {
+	animatedSprite.update(frameClock->restart());
 }

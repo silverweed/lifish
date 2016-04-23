@@ -3,6 +3,7 @@
 #include <SFML/System.hpp>
 #include "Entity.hpp"
 #include "Clock.hpp"
+#include "Animated.hpp"
 
 namespace Game {
 
@@ -14,23 +15,25 @@ class Player;
  */
 class Bomb : public Game::Entity {
 	Game::Clock<1> *fuseClock = nullptr;
-	unsigned short fuseTime;
+	sf::Time fuseTime;
 	unsigned short radius;
 	
 	bool ignited = false;
 	bool exploded = false;
 	bool switched = false;
 
+	Game::Animated *animated = nullptr;
+
 	/** The player who dropped this bomb */
 	const Game::Player *const sourcePlayer;
 
 public:
-	constexpr static unsigned short DEFAULT_FUSE = 5000; // ms
+	const static sf::Time DEFAULT_FUSE; 
 	constexpr static unsigned short DEFAULT_RADIUS = 2;
 	constexpr static unsigned short MAX_RADIUS = 4;
 
 	explicit Bomb(const sf::Vector2f& pos, const Game::Player *const source, 
-			const unsigned short fuseTime = DEFAULT_FUSE, 
+			const sf::Time& fuseTime = DEFAULT_FUSE, 
 			const unsigned short radius = DEFAULT_RADIUS);
 
 	void update();
@@ -40,7 +43,7 @@ public:
 
 	/** `true` if this bomb is currently exploding */
 	bool isExploding() const { 
-		return fuseClock->getElapsedTime().asMilliseconds() >= fuseTime;
+		return fuseClock->getElapsedTime() >= fuseTime;
 	}
 	
 	void setExploding();
@@ -54,7 +57,7 @@ public:
 	unsigned short getRadius() const { return radius; }
 	void setRadius(unsigned short r) { radius = r; }
 
-	void setFuseTime(unsigned short ft) { fuseTime = ft; }
+	void setFuseTime(const sf::Time& ft) { fuseTime = ft; }
 
 	const Game::Player* getSourcePlayer() const { return sourcePlayer; }
 };

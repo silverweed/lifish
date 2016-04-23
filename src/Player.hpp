@@ -10,11 +10,17 @@ namespace Game {
  * The player
  */
 class Player : public Game::Entity {
+public:
+	constexpr static unsigned short MAX_LIFE = 16;
+	constexpr static unsigned short MAX_MAX_BOMBS = 8;
+	constexpr static unsigned short INITIAL_LIVES = 3;
+
+private:
 	constexpr static unsigned short WALK_N_FRAMES = 8;
 	constexpr static unsigned short DEATH_N_FRAMES = 3;
 	constexpr static unsigned short DEFAULT_MAX_BOMBS = 5;
 	constexpr static float DEFAULT_SPEED = 150.f;
-	constexpr static unsigned short DEATH_TIME = 5000; // ms
+	const static sf::Time DEATH_TIME;
 
 	/** The identifier of this Player */
 	const unsigned short id;
@@ -22,19 +28,16 @@ class Player : public Game::Entity {
 	/** While true, the idle pose becomes ANIM_WIN */
 	bool winning = false;
 
+	short remainingLives = INITIAL_LIVES;
 
-	void _kill(Game::Entity*);
+
+	void _kill();
 
 public:
-	constexpr static unsigned short MAX_LIFE = 16;
-	constexpr static unsigned short MAX_MAX_BOMBS = 8;
-	constexpr static unsigned short INITIAL_LIVES = 3;
-
 	struct {
 		unsigned short bombRadius = Game::Bomb::DEFAULT_RADIUS;
-		/** In ms */
-		unsigned short bombFuseTime = Game::Bomb::DEFAULT_FUSE;
-		unsigned short maxBombs = DEFAULT_MAX_BOMBS;
+		sf::Time bombFuseTime     = Game::Bomb::DEFAULT_FUSE;
+		unsigned short maxBombs   = DEFAULT_MAX_BOMBS;
 	} powers;
 
 	/** The EXTRA letters of this player */

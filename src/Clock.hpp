@@ -22,6 +22,9 @@ class Clock : public Game::Component {
 	}
 
 public:
+	explicit Clock(Game::Entity *const owner)
+		: Game::Component(owner) {}
+
 	explicit Clock(Game::Entity *const owner,
 			std::initializer_list<std::string> _clockNames)
 		: Game::Component(owner)

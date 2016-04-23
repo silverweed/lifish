@@ -1,5 +1,4 @@
 #include "Bomb.hpp"
-#include "Animated.hpp"
 #include "Sounded.hpp"
 #include "Player.hpp"
 #include "Game.hpp"
@@ -7,16 +6,18 @@
 using Game::Bomb;
 using Game::TILE_SIZE;
 
+const sf::Time Bomb::DEFAULT_FUSE = sf::milliseconds(5000);
+
 Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source, 
-		const unsigned short _fuseTime, const unsigned short _radius)
-	: pos(pos)
+		const sf::Time& _fuseTime, const unsigned short _radius)
+	: Game::Entity(pos)
 	, fuseTime(_fuseTime)
 	, radius(_radius)
 	, sourcePlayer(source)
 {
 	fuseClock = addComponent(new Game::Clock<1>(this));
 	addComponent(new Game::Sounded(this, { Game::getAsset("sounds", "fuse.ogg") })); 
-	auto animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", "bomb.png")));
+	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", "bomb.png")));
 	auto& a_normal_idle = animated->addAnimation("normal_idle");
 	auto& a_normal_exploding = animated->addAnimation("normal_exploding");
 	auto& a_fast_idle = animated->addAnimation("fast_idle");
@@ -38,17 +39,16 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source,
 }
 
 void Bomb::update() {
-	if (!switched && fuseTime - fuseClock->getElapsedTime().asMilliseconds() < 2000 && !isExploded()) {
-		auto& anim = get<Animated>()->getAnimation(fuseTime < DEFAULT_FUSE 
+	if (!switched && fuseTime - fuseClock->getElapsedTime() < sf::milliseconds(2000) && !isExploded()) {
+		animated->setAnimation(fuseTime < DEFAULT_FUSE 
 				? "fast_exploding" : "normal_exploding");
-		animatedSprite.play(anim);
 		switched = true;
 	}
-	animatedSprite.update(frameClock.restart());
+	animated->update();
 }
 
 void Bomb::setExploding() {
-	fuseTime = 50; 
-	fuseClock.restart();
+	fuseTime = sf::milliseconds(50); 
+	fuseClock->restart();
 	ignited = true; 
 }

@@ -1,34 +1,20 @@
 #pragma once
 
 #include <random>
-#include "Scored.hpp"
-#include "Sounded.hpp"
-#include "NonAnimated.hpp"
-#include "Clocked.hpp"
+#include <SFML/System.hpp>
+#include "Sprite.hpp"
+#include "Clock.hpp"
+#include "Entity.hpp"
 
 namespace Game {
+
+extern std::discrete_distribution<unsigned short> bonusTypeDistribution;
 
 /**
  * The bonuses dropped by walls
  */
-class Bonus 
-	: public Game::NonAnimated
-	, public Game::Scored
-	, public Game::Sounded
-	, public Game::Clocked
-{
-	constexpr static float EXPIRE_TIME = 10; // s
-	constexpr static int VALUE = 100; // FIXME
-
-	const unsigned short type;
-
-	sftools::Chronometer expireClock;
+class Bonus : public Game::Entity {
 public:
-	constexpr static unsigned short N_BONUS_TYPES = 9;
-	constexpr static unsigned short N_PERMANENT_BONUS_TYPES = 5;
-	constexpr static unsigned short SHIELD_DURATION = 20000; // ms
-	constexpr static unsigned short SPEEDY_DURATION = 20000; // ms
-
 	enum Type : unsigned short {
 		// "Permanent" bonuses
 		MAX_BOMBS    = 0,
@@ -43,14 +29,28 @@ public:
 		HEALTH_FULL  = 8
 	};
 
-	Bonus(const sf::Vector2f& pos, const unsigned short type);
+private:
+	const static sf::Time EXPIRE_TIME;
+	constexpr static int VALUE = 100; // FIXME
 
-	unsigned short getType() const { return type; }
+	const Type type;
 
-	bool isExpired() const { return expireClock.getElapsedTime().asSeconds() >= EXPIRE_TIME; }
+	Game::Clock<1> *expireClock = nullptr;
+	Game::Sprite *sprite = nullptr;
 
-	void draw(sf::RenderTarget& window) override;
+public:
+	constexpr static unsigned short N_BONUS_TYPES = 9;
+	constexpr static unsigned short N_PERMANENT_BONUS_TYPES = 5;
+	const static sf::Time SHIELD_DURATION;
+	const static sf::Time SPEEDY_DURATION;
+
+	Bonus(const sf::Vector2f& pos, const Type type);
+
+	Type getType() const { return type; }
+
+	bool isExpired() const { return expireClock->getElapsedTime() >= EXPIRE_TIME; }
+
+	void update();
 };
 
-extern std::discrete_distribution<unsigned short> bonusTypeDistribution;
 }

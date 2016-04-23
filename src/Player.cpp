@@ -2,19 +2,23 @@
 #include "Lifed.hpp"
 #include "Sounded.hpp"
 #include "Bonusable.hpp"
+#include "Moving.hpp"
+#include "Drawable.hpp"
+#include "Killable.hpp"
 #include "utils.hpp"
 #include <sstream>
 
 using Game::Player;
 using Game::TILE_SIZE;
 
+const sf::Time Player::DEATH_TIME = sf::milliseconds(5000); 
+
 Player::Player(const sf::Vector2f& pos, const unsigned short id) 
-	: pos(pos)
+	: Game::Entity(pos)
 	, id(id)
-	, speed(DEFAULT_SPEED)	
-	, remainingLives(INITIAL_LIVES)
 {
 	addComponent(new Game::Lifed(this, MAX_LIFE));
+	addComponent(new Game::Moving(this, DEFAULT_SPEED));
 	auto animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", std::string("player") +
 				Game::to_string(id) + std::string(".png"))));
 	addComponent(new Game::Drawable(this, animated));
@@ -22,8 +26,8 @@ Player::Player(const sf::Vector2f& pos, const unsigned short id)
 		Game::getAsset("test", std::string("player") + Game::to_string(id) + std::string("_death.ogg")),
 		Game::getAsset("test", std::string("player") + Game::to_string(id) + std::string("_hurt.ogg")),
 		Game::getAsset("test", std::string("player") + Game::to_string(id) + std::string("_win.ogg")),
-	});
-	addComponent(new Game::Killable(this, _kill));
+	}));
+	addComponent(new Game::Killable(this, [this] () { _kill(); }));
 	addComponent(new Game::Bonusable(this));
 
 	extra.fill(false);
@@ -46,9 +50,10 @@ Player::Player(const sf::Vector2f& pos, const unsigned short id)
 
 	for (unsigned short i = 0; i < DEATH_N_FRAMES; ++i)
 		a_death.addFrame(sf::IntRect(i * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
-	a_win.addFrame(sf::IntRect(3 * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-	a_hurt.addFrame(sf::IntRect(4 * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+	a_win.addFrame(sf::IntRect(3 * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+	a_hurt.addFrame(sf::IntRect(4 * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
+	auto& animatedSprite = animated->getSprite();
 	animatedSprite.setAnimation(a_down);
 	animatedSprite.setLooped(true);
 	animatedSprite.setFrameTime(sf::seconds(0.06));
@@ -72,12 +77,12 @@ void Player::_kill() {
 //}
 
 void Player::resurrect() {
-	dead = false;
+	auto& animatedSprite = get<Game::Animated>()->getSprite();
 	animatedSprite.setAnimation(*get<Game::Animated>()->getAnimation("down"));
 	animatedSprite.pause();
 	get<Game::Lifed>()->setLife(MAX_LIFE);
 	extra.fill(false);
-	realign();
+	//realign();
 }
 
 //bool Player::playDeathAnimation() {

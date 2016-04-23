@@ -29,7 +29,7 @@ enum : unsigned short {
 class Animated : public Game::Component, public sf::Drawable {
 protected:
 	Game::Texture *texture;
-	Game::Clock<1> *clock;
+	Game::Clock<1> *frameClock;
 	std::unordered_map<std::string, Animation> animations;
 	AnimatedSprite animatedSprite;
 
@@ -40,6 +40,7 @@ public:
 	Animation* getAnimation(const std::string& name) const;
 	void setAnimation(const std::string& name);
 	AnimatedSprite& getSprite() { return animatedSprite; }
+	void update();
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	/*
