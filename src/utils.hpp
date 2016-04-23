@@ -21,7 +21,7 @@
 
 namespace Game {
 
-class LevelRenderer;
+class LevelManager;
 
 template<class T, size_t ROWS, size_t COLS>
 using Matrix = std::array<std::array<T, COLS>, ROWS>;

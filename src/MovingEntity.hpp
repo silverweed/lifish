@@ -10,13 +10,13 @@
 
 namespace Game {
 
-class LevelRenderer;
+class LevelManager;
 
 /** Selects a random direction which the entity can go to; only choose
  * `opp` if no other directions are viable.
  */
 Game::Direction selectRandomViable(const Game::MovingEntity *const entity,
-			const Game::LevelRenderer *const lr, const Game::Direction opp);
+			const Game::LevelManager *const lr, const Game::Direction opp);
 
 /**
  * Entities which can move (enemies, players, bullets, ...)
@@ -84,7 +84,7 @@ public:
 	bool isMoving() const { return moving; }
 
 	virtual bool canGo(const Game::Direction direction, 
-			const Game::LevelRenderer *const lr) const; 
+			const Game::LevelManager *const lr) const; 
 
 	virtual void setHurt(bool b);
 	bool isHurt() const { return hurt; }

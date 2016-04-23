@@ -11,6 +11,7 @@ Animated::Animated(Game::Entity *const owner, const std::string& texture_name)
 
 Animation& Animated::addAnimation(const std::string& name, bool set) {
 	auto& anim = animations[name];
+	anim.setSpriteSheet(texture);
 	if (set)
 		animatedSprite.setAnimation(anim);
 

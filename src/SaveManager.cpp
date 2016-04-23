@@ -4,7 +4,7 @@
 
 using Game::SaveManager;
 
-bool SaveManager::saveGame(const std::string& filename, const Game::LevelRenderer& lr) {
+bool SaveManager::saveGame(const std::string& filename, const Game::LevelManager& lr) {
 	std::ofstream saveFile(filename);
 
 	nlohmann::json save;
@@ -49,7 +49,7 @@ bool SaveManager::saveGame(const std::string& filename, const Game::LevelRendere
 }
 
 bool SaveManager::loadGame(const std::string& filename, 
-		Game::LevelRenderer& lr, unsigned short& start_level)
+		Game::LevelManager& lr, unsigned short& start_level)
 {
 	std::ifstream saveFile(filename);
 

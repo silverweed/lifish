@@ -8,7 +8,7 @@
 
 namespace Game {
 
-class LevelRenderer;
+class LevelManager;
 
 /**
  * The side panel with all game information:
@@ -48,8 +48,8 @@ class SidePanel final : public Game::Drawable, private sf::NonCopyable {
 	                                SCORE_POS_Y_2 = 403;
 	const sf::Vector2f TIME_POS = sf::Vector2f(21, 230);
 
-	/** The LevelRenderer this panel is connected with */
-	const Game::LevelRenderer *const lr;
+	/** The LevelManager this panel is connected with */
+	const Game::LevelManager *const lr;
 
 	/** The background image */
 	sf::Sprite backgroundSprite;
@@ -80,7 +80,7 @@ class SidePanel final : public Game::Drawable, private sf::NonCopyable {
 	void _drawWithShadow(sf::RenderTarget& window, sf::Sprite& sprite, 
 			const sf::Color& color = sf::Color::White);
 public:
-	SidePanel(const Game::LevelRenderer *const _lr);
+	SidePanel(const Game::LevelManager *const _lr);
 	~SidePanel();
 
 	void draw(sf::RenderTarget& window) override;

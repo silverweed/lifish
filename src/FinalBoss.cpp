@@ -1,7 +1,7 @@
 #include "FinalBoss.hpp"
 #include "Game.hpp"
 #include "utils.hpp"
-#include "LevelRenderer.hpp"
+#include "LevelManager.hpp"
 
 using Game::FinalBoss;
 using Game::TILE_SIZE;
@@ -85,7 +85,7 @@ void FinalBoss::kill() {
 	hurtClock.restart();
 }
 
-void FinalBoss::chooseDirection(const Game::LevelRenderer *const lr) {
+void FinalBoss::chooseDirection(const Game::LevelManager *const lr) {
 	const auto cur_align = Game::tile(pos);
 	if ((prevAlign == cur_align || distTravelled < MIN_DIST_BEFORE_CHANGE_DIR) && !colliding) 
 		return;
@@ -102,7 +102,7 @@ void FinalBoss::chooseDirection(const Game::LevelRenderer *const lr) {
 	direction = Game::selectRandomViable(this, lr, opp);
 }
 
-bool FinalBoss::canGo(const Game::Direction dir, const Game::LevelRenderer *const lr) const {
+bool FinalBoss::canGo(const Game::Direction dir, const Game::LevelManager *const lr) const {
 	short iposx = (short)(pos.x / TILE_SIZE) - 1,
 	      iposy = (short)(pos.y / TILE_SIZE) - 1;
 
@@ -144,7 +144,7 @@ bool FinalBoss::canGo(const Game::Direction dir, const Game::LevelRenderer *cons
 	return true;
 }
 
-void FinalBoss::detectCollisions(const Game::LevelRenderer *const lr) {
+void FinalBoss::detectCollisions(const Game::LevelManager *const lr) {
 	colliding = false;
 
 	if (isOverBoundaries(direction)) {

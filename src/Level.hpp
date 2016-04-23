@@ -46,7 +46,7 @@ struct LevelInfo {
 /**
  * The Level class contains the template of a level, with all the
  * static information about it. Dynamic informations about the level
- * during the game are managed by Game::LevelRenderer.
+ * during the game are managed by Game::LevelManager.
  */
 class Level final 
 	: public Game::Entity

@@ -1,7 +1,7 @@
 #include "MovingEntity.hpp"
 #include "Game.hpp"
 #include "GameCache.hpp"
-#include "LevelRenderer.hpp"
+#include "LevelManager.hpp"
 #include <cassert>
 
 using Game::MovingEntity;
@@ -112,7 +112,7 @@ void MovingEntity::realign() {
 	animatedSprite.setPosition(pos);
 }
 
-bool MovingEntity::canGo(const Direction dir, const Game::LevelRenderer *const lr) const {
+bool MovingEntity::canGo(const Direction dir, const Game::LevelManager *const lr) const {
 	short iposx = (short)(pos.x / TILE_SIZE) - 1,
 	      iposy = (short)(pos.y / TILE_SIZE) - 1;
 	

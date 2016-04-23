@@ -6,7 +6,7 @@
 
 namespace Game {
 
-class LevelRenderer;
+class LevelManager;
 class Player;
 
 /**
@@ -43,9 +43,9 @@ public:
 	 *  (fixed walls and borders stop the explosion). Also kills enemies and
 	 *  walls within the explosion.
 	 */
-	void propagate(LevelRenderer *const);
+	void propagate(LevelManager *const);
 
-	void checkHit(LevelRenderer *const);
+	void checkHit(LevelManager *const);
 
 	void draw(sf::RenderTarget& window) override;
 	

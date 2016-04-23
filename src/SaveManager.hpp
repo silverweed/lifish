@@ -2,7 +2,7 @@
 
 #include <string>
 #include <fstream>
-#include "LevelRenderer.hpp"
+#include "LevelManager.hpp"
 
 namespace Game {
 
@@ -30,11 +30,11 @@ namespace Game {
 class SaveManager {
 public:
 	/** Saves the game state into `filename` */
-	static bool saveGame(const std::string& filename, const Game::LevelRenderer& lr);
+	static bool saveGame(const std::string& filename, const Game::LevelManager& lr);
 
 	/** Loads a game state saved in `filename` into `lr` and `start_level` */
 	static bool loadGame(const std::string& filename,
-			Game::LevelRenderer& lr, unsigned short& start_level);
+			Game::LevelManager& lr, unsigned short& start_level);
 };
 
 }

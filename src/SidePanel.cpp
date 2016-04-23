@@ -1,11 +1,11 @@
 #include "SidePanel.hpp"
 #include "GameCache.hpp"
-#include "LevelRenderer.hpp"
+#include "LevelManager.hpp"
 #include <iomanip>
 
 using Game::SidePanel;
 
-SidePanel::SidePanel(const Game::LevelRenderer *const _lr) : lr(_lr) {
+SidePanel::SidePanel(const Game::LevelManager *const _lr) : lr(_lr) {
 	// Load background
 	bgTexture = Game::cache.loadTexture(Game::getAsset("graphics", "panel.png"));
 	backgroundSprite.setTexture(*bgTexture);

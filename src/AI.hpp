@@ -5,13 +5,13 @@
 
 #include <functional>
 #include <array>
-#include "LevelRenderer.hpp"
+#include "LevelManager.hpp"
 
 namespace Game {
 
 class Enemy;
 
-using AIBoundFunction = std::function<Game::Direction(const Game::LevelRenderer *const)>;
+using AIBoundFunction = std::function<Game::Direction(const Game::LevelManager *const)>;
 using AIFunction = std::function<AIBoundFunction(Game::Enemy *const)>;
 
 /** Choose a random direction; allow turning around */

@@ -5,6 +5,7 @@
 #include "Lifed.hpp"
 #include "Scored.hpp"
 #include "Sounded.hpp"
+#include "Drawable.hpp"
 
 using Game::BreakableWall;
 using Game::TILE_SIZE;
@@ -45,18 +46,18 @@ void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
 	addComponent(new Game::Scored(this, score));
 	addComponent(new Game::Lifed(this, life));
 	addComponent(new Game::Sounded(this, { Game::getAsset("sounds", "wall_break.ogg") })); 
-	addComponent(new Game::Killable(this, [this] (Game::Entity*) {
+	addComponent(new Game::Killable(this, [this] () {
 		// on kill
 		get<Game::Animated>()->getSprite().play();
-	}, [this] (Game::Entity*) {
+	}, [this] () {
 		// is kill in progress
 		return get<Game::Animated>()->getSprite().isPlaying();
 	}));
 }
 
 Animation& BreakableWall::_setupAnimations(const std::string& texture_name) {
-	
 	auto animated = addComponent(new Game::Animated(this, texture_name));
+	addComponent(new Game::Drawable(this, animated));
 	auto& animation = animated->addAnimation("break", true);
 	auto animatedSprite = animated->getSprite();
 

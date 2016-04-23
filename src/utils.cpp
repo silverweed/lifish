@@ -12,7 +12,7 @@ static Game::Direction directions[] = {
 };
 
 Game::Direction Game::selectRandomViable(const Game::MovingEntity *const entity,
-		const Game::LevelRenderer *const lr, const Game::Direction opp) {
+		const Game::LevelManager *const lr, const Game::Direction opp) {
 	Game::Direction dirs[4];
 	unsigned short n = 0;
 	for (const auto& d : directions)

@@ -1,12 +1,21 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "Component.hpp"
 
 namespace Game {
 
-class Drawable {
+class Drawable : public Game::Component, public sf::Drawable {
+	sf::Drawable *delegate;
+
 public:
-	virtual void draw(sf::RenderTarget& window) = 0;
+	explicit Drawable(Game::Entity *const owner, sf::Drawable *delegate)
+		: Game::Component(owner)
+		, delegate(delegate) {}
+
+	void draw(sf::RenderTarget& window, sf::RenderStates states) const override {
+		window.draw(*delegate, states);
+	}
 };
 
 }

@@ -26,9 +26,13 @@ public:
 		position = pos;
 	}
 
+	const sf::Vector2& get() const { return pos; }
+
 	void set(const sf::Vector2<T>& pos) {
 		position = pos;
 	}
+
+	bool isAligned(const char axis = 'b') const;
 };
 
 }

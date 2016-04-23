@@ -6,7 +6,7 @@ namespace Game {
 
 /**
  * A Temporary is an animated entity which gets deleted by the
- * Game::LevelRenderer as soon as isPlaying() == false.
+ * Game::LevelManager as soon as isPlaying() == false.
  */
 class Temporary : public Game::Animated {
 public:

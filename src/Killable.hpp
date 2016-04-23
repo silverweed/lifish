@@ -7,8 +7,8 @@ namespace Game {
 
 class Killable : public Game::Component {
 private:
-	using Callback = std::function<void(Game::Entity*)>;
-	using CheckKillCallback = std::function<bool(Game::Entity*)>;
+	using Callback = std::function<void()>;
+	using CheckKillCallback = std::function<bool()>;
 
 	bool killed = false;
 

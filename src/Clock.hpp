@@ -36,6 +36,12 @@ public:
 		return _getClock(name);
 	}
 
+	sftools::Chronometer* getClock(unsigned short i) {
+		if (i < clocks.size())
+			return &clocks[i];
+		return nullptr;
+	}
+
 	void pause() {
 		for (auto& clock : clocks)
 			clock.pause();
@@ -62,6 +68,10 @@ public:
 	void restart(const std::string& name) {
 		_getClock(name)->restart();
 	}
+
+	sf::Time getElapsedTime(const std::string& name) const {
+		return _getClock(name)->getElapsedTime();
+	}
 };
 
 template <>
@@ -87,6 +97,10 @@ public:
 
 	void restart(const std::string& name = "") {
 		clock.restart();
+	}
+
+	sf::Time getElapsedTime() const {
+		return clock.getElapsedTime();
 	}
 };
 

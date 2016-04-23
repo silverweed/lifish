@@ -3,6 +3,7 @@
 #include <memory>
 #include <list>
 #include <array>
+#include <iterator>
 #include <unordered_set>
 #include "Entity.hpp"
 
@@ -35,8 +36,13 @@ public:
 	EntityGroup() {}
 	~EntityGroup();
 
+	std::iterator<std::input_iterator_tag, const Game::Entity*> all();
+
 	template <class T>
 	T* add(T *entity, bool owned = true);
+
+	// TODO
+	unsigned int getCoinsNum() const { return 1; }
 };
 
 }

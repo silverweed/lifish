@@ -22,12 +22,12 @@ void Killable::kill() {
 	if (!killed) {
 		killed = true;
 		if (onKill)
-			onKill(this);
+			onKill();
 	}
 }
 
 bool Killable::isKillInProgress() const {
-	if (!isKilled) return false;
+	if (killed) return false;
 
-	return checkKillProgress ? checkKillProgress(this) : false;
+	return checkKillProgress ? checkKillProgress() : false;
 }

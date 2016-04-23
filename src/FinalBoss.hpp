@@ -49,7 +49,7 @@ public:
 
 	void draw(sf::RenderTarget& window) override;
 
-	bool canGo(const Game::Direction dir, const Game::LevelRenderer *const lr) const override;
+	bool canGo(const Game::Direction dir, const Game::LevelManager *const lr) const override;
 
 	/** Initiates kill animation */
 	void kill() override;
@@ -59,8 +59,8 @@ public:
 	bool shouldBreed() const { return breedClock.getElapsedTime().asMilliseconds() > BREED_TIME; }
 	void breed();
 
-	void chooseDirection(const Game::LevelRenderer *const lr);
-	void detectCollisions(const Game::LevelRenderer *const lr);
+	void chooseDirection(const Game::LevelManager *const lr);
+	void detectCollisions(const Game::LevelManager *const lr);
 };
 
 }

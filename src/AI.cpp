@@ -9,7 +9,7 @@ using Game::AIBoundFunction;
 using D = Game::Direction;
 
 AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
-	return [enemy] (const Game::LevelRenderer *const lr) { 
+	return [enemy] (const Game::LevelManager *const lr) { 
 		if (!enemy->colliding) {
 			if (enemy->distTravelled < Game::TILE_SIZE) 
 				return enemy->getDirection();
@@ -36,7 +36,7 @@ AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
 }
 
 AIBoundFunction Game::ai_random_forward(Game::Enemy *const enemy) {
-	return [enemy] (const Game::LevelRenderer *const lr) { 
+	return [enemy] (const Game::LevelManager *const lr) { 
 		const D cur = enemy->getDirection();
 		const auto cur_align = Game::tile(enemy->getPosition());
 		if (enemy->prevAlign == cur_align && !enemy->colliding) 
@@ -52,7 +52,7 @@ AIBoundFunction Game::ai_random_forward(Game::Enemy *const enemy) {
 }
 
 AIBoundFunction Game::ai_random_forward_haunt(Game::Enemy *const enemy) {
-	return [enemy] (const Game::LevelRenderer *const lr) {
+	return [enemy] (const Game::LevelManager *const lr) {
 		if (enemy->isShooting()) {
 			const auto cur_align = Game::tile(enemy->getPosition());
 			const D cur = enemy->getDirection();
@@ -87,7 +87,7 @@ AIBoundFunction Game::ai_random_forward_haunt(Game::Enemy *const enemy) {
 }
 
 AIBoundFunction Game::ai_follow(Game::Enemy *const enemy) {
-	return [enemy] (const Game::LevelRenderer *const lr) {
+	return [enemy] (const Game::LevelManager *const lr) {
 		const D cur = enemy->getDirection();
 		const auto cur_align = Game::tile(enemy->getPosition());
 		if (enemy->prevAlign == cur_align && !enemy->colliding) 
@@ -107,7 +107,7 @@ AIBoundFunction Game::ai_follow(Game::Enemy *const enemy) {
 }
 
 AIBoundFunction Game::ai_follow_dash(Game::Enemy *const enemy) {
-	return [enemy] (const Game::LevelRenderer *const lr) {
+	return [enemy] (const Game::LevelManager *const lr) {
 		const D cur = enemy->getDirection();
 		const D opp = oppositeDirection(cur);
 

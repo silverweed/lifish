@@ -24,7 +24,7 @@
 #include <SFML/Graphics.hpp>
 #include "Level.hpp"
 #include "LevelSet.hpp"
-#include "LevelRenderer.hpp"
+#include "LevelManager.hpp"
 #include "SidePanel.hpp"
 #include "MovingEntity.hpp"
 #include "Controls.hpp"
@@ -46,11 +46,11 @@ using Game::PAUSE_SCREEN;
 
 /** Starts the game on `window`, using `level_set` and starting at level `start_level` */
 static void play_game(sf::RenderWindow& window, const std::string& level_set,
-		Game::LevelRenderer& lr, unsigned short start_level = 1);
+		Game::LevelManager& lr, unsigned short start_level = 1);
 
 static void displayGetReady(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum);
 static bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short playernum);
-static Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Game::SidePanel& panel);
+static Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelManager& lr, Game::SidePanel& panel);
 static Game::Direction[] get_directions(sf::RenderWindow& window, 
 		const std::array<Game::Player*, Game::MAX_PLAYERS>& players);
 
@@ -118,7 +118,7 @@ int main(int argc, char **argv) {
 		switch (ScreenHandler::handleScreenEvents(window, HOME_SCREEN, ~0 & ~PAUSE_SCREEN)) {
 		case Game::Action::START_GAME:
 			{
-				Game::LevelRenderer lr {
+				Game::LevelManager lr {
 					new Game::Player(sf::Vector2f(0, 0), 1),
 					new Game::Player(sf::Vector2f(0, 0), 2)
 				};
@@ -132,7 +132,7 @@ int main(int argc, char **argv) {
 			{
 				const auto fname = Game::display_load_dialog();
 				if (fname.length() > 0) {
-					Game::LevelRenderer lr {
+					Game::LevelManager lr {
 						new Game::Player(sf::Vector2f(0, 0), 1),
 						new Game::Player(sf::Vector2f(0, 0), 2)
 					};
@@ -158,7 +158,7 @@ int main(int argc, char **argv) {
 }
 
 void play_game(sf::RenderWindow& window, const std::string& levelSetName,
-		Game::LevelRenderer& lr, unsigned short start_level)
+		Game::LevelManager& lr, unsigned short start_level)
 {
 	// Parse the level set
 	Game::LevelSet levelset(levelSetName);
@@ -559,7 +559,7 @@ bool displayContinue(sf::RenderWindow& window, Game::SidePanel& panel, const uns
 	return false;
 }
 
-Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelRenderer& lr, Game::SidePanel& panel) {
+Game::Level* advanceLevel(sf::RenderWindow& window, Game::LevelManager& lr, Game::SidePanel& panel) {
 	// Display the time bonus on screen
 	auto time_bonus = lr.getTimeLeft();
 	

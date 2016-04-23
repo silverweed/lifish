@@ -1,5 +1,5 @@
 #include "Explosion.hpp"
-#include "LevelRenderer.hpp"
+#include "LevelManager.hpp"
 #include "BreakableWall.hpp"
 #include "Scored.hpp"
 #include "Player.hpp"
@@ -49,7 +49,7 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game
 	propagation.fill(0);
 }
 
-void Explosion::propagate(Game::LevelRenderer *const lr) {
+void Explosion::propagate(Game::LevelManager *const lr) {
 	const sf::Vector2i m_tile = Game::tile(pos);
 	bool propagating[] = { true, true, true, true };
 
@@ -138,7 +138,7 @@ void Explosion::propagate(Game::LevelRenderer *const lr) {
 	}
 }
 
-void Explosion::checkHit(Game::LevelRenderer *const lr) {
+void Explosion::checkHit(Game::LevelManager *const lr) {
 	std::array<std::vector<Game::LifedMovingEntity*>, 5> moving;
 
 	const auto allmoving = lr->getMovingEntities();
