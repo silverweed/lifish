@@ -19,8 +19,9 @@
 #include "AlienSprite.hpp"
 #include "Letter.hpp"
 #include "Bonus.hpp"
-#include "Clocked.hpp"
+#include "Clock.hpp"
 #include "FinalBoss.hpp"
+#include "EntityGroup.hpp"
 
 namespace Game {
 
@@ -32,13 +33,13 @@ class SaveManager;
  */
 class LevelRenderer final : public Game::Entity, private sf::NonCopyable {
 	// This is a fixed-size array for faster lookup
-	using FixedEntityList     = std::array<Game::Entity*, LEVEL_WIDTH * LEVEL_HEIGHT>;
-	using MovingEntityList    = std::vector<Game::LifedMovingEntity*>;
-	using TemporaryEntityList = std::vector<Game::Temporary*>;
-	using BulletList          = std::vector<Game::Bullet*>;
-	using BossList            = std::vector<Game::Boss*>;
-	using ExplosionList       = std::vector<Game::Explosion*>;
-	using LetterList          = std::vector<Game::Letter*>;
+	//using FixedEntityList     = std::array<Game::Entity*, LEVEL_WIDTH * LEVEL_HEIGHT>;
+	//using MovingEntityList    = std::vector<Game::LifedMovingEntity*>;
+	//using TemporaryEntityList = std::vector<Game::Temporary*>;
+	//using BulletList          = std::vector<Game::Bullet*>;
+	//using BossList            = std::vector<Game::Boss*>;
+	//using ExplosionList       = std::vector<Game::Explosion*>;
+	//using LetterList          = std::vector<Game::Letter*>;
 
 	friend class Game::SaveManager;
 
@@ -50,7 +51,6 @@ class LevelRenderer final : public Game::Entity, private sf::NonCopyable {
 	sftools::Chronometer *levelTimeClock;
 
 	bool hurryUp = false;
-	bool hurryUpWarningGiven = false;
 
 	bool extraGame = false;
 	/** The number of coins in the level, used for EXTRA game. */
@@ -64,7 +64,15 @@ class LevelRenderer final : public Game::Entity, private sf::NonCopyable {
 	                   extraGameText;
 
 	/** All the entities */
-	std::list<Game::Entity*> entities;
+	Game::EntityGroup entities;
+
+	/** The players' pointers, guaranteed to always point to the players
+	 *  given to the constructor, even if the level tilemap doesn't contain all
+	 *  players, or a player is currently dead. This pointers become invalid
+	 *  after a call to removePlayer(), or setPlayer(), since those methods delete
+	 *  the i-th player.
+	 */
+	std::array<std::unique_ptr<Game::Player>, Game::MAX_PLAYERS> _players;
 
 	/** The fixed entities */
 	//FixedEntityList fixedEntities;
@@ -87,18 +95,10 @@ class LevelRenderer final : public Game::Entity, private sf::NonCopyable {
 	//[>* The players' bombs <]
 	//Matrix<Game::Bomb*, Game::MAX_PLAYERS, Game::Player::MAX_MAX_BOMBS> bombs;
 
-	sf::Vector2f origin;
-
 	/** The players belonging to a Level */
-	std::array<Game::Player*, Game::MAX_PLAYERS> players;
+	//std::array<Game::Player*, Game::MAX_PLAYERS> players;
 
-	/** The players' pointers, guaranteed to always point to the players
-	 *  given to the constructor, even if the level tilemap doesn't contain all
-	 *  players, or a player is currently dead. This pointers become invalid
-	 *  after a call to removePlayer(), or setPlayer(), since those methods delete
-	 *  the i-th player.
-	 */
-	std::array<std::unique_ptr<Game::Player>, Game::MAX_PLAYERS> _players;
+	sf::Vector2f origin;
 
 	/** The bosses, if any */
 	BossList bosses;
