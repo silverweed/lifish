@@ -1,8 +1,9 @@
 #pragma once
 
+#include <SFML/System.hpp>
+#include "Entity.hpp"
+#include "Clock.hpp"
 #include "Animated.hpp"
-#include "Scored.hpp"
-#include "Sounded.hpp"
 
 namespace Game {
 
@@ -10,25 +11,22 @@ namespace Game {
  * A coin can be taken by any player. Taking all coins triggers
  * EXTRA game, which morphs all enemies into harmless Aliens.
  */
-class Coin
-	: public Game::Animated
-	, public Game::Scored
-	, public Game::Sounded 
-{
-	constexpr static float GRAB_TIME = 3000; // ms	
+class Coin : public Game::Entity {
+	const static sf::Time GRAB_TIME; 
 	constexpr static unsigned int VALUE = 150;
 
-	sftools::Chronometer grabClock;
+	Game::Clock<1> *grabClock;
 	bool grabbed = false;
 
+	Game::Animated *animated = nullptr;
+
 public:
-	Coin(const sf::Vector2f& pos);
+	explicit Coin(const sf::Vector2f& pos);
 
 	bool isBeingGrabbed() const { return grabbed; } 
 	bool isGrabbed() const;
 	void grab();
-
-	void draw(sf::RenderTarget& window) override;
+	void update();
 };
 
 }

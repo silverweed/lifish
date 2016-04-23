@@ -40,38 +40,9 @@ public:
 	Animation* getAnimation(const std::string& name) const;
 	void setAnimation(const std::string& name);
 	AnimatedSprite& getSprite() { return animatedSprite; }
+	void setSmooth(bool s) { texture->getTexture()->setSmooth(s); }
 	void update();
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
-	/*
-protected:
-	static constexpr unsigned short MAX_N_ANIMATIONS = 7;
-	Animation animations[MAX_N_ANIMATIONS];
-	AnimatedSprite animatedSprite;
-	sftools::Chronometer frameClock;
-
-public:
-	Animated(const sf::Vector2f& pos, const std::string& texture_name = "") 
-		: Game::Entity(pos, texture_name) 
-		, Game::Clocked(&frameClock)
-	{
-		animatedSprite.setPosition(pos);
-	}
-	virtual ~Animated() {}
-
-	virtual void draw(sf::RenderTarget& window) override {
-		window.draw(animatedSprite);
-	}
-
-	virtual void setPosition(const sf::Vector2f& pos) override {
-		Game::Entity::setPosition(pos);
-		animatedSprite.setPosition(pos);
-	}
-
-	virtual void setOrigin(const sf::Vector2f& origin) override {
-		animatedSprite.setOrigin(origin);
-	}
-	*/
 };
 
 }

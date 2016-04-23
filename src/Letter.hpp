@@ -1,24 +1,22 @@
 #pragma once
 
-#include "Animated.hpp"
-#include "Scored.hpp"
-#include "Sounded.hpp"
+#include <SFML/System.hpp>
+#include "Entity.hpp"
+#include "Clock.hpp"
+#include "AnimatedSprite.hpp"
 
 namespace Game {
 
 /** An EXTRA letter. */
-class Letter 
-	: public Game::Animated
-	, public Game::Scored
-	, public Game::Sounded 
-{
-	constexpr static unsigned short TRANSITION_DELAY = 3000; // ms
+class Letter : public Game::Entity {
+	const static sf::Time TRANSITION_DELAY;
 
 	/** What letter is this (currently) */
 	unsigned short id;
 
 	/** The clock driving the letter's transitions */
-	sftools::Chronometer transitionClock;
+	Game::Clock<1> *transitionClock = nullptr;
+	AnimatedSprite* animatedSprite = nullptr;
 
 	/** Whether this letter is transitioning or not */
 	bool transitioning = false;
@@ -26,7 +24,7 @@ class Letter
 public:
 	static unsigned short randomId();
 
-	Letter(const sf::Vector2f& pos, unsigned short id);
+	explicit Letter(const sf::Vector2f& pos, unsigned short id);
 
 	unsigned short getId() const { return id; }
 
