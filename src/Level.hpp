@@ -40,7 +40,7 @@ struct LevelInfo {
 	unsigned int time = 0;
 
 	/** String representation of the tilemap */
-	const char *tilemap;
+	std::string tilemap;
 };
 
 /**
@@ -75,10 +75,10 @@ class Level final
 	////////////////////////// COMPONENTS ////////////////////////////
 
 	/** The background texture */
-	Game::Texture *bgTexture = nullptr;
+	sf::Texture *bgTexture = nullptr;
 
 	/** The borders' texture */
-	Game::Texture *borderTexture = nullptr;
+	sf::Texture *borderTexture = nullptr;
 	
 	/** The level's BGM */
 	Game::Music *music = nullptr;
@@ -93,6 +93,7 @@ class Level final
 
 	/** The sprites for the background tiles (8 border + background) */
 	std::array<sf::Sprite, 9> bgTiles;
+	std::array<sf::Texture, 9> bgTextures;
 
 	/** The LevelSet this level belongs to */
 	const Game::LevelSet *const levelSet;

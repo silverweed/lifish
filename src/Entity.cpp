@@ -6,22 +6,12 @@
 
 using Game::Entity;
 
-template<class Base, class T>
-static inline bool instanceof(const T*) {
-	return std::is_base_of<Base, T>::value;
-}
+void Entity::setOrigin(const sf::Vector2f& origin) {
+	WithOrigin::setOrigin(origin);
 
-template<class T>
-T* Entity::addComponent(T *comp) {
-	components.push_back(std::unique_ptr<Game::Component>(comp));
-}
-
-template<class T>
-T* Entity::get() const {
-	for (auto& comp : components) {
-		Component *ptr = comp.get();
-		if (instanceof<T>(ptr))
-			return static_cast<T*>(ptr);
-	}
-	return nullptr;
+	// TODO
+	//for (auto& c : components) {
+		//if (instanceof<Game::WithOrigin>(c))
+			//static_cast<Game::WithOrigin*>(c)->setOrigin(origin);
+	//}
 }

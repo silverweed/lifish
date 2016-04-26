@@ -7,7 +7,11 @@ using Game::ShadedText;
 
 ShadedText::ShadedText(const std::string& fontname, const std::string& _str, 
 		sf::Vector2f _pos, sf::Color fg, sf::Color bg)
-	: str(_str), pos(_pos), shadowSpacing(3.5, 3), fgcol(fg), bgcol(bg)
+	: str(_str)
+	, pos(_pos)
+	, shadowSpacing(3.5, 3)
+	, fgcol(fg)
+	, bgcol(bg)
 {
 	auto font = Game::cache.loadFont(fontname);
 	fgtext.setFont(*font);
@@ -60,11 +64,6 @@ void ShadedText::setShadowSpacing(float spx, float spy) {
 void ShadedText::setColor(const sf::Color& fg, const sf::Color& bg) {
 	fgtext.setColor(fgcol = fg);
 	bgtext.setColor(bgcol = bg);
-}
-
-void ShadedText::draw(sf::RenderTarget& window) {
-	window.draw(bgtext);
-	window.draw(fgtext);
 }
 
 void ShadedText::draw(sf::RenderTarget& window, sf::RenderStates states) const {

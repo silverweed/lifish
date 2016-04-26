@@ -21,6 +21,11 @@ sf::Texture* GameCache::loadTexture(const std::string& texture_name) {
 		std::cerr << "[GameCache.cpp] Error: couldn't load texture " 
 			<< texture_name << " from file!" << std::endl;
 	}
+#ifndef RELEASE
+	else {
+		std::cerr << "[GameCache] Loaded " << texture_name << std::endl;
+	}
+#endif
 	return &txt;
 }
 
@@ -37,6 +42,11 @@ bool GameCache::loadSound(sf::Sound& sound, const std::string& sound_name) {
 		std::cerr << "[GameCache.cpp] Error: couldn't load sound " << sound_name << " from file!" << std::endl;
 		return false;
 	}
+#ifndef RELEASE
+	else {
+		std::cerr << "[GameCache] Loaded " << sound_name << std::endl;
+	}
+#endif
 	sound.setBuffer(buf);
 	return true;
 }
@@ -73,5 +83,10 @@ sf::Font* GameCache::loadFont(const std::string& font_name) {
 		std::cerr << "[GameCache.cpp] Error: couldn't load font " 
 			<< font_name << " from file!" << std::endl;
 	}
+#ifndef RELEASE
+	else {
+		std::cerr << "[GameCache] Loaded " << font_name << std::endl;
+	}
+#endif
 	return &font;
 }

@@ -44,3 +44,11 @@ template<class T>
 T* EntityGroup::add(T *entity, bool owned) {
 	return _commonAdd(entity, owned);
 }
+
+void EntityGroup::setOrigin(const sf::Vector2f& origin) {
+	WithOrigin::setOrigin(origin);
+
+	for (auto& e : entities) {
+		e->setOrigin(origin);
+	}
+}

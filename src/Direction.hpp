@@ -8,7 +8,7 @@ enum class Direction {
 	UP, LEFT, DOWN, RIGHT, NONE
 };
 
-std::ostream& operator<<(std::ostream& stream, const Direction& dir) {
+inline std::ostream& operator<<(std::ostream& stream, const Direction& dir) {
 	switch (dir) {
 	case Direction::UP: stream << "UP"; break;
 	case Direction::LEFT: stream << "LEFT"; break;

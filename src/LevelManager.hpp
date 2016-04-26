@@ -22,7 +22,11 @@ class SaveManager;
  * The LevelManager manages a Level during the game, updating its
  * entities, time and so on.
  */
-class LevelManager final : public Game::Entity, private sf::NonCopyable {
+class LevelManager final 
+	: public Game::Entity
+	, public sf::Drawable
+	, private sf::NonCopyable 
+{
 	friend class Game::SaveManager;
 
 	/** The level this object is managing (externally owned by its LevelSet) */
@@ -143,7 +147,7 @@ public:
 
 	/** Creates the initial entities based on this level's tilemap. */
 	void loadLevel(Game::Level *const _level);
-	void renderFrame(sf::RenderWindow& window);
+	void renderFrame(sf::RenderWindow& window, sf::RenderStates states) const;
 
 	/** Calculates collisions based on the current entites layout, filling
 	 *  the `colliding` array for each moving entity based on their transparency.
@@ -169,8 +173,6 @@ public:
 	const BossList& getBosses() const { return bosses; }
 
 	Game::Bomb* getBombAt(const unsigned short left, const unsigned short top) const;
-
-	void setOrigin(const sf::Vector2f& _origin) { origin = _origin; }
 
 	/** Checks if any moving entity's bounding box is intersecting
 	 *  the rectangle at coordinates `pos`

@@ -132,10 +132,8 @@ void LevelManager::loadLevel(Game::Level *const _level) {
 			_pushTemporary(new Game::Flash(player->getPosition()));
 }
 
-void LevelManager::renderFrame(sf::RenderWindow& window) {
-	if (level == nullptr) return;
-
-
+void LevelManager::draw(sf::RenderWindow& window, sf::RenderStates states) const {
+	window.draw(renderer);
 }
 
 void LevelManager::detectCollisions() {
@@ -180,7 +178,9 @@ void LevelManager::detectCollisions() {
 		if (firstTeleport != nullptr && entity->canTeleport && entity->isAligned()) {
 			const auto cur_tile = Game::tile(pos);
 
-			if (level->getTile(cur_tile.x - 1, cur_tile.y - 1) == EntityType::TELEPORT && entity->prevAlign != cur_tile) {
+			if (level->getTile(cur_tile.x - 1, cur_tile.y - 1) == EntityType::TELEPORT 
+					&& entity->prevAlign != cur_tile) 
+			{
 				const unsigned short idx = (cur_tile.y - 1) * LEVEL_WIDTH + cur_tile.x - 1;
 
 				// Get Teleport from fixed entities

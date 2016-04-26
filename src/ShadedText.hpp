@@ -1,20 +1,20 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "Drawable.hpp"
 
 namespace Game {
 
 /**
  * A sf::Text container which draws a string with a shadow behind
  */
-class ShadedText : public Game::Drawable, public sf::Drawable {
+class ShadedText : public sf::Drawable {
 protected:
 	sf::Text fgtext, bgtext;
 	std::string str;
 	sf::Vector2f pos;
 	sf::Vector2f shadowSpacing;
 	sf::Color fgcol, bgcol;
+
 public:
 	ShadedText() {}
 	ShadedText(
@@ -47,7 +47,6 @@ public:
 	void setBGColor(const sf::Color& bg) { bgtext.setColor(bgcol = bg); }
 	void setColor(const sf::Color& fg, const sf::Color& bg);
 
-	void draw(sf::RenderTarget& target) override;
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 

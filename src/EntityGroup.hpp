@@ -13,7 +13,7 @@ namespace Game {
  * A container for Entities, providing convenient methods for operating
  * on all or a specific type of them.
  */
-class EntityGroup final {
+class EntityGroup final : public Game::WithOrigin {
 	/** All the entities (owning references) */
 	std::list<std::unique_ptr<Game::Entity>> entities;
 
@@ -43,6 +43,8 @@ public:
 
 	// TODO
 	unsigned int getCoinsNum() const { return 1; }
+
+	void setOrigin(const sf::Vector2f& origin) override;
 };
 
 }

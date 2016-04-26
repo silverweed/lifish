@@ -158,20 +158,20 @@ int main(int argc, char **argv) {
 }
 
 void play_game(sf::RenderWindow& window, const std::string& levelSetName,
-		Game::LevelManager& lr, unsigned short start_level)
+		Game::LevelManager& lm, unsigned short start_level)
 {
 	// Parse the level set
 	Game::LevelSet levelset(levelSetName);
 	std::clog << "Loaded " << levelset.getLevelsNum() << " levels." << std::endl;
 
-	// Create the level renderer and side panel and attach the 1st level to them
+	// Create the level manager and side panel and attach the 1st level to them
 	Game::Level *level = levelset.getLevel(start_level);
 
-	lr.setOrigin(sf::Vector2f(-MAIN_WINDOW_SHIFT, 0.f));
-	lr.loadLevel(level);
+	lm.get<Game::LevelRenderer>()->setOrigin(sf::Vector2f(-MAIN_WINDOW_SHIFT, 0.f));
+	lm.loadLevel(level);
 
 	// Create the side panel
-	Game::SidePanel panel(&lr);
+	Game::SidePanel panel(&lm);
 
 	// Load the interlevel font (FIXME)
 	const std::string fontname = Game::getAsset("fonts", Game::Fonts::INTERLEVEL);
@@ -184,7 +184,7 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 	Game::music = level->get<Game::Music>()->getMusic();
 	Game::playMusic();
 
-	auto players = lr.getPlayers();
+	auto players = lm.getPlayers();
 	bool gameOverTriggered = false;
 	bool levelClearTriggered = false, 
 	     levelClearSoundPlayed = false,
@@ -192,23 +192,23 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 	sf::Clock levelClearClock;
 
 	int cycle = 0;
-	lr.resetClocks();
+	lm.resetClocks();
 
 	// Main game cycle
 	while (window.isOpen()) {
 		// If all players are dead, scroll down the GAME OVER text
 		if (gameOverTriggered) {
-			if (lr.isGameOverEnded()) {
+			if (lm.isGameOverEnded()) {
 				return;
 			}
 		} else if (levelClearTriggered) {
 			const auto time = levelClearClock.getElapsedTime().asSeconds();
 			if (time >= 4) {
-				level = advance_level(window, lr, panel);
+				level = advance_level(window, lm, panel);
 				Game::music = level->get<Game::Music>()->getMusic();
 				Game::playMusic();
-				lr.resetClocks();
-				players = lr.getPlayers();
+				lm.resetClocks();
+				players = lm.getPlayers();
 				levelClearTriggered = false;
 				levelClearSoundPlayed = false;
 				playerWinSoundPlayed = false;
@@ -265,8 +265,8 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 							if (player != nullptr)
 								player->setWinning(false);
 						delete level;
-						lr.loadLevel(level = levelset.getLevel(n));
-						players = lr.getPlayers();
+						lm.loadLevel(level = levelset.getLevel(n));
+						players = lm.getPlayers();
 						break;
 					}
 				case sf::Keyboard::Key::Subtract: 
@@ -281,8 +281,8 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 							if (player != nullptr)
 								player->setWinning(false);
 						delete level;
-						lr.loadLevel(level = levelset.getLevel(n));
-						players = lr.getPlayers();
+						lm.loadLevel(level = levelset.getLevel(n));
+						players = lm.getPlayers();
 						break;
 					}
 #endif
@@ -294,7 +294,7 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 						// Pause
 						if (Game::music != nullptr)
 							Game::music->pause();
-						lr.pauseClocks();
+						lm.pauseClocks();
 						auto action = Game::Action::DO_NOTHING;
 						do {
 							action = ScreenHandler::handleScreenEvents(window, PAUSE_SCREEN,
@@ -302,12 +302,12 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 							if (action == Game::Action::SAVE_GAME) {
 								const auto fname = Game::display_save_dialog();
 								if (fname.length() > 0) {
-									Game::SaveManager::saveGame(fname, lr);
+									Game::SaveManager::saveGame(fname, lm);
 								}
 								// TODO: display some confirm screen
 							};
 						} while (action == Game::Action::SAVE_GAME);
-						lr.resumeClocks();
+						lm.resumeClocks();
 						Game::playMusic();
 						break;
 					}
@@ -329,19 +329,19 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 		}
 
 		auto dir = get_directions(window, players);
-		lr.checkHurryUp();
+		lm.checkHurryUp();
 
-		if (lr.isExtraGame()) {
-			lr.checkExtraGameEnd();
-			lr.cycleLetters();
+		if (lm.isExtraGame()) {
+			lm.checkExtraGameEnd();
+			lm.cycleLetters();
 		}
 
-		lr.checkLinesOfSight();
-		lr.selectEnemyMoves();
-		lr.makeBossesShoot();
-		lr.checkBombExplosions();
-		lr.checkExplosionHits();
-		lr.detectCollisions();
+		lm.checkLinesOfSight();
+		lm.selectEnemyMoves();
+		lm.makeBossesShoot();
+		lm.checkBombExplosions();
+		lm.checkExplosionHits();
+		lm.detectCollisions();
 
 		// Check players hurt / death; make players move
 		bool maybe_all_dead = true;
@@ -360,7 +360,7 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 								Game::joystickBombKey[i]))
 							|| sf::Keyboard::isKeyPressed(
 								Game::playerControls[i][Game::Control::BOMB]))
-						lr.dropBomb(i);
+						lm.dropBomb(i);
 			}
 
 			if (players[i]->isHurt()) {
@@ -372,7 +372,7 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 				players[i]->prepareDeathAnimation();
 				if (!players[i]->playDeathAnimation()) {
 					if (players[i]->getRemainingLives() <= 0) {
-						maybe_all_dead = !lr.removePlayer(i + 1);
+						maybe_all_dead = !lm.removePlayer(i + 1);
 						players[i] = nullptr;
 					} else {
 						players[i]->resurrect();
@@ -397,7 +397,7 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 					if (display_continue(window, panel, i+1)) {
 						all_dead = false;
 						players[i] = new Game::Player(sf::Vector2f(0, 0), i+1);
-						lr.setPlayer(i+1, players[i]);
+						lm.setPlayer(i+1, players[i]);
 						--Game::playerContinues[i];
 					} else {
 						Game::playerContinues[i] = 0;
@@ -407,29 +407,29 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 			if (!all_dead) {
 				// Restart level
 				display_get_ready(window, panel, level->getLevelNum());
-				lr.resetClocks();
-				lr.loadLevel(level);
+				lm.resetClocks();
+				lm.loadLevel(level);
 				levelClearTriggered = false;
 				levelClearSoundPlayed = false;
 				playerWinSoundPlayed = false;
 				Game::playMusic();
 				continue;
 			} else if (!gameOverTriggered) {
-				lr.triggerGameOver();
+				lm.triggerGameOver();
 				gameOverTriggered = true;
 			}
-		} else if (!levelClearTriggered && lr.isLevelClear()) {
+		} else if (!levelClearTriggered && lm.isLevelClear()) {
 			levelClearTriggered = true;
 			levelClearClock.restart();
 		}
 
-		lr.moveBullets();
+		lm.moveBullets();
 
 		// Actually move enemies
-		lr.applyEnemyMoves();
+		lm.applyEnemyMoves();
 
 		window.clear();
-		lr.renderFrame(window);
+		window.draw(lm);
 		panel.draw(window);
 		Game::maybeShowFPS(window);
 		window.display();

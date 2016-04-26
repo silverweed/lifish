@@ -16,7 +16,7 @@ Coin::Coin(const sf::Vector2f& pos)
 	addComponent(new Game::Sounded(this, { Game::getAsset("sounds", "coin.ogg") }));
 	grabClock = addComponent(new Game::Clock<1>(this));
 	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", "coin.png")));
-	animated->setSmooth(true);
+	animated->get<Game::Texture>()->getTexture()->setSmooth(true);
 
 	auto& anim = animated->addAnimation("spin");
 

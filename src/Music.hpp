@@ -2,6 +2,7 @@
 
 #include "Component.hpp"
 #include "Track.hpp"
+#include "LoopingMusic.hpp"
 
 namespace Game {
 

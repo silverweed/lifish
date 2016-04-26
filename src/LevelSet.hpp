@@ -29,7 +29,7 @@ class LevelSet final : public Game::Stringable, private sf::NonCopyable {
 
 public:
 	LevelSet(const std::string& jsonPath);
-	~LevelSet();
+	~LevelSet() {}
 
 	/** Constructs the i-th level and returns it if init() is successful.
 	 *  Callee MUST take care of deleting the returned Level.

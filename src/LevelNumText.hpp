@@ -7,7 +7,7 @@
 namespace Game {
 
 class LevelNumText : public Game::Component, public sf::Drawable {
-	Game::ShadedText *text;
+	Game::ShadedText text;
 
 public:
 	explicit LevelNumText(Game::Entity *const owner, 

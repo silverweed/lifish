@@ -1,3 +1,5 @@
+#pragma once
+
 // From: https://github.com/SFML/SFML/wiki/Source:-Looping-Music
 ////////////////////////////////////////////////////////////
 // Headers

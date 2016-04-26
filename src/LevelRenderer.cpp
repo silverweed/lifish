@@ -7,6 +7,10 @@ LevelRenderer::LevelRenderer(const Game::LevelManager *owner)
 	: owner(owner)
 {}
 
+void LevelRenderer::setOrigin(const sf::Vector2f& o) {
+	owner->getEntities()->setOrigin(o);
+}
+
 void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	
 	const auto level = owner->getLevel();
