@@ -27,7 +27,6 @@ bool Level::init() {
 
 	music = addComponent(new Game::Music(this, levelInfo.track));
 	_loadTextures();
-	//_loadTiles();
 
 	levelnumtext = addComponent(new Game::LevelNumText(this, levelInfo.levelnum));
 
@@ -47,19 +46,7 @@ void Level::_loadTextures() {
 	_loadTiles();
 }
 
-// FIXME: move to texture components?
 void Level::_loadTiles() {
-	// Load texture from file
-	//std::stringstream ss;
-	//ss << "bg" << levelInfo.tileIDs.bg << ".png";
-	//const std::string bgfname = Game::getAsset("graphics", ss.str());
-
-	//// Create sprites
-	//for (unsigned short i = 0; i < bgTiles.size(); ++i) {
-		//bgTiles[i] = addComponent(new Game::Sprite(this, bgfname));
-	//}
-	//sf::Texture *texture = bgTiles[0]->get<Game::Texture>()->getTexture();
-
 	// Background
 	bgTiles[TILE_REGULAR].setTexture(*bgTexture);
 	bgTiles[TILE_REGULAR].setTextureRect(sf::IntRect(0, 0, TILE_SIZE * LEVEL_WIDTH, TILE_SIZE * LEVEL_HEIGHT));
