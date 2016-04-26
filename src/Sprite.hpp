@@ -21,6 +21,8 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	sf::Sprite& getSprite() { return sprite; }
+
+	void update() override;
 };
 
 }

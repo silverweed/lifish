@@ -24,7 +24,7 @@ class EntityGroup final {
 	//std::array<Game::Entity*, LEVEL_WIDTH * LEVEL_HEIGHT> staticEntities;
 
 	
-	template <class T>
+	template<class T>
 	T* _commonAdd(T *entity, bool owned);
 
 public:
@@ -38,7 +38,7 @@ public:
 
 	std::iterator<std::input_iterator_tag, const Game::Entity*> all();
 
-	template <class T>
+	template<class T>
 	T* add(T *entity, bool owned = true);
 
 	// TODO

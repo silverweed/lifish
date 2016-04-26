@@ -68,8 +68,8 @@ constexpr unsigned short TILE_SIZE = 32; // pixels
 constexpr unsigned short LEVEL_WIDTH = 15; 
 constexpr unsigned short LEVEL_HEIGHT = 13;
 
-constexpr float DAMAGE_SHIELD_TIME = 1000; // ms
-constexpr float RESURRECT_SHIELD_TIME = 5000; // ms
+const sf::Time DAMAGE_SHIELD_TIME = sf::milliseconds(1000);
+const sf::Time RESURRECT_SHIELD_TIME = sf::milliseconds(5000);
 
 constexpr unsigned short MAX_PLAYERS = 2;
 

@@ -21,3 +21,7 @@ Sprite::Sprite(Game::Entity *const owner, const std::string& texture_name,
 void Sprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(sprite, states);
 }
+
+void Sprite::update() {
+	sprite.setPosition(owner.getPosition());
+}

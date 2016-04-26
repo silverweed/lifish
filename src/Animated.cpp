@@ -37,5 +37,6 @@ void Animated::setAnimation(const std::string& name) {
 }
 
 void Animated::update() {
+	animatedSprite.setPosition(owner.getPosition());
 	animatedSprite.update(frameClock->restart());
 }

@@ -11,12 +11,12 @@ static inline bool instanceof(const T*) {
 	return std::is_base_of<Base, T>::value;
 }
 
-template <class T>
+template<class T>
 T* Entity::addComponent(T *comp) {
 	components.push_back(std::unique_ptr<Game::Component>(comp));
 }
 
-template <class T>
+template<class T>
 T* Entity::get() const {
 	for (auto& comp : components) {
 		Component *ptr = comp.get();

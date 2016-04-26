@@ -90,15 +90,7 @@ public:
 		return &clock;
 	}
 
-	void pause(const std::string& name = "") {
-		clock.pause();
-	}
-
-	void resume(const std::string& name = "") {
-		clock.resume();
-	}
-
-	sf::Time restart(const std::string& name = "") {
+	sf::Time restart() {
 		return clock.restart();
 	}
 

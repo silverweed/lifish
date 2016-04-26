@@ -31,7 +31,7 @@ std::iterator<std::input_iterator_tag, const Game::Entity*> EntityGroup::all() {
 	return EntityConstIterator(entities);
 }
 
-template <class T>
+template<class T>
 T* EntityGroup::_commonAdd(T *entity, bool owned) {
 	entities.push_back(std::unique_ptr<Game::Entity>(entity));
 	if (!owned)
@@ -40,7 +40,7 @@ T* EntityGroup::_commonAdd(T *entity, bool owned) {
 	return entity;
 }
 
-template <class T>
+template<class T>
 T* EntityGroup::add(T *entity, bool owned) {
 	return _commonAdd(entity, owned);
 }
