@@ -102,7 +102,7 @@ void Explosion::propagate(Game::LevelManager *const lr) {
 				// Check if bomb
 				Game::Bomb *bomb = lr->getBombAt(new_tile.x, new_tile.y);
 				if (bomb != nullptr && !bomb->isIgnited()) {
-					bomb->setExploding();
+					bomb->ignite();
 					continue;
 				}
 

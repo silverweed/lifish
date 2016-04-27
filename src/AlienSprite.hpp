@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Animated.hpp"
-#include "MovingEntity.hpp"
-#include "Sounded.hpp"
+#include "Component.hpp"
 
 namespace Game {
 
@@ -14,21 +12,14 @@ namespace Game {
  * when they're morphed. Note that this class by itself isn't
  * an Entity, thus cannot be used standalone.
  */
-class AlienSprite : public Game::Animated, public Game::Sounded {
+class AlienSprite : public Game::Component {
 	constexpr static unsigned short WALK_N_FRAMES = 4;
 	constexpr static unsigned short DEATH_N_FRAMES = 2;
 
 	sf::Texture *texture;
 
-	// Disable parent's draw() function
-	using Game::Animated::draw;
 public:
-	AlienSprite();
-
-	/** Draw the alien sprite in this position, facing this direction.
-	 *  Direction::NONE means to draw its death frames.
-	 */
-	void draw(sf::RenderTarget& window, const sf::Vector2f& pos, const Game::Direction dir);
+	explicit AlienSprite(Game::Entity *const owner);
 };
 
 }

@@ -14,7 +14,7 @@ public:
 			const unsigned short levelnum);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-	void setOrigin(const sf::Vector2f& pos);
+	void setOrigin(const sf::Vector2f& pos) override;
 };
 
 }

@@ -80,9 +80,6 @@ class Level final
 	/** The borders' texture */
 	sf::Texture *borderTexture = nullptr;
 	
-	/** The level's BGM */
-	Game::Music *music = nullptr;
-
 	/** The text containing the level number */
 	Game::LevelNumText *levelnumtext = nullptr;
 	
@@ -137,7 +134,7 @@ public:
 	EntityType getTile(unsigned short left, unsigned short top) const;
 
 	/** Changes the origin of all tiles */
-	void setOrigin(const sf::Vector2f& origin);
+	void setOrigin(const sf::Vector2f& origin) override;
 
 	/** Draws this level's background in the target window */
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;

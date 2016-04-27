@@ -10,7 +10,7 @@ namespace Game {
  */
 class Sprite : public Game::Component, public sf::Drawable {
 protected:
-	Game::Texture *texture;
+	sf::Texture *texture;
 	sf::Sprite sprite;
 
 public:

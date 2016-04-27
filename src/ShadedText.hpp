@@ -7,8 +7,7 @@ namespace Game {
 /**
  * A sf::Text container which draws a string with a shadow behind
  */
-class ShadedText : public sf::Drawable {
-protected:
+class ShadedText final : public sf::Drawable {
 	sf::Text fgtext, bgtext;
 	std::string str;
 	sf::Vector2f pos;
@@ -24,9 +23,7 @@ public:
 		sf::Color fgcol = sf::Color::White,
 		sf::Color bgcol = sf::Color::Black);
 
-	virtual ~ShadedText() {}
-
-	virtual sf::FloatRect getGlobalBounds() const { return fgtext.getGlobalBounds(); }
+	sf::FloatRect getGlobalBounds() const { return fgtext.getGlobalBounds(); }
 
 	void setStyle(sf::Text::Style style);
 

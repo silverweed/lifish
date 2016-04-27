@@ -7,8 +7,8 @@ using Game::Sprite;
 Sprite::Sprite(Game::Entity *const owner, const std::string& texture_name) 
 	: Game::Component(owner)
 {
-	texture = addComponent(new Game::Texture(this, texture_name));
-	sprite.setTexture(*texture->getTexture());
+	texture = Game::cache.loadTexture(texture_name);
+	sprite.setTexture(*texture);
 }
 
 Sprite::Sprite(Game::Entity *const owner, const std::string& texture_name,

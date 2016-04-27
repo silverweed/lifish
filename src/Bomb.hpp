@@ -4,6 +4,7 @@
 #include "Entity.hpp"
 #include "Clock.hpp"
 #include "Animated.hpp"
+#include "Killable.hpp"
 
 namespace Game {
 
@@ -23,6 +24,7 @@ class Bomb : public Game::Entity {
 	bool switched = false;
 
 	Game::Animated *animated = nullptr;
+	Game::Killable *killable = nullptr;
 
 	/** The player who dropped this bomb */
 	const Game::Player *const sourcePlayer;
@@ -37,22 +39,11 @@ public:
 			const unsigned short radius = DEFAULT_RADIUS);
 
 	void update() override;
-
+	
 	/** `true` if this bomb was driven to explode by another explosion */
 	bool isIgnited() const { return ignited; }
-
-	/** `true` if this bomb is currently exploding */
-	bool isExploding() const { 
-		return fuseClock->getElapsedTime() >= fuseTime;
-	}
-	
-	void setExploding();
-
-	/** `true` if this bomb already spawned its explosion. */
-	bool isExploded() const { return exploded; }
-	
-	/** Mark this bomb as exploded (cannot be ignited nor explode again */
-	void blowUp() { exploded = true; }
+	/** Manually set this bomb to explode after 50 ms */
+	void ignite();
 
 	unsigned short getRadius() const { return radius; }
 	void setRadius(unsigned short r) { radius = r; }

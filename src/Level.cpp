@@ -25,7 +25,7 @@ bool Level::init() {
 	if (!_setTilemap(levelInfo.tilemap))
 		return false;
 
-	music = addComponent(new Game::Music(this, levelInfo.track));
+	addComponent(new Game::Music(this, levelInfo.track));
 	_loadTextures();
 
 	levelnumtext = addComponent(new Game::LevelNumText(this, levelInfo.levelnum));
@@ -125,8 +125,8 @@ void Level::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	window.draw(bgTiles[TILE_LOWER_LEFT], states);
 
 	// Draw the level number
-	//if (levelnumtext != nullptr)
-		//window.draw(*levelnumtext, states);
+	if (levelnumtext != nullptr)
+		window.draw(*levelnumtext, states);
 }
 
 EntityType Level::getTile(unsigned short left, unsigned short top) const {
@@ -193,7 +193,7 @@ std::string Level::toString() const {
 	   << "    border: " << levelInfo.tileIDs.border << "\r\n"
 	   << "    fixed: " << levelInfo.tileIDs.fixed << "\r\n"
 	   << "    breakable: " << levelInfo.tileIDs.breakable << "\r\n}\r\n"
-	   << "Music: " << music->getTrack().name << "\r\n";
+	   << "Music: " << get<Game::Music>()->getTrack().name << "\r\n";
 	if (levelSet != nullptr) {
 		ss << "Belongs to: >>>\r\n";
 		ss << levelSet->toString();

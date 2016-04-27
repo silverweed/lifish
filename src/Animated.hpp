@@ -28,7 +28,7 @@ enum : unsigned short {
  */
 class Animated : public Game::Component, public sf::Drawable {
 protected:
-	Game::Texture *texture;
+	sf::Texture *texture;
 	Game::Clock<1> *frameClock;
 	std::unordered_map<std::string, Animation> animations;
 	AnimatedSprite animatedSprite;
@@ -36,9 +36,20 @@ protected:
 public:
 	explicit Animated(Game::Entity *const owner, const std::string& texture_name);
 	
-	Animation& addAnimation(const std::string& name, bool set = false);
+	/** Adds a new empty animation to this Animated and returns it */
+	Animation& addAnimation(const std::string& name);
+	/** Adds a new animation tagged `name` with frames described by `frames`, and optionally sets it active. */
+	Animation& addAnimation(const std::string& name, std::initializer_list<sf::IntRect> frames, bool set = false);
+
+	/** If an animation tagged `name` exists, returns it. Else returns nullptr */
 	Animation* getAnimation(const std::string& name);
+
+	/** Sets the current animation to the one tagged `name`, if any.
+	 *  Throws if `name` doesn't exist.
+	 */
 	void setAnimation(const std::string& name);
+	/** Sets the current animation to `anim` */
+	void setAnimation(Animation& anim);
 
 	AnimatedSprite& getSprite() { return animatedSprite; }
 

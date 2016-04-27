@@ -9,13 +9,6 @@ namespace Game {
 
 class Component;
 
-namespace {
-	template<class Base, class T>
-	static inline bool instanceof(const T*) {
-		return std::is_base_of<Base, T>::value;
-	}
-}
-
 /**
  * Base class for game entities (walls, enemies, players, ...)
  */
@@ -32,14 +25,15 @@ public:
 	template<class T>
 	T* addComponent(T* comp) {
 		components.push_back(std::unique_ptr<Game::Component>(comp));
+		return comp;
 	}
 
 	template<class T>
 	T* get() const {
 		for (auto& comp : components) {
 			Component *ptr = comp.get();
-			if (instanceof<T>(ptr))
-				return static_cast<T*>(ptr);
+			if (T* derived = dynamic_cast<T*>(ptr))
+				return derived;
 		}
 		return nullptr;
 	}

@@ -11,7 +11,7 @@ class Music : public Game::Component {
 	sf::InputSoundFile musicInput;
 
 	/** The music for this level */
-	LoopingMusic *music = nullptr;
+	std::unique_ptr<LoopingMusic> music;
 
 	/** The music track data */
 	Game::Track track;
@@ -19,7 +19,7 @@ class Music : public Game::Component {
 public:
 	explicit Music(Game::Entity *const owner, const Game::Track& track);
 	
-	LoopingMusic* getMusic() const { return music; }
+	LoopingMusic* getMusic() const { return music.get(); }
 	const Game::Track& getTrack() const { return track; }
 };
 
