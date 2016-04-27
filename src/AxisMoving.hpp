@@ -5,6 +5,8 @@
 
 namespace Game {
 
+class LevelManager;
+
 /**
  * An object moving only parallel to axes */
 class AxisMoving : public Game::Moving {
@@ -23,6 +25,8 @@ public:
 	void stop() override;
 
 	void update() override;
+
+	bool canGo(const Game::Direction dir, const Game::LevelManager *const lm) const;
 };
 
 }

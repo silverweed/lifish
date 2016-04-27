@@ -1,8 +1,8 @@
 #pragma once
 
-#include "LifedMovingEntity.hpp"
+#include <SFML/System.hpp>
+#include "Entity.hpp"
 #include "AI.hpp"
-#include "Scored.hpp"
 #include "AlienSprite.hpp"
 
 namespace Game {
@@ -11,14 +11,14 @@ namespace Game {
  * An Enemy is a MovingEntity which (usually) shoots towards players 
  * when they see them and is vulnerable to Bombs.
  */
-class Enemy : public Game::LifedMovingEntity, public Game::Scored {
+class Enemy : public Game::Entity {
 	constexpr static unsigned short WALK_N_FRAMES = 4;
 	constexpr static int YELL_DELAY = 1000;
 	
-	/** Indexed with ANIM_UP etc */
-	sf::Sprite shootFrame[4];
 	/** The duration of the shooting frame */
-	unsigned short shootFrameTime = 250; // ms
+	sf::Time shootFrameTime = sf::milliseconds(250); // ms
+
+	Game::Clock<3> *clocks = nullptr;
 
 	/** The function determining this enemy's movements */
 	AIBoundFunction ai;
@@ -48,48 +48,6 @@ class Enemy : public Game::LifedMovingEntity, public Game::Scored {
 
 public:
 	constexpr static float BASE_SPEED = 75.f;
-	/** The different types of attacks.
-	 *  SIMPLE: the enemy shoots a single bullet at a time
-	 *  CONTACT: the enemy doesn't shoot, but hurts on contact.
-	 *  RANGED: the enemy's attack has a limited range. If paired
-	 *          with CONTACT, means the attack is "dashing", and
-	 *          the dash triggers withing range (use -1 for "infinite").
-	 *          __Note__: the "dashing" attack logic is actually performed 
-	 *          by ai_follow_dash, independently from attack.type;
-	 *          however, one must also specify this in attack.type so
-	 *          that the attack sound is played correctly (i.e. when
-	 *          the enemy starts dashing rather than when he contacts
-	 *          the player).
-	 *  BLOCKING: standalone, means that the enemy shoots continuously
-	 *            and stops moving while shooting; paired with SIMPLE,
-	 *            means the enemy shoots a single bullet and stops for
-	 *            `attack.blockTime` after shooting.
-	 */
-	enum AttackType : unsigned short {
-		SIMPLE   = 1,
-		CONTACT  = 1 << 1,
-		RANGED   = 1 << 2,
-		BLOCKING = 1 << 3
-	};
-
-	struct {
-		unsigned short type;
-		/** Cooldown is 1000/fireRate ms. If AI is ai_follow_dash, determines
-		 *  the cooldown between two dashes.
-		 */
-		float fireRate;
-		/** If attacktype is SIMPLE | BLOCKING, this is the time
-		 *  the enemy stops after shooting (in ms -- should be more than shootFrameTime);
-		 */
-		unsigned short blockTime;
-		unsigned short id;
-		unsigned short damage;
-		/** Projectile speed, in units of Bullet::BASE_SPEED */
-		float speed;
-		short range;
-	} attack;
-	/** Used by CONTACT attack AI */
-	sf::Vector2i attackAlign;
 
 	unsigned short distanceWithNearestPlayer = 2 * Game::LEVEL_WIDTH * Game::TILE_SIZE;
 
@@ -100,7 +58,6 @@ public:
 
 
 	Enemy(sf::Vector2f pos, const unsigned short id);
-	~Enemy();
 
 	void setAI(AIFunction aifunc) { ai = aifunc(this); }
 	AIBoundFunction getAI() const { return ai; }

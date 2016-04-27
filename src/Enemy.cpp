@@ -1,29 +1,34 @@
 #include "Enemy.hpp"
+#include "Animated.hpp"
+#include "AxisMoving.hpp"
+#include "Drawable.hpp"
+#include "Lifed.hpp"
+#include "Sounded.hpp"
 
 using Game::Enemy;
+using Game::TILE_SIZE;
 
 Enemy::Enemy(sf::Vector2f pos, const unsigned short id)
-	: Game::LifedMovingEntity(
-		pos, 
-		// Texture
-		Game::getAsset("graphics", std::string("enemy") + Game::to_string(id) + std::string(".png")), 
-		// Life
-		1,
-		// Sounds
-		{
-			Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_death.ogg")),
-			Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_yell.ogg")),
-			// Note: this is an invalid sound if enemy.attackType is not CONTACT. This is not an issue,
-			// since in that case, the sound never gets played, so the cache doesn't even load it.
-			Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_attack.ogg"))
-		}) 
+	: Game::Entity(pos)
+	, speed(BASE_SPEED)
+	, originalSpeed(speed)
 	, Game::Scored(id * 100)
 	, attackAlign(-1, -1)
 {
-	originalSpeed = speed = BASE_SPEED;
-	transparentTo.enemies = false;
-	transparentTo.bullets = false;
-	direction = prevDirection = Game::Direction::DOWN;
+	auto animated = addComponent(new Game::Animated(this, 
+		Game::getAsset("graphics", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
+	addComponent(new Game::Drawable(this, animated));
+	addComponent(new Game::Sounded(this, {
+		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_death.ogg")),
+		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_yell.ogg")),
+		// Note: this is an invalid sound if enemy.attackType is not CONTACT. This is not an issue,
+		// since in that case the sound never gets played, so the cache doesn't even load it.
+		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_attack.ogg"))
+	}));
+	addComponent(new Game::Lifed(this, 1));
+	addComponent(new Game::AxisMoving(this, speed, Game::Direction::DOWN));
+	clocks = addComponent(new Game::Clock<3>(this, { "attack", "yell", "dash" }));
+	addComponent(new Game::AlienSprite(this));
 
 	unsigned short death_n_frames = 2;
 	switch (id) {
@@ -34,74 +39,67 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id)
 		break;
 	}
 
-	for (unsigned short i = 0; i < MAX_N_ANIMATIONS; ++i) {
-		animations[i].setSpriteSheet(*texture);
-		if (i < 4)
-			shootFrame[i].setTexture(*texture);
-	}
+	auto& a_down = animated->addAnimation("down");
+	auto& a_up = animated->addAnimation("up");
+	auto& a_right = animated->addAnimation("right");
+	auto& a_left = animated->addAnimation("left");
+	auto& a_shoot_down = animated->addAnimation("shoot_down");
+	auto& a_shoot_up = animated->addAnimation("shoot_up");
+	auto& a_shoot_right = animated->addAnimation("shoot_right");
+	auto& a_shoot_left = animated->addAnimation("shoot_left");
 
 	for (unsigned short i = 0; i < WALK_N_FRAMES; ++i) {
-		animations[ANIM_DOWN].addFrame(sf::IntRect(
+		a_down.addFrame(sf::IntRect(
 					i * TILE_SIZE, 
 					0,
 					TILE_SIZE, 
 					TILE_SIZE));
-		animations[ANIM_UP].addFrame(sf::IntRect(
+		a_up.addFrame(sf::IntRect(
 					(WALK_N_FRAMES + i) * TILE_SIZE, 
 					0, 
 					TILE_SIZE, 
 					TILE_SIZE));
-		animations[ANIM_RIGHT].addFrame(sf::IntRect(
+		a_right.addFrame(sf::IntRect(
 					i * TILE_SIZE, 
 					TILE_SIZE, 
 					TILE_SIZE,
 					TILE_SIZE));
-		animations[ANIM_LEFT].addFrame(sf::IntRect(
+		a_left.addFrame(sf::IntRect(
 					(WALK_N_FRAMES + i) * TILE_SIZE, 
 					TILE_SIZE, 
 					TILE_SIZE, 
 					TILE_SIZE));
 	}
-	shootFrame[ANIM_DOWN].setTextureRect(sf::IntRect(
+	a_shoot_down.addFrame(sf::IntRect(
 				0,
 				2 * TILE_SIZE, 
 				TILE_SIZE, 
 				TILE_SIZE));
-	shootFrame[ANIM_UP].setTextureRect(sf::IntRect(
+	a_shoot_up.addFrame(sf::IntRect(
 				TILE_SIZE, 
 				2 * TILE_SIZE, 
 				TILE_SIZE, 
 				TILE_SIZE));
-	shootFrame[ANIM_RIGHT].setTextureRect(sf::IntRect(
+	a_shoot_right.addFrame(sf::IntRect(
 				2 * TILE_SIZE, 
 				2 * TILE_SIZE, 
 				TILE_SIZE, 
 				TILE_SIZE));
-	shootFrame[ANIM_LEFT].setTextureRect(sf::IntRect(
+	a_shoot_left.addFrame(sf::IntRect(
 				3 * TILE_SIZE, 
 				2 * TILE_SIZE, 
 				TILE_SIZE, 
 				TILE_SIZE));
 
+	auto& a_death = animated->addAnimation("death");
 	for (unsigned short i = 0; i < death_n_frames; ++i) 
-		animations[ANIM_DEATH].addFrame(sf::IntRect((WALK_N_FRAMES + i) * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+		a_death.addFrame(sf::IntRect((WALK_N_FRAMES + i) * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
-	animatedSprite.setAnimation(animations[ANIM_DOWN]);
+	auto& animatedSprite = animated->getSprite();
+	animatedSprite.setAnimation(a_down);
 	animatedSprite.setLooped(true);
 	animatedSprite.setFrameTime(sf::seconds(0.12));
 	animatedSprite.pause();
-
-	_addClock(&attackClock);
-	_addClock(&yellClock);
-	_addClock(&dashClock);
-	attackClock.reset(true);
-}
-
-Enemy::~Enemy() {
-	if (alienSprite != nullptr) {
-		delete alienSprite;
-		alienSprite = nullptr;
-	}
 }
 
 bool Enemy::_isTransparentTo(const Game::Entity *const e) const {

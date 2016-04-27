@@ -15,3 +15,12 @@ void Entity::setOrigin(const sf::Vector2f& origin) {
 			//static_cast<Game::WithOrigin*>(c)->setOrigin(origin);
 	//}
 }
+
+bool Entity::isAligned(const char axis) const {
+	switch (axis) {
+		case 'x': return (unsigned short)pos.x % Game::TILE_SIZE == 0;
+		case 'y': return (unsigned short)pos.y % Game::TILE_SIZE == 0;
+	}
+	return (unsigned short)pos.x % Game::TILE_SIZE == 0 
+		&& (unsigned short)pos.y % Game::TILE_SIZE == 0;
+}

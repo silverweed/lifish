@@ -1,6 +1,7 @@
 #include "AxisMoving.hpp"
 #include "Game.hpp"
 #include "utils.hpp"
+#include "LevelManager.hpp"
 
 using Game::AxisMoving;
 using Game::TILE_SIZE;
@@ -9,6 +10,7 @@ AxisMoving::AxisMoving(Game::Entity *const owner, float speed, Game::Direction d
 	: Game::Moving(owner, speed)
 	, direction(dir)
 	, prevDirection(Game::Direction::NONE)
+	, prevAlign(-1.f, -1.f)
 {}
 
 void AxisMoving::update() {
@@ -37,6 +39,7 @@ void AxisMoving::update() {
 		return;
 	}
 
+	// TODO
 	//if (!colliding) {
 		owner->setPosition(owner->getPosition() + shift * frameTime.asSeconds());
 		distTravelled += speed * frameTime.asSeconds();
@@ -72,4 +75,46 @@ void AxisMoving::stop() {
 	Game::Moving::stop();
 	direction = prevDirection = Game::Direction::NONE;
 	_realign();
+}
+
+bool AxisMoving::canGo(const Direction dir, const Game::LevelManager *const lm) const {
+	short iposx = (short)(pos.x / TILE_SIZE) - 1,
+	      iposy = (short)(pos.y / TILE_SIZE) - 1;
+	
+	switch (dir) {
+	case Direction::UP:
+		--iposy;
+		break;
+	case Direction::LEFT:
+		--iposx;
+		break;
+	case Direction::DOWN:
+		++iposy;
+		break;
+	case Direction::RIGHT:
+		++iposx;
+		break;
+	default:
+		return true;
+	}
+
+	if (iposx < 0 || iposx >= LEVEL_WIDTH || iposy < 0 || iposy >= LEVEL_HEIGHT)
+		return false;
+
+	const short idx = iposy * LEVEL_WIDTH + iposx;
+
+	// TODO
+	/*
+	const auto& fixed = lm->getFixedEntities();
+	
+	if (fixed[idx] != nullptr && !_isTransparentTo(fixed[idx]))
+		return false;
+
+	const auto bosses = lm->getBosses();
+	const sf::FloatRect r(iposx, iposy, TILE_SIZE, TILE_SIZE);
+	for (auto& boss : bosses)
+		if (boss->intersects(r)) return false;
+	*/
+
+	return true;
 }

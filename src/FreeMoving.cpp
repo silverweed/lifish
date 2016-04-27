@@ -18,6 +18,7 @@ void FreeMoving::update() {
 	
 	shift += velocity * speed;
 
+	// TODO
 	//if (!colliding) {
 		owner->setPosition(owner->getPosition() + shift * frameTime.asSeconds());
 		distTravelled += speed * frameTime.asSeconds();

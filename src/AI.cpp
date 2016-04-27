@@ -1,33 +1,56 @@
 #include "AI.hpp"
-#include "Enemy.hpp"
 #include "utils.hpp"
 #include "Game.hpp"
 #include "GameCache.hpp"
+#include "Moving.hpp"
+#include "Collider.hpp"
+#include "Direction.hpp"
 #include <random>
+#include <exception>
 
 using Game::AIBoundFunction;
 using D = Game::Direction;
 
-AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
-	return [enemy] (const Game::LevelManager *const lr) { 
-		if (!enemy->colliding) {
-			if (enemy->distTravelled < Game::TILE_SIZE) 
-				return enemy->getDirection();
+static Game::Direction Game::selectRandomViable(
+		const Game::Moving *const moving,
+		const Game::LevelManager *const lm, 
+		const Game::Direction opp)
+{
+	Game::Direction dirs[4];
+	unsigned short n = 0;
+	for (const auto& d : directions)
+		if (moving->canGo(d, lm) && d != opp) dirs[n++] = d;
+	if (n == 0)
+		dirs[n++] = opp;
+	std::uniform_int_distribution<int> dist(0, n - 1);
+	return dirs[dist(Game::rng)];
+}
+
+AIBoundFunction Game::ai_random(Game::Entity *const entity) {
+	auto moving = entity->get<Game::AxisMoving>();
+	auto collider = entity->get<Game::Collider>();
+	if (moving == nullptr || collider == nullptr)
+		throw std::invalid_argument("Entity passed to ai_random has no Moving or Collider component!");
+
+	return [entity, moving, collider] (const Game::LevelManager *const lr) { 
+		if (!collider->isColliding()) {
+			if (moving->distTravelled < Game::TILE_SIZE) 
+				return moving->getDirection();
 
 			std::uniform_int_distribution<int> dist(0, 10);
-			if (enemy->distTravelled < 2 * Game::TILE_SIZE && dist(Game::rng) <= 4)
-				return enemy->getDirection();
+			if (moving->distTravelled < 2 * Game::TILE_SIZE && dist(Game::rng) <= 4)
+				return moving->getDirection();
 		}
-		enemy->distTravelled = 0;
+		moving->distTravelled = 0;
 		D dirs[4];
 		unsigned short n = 0;
-		if (enemy->isAligned('x')) {
-			if (enemy->canGo(D::UP, lr)) dirs[n++] = D::UP;
-			if (enemy->canGo(D::DOWN, lr)) dirs[n++] = D::DOWN;
+		if (entity->isAligned('x')) {
+			if (moving->canGo(D::UP, lr)) dirs[n++] = D::UP;
+			if (moving->canGo(D::DOWN, lr)) dirs[n++] = D::DOWN;
 		}
-		if (enemy->isAligned('y')) {
-			if (enemy->canGo(D::LEFT, lr)) dirs[n++] = D::LEFT;
-			if (enemy->canGo(D::RIGHT, lr)) dirs[n++] = D::RIGHT;
+		if (entity->isAligned('y')) {
+			if (moving->canGo(D::LEFT, lr)) dirs[n++] = D::LEFT;
+			if (moving->canGo(D::RIGHT, lr)) dirs[n++] = D::RIGHT;
 		}
 		if (n < 1) return D::NONE;
 		std::uniform_int_distribution<int> d(0, n - 1);
@@ -35,106 +58,116 @@ AIBoundFunction Game::ai_random(Game::Enemy *const enemy) {
 	};
 }
 
-AIBoundFunction Game::ai_random_forward(Game::Enemy *const enemy) {
-	return [enemy] (const Game::LevelManager *const lr) { 
-		const D cur = enemy->getDirection();
-		const auto cur_align = Game::tile(enemy->getPosition());
-		if (enemy->prevAlign == cur_align && !enemy->colliding) 
+AIBoundFunction Game::ai_random_forward(Game::Entity *const entity) {
+	auto moving = entity->get<Game::AxisMoving>();
+	auto collider = entity->get<Game::Collider>();
+	if (moving == nullptr || collider == nullptr)
+		throw std::invalid_argument("Entity passed to ai_random_forward has no Moving or Collider component!");
+
+	return [entity, moving, collider] (const Game::LevelManager *const lr) { 
+		const D cur = moving->getDirection();
+		const auto cur_align = Game::tile(moving->getPosition());
+		if (moving->prevAlign == cur_align && !collider->isColliding()) 
 			return cur;
 
 		const D opp = oppositeDirection(cur);
 		// colliding with a moving entity
-		if (enemy->colliding && enemy->canGo(cur, lr))
+		if (collider->isColliding() && moving->canGo(cur, lr))
 			return opp;
 
-		return selectRandomViable(enemy, lr, opp);
+		return selectRandomViable(moving, lr, opp);
 	};
 }
 
-AIBoundFunction Game::ai_random_forward_haunt(Game::Enemy *const enemy) {
-	return [enemy] (const Game::LevelManager *const lr) {
-		if (enemy->isShooting()) {
-			const auto cur_align = Game::tile(enemy->getPosition());
-			const D cur = enemy->getDirection();
-			if (enemy->colliding && enemy->canGo(cur, lr)) 
+AIBoundFunction Game::ai_random_forward_haunt(Game::Entity *const entity) {
+	auto moving = entity->get<Game::AxisMoving>();
+	auto collider = entity->get<Game::Collider>();
+	if (moving == nullptr || collider == nullptr)
+		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving or Collider component!");
+
+	return [entity, moving, collider] (const Game::LevelManager *const lr) {
+		if (entity->isShooting()) {
+			const auto cur_align = Game::tile(entity->getPosition());
+			const D cur = moving->getDirection();
+			if (collider->isColliding() && moving->canGo(cur, lr)) 
 				return oppositeDirection(cur);
 
-			if (enemy->attackAlign == cur_align)
+			if (entity->attackAlign == cur_align)
 				return cur;
 			
-			if (enemy->attackAlign.x < cur_align.x)
+			if (entity->attackAlign.x < cur_align.x)
 				return D::LEFT;
-			else if (enemy->attackAlign.x > cur_align.x)
+			else if (entity->attackAlign.x > cur_align.x)
 				return D::RIGHT;
-			else if (enemy->attackAlign.y < cur_align.y)
+			else if (entity->attackAlign.y < cur_align.y)
 				return D::UP;
 			else
 				return D::DOWN;
-		} else if (enemy->attackAlign.x > 0) {
+		} else if (entity->attackAlign.x > 0) {
 			D dir = D::DOWN;
-			const auto cur_align = Game::tile(enemy->getPosition());
-			if (enemy->attackAlign.x < cur_align.x)
+			const auto cur_align = Game::tile(entity->getPosition());
+			if (entity->attackAlign.x < cur_align.x)
 				dir =  D::LEFT;
-			else if (enemy->attackAlign.x > cur_align.x)
+			else if (entity->attackAlign.x > cur_align.x)
 				dir =  D::RIGHT;
-			else if (enemy->attackAlign.y < cur_align.y)
+			else if (entity->attackAlign.y < cur_align.y)
 				dir =  D::UP;
-			enemy->attackAlign.x = -1;
+			entity->attackAlign.x = -1;
 			return dir;
 		}
-		return ai_random_forward(enemy)(lr);
+		return ai_random_forward(entity)(lr);
 	};
 }
 
-AIBoundFunction Game::ai_follow(Game::Enemy *const enemy) {
-	return [enemy] (const Game::LevelManager *const lr) {
-		const D cur = enemy->getDirection();
-		const auto cur_align = Game::tile(enemy->getPosition());
-		if (enemy->prevAlign == cur_align && !enemy->colliding) 
+AIBoundFunction Game::ai_follow(Game::Entity *const entity) {
+	return [entity] (const Game::LevelManager *const lr) {
+		const D cur = entity->getDirection();
+		const auto cur_align = Game::tile(entity->getPosition());
+		if (entity->prevAlign == cur_align && !entity->colliding) 
 			return cur;
 
 		const D opp = oppositeDirection(cur);
-		if (enemy->colliding && enemy->canGo(cur, lr))
+		if (entity->colliding && entity->canGo(cur, lr))
 			return opp;
 
-		if (enemy->seeingPlayer != Game::Direction::NONE) {
-			enemy->yell();
-			return enemy->seeingPlayer;
+		if (entity->seeingPlayer != Game::Direction::NONE) {
+			entity->yell();
+			return entity->seeingPlayer;
 		}
 
-		return selectRandomViable(enemy, lr, opp);
+		return selectRandomViable(entity, lr, opp);
 	};
 }
 
-AIBoundFunction Game::ai_follow_dash(Game::Enemy *const enemy) {
-	return [enemy] (const Game::LevelManager *const lr) {
-		const D cur = enemy->getDirection();
+AIBoundFunction Game::ai_follow_dash(Game::Entity *const entity) {
+	return [entity] (const Game::LevelManager *const lr) {
+		const D cur = entity->getDirection();
 		const D opp = oppositeDirection(cur);
 
-		if (enemy->colliding) {
-			enemy->setDashing(false);
-			if (enemy->canGo(cur, lr))
+		if (entity->colliding) {
+			entity->setDashing(false);
+			if (entity->canGo(cur, lr))
 				return opp;
 		}
 
-		if (enemy->isDashing())
+		if (entity->isDashing())
 			return cur;
 
-		const auto cur_align = Game::tile(enemy->getPosition());
-		if (enemy->prevAlign == cur_align && !enemy->colliding) 
+		const auto cur_align = Game::tile(entity->getPosition());
+		if (entity->prevAlign == cur_align && !entity->colliding) 
 			return cur;
 
-		if (enemy->seeingPlayer != Game::Direction::NONE) {
-			if (enemy->setDashing(true))
-				Game::cache.playSound(enemy->getSoundFile(Game::Sounds::ATTACK));
-			return enemy->seeingPlayer;
+		if (entity->seeingPlayer != Game::Direction::NONE) {
+			if (entity->setDashing(true))
+				Game::cache.playSound(entity->getSoundFile(Game::Sounds::ATTACK));
+			return entity->seeingPlayer;
 		}
 
-		return selectRandomViable(enemy, lr, opp);
+		return selectRandomViable(entity, lr, opp);
 	};
 }
 
-AIBoundFunction Game::ai_chase(Game::Enemy *const enemy) {
+AIBoundFunction Game::ai_chase(Game::Entity *const entity) {
 	// TODO
-	return ai_follow(enemy);
+	return ai_follow(entity);
 }
