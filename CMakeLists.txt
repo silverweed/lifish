@@ -75,6 +75,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEC_CXX_FLAGS} ${SEC_LD_FLAGS}")
 # Debug flags
 if(${RELEASE})
 	message(STATUS "Compiling in RELEASE mode")
+	# Disable assertions
+	add_definitions(-DNDEBUG=1)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wall -pedantic -Wextra")
 else()
 	message(STATUS "Compiling in DEBUG mode")
