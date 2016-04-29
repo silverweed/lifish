@@ -3,6 +3,9 @@
 #include "Scored.hpp"
 #include "Sounded.hpp"
 #include "Game.hpp"
+#include "GameCache.hpp"
+#include "Killable.hpp"
+#include "Drawable.hpp"
 
 using Game::Coin;
 using Game::TILE_SIZE;
@@ -15,8 +18,17 @@ Coin::Coin(const sf::Vector2f& pos)
 	addComponent(new Game::Scored(this, VALUE));
 	addComponent(new Game::Sounded(this, { Game::getAsset("sounds", "coin.ogg") }));
 	grabClock = addComponent(new Game::Clock<1>(this));
-	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", "coin.png")));
-	animated->get<Game::Texture>()->getTexture()->setSmooth(true);
+	std::string texname = Game::getAsset("graphics", "coin.png");
+	animated = addComponent(new Game::Animated(this, texname));
+	Game::cache.loadTexture(texname)->setSmooth(true);
+	addComponent(new Game::Drawable(this, animated));
+	addComponent(new Game::Killable(this, [this] () {
+		// on kill
+		_grab();	
+	}, [this] () {
+		// is kill in progress
+		return grabbed && grabClock->getElapsedTime() < GRAB_TIME;
+	}));
 
 	auto& anim = animated->addAnimation("spin");
 
@@ -31,19 +43,10 @@ Coin::Coin(const sf::Vector2f& pos)
 	animatedSprite.pause();
 }
 
-void Coin::grab() {
+void Coin::_grab() {
 	if (!grabbed) {
 		grabbed = true;
 		grabClock->restart();
 		animated->getSprite().play();
 	}
-}
-
-void Coin::update() {
-	if (grabbed)
-		animated->update();
-}
-
-bool Coin::isGrabbed() const {
-	return grabbed && grabClock->getElapsedTime() > GRAB_TIME; 
 }

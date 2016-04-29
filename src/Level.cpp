@@ -15,8 +15,8 @@ using Game::TILE_SIZE;
 using Game::EntityType;
 
 Level::Level(const Game::LevelSet *const _levelSet) 
-	: levelSet(_levelSet) 
-	, Game::Entity()
+	: Game::Entity()
+	, levelSet(_levelSet) 
 {}
 
 bool Level::init() {

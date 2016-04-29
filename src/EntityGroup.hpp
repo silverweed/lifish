@@ -5,15 +5,26 @@
 #include <array>
 #include <iterator>
 #include <unordered_set>
+#include <SFML/System/NonCopyable.hpp>
 #include "Entity.hpp"
 
 namespace Game {
+
+namespace {
+	template<class T>
+	struct identity {
+		typedef T type;
+	};
+
+	template<class T, typename... Args>
+	using AppliedFunc = typename identity<std::function<void(T*, Args...)>>::type;
+}
 
 /**
  * A container for Entities, providing convenient methods for operating
  * on all or a specific type of them.
  */
-class EntityGroup final : public Game::WithOrigin {
+class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	/** All the entities (owning references) */
 	std::list<std::unique_ptr<Game::Entity>> entities;
 
@@ -36,15 +47,65 @@ public:
 	EntityGroup() {}
 	~EntityGroup();
 
-	std::iterator<std::input_iterator_tag, const Game::Entity*> all();
+	/** Applies a void(Args...) function to all entities of type T */
+	template<class T, typename... Args>
+	void apply(AppliedFunc<T, Args...> func, Args... args);
+
+	/** Applies a void(Args...) function to all entities */
+	template<typename...Args>
+	void apply(AppliedFunc<Game::Entity, Args...> func, Args... args);
 
 	template<class T>
 	T* add(T *entity, bool owned = true);
 
-	// TODO
-	unsigned int getCoinsNum() const { return 1; }
-
 	void setOrigin(const sf::Vector2f& origin) override;
+
+	template<class T>
+	size_t size() const;
+	size_t size() const { return entities.size(); }
+
+	void updateAll();
 };
+
+///// Implementation /////
+
+template<class T, typename... Args>
+void EntityGroup::apply(AppliedFunc<T, Args...> func, Args... args) {
+	for (auto& e : entities) {
+		T* t = dynamic_cast<T*>(e.get());
+		if (t != nullptr)
+			func(t, args...);
+	}
+}
+
+template<typename... Args>
+void EntityGroup::apply(AppliedFunc<Game::Entity, Args...> func, Args... args) {
+	for (auto& e : entities)
+		func(e.get(), args...);
+}
+
+template<class T>
+T* EntityGroup::_commonAdd(T *entity, bool owned) {
+	entities.push_back(std::unique_ptr<Game::Entity>(entity));
+	if (!owned)
+		unowned.insert(entity);	
+
+	return entity;
+}
+
+template<class T>
+T* EntityGroup::add(T *entity, bool owned) {
+	return _commonAdd(entity, owned);
+}
+
+template<class T>
+size_t EntityGroup::size() const {
+	size_t sz = 0;
+	for (auto& e : entities) {
+		if (dynamic_cast<T*>(e.get()) != nullptr)
+			++sz;
+	}
+	return sz;
+}
 
 }

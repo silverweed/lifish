@@ -11,17 +11,6 @@
 
 namespace Game {
 
-/** It's mandatory that directions are the first 4 elements */
-enum : unsigned short {
-	ANIM_UP    = 0,
-	ANIM_RIGHT = 1,
-	ANIM_DOWN  = 2,
-	ANIM_LEFT  = 3,
-	ANIM_DEATH = 4,
-	ANIM_WIN   = 5,
-	ANIM_HURT  = 6
-};
-
 /**
  * An Animated is a drawable object whose sprite has a certain
  * number of associated animations.
@@ -56,6 +45,10 @@ public:
 	void update() override;
 	
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+	void setOrigin(const sf::Vector2f& o) override {
+		animatedSprite.setOrigin(o);
+	}
 };
 
 }

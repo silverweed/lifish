@@ -41,7 +41,7 @@ public:
 	const sf::Vector2f& getPosition() const { return position; }
 	void setPosition(const sf::Vector2f& p) { position = p; }
 
-	virtual void update() {}
+	virtual void update();
 
 	virtual void setOrigin(const sf::Vector2f& origin) override;
 

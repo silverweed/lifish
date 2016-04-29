@@ -1,5 +1,6 @@
 #include "Animated.hpp"
 #include "Game.hpp"
+#include "utils.hpp"
 
 using Game::Animated;
 

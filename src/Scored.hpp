@@ -13,7 +13,9 @@ protected:
 
 public:
 	explicit Scored(Game::Entity *const owner, const int points) 
-		: pointsGiven(points), Game::Component(owner) {}
+		: Game::Component(owner)
+		, pointsGiven(points)
+	{}
 
 	int getPointsGiven() const { return pointsGiven; }
 };

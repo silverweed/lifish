@@ -50,15 +50,15 @@ inline std::string to_string(T val) {
 }
 //////////////
 
-inline unsigned short directionToUshort(const Direction dir) {
-	switch (dir) {
-	case Game::Direction::UP:    return ANIM_UP;
-	case Game::Direction::DOWN:  return ANIM_DOWN;
-	case Game::Direction::LEFT:  return ANIM_LEFT;
-	case Game::Direction::RIGHT: return ANIM_RIGHT;
-	default:                     return ANIM_DEATH;
-	}
-}
+//inline unsigned short directionToUshort(const Direction dir) {
+	//switch (dir) {
+	//case Game::Direction::UP:    return ANIM_UP;
+	//case Game::Direction::DOWN:  return ANIM_DOWN;
+	//case Game::Direction::LEFT:  return ANIM_LEFT;
+	//case Game::Direction::RIGHT: return ANIM_RIGHT;
+	//default:                     return ANIM_DEATH;
+	//}
+//}
 
 /** Returns the aligned tile corresponding to position `pos` by
  *  flooring its components and dividing by TILE_SIZE.

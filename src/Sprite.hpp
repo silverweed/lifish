@@ -23,6 +23,10 @@ public:
 	sf::Sprite& getSprite() { return sprite; }
 
 	void update() override;
+
+	void setOrigin(const sf::Vector2f& o) override {
+		sprite.setOrigin(o);
+	}
 };
 
 }

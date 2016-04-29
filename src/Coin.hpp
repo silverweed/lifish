@@ -20,13 +20,10 @@ class Coin : public Game::Entity {
 
 	Game::Animated *animated = nullptr;
 
+	void _grab();
+
 public:
 	explicit Coin(const sf::Vector2f& pos);
-
-	bool isBeingGrabbed() const { return grabbed; } 
-	bool isGrabbed() const;
-	void grab();
-	void update() override;
 };
 
 }

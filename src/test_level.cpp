@@ -1,8 +1,11 @@
 #include "Level.hpp"
 #include "LevelSet.hpp"
 #include "Bomb.hpp"
+#include "Coin.hpp"
+#include "EntityGroup.hpp"
 #include <SFML/Window.hpp>
 #include <memory>
+#include <algorithm>
 
 int main() {
 	Game::init();
@@ -11,6 +14,8 @@ int main() {
 
 	Game::LevelSet ls("levels.json");
 	std::unique_ptr<Game::Level> level(ls.getLevel(1));
+
+	Game::EntityGroup entities;
 
 	Game::Entity entity;
 	entity.setPosition(sf::Vector2f(32, 32));
@@ -21,8 +26,18 @@ int main() {
 		sf::IntRect(64, 0, 32, 32),
 		sf::IntRect(96, 0, 32, 32) 
 	}, true);
+	entity.addComponent(&anim);
 
 	Game::Bomb bomb(sf::Vector2f(64, 64), nullptr);
+	Game::Coin coin(sf::Vector2f(96, 96));
+	
+	entities.add(&entity);
+	entities.add(&bomb);
+	entities.add(&coin);
+
+	entities.setOrigin(sf::Vector2f(-200, 0));
+
+	std::cerr << "Entities: " << entities.size() << std::endl;
 
 	Game::music = level->get<Game::Music>()->getMusic();
 	//Game::playMusic();
@@ -34,16 +49,19 @@ int main() {
 			switch (event.type) {
 			case sf::Event::Closed:
 				window.close();
+				break;
+			default: break;
 			}
 		}
 
-		anim.update();
-		bomb.update();
-
+		entities.updateAll();
 		window.clear();
 		window.draw(*level.get());
-		window.draw(anim);
-		window.draw(*bomb.get<Game::Drawable>());
+		entities.apply([&window] (Game::Entity* e) {
+			auto d = e->get<Game::Drawable>();
+			if (d != nullptr)
+				window.draw(*d);
+		});
 		window.display();
 	}
 
