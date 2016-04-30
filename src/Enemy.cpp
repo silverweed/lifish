@@ -2,6 +2,7 @@
 #include "Animated.hpp"
 #include "AxisMoving.hpp"
 #include "Drawable.hpp"
+#include "Scored.hpp"
 #include "Lifed.hpp"
 #include "Sounded.hpp"
 
@@ -12,7 +13,6 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id)
 	: Game::Entity(pos)
 	, speed(BASE_SPEED)
 	, originalSpeed(speed)
-	, Game::Scored(id * 100)
 	, attackAlign(-1, -1)
 {
 	auto animated = addComponent(new Game::Animated(this, 
@@ -28,7 +28,8 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id)
 	addComponent(new Game::Lifed(this, 1));
 	addComponent(new Game::AxisMoving(this, speed, Game::Direction::DOWN));
 	clocks = addComponent(new Game::Clock<3>(this, { "attack", "yell", "dash" }));
-	addComponent(new Game::AlienSprite(this));
+	alienSprite = addComponent(new Game::AlienSprite(this));
+	addComponent(new Game::Scored(this, id * 100));
 
 	unsigned short death_n_frames = 2;
 	switch (id) {
@@ -102,18 +103,23 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id)
 	animatedSprite.pause();
 }
 
-bool Enemy::_isTransparentTo(const Game::Entity *const e) const {
-	return e->transparentTo.enemies;
-}
-
 bool Enemy::isRecharging() const {
-	return attackClock.getElapsedTime().asSeconds() < 1./attack.fireRate;
+	return clocks->getElapsedTime("attack").asSeconds() < 1./attack.fireRate;
 }
 
 void Enemy::shoot() {
-	attackClock.restart();
-	animatedSprite.setAnimation(animations[directionToUshort(direction)]);
+	clocks->restart("attack");
+	get<Game::Animated>()->setAnimation("shoot_" + Game::directionToString(direction));
 	shooting = true;
+}
+
+void setMorphed(bool b) {
+	morphed = b;
+	auto animated = get<Game::Animated>();
+	if (morphed) {
+	} else {
+
+	}
 }
 
 void Enemy::draw(sf::RenderTarget& window) {

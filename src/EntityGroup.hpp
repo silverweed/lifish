@@ -5,6 +5,7 @@
 #include <array>
 #include <iterator>
 #include <unordered_set>
+#include <functional>
 #include <SFML/System/NonCopyable.hpp>
 #include "Entity.hpp"
 

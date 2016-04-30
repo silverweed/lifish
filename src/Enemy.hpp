@@ -2,7 +2,9 @@
 
 #include <SFML/System.hpp>
 #include "Entity.hpp"
-#include "AI.hpp"
+#include "Clock.hpp"
+#include "Direction.hpp"
+//#include "AI.hpp"
 #include "AlienSprite.hpp"
 
 namespace Game {
@@ -21,12 +23,8 @@ class Enemy : public Game::Entity {
 	Game::Clock<3> *clocks = nullptr;
 
 	/** The function determining this enemy's movements */
-	AIBoundFunction ai;
+	//AIBoundFunction ai;
 
-	/** Keep track of the time past since last yell */
-	sftools::Chronometer yellClock;
-
-	sftools::Chronometer attackClock;
 	bool shooting = false;
 
 	/** True when the enemy is shooting and atktype is BLOCKING */
@@ -40,11 +38,7 @@ class Enemy : public Game::Entity {
 	 *  the enemy is dashing towards the player
 	 */
 	bool dashing = false;
-	/** Used to keep a cooldown between two following dashes */
-	sftools::Chronometer dashClock;
 	float originalSpeed;
-
-	bool _isTransparentTo(const Entity *const e) const override;
 
 public:
 	constexpr static float BASE_SPEED = 75.f;
@@ -57,24 +51,16 @@ public:
 	Game::Direction seeingPlayer = Game::Direction::NONE;
 
 
-	Enemy(sf::Vector2f pos, const unsigned short id);
+	explicit Enemy(sf::Vector2f pos, const unsigned short id);
 
-	void setAI(AIFunction aifunc) { ai = aifunc(this); }
-	AIBoundFunction getAI() const { return ai; }
-
-	void setSpeed(const float _speed) override { originalSpeed = speed = _speed; }
-
-	void stop() override { frameClock.restart(); }
+	//void setAI(AIFunction aifunc) { ai = aifunc(this); }
+	//AIBoundFunction getAI() const { return ai; }
 
 	/** Returns true if enemy has attacked and hasn't cooled down yet. */
 	bool isRecharging() const;
 
 	void shoot();
 	bool isShooting() const { return shooting; }
-
-	void draw(sf::RenderTarget& window) override;
-
-	void move(const Game::Direction dir) override;
 
 	void block() { blocked = true; }
 	bool isBlocked() const { return blocked; }
@@ -86,15 +72,7 @@ public:
 	bool setDashing(bool b);
 	bool isDashing() const { return dashing; }
 
-	const std::string& getSoundFile(unsigned short n = 0) const override;
-
 	void yell();
-
-	void setOrigin(const sf::Vector2f& origin) override {
-		Game::MovingEntity::setOrigin(origin);
-		for (auto& frame : shootFrame)
-			frame.setOrigin(origin);
-	}
 };
 
 }

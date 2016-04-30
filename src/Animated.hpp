@@ -40,6 +40,8 @@ public:
 	/** Sets the current animation to `anim` */
 	void setAnimation(Animation& anim);
 
+	void setTexture(sf::Texture *t) { texture = t; }
+
 	AnimatedSprite& getSprite() { return animatedSprite; }
 
 	void update() override;

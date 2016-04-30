@@ -45,7 +45,7 @@ public:
 
 	virtual void setOrigin(const sf::Vector2f& origin) override;
 
-	bool isAligned(const char axis) const;
+	bool isAligned(const char axis = 'b') const;
 };
 
 }

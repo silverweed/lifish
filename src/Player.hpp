@@ -3,6 +3,8 @@
 #include "Entity.hpp"
 #include "Bomb.hpp"
 #include "Game.hpp"
+#include "AxisMoving.hpp"
+#include "Animated.hpp"
 
 namespace Game {
 
@@ -30,6 +32,8 @@ private:
 
 	short remainingLives = INITIAL_LIVES;
 
+	Game::AxisMoving *moving = nullptr;
+	Game::Animated *animated = nullptr;
 
 	void _kill();
 
@@ -48,6 +52,8 @@ public:
 	void resurrect();
 
 	void setWinning(bool b) { winning = b; }
+
+	void update() override;
 };
 
 }

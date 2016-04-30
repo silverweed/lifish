@@ -77,7 +77,8 @@ void AxisMoving::stop() {
 	_realign();
 }
 
-bool AxisMoving::canGo(const Direction dir, const Game::LevelManager *const lm) const {
+bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager *const lm) const {
+	auto pos = owner->getPosition();
 	short iposx = (short)(pos.x / TILE_SIZE) - 1,
 	      iposy = (short)(pos.y / TILE_SIZE) - 1;
 	
@@ -117,4 +118,9 @@ bool AxisMoving::canGo(const Direction dir, const Game::LevelManager *const lm) 
 	*/
 
 	return true;
+}
+
+void AxisMoving::setDirection(Game::Direction dir) {
+	direction = dir; 
+	moving = dir != Game::Direction::NONE;
 }

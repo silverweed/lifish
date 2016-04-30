@@ -32,6 +32,7 @@
 #include "SaveManager.hpp"
 #include "Options.hpp"
 #include "Dialogs.hpp"
+#include "input.hpp"
 #include "utils.hpp"
 
 using Game::TILE_SIZE;
@@ -51,8 +52,6 @@ static void play_game(sf::RenderWindow& window, const std::string& level_set,
 static void display_get_ready(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short lvnum);
 static bool display_continue(sf::RenderWindow& window, Game::SidePanel& panel, const unsigned short playernum);
 static Game::Level* advance_level(sf::RenderWindow& window, Game::LevelManager& lr, Game::SidePanel& panel);
-static Game::Direction[] get_directions(sf::RenderWindow& window, 
-		const std::array<Game::Player*, Game::MAX_PLAYERS>& players);
 
 static sf::Font interlevel_font;
 
@@ -328,7 +327,8 @@ void play_game(sf::RenderWindow& window, const std::string& levelSetName,
 			}
 		}
 
-		auto dir = get_directions(window, players);
+		Game::get_directions(window, players);
+
 		lm.checkHurryUp();
 
 		if (lm.isExtraGame()) {
@@ -655,42 +655,3 @@ Game::Level* advance_level(sf::RenderWindow& window, Game::LevelManager& lr, Gam
 	return const_cast<Game::Level*>(lr.getLevel());
 }
 
-Game::Direction[] get_directions(sf::RenderWindow& window,
-		const std::array<Game::Player*, Game::MAX_PLAYERS>& players)
-{
-	Game::Direction dir[] = { Game::Direction::NONE, Game::Direction::NONE };
-
-	for (unsigned int i = 0; i < 2; ++i) {
-		if (players[i] == nullptr) continue;
-
-		if (window.hasFocus()) {
-			if (Game::options.useJoystick[i] >= 0) {
-				const short joystick = Game::options.useJoystick[i];
-				const auto horizontal = sf::Joystick::getAxisPosition(joystick, sf::Joystick::X),
-					   vertical = sf::Joystick::getAxisPosition(joystick, sf::Joystick::Y);
-				if (vertical < -Game::JOYSTICK_INPUT_THRESHOLD) 
-					dir[i] = Game::Direction::UP;
-				else if (vertical > Game::JOYSTICK_INPUT_THRESHOLD)
-					dir[i] = Game::Direction::DOWN;
-				else if (horizontal < -Game::JOYSTICK_INPUT_THRESHOLD)
-					dir[i] = Game::Direction::LEFT;
-				else if (horizontal > Game::JOYSTICK_INPUT_THRESHOLD)
-					dir[i] = Game::Direction::RIGHT;
-			} else {
-				if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::UP]))
-					dir[i] = Game::Direction::UP;
-				else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::LEFT]))
-					dir[i] = Game::Direction::LEFT;
-				else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::DOWN]))
-					dir[i] = Game::Direction::DOWN;
-				else if (sf::Keyboard::isKeyPressed(Game::playerControls[i][Game::Control::RIGHT]))
-					dir[i] = Game::Direction::RIGHT;
-			}
-		}
-
-		if (players[i]->isAligned())
-			players[i]->setDirection(dir[i]);
-	}
-
-	return dir;
-}

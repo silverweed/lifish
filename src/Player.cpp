@@ -2,7 +2,6 @@
 #include "Lifed.hpp"
 #include "Sounded.hpp"
 #include "Bonusable.hpp"
-#include "Moving.hpp"
 #include "Drawable.hpp"
 #include "Killable.hpp"
 #include "utils.hpp"
@@ -18,8 +17,8 @@ Player::Player(const sf::Vector2f& pos, const unsigned short id)
 	, id(id)
 {
 	addComponent(new Game::Lifed(this, MAX_LIFE));
-	addComponent(new Game::Moving(this, DEFAULT_SPEED));
-	auto animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", std::string("player") +
+	moving = addComponent(new Game::AxisMoving(this, DEFAULT_SPEED));
+	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", std::string("player") +
 				Game::to_string(id) + std::string(".png"))));
 	addComponent(new Game::Drawable(this, animated));
 	addComponent(new Game::Sounded(this, {
@@ -103,3 +102,37 @@ void Player::resurrect() {
 		//animatedSprite.update(frameClock.restart());
 	//}
 //}
+
+void Player::update() {
+	Game::Entity::update();
+	
+	static Game::Direction prev = Game::Direction::NONE;
+	Game::Direction dir = moving->getDirection();
+
+	if (prev == dir) return;
+	
+	switch (dir) {
+	case Game::Direction::UP:
+		animated->setAnimation("walk_up");
+		animated->getSprite().play();
+		break;
+	case Game::Direction::DOWN:
+		animated->setAnimation("walk_down");
+		animated->getSprite().play();
+		break;
+	case Game::Direction::LEFT:
+		animated->setAnimation("walk_left");
+		animated->getSprite().play();
+		break;
+	case Game::Direction::RIGHT:
+		animated->setAnimation("walk_right");
+		animated->getSprite().play();
+		break;
+	case Game::Direction::NONE:
+		animated->setAnimation("walk_down");
+		animated->getSprite().stop();
+		break;
+	}
+
+	prev = dir;
+}

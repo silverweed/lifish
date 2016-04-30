@@ -4,8 +4,8 @@
 using Game::Music;
 
 Music::Music(Game::Entity *const owner, const Game::Track& track)
-	: track(track)
-	, Game::Component(owner)
+	: Game::Component(owner)
+	, track(track)
 {
 	if (!musicInput.openFromFile(track.name)) {
 		std::cerr << "Error: couldn't load music " << track.name << " from file!" << std::endl;

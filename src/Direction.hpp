@@ -8,6 +8,16 @@ enum class Direction {
 	UP, LEFT, DOWN, RIGHT, NONE
 };
 
+inline std::string directionToString(const Direction& dir) {
+	switch (dir) {
+	case Direction::UP: return "up";
+	case Direction::LEFT: return "left";
+	case Direction::DOWN: return "down"; 
+	case Direction::RIGHT: return "right";
+	default: return "none";
+	}
+}
+
 inline std::ostream& operator<<(std::ostream& stream, const Direction& dir) {
 	switch (dir) {
 	case Direction::UP: stream << "UP"; break;
