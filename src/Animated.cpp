@@ -21,7 +21,7 @@ Animation& Animated::addAnimation(const std::string& name) {
 Animation& Animated::addAnimation(const std::string& name, 
 		std::initializer_list<sf::IntRect> frames, bool set)
 {
-	auto& anim = Animated::addAnimation(name);
+	auto& anim = addAnimation(name);
 	
 	for (auto& frame : frames)
 		anim.addFrame(frame);

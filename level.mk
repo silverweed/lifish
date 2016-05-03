@@ -1,8 +1,8 @@
-CC := c++
+CC := clang++
 CFLAGS := -std=c++11 -Wall -Wextra -pedantic -ggdb
 LDFLAGS := -lsfml-window -lsfml-graphics -lsfml-system -lsfml-audio 
 
-test_level: Killable.o Animation.o Bomb.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o test_level.o LevelSet.o LevelNumText.o Music.o Game.o Texture.o ShadedText.o Track.o utils.o Entity.o EntityGroup.o Coin.o AxisMoving.o Moving.o Player.o Lifed.o Controls.o Enemy.o
+test_level: Killable.o Animation.o Bomb.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o test_level.o LevelSet.o LevelNumText.o Music.o Game.o Texture.o ShadedText.o Track.o utils.o Entity.o EntityGroup.o Coin.o AxisMoving.o Moving.o Lifed.o Controls.o Shooting.o MovingAnimator.o Player.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
 .PHONY: clean
@@ -59,5 +59,9 @@ Lifed.o: src/Lifed.cpp
 	$(CC) $(CFLAGS) -c $<
 Controls.o: src/Controls.cpp
 	$(CC) $(CFLAGS) -c $<
-Enemy.o: src/Enemy.cpp
+Shooting.o: src/Shooting.cpp
 	$(CC) $(CFLAGS) -c $<
+MovingAnimator.o: src/MovingAnimator.cpp
+	$(CC) $(CFLAGS) -c $<
+#Enemy.o: src/Enemy.cpp
+	#$(CC) $(CFLAGS) -c $<

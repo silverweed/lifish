@@ -28,6 +28,7 @@ Player::Player(const sf::Vector2f& pos, const unsigned short id)
 	}));
 	addComponent(new Game::Killable(this, [this] () { _kill(); }));
 	addComponent(new Game::Bonusable(this));
+	movingAnimator = addComponent(new Game::MovingAnimator(this));
 
 	extra.fill(false);
 
@@ -103,36 +104,6 @@ void Player::resurrect() {
 	//}
 //}
 
-void Player::update() {
-	Game::Entity::update();
-	
-	static Game::Direction prev = Game::Direction::NONE;
-	Game::Direction dir = moving->getDirection();
-
-	if (prev == dir) return;
-	
-	switch (dir) {
-	case Game::Direction::UP:
-		animated->setAnimation("walk_up");
-		animated->getSprite().play();
-		break;
-	case Game::Direction::DOWN:
-		animated->setAnimation("walk_down");
-		animated->getSprite().play();
-		break;
-	case Game::Direction::LEFT:
-		animated->setAnimation("walk_left");
-		animated->getSprite().play();
-		break;
-	case Game::Direction::RIGHT:
-		animated->setAnimation("walk_right");
-		animated->getSprite().play();
-		break;
-	case Game::Direction::NONE:
-		animated->setAnimation("walk_down");
-		animated->getSprite().stop();
-		break;
-	}
-
-	prev = dir;
-}
+//void Player::update() {
+	//Game::Entity::update();
+//}

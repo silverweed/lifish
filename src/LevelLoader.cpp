@@ -1,5 +1,11 @@
 #include "LevelLoader.hpp"
 #include "Game.hpp"
+#include "LevelSet.hpp"
+#include "FixedWall.hpp"
+#include "BreakableWall.hpp"
+#include "TransparentWall.hpp"
+#include "Coin.hpp"
+#include "Enemy.hpp"
 
 using Game::TILE_SIZE;
 
@@ -10,34 +16,21 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::EntityGroup& entiti
 			const sf::Vector2f curPos = sf::Vector2f((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
 			unsigned short enemy_id = 0;
 			const Game::LevelSet *ls = level.getLevelSet();
-			
-			struct {
-				unsigned short type;
-				float fireRate;
-				unsigned short id;
-				unsigned short damage;
-				unsigned short blockTime = 0;
-				float speed;
-				short range = -1;
-			} enemy_attack;	
 
 			/*auto is_game_over = [] (unsigned short id) {
 				return _players[id] == nullptr || (_players[id]->getRemainingLives() <= 0
 						&& _players[id]->getLife() <= 0 && Game::playerContinues[id] <= 0);
 			};*/
 
-			switch (level->getTile(left, top)) {
-
-				using AT = Game::Enemy::AttackType;
-
+			switch (level.getTile(left, top)) {
 			case EntityType::FIXED: 
 				//fixedEntities[top * LEVEL_WIDTH + left] = 
-				entities.add(new Game::FixedWall(curPos, level->getInfo().tileIDs.fixed));
+				entities.add(new Game::FixedWall(curPos, level.getInfo().tileIDs.fixed));
 				break;
 
 			case EntityType::BREAKABLE:
 				//fixedEntities[top * LEVEL_WIDTH + left] = 
-				entities.add(new Game::BreakableWall(curPos, level->getInfo().tileIDs.breakable));
+				entities.add(new Game::BreakableWall(curPos, level.getInfo().tileIDs.breakable));
 				break;
 
 			case EntityType::TRANSPARENT_WALL:
@@ -48,7 +41,6 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::EntityGroup& entiti
 			case EntityType::COIN:
 				entities.add(new Game::Coin(curPos));
 				//fixedEntities[top * LEVEL_WIDTH + left] = new Game::Coin(curPos);
-				++coinsNum;
 				break;
 
 			/*
@@ -128,8 +120,13 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::EntityGroup& entiti
 			default:
 				break;
 			}
-			if (enemy_id > 0)
-				entities.push_back(new Game::Enemy(curPos, enemy_id, ls->getEnemyInfo(enemy_id -1)));
+			if (enemy_id > 0) {
+				auto info = ls->getEnemyInfo(enemy_id - 1);
+				entities.add(new Game::Enemy(curPos, enemy_id, info.speed, info.attack));
+				// TODO AI
+			}
 		}
 	}
+
+	return true;
 }

@@ -3,6 +3,7 @@
 #include "Entity.hpp"
 #include "Bomb.hpp"
 #include "Game.hpp"
+#include "MovingAnimator.hpp"
 #include "AxisMoving.hpp"
 #include "Animated.hpp"
 
@@ -34,6 +35,7 @@ private:
 
 	Game::AxisMoving *moving = nullptr;
 	Game::Animated *animated = nullptr;
+	Game::MovingAnimator *movingAnimator = nullptr;
 
 	void _kill();
 
@@ -52,8 +54,6 @@ public:
 	void resurrect();
 
 	void setWinning(bool b) { winning = b; }
-
-	void update() override;
 };
 
 }

@@ -1,5 +1,4 @@
 #include "Enemy.hpp"
-#include "Animated.hpp"
 #include "AxisMoving.hpp"
 #include "Drawable.hpp"
 #include "Scored.hpp"
@@ -9,12 +8,12 @@
 using Game::Enemy;
 using Game::TILE_SIZE;
 
-Enemy::Enemy(sf::Vector2f pos, const unsigned short id)
+Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attack& attack)
 	: Game::Entity(pos)
 	, originalSpeed(speed)
 	, attackAlign(-1, -1)
 {
-	auto animated = addComponent(new Game::Animated(this, 
+	animated = addComponent(new Game::Animated(this, 
 		Game::getAsset("graphics", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
 	addComponent(new Game::Drawable(this, animated));
 	addComponent(new Game::Sounded(this, {
@@ -29,6 +28,8 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id)
 	clocks = addComponent(new Game::Clock<3>(this, { "attack", "yell", "dash" }));
 	alienSprite = addComponent(new Game::AlienSprite(this));
 	addComponent(new Game::Scored(this, id * 100));
+	addComponent(new Game::Shooting(this, attack));
+	movingAnimator = addComponent(new Game::MovingAnimator(this));
 
 	unsigned short death_n_frames = 2;
 	switch (id) {
@@ -102,14 +103,16 @@ Enemy::Enemy(sf::Vector2f pos, const unsigned short id)
 	animatedSprite.pause();
 }
 
-bool Enemy::isRecharging() const {
-	return clocks->getElapsedTime("attack").asSeconds() < 1./attack.fireRate;
-}
+void Enemy::update() {
+	Game::Entity::update();
 
-void Enemy::shoot() {
-	clocks->restart("attack");
-	get<Game::Animated>()->setAnimation("shoot_" + Game::directionToString(direction));
-	shooting = true;
+	if (shooting->isShooting()) {
+		animated->setAnimation("shoot_" + Game::directionToString(direction));
+		animated->play();
+		return;
+	}
+	
+	movingAnimator->update();
 }
 
 void setMorphed(bool b) {
@@ -121,7 +124,7 @@ void setMorphed(bool b) {
 	}
 }
 
-void Enemy::draw(sf::RenderTarget& window) {
+/*void Enemy::draw(sf::RenderTarget& window) {
 	if (dashing && !dead) {
 		const unsigned short d = Game::directionToUshort(direction);
 		shootFrame[d].setPosition(pos);
@@ -154,7 +157,7 @@ void Enemy::move(const Game::Direction dir) {
 		blocked = false;
 	}
 	MovingEntity::move(dir);
-}
+}*/
 
 void Enemy::setMorphed(bool b) {
 	morphed = b;

@@ -59,7 +59,8 @@ LevelSet::LevelSet(const std::string& path) {
 	 *	"attack": {
 	 *		"type": string,
 	 *		"damage": short,
-	 *		"speed": float,
+	 *		"id": ushort        [opt]
+	 *		"speed": float,     [opt]
 	 *		"fireRate": float,  [opt]
 	 *		"blockTime": float, [opt]
 	 *		"range": short,     [opt, default=-1]
@@ -78,7 +79,7 @@ LevelSet::LevelSet(const std::string& path) {
 		if (!Game::stringToAttackType(fst, enemies[enemynum].attack.type))
 			throw std::invalid_argument(fst.c_str());
 
-		for (int i = 1; i < atktype.size(); ++i) {
+		for (unsigned short i = 1; i < atktype.size(); ++i) {
 			AttackType type;
 			auto snd = atktype[1].get<std::string>();
 			if (!Game::stringToAttackType(snd, type))
@@ -89,7 +90,23 @@ LevelSet::LevelSet(const std::string& path) {
 					| static_cast<unsigned int>(type));
 		}
 
-		// TODO
+		// Mandatory fields
+		enemies[enemynum].attack.damage   = atk["damage"].get<short>();
+		// Optional fields
+		auto it = atk.find("speed");
+		if (it != atk.end())
+			enemies[enemynum].attack.speed = it->get<float>();
+		
+		it = atk.find("id");
+		if (it != atk.end())
+			enemies[enemynum].attack.id = it->get<unsigned short>();
+
+		it = atk.find("fireRate");
+		if (it != atk.end())
+			enemies[enemynum].attack.fireRate = it->get<float>();
+
+		it = atk.find("range");
+		enemies[enemynum].attack.range = it != atk.end() ? it->get<short>() : -1;
 
 		++enemynum;
 	}
@@ -114,13 +131,13 @@ LevelSet::LevelSet(const std::string& path) {
 	for (const auto& lvinfo : levelsdata) {
 		LevelInfo info;
 		info.levelnum          = lvnum;
-		info.time              = (unsigned int)lvinfo["time"];
-		info.track             = tracks[(unsigned short)lvinfo["music"]-1];
+		info.time              = lvinfo["time"].get<unsigned int>();
+		info.track             = tracks[lvinfo["music"].get<unsigned short>()-1];
 		info.tilemap           = lvinfo["tilemap"];
-		info.tileIDs.border    = (unsigned short)lvinfo["tileIDs"]["border"];
-		info.tileIDs.bg        = (unsigned short)lvinfo["tileIDs"]["bg"];
-		info.tileIDs.fixed     = (unsigned short)lvinfo["tileIDs"]["fixed"];
-		info.tileIDs.breakable = (unsigned short)lvinfo["tileIDs"]["breakable"];
+		info.tileIDs.border    = lvinfo["tileIDs"]["border"].get<unsigned short>();
+		info.tileIDs.bg        = lvinfo["tileIDs"]["bg"].get<unsigned short>();
+		info.tileIDs.fixed     = lvinfo["tileIDs"]["fixed"].get<unsigned short>();
+		info.tileIDs.breakable = lvinfo["tileIDs"]["breakable"].get<unsigned short>();
 		levels.push_back(info);
 	}
 }

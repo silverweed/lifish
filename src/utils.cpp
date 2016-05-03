@@ -4,12 +4,12 @@
 #include "ShadedText.hpp"
 #include <random>
 
-static Game::Direction directions[] = { 
-	Game::Direction::UP,
-	Game::Direction::RIGHT,
-	Game::Direction::DOWN, 
-	Game::Direction::LEFT 
-};
+//static Game::Direction directions[] = { 
+	//Game::Direction::UP,
+	//Game::Direction::RIGHT,
+	//Game::Direction::DOWN, 
+	//Game::Direction::LEFT 
+//};
 
 //Game::Direction Game::selectRandomViable(const Game::MovingEntity *const entity,
 		//const Game::LevelManager *const lr, const Game::Direction opp) {

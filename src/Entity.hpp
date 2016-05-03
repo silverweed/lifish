@@ -21,6 +21,7 @@ protected:
 public:
 	Entity() {}
 	Entity(const sf::Vector2f& pos) : position(pos) {}
+	virtual ~Entity() {}
 
 	template<class T>
 	T* addComponent(T* comp) {

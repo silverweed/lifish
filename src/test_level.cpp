@@ -2,7 +2,7 @@
 #include "LevelSet.hpp"
 #include "Bomb.hpp"
 #include "Coin.hpp"
-#include "Enemy.hpp"
+//#include "Enemy.hpp"
 #include "EntityGroup.hpp"
 #include <SFML/Window.hpp>
 #include <memory>
@@ -19,12 +19,12 @@ int main() {
 
 	Game::EntityGroup entities;
 
-	Game::Enemy enemy(sf::Vector2f(32, 32), 1);
+	//Game::Enemy enemy(sf::Vector2f(32, 32), 1);
 	Game::Bomb bomb(sf::Vector2f(64, 64), nullptr);
 	Game::Coin coin(sf::Vector2f(96, 96));
 	Game::Player player(sf::Vector2f(128, 128), 1);
 	
-	entities.add(&enemy);
+	//entities.add(&enemy);
 	entities.add(&bomb);
 	entities.add(&coin);
 	entities.add(&player);

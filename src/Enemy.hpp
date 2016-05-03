@@ -3,10 +3,13 @@
 #include <SFML/System.hpp>
 #include "Entity.hpp"
 #include "Clock.hpp"
+#include "Animated.hpp"
 #include "Direction.hpp"
+#include "MovingAnimator.hpp"
 //#include "AI.hpp"
 #include "AlienSprite.hpp"
 #include "Game.hpp"
+#include "Shooting.hpp"
 
 namespace Game {
 
@@ -21,12 +24,14 @@ class Enemy : public Game::Entity {
 	/** The duration of the shooting frame */
 	sf::Time shootFrameTime = sf::milliseconds(250); // ms
 
+	Game::Shooting *shooting = nullptr;
+	Game::Animated *animated = nullptr;
+	Game::MovingAnimator *movingAnimator = nullptr;
+
 	Game::Clock<3> *clocks = nullptr;
 
 	/** The function determining this enemy's movements */
 	//AIBoundFunction ai;
-
-	bool shooting = false;
 
 	/** True when the enemy is shooting and atktype is BLOCKING */
 	bool blocked = false;
@@ -52,16 +57,13 @@ public:
 	Game::Direction seeingPlayer = Game::Direction::NONE;
 
 
-	explicit Enemy(sf::Vector2f pos, const unsigned short id);
+	explicit Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attack& attack);
 
 	//void setAI(AIFunction aifunc) { ai = aifunc(this); }
 	//AIBoundFunction getAI() const { return ai; }
 
 	/** Returns true if enemy has attacked and hasn't cooled down yet. */
 	bool isRecharging() const;
-
-	void shoot();
-	bool isShooting() const { return shooting; }
 
 	void block() { blocked = true; }
 	bool isBlocked() const { return blocked; }
@@ -74,6 +76,8 @@ public:
 	bool isDashing() const { return dashing; }
 
 	void yell();
+
+	void update() override;
 };
 
 }

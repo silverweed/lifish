@@ -34,6 +34,8 @@ public:
 	virtual void move();
 	virtual void stop();
 
+	virtual bool isMoving() const { return moving; }
+
 	virtual void update() override = 0;
 };
 

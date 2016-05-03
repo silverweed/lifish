@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.hpp"
+#include "Clock.hpp"
 #include <string>
 
 namespace Game {
@@ -29,15 +30,7 @@ enum AttackType : unsigned int {
 	BLOCKING = 1 << 3
 };
 
-bool stringToAttackType(const std::string& str, AttackType& type) {
-	if (str == "simple") type = AttackType::SIMPLE;
-	else if (str == "contact") type = AttackType::CONTACT;
-	else if (str == "ranged") type = AttackType::RANGED;
-	else if (str == "blocking") type = AttackType::BLOCKING;
-	else return false;
-
-	return true;
-}
+bool stringToAttackType(const std::string& str, AttackType& type);
 
 /** Information about how an entity attacks */
 struct Attack {
@@ -72,7 +65,10 @@ protected:
 	sf::Vector2i attackAlign;
 	
 	Attack attack;
+	bool shooting = false;
 
+	Game::Clock<1> *rechargeClock = nullptr;
+	
 public:
 	/** id of the shot bullets */
 	unsigned short id;
@@ -82,7 +78,15 @@ public:
 	explicit Shooting(Game::Entity *const owner, const Attack& attack)
 		: Game::Component(owner)
 		, attackAlign(-1.f, -1.f)
-		, attack(attack) {}
+		, attack(attack) 
+	{
+		rechargeClock = addComponent(new Game::Clock<1>(this));
+	}
+
+	void shoot();
+	bool isShooting() const { return shooting; }
+
+	bool isRecharging() const;
 };
 
 }
