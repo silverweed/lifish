@@ -9,6 +9,7 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::EntityGroup& entiti
 
 			const sf::Vector2f curPos = sf::Vector2f((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
 			unsigned short enemy_id = 0;
+			const Game::LevelSet *ls = level.getLevelSet();
 			
 			struct {
 				unsigned short type;
@@ -44,12 +45,13 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::EntityGroup& entiti
 				entities.add(new Game::TransparentWall(curPos));
 				break;
 
-			/*case EntityType::COIN:
+			case EntityType::COIN:
 				entities.add(new Game::Coin(curPos));
 				//fixedEntities[top * LEVEL_WIDTH + left] = new Game::Coin(curPos);
 				++coinsNum;
 				break;
 
+			/*
 			case EntityType::PLAYER1: 
 				if (!is_game_over(0)) {
 					_players[0]->setPosition(curPos);
@@ -92,103 +94,42 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::EntityGroup& entiti
 					bosses.push_back(new Game::Boss(curPos));
 				}
 				break;
+			*/
 			case EntityType::ENEMY1: 
-				// TODO: make enemy_attack configurable from levels.json
 				enemy_id = 1;
-				enemy_attack.id = 1;
-				enemy_attack.type = AT::SIMPLE;
-				enemy_attack.damage = 1;
-				enemy_attack.speed = 1;
-				enemy_attack.fireRate = 1;
 				break;
 			case EntityType::ENEMY2: 
 				enemy_id = 2;
-				enemy_attack.id = 1;
-				enemy_attack.type = AT::SIMPLE;
-				enemy_attack.damage = 1;
-				enemy_attack.speed = 1;
-				enemy_attack.fireRate = 2;
 				break;
 			case EntityType::ENEMY3: 
 				enemy_id = 3;
-				enemy_attack.id = 2;
-				enemy_attack.type = AT::SIMPLE | AT::BLOCKING;
-				enemy_attack.damage = 2;
-				enemy_attack.speed = 0.66;
-				enemy_attack.fireRate = 1;
-				enemy_attack.blockTime = 200;
 				break;
 			case EntityType::ENEMY4:
 				enemy_id = 4;
-				enemy_attack.type = AT::CONTACT;
-				enemy_attack.damage = 2;
-				enemy_attack.fireRate = 1;
 				break;
 			case EntityType::ENEMY5: 
 				enemy_id = 5;
-				enemy_attack.id = 3;
-				enemy_attack.type = AT::BLOCKING;
-				enemy_attack.damage = 2;
-				enemy_attack.speed = 1;
-				enemy_attack.fireRate = 10;
 				break;
 			case EntityType::ENEMY6: 
 				enemy_id = 6;
-				enemy_attack.id = 4;
-				enemy_attack.type = AT::SIMPLE | AT::BLOCKING;
-				enemy_attack.damage = 3;
-				enemy_attack.fireRate = 1;
-				enemy_attack.speed = 0.66;
-				enemy_attack.blockTime = 250;
 				break;
 			case EntityType::ENEMY7: 
 				enemy_id = 7;
-				enemy_attack.type = AT::CONTACT | AT::RANGED;
-				enemy_attack.damage = 1;
-				enemy_attack.fireRate = 2.5;
 				break;
 			case EntityType::ENEMY8: 
 				enemy_id = 8;
-				enemy_attack.id = 5;
-				enemy_attack.type = AT::RANGED | AT::BLOCKING;
-				enemy_attack.damage = 3;
-				enemy_attack.range = 4;
-				enemy_attack.speed = 0.5;
-				enemy_attack.fireRate = 4;
 				break;
 			case EntityType::ENEMY9: 
 				enemy_id = 9;
-				enemy_attack.id = 6;
-				enemy_attack.type = AT::BLOCKING;
-				enemy_attack.damage = 3;
-				enemy_attack.speed = 1;
-				enemy_attack.fireRate = 10;
 				break;
 			case EntityType::ENEMY10: 
 				enemy_id = 10;
-				enemy_attack.id = 7;
-				enemy_attack.type = AT::SIMPLE | AT::BLOCKING;
-				enemy_attack.damage = 4;
-				enemy_attack.fireRate = 0.7;
-				enemy_attack.blockTime = 650;
-				enemy_attack.speed = 1;
-				break;*/
+				break;
 			default:
 				break;
 			}
-		/*	if (enemy_id > 0) {
-				auto enemy = new Game::Enemy(curPos, enemy_id);
-				enemy->setAI(Game::ai_functions[level->getLevelSet()->getEnemyInfo(enemy_id).ai]);
-				enemy->setSpeed(Game::Enemy::BASE_SPEED * level->getLevelSet()->getEnemyInfo(enemy_id).speed);
-				enemy->attack.id = enemy_attack.id;
-				enemy->attack.type = enemy_attack.type;
-				enemy->attack.damage = enemy_attack.damage;
-				enemy->attack.speed = enemy_attack.speed;
-				enemy->attack.fireRate = enemy_attack.fireRate;
-				enemy->attack.blockTime = enemy_attack.blockTime;
-				enemy->attack.range = enemy_attack.range;
-				movingEntities.push_back(enemy);
-			}*/
+			if (enemy_id > 0)
+				entities.push_back(new Game::Enemy(curPos, enemy_id, ls->getEnemyInfo(enemy_id -1)));
 		}
 	}
 }

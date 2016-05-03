@@ -8,12 +8,14 @@
 #include "Track.hpp"
 #include "Game.hpp"
 #include "Stringable.hpp"
+#include "Shooting.hpp"
 
 namespace Game {
 
 struct EnemyInfo {
 	unsigned short ai = 0;
 	unsigned short speed = 0;
+	Attack attack;	
 };
 
 /**

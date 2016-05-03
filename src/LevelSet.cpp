@@ -1,5 +1,7 @@
 #include "LevelSet.hpp"
 #include "json.hpp"
+#include "utils.hpp"
+#include <exception>
 #include <fstream>
 #include <iostream>
 #include <typeinfo>
@@ -53,12 +55,42 @@ LevelSet::LevelSet(const std::string& path) {
 	unsigned short enemynum = 0;
 	/* enemyinfo = {
 	 *	"ai": ushort,
-	 *	"speed": ushort
+	 *	"speed": ushort,
+	 *	"attack": {
+	 *		"type": string,
+	 *		"damage": short,
+	 *		"speed": float,
+	 *		"fireRate": float,  [opt]
+	 *		"blockTime": float, [opt]
+	 *		"range": short,     [opt, default=-1]
+	 *	}
+	 *
 	 * }
 	 */
 	for (const auto& enemyinfo : enemydata) {
 		enemies[enemynum].ai = enemyinfo["ai"];
 		enemies[enemynum].speed = enemyinfo["speed"];
+		
+		auto atk = enemyinfo["attack"];
+		auto atktype = atk["type"];
+		
+		auto fst = atktype[0].get<std::string>();
+		if (!Game::stringToAttackType(fst, enemies[enemynum].attack.type))
+			throw std::invalid_argument(fst.c_str());
+
+		for (int i = 1; i < atktype.size(); ++i) {
+			AttackType type;
+			auto snd = atktype[1].get<std::string>();
+			if (!Game::stringToAttackType(snd, type))
+				throw std::invalid_argument(snd.c_str());
+
+			enemies[enemynum].attack.type = AttackType(
+					static_cast<unsigned int>(enemies[enemynum].attack.type) 
+					| static_cast<unsigned int>(type));
+		}
+
+		// TODO
+
 		++enemynum;
 	}
 

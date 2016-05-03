@@ -11,7 +11,6 @@ using Game::TILE_SIZE;
 
 Enemy::Enemy(sf::Vector2f pos, const unsigned short id)
 	: Game::Entity(pos)
-	, speed(BASE_SPEED)
 	, originalSpeed(speed)
 	, attackAlign(-1, -1)
 {

@@ -6,6 +6,7 @@
 #include "Direction.hpp"
 //#include "AI.hpp"
 #include "AlienSprite.hpp"
+#include "Game.hpp"
 
 namespace Game {
 
@@ -38,7 +39,7 @@ class Enemy : public Game::Entity {
 	 *  the enemy is dashing towards the player
 	 */
 	bool dashing = false;
-	float originalSpeed;
+	const float originalSpeed;
 
 public:
 	constexpr static float BASE_SPEED = 75.f;
