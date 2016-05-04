@@ -7,7 +7,7 @@ namespace Game {
 /**
  * An object moving in any direction. Does not align to grid.
  */
-class FreeMoving : Game::Moving {
+class FreeMoving : public Game::Moving {
 	/** Normalized velocity vector */
 	sf::Vector2f velocity;
 
