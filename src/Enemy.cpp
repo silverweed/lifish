@@ -4,6 +4,8 @@
 #include "Scored.hpp"
 #include "Lifed.hpp"
 #include "Sounded.hpp"
+#include "Killable.hpp"
+#include "utils.hpp"
 
 using Game::Enemy;
 using Game::TILE_SIZE;
@@ -11,11 +13,9 @@ using Game::TILE_SIZE;
 Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attack& attack)
 	: Game::Entity(pos)
 	, originalSpeed(speed)
-	, attackAlign(-1, -1)
 {
 	animated = addComponent(new Game::Animated(this, 
 		Game::getAsset("graphics", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
-	addComponent(new Game::Drawable(this, animated));
 	addComponent(new Game::Sounded(this, {
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_death.ogg")),
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_yell.ogg")),
@@ -24,12 +24,21 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attac
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_attack.ogg"))
 	}));
 	addComponent(new Game::Lifed(this, 1));
-	addComponent(new Game::AxisMoving(this, speed, Game::Direction::DOWN));
-	clocks = addComponent(new Game::Clock<3>(this, { "attack", "yell", "dash" }));
+	moving = addComponent(new Game::AxisMoving(this, BASE_SPEED * speed, Game::Direction::DOWN));
+	clocks = addComponent(new Game::Clock<3>(this, {{ "attack", "yell", "dash" }}));
 	alienSprite = addComponent(new Game::AlienSprite(this));
 	addComponent(new Game::Scored(this, id * 100));
 	addComponent(new Game::Shooting(this, attack));
 	movingAnimator = addComponent(new Game::MovingAnimator(this));
+	addComponent(new Game::Killable(this, [this] () {
+		// on kill
+		get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH);
+	}));
+	alienSprite = addComponent(new Game::AlienSprite(this));
+	shooting = addComponent(new Game::Shooting(this, attack));
+
+	drawProxy = std::unique_ptr<Game::EnemyDrawableProxy>(new Game::EnemyDrawableProxy(*this));
+	addComponent(new Game::Drawable(this, drawProxy.get()));
 
 	unsigned short death_n_frames = 2;
 	switch (id) {
@@ -40,10 +49,10 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attac
 		break;
 	}
 
-	auto& a_down = animated->addAnimation("down");
-	auto& a_up = animated->addAnimation("up");
-	auto& a_right = animated->addAnimation("right");
-	auto& a_left = animated->addAnimation("left");
+	auto& a_down = animated->addAnimation("walk_down");
+	auto& a_up = animated->addAnimation("walk_up");
+	auto& a_right = animated->addAnimation("walk_right");
+	auto& a_left = animated->addAnimation("walk_left");
 	auto& a_shoot_down = animated->addAnimation("shoot_down");
 	auto& a_shoot_up = animated->addAnimation("shoot_up");
 	auto& a_shoot_right = animated->addAnimation("shoot_right");
@@ -107,21 +116,19 @@ void Enemy::update() {
 	Game::Entity::update();
 
 	if (shooting->isShooting()) {
-		animated->setAnimation("shoot_" + Game::directionToString(direction));
-		animated->play();
+		const auto s = "shoot_" + Game::directionToString(moving->getDirection());
+		if (!animated->isPlaying(s)) {
+			animated->setAnimation(s);
+			animated->getSprite().play();
+		}
 		return;
 	}
 	
 	movingAnimator->update();
 }
 
-void setMorphed(bool b) {
+void Enemy::setMorphed(bool b) {
 	morphed = b;
-	auto animated = get<Game::Animated>();
-	if (morphed) {
-	} else {
-
-	}
 }
 
 /*void Enemy::draw(sf::RenderTarget& window) {
@@ -157,17 +164,6 @@ void Enemy::move(const Game::Direction dir) {
 		blocked = false;
 	}
 	MovingEntity::move(dir);
-}*/
-
-void Enemy::setMorphed(bool b) {
-	morphed = b;
-	if (morphed) {
-		alienSprite = new Game::AlienSprite;
-		alienSprite->setOrigin(animatedSprite.getOrigin());
-	} else if (alienSprite != nullptr) {
-		delete alienSprite;
-		alienSprite = nullptr;
-	}
 }
 
 bool Enemy::setDashing(bool b) {
@@ -191,8 +187,22 @@ const std::string& Enemy::getSoundFile(unsigned short n) const {
 }
 
 void Enemy::yell() {
-	if (yellClock.getElapsedTime().asMilliseconds() >= YELL_DELAY) {
+	if (clocks->getElapsedTime("yell") >= YELL_DELAY) {
 		Game::cache.playSound(getSoundFile(Game::Sounds::YELL));
-		yellClock.restart();
+		clocks->restart("yell");
 	}
+}*/
+
+Game::EnemyDrawableProxy::EnemyDrawableProxy(Game::Enemy& e)
+	: enemy(e)
+{
+	enemyAnim = e.get<Game::Animated>();
+	morphedAnim = e.get<Game::AlienSprite>()->get<Game::Animated>();
+}
+
+void Game::EnemyDrawableProxy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	if (enemy.isMorphed())
+		morphedAnim->draw(target, states);
+	else
+		enemyAnim->draw(target, states);
 }

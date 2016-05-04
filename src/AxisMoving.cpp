@@ -124,3 +124,10 @@ void AxisMoving::setDirection(Game::Direction dir) {
 	direction = dir; 
 	moving = dir != Game::Direction::NONE;
 }
+
+void AxisMoving::turn(short straightAngles, bool clockwise) {
+	if (!clockwise)
+		straightAngles *= -1;
+
+	direction = Game::turnRight(direction, straightAngles);
+}

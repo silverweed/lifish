@@ -39,4 +39,6 @@ inline Direction oppositeDirection(const Direction dir) {
 	}
 }
 
+Direction turnRight(const Direction dir, short times);
+
 }

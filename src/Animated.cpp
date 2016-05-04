@@ -60,3 +60,7 @@ void Animated::update() {
 	animatedSprite.setPosition(owner->getPosition());
 	animatedSprite.update(frameClock->restart());
 }
+
+bool Animated::isPlaying(const std::string& name) {
+	return getAnimation(name) == animatedSprite.getAnimation() && animatedSprite.isPlaying();
+}

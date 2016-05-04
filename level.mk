@@ -2,7 +2,7 @@ CC := clang++
 CFLAGS := -std=c++11 -Wall -Wextra -pedantic -ggdb
 LDFLAGS := -lsfml-window -lsfml-graphics -lsfml-system -lsfml-audio 
 
-test_level: Killable.o Animation.o Bomb.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o test_level.o LevelSet.o LevelNumText.o Music.o Game.o Texture.o ShadedText.o Track.o utils.o Entity.o EntityGroup.o Coin.o AxisMoving.o Moving.o Lifed.o Controls.o Shooting.o MovingAnimator.o Player.o
+test_level: Killable.o Animation.o Bomb.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o test_level.o LevelSet.o LevelNumText.o Music.o Game.o Texture.o ShadedText.o Track.o utils.o Entity.o EntityGroup.o Coin.o AxisMoving.o Moving.o Lifed.o Controls.o Shooting.o MovingAnimator.o Player.o Enemy.o AlienSprite.o Direction.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
 .PHONY: clean
@@ -63,5 +63,9 @@ Shooting.o: src/Shooting.cpp
 	$(CC) $(CFLAGS) -c $<
 MovingAnimator.o: src/MovingAnimator.cpp
 	$(CC) $(CFLAGS) -c $<
-#Enemy.o: src/Enemy.cpp
-	#$(CC) $(CFLAGS) -c $<
+Enemy.o: src/Enemy.cpp
+	$(CC) $(CFLAGS) -c $<
+AlienSprite.o: src/AlienSprite.cpp
+	$(CC) $(CFLAGS) -c $<
+Direction.o: src/Direction.cpp
+	$(CC) $(CFLAGS) -c $<

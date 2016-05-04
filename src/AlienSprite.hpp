@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 #include "Component.hpp"
+#include "Animated.hpp"
+#include "MovingAnimator.hpp"
 
 namespace Game {
 
@@ -17,10 +19,13 @@ class AlienSprite : public Game::Component {
 	constexpr static unsigned short WALK_N_FRAMES = 4;
 	constexpr static unsigned short DEATH_N_FRAMES = 2;
 
-	sf::Texture *texture;
+	Game::Animated *animated = nullptr;
+	Game::MovingAnimator *movingAnimator = nullptr;
 
 public:
 	explicit AlienSprite(Game::Entity *const owner);
+
+	void update() override;
 };
 
 }

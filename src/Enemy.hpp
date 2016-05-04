@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/System.hpp>
+#include <memory>
 #include "Entity.hpp"
 #include "Clock.hpp"
 #include "Animated.hpp"
@@ -12,6 +13,19 @@
 #include "Shooting.hpp"
 
 namespace Game {
+
+class Enemy;
+
+class EnemyDrawableProxy : public sf::Drawable {
+	Game::Enemy& enemy;
+	Game::Animated *enemyAnim = nullptr,
+		       *morphedAnim = nullptr;
+
+public:
+	explicit EnemyDrawableProxy(Enemy& e);
+
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+};
 
 /** 
  * An Enemy is a MovingEntity which (usually) shoots towards players 
@@ -26,7 +40,10 @@ class Enemy : public Game::Entity {
 
 	Game::Shooting *shooting = nullptr;
 	Game::Animated *animated = nullptr;
+	Game::AxisMoving *moving = nullptr;
 	Game::MovingAnimator *movingAnimator = nullptr;
+
+	std::unique_ptr<Game::EnemyDrawableProxy> drawProxy;
 
 	Game::Clock<3> *clocks = nullptr;
 
@@ -72,10 +89,10 @@ public:
 	bool isMorphed() const { return morphed; }
 
 	/** Returns true if enemy wasn't already dashing and now is, else false. */
-	bool setDashing(bool b);
-	bool isDashing() const { return dashing; }
+	//bool setDashing(bool b);
+	//bool isDashing() const { return dashing; }
 
-	void yell();
+	//void yell();
 
 	void update() override;
 };

@@ -40,6 +40,9 @@ public:
 	/** Sets the current animation to `anim` */
 	void setAnimation(Animation& anim);
 
+	/** Returns true if cur animation == `name` and animatedSprite is playing */
+	bool isPlaying(const std::string& name);
+
 	void setTexture(sf::Texture *t) { texture = t; }
 
 	AnimatedSprite& getSprite() { return animatedSprite; }

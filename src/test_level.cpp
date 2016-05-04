@@ -2,8 +2,9 @@
 #include "LevelSet.hpp"
 #include "Bomb.hpp"
 #include "Coin.hpp"
-//#include "Enemy.hpp"
+#include "Enemy.hpp"
 #include "EntityGroup.hpp"
+#include "Shooting.hpp"
 #include <SFML/Window.hpp>
 #include <memory>
 #include <algorithm>
@@ -19,12 +20,12 @@ int main() {
 
 	Game::EntityGroup entities;
 
-	//Game::Enemy enemy(sf::Vector2f(32, 32), 1);
+	Game::Enemy enemy(sf::Vector2f(32, 32), 1, 1, { .type = Game::AttackType::CONTACT, .damage = 1 });
 	Game::Bomb bomb(sf::Vector2f(64, 64), nullptr);
 	Game::Coin coin(sf::Vector2f(96, 96));
 	Game::Player player(sf::Vector2f(128, 128), 1);
 	
-	//entities.add(&enemy);
+	entities.add(&enemy);
 	entities.add(&bomb);
 	entities.add(&coin);
 	entities.add(&player);
@@ -39,15 +40,32 @@ int main() {
 
 	std::array<Game::Player*, 1> players;
 	players[0] = &player;
+	
+	enemy.setMorphed(true);
+	enemy.get<Game::AxisMoving>()->setDirection(Game::Direction::DOWN);
+
+	sf::Clock turnClock;
 
 	while (window.isOpen()) {
 		sf::Event event;
+		
+		//enemy.get<Game::Shooting>()->shoot();
+		if (turnClock.getElapsedTime().asSeconds() > 1) {
+			enemy.get<Game::AxisMoving>()->turn(1, false);
+			turnClock.restart();
+		}
 
 		while (window.pollEvent(event)) {
 			switch (event.type) {
 			case sf::Event::Closed:
 				window.close();
 				break;
+			case sf::Event::KeyPressed:
+				switch (event.key.code) {
+				case sf::Keyboard::M:
+					enemy.setMorphed(!enemy.isMorphed());
+					break;
+				}
 			default: break;
 			}
 		}

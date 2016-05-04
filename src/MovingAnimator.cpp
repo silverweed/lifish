@@ -14,7 +14,21 @@ MovingAnimator::MovingAnimator(Game::Entity *const owner)
 		throw std::invalid_argument("owner has no Animated!");
 }
 
+MovingAnimator::MovingAnimator(Game::Entity *const owner, Game::AxisMoving *m, Game::Animated *a)
+	: Game::Component(owner)
+	, moving(m)
+	, animated(a)
+{
+	if (moving == nullptr)
+		throw std::invalid_argument("owner has no Moving!");
+	if (animated == nullptr)
+		throw std::invalid_argument("owner has no Animated!");
+}
+
 void MovingAnimator::update() {
+	moving->update();
+	animated->update();
+
 	Game::Direction dir = moving->getDirection();
 	auto& sprite = animated->getSprite();
 

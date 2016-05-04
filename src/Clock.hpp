@@ -1,6 +1,6 @@
 #pragma once
 
-#include <initializer_list>
+#include <array>
 #include "Chronometer.hpp"
 #include "Component.hpp"
 
@@ -26,10 +26,9 @@ public:
 		: Game::Component(owner) {}
 
 	explicit Clock(Game::Entity *const owner,
-			std::initializer_list<std::string> _clockNames)
+			std::array<std::string, NClocks> _clockNames)
 		: Game::Component(owner)
 	{
-		static_assert(_clockNames.size() == NClocks, "Invalid length of clockNames initializer_list!");
 		unsigned short i = 0;
 		for (auto name : _clockNames)
 			clockNames[i++] = name;

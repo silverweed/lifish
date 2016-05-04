@@ -17,6 +17,7 @@ class MovingAnimator : public Game::Component {
 
 public:
 	explicit MovingAnimator(Game::Entity *const owner);
+	explicit MovingAnimator(Game::Entity *const owner, Game::AxisMoving *m, Game::Animated *a);
 
 	void update() override;
 };

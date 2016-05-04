@@ -23,6 +23,7 @@ public:
 	Game::Direction getDirection() const { return direction; }
 	Game::Direction getPrevDirection() const { return prevDirection; }
 	void setDirection(Game::Direction dir);
+	void turn(short straightAngles, bool clockwise);
 
 	void stop() override;
 
