@@ -1,20 +1,31 @@
 #include "BossExplosion.hpp"
+#include "Drawable.hpp"
+#include "Temporary.hpp"
+#include "utils.hpp"
 
 using Game::BossExplosion;
+using Game::TILE_SIZE;
 
-BossExplosion::BossExplosion(const sf::Vector2f& pos) :
-	Game::Temporary(pos, Game::getAsset("test", "bossbullet.png")),
-	Game::Sounded({ Game::getAsset("test", "bossbullet_hit.ogg") })
+BossExplosion::BossExplosion(const sf::Vector2f& pos) 
+	: Game::Entity(pos)
 {
-	animations[0].setSpriteSheet(*texture);
-	animations[0].addFrame(sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
-	animations[0].addFrame(sf::IntRect(3 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
-	animations[0].addFrame(sf::IntRect(4 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
-	animations[0].addFrame(sf::IntRect(5 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
-	animations[0].addFrame(sf::IntRect(6 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
-	animatedSprite.setPosition(pos);
-	animatedSprite.setAnimation(animations[0]);
+	animated = addComponent(new Game::Animated(this, Game::getAsset("test", "bossbullet.png")));
+	addComponent(new Game::Drawable(this, animated));
+
+	animated->addAnimation("explosion", {
+		sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
+		sf::IntRect(3 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
+		sf::IntRect(4 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
+		sf::IntRect(5 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
+		sf::IntRect(6 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE)
+	}, true);
+	
+	auto& animatedSprite = animated->getSprite();
 	animatedSprite.setLooped(false);
 	animatedSprite.setFrameTime(sf::seconds(0.10));
-	animatedSprite.pause();
+	animatedSprite.play();
+
+	addComponent(new Game::Temporary(this, [&animatedSprite] () {
+		return !animatedSprite.isPlaying();
+	}));
 }

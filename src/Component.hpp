@@ -14,6 +14,8 @@ protected:
 public:
 	explicit Component(Game::Entity *const owner) 
 		: owner(owner) {}
+
+	const Game::Entity* getOwner() const { return owner; }
 };
 
 }

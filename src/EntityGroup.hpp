@@ -8,6 +8,7 @@
 #include <functional>
 #include <SFML/System/NonCopyable.hpp>
 #include "Entity.hpp"
+#include "Temporary.hpp"
 
 namespace Game {
 
@@ -35,9 +36,17 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	/** The static entities, which are always grid-aligned and cannot move */
 	//std::array<Game::Entity*, LEVEL_WIDTH * LEVEL_HEIGHT> staticEntities;
 
+	/** The list of the temporary entities, which have a brief lifetime
+	 *  and ought to be removed when their Temporary component tells they're expired.
+	 */
+	std::list<Game::Temporary*> temporary;
+
 	
 	template<class T>
 	T* _commonAdd(T *entity, bool owned);
+
+	/** Removes any expired temporary from both `temporary` and `entities`, and destroys them. */
+	void _removeExpiredTemporaries();
 
 public:
 	/**
@@ -90,6 +99,10 @@ T* EntityGroup::_commonAdd(T *entity, bool owned) {
 	entities.push_back(std::unique_ptr<Game::Entity>(entity));
 	if (!owned)
 		unowned.insert(entity);	
+
+	auto tmp = entity->template get<Game::Temporary>();
+	if (tmp != nullptr)
+		temporary.push_back(tmp);
 
 	return entity;
 }

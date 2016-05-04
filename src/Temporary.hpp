@@ -1,26 +1,33 @@
 #pragma once
 
-#include "Animated.hpp"
+#include "Component.hpp"
 
 namespace Game {
 
 /**
- * A Temporary is an animated entity which gets deleted by the
- * Game::LevelManager as soon as isPlaying() == false.
+ * A Temporary defines an entity which gets deleted by an EntityGroup
+ * as soon as isExpired() returns true.
  */
-class Temporary : public Game::Animated {
+class Temporary : public Game::Component {
+	bool expired = false;
+
+	std::function<bool()> expireCondition;
+
 public:
-	Temporary(const sf::Vector2f& pos)
-		: Game::Animated(pos) {}
-	Temporary(const sf::Vector2f& pos, const std::string& texture_name)
-		: Game::Animated(pos, texture_name) {}
+	explicit Temporary(Game::Entity *const owner)
+		: Game::Component(owner) {}
 
-	virtual void play() { animatedSprite.play(); }
-	virtual bool isPlaying() const { return animatedSprite.isPlaying(); }
+	explicit Temporary(Game::Entity *const owner, std::function<bool()> expireCondition)
+		: Game::Component(owner)
+		, expireCondition(expireCondition)
+	{}
 
-	virtual void draw(sf::RenderTarget& window) override {
-		animatedSprite.update(frameClock.restart());
-		Game::Animated::draw(window);
+	bool isExpired() const { return expired; }
+	void expire() { expired = true; }
+
+	void update() override {
+		if (!expired && expireCondition && expireCondition())
+			expired = true;
 	}
 };
 

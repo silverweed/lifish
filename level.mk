@@ -2,7 +2,7 @@ CC := clang++
 CFLAGS := -std=c++11 -Wall -Wextra -pedantic -ggdb
 LDFLAGS := -lsfml-window -lsfml-graphics -lsfml-system -lsfml-audio 
 
-test_level: Killable.o Animation.o Bomb.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o test_level.o LevelSet.o LevelNumText.o Music.o Game.o Texture.o ShadedText.o Track.o utils.o Entity.o EntityGroup.o Coin.o AxisMoving.o Moving.o Lifed.o Controls.o Shooting.o MovingAnimator.o Player.o Enemy.o AlienSprite.o Direction.o
+test_level: Killable.o Animation.o Bomb.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o test_level.o LevelSet.o LevelNumText.o Music.o Game.o Texture.o ShadedText.o Track.o utils.o Entity.o EntityGroup.o Coin.o AxisMoving.o Moving.o Lifed.o Controls.o Shooting.o MovingAnimator.o Player.o Enemy.o AlienSprite.o Direction.o Teleport.o Flash.o BossExplosion.o FixedWall.o BreakableWall.o TransparentWall.o Sprite.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
 .PHONY: clean
@@ -69,3 +69,18 @@ AlienSprite.o: src/AlienSprite.cpp
 	$(CC) $(CFLAGS) -c $<
 Direction.o: src/Direction.cpp
 	$(CC) $(CFLAGS) -c $<
+Teleport.o: src/Teleport.cpp
+	$(CC) $(CFLAGS) -c $<
+Flash.o: src/Flash.cpp
+	$(CC) $(CFLAGS) -c $<
+FixedWall.o: src/FixedWall.cpp
+	$(CC) $(CFLAGS) -c $<
+BreakableWall.o: src/BreakableWall.cpp
+	$(CC) $(CFLAGS) -c $<
+TransparentWall.o: src/TransparentWall.cpp
+	$(CC) $(CFLAGS) -c $<
+BossExplosion.o: src/BossExplosion.cpp
+	$(CC) $(CFLAGS) -c $<
+Sprite.o: src/Sprite.cpp
+	$(CC) $(CFLAGS) -c $<
+	

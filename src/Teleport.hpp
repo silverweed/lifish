@@ -1,26 +1,27 @@
 #pragma once
 
+#include "Entity.hpp"
 #include "Animated.hpp"
+#include "Clock.hpp"
 
 namespace Game {
 
 /**
  * A teleport can be used both by players and enemies.
  */
-class Teleport : public Game::Animated {
-	constexpr static unsigned int COOLDOWN_TIME = 1000; // milliseconds
+class Teleport : public Game::Entity {
+	const static sf::Time COOLDOWN_TIME;
 
 	/** The Teleport this one teleports to */
 	Teleport *next_t = nullptr;
 
 	bool disabled = false;
 	/** Time to wait before reactivating */
-	sftools::Chronometer disableClock;
+	Game::Clock<1> *disableClock = nullptr;
+	Game::Animated *animated = nullptr;
 
 public:
-	Teleport(const sf::Vector2f& pos);
-
-	void draw(sf::RenderTarget& window) override;
+	explicit Teleport(const sf::Vector2f& pos);
 
 	Teleport* next() const { return next_t; }
 	void linkTo(Teleport *nxt) { next_t = nxt; }
@@ -30,7 +31,9 @@ public:
 	 */
 	void disable();
 
-	bool isDisabled();
+	bool isDisabled() const { return disabled; }
+
+	void update() override;
 };
 
 }
