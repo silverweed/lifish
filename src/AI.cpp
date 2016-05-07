@@ -67,7 +67,7 @@ AIBoundFunction Game::ai_random_forward(Game::Entity *const entity) {
 	return [entity, moving, collider] (const Game::LevelManager *const lr) { 
 		const D cur = moving->getDirection();
 		const auto cur_align = Game::tile(moving->getPosition());
-		if (moving->prevAlign == cur_align && !collider->isColliding()) 
+		if (moving->getPrevAlign() == cur_align && !collider->isColliding()) 
 			return cur;
 
 		const D opp = oppositeDirection(cur);
@@ -120,14 +120,19 @@ AIBoundFunction Game::ai_random_forward_haunt(Game::Entity *const entity) {
 }
 
 AIBoundFunction Game::ai_follow(Game::Entity *const entity) {
-	return [entity] (const Game::LevelManager *const lr) {
+	auto moving = entity->get<Game::AxisMoving>();
+	auto collider = entity->get<Game::Collider>();
+	if (moving == nullptr || collider == nullptr)
+		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving or Collider component!");
+
+	return [entity, moving, collider] (const Game::LevelManager *const lr) {
 		const D cur = entity->getDirection();
 		const auto cur_align = Game::tile(entity->getPosition());
-		if (entity->prevAlign == cur_align && !entity->colliding) 
+		if (moving->getPrevAlign() == cur_align && !collider->isColliding()) 
 			return cur;
 
 		const D opp = oppositeDirection(cur);
-		if (entity->colliding && entity->canGo(cur, lr))
+		if (collider->isColliding() && moving->canGo(cur, lr))
 			return opp;
 
 		if (entity->seeingPlayer != Game::Direction::NONE) {
@@ -140,13 +145,18 @@ AIBoundFunction Game::ai_follow(Game::Entity *const entity) {
 }
 
 AIBoundFunction Game::ai_follow_dash(Game::Entity *const entity) {
-	return [entity] (const Game::LevelManager *const lr) {
-		const D cur = entity->getDirection();
+	auto moving = entity->get<Game::AxisMoving>();
+	auto collider = entity->get<Game::Collider>();
+	if (moving == nullptr || collider == nullptr)
+		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving or Collider component!");
+
+	return [entity, moving, collider] (const Game::LevelManager *const lr) {
+		const D cur = moving->getDirection();
 		const D opp = oppositeDirection(cur);
 
-		if (entity->colliding) {
+		if (collider->isColliding()) {
 			entity->setDashing(false);
-			if (entity->canGo(cur, lr))
+			if (moving->canGo(cur, lr))
 				return opp;
 		}
 
@@ -154,7 +164,7 @@ AIBoundFunction Game::ai_follow_dash(Game::Entity *const entity) {
 			return cur;
 
 		const auto cur_align = Game::tile(entity->getPosition());
-		if (entity->prevAlign == cur_align && !entity->colliding) 
+		if (moving->getPrevAlign() == cur_align && !collider->isColliding()) 
 			return cur;
 
 		if (entity->seeingPlayer != Game::Direction::NONE) {

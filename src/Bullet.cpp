@@ -1,9 +1,11 @@
+#include <algorithm>
 #include "Bullet.hpp"
-#include "Moving.hpp"
+#include "AxisMoving.hpp"
 #include "Sounded.hpp"
 #include "Drawable.hpp"
 #include "Killable.hpp"
 #include "Game.hpp"
+#include "Temporary.hpp"
 #include "utils.hpp"
 
 using Game::Bullet;
@@ -20,88 +22,26 @@ using Game::Bullet;
 	//// TODO
 //}
 
-Bullet::Bullet(const sf::Vector2f& _pos, const Game::Direction dir, unsigned short id,
-		float _speed, unsigned short _damage, short _range)
-	: Game::Entity(pos)
-	, range(_range)
-	, origin(_pos)
-	, damage(_damage)
-	, shift(0.f, 0.f)
-	, direction(dir)
+Bullet::Bullet(const sf::Vector2f& pos, const Game::Attack& attack)
+	: Game::Bullet(nullptr, attack)
 {
-	addComponent(new Game::Moving(this, BASE_SPEED * _speed));
+	position = pos;
+	setOrigin(pos);
+}
+
+Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
+	: Game::Entity(source != nullptr ? source->getPosition() : sf::Vector2f(0, 0))
+	, range(attack.rangeInTiles ? attack.tileRange : attack.pixelRange)
+	, origin(position)
+	, source(source)
+	, damage(damage)
+{
 	addComponent(new Game::Sounded(this, {
-		Game::getAsset("test", std::string("bullet") + Game::to_string(id) + std::string("_hit.ogg")),
-		Game::getAsset("test", std::string("bullet") + Game::to_string(id) + std::string("_shot.ogg"))
+		Game::getAsset("test", std::string("bullet") + Game::to_string(attack.id) + std::string("_hit.ogg")),
+		Game::getAsset("test", std::string("bullet") + Game::to_string(attack.id) + std::string("_shot.ogg"))
 	}));
-	auto animated = addComponent(new Game::Animated(this, Game::getAsset("test", "bullets.png")));
-	addComponent(new Game::Drawable(this, animated));
 	addComponent(new Game::Killable(this, [this] () { _destroy(); }));
 
-	// Bullets have a variable number of frames, up to 13:
-	// motion frames: 1 ~ 8 (max 8 / directional per direction)
-	// destroy frames: 0 ~ 5
-	// TODO: refactor
-	BulletPresets::setup(*this, id);
-
-	unsigned short d = 0;
-	switch (dir) {
-	case Game::Direction::DOWN: 
-		d = 0;
-		pos.x += (TILE_SIZE - size) / 2;
-		pos.y += TILE_SIZE;
-		break;
-	case Game::Direction::UP:    
-		d = directionality == 4 ? 1 : 0;
-		pos.x += (TILE_SIZE - size) / 2;
-		pos.y -= size;
-		break;
-	case Game::Direction::RIGHT:
-		d = directionality == 4 ? 2 : directionality == 2 ? 1 : 0; 
-		pos.y += (TILE_SIZE - size) / 2;
-		pos.x += TILE_SIZE;
-		break;
-	case Game::Direction::LEFT: 
-		d = directionality == 4 ? 3 : directionality == 2 ? 1 : 0;
-		pos.y += (TILE_SIZE - size) / 2;
-		pos.x -= size;
-		break;
-	default: 
-		break;
-	}
-
-	auto& a_move = animated->addAnimation("move");
-	auto& a_destroy = animated->addAnimation("destroy");
-
-	// Since the bullet cannot change direction, we only need to setup these 2 animations.
-	// The motion animation has up to 8 / directionality frames (but can also have less),
-	// while the destroy animation can have from 0 to 5 frames.
-	// Format for the spritesheet is:
-	// 	- if directionality == 1, [motion frames] [destroy frames]
-	//	- if == 2, [up/down frames] [left/right frames] [destroy frames]
-	//	- if == 4, [down] [up] [right] [left] [destroy]
-	unsigned short j = 0;
-	for (unsigned short i = 0; i < nMotionFrames && i < 8 / directionality; ++i)
-		a_move.addFrame(sf::IntRect(
-				(nMotionFrames * d + j++) * TILE_SIZE, 
-				(id-1) * TILE_SIZE, 
-				TILE_SIZE, 
-				TILE_SIZE));
-
-	// destroy animations are non-directional
-	for (unsigned short i = j; i < j + nDestroyFrames && i < j + 5; ++i)
-		a_destroy.addFrame(sf::IntRect(
-				(nMotionFrames * directionality + i) * TILE_SIZE, 
-				(id-1) * TILE_SIZE, 
-				TILE_SIZE, 
-				TILE_SIZE));
-
-	auto& animatedSprite = animated->getSprite();
-	animatedSprite.setPosition(pos);
-	animatedSprite.setAnimation(animations[0]);
-	animatedSprite.setLooped(true);
-	animatedSprite.setFrameTime(sf::seconds(0.10));
-	animatedSprite.play();
 
 	/*
 	switch (direction) {
@@ -121,6 +61,12 @@ Bullet::Bullet(const sf::Vector2f& _pos, const Game::Direction dir, unsigned sho
 		return;
 	}
 	*/
+
+	addComponent(new Game::Temporary(this, [this] () {
+		// TODO: check collision
+		return position.x < 0 || position.x > Game::TILE_SIZE * Game::LEVEL_WIDTH 
+			|| position.y < 0 || position.y > Game::TILE_SIZE * Game::LEVEL_HEIGHT;
+	}));
 }
 
 //void Bullet::move() {
@@ -153,65 +99,20 @@ Bullet::Bullet(const sf::Vector2f& _pos, const Game::Direction dir, unsigned sho
 //}
 
 void Bullet::_destroy() {
-	auto& animatedSprite = get<Game::Animated>()->getSprite();
+	auto animated = get<Game::Animated>();
+	auto moving = get<Game::AxisMoving>();
+	auto& animatedSprite = animated->getSprite();
 	if (nDestroyFrames > 0) {
-		switch (direction) {
+		switch (moving->getDirection()) {
 		case Game::Direction::UP: case Game::Direction::DOWN:
-			pos.x = Game::aligned(pos).x;
+			position.x = Game::aligned(position).x;
 			break; 
 		default:
-			pos.y = Game::aligned(pos).y;
+			position.y = Game::aligned(position).y;
 			break; 
 		}
-		animatedSprite.setPosition(pos);
-		animatedSprite.play(animations[ANIM_DEATH]);
+		animated->setAnimation("destroy");
 	}
 	animatedSprite.setLooped(false);
-	direction = Game::Direction::NONE;
-}
-
-void Game::BulletPresets::setup(Game::Bullet& b, unsigned short id) {
-	switch (id) {
-	case 1:
-		// shot
-		b.directionality = 1;
-		b.size = 7;
-		break;
-	case 2:
-		// fireball
-		b.directionality = 1;
-		b.size = 13;
-		break;
-	case 3:
-		// MG shot
-		b.directionality = 4;
-		b.nMotionFrames = 1;
-		b.nDestroyFrames = 5;
-		b.size = 10;
-		break;
-	case 4:
-		// lightbolt
-		b.directionality = 1;
-		b.size = 13;
-		break;
-	case 5:
-		// flame
-		b.directionality = 2;
-		b.nMotionFrames = 5;
-		b.nDestroyFrames = 0;
-		b.size = TILE_SIZE;
-		break;
-	case 6:
-		// plasma
-		b.directionality = 1;
-		b.size = 12;
-		break;
-	case 7:
-		// magma
-		b.directionality = 4;
-		b.size = 26;
-		break;
-	default:
-		break;
-	}
+	moving->stop();
 }

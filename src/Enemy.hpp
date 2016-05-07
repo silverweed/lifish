@@ -16,6 +16,10 @@ namespace Game {
 
 class Enemy;
 
+/**
+ * This class provides a Drawable proxy to draw the regular enemy's sprite
+ * or its AlienSprite according to the morphed state of the Enemy.
+ */
 class EnemyDrawableProxy : public sf::Drawable {
 	Game::Enemy& enemy;
 	Game::Animated *enemyAnim = nullptr,

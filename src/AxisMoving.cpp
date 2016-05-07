@@ -16,6 +16,9 @@ AxisMoving::AxisMoving(Game::Entity *const owner, float speed, Game::Direction d
 void AxisMoving::update() {
 	if (!moving) return;
 
+	if (prevDirection != direction)
+		realign();
+
 	sf::Vector2f shift(0.f, 0.f);
 	sf::Time frameTime = frameClock->restart();
 
@@ -44,10 +47,12 @@ void AxisMoving::update() {
 		owner->setPosition(owner->getPosition() + shift * frameTime.asSeconds());
 		distTravelled += speed * frameTime.asSeconds();
 	//}
+
+	prevDirection = direction;
 }
 
-void AxisMoving::_realign() {
-	sf::Vector2f pos;
+void AxisMoving::realign() {
+	sf::Vector2f pos = owner->getPosition();
 
 	switch (direction) {
 	case Game::Direction::UP:
@@ -67,14 +72,14 @@ void AxisMoving::_realign() {
 		pos = Game::aligned(pos);
 		break;
 	}
-
+	
 	owner->setPosition(pos);
 }
 
 void AxisMoving::stop() {
 	Game::Moving::stop();
 	direction = prevDirection = Game::Direction::NONE;
-	_realign();
+	realign();
 }
 
 bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager *const lm) const {

@@ -100,6 +100,8 @@ T* EntityGroup::_commonAdd(T *entity, bool owned) {
 	if (!owned)
 		unowned.insert(entity);	
 
+	entity->setOrigin(origin);
+
 	auto tmp = entity->template get<Game::Temporary>();
 	if (tmp != nullptr)
 		temporary.push_back(tmp);

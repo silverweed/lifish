@@ -2,47 +2,36 @@
 
 #include "Component.hpp"
 #include "Direction.hpp"
+#include "Attack.hpp"
 
 namespace Game {
 
 class BulletPresets;
 
 /**
- * A bullet can only travel towards a single direction until it
- * impacts with another Entity which is not transparentTo.bullets.
- * Cannot travel diagonally.
+ * A bullet travels until it impacts with another Entity which is not transparent to it.
  */
 class Bullet : public Game::Entity {
+protected:
 	friend class Game::BulletPresets;
 
-protected:
-	/** If 1 => this bullet has the same animation for any direction, up to 8.
-	 *  If 2 => this bullet has 2 different animations when traveling UP/DOWN or
-	 *          LEFT/RIGHT, up to 4 per direction.
-	 *  If 4 => this bullet has different animations for each direction, up to 2.
-	 *  The effective number of frames is established by nMotionFrames.
-	 */
-	unsigned short directionality = 1;
-	
 	/** The actual size of this bullet in pixels */
 	unsigned short size;
 
-	/** How many tiles does this bullet travel; -1 means infinite. */
-	short range;
-
-	/** The position this bullet was shot from */
+	/** The position this bullet was shot from (used for range) */
 	const sf::Vector2f origin;
-	/** The Entity that shot this bullet */
-	const Game::Entity *source;
 
+	/** The Entity that shot this bullet */
+	const Game::Entity *const source;
+
+	/** The damage dealt to the impacted Entity */
 	unsigned short damage;
+
+	/** How many pixels does this bullet travel; -1 means infinite. */
+	float range;
 
 	unsigned short nMotionFrames = 1,  // up to 2
 		       nDestroyFrames = 4; // up to 5
-
-	//sf::Vector2f shift;
-
-	//bool destroyed = false;
 
 	/** This constructor is used by BossBullet */
 	//Bullet(const sf::Vector2f& pos, const std::string& texture_name);
@@ -52,26 +41,19 @@ protected:
 public:
 	constexpr static float BASE_SPEED = 200.f;
 
-	/** This is the constructor used by regular bullets */
-	Bullet(const sf::Vector2f& pos, const Game::Direction dir, unsigned short id,
-			float speed, unsigned short damage, short range = -1);
+	/** Constructs a Bullet without a source (must specify the position) */
+	explicit Bullet(const sf::Vector2f& pos, const Game::Attack& attack);
 
-	void setSource(const Game::Entity *e) { source = e; }
+	/** Constructs a Bullet with a source Entity (using that Entity's position) */
+	explicit Bullet(const Game::Entity *const source, const Game::Attack& attack);
+
 	const Game::Entity* getSource() const { return source; }
 
 	//bool hits(const sf::Vector2f& pos) const;
 
 	unsigned short getDamage() const { return damage; }
 
-	//void destroy();
-	//bool isBeingDestroyed() const { return destroyed; }
-	//bool isDestroyed() const { return destroyed && !animatedSprite.isPlaying(); }
-
 	//unsigned short getSize() const { return size; }
-};
-
-class BulletPresets {
-	static void setup(Game::Bullet& b, unsigned short id);
 };
 
 }

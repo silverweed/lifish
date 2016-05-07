@@ -75,15 +75,12 @@ LevelSet::LevelSet(const std::string& path) {
 		auto atk = enemyinfo["attack"];
 		auto atktype = atk["type"];
 		
-		auto fst = atktype[0].get<std::string>();
-		if (!Game::stringToAttackType(fst, enemies[enemynum].attack.type))
-			throw std::invalid_argument(fst.c_str());
-
-		for (unsigned short i = 1; i < atktype.size(); ++i) {
+		enemies[enemynum].attack.type = Game::AttackType::AXIS_BOUND;
+		for (unsigned short i = 0; i < atktype.size(); ++i) {
 			AttackType type;
-			auto snd = atktype[1].get<std::string>();
-			if (!Game::stringToAttackType(snd, type))
-				throw std::invalid_argument(snd.c_str());
+			auto at = atktype[i].get<std::string>();
+			if (!Game::stringToAttackType(at, type))
+				throw std::invalid_argument(at.c_str());
 
 			enemies[enemynum].attack.type = AttackType(
 					static_cast<unsigned int>(enemies[enemynum].attack.type) 
@@ -105,9 +102,25 @@ LevelSet::LevelSet(const std::string& path) {
 		if (it != atk.end())
 			enemies[enemynum].attack.fireRate = it->get<float>();
 
-		it = atk.find("range");
-		enemies[enemynum].attack.range = it != atk.end() ? it->get<short>() : -1;
-
+		bool range_found = false;
+		enemies[enemynum].attack.rangeInTiles = true;
+		it = atk.find("tileRange");
+		if (it != atk.end()) {
+			enemies[enemynum].attack.tileRange = it->get<short>();
+			range_found = true;
+		}
+		if (!range_found) {
+			it = atk.find("pixelRange");
+			if (it != atk.end()) {
+				enemies[enemynum].attack.pixelRange = it->get<float>();
+				enemies[enemynum].attack.rangeInTiles = false;
+				range_found = true;
+			}
+		}
+		if (!range_found) {
+			enemies[enemynum].attack.tileRange = -1;
+			enemies[enemynum].attack.pixelRange = -1;
+		}
 		++enemynum;
 	}
 

@@ -1,5 +1,6 @@
 #include "EntityGroup.hpp"
 #include "Component.hpp"
+#include "Killable.hpp"
 #include <algorithm>
 
 using Game::EntityGroup;
@@ -30,6 +31,11 @@ void EntityGroup::_removeExpiredTemporaries() {
 	for (auto it = temporary.begin(); it != temporary.end(); ) {
 		auto tmp = *it;
 		if (tmp->isExpired()) {
+			// If object is Killable, call its onKill()
+			auto k = tmp->getOwner()->get<Game::Killable>();
+			if (k != nullptr)
+				k->kill();
+
 			auto eit = std::find_if(entities.begin(), entities.end(), 
 					[tmp] (std::unique_ptr<Game::Entity>& ptr) 
 			{

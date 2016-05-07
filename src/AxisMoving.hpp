@@ -14,7 +14,6 @@ class AxisMoving : public Game::Moving {
 	Game::Direction prevDirection;
 	sf::Vector2f prevAlign;
 	
-	void _realign();
 
 public:
 	explicit AxisMoving(Game::Entity *const owner, float speed, 
@@ -22,11 +21,12 @@ public:
 
 	Game::Direction getDirection() const { return direction; }
 	Game::Direction getPrevDirection() const { return prevDirection; }
+	const sf::Vector2f& getPrevAlign() const { return prevAlign; }
 	void setDirection(Game::Direction dir);
 	void turn(short straightAngles, bool clockwise);
 
+	void realign();
 	void stop() override;
-
 	void update() override;
 
 	bool canGo(const Game::Direction dir, const Game::LevelManager *const lm) const;

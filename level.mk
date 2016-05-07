@@ -1,8 +1,8 @@
-CC := clang++
+C := clang++
 CFLAGS := -std=c++11 -Wall -Wextra -pedantic -ggdb
-LDFLAGS := -lsfml-window -lsfml-graphics -lsfml-system -lsfml-audio 
+LDFLAGS := -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-system -lstdc++
 
-test_level: Killable.o Animation.o Bomb.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o test_level.o LevelSet.o LevelNumText.o Music.o Game.o Texture.o ShadedText.o Track.o utils.o Entity.o EntityGroup.o Coin.o AxisMoving.o Moving.o Lifed.o Controls.o Shooting.o MovingAnimator.o Player.o Enemy.o AlienSprite.o Direction.o Teleport.o Flash.o BossExplosion.o FixedWall.o BreakableWall.o TransparentWall.o Sprite.o
+test_level: Killable.o Animation.o Bomb.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o test_level.o LevelSet.o LevelNumText.o Music.o Game.o Texture.o ShadedText.o Track.o utils.o Entity.o EntityGroup.o Coin.o AxisMoving.o Moving.o Lifed.o Controls.o Shooting.o MovingAnimator.o Player.o Enemy.o AlienSprite.o Direction.o Teleport.o Flash.o BossExplosion.o FixedWall.o BreakableWall.o TransparentWall.o Sprite.o Bullet.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
 .PHONY: clean
@@ -83,4 +83,5 @@ BossExplosion.o: src/BossExplosion.cpp
 	$(CC) $(CFLAGS) -c $<
 Sprite.o: src/Sprite.cpp
 	$(CC) $(CFLAGS) -c $<
-	
+Bullet.o: src/Bullet.cpp
+	$(CC) $(CFLAGS) -c $<

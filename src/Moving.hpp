@@ -31,6 +31,8 @@ public:
 	float getSpeed() const { return speed; }
 	void setSpeed(const float _speed) { speed = _speed; }
 
+	float getDistTravelled() const { return distTravelled; }
+
 	virtual void move();
 	virtual void stop();
 

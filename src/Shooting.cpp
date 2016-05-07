@@ -12,8 +12,11 @@ bool Game::stringToAttackType(const std::string& str, AttackType& type) {
 	return true;
 }
 
-void Shooting::shoot() {
+Game::Bullet* Shooting::shoot() {
 	shooting = true;
+	return new Game::Bullet(
+			owner,
+			attack);
 }
 
 bool Shooting::isRecharging() const {

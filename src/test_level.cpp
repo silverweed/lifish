@@ -12,21 +12,27 @@
 #include "Shooting.hpp"
 #include <SFML/Window.hpp>
 #include <memory>
+#include <cstdlib>
 #include <algorithm>
 #include "input.hpp"
 #include "Flash.hpp"
+#include "Options.hpp"
 
 int main() {
 	Game::init();
 	
 	sf::RenderWindow window(sf::VideoMode(800, 600), "test level");
+	Game::options.showFPS = true;
 
 	Game::LevelSet ls("levels.json");
 	std::unique_ptr<Game::Level> level(ls.getLevel(1));
 
 	Game::EntityGroup entities;
 
-	Game::Enemy enemy(sf::Vector2f(32, 32), 1, 1, { .type = Game::AttackType::CONTACT, .damage = 1 });
+	Game::Attack atype;
+	atype.type = Game::AttackType::CONTACT;
+	atype.damage = 1;
+	Game::Enemy enemy(sf::Vector2f(32*6, 32*8), 1, 1, atype);
 	Game::Bomb bomb(sf::Vector2f(64, 64), nullptr);
 	Game::Coin coin(sf::Vector2f(96, 96));
 	Game::Player player(sf::Vector2f(128, 128), 1);
@@ -53,22 +59,32 @@ int main() {
 	std::array<Game::Player*, 1> players;
 	players[0] = &player;
 	
-	enemy.setMorphed(true);
 	enemy.get<Game::AxisMoving>()->setDirection(Game::Direction::DOWN);
 
 	sf::Clock turnClock;
 
 	while (window.isOpen()) {
 		std::cerr << "Entities: " << entities.size() << std::endl;
+		std::cerr << "Bullets: " << entities.size<Game::Bullet>() << std::endl;
 
 		sf::Event event;
 		
 		//enemy.get<Game::Shooting>()->shoot();
+	/*	if (turnClock.getElapsedTime().asMilliseconds() > 100) {
+			float x = float(rand())/RAND_MAX, y = float(rand())/RAND_MAX;
+			entities.add(new Game::BossExplosion(sf::Vector2f(
+						Game::LEVEL_WIDTH * Game::TILE_SIZE * x + 200,
+						Game::LEVEL_HEIGHT * Game::TILE_SIZE * y)));
+		}*/
+
 		if (turnClock.getElapsedTime().asSeconds() > 1) {
-			enemy.get<Game::AxisMoving>()->turn(1, false);
-			turnClock.restart();
-			entities.add(new Game::Flash(sf::Vector2f(300, 300)));
-			entities.add(new Game::BossExplosion(sf::Vector2f(400, 200)));
+			if (enemy.isAligned()) {
+				enemy.get<Game::AxisMoving>()->turn(1, false);
+				turnClock.restart();
+				if (rand() < RAND_MAX/2)
+					entities.add(enemy.get<Game::Shooting>()->shoot());
+			}
+			//entities.add(new Game::Flash(sf::Vector2f(300, 300)));
 		}
 
 		while (window.pollEvent(event)) {
@@ -96,6 +112,7 @@ int main() {
 			if (d != nullptr)
 				window.draw(*d);
 		});
+		Game::maybeShowFPS(window);
 		window.display();
 	}
 

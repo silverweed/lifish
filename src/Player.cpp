@@ -82,7 +82,7 @@ void Player::resurrect() {
 	animatedSprite.pause();
 	get<Game::Lifed>()->setLife(MAX_LIFE);
 	extra.fill(false);
-	//realign();
+	moving->realign();
 }
 
 //bool Player::playDeathAnimation() {
