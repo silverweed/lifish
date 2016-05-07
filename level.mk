@@ -9,6 +9,8 @@ test_level: Killable.o Animation.o Bomb.o AnimatedSprite.o Animated.o EntityType
 clean:
 	rm -rf *.o test_level
 
+test_level.o: tests/test_level.cpp
+	$(CC) $(CFLAGS) -c $<
 Killable.o: src/Killable.cpp
 	$(CC) $(CFLAGS) -c $<
 Animation.o: src/Animation.cpp
@@ -24,8 +26,6 @@ EntityType.o: src/EntityType.cpp
 GameCache.o: src/GameCache.cpp
 	$(CC) $(CFLAGS) -c $<
 Level.o: src/Level.cpp
-	$(CC) $(CFLAGS) -c $<
-test_level.o: src/test_level.cpp
 	$(CC) $(CFLAGS) -c $<
 LevelSet.o: src/LevelSet.cpp
 	$(CC) $(CFLAGS) -c $<

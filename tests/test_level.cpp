@@ -1,22 +1,22 @@
-#include "Level.hpp"
-#include "LevelSet.hpp"
-#include "Bomb.hpp"
-#include "Coin.hpp"
-#include "BossExplosion.hpp"
-#include "FixedWall.hpp"
-#include "BreakableWall.hpp"
-#include "TransparentWall.hpp"
-#include "Enemy.hpp"
-#include "EntityGroup.hpp"
-#include "Teleport.hpp"
-#include "Shooting.hpp"
 #include <SFML/Window.hpp>
 #include <memory>
 #include <cstdlib>
 #include <algorithm>
-#include "input.hpp"
-#include "Flash.hpp"
-#include "Options.hpp"
+#include "../src/Level.hpp"
+#include "../src/LevelSet.hpp"
+#include "../src/Bomb.hpp"
+#include "../src/Coin.hpp"
+#include "../src/BossExplosion.hpp"
+#include "../src/FixedWall.hpp"
+#include "../src/BreakableWall.hpp"
+#include "../src/TransparentWall.hpp"
+#include "../src/Enemy.hpp"
+#include "../src/EntityGroup.hpp"
+#include "../src/Teleport.hpp"
+#include "../src/Shooting.hpp"
+#include "../src/input.hpp"
+#include "../src/Flash.hpp"
+#include "../src/Options.hpp"
 
 int main() {
 	Game::init();
@@ -97,6 +97,7 @@ int main() {
 				case sf::Keyboard::M:
 					enemy.setMorphed(!enemy.isMorphed());
 					break;
+				default: break;
 				}
 			default: break;
 			}
