@@ -19,11 +19,6 @@ protected:
 	Game::Clock<1> *rechargeClock = nullptr;
 	
 public:
-	/** id of the shot bullets */
-	unsigned short id;
-
-	const Attack& getAttack() const { return attack; }
-
 	explicit Shooting(Game::Entity *const owner, const Attack& attack)
 		: Game::Component(owner)
 		, attackAlign(-1.f, -1.f)
@@ -31,6 +26,8 @@ public:
 	{
 		rechargeClock = addComponent(new Game::Clock<1>(this));
 	}
+
+	const Attack& getAttack() const { return attack; }
 
 	/** Creates a bullet described by `attack` and returns it. 
 	 *  The callee must take care of its destruction.
