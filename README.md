@@ -22,6 +22,8 @@ original BOOM:
 * new powerups are planned;
 * online multiplayer *may* be added in future.
 
+Coded with [vim](http://www.vim.org/).
+
 ### Planned release ###
 Once the main work is done (read: the assets), the game will be released 
 for the current platforms:
@@ -59,6 +61,8 @@ If you manage to build the game in some other way or on some other platform, let
 sprites should be, it means that asset hasn't been created yet.
 
 ### Current Status ###
+
+**MASSIVE REFACTOR IN PROGRESS** (see branch [refactor](https://github.com/silverweed/lifish/tree/refactor))
 
 - [x] Levels BG / Borders display
 - [x] Levels music play
