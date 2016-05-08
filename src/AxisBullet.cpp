@@ -1,5 +1,8 @@
 #include "AxisBullet.hpp"
 #include "AxisMoving.hpp"
+#include "Animated.hpp"
+#include "Drawable.hpp"
+#include "Game.hpp"
 
 using Game::AxisBullet;
 using Game::TILE_SIZE;
@@ -7,7 +10,7 @@ using Game::TILE_SIZE;
 AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction dir, const Game::Attack& attack)
 	: Game::Bullet(source, attack)
 {
-	addComponent(new Game::AxisMoving(this, BASE_SPEED * speed))->setDirection(dir);
+	addComponent(new Game::AxisMoving(this, BASE_SPEED * attack.speed))->setDirection(dir);
 	auto animated = addComponent(new Game::Animated(this, Game::getAsset("test", "bullets.png")));
 	addComponent(new Game::Drawable(this, animated));
 
@@ -15,7 +18,7 @@ AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction d
 	// motion frames: 1 ~ 8 (max 8 / directional per direction)
 	// destroy frames: 0 ~ 5
 	// TODO: refactor
-	BulletPresets::setup(*this, id);
+	BulletPresets::setup(*this, attack.id);
 
 	unsigned short d = 0;
 	switch (dir) {
@@ -57,7 +60,7 @@ AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction d
 	for (unsigned short i = 0; i < nMotionFrames && i < 8 / directionality; ++i)
 		a_move.addFrame(sf::IntRect(
 				(nMotionFrames * d + j++) * TILE_SIZE, 
-				(id-1) * TILE_SIZE, 
+				(attack.id-1) * TILE_SIZE, 
 				TILE_SIZE, 
 				TILE_SIZE));
 
@@ -65,12 +68,11 @@ AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction d
 	for (unsigned short i = j; i < j + nDestroyFrames && i < j + 5; ++i)
 		a_destroy.addFrame(sf::IntRect(
 				(nMotionFrames * directionality + i) * TILE_SIZE, 
-				(id-1) * TILE_SIZE, 
+				(attack.id-1) * TILE_SIZE, 
 				TILE_SIZE, 
 				TILE_SIZE));
 
 	auto& animatedSprite = animated->getSprite();
-	animatedSprite.setPosition(pos);
 	animatedSprite.setAnimation(a_move);
 	animatedSprite.setLooped(true);
 	animatedSprite.setFrameTime(sf::seconds(0.10));

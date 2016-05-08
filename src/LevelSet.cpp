@@ -88,7 +88,7 @@ LevelSet::LevelSet(const std::string& path) {
 		}
 
 		// Mandatory fields
-		enemies[enemynum].attack.damage   = atk["damage"].get<short>();
+		enemies[enemynum].attack.damage = atk["damage"].get<short>();
 		// Optional fields
 		auto it = atk.find("speed");
 		if (it != atk.end())

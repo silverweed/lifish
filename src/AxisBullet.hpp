@@ -6,6 +6,8 @@ namespace Game {
 
 /** A Bullet which travels along axes */
 class AxisBullet : public Game::Bullet {
+	friend class Game::BulletPresets;
+
 	/** If 1 => this bullet has the same animation for any direction, up to 8.
 	 *  If 2 => this bullet has 2 different animations when traveling UP/DOWN or
 	 *          LEFT/RIGHT, up to 4 per direction.
@@ -23,7 +25,7 @@ public:
 class BulletPresets {
 	friend class Game::AxisBullet;
 
-	static void setup(Game::Bullet& b, unsigned short id);
+	static void setup(Game::AxisBullet& b, unsigned short id);
 };
 
 }

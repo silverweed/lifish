@@ -24,10 +24,11 @@ public:
 	void kill();
 	bool isKilled() const { return killed; }
 	/** 
-	 * If checkKill callback is provided, this will return whether the kill is still
-	 * happening or not. If not provided, will always return false.
+	 * If checkKill callback is provided, this will return true if the kill is still
+	 * happening and therefore the owner should not be disposed of.
+	 * If not provided, will always return false.
 	 * Note that isKillInProgress() implies isKilled()
-	 */
+	 */ 
 	bool isKillInProgress() const;
 };
 

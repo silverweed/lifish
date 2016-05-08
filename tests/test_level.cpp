@@ -18,6 +18,8 @@
 #include "../src/Flash.hpp"
 #include "../src/Options.hpp"
 
+using namespace Game;
+
 int main() {
 	Game::init();
 	
@@ -30,25 +32,27 @@ int main() {
 	Game::EntityGroup entities;
 
 	Game::Attack atype;
-	atype.type = Game::AttackType::CONTACT;
+	atype.type = Game::AttackType::SIMPLE;
 	atype.damage = 1;
-	Game::Enemy enemy(sf::Vector2f(32*6, 32*8), 1, 1, atype);
-	Game::Bomb bomb(sf::Vector2f(64, 64), nullptr);
-	Game::Coin coin(sf::Vector2f(96, 96));
-	Game::Player player(sf::Vector2f(128, 128), 1);
-	Game::Teleport teleport(sf::Vector2f(256, 256));
-	Game::FixedWall wall1(sf::Vector2f(32, 64), 5);
-	Game::BreakableWall wall2(sf::Vector2f(32, 96), 3);
-	Game::TransparentWall wall3(sf::Vector2f(32, 128));
+	atype.id = 1;
+	atype.speed = 1;
+	Game::Enemy *enemy = new Enemy(sf::Vector2f(32*6, 32*8), 1, 1, atype);
+	Game::Player *player = new Player(sf::Vector2f(128, 128), 1);
+	Game::Bomb *bomb = new Bomb(sf::Vector2f(64, 64), nullptr);
+	Game::Coin *coin = new Coin(sf::Vector2f(96, 96));
+	Game::Teleport *teleport = new Teleport(sf::Vector2f(256, 256));
+	Game::FixedWall *wall1 = new FixedWall(sf::Vector2f(32, 64), 5);
+	Game::BreakableWall *wall2 = new BreakableWall(sf::Vector2f(32, 96), 3);
+	Game::TransparentWall *wall3 = new TransparentWall(sf::Vector2f(32, 128));
 	
-	entities.add(&enemy);
-	entities.add(&bomb);
-	entities.add(&coin);
-	entities.add(&player);
-	entities.add(&teleport);
-	entities.add(&wall1);
-	entities.add(&wall2);
-	entities.add(&wall3);
+	entities.add(enemy);
+	entities.add(bomb);
+	entities.add(coin);
+	entities.add(player);
+	entities.add(teleport);
+	entities.add(wall1);
+	entities.add(wall2);
+	entities.add(wall3);
 
 	level->setOrigin(sf::Vector2f(-200, 0));
 	entities.setOrigin(sf::Vector2f(-200, 0));
@@ -57,16 +61,13 @@ int main() {
 	//Game::playMusic();
 
 	std::array<Game::Player*, 1> players;
-	players[0] = &player;
+	players[0] = player;
 	
-	enemy.get<Game::AxisMoving>()->setDirection(Game::Direction::DOWN);
+	enemy->get<Game::AxisMoving>()->setDirection(Game::Direction::DOWN);
 
 	sf::Clock turnClock;
 
 	while (window.isOpen()) {
-		std::cerr << "Entities: " << entities.size() << std::endl;
-		std::cerr << "Bullets: " << entities.size<Game::Bullet>() << std::endl;
-
 		sf::Event event;
 		
 		//enemy.get<Game::Shooting>()->shoot();
@@ -78,11 +79,11 @@ int main() {
 		}*/
 
 		if (turnClock.getElapsedTime().asSeconds() > 1) {
-			if (enemy.isAligned()) {
-				enemy.get<Game::AxisMoving>()->turn(1, false);
+			if (enemy->isAligned()) {
+				enemy->get<Game::AxisMoving>()->turn(1, false);
 				turnClock.restart();
-				if (rand() < RAND_MAX/2)
-					entities.add(enemy.get<Game::Shooting>()->shoot());
+				//if (rand() < RAND_MAX/2)
+					entities.add(enemy->get<Game::Shooting>()->shoot());
 			}
 			//entities.add(new Game::Flash(sf::Vector2f(300, 300)));
 		}
@@ -95,7 +96,7 @@ int main() {
 			case sf::Event::KeyPressed:
 				switch (event.key.code) {
 				case sf::Keyboard::M:
-					enemy.setMorphed(!enemy.isMorphed());
+					enemy->setMorphed(!enemy->isMorphed());
 					break;
 				default: break;
 				}

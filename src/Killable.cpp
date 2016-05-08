@@ -27,7 +27,7 @@ void Killable::kill() {
 }
 
 bool Killable::isKillInProgress() const {
-	if (killed) return false;
+	if (!killed) return false;
 
 	return checkKillProgress ? checkKillProgress() : false;
 }

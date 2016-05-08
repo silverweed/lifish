@@ -31,16 +31,23 @@ Bullet::Bullet(const sf::Vector2f& pos, const Game::Attack& attack)
 
 Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
 	: Game::Entity(source != nullptr ? source->getPosition() : sf::Vector2f(0, 0))
-	, range(attack.rangeInTiles ? attack.tileRange : attack.pixelRange)
 	, origin(position)
 	, source(source)
 	, damage(attack.damage)
+	, range(attack.rangeInTiles ? attack.tileRange : attack.pixelRange)
 {
 	addComponent(new Game::Sounded(this, {
 		Game::getAsset("test", std::string("bullet") + Game::to_string(attack.id) + std::string("_hit.ogg")),
 		Game::getAsset("test", std::string("bullet") + Game::to_string(attack.id) + std::string("_shot.ogg"))
 	}));
-	addComponent(new Game::Killable(this, [this] () { _destroy(); }));
+	addComponent(new Game::Killable(this, [this] () {
+		// on kill
+		_destroy();
+	}, [this] () {
+		// kill in progress
+		static auto& animatedSprite = get<Game::Animated>()->getSprite();
+		return animatedSprite.isPlaying();
+	}));
 
 
 	/*

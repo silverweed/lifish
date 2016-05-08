@@ -9,6 +9,7 @@
 #include <SFML/System/NonCopyable.hpp>
 #include "Entity.hpp"
 #include "Temporary.hpp"
+#include "Killable.hpp"
 
 namespace Game {
 
@@ -41,12 +42,23 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	 */
 	std::list<Game::Temporary*> temporary;
 
+	/** The list of Killable entities who are being destroyed (those whose isKilled() is
+	 *  true but isKillInProgress() is true as well).
+	 */
+	std::list<Game::Killable*> dying;
+
 	
 	template<class T>
 	T* _commonAdd(T *entity, bool owned);
 
-	/** Removes any expired temporary from both `temporary` and `entities`, and destroys them. */
+	/** Removes any expired temporary from both `temporary` and `entities`, and destroys them.
+	 *  If an entity is Killable and its `isKillInProgress()` is true, puts it in `dying`
+	 *  instead of immediately destroing it.
+	 */
 	void _removeExpiredTemporaries();
+
+	/** Removes any expired Killable in `dying`. */
+	void _removeDying();
 
 public:
 	/**

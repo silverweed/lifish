@@ -29,7 +29,15 @@ enum AttackType : unsigned int {
 	AXIS_BOUND = 1 << 4
 };
 
-bool stringToAttackType(const std::string& str, AttackType& type);
+inline bool stringToAttackType(const std::string& str, AttackType& type) {
+	if (str == "simple") type = AttackType::SIMPLE;
+	else if (str == "contact") type = AttackType::CONTACT;
+	else if (str == "ranged") type = AttackType::RANGED;
+	else if (str == "blocking") type = AttackType::BLOCKING;
+	else return false;
+
+	return true;
+}
 
 /** Information about how an entity attacks */
 struct Attack {

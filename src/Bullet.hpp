@@ -13,8 +13,6 @@ class BulletPresets;
  */
 class Bullet : public Game::Entity {
 protected:
-	friend class Game::BulletPresets;
-
 	/** The actual size of this bullet in pixels */
 	unsigned short size;
 
