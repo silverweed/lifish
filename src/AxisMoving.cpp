@@ -46,13 +46,18 @@ void AxisMoving::update() {
 	//if (!colliding) {
 		owner->setPosition(owner->getPosition() + shift * frameTime.asSeconds());
 		distTravelled += speed * frameTime.asSeconds();
+		_ensureAlign();
 	//}
 
 	prevDirection = direction;
+
+	// FIXME: why cannot set this here but must do it after entities.updateAll()?
+	//if (owner->isAligned())
+		//prevAlign = Game::tile(owner->getPosition());
 }
 
 void AxisMoving::realign() {
-	sf::Vector2f pos = owner->getPosition();
+	auto pos = owner->getPosition();
 
 	switch (direction) {
 	case Game::Direction::UP:
@@ -63,7 +68,6 @@ void AxisMoving::realign() {
 		break;
 	case Game::Direction::DOWN:
 		pos = sf::Vector2f(pos.x, (unsigned short)(pos.y / TILE_SIZE) * TILE_SIZE);
-
 		break;
 	case Game::Direction::RIGHT:
 		pos = sf::Vector2f((unsigned short)(pos.x / TILE_SIZE) * TILE_SIZE, pos.y);
@@ -135,4 +139,28 @@ void AxisMoving::turn(short straightAngles, bool clockwise) {
 		straightAngles *= -1;
 
 	direction = Game::turnRight(direction, straightAngles);
+}
+
+void AxisMoving::_ensureAlign() {
+	// Ensure we are always aligned at least for one frame for
+	// each tile we step in (this may not be the case if FPS are too low)
+	auto pos = owner->getPosition();
+	switch (direction) {
+	case Direction::RIGHT:
+	case Direction::DOWN:
+		if (Game::tile(pos) != prevAlign)
+			pos = Game::aligned(pos);
+		break;
+	case Direction::LEFT:
+		if (Game::tile(pos).x == prevAlign.x - 2)
+			pos = Game::aligned(pos) + sf::Vector2f(Game::TILE_SIZE, 0);
+		break;
+	case Direction::UP:
+		if (Game::tile(pos).y == prevAlign.y - 2)
+			pos = Game::aligned(pos) + sf::Vector2f(0, Game::TILE_SIZE);
+		break;
+	case Direction::NONE:
+		break;
+	}
+	owner->setPosition(pos);
 }

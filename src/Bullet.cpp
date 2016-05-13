@@ -45,7 +45,7 @@ Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
 		_destroy();
 	}, [this] () {
 		// kill in progress
-		static auto& animatedSprite = get<Game::Animated>()->getSprite();
+		auto& animatedSprite = get<Game::Animated>()->getSprite();
 		return animatedSprite.isPlaying();
 	}));
 

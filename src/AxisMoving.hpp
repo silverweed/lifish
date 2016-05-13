@@ -8,12 +8,15 @@ namespace Game {
 class LevelManager;
 
 /**
- * An object moving only parallel to axes */
+ * An object moving only parallel to axes 
+ */
 class AxisMoving : public Game::Moving {
 	Game::Direction direction;
 	Game::Direction prevDirection;
-	sf::Vector2f prevAlign;
-	
+	sf::Vector2i prevAlign;
+
+
+	void _ensureAlign();
 
 public:
 	explicit AxisMoving(Game::Entity *const owner, float speed, 
@@ -21,9 +24,11 @@ public:
 
 	Game::Direction getDirection() const { return direction; }
 	Game::Direction getPrevDirection() const { return prevDirection; }
-	const sf::Vector2f& getPrevAlign() const { return prevAlign; }
+	const sf::Vector2i& getPrevAlign() const { return prevAlign; }
+
 	void setDirection(Game::Direction dir);
 	void turn(short straightAngles, bool clockwise);
+	void setPrevAlign(const sf::Vector2i& a) { prevAlign = a; }
 
 	void realign();
 	void stop() override;

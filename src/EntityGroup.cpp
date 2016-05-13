@@ -25,10 +25,10 @@ void EntityGroup::updateAll() {
 		e->update();
 
 	_removeExpiredTemporaries();
-	_removeDying();
+	if (dying.size() > 0)
+		_removeDying();
 }
 
-#include <iostream>
 void EntityGroup::_removeExpiredTemporaries() {
 	for (auto it = temporary.begin(); it != temporary.end(); ) {
 		auto tmp = *it;
@@ -37,9 +37,7 @@ void EntityGroup::_removeExpiredTemporaries() {
 			auto k = tmp->getOwner()->get<Game::Killable>();
 			if (k != nullptr) {
 				k->kill();
-				std::cerr<<"in progress: "<<k->isKillInProgress()<<std::endl;
 				if (k->isKillInProgress()) {
-					std::cerr<<"push back ["<<dying.size()<<"]"<<std::endl;
 					dying.push_back(k);
 					it = temporary.erase(it);
 					continue;
@@ -61,9 +59,7 @@ void EntityGroup::_removeExpiredTemporaries() {
 }
 
 
-// FIXME!!!
 void EntityGroup::_removeDying() {
-	int i = 0;
 	for (auto it = dying.begin(); it != dying.end(); ) {
 		auto tmp = *it;
 		if (!tmp->isKillInProgress()) {

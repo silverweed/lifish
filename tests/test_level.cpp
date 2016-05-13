@@ -24,6 +24,7 @@ int main() {
 	Game::init();
 	
 	sf::RenderWindow window(sf::VideoMode(800, 600), "test level");
+	window.setVerticalSyncEnabled(true);
 	Game::options.showFPS = true;
 
 	Game::LevelSet ls("levels.json");
@@ -66,24 +67,27 @@ int main() {
 	enemy->get<Game::AxisMoving>()->setDirection(Game::Direction::DOWN);
 
 	sf::Clock turnClock;
+	sf::Clock shootClock;
 
 	while (window.isOpen()) {
 		sf::Event event;
 		
 		//enemy.get<Game::Shooting>()->shoot();
-	/*	if (turnClock.getElapsedTime().asMilliseconds() > 100) {
-			float x = float(rand())/RAND_MAX, y = float(rand())/RAND_MAX;
-			entities.add(new Game::BossExplosion(sf::Vector2f(
-						Game::LEVEL_WIDTH * Game::TILE_SIZE * x + 200,
-						Game::LEVEL_HEIGHT * Game::TILE_SIZE * y)));
-		}*/
+		if (shootClock.getElapsedTime().asMilliseconds() > 200) {
+			//float x = float(rand())/RAND_MAX, y = float(rand())/RAND_MAX;
+			//entities.add(new Game::BossExplosion(sf::Vector2f(
+						//Game::LEVEL_WIDTH * Game::TILE_SIZE * x + 200,
+						//Game::LEVEL_HEIGHT * Game::TILE_SIZE * y)));
+			entities.add(enemy->get<Game::Shooting>()->shoot());
+			shootClock.restart();
+		}
 
 		if (turnClock.getElapsedTime().asSeconds() > 1) {
 			if (enemy->isAligned()) {
 				enemy->get<Game::AxisMoving>()->turn(1, false);
 				turnClock.restart();
 				//if (rand() < RAND_MAX/2)
-					entities.add(enemy->get<Game::Shooting>()->shoot());
+					//entities.add(enemy->get<Game::Shooting>()->shoot());
 			}
 			//entities.add(new Game::Flash(sf::Vector2f(300, 300)));
 		}
@@ -104,12 +108,22 @@ int main() {
 			}
 		}
 
+		// Fill players' directions according to input
 		Game::get_directions(window, players);
 
 		entities.updateAll();
+
+		// Set entities' previous align	
+		entities.apply([] (Game::Entity *e) {
+			auto m = e->get<Game::AxisMoving>();
+			if (m != nullptr && e->isAligned())
+				m->setPrevAlign(Game::tile(e->getPosition()));
+		});
+
+		// Draw everything
 		window.clear();
 		window.draw(*level.get());
-		entities.apply([&window] (Game::Entity* e) {
+		entities.apply([&window] (Game::Entity *e) {
 			auto d = e->get<Game::Drawable>();
 			if (d != nullptr)
 				window.draw(*d);
