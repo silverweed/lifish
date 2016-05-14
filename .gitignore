@@ -21,3 +21,4 @@ tests
 test.json
 *.lifish
 *.pyc
+*.exe
