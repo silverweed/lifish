@@ -5,54 +5,61 @@
 #include "Player.hpp"
 #include "utils.hpp"
 #include "Game.hpp"
+#include "Drawable.hpp"
 #include "GameCache.hpp"
+#include "Temporary.hpp"
+#include "Sounded.hpp"
 #include <list>
 
 using Game::Explosion;
 using Game::TILE_SIZE;
 
-Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game::Player *const source) :
-	Game::Temporary(pos, Game::getAsset("graphics", "explosion.png")),
-	Game::Sounded({ Game::getAsset("sounds", "explosion.ogg") }),
-	radius(_radius),
-	sourcePlayer(source)
+Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game::Player *const source)
+	: Game::Entity(pos)
+	, radius(_radius)
+	, sourcePlayer(source)
 {
-	animations[ANIM_DEATH].setSpriteSheet(*texture);
-	animations[ANIM_UP].setSpriteSheet(*texture);
-	animations[ANIM_LEFT].setSpriteSheet(*texture);
+	addComponent(new Game::Sounded(this, { Game::getAsset("sounds", "explosion.ogg") }));
+	explosionC = addComponent(new Game::Animated(this, Game::getAsset("graphics", "explosionC.png")));
+	explosionC->addAnimation("explode", {
+		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),
+		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
+		sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
+		sf::IntRect(3 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
+		sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
+		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
+		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE)
+	}, true);
+	explosionV = addComponent(new Game::Animated(this, Game::getAsset("graphics", "explosionV.png")));
+	explosionV->getTexture()->setRepeated(true);
+	explosionH = addComponent(new Game::Animated(this, Game::getAsset("graphics", "explosionH.png")));
+	explosionH->getTexture()->setRepeated(true);
 
-	// An Explosion has 12 sprites: 4 central, 4 horizontal and 4 vertical
-	// Here, ANIM_UP is used for vertical, ANIM_LEFT for horizontal and
-	// ANIM_DEATH for central.
-	for (unsigned short i = 0; i < 4; ++i) {
-		animations[ANIM_DEATH].addFrame(sf::IntRect(i*TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
-		animations[ANIM_UP].addFrame(sf::IntRect(i*TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE));
-		animations[ANIM_LEFT].addFrame(sf::IntRect(i*TILE_SIZE, 2*TILE_SIZE, TILE_SIZE, TILE_SIZE));
-	}
-	for (short i = 2; i > -1; --i) {
-		animations[ANIM_DEATH].addFrame(sf::IntRect(i*TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
-		animations[ANIM_UP].addFrame(sf::IntRect(i*TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE));
-		animations[ANIM_LEFT].addFrame(sf::IntRect(i*TILE_SIZE, 2*TILE_SIZE, TILE_SIZE, TILE_SIZE));
-	}
+	addComponent(new Game::Drawable(this, this));
 
-	animatedSprite.setPosition(pos);
-	animatedSprite.setAnimation(animations[ANIM_DEATH]);
-	explosionH.setAnimation(animations[ANIM_LEFT]);
-	explosionV.setAnimation(animations[ANIM_UP]);
-	animatedSprite.setFrameTime(sf::seconds(0.05));
-	explosionH.setFrameTime(sf::seconds(0.05));
-	explosionV.setFrameTime(sf::seconds(0.05));
-	animatedSprite.setLooped(false);
-	explosionH.setLooped(false);
-	explosionV.setLooped(false);
+	explosionC->getSprite().setFrameTime(sf::seconds(0.05));
+	explosionH->getSprite().setFrameTime(sf::seconds(0.05));
+	explosionV->getSprite().setFrameTime(sf::seconds(0.05));
+	explosionC->getSprite().setLooped(false);
+	explosionH->getSprite().setLooped(false);
+	explosionV->getSprite().setLooped(false);
+
+	addComponent(new Game::Temporary(this, [this] () {
+		return !explosionC->getSprite().isPlaying();
+	}));
 
 	propagation.fill(0);
 }
 
 void Explosion::propagate(Game::LevelManager *const lr) {
-	const sf::Vector2i m_tile = Game::tile(pos);
+	const sf::Vector2i m_tile = Game::tile(position);
 	bool propagating[] = { true, true, true, true };
+	
+	// TODO
+	propagation.fill(radius);
+	checkHit(lr);
 
+#if 0
 	const auto fixed = lr->getFixedEntities();
 	const auto level = lr->getLevel();
 	const auto bosses = lr->getBosses();
@@ -136,9 +143,11 @@ void Explosion::propagate(Game::LevelManager *const lr) {
 			}
 		}
 	}
+#endif
 }
 
 void Explosion::checkHit(Game::LevelManager *const lr) {
+#if 0
 	std::array<std::vector<Game::LifedMovingEntity*>, 5> moving;
 
 	const auto allmoving = lr->getMovingEntities();
@@ -228,30 +237,41 @@ void Explosion::checkHit(Game::LevelManager *const lr) {
 				tryHit(e, expl_box);
 		}
 	}
+#endif
+
+	_setPropagatedAnims();
 }
 
-void Explosion::draw(sf::RenderTarget& window) {
-	sf::Time frameTime = frameClock.restart();
-	// Draw center
-	animatedSprite.update(frameTime);
-	window.draw(animatedSprite);
+void Explosion::_setPropagatedAnims() {
+	const unsigned short hsize = TILE_SIZE * (propagation[ANIM_RIGHT] + propagation[ANIM_LEFT] + 1);
+	explosionH->addAnimation("explode", {
+		sf::IntRect(0, 0, hsize, TILE_SIZE),
+		sf::IntRect(0, TILE_SIZE, hsize, TILE_SIZE),
+		sf::IntRect(0, 2 * TILE_SIZE, hsize, TILE_SIZE),
+		sf::IntRect(0, 3 * TILE_SIZE, hsize, TILE_SIZE),
+		sf::IntRect(0, 2 * TILE_SIZE, hsize, TILE_SIZE),
+		sf::IntRect(0, TILE_SIZE, hsize, TILE_SIZE),
+		sf::IntRect(0, 0, hsize, TILE_SIZE)
+	}, true);
+	const unsigned short vsize = TILE_SIZE * (propagation[ANIM_DOWN] + propagation[ANIM_UP] + 1);
+	explosionV->addAnimation("explode", {
+		sf::IntRect(0, 0, TILE_SIZE, vsize),
+		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, vsize),
+		sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, vsize),
+		sf::IntRect(3 * TILE_SIZE, 0, TILE_SIZE, vsize),
+		sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, vsize),
+		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, vsize),
+		sf::IntRect(0, 0, TILE_SIZE, vsize)
+	}, true);
+	explosionH->setPosition(position - sf::Vector2f(TILE_SIZE * propagation[ANIM_LEFT], 0));
+	explosionV->setPosition(position - sf::Vector2f(0, TILE_SIZE * propagation[ANIM_UP]));
+}
+
+void Explosion::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	// Draw horizontal
-	sf::Vector2i m_tile = Game::tile(pos);
-	const unsigned short h_start_tile = m_tile.x - propagation[ANIM_LEFT],
-	                     h_end_tile = m_tile.x + propagation[ANIM_RIGHT];
-	explosionH.update(frameTime);
-	for (unsigned short i = h_start_tile; i <= h_end_tile; ++i) {
-		if (i == m_tile.x) continue;
-		explosionH.setPosition(i * TILE_SIZE, pos.y);
-		window.draw(explosionH);
-	}
+	window.draw(*explosionH, states);
 	// Draw vertical
-	const unsigned short v_start_tile = m_tile.y - propagation[ANIM_UP],
-	                     v_end_tile = m_tile.y + propagation[ANIM_DOWN];
-	explosionV.update(frameTime);
-	for (unsigned short i = v_start_tile; i <= v_end_tile; ++i) {
-		if (i == m_tile.y) continue;
-		explosionV.setPosition(pos.x, i * TILE_SIZE);
-		window.draw(explosionV);
-	}
+	window.draw(*explosionV, states);
+	// Draw center
+	window.draw(*explosionC, states);
 }

@@ -8,6 +8,14 @@ enum class Direction {
 	UP, LEFT, DOWN, RIGHT, NONE
 };
 
+/** This is used to index arrays, but should be avoided when possible */
+enum : unsigned short {
+	ANIM_UP    = 0,
+	ANIM_LEFT  = 1,
+	ANIM_DOWN  = 2,
+	ANIM_RIGHT = 3
+};
+
 inline std::string directionToString(const Direction& dir) {
 	switch (dir) {
 	case Direction::UP: return "up";

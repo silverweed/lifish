@@ -21,6 +21,7 @@ protected:
 	Game::Clock<1> *frameClock;
 	std::unordered_map<std::string, Animation> animations;
 	AnimatedSprite animatedSprite;
+	bool manualPosition = false;
 
 public:
 	explicit Animated(Game::Entity *const owner, const std::string& texture_name);
@@ -43,6 +44,7 @@ public:
 	/** Returns true if cur animation == `name` and animatedSprite is playing */
 	bool isPlaying(const std::string& name);
 
+	sf::Texture* getTexture() const { return texture; }
 	void setTexture(sf::Texture *t) { texture = t; }
 
 	AnimatedSprite& getSprite() { return animatedSprite; }
@@ -53,6 +55,11 @@ public:
 
 	void setOrigin(const sf::Vector2f& o) override {
 		animatedSprite.setOrigin(o);
+	}
+
+	void setPosition(const sf::Vector2f& pos) override {
+		Game::Entity::setPosition(pos);
+		manualPosition = true;
 	}
 };
 

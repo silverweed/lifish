@@ -57,7 +57,10 @@ void Animated::setAnimation(Animation& anim) {
 }
 
 void Animated::update() {
-	animatedSprite.setPosition(owner->getPosition());
+	if (manualPosition)
+		animatedSprite.setPosition(position);
+	else
+		animatedSprite.setPosition(owner->getPosition());
 	animatedSprite.update(frameClock->restart());
 }
 

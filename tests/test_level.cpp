@@ -17,8 +17,16 @@
 #include "../src/input.hpp"
 #include "../src/Flash.hpp"
 #include "../src/Options.hpp"
+#include "../src/Explosion.hpp"
 
 using namespace Game;
+
+// MOCK
+namespace Game {
+class LevelManager {
+
+};
+}
 
 int main() {
 	Game::init();
@@ -37,14 +45,14 @@ int main() {
 	atype.damage = 1;
 	atype.id = 1;
 	atype.speed = 1;
-	Game::Enemy *enemy = new Enemy(sf::Vector2f(32*6, 32*8), 1, 1, atype);
-	Game::Player *player = new Player(sf::Vector2f(128, 128), 1);
-	Game::Bomb *bomb = new Bomb(sf::Vector2f(64, 64), nullptr);
-	Game::Coin *coin = new Coin(sf::Vector2f(96, 96));
-	Game::Teleport *teleport = new Teleport(sf::Vector2f(256, 256));
-	Game::FixedWall *wall1 = new FixedWall(sf::Vector2f(32, 64), 5);
-	Game::BreakableWall *wall2 = new BreakableWall(sf::Vector2f(32, 96), 3);
-	Game::TransparentWall *wall3 = new TransparentWall(sf::Vector2f(32, 128));
+	Enemy *enemy = new Enemy(sf::Vector2f(32*6, 32*8), 1, 1, atype);
+	Player *player = new Player(sf::Vector2f(128, 128), 1);
+	Bomb *bomb = new Bomb(sf::Vector2f(64, 64), nullptr);
+	Coin *coin = new Coin(sf::Vector2f(96, 96));
+	Teleport *teleport = new Teleport(sf::Vector2f(256, 256));
+	FixedWall *wall1 = new FixedWall(sf::Vector2f(32, 64), 5);
+	BreakableWall *wall2 = new BreakableWall(sf::Vector2f(32, 96), 3);
+	TransparentWall *wall3 = new TransparentWall(sf::Vector2f(32, 128));
 	
 	entities.add(enemy);
 	entities.add(bomb);
@@ -69,15 +77,23 @@ int main() {
 	sf::Clock turnClock;
 	sf::Clock shootClock;
 
+	auto lm = new Game::LevelManager;
+
 	while (window.isOpen()) {
 		sf::Event event;
 		
 		//enemy.get<Game::Shooting>()->shoot();
 		if (shootClock.getElapsedTime().asMilliseconds() > 200) {
 			//float x = float(rand())/RAND_MAX, y = float(rand())/RAND_MAX;
+			//float xx = float(rand())/RAND_MAX, yy = float(rand())/RAND_MAX;
 			//entities.add(new Game::BossExplosion(sf::Vector2f(
-						//Game::LEVEL_WIDTH * Game::TILE_SIZE * x + 200,
-						//Game::LEVEL_HEIGHT * Game::TILE_SIZE * y)));
+						//Game::LEVEL_WIDTH * Game::TILE_SIZE * xx,
+						//Game::LEVEL_HEIGHT * Game::TILE_SIZE * yy)));
+			//auto e = new Game::Explosion(sf::Vector2f(
+						//Game::LEVEL_WIDTH * Game::TILE_SIZE * x,
+						//Game::LEVEL_HEIGHT * Game::TILE_SIZE * y), 2, player);
+			//e->propagate(lm);
+			//entities.add(e);
 			entities.add(enemy->get<Game::Shooting>()->shoot());
 			shootClock.restart();
 		}
@@ -86,6 +102,9 @@ int main() {
 			if (enemy->isAligned()) {
 				enemy->get<Game::AxisMoving>()->turn(1, false);
 				turnClock.restart();
+				Explosion *expl = new Explosion(sf::Vector2f(7 * 32, 3 * 32), 2, player);
+				expl->propagate(lm);
+				entities.add(expl);
 				//if (rand() < RAND_MAX/2)
 					//entities.add(enemy->get<Game::Shooting>()->shoot());
 			}
@@ -131,6 +150,8 @@ int main() {
 		Game::maybeShowFPS(window);
 		window.display();
 	}
+
+	delete lm;
 
 	//Game::stopMusic();
 }

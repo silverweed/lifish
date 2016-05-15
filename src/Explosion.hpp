@@ -1,8 +1,8 @@
 #pragma once
 
 #include <array>
-#include "Temporary.hpp"
-#include "Sounded.hpp"
+#include <SFML/Graphics.hpp>
+#include "Animated.hpp"
 
 namespace Game {
 
@@ -14,11 +14,13 @@ class Player;
  * doesn't propagate in time: rather, it blossoms in all involved
  * tiles at once and has a duration of ~200 ms (framerate: 0.05)
  */
-class Explosion : public Game::Temporary, public Game::Sounded {
-	/** The additional sprites for horizontal and vertical
-	 *  explosions (the central one is animatedSprite)
-	 */
-	AnimatedSprite explosionH, explosionV;
+class Explosion : public Game::Entity, public sf::Drawable {
+	sf::Texture explosionHTexture,
+		    explosionVTexture;
+
+	Game::Animated *explosionC = nullptr, // central explosion
+	               *explosionH = nullptr, // horizontal explosion
+		       *explosionV = nullptr; // vertical explosion
 
 	/** The radius of this explosion */
 	unsigned short radius;
@@ -31,29 +33,28 @@ class Explosion : public Game::Temporary, public Game::Sounded {
 
 	/** The player who dropped the bomb this explosion originated from */
 	const Game::Player *const sourcePlayer;
+
+
+	/** To be called after `propagate()`; sets the correct positions for explosionH/V */
+	void _setPropagatedAnims();
+
 public:
 	/** If sourcePlayer == nullptr, the explosion wasn't originated by a bomb.
 	 *  In this case, whenever points should be given to a player, no points
 	 *  are given at all.
 	 */
-	Explosion(const sf::Vector2f& pos, unsigned short radius, 
+	explicit Explosion(const sf::Vector2f& pos, unsigned short radius, 
 			const Game::Player *const sourcePlayer = nullptr);
 
 	/** Calculate the tiles this explosion propagates to
 	 *  (fixed walls and borders stop the explosion). Also kills enemies and
-	 *  walls within the explosion.
+	 *  walls within the explosion. (called once in the Explosion's lifetime)
 	 */
-	void propagate(LevelManager *const);
+	void propagate(Game::LevelManager *const);
 
-	void checkHit(LevelManager *const);
+	void checkHit(Game::LevelManager *const);
 
-	void draw(sf::RenderTarget& window) override;
-	
-	void setOrigin(const sf::Vector2f& pos) override {
-		animatedSprite.setOrigin(pos);
-		explosionH.setOrigin(pos);
-		explosionV.setOrigin(pos);
-	}
+	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 };
 
 }
