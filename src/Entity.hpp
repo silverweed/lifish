@@ -4,6 +4,7 @@
 #include <list>
 #include <SFML/System.hpp>
 #include "WithOrigin.hpp"
+#include "Stringable.hpp"
 
 namespace Game {
 
@@ -12,11 +13,12 @@ class Component;
 /**
  * Base class for game entities (walls, enemies, players, ...)
  */
-class Entity : public Game::WithOrigin {
+class Entity : public Game::WithOrigin, public Game::Stringable {
 	std::list<std::unique_ptr<Game::Component>> components;
 
 protected:
 	sf::Vector2f position;
+	std::string _toString(unsigned short indent) const;
 
 public:
 	Entity() {}
@@ -33,7 +35,8 @@ public:
 	T* get() const {
 		for (auto& comp : components) {
 			Component *ptr = comp.get();
-			if (T* derived = dynamic_cast<T*>(ptr))
+			T* derived = nullptr;
+			if (ptr && (derived = dynamic_cast<T*>(ptr)))
 				return derived;
 		}
 		return nullptr;
@@ -42,11 +45,17 @@ public:
 	const sf::Vector2f& getPosition() const { return position; }
 	void setPosition(const sf::Vector2f& p) { position = p; }
 
+	bool isAligned(const char axis = 'b') const;
+
 	virtual void update();
 
+	/** Implements WithOrigin */
 	virtual void setOrigin(const sf::Vector2f& origin) override;
-
-	bool isAligned(const char axis = 'b') const;
+	
+	/** Implements Stringable */
+	virtual std::string toString() const override {
+		return _toString(0);
+	}
 };
 
 }

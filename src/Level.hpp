@@ -50,7 +50,6 @@ struct LevelInfo {
  */
 class Level final 
 	: public Game::Entity
-	, public Game::Stringable
 	, public sf::Drawable
 	, private sf::NonCopyable
 {
