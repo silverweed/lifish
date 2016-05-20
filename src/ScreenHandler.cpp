@@ -7,24 +7,21 @@
 using Game::ScreenHandler;
 
 Game::Action ScreenHandler::handleScreenEvents(sf::RenderWindow& window, ScreenType rootScreen, int enabledScreens) {
-	// The currently displayed screen
-	Game::Screen *cur_screen = nullptr;
-	
 	switch (rootScreen) {
 	case HOME_SCREEN:
-		cur_screen = &screens.home;
+		curScreen = &screens.home;
 		break;
 	case PREFERENCES_SCREEN: 
-		cur_screen = &screens.preferences;
+		curScreen = &screens.preferences;
 		break;
 	case CONTROLS_SCREEN: 
-		cur_screen = &screens.controls;
+		curScreen = &screens.controls;
 		break;
 	case ABOUT_SCREEN:
-		cur_screen = &screens.about;
+		curScreen = &screens.about;
 		break;
 	case PAUSE_SCREEN:
-		cur_screen = &screens.pause;
+		curScreen = &screens.pause;
 		break;
 	default:
 		throw std::invalid_argument("Called handleScreenEvents with non-existing screen!");
@@ -43,9 +40,6 @@ Game::Action ScreenHandler::handleScreenEvents(sf::RenderWindow& window, ScreenT
 	if (enabledScreens & PAUSE_SCREEN)
 		enabled_screens.insert(&screens.pause);
 
-	window.clear();
-	cur_screen->draw(window);
-
 	auto find_parent = [&enabled_screens] (Game::Screen *screen) -> Game::Screen* {
 		for (const auto& parent : screen->getParents()) {
 			if (enabled_screens.find(parent) != enabled_screens.end())
@@ -62,14 +56,14 @@ Game::Action ScreenHandler::handleScreenEvents(sf::RenderWindow& window, ScreenT
 				window.close();
 				break;
 			case sf::Event::MouseMoved:
-				cur_screen->triggerMouseOver(
+				curScreen->triggerMouseOver(
 						window.mapPixelToCoords(sf::Mouse::getPosition(window)));
 				break;
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::Key::Escape) {
-					const auto parent = find_parent(cur_screen);
+					const auto parent = find_parent(curScreen);
 					if (parent != nullptr)
-						cur_screen = parent;
+						curScreen = parent;
 					else
 						return Game::Action::DO_NOTHING;
 				} else if (event.key.code == sf::Keyboard::Key::F) {
@@ -78,7 +72,7 @@ Game::Action ScreenHandler::handleScreenEvents(sf::RenderWindow& window, ScreenT
 				break;
 			case sf::Event::MouseButtonReleased:
 				{
-					const auto clicked = cur_screen->triggerMouseClick(
+					const auto clicked = curScreen->triggerMouseClick(
 							window.mapPixelToCoords(sf::Mouse::getPosition(window)));
 					if (clicked == "start") {
 						return Game::Action::START_GAME;
@@ -88,7 +82,7 @@ Game::Action ScreenHandler::handleScreenEvents(sf::RenderWindow& window, ScreenT
 						return Game::Action::SAVE_GAME;
 					} else if (clicked == "preferences") {
 						if (enabledScreens & PREFERENCES_SCREEN)
-							cur_screen = &screens.preferences;
+							curScreen = &screens.preferences;
 						break;
 					} else if (clicked == "preferences::music_volume_down") {
 						screens.preferences.changeVolume(
@@ -128,7 +122,7 @@ Game::Action ScreenHandler::handleScreenEvents(sf::RenderWindow& window, ScreenT
 						break;
 					} else if (clicked == "preferences::controls") {
 						if (enabledScreens & CONTROLS_SCREEN)
-							cur_screen = &screens.controls;
+							curScreen = &screens.controls;
 						break;
 					} else if (clicked == "controls::p1") {
 						screens.controls.selectPlayer(1);
@@ -144,12 +138,12 @@ Game::Action ScreenHandler::handleScreenEvents(sf::RenderWindow& window, ScreenT
 						break;
 					} else if (clicked == "about") {
 						if (enabledScreens & ABOUT_SCREEN)
-							cur_screen = &screens.about;
+							curScreen = &screens.about;
 						break;
 					} else if (clicked == "exit") {
-						const auto parent = find_parent(cur_screen);
+						const auto parent = find_parent(curScreen);
 						if (parent != nullptr)
-							cur_screen = parent;
+							curScreen = parent;
 						else
 							return Game::Action::EXIT;
 					}
@@ -159,10 +153,10 @@ Game::Action ScreenHandler::handleScreenEvents(sf::RenderWindow& window, ScreenT
 				break;
 			}
 		}
-		window.clear();
-		cur_screen->draw(window);
-		Game::maybeShowFPS(window);
-		window.display();
 	}
 	return Game::Action::DO_NOTHING;
+}
+
+void ScreenHandler::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	target.draw(*curScreen, states);
 }

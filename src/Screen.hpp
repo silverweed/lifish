@@ -17,6 +17,7 @@ namespace Game {
  * foreground sprites or text
  */
 class Screen : public Game::Entity, public sf::Drawable, protected sf::NonCopyable {
+protected:
 	Game::Sprite *bgSprite = nullptr;
 
 	//[>* The background texture <]
@@ -33,7 +34,6 @@ class Screen : public Game::Entity, public sf::Drawable, protected sf::NonCopyab
 	/** The static elements which don't interact */
 	std::vector<std::unique_ptr<sf::Drawable>> elements;
 
-protected:
 	void _addClickable(const std::string& key, Game::ShadedText *elem);
 	void _addClickable(const std::string& key, Game::Sprite *elem);
 	void _addStatic(sf::Drawable *elem) {

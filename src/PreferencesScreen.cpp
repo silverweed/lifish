@@ -31,7 +31,7 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 
 	text = new Game::ShadedText(font, "-", sf::Vector2f(ipadx + 150, ipady - 8));
 	text->setCharacterSize(32);
-	texts["preferences::music_volume_down"] = text;
+	_addClickable("preferences::music_volume_down", text);
 
 	text = new Game::ShadedText(font, "placeholder", sf::Vector2f(ipadx + 200, ipady));
 	// Draw the full volume bar to get the measure of this element's max width
@@ -48,7 +48,7 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 	auto bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font, "+", sf::Vector2f(ipadx + 200 + bounds.width + 40, ipady - 6));
 	text->setCharacterSize(30);
-	texts["preferences::music_volume_up"] = text;
+	_addClickable("preferences::music_volume_up", text);
 
 	bounds = text->getGlobalBounds();
 	auto image = new sf::Sprite;
@@ -56,7 +56,7 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 	image->setTexture(*speakerTexture);
 	image->setTextureRect(sf::IntRect(prevMusicVolume >= 0 ? 25 : 0, 0, 25, 25));
 	image->setPosition(sf::Vector2f(bounds.left + bounds.width + 20, ipady));
-	images["preferences::music_mute_toggle"] = image;
+	_addClickable("preferences::music_mute_toggle", image);
 
 	// FX Volume
 	text = new Game::ShadedText(font, "FX:", sf::Vector2f(ipadx, ipady + bounds.height + 20));
@@ -66,7 +66,7 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 	pos = text->getPosition();
 	text = new Game::ShadedText(font, "-", sf::Vector2f(ipadx + 150, pos.y - 8));
 	text->setCharacterSize(32);
-	texts["preferences::sounds_volume_down"] = text;
+	_addClickable("preferences::sounds_volume_down", text);
 
 	text = new Game::ShadedText(font, ss.str(), sf::Vector2f(ipadx + 200, pos.y));
 	text->setCharacterSize(20);
@@ -76,7 +76,7 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 	bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font, "+", sf::Vector2f(ipadx + 200 + bounds.width + 40, pos.y - 6));
 	text->setCharacterSize(30);
-	texts["preferences::sounds_volume_up"] = text;
+	_addClickable("preferences::sounds_volume_up", text);
 
 	bounds = text->getGlobalBounds();
 	image = new sf::Sprite;
@@ -85,17 +85,17 @@ PreferencesScreen::PreferencesScreen() : Screen() {
 	image->setTextureRect(sf::IntRect(Game::options.soundsMute ? SPEAKER_SPRITE_SIZE : 0,
 				0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
 	image->setPosition(sf::Vector2f(bounds.left + bounds.width + 20, bounds.top));
-	images["preferences::sounds_mute_toggle"] = image;
+	_addClickable("preferences::sounds_mute_toggle", image);
 
 	text = new Game::ShadedText(font, "Controls", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
 	text->setCharacterSize(size);
-	texts["preferences::controls"] = text;
+	_addClickable("preferences::controls", text);
 	
 	text = new Game::ShadedText(font, "Exit", pos);
 	text->setCharacterSize(size);
 	bounds = text->getGlobalBounds();
 	text->setPosition(sf::Vector2f(Game::center(bounds, win_bounds).x, win_bounds.height - 2 * bounds.height));
-	texts["exit"] = text;
+	_addClickable("exit", text);
 }
 
 void PreferencesScreen::changeVolume(VolumeType which, VolumeAction what) {

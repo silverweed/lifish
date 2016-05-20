@@ -26,7 +26,7 @@ enum class Action {
 	DO_NOTHING
 };
 
-class ScreenHandler final {
+class ScreenHandler final : public sf::Drawable {
 	// All possible screens
 	static struct {
 		Game::HomeScreen& home = Game::HomeScreen::getInstance();
@@ -35,11 +35,23 @@ class ScreenHandler final {
 		Game::AboutScreen& about = Game::AboutScreen::getInstance();
 		Game::PauseScreen& pause = Game::PauseScreen::getInstance();
 	} screens;
+
+	Game::Screen *curScreen = nullptr;
+	
+	ScreenHandler() : curScreen(&screens.home) {}
+
 public:
+	static ScreenHandler& getInstance() {
+		static ScreenHandler instance;
+		return instance;
+	}
+
 	/** Displays the menu, starting with `rootScreen` and exiting when it should change to a
 	 *  screen which is not enabled. All screens are enabled by default.
 	 */
-	static Game::Action handleScreenEvents(sf::RenderWindow& window, ScreenType rootScreen, int enabledScreens);
+	Game::Action handleScreenEvents(sf::RenderWindow& window, ScreenType rootScreen, int enabledScreens);
+
+	void draw(sf::RenderTarget& target, sf::RenderStates) const override;
 };
 
 }
