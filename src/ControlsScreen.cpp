@@ -28,7 +28,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 	auto text = new Game::ShadedText(font, "P1", sf::Vector2f(ipadx, ipady));
 	text->setCharacterSize(size);
 	text->setFGColor(sf::Color::Red);
-	_addClickable("controls::p1", text);
+	texts["controls::p1"] = text;
 
 	auto bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font, " / ", sf::Vector2f(bounds.left + bounds.width, ipady));
@@ -38,7 +38,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 	bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font, "P2", sf::Vector2f(bounds.left + bounds.width, ipady));
 	text->setCharacterSize(size);
-	_addClickable("controls::p2", text);
+	texts["controls::p2"] = text;
 
 	float y = bounds.top + 3 * bounds.height,
 	      x = 180;
@@ -52,7 +52,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 			Game::KeyUtils::keyToString(Game::playerControls[selectedPlayer-1][Control::UP]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
-	_addClickable("controls::change_up", text);
+	texts["controls::change_up"] = text;
 
 	y += 2 * bounds.height;
 	text = new Game::ShadedText(font, "DOWN: ", sf::Vector2f(ipadx, y));
@@ -63,7 +63,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 			Game::KeyUtils::keyToString(Game::playerControls[selectedPlayer-1][Control::DOWN]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
-	_addClickable("controls::change_down", text);
+	texts["controls::change_down"] = text;
 
 	y += 2 * bounds.height;
 	text = new Game::ShadedText(font, "LEFT: ", sf::Vector2f(ipadx, y));
@@ -74,7 +74,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 			Game::KeyUtils::keyToString(Game::playerControls[selectedPlayer-1][Control::LEFT]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
-	_addClickable("controls::change_left", text);
+	texts["controls::change_left"] = text;
 
 	y += 2 * bounds.height;
 	text = new Game::ShadedText(font, "RIGHT: ", sf::Vector2f(ipadx, y));
@@ -85,7 +85,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 			Game::KeyUtils::keyToString(Game::playerControls[selectedPlayer-1][Control::RIGHT]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
-	_addClickable("controls::change_right", text);
+	texts["controls::change_right"] = text;
 
 	y += 2 * bounds.height;
 	text = new Game::ShadedText(font, "BOMB: ", sf::Vector2f(ipadx, y));
@@ -96,7 +96,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 			Game::KeyUtils::keyToString(Game::playerControls[selectedPlayer-1][Control::BOMB]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
-	_addClickable("controls::change_bomb", text);
+	texts["controls::change_bomb"] = text;
 
 	y += 3 * bounds.height;
 	text = new Game::ShadedText(font, "Use Joystick?", sf::Vector2f(ipadx, y));
@@ -106,14 +106,14 @@ ControlsScreen::ControlsScreen() : Screen () {
 	bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font, "NO", sf::Vector2f(bounds.left + bounds.width + 20, y));
 	text->setCharacterSize(small_size);
-	_addClickable("controls::joystick_toggle", text);
+	texts["controls::joystick_toggle"] = text;
 
 	const auto win_bounds = sf::FloatRect(0, 0, Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
 	text = new Game::ShadedText(font, "OK", sf::Vector2f(0, 0));
 	text->setCharacterSize(size);
 	bounds = text->getGlobalBounds();
 	text->setPosition(sf::Vector2f(Game::center(bounds, win_bounds).x, win_bounds.height - 2 * bounds.height));
-	_addClickable("exit", text);
+	texts["exit"] = text;
 }
 
 void ControlsScreen::selectPlayer(unsigned short id) {
@@ -141,20 +141,16 @@ void ControlsScreen::selectPlayer(unsigned short id) {
 			std::string("Joystick") + Game::to_string(used));
 }
 
-void ControlsScreen::update() {
-	_highlightSelectedPlayer();
-}
-
-void ControlsScreen::draw(sf::RenderTarget& window, sf::RenderStates states) const {
-	Game::Screen::draw(window, states);
-}
-
 void ControlsScreen::_highlightSelectedPlayer() {
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 		auto text = texts["controls::p" + Game::to_string(i+1)];
 		if (selectedPlayer == i + 1) 
 			text->setFGColor(sf::Color::Yellow);
 	}
+}
+
+void ControlsScreen::update() {
+	_highlightSelectedPlayer();
 }
 
 void ControlsScreen::triggerMouseOver(const sf::Vector2f& mousePos) {

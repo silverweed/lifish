@@ -32,30 +32,30 @@ HomeScreen::HomeScreen() : Screen() {
 	text->setCharacterSize(size);
 	auto pos = Game::center(text->getGlobalBounds(), win_bounds);
 	text->setPosition(pos);
-	_addClickable("start", text);
+	texts["start"] = text;
 
 	text = new Game::ShadedText(font, "Load Game", pos);
 	text->setCharacterSize(size);
 	text->setPosition(sf::Vector2f(Game::centerX(text->getGlobalBounds(), win_bounds), pos.y + spacing*size));
-	_addClickable("load", text);
+	texts["load"] = text;
 
 	text = new Game::ShadedText(font, "Preferences", pos);
 	text->setCharacterSize(size);
 	text->setPosition(sf::Vector2f(Game::centerX(text->getGlobalBounds(), win_bounds), pos.y + 2*spacing*size));
-	_addClickable("preferences", text);
+	texts["preferences"] = text;
 
 	text = new Game::ShadedText(font, "About", pos);
 	text->setCharacterSize(size);
 	text->setPosition(sf::Vector2f(Game::centerX(text->getGlobalBounds(), win_bounds), pos.y + 3*spacing*size));
-	_addClickable("about", text);
+	texts["about"] = text;
 
 	text = new Game::ShadedText(font, "Exit Game", pos);
 	text->setCharacterSize(size);
 	text->setPosition(sf::Vector2f(Game::centerX(text->getGlobalBounds(), win_bounds), pos.y + 4*spacing*size));
-	_addClickable("exit", text);
+	texts["exit"] = text;
 
 	// Footer
 	auto txt = new sf::Text("lifish v." VERSION " rev." COMMIT, *Game::cache.loadFont(font), 10);
 	txt->setPosition(5, win_bounds.height - 18);
-	_addStatic(txt);
+	elements.push_back(txt);
 }
