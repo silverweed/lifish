@@ -1,14 +1,13 @@
 #include "ShadedText.hpp"
 #include "Game.hpp"
 #include "GameCache.hpp"
-#include <iostream>
 
 using Game::ShadedText;
 
 ShadedText::ShadedText(const std::string& fontname, const std::string& _str, 
 		sf::Vector2f _pos, sf::Color fg, sf::Color bg)
-	: str(_str)
-	, pos(_pos)
+	: Game::Entity(_pos)
+	, str(_str)
 	, shadowSpacing(3.5, 3)
 	, fgcol(fg)
 	, bgcol(bg)
@@ -18,8 +17,8 @@ ShadedText::ShadedText(const std::string& fontname, const std::string& _str,
 	bgtext.setFont(*font);
 	fgtext.setString(str);
 	bgtext.setString(str);
-	fgtext.setPosition(pos);
-	bgtext.setPosition(pos + shadowSpacing);
+	fgtext.setPosition(_pos);
+	bgtext.setPosition(_pos + shadowSpacing);
 	fgtext.setColor(fgcol);
 	bgtext.setColor(bgcol);
 }
@@ -35,6 +34,7 @@ void ShadedText::setString(const std::string& str) {
 }
 
 void ShadedText::setOrigin(const sf::Vector2f& origin) {
+	Game::Entity::setOrigin(origin);
 	bgtext.setOrigin(origin);
 	fgtext.setOrigin(origin);
 }
@@ -52,7 +52,7 @@ void ShadedText::setCharacterSize(unsigned int size) {
 void ShadedText::setPosition(const sf::Vector2f& _pos) {
 	fgtext.setPosition(_pos);
 	bgtext.setPosition(_pos + shadowSpacing);
-	pos = _pos;
+	position = _pos;
 }
 
 void ShadedText::setShadowSpacing(float spx, float spy) {

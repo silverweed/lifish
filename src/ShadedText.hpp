@@ -1,16 +1,17 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "Entity.hpp"
+#include "Component.hpp"
 
 namespace Game {
 
 /**
  * A sf::Text container which draws a string with a shadow behind
  */
-class ShadedText final : public sf::Drawable {
+class ShadedText final : public Game::Entity, public sf::Drawable {
 	sf::Text fgtext, bgtext;
 	std::string str;
-	sf::Vector2f pos;
 	sf::Vector2f shadowSpacing;
 	sf::Color fgcol, bgcol;
 
@@ -29,14 +30,13 @@ public:
 
 	void setString(const std::string& str);
 
-	void setOrigin(const sf::Vector2f& origin);
+	void setOrigin(const sf::Vector2f& origin) override;
 
 	void moveSprites(const sf::Vector2f& offset);
 
 	void setCharacterSize(unsigned int size);
 
-	sf::Vector2f getPosition() const { return fgtext.getPosition(); }
-	void setPosition(const sf::Vector2f& pos);
+	void setPosition(const sf::Vector2f& pos) override;
 
 	void setShadowSpacing(float spx, float spy);
 

@@ -1,52 +1,41 @@
 #pragma once
 
+#include <functional>
 #include <SFML/Graphics.hpp>
 #include "Sprite.hpp"
 #include "ShadedText.hpp"
 
 namespace Game {
 
-class Clickable : public sf::Drawable {
-	union {
-		Game::ShadedText *text;
-		Game::Sprite *sprite;
-	};
-	sf::Drawable *drawable = nullptr;
-
-	const bool isText;
+class Clickable : public Game::WithOrigin, public sf::Drawable {
+	std::unique_ptr<sf::Drawable> drawable;
+	std::function<bool(const sf::Vector2f&)> isBelowCb;
+	std::function<void(bool)> highlightCb;
 
 public:
-	explicit Clickable(Game::ShadedText *e) 
-		: text(e)
+	explicit Clickable(sf::Drawable *e, std::function<bool(const sf::Vector2f&)> isBelow,
+			std::function<void(bool)> highlight)
+		: Game::WithOrigin()
 		, drawable(e)
-		, isText(true) {}
-
-	explicit Clickable(Game::Sprite *e) 
-		: sprite(e)
-		, drawable(e)
-		, isText(false) {}
-
-	~Clickable() {
-		if (isText && text != nullptr) delete text;
-		else if (sprite != nullptr) delete sprite;
-	}
+		, isBelowCb(isBelow)
+		, highlightCb(highlight) {}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-		target.draw(*drawable, states);
+		target.draw(*drawable.get(), states);
 	}
 
 	bool isBelow(const sf::Vector2f& pos) const {
-		if (isText)
-			return text->getGlobalBounds().contains(pos.x, pos.y);
-		else
-			return sprite->getSprite().getGlobalBounds().contains(pos.x, pos.y);
+		return isBelowCb(pos);
 	}
 
 	void highlight(bool on) {
-		if (isText)
-			text->setFGColor(on ? sf::Color::Red : sf::Color::White);
-		else
-			sprite->getSprite().setColor(on ? sf::Color::Red : sf::Color::White);
+		highlightCb(on);
+	}
+
+	void setOrigin(const sf::Vector2f& origin) override {
+		auto o = dynamic_cast<Game::WithOrigin*>(drawable.get());
+		if (o != nullptr)
+			o->setOrigin(origin);
 	}
 };
 

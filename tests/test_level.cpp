@@ -157,6 +157,7 @@ int main() {
 					window.draw(*d);
 			});
 		} else {
+			screen.triggerMouseOver(sf::Mouse::getPosition());
 			window.draw(screen);
 		}
 		Game::maybeShowFPS(window);

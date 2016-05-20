@@ -37,18 +37,34 @@ void Screen::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	for (auto& pair : clickables)
 		window.draw(pair.second, states);
 }
-*
+
 void Screen::triggerMouseOver(const sf::Vector2f& mousePos) {
 	for (auto& pair : clickables) {
 		auto& c = pair.second;
-		c->highlight(c->isBelow(mousePos));
+		c.highlight(c.isBelow(mousePos));
 	}
 }
 
 std::string Screen::triggerMouseClick(const sf::Vector2f& mousePos) {
 	for (auto& pair : clickables) {
-		if (pair.second->isBelow(mousePos))
+		if (pair.second.isBelow(mousePos))
 			return pair.first;
 	}
 	return "";
+}
+
+void Screen::_addClickable(const std::string& key, Game::ShadedText *elem) {
+	clickables.emplace(key, Game::Clickable(elem, [elem] (const sf::Vector2f& pos) {
+		return elem->getGlobalBounds().contains(pos.x, pos.y);
+	}, [elem] (bool on) {
+		elem->setFGColor(on ? sf::Color::Red : sf::Color::White);	
+	}));
+}
+
+void Screen::_addClickable(const std::string& key, Game::Sprite *elem) {
+	clickables.emplace(key, Game::Clickable(elem, [elem] (const sf::Vector2f& pos) {
+		return elem->getSprite().getGlobalBounds().contains(pos.x, pos.y);
+	}, [elem] (bool on) {
+		elem->getSprite().setColor(on ? sf::Color::Red : sf::Color::White);	
+	}));
 }

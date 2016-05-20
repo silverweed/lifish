@@ -175,8 +175,7 @@ void Game::maybeShowFPS(sf::RenderWindow& window) {
 	static int n_updates = 0;
 	static sf::Clock fps_clock, fps_update_clock;
 	static Game::ShadedText fps_text(Game::getAsset("fonts", Game::Fonts::DEBUG_INFO),
-			"-", sf::Vector2f(Game::LEVEL_WIDTH * Game::TILE_SIZE - 20, 
-					(Game::LEVEL_HEIGHT + 1) * Game::TILE_SIZE + 2));
+			"-", sf::Vector2f(Game::WINDOW_WIDTH - 90, Game::WINDOW_HEIGHT - 25));
 	static bool textSetUp = false;
 
 	// Setup text once
