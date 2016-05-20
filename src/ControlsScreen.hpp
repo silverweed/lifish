@@ -19,7 +19,7 @@ public:
 		return instance;
 	}
 
-	std::set<Game::Screen*> getParents() override {
+	std::set<Game::Screen*> getParents() const override {
 		return { &Game::PreferencesScreen::getInstance() };
 	}
 
@@ -31,8 +31,10 @@ public:
 	/** Toggles the Game::useJoystick variable for the selected player */
 	void toggleJoystick();
 
-	void draw(sf::RenderTarget& window) override;
+	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 	void triggerMouseOver(const sf::Vector2f& mousePos) override;
+
+	void update() override;
 };
 
 }

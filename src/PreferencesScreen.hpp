@@ -38,7 +38,7 @@ public:
 
 	void changeVolume(VolumeType which, VolumeAction what);
 
-	std::set<Game::Screen*> getParents() override {
+	std::set<Game::Screen*> getParents() const override {
 		return {
 			&Game::HomeScreen::getInstance(),
 			&Game::PauseScreen::getInstance()

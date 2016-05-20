@@ -1,82 +1,53 @@
 #include "Screen.hpp"
 #include "Game.hpp"
 #include "GameCache.hpp"
+#include "Clickable.hpp"
 #include "utils.hpp"
 #include <cmath>
 
 using Game::Screen;
 using Game::TILE_SIZE;
-using Game::WINDOW_WIDTH;
-using Game::WINDOW_HEIGHT;
 
-Screen::Screen() {
-	bgTexture = Game::cache.loadTexture(Game::getAsset("graphics", "screenbg1.png"));
-
-	bgTexture->setRepeated(true);
-	bgTexture->setSmooth(true);
-
-	bgSprite.setTexture(*bgTexture);
-	bgSprite.setTextureRect(sf::IntRect(0, 0, 2*TILE_SIZE, 2*TILE_SIZE));
+Screen::Screen() : Game::Entity() {
+	bgSprite = addComponent(new Game::Sprite(this, 
+				Game::getAsset("graphics", "screenbg1.png"), 
+				sf::IntRect(0, 0, Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT)));
+	bgSprite->getTexture()->setRepeated(true);
+	bgSprite->getTexture()->setSmooth(true);
 }
 
-Screen::~Screen() {
-	for (auto& pair : texts)
-		if (pair.second != nullptr)
-			delete pair.second;
+//Screen::~Screen() {
+	//for (auto& pair : texts)	
+		//if (pair.second != nullptr)
+			//delete pair.second;
+	//for (auto& pair : images)	
+		//if (pair.second != nullptr)
+			//delete pair.second;
+	//for (auto& e : elements)
+		//if (e != nullptr)
+			//delete e;
+//}
 
-	for (auto& pair : images)
-		if (pair.second != nullptr)
-			delete pair.second;
-
-	for (auto& el : elements)
-		delete el;
-}
-
-void Screen::draw(sf::RenderTarget& window) {
-	for (unsigned short i = 0, maxi = std::ceil(WINDOW_WIDTH/2.); i < maxi; ++i) {
-		for (unsigned short j = 0, maxj = std::ceil(WINDOW_HEIGHT/2.); j < maxj; ++j) {
-			bgSprite.setPosition(i*2*TILE_SIZE, j*2*TILE_SIZE);
-			window.draw(bgSprite);
-		}
-	}
+void Screen::draw(sf::RenderTarget& window, sf::RenderStates states) const {
+	window.draw(*bgSprite, states);
 
 	for (auto& el : elements)
-		window.draw(*el);
+		window.draw(*el, states);
 	
-	for (auto& pair : texts)
-		window.draw(*pair.second);
-
-	for (auto& pair : images)
-		window.draw(*pair.second);
+	for (auto& pair : clickables)
+		window.draw(pair.second, states);
 }
-
+*
 void Screen::triggerMouseOver(const sf::Vector2f& mousePos) {
-	for (auto& pair : texts) {
-		auto text = pair.second;
-		if (text->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-			text->setFGColor(sf::Color::Red);
-		} else {
-			text->setFGColor(sf::Color::White);
-		}
-	}
-
-	for (auto& pair : images) {
-		auto image = pair.second;
-		if (image->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-			image->setColor(sf::Color::Red);
-		} else {
-			image->setColor(sf::Color::White);
-		}
+	for (auto& pair : clickables) {
+		auto& c = pair.second;
+		c->highlight(c->isBelow(mousePos));
 	}
 }
 
 std::string Screen::triggerMouseClick(const sf::Vector2f& mousePos) {
-	for (auto& pair : texts) {
-		if (pair.second->getGlobalBounds().contains(mousePos.x, mousePos.y))
-			return pair.first;
-	}
-	for (auto& pair : images) {
-		if (pair.second->getGlobalBounds().contains(mousePos.x, mousePos.y))
+	for (auto& pair : clickables) {
+		if (pair.second->isBelow(mousePos))
 			return pair.first;
 	}
 	return "";

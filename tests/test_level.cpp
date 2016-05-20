@@ -18,6 +18,7 @@
 #include "../src/Flash.hpp"
 #include "../src/Options.hpp"
 #include "../src/Explosion.hpp"
+#include "../src/HomeScreen.hpp"
 
 using namespace Game;
 
@@ -68,6 +69,10 @@ int main() {
 
 	Game::music = level->get<Game::Music>()->getMusic();
 	//Game::playMusic();
+
+	Game::HomeScreen& screen = HomeScreen::getInstance();
+	screen.setOrigin(sf::Vector2f(-200, 0));
+	bool drawScreen = false;
 
 	std::array<Game::Player*, 1> players;
 	players[0] = player;
@@ -121,6 +126,9 @@ int main() {
 				case sf::Keyboard::M:
 					enemy->setMorphed(!enemy->isMorphed());
 					break;
+				case sf::Keyboard::S:
+					drawScreen = !drawScreen;
+					break;
 				default: break;
 				}
 			default: break;
@@ -141,12 +149,16 @@ int main() {
 
 		// Draw everything
 		window.clear();
-		window.draw(*level.get());
-		entities.apply([&window] (Game::Entity *e) {
-			auto d = e->get<Game::Drawable>();
-			if (d != nullptr)
-				window.draw(*d);
-		});
+		if (!drawScreen) {
+			window.draw(*level.get());
+			entities.apply([&window] (Game::Entity *e) {
+				auto d = e->get<Game::Drawable>();
+				if (d != nullptr)
+					window.draw(*d);
+			});
+		} else {
+			window.draw(screen);
+		}
 		Game::maybeShowFPS(window);
 		window.display();
 	}

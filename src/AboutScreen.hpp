@@ -16,7 +16,7 @@ public:
 		return instance;
 	}
 
-	std::set<Game::Screen*> getParents() override {
+	std::set<Game::Screen*> getParents() const override {
 		return { &Game::HomeScreen::getInstance() };
 	}
 };

@@ -141,17 +141,20 @@ void ControlsScreen::selectPlayer(unsigned short id) {
 			std::string("Joystick") + Game::to_string(used));
 }
 
+void ControlsScreen::update() {
+	_highlightSelectedPlayer();
+}
+
+void ControlsScreen::draw(sf::RenderTarget& window, sf::RenderStates states) const {
+	Game::Screen::draw(window, states);
+}
+
 void ControlsScreen::_highlightSelectedPlayer() {
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 		auto text = texts["controls::p" + Game::to_string(i+1)];
 		if (selectedPlayer == i + 1) 
 			text->setFGColor(sf::Color::Yellow);
 	}
-}
-
-void ControlsScreen::draw(sf::RenderTarget& window) {
-	Game::Screen::draw(window);
-	_highlightSelectedPlayer();
 }
 
 void ControlsScreen::triggerMouseOver(const sf::Vector2f& mousePos) {

@@ -20,6 +20,7 @@ public:
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+	sf::Texture* getTexture() const { return texture; }
 	sf::Sprite& getSprite() { return sprite; }
 
 	void update() override;
