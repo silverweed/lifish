@@ -19,6 +19,7 @@
 #include "../src/Options.hpp"
 #include "../src/Explosion.hpp"
 #include "../src/HomeScreen.hpp"
+#include "../src/ScreenHandler.hpp"
 
 using namespace Game;
 
@@ -157,7 +158,14 @@ int main() {
 					window.draw(*d);
 			});
 		} else {
-			window.draw(screen);
+			switch (Game::ScreenHandler::getInstance().handleScreenEvents(window, 
+				HOME_SCREEN,
+				HOME_SCREEN)) 
+			{
+			case Action::EXIT:
+				drawScreen = false;
+			}
+			window.draw(Game::ScreenHandler::getInstance());
 		}
 		Game::maybeShowFPS(window);
 		window.display();

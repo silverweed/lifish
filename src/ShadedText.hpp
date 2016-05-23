@@ -26,6 +26,7 @@ public:
 	void setStyle(sf::Text::Style style);
 	void setString(const std::string& str);
 	void setCharacterSize(unsigned int size);
+	void setOrigin(const sf::Vector2f& origin) override;
 	void setShadowSpacing(float spx, float spy);
 	void setFGColor(const sf::Color& fg) { fgtext.setColor(fg); }
 	void setBGColor(const sf::Color& bg) { bgtext.setColor(bg); }
