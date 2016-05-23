@@ -47,8 +47,10 @@ void AxisMoving::update() {
 	// TODO
 	//if (!colliding) {
 		owner->setPosition(owner->getPosition() + shift * frameTime.asSeconds());
-		distTravelled += speed * frameTime.asSeconds();
-		_ensureAlign();
+		const float delta = speed * frameTime.asSeconds();
+		distTravelled += delta;
+		if (delta > TILE_SIZE)
+			_ensureAlign();
 	//}
 
 	prevDirection = direction;
@@ -162,7 +164,7 @@ void AxisMoving::_ensureAlign() {
 			pos = Game::aligned(pos) + sf::Vector2f(0, Game::TILE_SIZE);
 		break;
 	case Direction::NONE:
-		break;
+		return;
 	}
 	owner->setPosition(pos);
 }

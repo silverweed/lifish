@@ -19,9 +19,8 @@ public:
 	explicit Points(const sf::Vector2f& pos, const std::string& str, 
 		sf::Color color = sf::Color::Blue, 
 		unsigned short charSize = CHARACTER_SIZE);
-	~Points() {
-		std::cerr << "Destroying pts"<<std::endl;
-	}
+
+	void update() override;
 };
 
 }

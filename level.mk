@@ -5,12 +5,16 @@ LDFLAGS := -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-system -lstdc++ -lm
 
 test_level: Killable.o Animation.o Bomb.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o test_level.o LevelSet.o LevelNumText.o Music.o Game.o Texture.o Points.o ShadedText.o Track.o utils.o Entity.o EntityGroup.o Coin.o AxisMoving.o Moving.o Lifed.o Controls.o Shooting.o MovingAnimator.o Player.o Enemy.o AlienSprite.o Direction.o Teleport.o Flash.o BossExplosion.o FixedWall.o BreakableWall.o TransparentWall.o Sprite.o Bullet.o AxisBullet.o FreeBullet.o FreeMoving.o Explosion.o Screen.o HomeScreen.o 
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+points: Killable.o Animation.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o LevelSet.o LevelNumText.o Game.o Texture.o Points.o ShadedText.o utils.o Entity.o EntityGroup.o AxisMoving.o Moving.o Lifed.o Controls.o MovingAnimator.o Direction.o Sprite.o FreeMoving.o Track.o Music.o test_points.o Explosion.o
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
 .PHONY: clean
 clean:
 	rm -rf *.o test_level
 
 test_level.o: tests/test_level.cpp
+	$(CC) $(CFLAGS) -c $<
+test_points.o: tests/test_points.cpp
 	$(CC) $(CFLAGS) -c $<
 Killable.o: src/Killable.cpp
 	$(CC) $(CFLAGS) -c $<

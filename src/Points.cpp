@@ -7,7 +7,6 @@
 
 using Game::Points;
 
-#include <iostream>
 Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color, unsigned short charSize) 
 	: Game::Entity(pos)
 	, initialPos(pos)
@@ -16,11 +15,14 @@ Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color,
 	text.setCharacterSize(charSize);
 	text.setShadowSpacing(1.5, 1);
 
-	addComponent(new Game::AxisMoving(&text, SPEED, Game::Direction::UP));
+	addComponent(new Game::AxisMoving(this, SPEED, Game::Direction::UP));
 	addComponent(new Game::Drawable(this, &text));
-	//addComponent(new Game::Temporary(this, [this] () {
-				//return false;
-				//std::cerr<<((initialPos-position).y>=20)<<std::endl;
-		//return (initialPos - position).y >= 20;
-	//}));
+	addComponent(new Game::Temporary(this, [this] () {
+		return (initialPos - position).y >= 20;
+	}));
+}
+
+void Points::update() {
+	Game::Entity::update();
+	text.setPosition(position);
 }
