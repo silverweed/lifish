@@ -49,7 +49,7 @@ void AxisMoving::update() {
 		owner->setPosition(owner->getPosition() + shift * frameTime.asSeconds());
 		const float delta = speed * frameTime.asSeconds();
 		distTravelled += delta;
-		if (delta > TILE_SIZE)
+		if (delta > 1)
 			_ensureAlign();
 	//}
 
