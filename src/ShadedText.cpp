@@ -1,17 +1,14 @@
 #include "ShadedText.hpp"
 #include "Game.hpp"
 #include "GameCache.hpp"
-#include <iostream>
+#include "Drawable.hpp"
 
 using Game::ShadedText;
 
-ShadedText::ShadedText(const std::string& fontname, const std::string& _str, 
-		sf::Vector2f _pos, sf::Color fg, sf::Color bg)
-	: str(_str)
-	, pos(_pos)
+ShadedText::ShadedText(const std::string& fontname, const std::string& str, 
+		sf::Vector2f pos, sf::Color fg, sf::Color bg)
+	: Game::Entity(pos)
 	, shadowSpacing(3.5, 3)
-	, fgcol(fg)
-	, bgcol(bg)
 {
 	auto font = Game::cache.loadFont(fontname);
 	fgtext.setFont(*font);
@@ -20,8 +17,10 @@ ShadedText::ShadedText(const std::string& fontname, const std::string& _str,
 	bgtext.setString(str);
 	fgtext.setPosition(pos);
 	bgtext.setPosition(pos + shadowSpacing);
-	fgtext.setColor(fgcol);
-	bgtext.setColor(bgcol);
+	fgtext.setColor(fg);
+	bgtext.setColor(bg);
+
+	addComponent(new Game::Drawable(this, this));
 }
 
 void ShadedText::setStyle(sf::Text::Style style) {
@@ -35,13 +34,9 @@ void ShadedText::setString(const std::string& str) {
 }
 
 void ShadedText::setOrigin(const sf::Vector2f& origin) {
+	Game::Entity::setOrigin(origin);
 	bgtext.setOrigin(origin);
 	fgtext.setOrigin(origin);
-}
-
-void ShadedText::moveSprites(const sf::Vector2f& offset) {
-	bgtext.move(offset);
-	fgtext.move(offset);
 }
 
 void ShadedText::setCharacterSize(unsigned int size) {
@@ -50,9 +45,9 @@ void ShadedText::setCharacterSize(unsigned int size) {
 }
 
 void ShadedText::setPosition(const sf::Vector2f& _pos) {
+	Game::Entity::setPosition(_pos);
 	fgtext.setPosition(_pos);
 	bgtext.setPosition(_pos + shadowSpacing);
-	pos = _pos;
 }
 
 void ShadedText::setShadowSpacing(float spx, float spy) {
@@ -62,8 +57,8 @@ void ShadedText::setShadowSpacing(float spx, float spy) {
 }
 
 void ShadedText::setColor(const sf::Color& fg, const sf::Color& bg) {
-	fgtext.setColor(fgcol = fg);
-	bgtext.setColor(bgcol = bg);
+	fgtext.setColor(fg);
+	bgtext.setColor(bg);
 }
 
 void ShadedText::draw(sf::RenderTarget& window, sf::RenderStates states) const {

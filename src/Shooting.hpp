@@ -7,7 +7,6 @@
 #include "Attack.hpp"
 #include "AxisBullet.hpp"
 #include "FreeBullet.hpp"
-#include <string>
 
 namespace Game {
 

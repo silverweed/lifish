@@ -1,14 +1,20 @@
 #include "Points.hpp"
+#include "Direction.hpp"
 
 using Game::Points;
 
-Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color, unsigned short charSize) :
-	Game::Temporary(pos),
+Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color, unsigned short charSize) 
+	: Game::Entity(pos)
+	, initialPos(pos)
 	Game::ShadedText(
 		Game::getAsset("fonts", Game::Fonts::POINTS),
 		str, pos, color, sf::Color::Black),
 	initialPos(pos)
 {
+	addComponent(new Game::Temporary(this, [this] () {
+		return (initialPos - position).y >= 20;
+	}));
+	addComponent(new Game::AxisMoving(this, SPEED, Game::Direction::UP));
 	setCharacterSize(charSize);
 	shadowSpacing = sf::Vector2f(1.5, 1);
 }
