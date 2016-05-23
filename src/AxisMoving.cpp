@@ -11,7 +11,9 @@ AxisMoving::AxisMoving(Game::Entity *const owner, float speed, Game::Direction d
 	, direction(dir)
 	, prevDirection(Game::Direction::NONE)
 	, prevAlign(-1.f, -1.f)
-{}
+{
+	moving = dir != Game::Direction::NONE;
+}
 
 void AxisMoving::update() {
 	if (!moving) return;

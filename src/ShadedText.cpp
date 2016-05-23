@@ -1,6 +1,7 @@
 #include "ShadedText.hpp"
 #include "Game.hpp"
 #include "GameCache.hpp"
+#include "Drawable.hpp"
 
 using Game::ShadedText;
 

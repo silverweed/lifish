@@ -1,9 +1,8 @@
 #pragma once
 
 #include "Entity.hpp"
-#include "Temporary.hpp"
 #include "ShadedText.hpp"
-
+#include <iostream>
 namespace Game {
 
 /**
@@ -20,14 +19,9 @@ public:
 	explicit Points(const sf::Vector2f& pos, const std::string& str, 
 		sf::Color color = sf::Color::Blue, 
 		unsigned short charSize = CHARACTER_SIZE);
-
-	void update() override;
-	void draw(sf::RenderTarget& window) override;
-
-	using Game::ShadedText::setPosition;
-	using Game::ShadedText::getPosition;
-	using Game::ShadedText::getGlobalBounds;
-	using Game::ShadedText::setOrigin;
+	~Points() {
+		std::cerr << "Destroying pts"<<std::endl;
+	}
 };
 
 }

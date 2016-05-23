@@ -29,6 +29,7 @@ void EntityGroup::updateAll() {
 		_removeDying();
 }
 
+#include <iostream>
 void EntityGroup::_removeExpiredTemporaries() {
 	for (auto it = temporary.begin(); it != temporary.end(); ) {
 		auto tmp = *it;
@@ -49,15 +50,15 @@ void EntityGroup::_removeExpiredTemporaries() {
 			{
 				return ptr.get() == tmp->getOwner();
 			});
-			if (eit != entities.end()) 
-				entities.erase(eit);
+			if (eit != entities.end()) {
+				std::cerr<<"erasing"<<std::endl;
+				entities.erase(eit);}
 			
 			it = temporary.erase(it);
 		} else 
 			++it;
 	}
 }
-
 
 void EntityGroup::_removeDying() {
 	for (auto it = dying.begin(); it != dying.end(); ) {

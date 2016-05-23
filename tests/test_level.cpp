@@ -20,6 +20,7 @@
 #include "../src/Explosion.hpp"
 #include "../src/HomeScreen.hpp"
 #include "../src/ScreenHandler.hpp"
+#include "../src/Points.hpp"
 
 using namespace Game;
 
@@ -56,10 +57,10 @@ int main() {
 	BreakableWall *wall2 = new BreakableWall(sf::Vector2f(32, 96), 3);
 	TransparentWall *wall3 = new TransparentWall(sf::Vector2f(32, 128));
 	
-	entities.add(enemy);
+	//entities.add(enemy);
 	entities.add(bomb);
 	entities.add(coin);
-	entities.add(player);
+	//entities.add(player);
 	entities.add(teleport);
 	entities.add(wall1);
 	entities.add(wall2);
@@ -85,6 +86,8 @@ int main() {
 
 	auto lm = new Game::LevelManager;
 
+	bool spawned = false;
+
 	while (window.isOpen()) {
 		sf::Event event;
 		
@@ -100,7 +103,7 @@ int main() {
 						//Game::LEVEL_HEIGHT * Game::TILE_SIZE * y), 2, player);
 			//e->propagate(lm);
 			//entities.add(e);
-			entities.add(enemy->get<Game::Shooting>()->shoot());
+			//entities.add(enemy->get<Game::Shooting>()->shoot());
 			shootClock.restart();
 		}
 
@@ -110,9 +113,14 @@ int main() {
 				turnClock.restart();
 				Explosion *expl = new Explosion(sf::Vector2f(7 * 32, 3 * 32), 2, player);
 				expl->propagate(lm);
-				entities.add(expl);
+				//entities.add(expl);
 				//if (rand() < RAND_MAX/2)
 					//entities.add(enemy->get<Game::Shooting>()->shoot());
+				if (!spawned) {
+					Points *pts = new Points(sf::Vector2f(320, 12*32), "100");
+					entities.add(pts);
+					spawned = true;
+				}
 			}
 			//entities.add(new Game::Flash(sf::Vector2f(300, 300)));
 		}
@@ -158,14 +166,15 @@ int main() {
 					window.draw(*d);
 			});
 		} else {
-			switch (Game::ScreenHandler::getInstance().handleScreenEvents(window, 
-				HOME_SCREEN,
-				HOME_SCREEN)) 
-			{
-			case Action::EXIT:
-				drawScreen = false;
-			}
-			window.draw(Game::ScreenHandler::getInstance());
+			//switch (Game::ScreenHandler::getInstance().handleScreenEvents(window, 
+				//HOME_SCREEN,
+				//HOME_SCREEN)) 
+			//{
+			//case Action::EXIT:
+				//drawScreen = false;
+			//}
+			//window.draw(Game::ScreenHandler::getInstance());
+			window.draw(Game::HomeScreen::getInstance());
 		}
 		Game::maybeShowFPS(window);
 		window.display();

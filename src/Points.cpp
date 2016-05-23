@@ -1,27 +1,26 @@
 #include "Points.hpp"
 #include "Direction.hpp"
+#include "Game.hpp"
+#include "Temporary.hpp"
+#include "AxisMoving.hpp"
+#include "Drawable.hpp"
 
 using Game::Points;
 
+#include <iostream>
 Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color, unsigned short charSize) 
 	: Game::Entity(pos)
 	, initialPos(pos)
-	Game::ShadedText(
-		Game::getAsset("fonts", Game::Fonts::POINTS),
-		str, pos, color, sf::Color::Black),
-	initialPos(pos)
+	, text(Game::getAsset("fonts", Game::Fonts::POINTS), str, pos, color, sf::Color::Black)
 {
-	addComponent(new Game::Temporary(this, [this] () {
-		return (initialPos - position).y >= 20;
-	}));
-	addComponent(new Game::AxisMoving(this, SPEED, Game::Direction::UP));
-	setCharacterSize(charSize);
-	shadowSpacing = sf::Vector2f(1.5, 1);
-}
+	text.setCharacterSize(charSize);
+	text.setShadowSpacing(1.5, 1);
 
-void Points::draw(sf::RenderTarget& window) {
-	sf::Time frameTime = frameClock.restart();
-	ShadedText::pos.y -= speed * frameTime.asSeconds();
-	ShadedText::setPosition(ShadedText::pos);
-	Game::ShadedText::draw(window);
+	addComponent(new Game::AxisMoving(&text, SPEED, Game::Direction::UP));
+	addComponent(new Game::Drawable(this, &text));
+	//addComponent(new Game::Temporary(this, [this] () {
+				//return false;
+				//std::cerr<<((initialPos-position).y>=20)<<std::endl;
+		//return (initialPos - position).y >= 20;
+	//}));
 }
