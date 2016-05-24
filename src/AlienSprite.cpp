@@ -46,7 +46,3 @@ AlienSprite::AlienSprite(Game::Entity *const owner)
 	animatedSprite.setFrameTime(sf::seconds(0.12));
 	animatedSprite.play();
 }
-
-void AlienSprite::update() {
-	movingAnimator->update();
-}

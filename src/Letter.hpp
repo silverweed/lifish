@@ -28,8 +28,7 @@ public:
 
 	unsigned short getId() const { return id; }
 
-	/** Checks if the letter should make the transition and, if so, makes it. */
-	void checkTransition();
+	void update() override;
 };
 
 }

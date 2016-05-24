@@ -26,8 +26,7 @@ MovingAnimator::MovingAnimator(Game::Entity *const owner, Game::AxisMoving *m, G
 }
 
 void MovingAnimator::update() {
-	moving->update();
-	animated->update();
+	Game::Component::update();
 
 	Game::Direction dir = moving->getDirection();
 	auto& sprite = animated->getSprite();

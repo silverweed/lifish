@@ -28,14 +28,15 @@ Teleport::Teleport(const sf::Vector2f& pos)
 }
 
 void Teleport::update() {
-	if (disabled && disableClock->getElapsedTime() >= COOLDOWN_TIME)
+	Game::Entity::update();
+	if (disabled && disableClock->getElapsedTime() >= COOLDOWN_TIME) {
 		disabled = false;
-
-	if (!disabled)
-		animated->update();
+		animated->getSprite().play();
+	}
 }
 
 void Teleport::disable() {
 	disabled = true;
+	animated->getSprite().pause();
 	disableClock->restart();
 }

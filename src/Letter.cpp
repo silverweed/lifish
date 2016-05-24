@@ -59,11 +59,8 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	animatedSprite->pause();
 }
 
-void Letter::checkTransition() {
-	if (animatedSprite->isPlaying()) {
-		get<Game::Animated>()->update();
-		return;
-	} else if (transitioning) {
+void Letter::update() {
+	if (!animatedSprite->isPlaying() && transitioning) {
 		transitioning = false;
 		id = (id + 1) % Game::N_EXTRA_LETTERS;
 		animatedSprite->setAnimation(*get<Game::Animated>()->getAnimation(Game::to_string(id)));

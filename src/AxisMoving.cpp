@@ -16,6 +16,8 @@ AxisMoving::AxisMoving(Game::Entity *const owner, float speed, Game::Direction d
 }
 
 void AxisMoving::update() {
+	Game::Component::update();
+
 	if (!moving) return;
 
 	if (prevDirection != direction)

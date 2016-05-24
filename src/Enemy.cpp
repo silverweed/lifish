@@ -123,8 +123,6 @@ void Enemy::update() {
 		}
 		return;
 	}
-	
-	movingAnimator->update();
 }
 
 void Enemy::setMorphed(bool b) {
