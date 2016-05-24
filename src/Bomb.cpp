@@ -52,6 +52,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source,
 }
 
 void Bomb::update() {
+	Game::Entity::update();
 	if (!switched && fuseTime - fuseClock->getElapsedTime() < sf::milliseconds(2000)
 			&& !killable->isKilled())
 	{
@@ -59,7 +60,6 @@ void Bomb::update() {
 				? "fast_exploding" : "normal_exploding");
 		switched = true;
 	}
-	animated->update();
 }
 
 void Bomb::ignite() {

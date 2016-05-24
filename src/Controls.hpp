@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <SFML/Window/Keyboard.hpp>
 #include <string>
 #include <array>
@@ -8,19 +8,27 @@
 
 namespace Game {
 
-enum class Control {
-	UP, DOWN, LEFT, RIGHT, BOMB
+enum Control : unsigned short {
+	UP    = 0,
+	DOWN  = 1,
+	LEFT  = 2,
+	RIGHT = 3,
+	BOMB  = 4
 };
 
-extern std::map<Control, sf::Keyboard::Key> playerControls[Game::MAX_PLAYERS];
-extern std::array<unsigned int, Game::MAX_PLAYERS> joystickBombKey;
+namespace Controls {
+	constexpr static unsigned short CONTROLS_NUM = 5;
 
-inline Control controlFromString(const std::string& name) {
-	if (name == "up" || name == "UP") return Control::UP;
-	else if (name == "down" || name == "DOWN") return Control::DOWN;
-	else if (name == "left" || name == "LEFT") return Control::LEFT;
-	else if (name == "right" || name == "RIGHT") return Control::RIGHT;
-	return Control::BOMB;
+	extern std::array<sf::Keyboard::Key, CONTROLS_NUM> players[Game::MAX_PLAYERS];
+	extern std::array<unsigned int, Game::MAX_PLAYERS> joystickBombKey;
+
+	inline Control fromString(const std::string& name) {
+		if (name == "up" || name == "UP") return Control::UP;
+		else if (name == "down" || name == "DOWN") return Control::DOWN;
+		else if (name == "left" || name == "LEFT") return Control::LEFT;
+		else if (name == "right" || name == "RIGHT") return Control::RIGHT;
+		return Control::BOMB;
+	}
 }
 
 }

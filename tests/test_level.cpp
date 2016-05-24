@@ -6,6 +6,7 @@
 #include "../src/LevelSet.hpp"
 #include "../src/Bomb.hpp"
 #include "../src/Coin.hpp"
+#include "../src/Controllable.hpp"
 #include "../src/BossExplosion.hpp"
 #include "../src/FixedWall.hpp"
 #include "../src/BreakableWall.hpp"
@@ -14,7 +15,7 @@
 #include "../src/EntityGroup.hpp"
 #include "../src/Teleport.hpp"
 #include "../src/Shooting.hpp"
-#include "../src/input.hpp"
+#include "../src/Player.hpp"
 #include "../src/Flash.hpp"
 #include "../src/Options.hpp"
 #include "../src/Explosion.hpp"
@@ -79,6 +80,7 @@ int main() {
 	std::array<Game::Player*, 1> players;
 	players[0] = player;
 	
+	player->get<Game::Controllable>()->setWindow(&window);
 	enemy->get<Game::AxisMoving>()->setDirection(Game::Direction::DOWN);
 
 	sf::Clock turnClock;
@@ -145,7 +147,7 @@ int main() {
 		}
 
 		// Fill players' directions according to input
-		Game::get_directions(window, players);
+		//Game::get_directions(window, players);
 
 		entities.updateAll();
 

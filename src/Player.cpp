@@ -4,6 +4,7 @@
 #include "Bonusable.hpp"
 #include "Drawable.hpp"
 #include "Killable.hpp"
+#include "Controllable.hpp"
 #include "utils.hpp"
 #include <sstream>
 
@@ -29,6 +30,7 @@ Player::Player(const sf::Vector2f& pos, const unsigned short id)
 	addComponent(new Game::Killable(this, [this] () { _kill(); }));
 	addComponent(new Game::Bonusable(this));
 	movingAnimator = addComponent(new Game::MovingAnimator(this));
+	addComponent(new Game::Controllable(this, Game::Controls::players[id]));
 
 	extra.fill(false);
 

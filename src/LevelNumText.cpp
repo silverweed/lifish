@@ -19,5 +19,6 @@ void LevelNumText::draw(sf::RenderTarget& target, sf::RenderStates states) const
 }
 
 void LevelNumText::setOrigin(const sf::Vector2f& pos) {
+	Game::Entity::setOrigin(pos);
 	text.setOrigin(pos);
 }

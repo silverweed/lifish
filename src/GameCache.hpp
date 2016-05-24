@@ -30,7 +30,7 @@ class GameCache final : private sf::NonCopyable {
 public:
 	constexpr static int SOUNDS_GC_DELAY = 1024;
 
-	GameCache();
+	explicit GameCache();
 
 	/** If the texture loaded from `texture_name` already exists in the cache,
 	 *  return its pointer; else try to load it from `texture_name` and return either
