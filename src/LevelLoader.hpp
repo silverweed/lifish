@@ -5,8 +5,7 @@
 
 namespace Game {
 
-class LevelLoader final {
-public:
+namespace LevelLoader {
 	/**
 	 * Fills `entities` as defined by `level`'s tilemap. 
 	 * Returns whether have been errors or not.

@@ -28,7 +28,7 @@ using Matrix = std::array<std::array<T, COLS>, ROWS>;
 
 /// Polyfill ///
 template<typename T> 
-inline T abs(T num) {
+constexpr T abs(T num) {
 #ifdef IS_APPLE
 	// Apple Clang is a "good" compiler...
 	if (num < 0) return -num;
@@ -66,25 +66,25 @@ inline sf::Vector2f aligned(const sf::Vector2f& pos) {
 }
 
 template<typename T>
-inline std::ostream& operator<<(std::ostream& stream, const sf::Vector2<T>& vec) {
+constexpr std::ostream& operator<<(std::ostream& stream, const sf::Vector2<T>& vec) {
 	return stream << "(" << vec.x << ", " << vec.y << ")";
 }
 
 template<typename T>
-inline std::ostream& operator<<(std::ostream& stream, const sf::Rect<T>& rect) {
+constexpr std::ostream& operator<<(std::ostream& stream, const sf::Rect<T>& rect) {
 	return stream << "(" << rect.left << ", " << rect.top 
 		<< " x " << rect.width << ", " << rect.height << ")";
 }
 
-inline double distance(const sf::Vector2f& a, const sf::Vector2f& b) {
+constexpr double distance(const sf::Vector2f& a, const sf::Vector2f& b) {
 	return std::sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
 
-inline float centerX(const sf::FloatRect& bounds, const sf::FloatRect& rect) {
+constexpr float centerX(const sf::FloatRect& bounds, const sf::FloatRect& rect) {
 	return rect.left + (rect.width - bounds.width) / 2.;
 }
 
-inline float centerY(const sf::FloatRect& bounds, const sf::FloatRect& rect) {
+constexpr float centerY(const sf::FloatRect& bounds, const sf::FloatRect& rect) {
 	return rect.top + (rect.height - bounds.height) / 2.;
 }
 
