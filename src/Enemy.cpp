@@ -32,7 +32,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attac
 	movingAnimator = addComponent(new Game::MovingAnimator(this));
 	addComponent(new Game::Killable(this, [this] () {
 		// on kill
-		get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH);
+		Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
 	}));
 	alienSprite = addComponent(new Game::AlienSprite(this));
 	shooting = addComponent(new Game::Shooting(this, attack));

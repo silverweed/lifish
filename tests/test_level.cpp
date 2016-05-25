@@ -91,6 +91,7 @@ int main() {
 	auto lm = new Game::LevelManager;
 
 	bool spawned = false;
+	int cycle = 0;
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -198,6 +199,11 @@ int main() {
 		}
 		Game::maybeShowFPS(window);
 		window.display();
+
+		if (++cycle >= Game::GameCache::SOUNDS_GC_DELAY) {
+			cycle = 0;
+			Game::cache.gcSounds();
+		}
 	}
 
 	delete lm;
