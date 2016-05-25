@@ -21,8 +21,14 @@ protected:
 	std::string _toString(unsigned short indent) const;
 
 public:
-	Entity() {}
-	Entity(const sf::Vector2f& pos) : position(pos) {}
+	Entity(Game::EntityType type = Game::EntityType::UNKNOWN) 
+		: type(type)
+	{}
+
+	Entity(const sf::Vector2f& pos, Game::EntityType type = Game::EntityType::UNKNOWN) 
+		: position(pos)
+		, type(type)
+	{}
 	virtual ~Entity() {}
 
 	template<class T>

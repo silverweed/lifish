@@ -25,6 +25,9 @@ public:
 	explicit Shooting(Game::Entity *const owner, const Attack& attack);
 
 	const Attack& getAttack() const { return attack; }
+	
+	const sf::Vector2i& getAttackAlign() const { return attackAlign; }
+	void setAttackAlign(const sf::Vector2i& aa) { attackAlign = aa; }
 
 	/** Creates an AxisBullet described by `attack` and returns it. 
 	 *  The callee must take care of its destruction.

@@ -11,12 +11,6 @@ namespace Game {
  */
 class Moving : public Game::Component {
 protected:
-	/*
-	friend AIBoundFunction Game::ai_random(Game::Entity *const entity);
-	friend AIBoundFunction Game::ai_random_forward(Game::Entity *const entity);
-	friend AIBoundFunction Game::ai_random_forward_haunt(Game::Entity *const entity);
-	*/
-
 	const static sf::Time MAX_FRAME_TIME;
 
 	bool moving = false;
@@ -32,6 +26,7 @@ public:
 	void setSpeed(const float _speed) { speed = _speed; }
 
 	float getDistTravelled() const { return distTravelled; }
+	void setDistTravelled(float d) { distTravelled = d; }
 
 	virtual void move();
 	virtual void stop();

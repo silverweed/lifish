@@ -6,10 +6,12 @@
 #include <functional>
 #include <array>
 #include "Component.hpp"
+#include "Direction.hpp"
 
 namespace Game {
 
 class Enemy;
+class LevelManager;
 
 using AIBoundFunction = std::function<Game::Direction(const Game::LevelManager *const)>;
 using AIFunction = std::function<AIBoundFunction(Game::Entity *const)>;

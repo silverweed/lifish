@@ -83,9 +83,6 @@ public:
 	//void setAI(AIFunction aifunc) { ai = aifunc(this); }
 	//AIBoundFunction getAI() const { return ai; }
 
-	/** Returns true if enemy has attacked and hasn't cooled down yet. */
-	bool isRecharging() const;
-
 	void block() { blocked = true; }
 	bool isBlocked() const { return blocked; }
 

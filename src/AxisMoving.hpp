@@ -14,6 +14,7 @@ class AxisMoving : public Game::Moving {
 	Game::Direction direction;
 	Game::Direction prevDirection;
 	sf::Vector2i prevAlign;
+	bool dashing = false;
 
 
 	void _ensureAlign();
@@ -33,6 +34,9 @@ public:
 	void realign();
 	void stop() override;
 	void update() override;
+
+	bool isDashing() const { return dashing; }
+	void setDashing(bool d) { dashing = d; }
 
 	bool canGo(const Game::Direction dir, const Game::LevelManager *const lm) const;
 };
