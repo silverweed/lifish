@@ -21,13 +21,10 @@ protected:
 	std::string _toString(unsigned short indent) const;
 
 public:
-	Entity(Game::EntityType type = Game::EntityType::UNKNOWN) 
-		: type(type)
-	{}
+	Entity() {}
 
-	Entity(const sf::Vector2f& pos, Game::EntityType type = Game::EntityType::UNKNOWN) 
+	Entity(const sf::Vector2f& pos) 
 		: position(pos)
-		, type(type)
 	{}
 	virtual ~Entity() {}
 

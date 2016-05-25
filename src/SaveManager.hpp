@@ -2,9 +2,10 @@
 
 #include <string>
 #include <fstream>
-#include "LevelManager.hpp"
 
 namespace Game {
+
+class LevelManager;
 
 /**
  * Serializes the game state into JSON data or

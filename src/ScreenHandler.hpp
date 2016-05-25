@@ -28,17 +28,25 @@ enum class Action {
 
 class ScreenHandler final : public sf::Drawable {
 	// All possible screens
-	static struct {
-		Game::HomeScreen& home = Game::HomeScreen::getInstance();
-		Game::PreferencesScreen& preferences = Game::PreferencesScreen::getInstance();
-		Game::ControlsScreen& controls = Game::ControlsScreen::getInstance();
-		Game::AboutScreen& about = Game::AboutScreen::getInstance();
-		Game::PauseScreen& pause = Game::PauseScreen::getInstance();
+	struct Screens {
+		Game::HomeScreen& home;
+		Game::PreferencesScreen& preferences;
+		Game::ControlsScreen& controls;
+		Game::AboutScreen& about;
+		Game::PauseScreen& pause;
+
+		Screens()
+			: home(Game::HomeScreen::getInstance()) 
+			, preferences(Game::PreferencesScreen::getInstance())
+			, controls(Game::ControlsScreen::getInstance())
+			, about(Game::AboutScreen::getInstance())
+			, pause(Game::PauseScreen::getInstance())
+		{}
 	} screens;
 
 	Game::Screen *curScreen = nullptr;
 	
-	ScreenHandler() : curScreen(&screens.home) {}
+	ScreenHandler() : screens(), curScreen(&screens.home) {}
 
 public:
 	static ScreenHandler& getInstance() {

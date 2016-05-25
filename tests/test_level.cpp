@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include "../src/Level.hpp"
+#include "../src/dialogs.hpp"
 #include "../src/LevelSet.hpp"
 #include "../src/Bomb.hpp"
 #include "../src/Coin.hpp"
@@ -37,6 +38,7 @@ int main() {
 	
 	sf::RenderWindow window(sf::VideoMode(800, 600), "test level");
 	window.setVerticalSyncEnabled(true);
+	window.setJoystickThreshold(Game::JOYSTICK_INPUT_THRESHOLD);
 	Game::options.showFPS = true;
 
 	Game::LevelSet ls("levels.json");
@@ -140,6 +142,22 @@ int main() {
 				case sf::Keyboard::S:
 					drawScreen = !drawScreen;
 					break;
+				case sf::Keyboard::P:
+					{
+						auto action = Game::Action::DO_NOTHING;
+						do {
+							action = ScreenHandler::getInstance().handleScreenEvents(window, PAUSE_SCREEN,
+									PAUSE_SCREEN | PREFERENCES_SCREEN | CONTROLS_SCREEN);
+							if (action == Game::Action::SAVE_GAME) {
+								const auto fname = Game::display_save_dialog();
+								if (fname.length() > 0) {
+									//Game::SaveManager::saveGame(fname, *lm);
+								}
+								// TODO: display some confirm screen
+							};
+						} while (action == Game::Action::SAVE_GAME);
+						break;
+					}
 				default: break;
 				}
 			default: break;

@@ -49,7 +49,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 
 	bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font,
-			Game::KeyUtils::keyToString(Game::playerControls[selectedPlayer-1][Control::UP]),
+			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Control::UP]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	texts["controls::change_up"] = text;
@@ -60,7 +60,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 	elements.push_back(text);
 
 	text = new Game::ShadedText(font,
-			Game::KeyUtils::keyToString(Game::playerControls[selectedPlayer-1][Control::DOWN]),
+			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Control::DOWN]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	texts["controls::change_down"] = text;
@@ -71,7 +71,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 	elements.push_back(text);
 
 	text = new Game::ShadedText(font,
-			Game::KeyUtils::keyToString(Game::playerControls[selectedPlayer-1][Control::LEFT]),
+			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Control::LEFT]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	texts["controls::change_left"] = text;
@@ -82,7 +82,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 	elements.push_back(text);
 
 	text = new Game::ShadedText(font,
-			Game::KeyUtils::keyToString(Game::playerControls[selectedPlayer-1][Control::RIGHT]),
+			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Control::RIGHT]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	texts["controls::change_right"] = text;
@@ -93,7 +93,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 	elements.push_back(text);
 
 	text = new Game::ShadedText(font,
-			Game::KeyUtils::keyToString(Game::playerControls[selectedPlayer-1][Control::BOMB]),
+			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Control::BOMB]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	texts["controls::change_bomb"] = text;
@@ -133,7 +133,7 @@ void ControlsScreen::selectPlayer(unsigned short id) {
 		std::stringstream ss;
 		ss << "controls::change_" << it->first;
 		texts[ss.str()]->setString(Game::KeyUtils::keyToString(
-				Game::playerControls[selectedPlayer-1][it->second]));
+				Game::Controls::players[selectedPlayer-1][it->second]));
 	}
 
 	const short used = Game::options.useJoystick[selectedPlayer-1];
@@ -150,7 +150,6 @@ void ControlsScreen::_highlightSelectedPlayer() {
 }
 
 void ControlsScreen::update() {
-	_highlightSelectedPlayer();
 }
 
 void ControlsScreen::triggerMouseOver(const sf::Vector2f& mousePos) {
@@ -159,7 +158,7 @@ void ControlsScreen::triggerMouseOver(const sf::Vector2f& mousePos) {
 }
 
 void ControlsScreen::changeControl(sf::RenderWindow& window, const std::string& textKey) {
-	Control control = Game::controlFromString(textKey.substr(17));
+	Control control = Game::Controls::fromString(textKey.substr(17));
 	if (Game::options.useJoystick[selectedPlayer-1] >= 0) {
 		if (control == Control::BOMB) {
 			_changeJoystickBomb(window);
@@ -176,7 +175,7 @@ void ControlsScreen::changeControl(sf::RenderWindow& window, const std::string& 
 	window.draw(*text);
 	window.display();
 
-	sf::Keyboard::Key original_command = Game::playerControls[selectedPlayer-1][control];
+	sf::Keyboard::Key original_command = Game::Controls::players[selectedPlayer-1][control];
 
 	// Wait for input
 	while (window.isOpen()) {
@@ -192,7 +191,7 @@ void ControlsScreen::changeControl(sf::RenderWindow& window, const std::string& 
 					text->setString(Game::KeyUtils::keyToString(original_command));
 					return;
 				default:
-					Game::playerControls[selectedPlayer-1][control] = event.key.code;
+					Game::Controls::players[selectedPlayer-1][control] = event.key.code;
 					text->setString(Game::KeyUtils::keyToString(event.key.code));
 					// TODO: invalidate other commands with the same key
 					return;
@@ -203,7 +202,7 @@ void ControlsScreen::changeControl(sf::RenderWindow& window, const std::string& 
 		}
 
 		window.clear();
-		draw(window);
+		window.draw(*this);
 		window.display();
 	}
 }
@@ -216,7 +215,7 @@ void ControlsScreen::_changeJoystickBomb(sf::RenderWindow& window) {
 	window.draw(*text);
 	window.display();
 
-	unsigned int original_command = Game::joystickBombKey[selectedPlayer-1];
+	unsigned int original_command = Game::Controls::joystickBombKey[selectedPlayer-1];
 
 	// Wait for button input
 	while (window.isOpen()) {
@@ -230,7 +229,7 @@ void ControlsScreen::_changeJoystickBomb(sf::RenderWindow& window) {
 				{
 					if (short(event.joystickButton.joystickId) != Game::options.useJoystick[selectedPlayer-1])
 						break;
-					Game::joystickBombKey[selectedPlayer-1] = event.joystickButton.button;
+					Game::Controls::joystickBombKey[selectedPlayer-1] = event.joystickButton.button;
 					std::stringstream ss;
 					ss << "Button" << event.joystickButton.button;
 					text->setString(ss.str());
@@ -251,7 +250,7 @@ void ControlsScreen::_changeJoystickBomb(sf::RenderWindow& window) {
 		}
 
 		window.clear();
-		draw(window);
+		window.draw(*this);
 		window.display();
 	}
 }
@@ -285,15 +284,15 @@ void ControlsScreen::toggleJoystick() {
 	if (current == -1) {
 		texts["controls::joystick_toggle"]->setString("NO");
 		texts["controls::change_up"]->setString(Game::KeyUtils::keyToString(
-				Game::playerControls[selectedPlayer-1][Control::UP]));
+				Game::Controls::players[selectedPlayer-1][Control::UP]));
 		texts["controls::change_down"]->setString(Game::KeyUtils::keyToString(
-				Game::playerControls[selectedPlayer-1][Control::DOWN]));
+				Game::Controls::players[selectedPlayer-1][Control::DOWN]));
 		texts["controls::change_left"]->setString(Game::KeyUtils::keyToString(
-				Game::playerControls[selectedPlayer-1][Control::LEFT]));
+				Game::Controls::players[selectedPlayer-1][Control::LEFT]));
 		texts["controls::change_right"]->setString(Game::KeyUtils::keyToString(
-				Game::playerControls[selectedPlayer-1][Control::RIGHT]));
+				Game::Controls::players[selectedPlayer-1][Control::RIGHT]));
 		texts["controls::change_bomb"]->setString(Game::KeyUtils::keyToString(
-				Game::playerControls[selectedPlayer-1][Control::BOMB]));
+				Game::Controls::players[selectedPlayer-1][Control::BOMB]));
 	} else {
 		std::stringstream ss;
 		ss << "Joystick" << current;
@@ -303,7 +302,7 @@ void ControlsScreen::toggleJoystick() {
 		texts["controls::change_left"]->setString("LEFT");
 		texts["controls::change_right"]->setString("RIGHT");
 		ss.str("");
-		ss << "Button" << Game::joystickBombKey[selectedPlayer-1];
+		ss << "Button" << Game::Controls::joystickBombKey[selectedPlayer-1];
 		texts["controls::change_bomb"]->setString(ss.str());
 	}
 }

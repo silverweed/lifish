@@ -61,7 +61,7 @@ Game::Action ScreenHandler::handleScreenEvents(sf::RenderWindow& window, ScreenT
 				break;
 			case sf::Event::KeyPressed:
 				if (event.key.code == sf::Keyboard::Key::Escape) {
-					const auto parent = find_parent(curScreen);
+					Game::Screen *parent = find_parent(curScreen);
 					if (parent != nullptr)
 						curScreen = parent;
 					else
@@ -72,7 +72,7 @@ Game::Action ScreenHandler::handleScreenEvents(sf::RenderWindow& window, ScreenT
 				break;
 			case sf::Event::MouseButtonReleased:
 				{
-					const auto clicked = curScreen->triggerMouseClick(
+					const std::string clicked = curScreen->triggerMouseClick(
 							window.mapPixelToCoords(sf::Mouse::getPosition(window)));
 					if (clicked == "start") {
 						return Game::Action::START_GAME;
@@ -141,7 +141,7 @@ Game::Action ScreenHandler::handleScreenEvents(sf::RenderWindow& window, ScreenT
 							curScreen = &screens.about;
 						break;
 					} else if (clicked == "exit") {
-						const auto parent = find_parent(curScreen);
+						Game::Screen *parent = find_parent(curScreen);
 						if (parent != nullptr)
 							curScreen = parent;
 						else
@@ -153,6 +153,10 @@ Game::Action ScreenHandler::handleScreenEvents(sf::RenderWindow& window, ScreenT
 				break;
 			}
 		}
+
+		window.clear();
+		window.draw(*this);
+		window.display();
 	}
 	return Game::Action::DO_NOTHING;
 }
