@@ -1,7 +1,9 @@
 #include "AxisMoving.hpp"
 #include "Game.hpp"
 #include "utils.hpp"
+#include "Shooting.hpp"
 #include "LevelManager.hpp"
+#include <exception>
 
 using Game::AxisMoving;
 using Game::TILE_SIZE;
@@ -169,4 +171,21 @@ void AxisMoving::_ensureAlign() {
 		return;
 	}
 	owner->setPosition(pos);
+}
+
+bool AxisMoving::setDashing(bool d) {
+	auto shooting = owner->get<Game::Shooting>();
+	if (shooting == nullptr)
+		throw std::logic_error("Called setDashing on Entity without a Shooting component!");
+
+	if (!d) {
+		dashing = false;
+		speed = originalSpeed;
+	} else if (!shooting->isRecharging() && speed == originalSpeed) {
+		dashing = true;
+		speed *= 4;
+		shooting->shoot(); // reset the recharge clock
+		return true;
+	}
+	return false;
 }

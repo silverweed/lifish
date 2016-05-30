@@ -13,20 +13,31 @@ Shooting::Shooting(Game::Entity *const owner, const Attack& attack)
 }
 
 Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
+	if (attack.type & Game::AttackType::CONTACT) {
+		rechargeClock->restart();
+		return nullptr;
+	}
+
 	if (dir == Game::Direction::NONE) {
 		if (ownerMoving == nullptr)
-			throw std::invalid_argument("Called shoot(NONE) on a non-AxisMoving owner!");
+			throw std::logic_error("Called shoot(Direction::NONE) on a non-AxisMoving owner!");
 		
 		shooting = true;
+		rechargeClock->restart();
 		return new Game::AxisBullet(owner, ownerMoving->getDirection(), attack);
 	}
 
 	shooting = true;
+	rechargeClock->restart();
 	return new Game::AxisBullet(owner, dir, attack);
 }
 
 Game::FreeBullet* Shooting::shoot(double angle) {
+	if (attack.type & Game::AttackType::CONTACT)
+		throw std::logic_error("Called shoot(angle) for a CONTACT attack!");
+
 	shooting = true;
+	rechargeClock->restart();
 	return new Game::FreeBullet(owner, angle, attack);
 }
 

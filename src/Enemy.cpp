@@ -3,6 +3,7 @@
 #include "Drawable.hpp"
 #include "Scored.hpp"
 #include "Lifed.hpp"
+#include "LevelManager.hpp"
 #include "Sounded.hpp"
 #include "Killable.hpp"
 #include "utils.hpp"
@@ -36,6 +37,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attac
 	}));
 	alienSprite = addComponent(new Game::AlienSprite(this));
 	shooting = addComponent(new Game::Shooting(this, attack));
+	sighted = addComponent(new Game::Sighted(this));
 
 	drawProxy = std::unique_ptr<Game::EnemyDrawableProxy>(new Game::EnemyDrawableProxy(*this));
 	addComponent(new Game::Drawable(this, drawProxy.get()));
@@ -127,6 +129,19 @@ void Enemy::update() {
 
 void Enemy::setMorphed(bool b) {
 	morphed = b;
+}
+
+Game::Direction Enemy::seeingPlayer(const Game::LevelManager& lm) const {
+	auto& seen = sighted->entitiesSeen();
+	Game::Direction dir = Game::Direction::NONE;
+	unsigned short dist = Game::LEVEL_WIDTH + 1;
+	for (unsigned short i = 0; i < 4; ++i) {
+		if (lm.isPlayer(seen[i].first) && seen[i].second < dist) {
+			dir = static_cast<Game::Direction>(i);
+			dist = seen[i].second;
+		}
+	}
+	return dir;
 }
 
 /*void Enemy::draw(sf::RenderTarget& window) {

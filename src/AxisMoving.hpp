@@ -36,7 +36,11 @@ public:
 	void update() override;
 
 	bool isDashing() const { return dashing; }
-	void setDashing(bool d) { dashing = d; }
+	/** Can only be called on an Entity with a Shooting component.
+	 *  If the dash cooldown has ended and the Entity is not dashing, make this entity dash
+	 *  and return true; else, return false.
+	 */
+	bool setDashing(bool d);
 
 	bool canGo(const Game::Direction dir, const Game::LevelManager *const lm) const;
 };

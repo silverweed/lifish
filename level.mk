@@ -3,7 +3,7 @@ CFLAGS := -std=c++11 -Wall -Wextra -pedantic -ggdb
 # CFLAGS := $(CFLAGS) -O2 -fno-omit-frame-pointer -pg
 LDFLAGS := -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-system -lstdc++ -lm
 
-test_level: Killable.o Animation.o Bomb.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o test_level.o LevelSet.o LevelNumText.o Music.o Game.o Texture.o Points.o ShadedText.o Track.o utils.o Entity.o EntityGroup.o Coin.o AxisMoving.o Moving.o Lifed.o Controls.o Shooting.o MovingAnimator.o Player.o Enemy.o AlienSprite.o Direction.o Teleport.o Flash.o BossExplosion.o FixedWall.o BreakableWall.o TransparentWall.o Sprite.o Bullet.o AxisBullet.o FreeBullet.o FreeMoving.o Explosion.o Screen.o ScreenHandler.o HomeScreen.o Controllable.o ControlsScreen.o PreferencesScreen.o AboutScreen.o PauseScreen.o  
+test_level: Killable.o Animation.o Bomb.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o test_level.o LevelSet.o LevelNumText.o Music.o Game.o Texture.o Points.o ShadedText.o Track.o utils.o Entity.o EntityGroup.o Coin.o AxisMoving.o Moving.o Lifed.o Controls.o Shooting.o MovingAnimator.o Player.o Enemy.o AlienSprite.o Direction.o Teleport.o Flash.o BossExplosion.o FixedWall.o BreakableWall.o TransparentWall.o Sprite.o Bullet.o AxisBullet.o FreeBullet.o FreeMoving.o Explosion.o Screen.o ScreenHandler.o HomeScreen.o Controllable.o ControlsScreen.o PreferencesScreen.o AboutScreen.o PauseScreen.o Sighted.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 points: Killable.o Animation.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o LevelSet.o LevelNumText.o Game.o Texture.o Points.o ShadedText.o utils.o Entity.o EntityGroup.o AxisMoving.o Moving.o Lifed.o Controls.o MovingAnimator.o Direction.o Sprite.o FreeMoving.o Track.o Music.o test_points.o Explosion.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
@@ -117,4 +117,6 @@ Points.o: src/Points.cpp
 Controllable.o: src/Controllable.cpp
 	$(CC) $(CFLAGS) -c $<
 SaveManager.o: src/SaveManager.cpp
+	$(CC) $(CFLAGS) -c $<
+Sighted.o: src/Sighted.cpp
 	$(CC) $(CFLAGS) -c $<

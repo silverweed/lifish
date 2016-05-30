@@ -7,7 +7,7 @@ Sighted::Sighted(Game::Entity *const owner, short visionRadius)
 	: Game::Component(owner)
 	, visionRadius(visionRadius)
 {
-	seen.fill(nullptr);
+	seen.fill(std::make_pair(nullptr, 0));
 }
 
 void Sighted::update() {

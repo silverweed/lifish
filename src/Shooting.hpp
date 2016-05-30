@@ -29,14 +29,19 @@ public:
 	const sf::Vector2i& getAttackAlign() const { return attackAlign; }
 	void setAttackAlign(const sf::Vector2i& aa) { attackAlign = aa; }
 
-	/** Creates an AxisBullet described by `attack` and returns it. 
+	/** If attack is CONTACT, just reset the recharge clock and return nullptr.
+	 *  Else, create an AxisBullet described by `attack` and return it. 
 	 *  The callee must take care of its destruction.
 	 *  If dir is NONE, the bullet is shot in the direction of its owner. 
 	 *  In this case, the owner must have an AxisMoving component, or an exception is thrown.
+	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
 	Game::AxisBullet* shoot(Game::Direction dir = Game::Direction::NONE);
+
 	/** Creates a FreeBullet moving with angle `angle` (rad) from its owner.
-	 *  Callee must take care of its destruction.
+	 *  Callee must take care of its destruction. 
+	 *  Throws if attack is CONTACT.
+	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
 	Game::FreeBullet* shoot(double angle);
 	bool isShooting() const { return shooting; }

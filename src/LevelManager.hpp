@@ -1,6 +1,15 @@
-#if 0
-
 #pragma once
+// MOCK
+namespace Game {
+class LevelManager {
+public:
+	bool isPlayer(const Game::Entity *const e) const {
+		return false;
+	}
+};
+}
+
+#if 0
 
 #include <vector>
 #include <array>

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "../src/Level.hpp"
 #include "../src/dialogs.hpp"
+#include "../src/LevelManager.hpp"
 #include "../src/LevelSet.hpp"
 #include "../src/Bomb.hpp"
 #include "../src/Coin.hpp"
@@ -25,13 +26,6 @@
 #include "../src/Points.hpp"
 
 using namespace Game;
-
-// MOCK
-namespace Game {
-class LevelManager {
-
-};
-}
 
 int main() {
 	Game::init();

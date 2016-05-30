@@ -15,6 +15,7 @@ protected:
 
 	bool moving = false;
 	float speed;
+	const float originalSpeed;
 	float distTravelled = 0;
 	sf::Vector2f prevAlign;
 	Game::Clock<1> *frameClock = nullptr;
