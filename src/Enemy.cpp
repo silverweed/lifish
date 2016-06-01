@@ -135,7 +135,7 @@ Game::Direction Enemy::seeingPlayer(const Game::LevelManager& lm) const {
 	auto& seen = sighted->entitiesSeen();
 	Game::Direction dir = Game::Direction::NONE;
 	unsigned short dist = Game::LEVEL_WIDTH + 1;
-	for (unsigned short i = 0; i < 4; ++i) {
+	for (unsigned short i = 0; i < (unsigned short)Game::Direction::NONE; ++i) {
 		if (lm.isPlayer(seen[i].first) && seen[i].second < dist) {
 			dir = static_cast<Game::Direction>(i);
 			dist = seen[i].second;

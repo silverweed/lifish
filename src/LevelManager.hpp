@@ -1,11 +1,18 @@
 #pragma once
+
+#include "EntityGroup.hpp"
+
 // MOCK
 namespace Game {
 class LevelManager {
+	Game::EntityGroup entities;
+
 public:
 	bool isPlayer(const Game::Entity *const e) const {
 		return false;
 	}
+
+	const Game::EntityGroup& getEntities() const { return entities; }
 };
 }
 

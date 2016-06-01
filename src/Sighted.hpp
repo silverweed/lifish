@@ -17,6 +17,10 @@ class Sighted : public Game::Component {
 
 	const Game::LevelManager *lm = nullptr;
 
+
+	std::pair<const Game::Entity*, unsigned short> _fillLine(
+			const Game::LevelManager *lm, const Game::Direction dir);
+
 public:
 	explicit Sighted(Game::Entity *const owner, short visionRadius = -1);
 

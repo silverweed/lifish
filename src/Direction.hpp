@@ -5,15 +5,11 @@
 namespace Game {
 
 enum class Direction {
-	UP, LEFT, DOWN, RIGHT, NONE
-};
-
-/** This is used to index arrays, but should be avoided when possible */
-enum : unsigned short {
-	ANIM_UP    = 0,
-	ANIM_LEFT  = 1,
-	ANIM_DOWN  = 2,
-	ANIM_RIGHT = 3
+	UP    = 0,
+	LEFT  = 1,
+	DOWN  = 2, 
+	RIGHT = 3,
+	NONE  = 4
 };
 
 inline std::string directionToString(const Direction& dir) {

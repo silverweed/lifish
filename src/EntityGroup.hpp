@@ -77,6 +77,10 @@ public:
 	template<typename...Args>
 	void apply(AppliedFunc<Game::Entity, Args...> func, Args... args);
 
+	/** Applies a void(Args...) function to all entities (const version) */
+	template<typename...Args>
+	void apply(AppliedFunc<const Game::Entity, Args...> func, Args... args) const;
+
 	template<class T>
 	T* add(T *entity, bool owned = true);
 
@@ -103,6 +107,12 @@ void EntityGroup::apply(AppliedFunc<T, Args...> func, Args... args) {
 template<typename... Args>
 void EntityGroup::apply(AppliedFunc<Game::Entity, Args...> func, Args... args) {
 	for (auto& e : entities)
+		func(e.get(), args...);
+}
+
+template<typename... Args>
+void EntityGroup::apply(AppliedFunc<const Game::Entity, Args...> func, Args... args) const {
+	for (const auto& e : entities)
 		func(e.get(), args...);
 }
 
