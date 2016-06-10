@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility>
+#include <array>
 #include "Direction.hpp"
 #include "Component.hpp"
 
