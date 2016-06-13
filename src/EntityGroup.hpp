@@ -10,6 +10,7 @@
 #include "Entity.hpp"
 #include "Temporary.hpp"
 #include "Killable.hpp"
+#include "Moving.hpp"
 
 namespace Game {
 
@@ -91,6 +92,13 @@ public:
 	size_t size() const { return entities.size(); }
 
 	void updateAll();
+
+	template<class T>
+	std::iterator<Game::Entity*, std::input_iterator_tag> all() { 
+		return std::find_if(entities.begin(), entities.end(), [] (std::unique_ptr<Game::Entity>& e) {
+			return e->get<T>() != nullptr;
+		}); 
+	}
 };
 
 ///// Implementation /////
@@ -119,10 +127,11 @@ void EntityGroup::apply(AppliedFunc<const Game::Entity, Args...> func, Args... a
 template<class T>
 T* EntityGroup::_commonAdd(T *entity, bool owned) {
 	entities.push_back(std::unique_ptr<Game::Entity>(entity));
+	entity->setOrigin(origin);
+
+	// Put in auxiliary collections
 	if (!owned)
 		unowned.insert(entity);	
-
-	entity->setOrigin(origin);
 
 	auto tmp = entity->template get<Game::Temporary>();
 	if (tmp != nullptr)
