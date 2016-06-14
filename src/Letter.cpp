@@ -4,6 +4,7 @@
 #include "Drawable.hpp"
 #include "Sounded.hpp"
 #include "Animated.hpp"
+#include "Collider.hpp"
 #include "utils.hpp"
 #include <random>
 
@@ -27,6 +28,7 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	transitionClock = addComponent(new Game::Clock<1>(this));
 	auto animated = addComponent(new Game::Animated(this, Game::getAsset("test", "extra_letters.png")));
 	addComponent(new Game::Drawable(this, animated));
+	addComponent(new Game::Component(this));
 
 	// Letters are indexed 0 to N_EXTRA_LETTERS - 1.
 	if (id > Game::N_EXTRA_LETTERS - 1) 

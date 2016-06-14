@@ -4,7 +4,7 @@
 
 namespace Game {
 
-enum class Direction {
+enum Direction {
 	UP    = 0,
 	LEFT  = 1,
 	DOWN  = 2, 

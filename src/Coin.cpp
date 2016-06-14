@@ -6,6 +6,7 @@
 #include "GameCache.hpp"
 #include "Killable.hpp"
 #include "Drawable.hpp"
+#include "Collider.hpp"
 
 using Game::Coin;
 using Game::TILE_SIZE;
@@ -22,6 +23,7 @@ Coin::Coin(const sf::Vector2f& pos)
 	animated = addComponent(new Game::Animated(this, texname));
 	Game::cache.loadTexture(texname)->setSmooth(true);
 	addComponent(new Game::Drawable(this, animated));
+	addComponent(new Game::Collider(this));
 	addComponent(new Game::Killable(this, [this] () {
 		// on kill
 		_grab();	

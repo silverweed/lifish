@@ -2,21 +2,21 @@
 
 using Game::Collider;
 
-Collider::Collider(Game::Entity *const owner, const sf::Vector2i& size, int layer)
+Collider::Collider(Game::Entity *const owner, Game::Layers::Layer layer, const sf::Vector2i& size)
 	: Game::Component(owner)
 	, size(size)
 	, layer(layer)
 {}
 
-Collider::Collider(Game::Entity *const owner, const sf::Vector2i& size, 
-		int layer, std::function<void(Game::Collider*)> onCollision)
+Collider::Collider(Game::Entity *const owner, std::function<void(Game::Collider*)> onCollision,
+		Game::Layers::Layer layer, const sf::Vector2i& size)
 	: Game::Component(owner)
 	, size(size)
 	, layer(layer)
 	, onCollision(onCollision)
 {}
 
-void Collider::update() const {
+void Collider::update() {
 	if (onCollision && isColliding())
 		onCollision(colliding);
 }

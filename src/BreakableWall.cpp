@@ -3,6 +3,7 @@
 #include "GameCache.hpp"
 #include "Killable.hpp"
 #include "Lifed.hpp"
+#include "Collider.hpp"
 #include "Scored.hpp"
 #include "Sounded.hpp"
 #include "Drawable.hpp"
@@ -51,6 +52,7 @@ void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
 	addComponent(new Game::Scored(this, score));
 	addComponent(new Game::Lifed(this, life));
 	addComponent(new Game::Sounded(this, { Game::getAsset("sounds", "wall_break.ogg") })); 
+	addComponent(new Game::Collider(this, Game::Layers::WALLS));
 	addComponent(new Game::Killable(this, [this] () {
 		// on kill
 		get<Game::Animated>()->getSprite().play();

@@ -11,8 +11,11 @@
 #include "Temporary.hpp"
 #include "Killable.hpp"
 #include "Moving.hpp"
+#include "Collider.hpp"
 
 namespace Game {
+
+class CollisionDetector;
 
 namespace {
 	template<class T>
@@ -29,11 +32,16 @@ namespace {
  * on all or a specific type of them.
  */
 class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
+
+	friend class Game::CollisionDetector;
+
 	/** All the entities (owning references) */
 	std::list<std::unique_ptr<Game::Entity>> entities;
 
 	/** The unowned entities, which are managed externally */
 	std::unordered_set<Game::Entity*> unowned;
+
+	std::list<Game::Collider*> collidingEntities;
 
 	/** The static entities, which are always grid-aligned and cannot move */
 	//std::array<Game::Entity*, LEVEL_WIDTH * LEVEL_HEIGHT> staticEntities;
@@ -92,13 +100,6 @@ public:
 	size_t size() const { return entities.size(); }
 
 	void updateAll();
-
-	template<class T>
-	std::iterator<Game::Entity*, std::input_iterator_tag> all() { 
-		return std::find_if(entities.begin(), entities.end(), [] (std::unique_ptr<Game::Entity>& e) {
-			return e->get<T>() != nullptr;
-		}); 
-	}
 };
 
 ///// Implementation /////
@@ -136,6 +137,10 @@ T* EntityGroup::_commonAdd(T *entity, bool owned) {
 	auto tmp = entity->template get<Game::Temporary>();
 	if (tmp != nullptr)
 		temporary.push_back(tmp);
+
+	auto cld = entity->template get<Game::Collider>();
+	if (cld != nullptr)
+		collidingEntities.push_back(cld);
 
 	return entity;
 }

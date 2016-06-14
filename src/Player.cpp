@@ -3,6 +3,7 @@
 #include "Sounded.hpp"
 #include "Bonusable.hpp"
 #include "Drawable.hpp"
+#include "Collider.hpp"
 #include "Killable.hpp"
 #include "Controllable.hpp"
 #include "utils.hpp"
@@ -31,6 +32,7 @@ Player::Player(const sf::Vector2f& pos, const unsigned short id)
 	addComponent(new Game::Bonusable(this));
 	movingAnimator = addComponent(new Game::MovingAnimator(this));
 	addComponent(new Game::Controllable(this, Game::Controls::players[id-1]));
+	addComponent(new Game::Collider(this, Game::Layers::PLAYERS));
 
 	extra.fill(false);
 

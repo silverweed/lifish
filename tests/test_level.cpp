@@ -24,6 +24,7 @@
 #include "../src/HomeScreen.hpp"
 #include "../src/ScreenHandler.hpp"
 #include "../src/Points.hpp"
+#include "../src/CollisionDetector.hpp"
 
 using namespace Game;
 
@@ -83,6 +84,8 @@ int main() {
 	sf::Clock shootClock;
 
 	auto lm = new Game::LevelManager;
+
+	Game::CollisionDetector cd(entities);
 
 	bool spawned = false;
 	int cycle = 0;
@@ -170,6 +173,9 @@ int main() {
 			if (m != nullptr && e->isAligned())
 				m->setPrevAlign(Game::tile(e->getPosition()));
 		});
+
+		// Update collisions
+		cd.update();
 
 		// Draw everything
 		window.clear();

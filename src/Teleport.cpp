@@ -2,6 +2,7 @@
 #include "Game.hpp"
 #include "GameCache.hpp"
 #include "Drawable.hpp"
+#include "Collider.hpp"
 
 using Game::Teleport;
 using Game::TILE_SIZE;
@@ -14,6 +15,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", "teleport.png")));
 	disableClock = addComponent(new Game::Clock<1>(this));
 	addComponent(new Game::Drawable(this, animated));
+	addComponent(new Game::Collider(this));
 
 	auto& anim = animated->addAnimation("teleport");
 	// Teleports have 8 frames

@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include "LoopingMusic.hpp"
+#include "collision_layers.hpp"
 #include "Options.hpp"
 #include <cstring>
 #include <iostream>
@@ -78,6 +79,9 @@ bool Game::init() {
 			break;
 		}
 	}
+
+	// Setup collision layers
+	Game::Layers::init();
 
 	return true;
 }

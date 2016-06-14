@@ -2,6 +2,7 @@
 #include "Sounded.hpp"
 #include "Player.hpp"
 #include "Drawable.hpp"
+#include "Collider.hpp"
 #include "Game.hpp"
 
 using Game::Bomb;
@@ -26,6 +27,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source,
 		return fuseClock->getElapsedTime() >= fuseTime;
 	}));
 	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", "bomb.png")));
+	addComponent(new Game::Collider(this));
 	addComponent(new Game::Drawable(this, animated));
 	auto& a_normal_idle = animated->addAnimation("normal_idle", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),

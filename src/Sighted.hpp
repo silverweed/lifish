@@ -28,6 +28,7 @@ public:
 	const std::array<std::pair<const Game::Entity*, unsigned short>, 4>& entitiesSeen() const { 
 		return seen;
 	}
+
 	std::pair<const Game::Entity*, unsigned short> entitySeen(Game::Direction dir) const { 
 		return seen[static_cast<size_t>(dir)];
 	}

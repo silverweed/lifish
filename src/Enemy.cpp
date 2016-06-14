@@ -6,6 +6,7 @@
 #include "LevelManager.hpp"
 #include "Sounded.hpp"
 #include "Killable.hpp"
+#include "Collider.hpp"
 #include "utils.hpp"
 
 using Game::Enemy;
@@ -38,6 +39,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attac
 	alienSprite = addComponent(new Game::AlienSprite(this));
 	shooting = addComponent(new Game::Shooting(this, attack));
 	sighted = addComponent(new Game::Sighted(this));
+	addComponent(new Game::Collider(this, Game::Layers::ENEMIES));
 
 	drawProxy = std::unique_ptr<Game::EnemyDrawableProxy>(new Game::EnemyDrawableProxy(*this));
 	addComponent(new Game::Drawable(this, drawProxy.get()));

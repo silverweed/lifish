@@ -13,6 +13,7 @@
 
 using Game::Explosion;
 using Game::TILE_SIZE;
+using Game::Direction;
 
 Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game::Player *const source)
 	: Game::Entity(pos)
@@ -84,16 +85,16 @@ void Explosion::propagate(Game::LevelManager *const lr) {
 
 			sf::Vector2i new_tile = m_tile;
 			switch (dir) {
-			case ANIM_UP:
+			case Direction::UP:
 				new_tile.y -= d;
 				break;
-			case ANIM_LEFT:
+			case Direction::LEFT:
 				new_tile.x -= d;
 				break;
-			case ANIM_DOWN:
+			case Direction::DOWN:
 				new_tile.y += d;
 				break;
-			case ANIM_RIGHT:
+			case Direction::RIGHT:
 				new_tile.x += d;
 				break;
 			}
@@ -173,14 +174,14 @@ void Explosion::checkHit(Game::LevelManager *const lr) {
 			moving[4].push_back(e); 
 		} else if (intersects_x) {
 			if (epos.x < pos.x) 
-				moving[ANIM_LEFT].push_back(e);
+				moving[Direction::LEFT].push_back(e);
 			else
-				moving[ANIM_RIGHT].push_back(e);
+				moving[Direction::RIGHT].push_back(e);
 		} else if (intersects_y) {
 			if (epos.y < pos.y) 
-				moving[ANIM_UP].push_back(e);
+				moving[Direction::UP].push_back(e);
 			else 
-				moving[ANIM_DOWN].push_back(e);
+				moving[Direction::DOWN].push_back(e);
 		}
 	}
 
@@ -217,16 +218,16 @@ void Explosion::checkHit(Game::LevelManager *const lr) {
 		for (unsigned short d = 1; d <= propagation[dir]; ++d) {
 			sf::Vector2i new_tile = m_tile;
 			switch (dir) {
-			case ANIM_UP:
+			case Direction::UP:
 				new_tile.y -= d;
 				break;
-			case ANIM_LEFT:
+			case Direction::LEFT:
 				new_tile.x -= d;
 				break;
-			case ANIM_DOWN:
+			case Direction::DOWN:
 				new_tile.y += d;
 				break;
-			case ANIM_RIGHT:
+			case Direction::RIGHT:
 				new_tile.x += d;
 				break;
 			}
@@ -243,7 +244,7 @@ void Explosion::checkHit(Game::LevelManager *const lr) {
 }
 
 void Explosion::_setPropagatedAnims() {
-	const unsigned short hsize = TILE_SIZE * (propagation[ANIM_RIGHT] + propagation[ANIM_LEFT] + 1);
+	const unsigned short hsize = TILE_SIZE * (propagation[Direction::RIGHT] + propagation[Direction::LEFT] + 1);
 	explosionH->addAnimation("explode", {
 		sf::IntRect(0, 0, hsize, TILE_SIZE),
 		sf::IntRect(0, TILE_SIZE, hsize, TILE_SIZE),
@@ -253,7 +254,7 @@ void Explosion::_setPropagatedAnims() {
 		sf::IntRect(0, TILE_SIZE, hsize, TILE_SIZE),
 		sf::IntRect(0, 0, hsize, TILE_SIZE)
 	}, true);
-	const unsigned short vsize = TILE_SIZE * (propagation[ANIM_DOWN] + propagation[ANIM_UP] + 1);
+	const unsigned short vsize = TILE_SIZE * (propagation[Direction::DOWN] + propagation[Direction::UP] + 1);
 	explosionV->addAnimation("explode", {
 		sf::IntRect(0, 0, TILE_SIZE, vsize),
 		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, vsize),
@@ -263,8 +264,8 @@ void Explosion::_setPropagatedAnims() {
 		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, vsize),
 		sf::IntRect(0, 0, TILE_SIZE, vsize)
 	}, true);
-	explosionH->setPosition(position - sf::Vector2f(TILE_SIZE * propagation[ANIM_LEFT], 0));
-	explosionV->setPosition(position - sf::Vector2f(0, TILE_SIZE * propagation[ANIM_UP]));
+	explosionH->setPosition(position - sf::Vector2f(TILE_SIZE * propagation[Direction::LEFT], 0));
+	explosionV->setPosition(position - sf::Vector2f(0, TILE_SIZE * propagation[Direction::UP]));
 }
 
 void Explosion::draw(sf::RenderTarget& window, sf::RenderStates states) const {

@@ -3,7 +3,9 @@
 #include "Game.hpp"
 #include "Collider.hpp"
 #include "Direction.hpp"
+#include "collision_layers.hpp"
 #include <algorithm>
+#include <iostream>
 
 using Game::Direction;
 using Game::CollisionDetector;
@@ -38,37 +40,35 @@ void CollisionDetector::update() {
 	 * 1) has it reached the level boundaries?
 	 * 2) is there another non-trasparent entity occupying the cell ahead?
 	 */
-	auto movingEntities = group.all<Game::Moving>();
-	std::vector<bool> checked(group.size(), false);
+	auto& colliding = group.collidingEntities;
+	std::vector<bool> checked(colliding.size(), false);
 	
 	// Collision detection loop
 	unsigned short i = 0;
-	//for (unsigned short i = 0, len = movingEntities.size(); i < len; ++i) {
-	for (auto& entity : movingEntities) {
+	for (auto it = colliding.begin(); it != colliding.end(); ++it, ++i) {
 		if (checked[i]) continue;
-		//const auto moving = movingEntities[i];
-		//auto entity = moving->getOwner();
-		const auto collider = entity->get<Game::Collider>();
-		// Only consider entities with a collider
-		if (collider == nullptr) continue;
 
-		//const bool is_player = entity->get<Game::Player>() != nullptr;
-		//const auto killable = entity->get<Game::Killable>();
-		//if (killable != nullptr && killable->isKilled()) continue;
+		auto& collider = *it;
 
 		// Very simple check with all others
-		for (unsigned short j = i + 1; j < len; ++j) {
-			const auto othmoving = movingEntities[j];
-			Game::Entity *othentity = othmoving->getOwner();
-			const auto othcollider = othentity->get<Game::Collider>();
-			if (othcollider == nullptr) continue;
-			const auto othpos = othentity->getPosition();
-			if (collider.contains(othcollider)) {
+		unsigned short j = i + 1;
+		for (auto jt = std::next(it); jt != colliding.end(); ++jt, ++j) {
+			if (checked[j]) continue;
+		
+			auto& othcollider = *jt;
+
+			if (Game::Layers::collide[collider->getLayer()][othcollider->getLayer()]
+					&& collider->contains(*othcollider)) 
+			{
 				collider->colliding = othcollider;
 				othcollider->colliding = collider;
 				checked[i] = checked[j] = true;
 			}
 		}
+	}
+
+	auto n = std::count_if(checked.begin(), checked.end(), [] (bool b) { return b; });
+	std::cerr << "Colliding: " << n << std::endl;
 
 		// Check for teleports
 		/*if (firstTeleport != nullptr && entity->canTeleport && entity->isAligned()) {
