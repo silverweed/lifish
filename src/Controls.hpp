@@ -9,11 +9,11 @@
 namespace Game {
 
 enum Control : unsigned short {
-	UP    = 0,
-	DOWN  = 1,
-	LEFT  = 2,
-	RIGHT = 3,
-	BOMB  = 4
+	CTRL_UP    = 0,
+	CTRL_DOWN  = 1,
+	CTRL_LEFT  = 2,
+	CTRL_RIGHT = 3,
+	CTRL_BOMB  = 4
 };
 
 namespace Controls {
@@ -23,11 +23,11 @@ namespace Controls {
 	extern std::array<unsigned int, Game::MAX_PLAYERS> joystickBombKey;
 
 	inline Control fromString(const std::string& name) {
-		if (name == "up" || name == "UP") return Control::UP;
-		else if (name == "down" || name == "DOWN") return Control::DOWN;
-		else if (name == "left" || name == "LEFT") return Control::LEFT;
-		else if (name == "right" || name == "RIGHT") return Control::RIGHT;
-		return Control::BOMB;
+		if (name == "up" || name == "UP") return CTRL_UP;
+		else if (name == "down" || name == "DOWN") return CTRL_DOWN;
+		else if (name == "left" || name == "LEFT") return CTRL_LEFT;
+		else if (name == "right" || name == "RIGHT") return CTRL_RIGHT;
+		return CTRL_BOMB;
 	}
 }
 

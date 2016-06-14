@@ -18,6 +18,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attac
 {
 	animated = addComponent(new Game::Animated(this, 
 		Game::getAsset("graphics", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
+	addComponent(new Game::Collider(this, Game::Layers::ENEMIES));
 	addComponent(new Game::Sounded(this, {
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_death.ogg")),
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_yell.ogg")),
@@ -39,7 +40,6 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attac
 	alienSprite = addComponent(new Game::AlienSprite(this));
 	shooting = addComponent(new Game::Shooting(this, attack));
 	sighted = addComponent(new Game::Sighted(this));
-	addComponent(new Game::Collider(this, Game::Layers::ENEMIES));
 
 	drawProxy = std::unique_ptr<Game::EnemyDrawableProxy>(new Game::EnemyDrawableProxy(*this));
 	addComponent(new Game::Drawable(this, drawProxy.get()));

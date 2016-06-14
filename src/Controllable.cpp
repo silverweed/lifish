@@ -33,13 +33,13 @@ void Controllable::update() {
 		else if (horizontal > Game::JOYSTICK_INPUT_THRESHOLD)
 			dir = Game::Direction::RIGHT;
 	} else {
-		if (sf::Keyboard::isKeyPressed(controls[Game::Control::UP]))
+		if (sf::Keyboard::isKeyPressed(controls[Game::CTRL_UP]))
 			dir = Game::Direction::UP;
-		else if (sf::Keyboard::isKeyPressed(controls[Game::Control::LEFT]))
+		else if (sf::Keyboard::isKeyPressed(controls[Game::CTRL_LEFT]))
 			dir = Game::Direction::LEFT;
-		else if (sf::Keyboard::isKeyPressed(controls[Game::Control::DOWN]))
+		else if (sf::Keyboard::isKeyPressed(controls[Game::CTRL_DOWN]))
 			dir = Game::Direction::DOWN;
-		else if (sf::Keyboard::isKeyPressed(controls[Game::Control::RIGHT]))
+		else if (sf::Keyboard::isKeyPressed(controls[Game::CTRL_RIGHT]))
 			dir = Game::Direction::RIGHT;
 	}
 

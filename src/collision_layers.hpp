@@ -17,7 +17,8 @@ enum Layer : unsigned short {
 	N_LAYERS      = 7
 };
 
-extern Matrix<bool, Layers::N_LAYERS, Layers::N_LAYERS> collide;
+extern Matrix<bool, Layers::N_LAYERS, Layers::N_LAYERS> collide, // whether levels "see" each other
+                                                        solid;   // whether levels are solid for each other
 
 /** To be called by Game::init() */
 void init();

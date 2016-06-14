@@ -28,7 +28,7 @@ public:
 			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
 			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE));
 
-	bool isColliding() const { return colliding != nullptr; }
+	Game::Collider* getColliding() const { return colliding; }
 
 	Game::Layers::Layer getLayer() const { return layer; }
 	void setLayer(Game::Layers::Layer l) { layer = l; }

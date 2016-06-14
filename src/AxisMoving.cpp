@@ -49,13 +49,13 @@ void AxisMoving::update() {
 	}
 
 	// TODO
-	//if (!colliding) {
+	if (!_collidesWithSolid()) {
 		owner->setPosition(owner->getPosition() + shift * frameTime.asSeconds());
 		const float delta = speed * frameTime.asSeconds();
 		distTravelled += delta;
 		if (delta > 1)
 			_ensureAlign();
-	//}
+	}
 
 	prevDirection = direction;
 

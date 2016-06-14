@@ -2,6 +2,7 @@
 
 #include "Component.hpp"
 #include "Clock.hpp"
+#include "Collider.hpp"
 
 namespace Game {
 
@@ -19,6 +20,10 @@ protected:
 	float distTravelled = 0;
 	sf::Vector2f prevAlign;
 	Game::Clock<1> *frameClock = nullptr;
+	Game::Collider *collider = nullptr;
+
+
+	bool _collidesWithSolid() const;
 
 public:
 	explicit Moving(Game::Entity *const owner, float speed);
