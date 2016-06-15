@@ -15,7 +15,8 @@ enum Layer : unsigned short {
 	BOSS_BULLETS  = 5,
 	WALLS         = 6,
 	TRANSP_WALLS  = 7,
-	N_LAYERS      = 8
+	TELEPORTS     = 8,
+	N_LAYERS      = 9
 };
 
 extern Matrix<bool, Layers::N_LAYERS, Layers::N_LAYERS> collide, // whether levels "see" each other

@@ -61,8 +61,8 @@ void AxisMoving::update() {
 	prevDirection = direction;
 
 	// FIXME: why cannot set this here but must do it after entities.updateAll()?
-	//if (owner->isAligned())
-		//prevAlign = Game::tile(owner->getPosition());
+	if (owner->isAligned())
+		prevAlign = Game::tile(owner->getPosition());
 }
 
 // Realigns the entity by "bouncing it back" to the tile it occupies the most.

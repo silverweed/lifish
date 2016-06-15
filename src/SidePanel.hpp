@@ -22,7 +22,7 @@ class LevelManager;
  * independently from Game::MAX_PLAYERS.
  */
 class SidePanel final : public Game::Drawable, private sf::NonCopyable {
-	// Elements' coordinates
+	// Elements' coordinates (in pixel)
 	constexpr static unsigned short PLAYER_HEAD_WIDTH = 32,
 	                                PLAYER_HEAD_HEIGHT = 23,
 	                                N_LIVES_X = 55,
@@ -80,7 +80,7 @@ class SidePanel final : public Game::Drawable, private sf::NonCopyable {
 	void _drawWithShadow(sf::RenderTarget& window, sf::Sprite& sprite, 
 			const sf::Color& color = sf::Color::White);
 public:
-	SidePanel(const Game::LevelManager *const _lr);
+	explicit SidePanel(const Game::LevelManager *const lm);
 	~SidePanel();
 
 	void draw(sf::RenderTarget& window) override;

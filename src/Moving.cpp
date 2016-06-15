@@ -22,14 +22,7 @@ void Moving::stop() {
 	moving = false;
 }
 
-#include <iostream>
 bool Moving::_collidesWithSolid() const {
-	if (collider != nullptr) {
-		std::cerr << "[aligned? " << owner->isAligned() << "] Collider->getColliding() = " << collider->getColliding() << std::endl;
-		if (collider->getColliding() != nullptr)
-			std::cerr << "solid[" << int(collider->getLayer()) << "][" << int(collider->getColliding()->getLayer()) << "] = "
-				<< Game::Layers::solid[collider->getLayer()][collider->getColliding()->getLayer()] << std::endl;
-	}
 	return collider != nullptr && collider->getColliding() != nullptr
 		&& Game::Layers::solid[collider->getLayer()][collider->getColliding()->getLayer()];
 }

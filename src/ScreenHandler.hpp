@@ -26,7 +26,7 @@ enum class Action {
 	DO_NOTHING
 };
 
-class ScreenHandler final : public sf::Drawable {
+class ScreenHandler final : public Game::WithOrigin, public sf::Drawable {
 	// All possible screens
 	struct Screens {
 		Game::HomeScreen& home;
@@ -60,6 +60,15 @@ public:
 	Game::Action handleScreenEvents(sf::RenderWindow& window, ScreenType rootScreen, int enabledScreens);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates) const override;
+
+	void setOrigin(const sf::Vector2f& pos) override {
+		Game::WithOrigin::setOrigin(pos);
+		screens.home.setOrigin(pos);
+		screens.preferences.setOrigin(pos);
+		screens.controls.setOrigin(pos);
+		screens.about.setOrigin(pos);
+		screens.pause.setOrigin(pos);
+	}
 };
 
 }

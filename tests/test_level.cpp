@@ -41,8 +41,8 @@ int main() {
 
 	Game::EntityGroup entities;
 
-	Game::Attack atype;
-	atype.type = Game::AttackType::SIMPLE;
+	Attack atype;
+	atype.type = AttackType::SIMPLE;
 	atype.damage = 1;
 	atype.id = 1;
 	atype.speed = 1;
@@ -51,20 +51,24 @@ int main() {
 	Player *player2 = new Player(sf::Vector2f(128, 128 + 32), 2);
 	Bomb *bomb = new Bomb(sf::Vector2f(64, 64), nullptr);
 	Coin *coin = new Coin(sf::Vector2f(96, 96));
-	Teleport *teleport = new Teleport(sf::Vector2f(256, 256));
+	Teleport *teleport = new Teleport(sf::Vector2f(256, 224));
+	Teleport *teleport2 = new Teleport(sf::Vector2f(32*11, 320));
+	teleport->linkTo(teleport2);
+	teleport2->linkTo(teleport);
 	FixedWall *wall1 = new FixedWall(sf::Vector2f(32, 64), 5);
 	BreakableWall *wall2 = new BreakableWall(sf::Vector2f(32, 96), 3);
 	TransparentWall *wall3 = new TransparentWall(sf::Vector2f(32, 128));
 	
-	entities.add(enemy);
 	entities.add(bomb);
 	entities.add(coin);
-	entities.add(player);
-	entities.add(player2);
 	entities.add(teleport);
+	entities.add(teleport2);
 	entities.add(wall1);
 	entities.add(wall2);
 	entities.add(wall3);
+	entities.add(enemy);
+	entities.add(player);
+	entities.add(player2);
 	//for (int i = 0; i < 64; ++i) {
 		//entities.add(new BreakableWall(sf::Vector2f((i%Game::LEVEL_WIDTH)*32, int(i/Game::LEVEL_WIDTH)*32.0), 2));
 		//entities.add(new BreakableWall(sf::Vector2f((i%Game::LEVEL_WIDTH)*32, (Game::LEVEL_HEIGHT-int(i/Game::LEVEL_WIDTH))*32.0), 2));
@@ -78,7 +82,7 @@ int main() {
 	//Game::playMusic();
 
 	Game::HomeScreen& screen = HomeScreen::getInstance();
-	screen.setOrigin(sf::Vector2f(-200, 0));
+	Game::ScreenHandler::getInstance().setOrigin(sf::Vector2f(-200, 0));
 	bool drawScreen = false;
 
 	std::array<Game::Player*, 2> players;
@@ -136,6 +140,7 @@ int main() {
 			//entities.add(new Game::Flash(sf::Vector2f(300, 300)));
 		}
 
+		// Event loop
 		while (window.pollEvent(event)) {
 			switch (event.type) {
 			case sf::Event::Closed:
@@ -172,17 +177,8 @@ int main() {
 			}
 		}
 
-		// Fill players' directions according to input
-		//Game::get_directions(window, players);
-
+		// Update entities and their components
 		entities.updateAll();
-
-		// Set entities' previous align	
-		entities.apply([] (Game::Entity *e) {
-			auto m = e->get<Game::AxisMoving>();
-			if (m != nullptr && e->isAligned())
-				m->setPrevAlign(Game::tile(e->getPosition()));
-		});
 
 		// Update collisions
 		cd.update();
@@ -197,14 +193,6 @@ int main() {
 					window.draw(*d);
 			});
 		} else {
-			//switch (Game::ScreenHandler::getInstance().handleScreenEvents(window, 
-				//HOME_SCREEN,
-				//HOME_SCREEN)) 
-			//{
-			//case Action::EXIT:
-				//drawScreen = false;
-			//}
-			//window.draw(Game::ScreenHandler::getInstance());
 			window.draw(Game::HomeScreen::getInstance());
 		}
 		Game::maybeShowFPS(window);

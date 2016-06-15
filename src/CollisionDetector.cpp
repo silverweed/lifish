@@ -64,7 +64,7 @@ void CollisionDetector::update() {
 			{
 				collider->colliding = othcollider;
 				auto othmoving = othcollider->getOwner()->get<Game::AxisMoving>();
-				if (othmoving != nullptr && othmoving->getDirection() == Game::oppositeDirection(
+				if (othmoving == nullptr || othmoving->getDirection() == Game::oppositeDirection(
 							moving->getDirection()))
 				{
 					othcollider->colliding = collider;

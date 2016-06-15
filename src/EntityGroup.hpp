@@ -41,6 +41,8 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	/** The unowned entities, which are managed externally */
 	std::unordered_set<Game::Entity*> unowned;
 
+	/** The colliders of entities which have one */
+	// TODO remove invalid pointers from here when the objects are destroyed
 	std::vector<Game::Collider*> collidingEntities;
 
 	/** The static entities, which are always grid-aligned and cannot move */
@@ -56,9 +58,6 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	 */
 	std::list<Game::Killable*> dying;
 
-	
-	template<class T>
-	T* _commonAdd(T *entity, bool owned);
 
 	/** Removes any expired temporary from both `temporary` and `entities`, and destroys them.
 	 *  If an entity is Killable and its `isKillInProgress()` is true, puts it in `dying`
@@ -77,10 +76,6 @@ public:
 	 */
 	EntityGroup() {}
 	~EntityGroup();
-
-	/** Applies a void(Args...) function to all entities of type T */
-	template<class T, typename... Args>
-	void apply(AppliedFunc<T, Args...> func, Args... args);
 
 	/** Applies a void(Args...) function to all entities */
 	template<typename...Args>
@@ -104,15 +99,6 @@ public:
 
 ///// Implementation /////
 
-template<class T, typename... Args>
-void EntityGroup::apply(AppliedFunc<T, Args...> func, Args... args) {
-	for (auto& e : entities) {
-		T* t = dynamic_cast<T*>(e.get());
-		if (t != nullptr)
-			func(t, args...);
-	}
-}
-
 template<typename... Args>
 void EntityGroup::apply(AppliedFunc<Game::Entity, Args...> func, Args... args) {
 	for (auto& e : entities)
@@ -126,7 +112,7 @@ void EntityGroup::apply(AppliedFunc<const Game::Entity, Args...> func, Args... a
 }
 
 template<class T>
-T* EntityGroup::_commonAdd(T *entity, bool owned) {
+T* EntityGroup::add(T *entity, bool owned) {
 	entities.push_back(std::unique_ptr<Game::Entity>(entity));
 	entity->setOrigin(origin);
 
@@ -143,11 +129,6 @@ T* EntityGroup::_commonAdd(T *entity, bool owned) {
 		collidingEntities.push_back(cld);
 
 	return entity;
-}
-
-template<class T>
-T* EntityGroup::add(T *entity, bool owned) {
-	return _commonAdd(entity, owned);
 }
 
 template<class T>
