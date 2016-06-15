@@ -56,7 +56,7 @@ int main() {
 	BreakableWall *wall2 = new BreakableWall(sf::Vector2f(32, 96), 3);
 	TransparentWall *wall3 = new TransparentWall(sf::Vector2f(32, 128));
 	
-	//entities.add(enemy);
+	entities.add(enemy);
 	entities.add(bomb);
 	entities.add(coin);
 	entities.add(player);
@@ -68,6 +68,7 @@ int main() {
 	//for (int i = 0; i < 64; ++i) {
 		//entities.add(new BreakableWall(sf::Vector2f((i%Game::LEVEL_WIDTH)*32, int(i/Game::LEVEL_WIDTH)*32.0), 2));
 		//entities.add(new BreakableWall(sf::Vector2f((i%Game::LEVEL_WIDTH)*32, (Game::LEVEL_HEIGHT-int(i/Game::LEVEL_WIDTH))*32.0), 2));
+		//entities.add(new Enemy(sf::Vector2f((i%Game::LEVEL_WIDTH)*32, int(i/Game::LEVEL_WIDTH)*32.0), 1, 1, atype));
 	//}
 
 	level->setOrigin(sf::Vector2f(-200, 0));
@@ -113,7 +114,7 @@ int main() {
 						//Game::LEVEL_HEIGHT * Game::TILE_SIZE * y), 2, player);
 			//e->propagate(lm);
 			//entities.add(e);
-			//entities.add(enemy->get<Game::Shooting>()->shoot());
+			entities.add(enemy->get<Game::Shooting>()->shoot());
 			shootClock.restart();
 		}
 

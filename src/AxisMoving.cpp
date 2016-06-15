@@ -91,13 +91,10 @@ void AxisMoving::realign() {
 	owner->setPosition(pos);
 }
 
-#include <iostream>
 void AxisMoving::stop() {
 	Game::Moving::stop();
 	direction = prevDirection = Game::Direction::NONE;
-	std::cerr << "Before realign = " << owner->getPosition();
 	realign();
-	std::cerr << " | after realign = " << owner->getPosition() << std::endl;
 }
 
 bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager *const lm) const {
