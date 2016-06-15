@@ -41,7 +41,7 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	/** The unowned entities, which are managed externally */
 	std::unordered_set<Game::Entity*> unowned;
 
-	std::list<Game::Collider*> collidingEntities;
+	std::vector<Game::Collider*> collidingEntities;
 
 	/** The static entities, which are always grid-aligned and cannot move */
 	//std::array<Game::Entity*, LEVEL_WIDTH * LEVEL_HEIGHT> staticEntities;

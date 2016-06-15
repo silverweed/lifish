@@ -34,10 +34,12 @@ public:
 	void setLayer(Game::Layers::Layer l) { layer = l; }
 
 	bool contains(const Game::Collider& other) const {
+		return getRect().intersects(other.getRect());
+	}
+
+	sf::IntRect getRect() const {
 		const auto pos = owner->getPosition();
-		const auto opos = other.getOwner()->getPosition();
-		return sf::IntRect(pos.x, pos.y, size.x, size.y).intersects(
-				sf::IntRect(opos.x, opos.y, other.size.x, other.size.y));
+		return sf::IntRect(pos.x, pos.y, size.x, size.y);
 	}
 
 	void update() override;

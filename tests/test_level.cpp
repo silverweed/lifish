@@ -48,6 +48,7 @@ int main() {
 	atype.speed = 1;
 	Enemy *enemy = new Enemy(sf::Vector2f(32*6, 32*8), 1, 1, atype);
 	Player *player = new Player(sf::Vector2f(128, 128), 1);
+	Player *player2 = new Player(sf::Vector2f(128, 128 + 32), 2);
 	Bomb *bomb = new Bomb(sf::Vector2f(64, 64), nullptr);
 	Coin *coin = new Coin(sf::Vector2f(96, 96));
 	Teleport *teleport = new Teleport(sf::Vector2f(256, 256));
@@ -55,14 +56,19 @@ int main() {
 	BreakableWall *wall2 = new BreakableWall(sf::Vector2f(32, 96), 3);
 	TransparentWall *wall3 = new TransparentWall(sf::Vector2f(32, 128));
 	
-	entities.add(enemy);
+	//entities.add(enemy);
 	entities.add(bomb);
 	entities.add(coin);
 	entities.add(player);
+	entities.add(player2);
 	entities.add(teleport);
 	entities.add(wall1);
 	entities.add(wall2);
 	entities.add(wall3);
+	//for (int i = 0; i < 64; ++i) {
+		//entities.add(new BreakableWall(sf::Vector2f((i%Game::LEVEL_WIDTH)*32, int(i/Game::LEVEL_WIDTH)*32.0), 2));
+		//entities.add(new BreakableWall(sf::Vector2f((i%Game::LEVEL_WIDTH)*32, (Game::LEVEL_HEIGHT-int(i/Game::LEVEL_WIDTH))*32.0), 2));
+	//}
 
 	level->setOrigin(sf::Vector2f(-200, 0));
 	entities.setOrigin(sf::Vector2f(-200, 0));
@@ -74,10 +80,12 @@ int main() {
 	screen.setOrigin(sf::Vector2f(-200, 0));
 	bool drawScreen = false;
 
-	std::array<Game::Player*, 1> players;
+	std::array<Game::Player*, 2> players;
 	players[0] = player;
+	players[1] = player2;
 	
 	player->get<Game::Controllable>()->setWindow(&window);
+	player2->get<Game::Controllable>()->setWindow(&window);
 	enemy->get<Game::AxisMoving>()->setDirection(Game::Direction::DOWN);
 
 	sf::Clock turnClock;
@@ -105,7 +113,7 @@ int main() {
 						//Game::LEVEL_HEIGHT * Game::TILE_SIZE * y), 2, player);
 			//e->propagate(lm);
 			//entities.add(e);
-			entities.add(enemy->get<Game::Shooting>()->shoot());
+			//entities.add(enemy->get<Game::Shooting>()->shoot());
 			shootClock.restart();
 		}
 
@@ -138,7 +146,8 @@ int main() {
 					enemy->setMorphed(!enemy->isMorphed());
 					break;
 				case sf::Keyboard::S:
-					drawScreen = !drawScreen;
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+						drawScreen = !drawScreen;
 					break;
 				case sf::Keyboard::P:
 					{

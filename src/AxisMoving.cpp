@@ -28,6 +28,7 @@ void AxisMoving::update() {
 	sf::Vector2f shift(0.f, 0.f);
 	sf::Time frameTime = frameClock->restart();
 
+	// Cap frameTime to a maximum to avoid excessive "jumps" due to lag.
 	if (frameTime > MAX_FRAME_TIME)
 		frameTime = MAX_FRAME_TIME;
 	
@@ -55,7 +56,7 @@ void AxisMoving::update() {
 		distTravelled += delta;
 		if (delta > 1)
 			_ensureAlign();
-	}
+	} else realign();
 
 	prevDirection = direction;
 
@@ -64,6 +65,8 @@ void AxisMoving::update() {
 		//prevAlign = Game::tile(owner->getPosition());
 }
 
+// Realigns the entity by "bouncing it back" to the tile it occupies the most.
+// If direction is NONE, just aligns it to its current tile
 void AxisMoving::realign() {
 	auto pos = owner->getPosition();
 
@@ -88,10 +91,13 @@ void AxisMoving::realign() {
 	owner->setPosition(pos);
 }
 
+#include <iostream>
 void AxisMoving::stop() {
 	Game::Moving::stop();
 	direction = prevDirection = Game::Direction::NONE;
+	std::cerr << "Before realign = " << owner->getPosition();
 	realign();
+	std::cerr << " | after realign = " << owner->getPosition() << std::endl;
 }
 
 bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager *const lm) const {
@@ -138,8 +144,23 @@ bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager *cons
 }
 
 void AxisMoving::setDirection(Game::Direction dir) {
+	if (dir == direction) return;
 	direction = dir; 
+
 	moving = dir != Game::Direction::NONE;
+	realign();
+	if (!moving) stop();
+	//auto pos = owner->getPosition();
+	//switch (dir) {
+	//case Direction::UP: case Direction::DOWN:
+		//pos.x = (unsigned short)pos.x;
+		//break;
+	//case Direction::LEFT: case Direction::RIGHT:
+		//pos.y = (unsigned short)pos.y;
+		//break;
+	//case Direction::NONE: break;
+	//}
+	//owner->setPosition(pos);
 }
 
 void AxisMoving::turn(short straightAngles, bool clockwise) {

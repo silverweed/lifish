@@ -12,27 +12,28 @@ using Game::CollisionDetector;
 using Game::TILE_SIZE;
 
 // Checks if entity in `pos` and entity in `opos` collide, given that the one in `pos` has direction `dir`.
-static bool _collide(const sf::Vector2f& pos, const sf::Vector2f& opos, const Game::Direction dir) {
-	const unsigned short iposx = (unsigned short)pos.x,
-			     iposy = (unsigned short)pos.y,
-			     ioposx = (unsigned short)opos.x,
-			     ioposy = (unsigned short)opos.y;
+static bool _collide(const Game::Collider *cld1, const Game::Collider *cld2, const Game::Direction dir) {
+	sf::IntRect rect = cld1->getRect(),
+		    orect = cld2->getRect();
+
 	switch (dir) {
-	case Direction::UP:
-		return iposx - TILE_SIZE < ioposx && ioposx < iposx + TILE_SIZE
-			&& iposy >= ioposy && ioposy >= iposy - TILE_SIZE;
-	case Direction::LEFT:
-		return iposx >= ioposx && ioposx >= iposx - TILE_SIZE
-			&& iposy - TILE_SIZE < ioposy && ioposy < iposy + TILE_SIZE;
+	case Direction::UP: 
+		--rect.top;
+		break;
 	case Direction::DOWN:
-		return iposx - TILE_SIZE < ioposx && ioposx < iposx + TILE_SIZE
-			&& ioposy >= iposy && ioposy <= iposy + TILE_SIZE;
-	case Direction::RIGHT:
-		return ioposx >= iposx && ioposx <= iposx + TILE_SIZE
-			&& iposy - TILE_SIZE < ioposy && ioposy < iposy + TILE_SIZE;
+		++rect.top;
+		break;
+	case Direction::LEFT:  
+		--rect.left;
+		break;
+	case Direction::RIGHT: 
+		++rect.left;
+		break;
 	default:
-		return false;
+		break;
 	}
+
+	return rect.intersects(orect);
 }
 
 void CollisionDetector::update() {
@@ -44,31 +45,37 @@ void CollisionDetector::update() {
 	std::vector<bool> checked(colliding.size(), false);
 	
 	// Collision detection loop
-	unsigned short i = 0;
-	for (auto it = colliding.begin(); it != colliding.end(); ++it, ++i) {
+	for (unsigned short i = 0, len = colliding.size(); i < len; ++i) {
 		if (checked[i]) continue;
 
-		auto& collider = *it;
+		auto collider = colliding[i];
+		collider->colliding = nullptr;
+		auto moving = collider->getOwner()->get<Game::AxisMoving>();
+		if (!moving) continue;
 
-		// Very simple check with all others
-		unsigned short j = i + 1;
-		for (auto jt = std::next(it); jt != colliding.end(); ++jt, ++j) {
-			if (checked[j]) continue;
+		// Very simple (aka quadratic) check with all others
+		for (unsigned short j = 0; j < len; ++j) {
+			if (i == j)  continue;
 		
-			auto& othcollider = *jt;
+			auto& othcollider = colliding[j];
 
 			if (Game::Layers::collide[collider->getLayer()][othcollider->getLayer()]
-					&& collider->contains(*othcollider)) 
+					&& _collide(collider, othcollider, moving->getDirection()))
 			{
 				collider->colliding = othcollider;
-				othcollider->colliding = collider;
+				auto othmoving = othcollider->getOwner()->get<Game::AxisMoving>();
+				if (othmoving != nullptr && othmoving->getDirection() == Game::oppositeDirection(
+							moving->getDirection()))
+				{
+					othcollider->colliding = collider;
+				}
 				checked[i] = checked[j] = true;
 			}
 		}
 	}
 
-	auto n = std::count_if(checked.begin(), checked.end(), [] (bool b) { return b; });
-	std::cerr << "Colliding: " << n << std::endl;
+	//auto n = std::count_if(checked.begin(), checked.end(), [] (bool b) { return b; });
+	//std::cerr << "Colliding: " << n << std::endl;
 
 		// Check for teleports
 		/*if (firstTeleport != nullptr && entity->canTeleport && entity->isAligned()) {
