@@ -30,6 +30,7 @@ namespace {
 /**
  * A container for Entities, providing convenient methods for operating
  * on all or a specific type of them.
+ * EntityGroup is _not_ thread-safe.
  */
 class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 
@@ -42,7 +43,6 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	std::unordered_set<Game::Entity*> unowned;
 
 	/** The colliders of entities which have one */
-	// TODO remove invalid pointers from here when the objects are destroyed
 	std::vector<Game::Collider*> collidingEntities;
 
 	/** The static entities, which are always grid-aligned and cannot move */
@@ -87,6 +87,9 @@ public:
 
 	template<class T>
 	T* add(T *entity, bool owned = true);
+
+	/** Removes an entity from all internal collections. */
+	void remove(Game::Entity *entity);
 
 	void setOrigin(const sf::Vector2f& origin) override;
 

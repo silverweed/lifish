@@ -29,6 +29,23 @@ void EntityGroup::updateAll() {
 		_removeDying();
 }
 
+void EntityGroup::remove(Game::Entity *entity) {
+	const auto cld = entity->get<Game::Collider>();
+	const auto tmp = entity->get<Game::Temporary>();
+	const auto klb = entity->get<Game::Killable>();
+	entities.remove_if([entity] (const std::unique_ptr<Game::Entity>& e) { return e.get() == entity; });
+	for (auto it = unowned.begin(); it != unowned.end(); ) {
+		if (*it == entity) it = unowned.erase(it);
+		else ++it;
+	}
+	if (cld != nullptr)
+		collidingEntities.erase(std::remove(collidingEntities.begin(), collidingEntities.end(), cld));
+	if (tmp != nullptr)
+		temporary.remove(tmp);
+	if (klb != nullptr)
+		dying.remove(klb);
+}
+
 void EntityGroup::_removeExpiredTemporaries() {
 	for (auto it = temporary.begin(); it != temporary.end(); ) {
 		auto tmp = *it;
@@ -38,6 +55,7 @@ void EntityGroup::_removeExpiredTemporaries() {
 			if (k != nullptr) {
 				k->kill();
 				if (k->isKillInProgress()) {
+					// Will be finalized later
 					dying.push_back(k);
 					it = temporary.erase(it);
 					continue;
@@ -45,7 +63,7 @@ void EntityGroup::_removeExpiredTemporaries() {
 			}
 
 			auto eit = std::find_if(entities.begin(), entities.end(), 
-					[tmp] (std::unique_ptr<Game::Entity>& ptr) 
+					[tmp] (const std::unique_ptr<Game::Entity>& ptr) 
 			{
 				return ptr.get() == tmp->getOwner();
 			});

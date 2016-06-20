@@ -102,6 +102,7 @@ int main() {
 
 	bool spawned = false;
 	int cycle = 0;
+	//bool removed = false;
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -139,6 +140,11 @@ int main() {
 			}
 			//entities.add(new Game::Flash(sf::Vector2f(300, 300)));
 		}
+
+		//if (!removed && cycle > 100) {
+			//entities.remove(wall1); 
+			//removed = true;
+		//}
 
 		// Event loop
 		while (window.pollEvent(event)) {
