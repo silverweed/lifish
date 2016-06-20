@@ -18,7 +18,7 @@ Coin::Coin(const sf::Vector2f& pos)
 {
 	addComponent(new Game::Scored(this, VALUE));
 	addComponent(new Game::Sounded(this, { Game::getAsset("sounds", "coin.ogg") }));
-	grabClock = addComponent(new Game::Clock<1>(this));
+	grabClock = addComponent(new Game::Clock(this));
 	std::string texname = Game::getAsset("graphics", "coin.png");
 	animated = addComponent(new Game::Animated(this, texname));
 	Game::cache.loadTexture(texname)->setSmooth(true);

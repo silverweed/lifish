@@ -1,46 +1,54 @@
 #include "Boss.hpp"
 #include "Game.hpp"
 #include "utils.hpp"
+#include "Lifed.hpp"
+#include "Scored.hpp"
+#include "Killable.hpp"
+#include "Drawable.hpp"
+#include "Sounded.hpp"
+#include "Collider.hpp"
 
 using Game::Boss;
 
-Boss::Boss(const sf::Vector2f& pos)
-	: Game::NonAnimated(pos, Game::getAsset("test", "boss.png"))
-	, Game::Lifed(MAX_LIFE)
-	, Game::Scored(VALUE)
-	, Game::Sounded({ Game::getAsset("test", "boss_death.ogg"),
-			Game::getAsset("test", "boss_hurt.ogg") })
-	, Game::Clocked({ &explClock, &hurtClock })
-{
-	transparentTo.bullets = true;
+Boss::Boss(const sf::Vector2f& pos) : Game::Entity(pos) {
+	addComponent(new Game::Collider(this, Game::Layers::BOSSES, sf::Vector2i(
+					SIZE * Game::TILE_SIZE, SIZE * Game::TILE_SIZE)));
+	addComponent(new Game::Lifed(this, MAX_LIFE));
+	addComponent(new Game::Scored(this, VALUE));
+	addComponent(new Game::Sounded(this, {
+		Game::getAsset("test", "boss_death.ogg"),
+		Game::getAsset("test", "boss_hurt.ogg") 
+	}));
+	sprite = addComponent(new Game::Sprite(this, Game::getAsset("test", "boss.png"), sf::IntRect(
+					0, 0, SIZE * Game::TILE_SIZE, SIZE * Game::TILE_SIZE)));
+	addComponent(new Game::Drawable(this, sprite));
+	addComponent(new Game::Killable(this, [this] () {
+		// TODO		
+	}));
 
-	sprite.setTextureRect(sf::IntRect(0, 0, SIZE * Game::TILE_SIZE, SIZE * Game::TILE_SIZE));
+	hurtClock = addComponent(new Game::Clock(this));
+	explClock = addComponent(new Game::Clock(this));
 
 	shootingPoints[0] = pos + sf::Vector2f(34, 36);
 	shootingPoints[1] = pos + sf::Vector2f(63, 36);
 }
 
-void Boss::draw(sf::RenderTarget& window) {
+void Boss::update() {
+	Game::Entity::update();
+
 	if (dead) {
-		const float s = hurtClock.getElapsedTime().asSeconds();
+		const float s = hurtClock->getElapsedTime().asSeconds();
 		const float diff = s - std::floor(s);
 		if (4*diff - std::floor(4*diff) < 0.5)
 			return;
 	} else if (isHurt) {
-		if (hurtClock.getElapsedTime().asMilliseconds() > 200) {
-			sprite.setColor(sf::Color(sf::Color::White));
+		if (hurtClock->getElapsedTime().asMilliseconds() > 200) {
+			sprite->getSprite().setColor(sf::Color(sf::Color::White));
 			isHurt = false;
 		} else {
-			sprite.setColor(sf::Color(200, 0, 0, 255));
+			sprite->getSprite().setColor(sf::Color(200, 0, 0, 255));
 		}
 	}
-	Game::NonAnimated::draw(window);
-}
-
-bool Boss::occupies(const sf::Vector2i& tile) const {
-	const auto m_tile = Game::tile(pos);
-	return tile.x >= m_tile.x && tile.x < m_tile.x + SIZE
-		&& tile.y >= m_tile.y && tile.y < m_tile.y + SIZE;
 }
 
 void Boss::hurt() { 

@@ -28,7 +28,9 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attac
 	}));
 	addComponent(new Game::Lifed(this, 1));
 	moving = addComponent(new Game::AxisMoving(this, BASE_SPEED * speed, Game::Direction::DOWN));
-	clocks = addComponent(new Game::Clock<3>(this, {{ "attack", "yell", "dash" }}));
+	attackClock = addComponent(new Game::Clock(this));
+	yellClock = addComponent(new Game::Clock(this));
+	dashClock = addComponent(new Game::Clock(this));
 	alienSprite = addComponent(new Game::AlienSprite(this));
 	addComponent(new Game::Scored(this, id * 100));
 	addComponent(new Game::Shooting(this, attack));

@@ -15,7 +15,7 @@ class Player;
  * where the bomb was deployed.
  */
 class Bomb : public Game::Entity {
-	Game::Clock<1> *fuseClock = nullptr;
+	Game::Clock *fuseClock = nullptr;
 	sf::Time fuseTime;
 	unsigned short radius;
 	

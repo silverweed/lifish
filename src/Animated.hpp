@@ -18,7 +18,7 @@ namespace Game {
 class Animated : public Game::Component, public sf::Drawable {
 protected:
 	sf::Texture *texture;
-	Game::Clock<1> *frameClock;
+	Game::Clock *frameClock;
 	std::unordered_map<std::string, Animation> animations;
 	AnimatedSprite animatedSprite;
 	bool manualPosition = false;

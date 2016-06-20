@@ -149,9 +149,6 @@ void ControlsScreen::_highlightSelectedPlayer() {
 	}
 }
 
-void ControlsScreen::update() {
-}
-
 void ControlsScreen::triggerMouseOver(const sf::Vector2f& mousePos) {
 	Game::Screen::triggerMouseOver(mousePos);
 	_highlightSelectedPlayer();

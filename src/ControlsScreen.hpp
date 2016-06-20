@@ -31,7 +31,6 @@ public:
 	/** Toggles the Game::useJoystick variable for the selected player */
 	void toggleJoystick();
 
-	void update() override;
 	void triggerMouseOver(const sf::Vector2f& mousePos) override;
 };
 

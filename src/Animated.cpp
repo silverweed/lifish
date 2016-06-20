@@ -8,7 +8,7 @@ Animated::Animated(Game::Entity *const owner, const std::string& texture_name)
 	: Game::Component(owner)
 {
 	texture = Game::cache.loadTexture(texture_name);
-	frameClock = addComponent(new Game::Clock<1>(this));
+	frameClock = addComponent(new Game::Clock(this));
 }
 
 Animation& Animated::addAnimation(const std::string& name) {

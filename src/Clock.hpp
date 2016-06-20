@@ -9,6 +9,7 @@ namespace Game {
 /**
  * An object with one or more pausable clocks
  */
+	/*
 template <unsigned short NClocks = 1>
 class Clock : public Game::Component {
 	std::array<sftools::Chronometer, NClocks> clocks;
@@ -74,10 +75,9 @@ public:
 	sf::Time getElapsedTime(const std::string& name) const {
 		return _getClock(name)->getElapsedTime();
 	}
-};
+};*/
 
-template <>
-class Clock<1> : public Game::Component {
+class Clock : public Game::Component {
 	sftools::Chronometer clock;
 
 public:

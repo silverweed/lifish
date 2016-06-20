@@ -35,7 +35,7 @@ private:
 
 	const Type type;
 
-	Game::Clock<1> *expireClock = nullptr;
+	Game::Clock *expireClock = nullptr;
 	Game::Sprite *sprite = nullptr;
 
 public:

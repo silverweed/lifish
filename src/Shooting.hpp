@@ -18,7 +18,7 @@ protected:
 	Attack attack;
 	bool shooting = false;
 
-	Game::Clock<1> *rechargeClock = nullptr;
+	Game::Clock *rechargeClock = nullptr;
 	Game::AxisMoving *ownerMoving = nullptr;
 	
 public:

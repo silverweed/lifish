@@ -39,7 +39,7 @@ Bonus::Bonus(const sf::Vector2f& pos, const Type _type)
 					TILE_SIZE)));
 	addComponent(new Game::Drawable(this, sprite));
 	addComponent(new Game::Scored(this, VALUE));
-	expireClock = addComponent(new Game::Clock<1>(this));
+	expireClock = addComponent(new Game::Clock(this));
 	addComponent(new Game::Sounded(this, { Game::getAsset("test", "bonus_grab.ogg") }));
 }
 

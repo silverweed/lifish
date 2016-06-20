@@ -17,7 +17,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source,
 	, radius(_radius)
 	, sourcePlayer(source)
 {
-	fuseClock = addComponent(new Game::Clock<1>(this));
+	fuseClock = addComponent(new Game::Clock(this));
 	addComponent(new Game::Sounded(this, { Game::getAsset("sounds", "fuse.ogg") })); 
 	killable = addComponent(new Game::Killable(this, [this] () {
 		// On kill

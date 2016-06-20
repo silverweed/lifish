@@ -19,7 +19,7 @@ protected:
 	const float originalSpeed;
 	float distTravelled = 0;
 	sf::Vector2f prevAlign;
-	Game::Clock<1> *frameClock = nullptr;
+	Game::Clock *frameClock = nullptr;
 	Game::Collider *collider = nullptr;
 
 

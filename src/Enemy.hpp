@@ -51,7 +51,9 @@ class Enemy : public Game::Entity {
 
 	std::unique_ptr<Game::EnemyDrawableProxy> drawProxy;
 
-	Game::Clock<3> *clocks = nullptr;
+	Game::Clock *attackClock = nullptr,
+		    *yellClock = nullptr,
+		    *dashClock = nullptr;
 
 	/** The function determining this enemy's movements */
 	//AIBoundFunction ai;
