@@ -47,10 +47,10 @@ Game::Entity* EntityGroup::release(Game::Entity *e) {
 			}
 			auto tmp = released->get<Game::Temporary>();
 			if (tmp != nullptr)
-				temporary.erase(std::remove(temporary.begin(), temporary.end(), tmp));
+				temporary.remove(tmp);
 			auto klb = released->get<Game::Killable>();
 			if (klb != nullptr)
-				dying.erase(std::remove(dying.begin(), dying.end(), klb));
+				dying.remove(klb);
 
 			it = entities.erase(it);
 			break;
