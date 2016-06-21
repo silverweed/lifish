@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include "../src/Level.hpp"
+#include "../src/LevelLoader.hpp"
 #include "../src/dialogs.hpp"
 #include "../src/LevelManager.hpp"
 #include "../src/LevelSet.hpp"
@@ -39,7 +40,22 @@ int main() {
 	Game::LevelSet ls("levels.json");
 	std::unique_ptr<Game::Level> level(ls.getLevel(1));
 
-	Game::EntityGroup entities;
+	Game::LevelManager lm;
+	// Create the players
+	auto players = lm.createNewPlayers();
+	for (auto p : players)
+		p->get<Game::Controllable>()->setWindow(&window);
+
+	LevelLoader::load(*level.get(), lm);
+
+	Game::EntityGroup& entities = lm.getEntities();
+
+#if 0
+	// XXX For now, manually position players
+	players[0]->setPosition(sf::Vector2f(128, 128));
+	players[1]->setPosition(sf::Vector2f(128, 128+32));
+
+	// XXX For now, we manually fill the entities
 
 	Attack atype;
 	atype.type = AttackType::SIMPLE;
@@ -47,8 +63,6 @@ int main() {
 	atype.id = 1;
 	atype.speed = 1;
 	Enemy *enemy = new Enemy(sf::Vector2f(32*6, 32*8), 1, 1, atype);
-	Player *player = new Player(sf::Vector2f(128, 128), 1);
-	Player *player2 = new Player(sf::Vector2f(128, 128 + 32), 2);
 	Bomb *bomb = new Bomb(sf::Vector2f(64, 64), nullptr);
 	Coin *coin = new Coin(sf::Vector2f(96, 96));
 	Teleport *teleport = new Teleport(sf::Vector2f(256, 224));
@@ -67,13 +81,12 @@ int main() {
 	entities.add(wall2);
 	entities.add(wall3);
 	entities.add(enemy);
-	entities.add(player);
-	entities.add(player2);
 	//for (int i = 0; i < 64; ++i) {
 		//entities.add(new BreakableWall(sf::Vector2f((i%Game::LEVEL_WIDTH)*32, int(i/Game::LEVEL_WIDTH)*32.0), 2));
 		//entities.add(new BreakableWall(sf::Vector2f((i%Game::LEVEL_WIDTH)*32, (Game::LEVEL_HEIGHT-int(i/Game::LEVEL_WIDTH))*32.0), 2));
 		//entities.add(new Enemy(sf::Vector2f((i%Game::LEVEL_WIDTH)*32, int(i/Game::LEVEL_WIDTH)*32.0), 1, 1, atype));
 	//}
+#endif
 
 	level->setOrigin(sf::Vector2f(-200, 0));
 	entities.setOrigin(sf::Vector2f(-200, 0));
@@ -84,21 +97,10 @@ int main() {
 	Game::HomeScreen& screen = HomeScreen::getInstance();
 	Game::ScreenHandler::getInstance().setOrigin(sf::Vector2f(-200, 0));
 	bool drawScreen = false;
-
-	std::array<Game::Player*, 2> players;
-	players[0] = player;
-	players[1] = player2;
-	
-	player->get<Game::Controllable>()->setWindow(&window);
-	player2->get<Game::Controllable>()->setWindow(&window);
-	enemy->get<Game::AxisMoving>()->setDirection(Game::Direction::DOWN);
+	//enemy->get<Game::AxisMoving>()->setDirection(Game::Direction::DOWN);
 
 	sf::Clock turnClock;
 	sf::Clock shootClock;
-
-	auto lm = new Game::LevelManager;
-
-	Game::CollisionDetector cd(entities);
 
 	bool spawned = false;
 	int cycle = 0;
@@ -119,16 +121,17 @@ int main() {
 						//Game::LEVEL_HEIGHT * Game::TILE_SIZE * y), 2, player);
 			//e->propagate(lm);
 			//entities.add(e);
-			entities.add(enemy->get<Game::Shooting>()->shoot());
+			//entities.add(enemy->get<Game::Shooting>()->shoot());
 			shootClock.restart();
 		}
 
+		/*
 		if (turnClock.getElapsedTime().asSeconds() > 1) {
 			if (enemy->isAligned()) {
 				enemy->get<Game::AxisMoving>()->turn(1, false);
 				turnClock.restart();
-				Explosion *expl = new Explosion(sf::Vector2f(7 * 32, 3 * 32), 2, player);
-				expl->propagate(lm);
+				//Explosion *expl = new Explosion(sf::Vector2f(7 * 32, 3 * 32), 2, players[0]);
+				//expl->propagate(&lm);
 				//entities.add(expl);
 				//if (rand() < RAND_MAX/2)
 					//entities.add(enemy->get<Game::Shooting>()->shoot());
@@ -139,7 +142,7 @@ int main() {
 				}
 			}
 			//entities.add(new Game::Flash(sf::Vector2f(300, 300)));
-		}
+		}*/
 
 		//if (!removed && cycle > 100) {
 			//entities.remove(wall1); 
@@ -154,12 +157,11 @@ int main() {
 				break;
 			case sf::Event::KeyPressed:
 				switch (event.key.code) {
-				case sf::Keyboard::M:
-					enemy->setMorphed(!enemy->isMorphed());
+				case sf::Keyboard::Q:
+					window.close();
 					break;
-				case sf::Keyboard::S:
-					if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-						drawScreen = !drawScreen;
+				case sf::Keyboard::M:
+					//enemy->setMorphed(!enemy->isMorphed());
 					break;
 				case sf::Keyboard::P:
 					{
@@ -183,34 +185,38 @@ int main() {
 			}
 		}
 
-		// Update entities and their components
-		entities.updateAll();
 
-		// Update collisions
-		cd.update();
+		// FIXME
+		for (auto player : players) {
+			if (player->get<Game::Controllable>()->hasFocus() 
+					&& player->isAligned() 
+					&& sf::Keyboard::isKeyPressed(
+						Game::Controls::players[player->getInfo().id-1][Game::Controls::CTRL_BOMB]))
+			{
+				entities.add(new Game::Bomb(player->getPosition(), player));	
+			}
+		}
+
+		// Update level
+		lm.update();
 
 		// Draw everything
 		window.clear();
-		if (!drawScreen) {
-			window.draw(*level.get());
-			entities.apply([&window] (Game::Entity *e) {
-				auto d = e->get<Game::Drawable>();
-				if (d != nullptr)
-					window.draw(*d);
-			});
-		} else {
-			window.draw(Game::HomeScreen::getInstance());
-		}
+		window.draw(*level.get());
+		entities.apply([&window] (Game::Entity *e) {
+			auto d = e->get<Game::Drawable>();
+			if (d != nullptr)
+				window.draw(*d);
+		});
 		Game::maybeShowFPS(window);
 		window.display();
 
+		// Garbage-collect sounds
 		if (++cycle >= Game::GameCache::SOUNDS_GC_DELAY) {
 			cycle = 0;
 			Game::cache.gcSounds();
 		}
 	}
-
-	delete lm;
 
 	//Game::stopMusic();
 }

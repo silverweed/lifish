@@ -1,11 +1,11 @@
-CC := clang++
+
 CFLAGS := -std=c++11 -Wall -Wextra -pedantic -ggdb 
 # CFLAGS := $(CFLAGS) -O2 -fno-omit-frame-pointer -pg
 LDFLAGS := -lsfml-window -lsfml-graphics -lsfml-audio -lsfml-system -lstdc++ -lm
 
-test_level: collision_layers.o Killable.o Animation.o Bomb.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o test_level.o LevelSet.o LevelNumText.o Music.o Game.o Texture.o Points.o ShadedText.o Track.o utils.o Entity.o EntityGroup.o Coin.o AxisMoving.o Moving.o Lifed.o Controls.o Shooting.o MovingAnimator.o Player.o Enemy.o AlienSprite.o Direction.o Teleport.o Flash.o BossExplosion.o FixedWall.o BreakableWall.o TransparentWall.o Sprite.o Bullet.o AxisBullet.o FreeBullet.o FreeMoving.o Explosion.o Screen.o ScreenHandler.o HomeScreen.o Controllable.o ControlsScreen.o PreferencesScreen.o AboutScreen.o PauseScreen.o Sighted.o CollisionDetector.o Collider.o 
+test_level: collision_layers.o Killable.o Animation.o Bomb.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o test_level.o LevelSet.o LevelNumText.o Music.o Game.o Texture.o Points.o ShadedText.o Track.o utils.o Entity.o EntityGroup.o Coin.o AxisMoving.o Moving.o controls.o Shooting.o MovingAnimator.o Player.o Enemy.o AlienSprite.o Direction.o Teleport.o Flash.o BossExplosion.o FixedWall.o BreakableWall.o TransparentWall.o Sprite.o Bullet.o AxisBullet.o FreeBullet.o FreeMoving.o Explosion.o Screen.o ScreenHandler.o HomeScreen.o Controllable.o ControlsScreen.o PreferencesScreen.o AboutScreen.o PauseScreen.o Sighted.o CollisionDetector.o Collider.o LevelManager.o LevelLoader.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
-points: Killable.o Animation.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o LevelSet.o LevelNumText.o Game.o Texture.o Points.o ShadedText.o utils.o Entity.o EntityGroup.o AxisMoving.o Moving.o Lifed.o Controls.o MovingAnimator.o Direction.o Sprite.o FreeMoving.o Track.o Music.o test_points.o Explosion.o
+points: Killable.o Animation.o AnimatedSprite.o Animated.o EntityType.o GameCache.o Level.o LevelSet.o LevelNumText.o Game.o Texture.o Points.o ShadedText.o utils.o Entity.o EntityGroup.o AxisMoving.o Moving.o controls.o MovingAnimator.o Direction.o Sprite.o FreeMoving.o Track.o Music.o test_points.o Explosion.o
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
 .PHONY: clean
@@ -60,9 +60,7 @@ Moving.o: src/Moving.cpp
 	$(CC) $(CFLAGS) -c $<
 Player.o: src/Player.cpp
 	$(CC) $(CFLAGS) -c $<
-Lifed.o: src/Lifed.cpp
-	$(CC) $(CFLAGS) -c $<
-Controls.o: src/Controls.cpp
+controls.o: src/controls.cpp
 	$(CC) $(CFLAGS) -c $<
 Shooting.o: src/Shooting.cpp
 	$(CC) $(CFLAGS) -c $<
@@ -125,4 +123,8 @@ CollisionDetector.o: src/CollisionDetector.cpp
 Collider.o: src/Collider.cpp
 	$(CC) $(CFLAGS) -c $<
 collision_layers.o: src/collision_layers.cpp
+	$(CC) $(CFLAGS) -c $<
+LevelManager.o: src/LevelManager.cpp
+	$(CC) $(CFLAGS) -c $<
+LevelLoader.o: src/LevelLoader.cpp
 	$(CC) $(CFLAGS) -c $<

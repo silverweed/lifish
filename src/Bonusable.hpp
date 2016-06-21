@@ -25,7 +25,7 @@ public:
 	void giveBonus(Game::Bonus::Type type, const sf::Time& time) {
 		const unsigned short i = static_cast<unsigned short>(type);
 		bonusTime[i] = time;
-		bonusClocki[i]->restart();
+		bonusClock[i]->restart();
 	}
 
 	bool hasBonus(Game::Bonus::Type type) const {

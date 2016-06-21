@@ -1,6 +1,4 @@
-#include "Controls.hpp"
-
-using Game::Control;
+#include "controls.hpp"
 
 std::array<sf::Keyboard::Key, Game::Controls::CONTROLS_NUM> Game::Controls::players[] =
 {

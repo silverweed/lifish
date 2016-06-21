@@ -14,27 +14,36 @@ using Game::TILE_SIZE;
 
 const sf::Time Player::DEATH_TIME = sf::milliseconds(5000); 
 
+Player::Player(const sf::Vector2f& pos, const Game::PlayerInfo& info)
+	: Game::Entity(pos)
+	, info(info)
+{
+	_init();
+}
+
 Player::Player(const sf::Vector2f& pos, const unsigned short id) 
 	: Game::Entity(pos)
-	, id(id)
+	, info(id)
 {
-	addComponent(new Game::Lifed(this, MAX_LIFE));
+	_init();
+}
+
+void Player::_init() {
+	addComponent(new Game::Lifed(this, Game::Conf::Player::MAX_LIFE));
 	addComponent(new Game::Collider(this, Game::Layers::PLAYERS));
-	moving = addComponent(new Game::AxisMoving(this, DEFAULT_SPEED));
+	moving = addComponent(new Game::AxisMoving(this, Game::Conf::Player::DEFAULT_SPEED));
 	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", std::string("player") +
-				Game::to_string(id) + std::string(".png"))));
+				Game::to_string(info.id) + std::string(".png"))));
 	addComponent(new Game::Drawable(this, animated));
 	addComponent(new Game::Sounded(this, {
-		Game::getAsset("test", std::string("player") + Game::to_string(id) + std::string("_death.ogg")),
-		Game::getAsset("test", std::string("player") + Game::to_string(id) + std::string("_hurt.ogg")),
-		Game::getAsset("test", std::string("player") + Game::to_string(id) + std::string("_win.ogg")),
+		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_death.ogg")),
+		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_hurt.ogg")),
+		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_win.ogg")),
 	}));
 	addComponent(new Game::Killable(this, [this] () { _kill(); }));
 	addComponent(new Game::Bonusable(this));
 	movingAnimator = addComponent(new Game::MovingAnimator(this));
-	addComponent(new Game::Controllable(this, Game::Controls::players[id-1]));
-
-	extra.fill(false);
+	addComponent(new Game::Controllable(this, Game::Controls::players[info.id-1]));
 
 	auto& a_down = animated->addAnimation("walk_down");
 	auto& a_up = animated->addAnimation("walk_up");
@@ -68,9 +77,7 @@ void Player::_kill() {
 	//MovingEntity::kill();
 	get<Game::Lifed>()->setLife(0);
 	get<Game::Bonusable>()->reset();
-	powers.bombRadius = Game::Bomb::DEFAULT_RADIUS;
-	powers.bombFuseTime = Game::Bomb::DEFAULT_FUSE;
-	powers.maxBombs = DEFAULT_MAX_BOMBS;
+	info.reset();
 }
 
 // TODO
@@ -84,8 +91,7 @@ void Player::resurrect() {
 	auto& animatedSprite = get<Game::Animated>()->getSprite();
 	animatedSprite.setAnimation(*get<Game::Animated>()->getAnimation("down"));
 	animatedSprite.pause();
-	get<Game::Lifed>()->setLife(MAX_LIFE);
-	extra.fill(false);
+	get<Game::Lifed>()->setLife(Game::Conf::Player::MAX_LIFE);
 	moving->realign();
 }
 

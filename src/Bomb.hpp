@@ -5,6 +5,7 @@
 #include "Clock.hpp"
 #include "Animated.hpp"
 #include "Killable.hpp"
+#include "game_values.hpp"
 
 namespace Game {
 
@@ -30,13 +31,10 @@ class Bomb : public Game::Entity {
 	const Game::Player *const sourcePlayer;
 
 public:
-	const static sf::Time DEFAULT_FUSE; 
-	constexpr static unsigned short DEFAULT_RADIUS = 2;
-	constexpr static unsigned short MAX_RADIUS = 4;
 
 	explicit Bomb(const sf::Vector2f& pos, const Game::Player *const source, 
-			const sf::Time& fuseTime = DEFAULT_FUSE, 
-			const unsigned short radius = DEFAULT_RADIUS);
+			const sf::Time& fuseTime = Game::Conf::Bomb::DEFAULT_FUSE, 
+			const unsigned short radius = Game::Conf::Bomb::DEFAULT_RADIUS);
 
 	void update() override;
 	

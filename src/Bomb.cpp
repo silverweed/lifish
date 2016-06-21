@@ -7,8 +7,7 @@
 
 using Game::Bomb;
 using Game::TILE_SIZE;
-
-const sf::Time Bomb::DEFAULT_FUSE = sf::milliseconds(5000);
+using namespace Game::Conf::Bomb;
 
 Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source, 
 		const sf::Time& _fuseTime, const unsigned short _radius)

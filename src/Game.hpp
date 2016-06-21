@@ -59,6 +59,8 @@ constexpr char DIRSEP = '\\';
 constexpr char DIRSEP = '/';
 #endif
 
+constexpr unsigned short MAX_PLAYERS = 2;
+
 constexpr unsigned short TILE_SIZE = 32; // pixels
 /**
  * Level width / height in tiles. Don't take the
@@ -67,13 +69,6 @@ constexpr unsigned short TILE_SIZE = 32; // pixels
  */
 constexpr unsigned short LEVEL_WIDTH = 15; 
 constexpr unsigned short LEVEL_HEIGHT = 13;
-
-const sf::Time DAMAGE_SHIELD_TIME = sf::milliseconds(1000);
-const sf::Time RESURRECT_SHIELD_TIME = sf::milliseconds(5000);
-
-constexpr unsigned short MAX_PLAYERS = 2;
-
-constexpr unsigned short INITIAL_CONTINUES = 3;
 
 constexpr unsigned short SIDE_PANEL_WIDTH = 96;
 constexpr unsigned short SIDE_PANEL_HEIGHT = 480;

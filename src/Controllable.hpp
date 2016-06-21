@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include "Component.hpp"
 #include "AxisMoving.hpp"
-#include "Controls.hpp"
+#include "controls.hpp"
 
 namespace Game {
 
@@ -22,6 +22,8 @@ public:
 
 	void setWindow(const sf::Window *w) { window = w; }
 	void setJoystickUsed(short idx) { joystickUsed = idx; }
+
+	bool hasFocus() const { return window && window->hasFocus(); }
 };
 
 }

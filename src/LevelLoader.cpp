@@ -6,10 +6,23 @@
 #include "TransparentWall.hpp"
 #include "Coin.hpp"
 #include "Enemy.hpp"
+#include "Lifed.hpp"
 
 using Game::TILE_SIZE;
 
-bool Game::LevelLoader::load(const Game::Level& level, Game::EntityGroup& entities) {
+bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
+	
+	auto& entities = lm.getEntities();
+	entities.apply([&lm, &entities] (Game::Entity *e) {
+		auto p = dynamic_cast<Game::Player*>(e);
+		if (p == nullptr) return;
+		entities.release(e);
+		lm.players[p->getInfo().id - 1] = p;
+	});
+			
+	if (entities.size() > 0)
+		entities.clear();
+
 	for (unsigned short top = 0; top < Game::LEVEL_HEIGHT; ++top) {
 		for (unsigned short left = 0; left < Game::LEVEL_WIDTH; ++left) {
 
@@ -17,10 +30,13 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::EntityGroup& entiti
 			unsigned short enemy_id = 0;
 			const Game::LevelSet *ls = level.getLevelSet();
 
-			/*auto is_game_over = [] (unsigned short id) {
-				return _players[id] == nullptr || (_players[id]->getRemainingLives() <= 0
-						&& _players[id]->getLife() <= 0 && Game::playerContinues[id] <= 0);
-			};*/
+			auto is_game_over = [&lm] (unsigned short id) -> bool {
+				return lm.players[id] == nullptr || (
+						lm.players[id]->getInfo().remainingLives <= 0
+						&& lm.players[id]->get<Game::Lifed>()->getLife() <= 0
+						&& Game::playerContinues[id] <= 0
+					);
+			};
 
 			switch (level.getTile(left, top)) {
 			case EntityType::FIXED: 
@@ -43,21 +59,19 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::EntityGroup& entiti
 				//fixedEntities[top * LEVEL_WIDTH + left] = new Game::Coin(curPos);
 				break;
 
-			/*
 			case EntityType::PLAYER1: 
 				if (!is_game_over(0)) {
-					_players[0]->setPosition(curPos);
-					players[0] = _players[0].get();
-					movingEntities.push_back(players[0]);
+					//lm.players[0]->setPosition(curPos);
+					entities.add(lm.players[0]);
 				}
 				break;
 			case EntityType::PLAYER2: 
 				if (!is_game_over(1)) {
-					_players[1]->setPosition(curPos);
-					players[1] = _players[1].get();
-					movingEntities.push_back(players[1]);
+					//lm.players[1]->setPosition(curPos);
+					entities.add(lm.players[1]);
 				}
 				break;
+			/*
 			case EntityType::TELEPORT:
 				{
 					auto teleport = new Game::Teleport(curPos);

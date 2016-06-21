@@ -5,14 +5,6 @@
 
 using Game::EntityGroup;
 
-EntityGroup::~EntityGroup() {
-	// Don't destroy unowned entities
-	for (auto& e : entities) {
-		if (unowned.find(e.get()) != unowned.end())
-			e.release();
-	}
-}
-
 void EntityGroup::setOrigin(const sf::Vector2f& origin) {
 	WithOrigin::setOrigin(origin);
 
@@ -34,16 +26,45 @@ void EntityGroup::remove(Game::Entity *entity) {
 	const auto tmp = entity->get<Game::Temporary>();
 	const auto klb = entity->get<Game::Killable>();
 	entities.remove_if([entity] (const std::unique_ptr<Game::Entity>& e) { return e.get() == entity; });
-	for (auto it = unowned.begin(); it != unowned.end(); ) {
-		if (*it == entity) it = unowned.erase(it);
-		else ++it;
-	}
 	if (cld != nullptr)
 		collidingEntities.erase(std::remove(collidingEntities.begin(), collidingEntities.end(), cld));
 	if (tmp != nullptr)
 		temporary.remove(tmp);
 	if (klb != nullptr)
 		dying.remove(klb);
+}
+
+Game::Entity* EntityGroup::release(Game::Entity *e) {
+	Game::Entity *released = nullptr;
+	for (auto it = entities.begin(); it != entities.end(); ) {
+		if (it->get() == e) {
+			released = it->release();
+			// Remove it from internal collections
+			auto cld = released->get<Game::Collider>();
+			if (cld != nullptr) {
+				collidingEntities.erase(
+						std::remove(collidingEntities.begin(), collidingEntities.end(), cld));
+			}
+			auto tmp = released->get<Game::Temporary>();
+			if (tmp != nullptr)
+				temporary.erase(std::remove(temporary.begin(), temporary.end(), tmp));
+			auto klb = released->get<Game::Killable>();
+			if (klb != nullptr)
+				dying.erase(std::remove(dying.begin(), dying.end(), klb));
+
+			it = entities.erase(it);
+			break;
+		} else 
+			++it;
+	}
+	return released;
+}
+
+void EntityGroup::clear() {
+	entities.clear();
+	collidingEntities.clear();
+	temporary.clear();
+	dying.clear();
 }
 
 void EntityGroup::_removeExpiredTemporaries() {

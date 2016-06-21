@@ -14,7 +14,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 	: Game::Entity(pos)
 {
 	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", "teleport.png")));
-	disableClock = addComponent(new Game::Clock<1>(this));
+	disableClock = addComponent(new Game::Clock(this));
 	addComponent(new Game::Drawable(this, animated));
 	addComponent(new Game::Collider(this, [this] (Game::Collider *c) { warp(c); }, Game::Layers::TELEPORTS));
 

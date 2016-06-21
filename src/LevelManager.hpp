@@ -1,19 +1,59 @@
 #pragma once
 
+#include <array>
+#include <SFML/System/NonCopyable.hpp>
 #include "EntityGroup.hpp"
+#include "CollisionDetector.hpp"
+#include "Player.hpp"
+#include "Bomb.hpp"
+#include "Game.hpp"
+#include "utils.hpp"
+#include "game_values.hpp"
 
 // MOCK
 namespace Game {
-class LevelManager {
+
+class LevelLoader;
+
+class LevelManager final : private sf::NonCopyable {
+
+	friend class Game::LevelLoader;
+
 	Game::EntityGroup entities;
+	Game::CollisionDetector cd;
+
+	/** "Owned" pointers to players. 
+	 *  The players' lifecycle is the following:
+	 *  1) players are created via `createNewPlayers` and added to `entities`;
+	 *  2) updates to players are managed by the EntityGroup;
+	 *  3) on level change, the EntityGroup releases the ownership of all players to us (the LevelManager);
+	 *  4) the new level is loaded: `entities` gets cleared;
+	 *  5) the players are handed back to the EntityGroup.
+	 */
+	std::array<Game::Player*, Game::MAX_PLAYERS> players;
+
+	/** Unowned references to bombs, used for efficiency */
+	Matrix<Game::Bomb*, Game::MAX_PLAYERS, Game::Conf::Player::MAX_MAX_BOMBS> bombs;
 
 public:
+	LevelManager();
+
+	/** Generates n players and returns them. If n > MAX_PLAYERS, only generate MAX_PLAYERS players. */
+	auto createNewPlayers(unsigned short n = Game::MAX_PLAYERS) -> std::vector<Game::Player*>;
+
 	bool isPlayer(const Game::Entity *const e) const {
+		for (const auto& p : players)
+			if (e == p) return true;
 		return false;
 	}
 
+	Game::EntityGroup& getEntities() { return entities; }
 	const Game::EntityGroup& getEntities() const { return entities; }
+
+	/** Updates all entities and collisions */
+	void update();
 };
+
 }
 
 #if 0

@@ -5,6 +5,7 @@
 #include <cstring>
 #include <iostream>
 #include <array>
+#include "game_values.hpp"
 
 #if defined(SFML_SYSTEM_MACOS)
 #	include <mach-o/dyld.h>
@@ -34,7 +35,7 @@ std::array<unsigned short, Game::MAX_PLAYERS> Game::playerContinues;
 bool Game::init() {
 	using Game::pwd;
 
-	Game::playerContinues.fill(INITIAL_CONTINUES);
+	Game::playerContinues.fill(Game::Conf::Player::INITIAL_CONTINUES);
 
 	// Setup default options
 	Game::options.musicVolume = 100;

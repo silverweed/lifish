@@ -1,11 +1,11 @@
 #include "ControlsScreen.hpp"
-#include "Controls.hpp"
+#include "controls.hpp"
 #include "Game.hpp"
 #include "Options.hpp"
 #include "utils.hpp"
 
 using Game::ControlsScreen;
-using Game::Control;
+using namespace Game::Controls;
 
 ControlsScreen::ControlsScreen() : Screen () {
 	/* Layout:
@@ -49,7 +49,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 
 	bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font,
-			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Game::CTRL_UP]),
+			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Controls::CTRL_UP]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	texts["controls::change_up"] = text;
@@ -60,7 +60,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 	elements.push_back(text);
 
 	text = new Game::ShadedText(font,
-			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Game::CTRL_DOWN]),
+			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Controls::CTRL_DOWN]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	texts["controls::change_down"] = text;
@@ -71,7 +71,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 	elements.push_back(text);
 
 	text = new Game::ShadedText(font,
-			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Game::CTRL_LEFT]),
+			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Controls::CTRL_LEFT]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	texts["controls::change_left"] = text;
@@ -82,7 +82,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 	elements.push_back(text);
 
 	text = new Game::ShadedText(font,
-			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Game::CTRL_RIGHT]),
+			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Controls::CTRL_RIGHT]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	texts["controls::change_right"] = text;
@@ -93,7 +93,7 @@ ControlsScreen::ControlsScreen() : Screen () {
 	elements.push_back(text);
 
 	text = new Game::ShadedText(font,
-			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Game::CTRL_BOMB]),
+			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Controls::CTRL_BOMB]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	texts["controls::change_bomb"] = text;
@@ -121,12 +121,12 @@ void ControlsScreen::selectPlayer(unsigned short id) {
 	texts["controls::p" + Game::to_string(selectedPlayer)]->setFGColor(sf::Color::White);
 	selectedPlayer = id;
 	
-	const std::array<std::pair<const char*, Game::Control>, 5> pairs = {{
-		std::make_pair("up", Game::CTRL_UP),
-		std::make_pair("down", Game::CTRL_DOWN),
-		std::make_pair("left", Game::CTRL_LEFT),
-		std::make_pair("right", Game::CTRL_RIGHT),
-		std::make_pair("bomb", Game::CTRL_BOMB)
+	const std::array<std::pair<const char*, Control>, 5> pairs = {{
+		std::make_pair("up", Controls::CTRL_UP),
+		std::make_pair("down", Controls::CTRL_DOWN),
+		std::make_pair("left", Controls::CTRL_LEFT),
+		std::make_pair("right", Controls::CTRL_RIGHT),
+		std::make_pair("bomb", Controls::CTRL_BOMB)
 	}};
 
 	for (auto it = pairs.begin(); it != pairs.end(); ++it) {
@@ -157,7 +157,7 @@ void ControlsScreen::triggerMouseOver(const sf::Vector2f& mousePos) {
 void ControlsScreen::changeControl(sf::RenderWindow& window, const std::string& textKey) {
 	Control control = Game::Controls::fromString(textKey.substr(17));
 	if (Game::options.useJoystick[selectedPlayer-1] >= 0) {
-		if (control == Game::CTRL_BOMB) {
+		if (control == Controls::CTRL_BOMB) {
 			_changeJoystickBomb(window);
 			return;
 		} else {
@@ -281,15 +281,15 @@ void ControlsScreen::toggleJoystick() {
 	if (current == -1) {
 		texts["controls::joystick_toggle"]->setString("NO");
 		texts["controls::change_up"]->setString(Game::KeyUtils::keyToString(
-				Game::Controls::players[selectedPlayer-1][Game::CTRL_UP]));
+				Game::Controls::players[selectedPlayer-1][Controls::CTRL_UP]));
 		texts["controls::change_down"]->setString(Game::KeyUtils::keyToString(
-				Game::Controls::players[selectedPlayer-1][Game::CTRL_DOWN]));
+				Game::Controls::players[selectedPlayer-1][Controls::CTRL_DOWN]));
 		texts["controls::change_left"]->setString(Game::KeyUtils::keyToString(
-				Game::Controls::players[selectedPlayer-1][Game::CTRL_LEFT]));
+				Game::Controls::players[selectedPlayer-1][Controls::CTRL_LEFT]));
 		texts["controls::change_right"]->setString(Game::KeyUtils::keyToString(
-				Game::Controls::players[selectedPlayer-1][Game::CTRL_RIGHT]));
+				Game::Controls::players[selectedPlayer-1][Controls::CTRL_RIGHT]));
 		texts["controls::change_bomb"]->setString(Game::KeyUtils::keyToString(
-				Game::Controls::players[selectedPlayer-1][Game::CTRL_BOMB]));
+				Game::Controls::players[selectedPlayer-1][Controls::CTRL_BOMB]));
 	} else {
 		std::stringstream ss;
 		ss << "Joystick" << current;

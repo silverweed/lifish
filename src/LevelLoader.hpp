@@ -1,16 +1,17 @@
 #pragma once
 
 #include "Level.hpp"
-#include "EntityGroup.hpp"
+#include "LevelManager.hpp"
 
 namespace Game {
 
-namespace LevelLoader {
+class LevelLoader {
+public:
 	/**
-	 * Fills `entities` as defined by `level`'s tilemap. 
+	 * Loads `level` into the LevelManager `lm`.
 	 * Returns whether have been errors or not.
 	 */
-	static bool load(const Game::Level& level, Game::EntityGroup& entities);
+	static bool load(const Game::Level& level, Game::LevelManager& lm);
 };
 
 }

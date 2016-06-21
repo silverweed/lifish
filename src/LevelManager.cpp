@@ -1,20 +1,52 @@
 #include "LevelManager.hpp"
-#include "EntityType.hpp"
-#include "FixedWall.hpp"
-#include "BreakableWall.hpp"
-#include "TransparentWall.hpp"
-#include "Coin.hpp"
-#include "Flash.hpp"
-#include "BossExplosion.hpp"
-#include "BossBullet.hpp"
-#include "Enemy.hpp"
-#include "Points.hpp"
-#include "LevelLoader.hpp"
-#include "utils.hpp"
-#include <sstream>
-#include <limits>
+//#include "EntityType.hpp"
+//#include "FixedWall.hpp"
+//#include "BreakableWall.hpp"
+//#include "TransparentWall.hpp"
+//#include "Coin.hpp"
+//#include "Flash.hpp"
+//#include "BossExplosion.hpp"
+//#include "BossBullet.hpp"
+//#include "Enemy.hpp"
+//#include "Points.hpp"
+//#include "LevelLoader.hpp"
+//#include "utils.hpp"
+//#include <sstream>
+//#include <limits>
 
 using Game::LevelManager;
+
+LevelManager::LevelManager() 
+	: cd(entities) 
+{
+	//for (auto& b : bombs)
+		//b.fill(nullptr);
+}
+
+auto LevelManager::createNewPlayers(unsigned short n) -> std::vector<Game::Player*> {
+	std::vector<Game::Player*> pls;
+	for (int i = 0; i < n && i < Game::MAX_PLAYERS; ++i) {
+		auto p = new Game::Player(sf::Vector2f(0, 0), i + 1);
+		// Pointers kept by LevelManager
+		players[i] = p;
+		// Pointers owned by EntityGroup
+		entities.add(p);
+		// Returned (unowned) pointers
+		pls.push_back(p);
+	}
+	return pls;
+}
+
+void LevelManager::update() {
+	// Update entities and their components
+	entities.updateAll();
+
+	// Update collisions
+	cd.update();
+}
+
+
+#if 0
 
 LevelManager::LevelManager(std::initializer_list<Game::Player*> the_players)
 	: renderer(this)
@@ -1198,3 +1230,5 @@ void LevelManager::resumeClocks() {
 bool LevelManager::_isFinalLevel() const {
 	return level != nullptr && level->getLevelNum() == level->getLevelSet()->getLevelsNum();
 }
+
+#endif

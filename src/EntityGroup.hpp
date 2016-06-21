@@ -39,9 +39,6 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	/** All the entities (owning references) */
 	std::list<std::unique_ptr<Game::Entity>> entities;
 
-	/** The unowned entities, which are managed externally */
-	std::unordered_set<Game::Entity*> unowned;
-
 	/** The colliders of entities which have one */
 	std::vector<Game::Collider*> collidingEntities;
 
@@ -71,11 +68,8 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 public:
 	/**
 	 * Constructs the EntityGroup as the owner of its entities.
-	 * One can specify a given entity is owned externally by specifying
-	 * it in the add() method.
 	 */
 	EntityGroup() {}
-	~EntityGroup();
 
 	/** Applies a void(Args...) function to all entities */
 	template<typename...Args>
@@ -86,10 +80,18 @@ public:
 	void apply(AppliedFunc<const Game::Entity, Args...> func, Args... args) const;
 
 	template<class T>
-	T* add(T *entity, bool owned = true);
+	T* add(T *entity);
 
 	/** Removes an entity from all internal collections. */
 	void remove(Game::Entity *entity);
+
+	/** Relinquishes the ownership of `e` to the callee.
+	 *  `e` is then removed from all internal collections. 
+	 */
+	Game::Entity* release(Game::Entity *e);
+
+	/** Removes all entities from this EntityGroup. */
+	void clear();
 
 	void setOrigin(const sf::Vector2f& origin) override;
 
@@ -115,13 +117,9 @@ void EntityGroup::apply(AppliedFunc<const Game::Entity, Args...> func, Args... a
 }
 
 template<class T>
-T* EntityGroup::add(T *entity, bool owned) {
+T* EntityGroup::add(T *entity) {
 	entities.push_back(std::unique_ptr<Game::Entity>(entity));
 	entity->setOrigin(origin);
-
-	// Put in auxiliary collections
-	if (!owned)
-		unowned.insert(entity);	
 
 	auto tmp = entity->template get<Game::Temporary>();
 	if (tmp != nullptr)

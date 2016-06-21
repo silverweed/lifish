@@ -8,7 +8,7 @@ Shooting::Shooting(Game::Entity *const owner, const Attack& attack)
 	, attackAlign(-1.f, -1.f)
 	, attack(attack) 
 {
-	rechargeClock = addComponent(new Game::Clock<1>(this));
+	rechargeClock = addComponent(new Game::Clock(this));
 	ownerMoving = owner->get<Game::AxisMoving>();
 }
 
