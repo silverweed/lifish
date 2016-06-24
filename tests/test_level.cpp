@@ -38,7 +38,8 @@ int main() {
 	Game::options.showFPS = true;
 
 	Game::LevelSet ls("levels.json");
-	std::unique_ptr<Game::Level> level(ls.getLevel(1));
+	int lvnum = 1;
+	std::unique_ptr<Game::Level> level(ls.getLevel(lvnum));
 
 	Game::LevelManager lm;
 	// Create the players
@@ -88,14 +89,15 @@ int main() {
 	//}
 #endif
 
-	level->setOrigin(sf::Vector2f(-200, 0));
-	entities.setOrigin(sf::Vector2f(-200, 0));
+	sf::Vector2f origin(-200, 0);
+	level->setOrigin(origin);
+	entities.setOrigin(origin);
 
 	Game::music = level->get<Game::Music>()->getMusic();
 	//Game::playMusic();
 
 	Game::HomeScreen& screen = HomeScreen::getInstance();
-	Game::ScreenHandler::getInstance().setOrigin(sf::Vector2f(-200, 0));
+	Game::ScreenHandler::getInstance().setOrigin(origin);
 	bool drawScreen = false;
 	//enemy->get<Game::AxisMoving>()->setDirection(Game::Direction::DOWN);
 
@@ -163,12 +165,29 @@ int main() {
 				case sf::Keyboard::M:
 					//enemy->setMorphed(!enemy->isMorphed());
 					break;
+				case sf::Keyboard::Add:
+					lvnum = level->getInfo().levelnum + 1;
+					if (lvnum > ls.getLevelsNum())
+						lvnum = 1;
+					level.reset(ls.getLevel(lvnum));
+					level->setOrigin(origin);
+					LevelLoader::load(*level.get(), lm);
+					break;
+				case sf::Keyboard::Subtract:
+					lvnum = level->getInfo().levelnum - 1;
+					if (lvnum < 1) 
+						lvnum = ls.getLevelsNum();
+					level.reset(ls.getLevel(lvnum));
+					level->setOrigin(origin);
+					LevelLoader::load(*level.get(), lm);
+					break;
 				case sf::Keyboard::P:
 					{
 						auto action = Game::Action::DO_NOTHING;
 						do {
-							action = ScreenHandler::getInstance().handleScreenEvents(window, PAUSE_SCREEN,
-									PAUSE_SCREEN | PREFERENCES_SCREEN | CONTROLS_SCREEN);
+							action = ScreenHandler::getInstance().handleScreenEvents(
+								window, PAUSE_SCREEN,
+								PAUSE_SCREEN | PREFERENCES_SCREEN | CONTROLS_SCREEN);
 							if (action == Game::Action::SAVE_GAME) {
 								const auto fname = Game::display_save_dialog();
 								if (fname.length() > 0) {
@@ -189,9 +208,9 @@ int main() {
 		// FIXME
 		for (auto player : players) {
 			if (player->get<Game::Controllable>()->hasFocus() 
-					&& player->isAligned() 
-					&& sf::Keyboard::isKeyPressed(
-						Game::Controls::players[player->getInfo().id-1][Game::Controls::CTRL_BOMB]))
+				&& player->isAligned() 
+				&& sf::Keyboard::isKeyPressed(
+					Game::Controls::players[player->getInfo().id-1][Game::Controls::CTRL_BOMB]))
 			{
 				entities.add(new Game::Bomb(player->getPosition(), player));	
 			}

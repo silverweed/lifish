@@ -13,15 +13,15 @@ using Game::TILE_SIZE;
 bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 	
 	auto& entities = lm.getEntities();
-	entities.apply([&lm, &entities] (Game::Entity *e) {
-		auto p = dynamic_cast<Game::Player*>(e);
-		if (p == nullptr) return;
-		entities.release(e);
-		lm.players[p->getInfo().id - 1] = p;
-	});
-			
-	if (entities.size() > 0)
+	if (entities.size() > 0) {
+		// Release the players so they're not destroyed with other entities.
+		for (Game::Player *p : lm.players)
+			if (p != nullptr)
+				entities.release(p);
+
+		// Destroy everything else
 		entities.clear();
+	}
 
 	for (unsigned short top = 0; top < Game::LEVEL_HEIGHT; ++top) {
 		for (unsigned short left = 0; left < Game::LEVEL_WIDTH; ++left) {
@@ -61,13 +61,13 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 
 			case EntityType::PLAYER1: 
 				if (!is_game_over(0)) {
-					//lm.players[0]->setPosition(curPos);
+					lm.players[0]->setPosition(curPos);
 					entities.add(lm.players[0]);
 				}
 				break;
 			case EntityType::PLAYER2: 
 				if (!is_game_over(1)) {
-					//lm.players[1]->setPosition(curPos);
+					lm.players[1]->setPosition(curPos);
 					entities.add(lm.players[1]);
 				}
 				break;

@@ -13,6 +13,8 @@ class Collider : public Game::Component {
 	friend class Game::CollisionDetector;
 
 	Game::Collider *colliding = nullptr;
+	/** Whether this entity is at a level's boundary */
+	bool atLimit = false;
 	const sf::Vector2i size;
 	/** Collision layer */
 	Game::Layers::Layer layer;
@@ -36,6 +38,8 @@ public:
 	bool contains(const Game::Collider& other) const {
 		return getRect().intersects(other.getRect());
 	}
+
+	bool isAtLimit() const { return atLimit; }
 
 	sf::IntRect getRect() const {
 		const auto pos = owner->getPosition();

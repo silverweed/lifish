@@ -36,6 +36,30 @@ static bool _collide(const Game::Collider *cld1, const Game::Collider *cld2, con
 	return rect.intersects(orect);
 }
 
+static bool _isAtBoundaries(const Game::Collider *const cld, const Game::AxisMoving *const am) {
+	const auto pos = cld->getOwner()->getPosition();
+	const auto rect = cld->getRect();
+	if (am != nullptr) {
+		auto dir = am->getDirection();
+		switch (dir) {
+		case Direction::UP:
+			return pos.y <= TILE_SIZE;
+		case Direction::LEFT:
+			return pos.x <= TILE_SIZE;
+		case Direction::DOWN:
+			return pos.y + rect.height >= TILE_SIZE * (Game::LEVEL_HEIGHT + 1);
+		case Direction::RIGHT:
+			return pos.x + rect.width >= TILE_SIZE * (Game::LEVEL_WIDTH + 1);
+		default:
+			return false;
+		}
+	} else {
+		return pos.y < TILE_SIZE || pos.x < TILE_SIZE 
+			|| pos.x + rect.width > TILE_SIZE * Game::LEVEL_WIDTH
+			|| pos.y + rect.height > TILE_SIZE * Game::LEVEL_HEIGHT;
+	}
+}
+
 void CollisionDetector::update() {
 	/* For each moving entity, check (towards its direction):
 	 * 1) has it reached the level boundaries?
@@ -50,7 +74,13 @@ void CollisionDetector::update() {
 
 		auto collider = colliding[i];
 		collider->colliding = nullptr;
+		collider->atLimit = false;
 		auto moving = collider->getOwner()->get<Game::AxisMoving>();
+		if (_isAtBoundaries(collider, moving)) {
+			collider->atLimit = true;	
+			continue;
+		}
+
 		if (!moving) continue;
 
 		// Very simple (aka quadratic) check with all others

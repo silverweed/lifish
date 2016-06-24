@@ -116,6 +116,8 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attac
 	animatedSprite.setLooped(true);
 	animatedSprite.setFrameTime(sf::seconds(0.12));
 	animatedSprite.pause();
+	// FIXME
+	moving->stop();
 }
 
 void Enemy::update() {

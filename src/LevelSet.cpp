@@ -143,7 +143,7 @@ LevelSet::LevelSet(const std::string& path) {
 	 */
 	for (const auto& lvinfo : levelsdata) {
 		LevelInfo info;
-		info.levelnum          = lvnum;
+		info.levelnum          = lvnum++;
 		info.time              = lvinfo["time"].get<unsigned int>();
 		info.track             = tracks[lvinfo["music"].get<unsigned short>()-1];
 		info.tilemap           = lvinfo["tilemap"];

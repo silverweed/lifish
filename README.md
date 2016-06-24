@@ -24,6 +24,8 @@ original BOOM:
 
 Coded with [vim](http://www.vim.org/).
 
+Lifish comes with a (Work In Progress) level editor, currently working only on Linux and MacOS: [LifishEdit](https://github.com/silverweed/lifish-edit)
+
 ### Planned release ###
 Once the main work is done (read: the assets), the game will be released 
 for the current platforms:

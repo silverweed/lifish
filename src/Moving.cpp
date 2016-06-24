@@ -23,6 +23,6 @@ void Moving::stop() {
 }
 
 bool Moving::_collidesWithSolid() const {
-	return collider != nullptr && collider->getColliding() != nullptr
-		&& Game::Layers::solid[collider->getLayer()][collider->getColliding()->getLayer()];
+	return collider != nullptr && (collider->isAtLimit() || collider->getColliding() != nullptr
+		&& Game::Layers::solid[collider->getLayer()][collider->getColliding()->getLayer()]);
 }
