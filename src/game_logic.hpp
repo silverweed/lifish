@@ -4,15 +4,25 @@
 #include "LevelManager.hpp"
 #include <vector>
 
+#define DEF_LOGIC(name) \
+	void name(Game::Entity *e, Game::LevelManager& lm, \
+			std::list<Game::Entity*>& tbspawned, std::list<Game::Entity*>& tbkilled);
+
 namespace Game {
 
+/** Namespace containing game logic rules */
 namespace Logic {
-	using GameLogicFunc = std::function<void(Game::Entity*, Game::LevelManager&)>;
+	using GameLogicFunc = std::function<void(
+			Game::Entity*,             // for-each loop variable 
+			Game::LevelManager&,       // LevelManager calling this function
+			std::list<Game::Entity*>&, // list of entities to be spawned after calling game logic
+			std::list<Game::Entity*>&  // list of entities to be removed after calling game logic
+			)>;
 
 	/** Make bombs explode */
-	void bombExplosionLogic(Game::Entity *e, Game::LevelManager &lm);
+	DEF_LOGIC(bombExplosionLogic)
 	/** Make players drop bombs */
-	void bombDeployLogic(Game::Entity *e, Game::LevelManager &lm);
+	DEF_LOGIC(bombDeployLogic)
 
 	extern std::vector<GameLogicFunc> functions;
 }

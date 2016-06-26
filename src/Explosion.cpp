@@ -52,13 +52,13 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game
 	propagation.fill(0);
 }
 
-void Explosion::propagate(Game::LevelManager *const lr) {
+Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 	const sf::Vector2i m_tile = Game::tile(position);
 	bool propagating[] = { true, true, true, true };
 	
 	// TODO
 	propagation.fill(radius);
-	checkHit(lr);
+	_checkHit(lm);
 
 #if 0
 	const auto fixed = lr->getFixedEntities();
@@ -145,9 +145,10 @@ void Explosion::propagate(Game::LevelManager *const lr) {
 		}
 	}
 #endif
+	return this;
 }
 
-void Explosion::checkHit(Game::LevelManager *const lr) {
+void Explosion::_checkHit(Game::LevelManager& lm) {
 #if 0
 	std::array<std::vector<Game::LifedMovingEntity*>, 5> moving;
 

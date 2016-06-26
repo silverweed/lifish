@@ -43,6 +43,9 @@ class LevelManager final : public sf::Drawable, public Game::WithOrigin, private
 	/** Unowned references to bombs, used for efficiency */
 	Matrix<Game::Bomb*, Game::MAX_PLAYERS, Game::Conf::Player::MAX_MAX_BOMBS> bombs;
 
+
+	void _spawnBomb(Game::Bomb *b);
+
 public:
 	explicit LevelManager();
 
@@ -69,7 +72,12 @@ public:
 		renderer.setOrigin(o);
 	}
 
+	/** Adds the given entity to `entities` */
 	void spawn(Game::Entity *e);
+
+	bool isBombAt(const sf::Vector2f& pos) const;
+	/** Removes `bomb` from `bombs` */
+	void rmBomb(Game::Bomb *bomb);
 };
 
 }

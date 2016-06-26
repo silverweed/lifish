@@ -37,6 +37,7 @@ class Explosion : public Game::Entity, public sf::Drawable {
 
 	/** To be called after `propagate()`; sets the correct positions for explosionH/V */
 	void _setPropagatedAnims();
+	void _checkHit(Game::LevelManager& lm);
 
 public:
 	/** If sourcePlayer == nullptr, the explosion wasn't originated by a bomb.
@@ -48,11 +49,10 @@ public:
 
 	/** Calculate the tiles this explosion propagates to
 	 *  (fixed walls and borders stop the explosion). Also kills enemies and
-	 *  walls within the explosion. (called once in the Explosion's lifetime)
+	 *  walls within the explosion. (called once in the Explosion's lifetime).
+	 * @return self
 	 */
-	void propagate(Game::LevelManager *const);
-
-	void checkHit(Game::LevelManager *const);
+	Game::Explosion* propagate(Game::LevelManager& lm);
 
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 };

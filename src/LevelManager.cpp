@@ -14,15 +14,16 @@
 //#include "utils.hpp"
 //#include <sstream>
 //#include <limits>
+#include <iostream>
 
 using Game::LevelManager;
 
 LevelManager::LevelManager() 
-	: cd(entities) 
-	, renderer(*this)
+	: renderer(*this)
+	, cd(entities)
 {
-	//for (auto& b : bombs)
-		//b.fill(nullptr);
+	for (auto& b : bombs)
+		b.fill(nullptr);
 }
 
 auto LevelManager::createNewPlayers(unsigned short n) -> std::vector<Game::Player*> {
@@ -40,21 +41,63 @@ auto LevelManager::createNewPlayers(unsigned short n) -> std::vector<Game::Playe
 }
 
 void LevelManager::update() {
+	std::list<Game::Entity*> to_be_spawned, to_be_killed;
+
 	// Apply game logic rules
-	for (auto logic : Game::Logic::functions) {
-		entities.apply(logic, *this);
-	}
+	for (auto logic : Game::Logic::functions)
+		entities.apply(logic, *this, to_be_spawned, to_be_killed);
+
+	for (auto e : to_be_spawned)
+		spawn(e);
+
+	for (auto e : to_be_killed)
+		entities.remove(e);
 
 	// Update entities and their components
 	entities.updateAll();
+	std::cerr << "size = " << entities.size() << std::endl;
 
 	// Update collisions
 	cd.update();
 }
 
-void LevelManager::spawn(Game::Entity *e) {
-	entities.add(e);
+bool LevelManager::isBombAt(const sf::Vector2f& pos) const {
+	for (unsigned short i = 0; i < bombs.size(); ++i)
+		for (auto bomb : bombs[i])
+			if (bomb != nullptr && bomb->getPosition() == pos)
+				return true;
+	return false;
 }
+
+void LevelManager::rmBomb(Game::Bomb *bomb) {
+	auto& bs = bombs[bomb->getSourcePlayer().getInfo().id - 1];
+	for (unsigned short i = 0; i < bs.size(); ++i)
+		if (bs[i] == bomb) {
+			bs[i] = nullptr;
+			return;
+		}
+}
+
+void LevelManager::spawn(Game::Entity *e) {
+	auto b = dynamic_cast<Game::Bomb*>(e);
+	if (b != nullptr)
+		_spawnBomb(b);
+	else
+		entities.add(e);
+}
+
+void LevelManager::_spawnBomb(Game::Bomb *b) {
+	const auto id = b->getSourcePlayer().getInfo().id - 1;
+	// Spawn bomb only if player has not deployed all the available ones already
+	for (unsigned short i = 0; i < bombs[id].size(); ++i) {
+		if (bombs[id][i] == nullptr) {
+			entities.add(b);
+			bombs[id][i] = b;
+			break;
+		}
+	}
+}
+
 
 #if 0
 

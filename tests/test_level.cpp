@@ -205,15 +205,15 @@ int main() {
 
 
 		// FIXME
-		//for (auto player : players) {
-			//if (player->get<Game::Controllable>()->hasFocus() 
-				//&& player->isAligned() 
-				//&& sf::Keyboard::isKeyPressed(
-					//Game::Controls::players[player->getInfo().id-1][Game::Controls::CTRL_BOMB]))
-			//{
-				//entities.add(new Game::Bomb(player->getPosition(), *player));	
-			//}
-		//}
+		for (auto player : players) {
+			if (player->get<Game::Controllable>()->hasFocus() 
+				&& player->isAligned() 
+				&& sf::Keyboard::isKeyPressed(
+					Game::Controls::players[player->getInfo().id-1][Game::Controls::CTRL_BOMB]))
+			{
+				entities.add(new Game::Bomb(player->getPosition(), *player));	
+			}
+		}
 
 		// Update level
 		lm.update();
