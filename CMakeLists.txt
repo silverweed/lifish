@@ -47,7 +47,7 @@ target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES})
 # Check if we have support for PIE
 if(NOT ${HAS_CHECK_CXX} STREQUAL "")
 	check_cxx_compiler_flag("-pie -fPIE -Wl,-fPIE" SUPPORTS_PIE)
-	if(${SUPPORTS_PIE})
+	if(${SUPPORTS_PIE} AND NOT MSYS)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pie -fPIE -Wl,-pie")
 	endif()
 	check_cxx_compiler_flag("-Qunused-arguments" SUPPORTS_UNUSED_ARGS)
