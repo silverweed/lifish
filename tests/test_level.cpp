@@ -90,8 +90,7 @@ int main() {
 #endif
 
 	sf::Vector2f origin(-200, 0);
-	level->setOrigin(origin);
-	entities.setOrigin(origin);
+	lm.setOrigin(origin);
 
 	Game::music = level->get<Game::Music>()->getMusic();
 	//Game::playMusic();
@@ -206,27 +205,22 @@ int main() {
 
 
 		// FIXME
-		for (auto player : players) {
-			if (player->get<Game::Controllable>()->hasFocus() 
-				&& player->isAligned() 
-				&& sf::Keyboard::isKeyPressed(
-					Game::Controls::players[player->getInfo().id-1][Game::Controls::CTRL_BOMB]))
-			{
-				entities.add(new Game::Bomb(player->getPosition(), player));	
-			}
-		}
+		//for (auto player : players) {
+			//if (player->get<Game::Controllable>()->hasFocus() 
+				//&& player->isAligned() 
+				//&& sf::Keyboard::isKeyPressed(
+					//Game::Controls::players[player->getInfo().id-1][Game::Controls::CTRL_BOMB]))
+			//{
+				//entities.add(new Game::Bomb(player->getPosition(), *player));	
+			//}
+		//}
 
 		// Update level
 		lm.update();
 
 		// Draw everything
 		window.clear();
-		window.draw(*level.get());
-		entities.apply([&window] (Game::Entity *e) {
-			auto d = e->get<Game::Drawable>();
-			if (d != nullptr)
-				window.draw(*d);
-		});
+		window.draw(lm);
 		Game::maybeShowFPS(window);
 		window.display();
 

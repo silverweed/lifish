@@ -3,29 +3,32 @@
 
 using Game::LevelRenderer;
 
-LevelRenderer::LevelRenderer(const Game::LevelManager *owner)
+LevelRenderer::LevelRenderer(Game::LevelManager& owner)
 	: owner(owner)
 {}
 
 void LevelRenderer::setOrigin(const sf::Vector2f& o) {
-	owner->getEntities()->setOrigin(o);
+	if (owner.level != nullptr)
+		const_cast<Game::Level*>(owner.level)->setOrigin(o);
+	owner.entities.setOrigin(o);
 }
 
 void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	
-	const auto level = owner->getLevel();
+	const auto level = owner.level;
 	if (level == nullptr) return;
 
-	window.draw(level, states);
+	target.draw(*level, states);
 
-	const auto& entities = owner->getEntities();
+	const auto& entities = owner.entities;
 
-	for (auto& entity : entities.all()) {
-		auto drawable = entity->get<Game::Drawable>();
-		if (drawable != nullptr)
-			drawable->draw(window, states):
-	}
-/*
+	entities.apply([&target, states] (const Game::Entity *e) {
+		auto d = e->get<Game::Drawable>();
+		if (d != nullptr)
+			target.draw(*d, states);
+	});
+}
+
+#if 0
 	// Draw fixed entities
 	for (unsigned short left = 0; left < LEVEL_WIDTH; ++left) {
 		for (unsigned short top = 0; top < LEVEL_HEIGHT; ++top) {
@@ -236,5 +239,4 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 		extraGameText.move();
 		window.draw(extraGameText);
 	}
-	*/
-}
+#endif

@@ -9,7 +9,7 @@ using Game::Bomb;
 using Game::TILE_SIZE;
 using namespace Game::Conf::Bomb;
 
-Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source, 
+Bomb::Bomb(const sf::Vector2f& pos, const Game::Player& source, 
 		const sf::Time& _fuseTime, const unsigned short _radius)
 	: Game::Entity(pos)
 	, fuseTime(_fuseTime)
@@ -21,9 +21,6 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player *const source,
 	killable = addComponent(new Game::Killable(this, [this] () {
 		// On kill
 		exploded = true;
-	}, [this] () {
-		// Is kill in progress
-		return fuseClock->getElapsedTime() >= fuseTime;
 	}));
 	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", "bomb.png")));
 	addComponent(new Game::Collider(this));

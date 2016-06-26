@@ -72,11 +72,15 @@ public:
 	EntityGroup() {}
 
 	/** Applies a void(Args...) function to all entities */
-	template<typename...Args>
+	template<typename... Args>
 	void apply(AppliedFunc<Game::Entity, Args...> func, Args... args);
 
+	/** Applies a void(Args...) function to all entities (ref-args version)  */
+	template<typename... Args>
+	void apply(AppliedFunc<Game::Entity, Args&...> func, Args&... args);
+
 	/** Applies a void(Args...) function to all entities (const version) */
-	template<typename...Args>
+	template<typename... Args>
 	void apply(AppliedFunc<const Game::Entity, Args...> func, Args... args) const;
 
 	template<class T>
@@ -106,6 +110,12 @@ public:
 
 template<typename... Args>
 void EntityGroup::apply(AppliedFunc<Game::Entity, Args...> func, Args... args) {
+	for (auto& e : entities)
+		func(e.get(), args...);
+}
+
+template<typename... Args>
+void EntityGroup::apply(AppliedFunc<Game::Entity, Args&...> func, Args&... args) {
 	for (auto& e : entities)
 		func(e.get(), args...);
 }

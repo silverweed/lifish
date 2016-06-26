@@ -1,4 +1,5 @@
 #include "LevelManager.hpp"
+#include "game_logic.hpp"
 //#include "EntityType.hpp"
 //#include "FixedWall.hpp"
 //#include "BreakableWall.hpp"
@@ -18,6 +19,7 @@ using Game::LevelManager;
 
 LevelManager::LevelManager() 
 	: cd(entities) 
+	, renderer(*this)
 {
 	//for (auto& b : bombs)
 		//b.fill(nullptr);
@@ -38,6 +40,11 @@ auto LevelManager::createNewPlayers(unsigned short n) -> std::vector<Game::Playe
 }
 
 void LevelManager::update() {
+	// Apply game logic rules
+	for (auto logic : Game::Logic::functions) {
+		entities.apply(logic, *this);
+	}
+
 	// Update entities and their components
 	entities.updateAll();
 
@@ -45,6 +52,9 @@ void LevelManager::update() {
 	cd.update();
 }
 
+void LevelManager::spawn(Game::Entity *e) {
+	entities.add(e);
+}
 
 #if 0
 

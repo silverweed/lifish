@@ -28,11 +28,11 @@ class Bomb : public Game::Entity {
 	Game::Killable *killable = nullptr;
 
 	/** The player who dropped this bomb */
-	const Game::Player *const sourcePlayer;
+	const Game::Player& sourcePlayer;
 
 public:
 
-	explicit Bomb(const sf::Vector2f& pos, const Game::Player *const source, 
+	explicit Bomb(const sf::Vector2f& pos, const Game::Player& source, 
 			const sf::Time& fuseTime = Game::Conf::Bomb::DEFAULT_FUSE, 
 			const unsigned short radius = Game::Conf::Bomb::DEFAULT_RADIUS);
 
@@ -46,9 +46,11 @@ public:
 	unsigned short getRadius() const { return radius; }
 	void setRadius(unsigned short r) { radius = r; }
 
+	/** Returns true if this bomb's fuse is over and the bomb should blow off. */
+	bool isFuseOver() const { return fuseClock->getElapsedTime() >= fuseTime; }
 	void setFuseTime(const sf::Time& ft) { fuseTime = ft; }
 
-	const Game::Player* getSourcePlayer() const { return sourcePlayer; }
+	const Game::Player& getSourcePlayer() const { return sourcePlayer; }
 };
 
 }

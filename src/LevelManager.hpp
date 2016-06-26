@@ -2,11 +2,14 @@
 
 #include <array>
 #include <SFML/System/NonCopyable.hpp>
+#include <SFML/Graphics.hpp>
 #include "EntityGroup.hpp"
 #include "CollisionDetector.hpp"
 #include "Player.hpp"
 #include "Bomb.hpp"
 #include "Game.hpp"
+#include "Level.hpp"
+#include "LevelRenderer.hpp"
 #include "utils.hpp"
 #include "game_values.hpp"
 
@@ -15,9 +18,14 @@ namespace Game {
 
 class LevelLoader;
 
-class LevelManager final : private sf::NonCopyable {
+class LevelManager final : public sf::Drawable, public Game::WithOrigin, private sf::NonCopyable {
 
 	friend class Game::LevelLoader;
+	friend class Game::LevelRenderer;
+
+	/** The currently managed level */
+	const Game::Level *level = nullptr;
+	Game::LevelRenderer renderer;
 
 	Game::EntityGroup entities;
 	Game::CollisionDetector cd;
@@ -36,7 +44,7 @@ class LevelManager final : private sf::NonCopyable {
 	Matrix<Game::Bomb*, Game::MAX_PLAYERS, Game::Conf::Player::MAX_MAX_BOMBS> bombs;
 
 public:
-	LevelManager();
+	explicit LevelManager();
 
 	/** Generates n players and returns them. If n > MAX_PLAYERS, only generate MAX_PLAYERS players. */
 	auto createNewPlayers(unsigned short n = Game::MAX_PLAYERS) -> std::vector<Game::Player*>;
@@ -47,11 +55,21 @@ public:
 		return false;
 	}
 
-	Game::EntityGroup& getEntities() { return entities; }
 	const Game::EntityGroup& getEntities() const { return entities; }
+	Game::EntityGroup& getEntities() { return entities; }
 
 	/** Updates all entities and collisions */
 	void update();
+
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
+		renderer.draw(target, states);
+	}
+
+	void setOrigin(const sf::Vector2f& o) override {
+		renderer.setOrigin(o);
+	}
+
+	void spawn(Game::Entity *e);
 };
 
 }

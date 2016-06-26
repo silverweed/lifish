@@ -11,7 +11,9 @@
 using Game::TILE_SIZE;
 
 bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
-	
+
+	lm.level = &level;
+
 	auto& entities = lm.getEntities();
 	if (entities.size() > 0) {
 		// Release the players so they're not destroyed with other entities.
