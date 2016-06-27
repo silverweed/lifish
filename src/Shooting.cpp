@@ -15,6 +15,12 @@ Shooting::Shooting(Game::Entity *const owner, const Attack& attack)
 Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 	if (attack.type & Game::AttackType::CONTACT) {
 		rechargeClock->restart();
+		if (attack.type & Game::AttackType::RANGED) {
+			auto moving = owner->get<Game::Moving>();
+			if (moving == nullptr)
+				throw std::logic_error("Called shoot() for a dashing attack on a non-Moving owner!");
+			moving->setDashing(true);
+		}
 		return nullptr;
 	}
 

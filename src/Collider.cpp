@@ -18,6 +18,7 @@ Collider::Collider(Game::Entity *const owner, std::function<void(Game::Collider*
 
 void Collider::update() {
 	Game::Component::update();
-	if (onCollision && colliding != nullptr)
-		onCollision(colliding);
+	if (onCollision)
+		for (auto cld : colliding)
+			onCollision(cld);
 }

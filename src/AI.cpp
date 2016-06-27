@@ -184,6 +184,7 @@ AIBoundFunction Game::ai_follow_dash(Game::Entity *const entity) {
 
 		auto sp = enemy->seeingPlayer(*lm);
 		if (sp != Game::Direction::NONE) {
+			// FIXME: check cooldown somewhere!
 			if (moving->setDashing(true))
 				Game::cache.playSound(enemy->get<Game::Sounded>()
 						->getSoundFile(Game::Sounds::ATTACK));

@@ -73,7 +73,7 @@ void CollisionDetector::update() {
 		if (checked[i]) continue;
 
 		auto collider = colliding[i];
-		collider->colliding = nullptr;
+		collider->colliding.clear();
 		collider->atLimit = false;
 		auto moving = collider->getOwner()->get<Game::AxisMoving>();
 		if (_isAtBoundaries(collider, moving)) {
@@ -92,12 +92,12 @@ void CollisionDetector::update() {
 			if (Game::Layers::collide[collider->getLayer()][othcollider->getLayer()]
 					&& _collide(collider, othcollider, moving->getDirection()))
 			{
-				collider->colliding = othcollider;
+				collider->colliding.push_back(othcollider);
 				auto othmoving = othcollider->getOwner()->get<Game::AxisMoving>();
 				if (othmoving == nullptr || othmoving->getDirection() == Game::oppositeDirection(
 							moving->getDirection()))
 				{
-					othcollider->colliding = collider;
+					othcollider->colliding.push_back(collider);
 				}
 				checked[i] = checked[j] = true;
 			}

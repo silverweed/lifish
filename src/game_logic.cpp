@@ -26,18 +26,18 @@ void Game::Logic::bombExplosionLogic(Game::Entity *e, Game::LevelManager& lm,
 void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager &lm,
 		EntityList& tbspawned, EntityList& tbkilled)
 {
-	//if (!lm.isPlayer(e)) return;
-	//auto player = static_cast<Game::Player*>(e);
+	if (!lm.isPlayer(e)) return;
+	auto player = static_cast<Game::Player*>(e);
 
-	//if (player->get<Game::Controllable>()->hasFocus() 
-		//&& player->isAligned() 
-		//&& sf::Keyboard::isKeyPressed(
-			//Game::Controls::players[player->getInfo().id-1][Game::Controls::CTRL_BOMB])
-		//&& !lm.isBombAt(player->getPosition()))
-	//{
-		//const auto pw = player->getInfo().powers;
-		//tbspawned.push_back(new Game::Bomb(player->getPosition(), *player, pw.bombFuseTime, pw.bombRadius));
-	//}
+	if (player->get<Game::Controllable>()->hasFocus() 
+		&& player->isAligned() 
+		&& sf::Keyboard::isKeyPressed(
+			Game::Controls::players[player->getInfo().id-1][Game::Controls::CTRL_BOMB])
+		&& !lm.isBombAt(player->getPosition()))
+	{
+		const auto pw = player->getInfo().powers;
+		tbspawned.push_back(new Game::Bomb(player->getPosition(), *player, pw.bombFuseTime, pw.bombRadius));
+	}
 }
 
 std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {

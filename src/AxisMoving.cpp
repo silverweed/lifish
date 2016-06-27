@@ -190,20 +190,3 @@ void AxisMoving::_ensureAlign() {
 	}
 	owner->setPosition(pos);
 }
-
-bool AxisMoving::setDashing(bool d) {
-	auto shooting = owner->get<Game::Shooting>();
-	if (shooting == nullptr)
-		throw std::logic_error("Called setDashing on Entity without a Shooting component!");
-
-	if (!d) {
-		dashing = false;
-		speed = originalSpeed;
-	} else if (!shooting->isRecharging() && speed == originalSpeed) {
-		dashing = true;
-		speed *= 4;
-		shooting->shoot(); // reset the recharge clock
-		return true;
-	}
-	return false;
-}

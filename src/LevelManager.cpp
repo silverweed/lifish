@@ -14,7 +14,7 @@
 //#include "utils.hpp"
 //#include <sstream>
 //#include <limits>
-#include <iostream>
+//#include <iostream>
 
 using Game::LevelManager;
 
@@ -55,7 +55,6 @@ void LevelManager::update() {
 
 	// Update entities and their components
 	entities.updateAll();
-	std::cerr << "size = " << entities.size() << std::endl;
 
 	// Update collisions
 	cd.update();

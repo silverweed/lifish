@@ -23,6 +23,20 @@ void Moving::stop() {
 }
 
 bool Moving::_collidesWithSolid() const {
-	return collider != nullptr && (collider->isAtLimit() || collider->getColliding() != nullptr
-		&& Game::Layers::solid[collider->getLayer()][collider->getColliding()->getLayer()]);
+	if (collider == nullptr) return false;
+	if (collider->isAtLimit()) return true;
+	for (auto c : collider->getColliding())
+		if (Game::Layers::solid[collider->getLayer()][c->getLayer()])
+			return true;
+	return false;
+}
+
+void Moving::setDashing(bool d, float mult) {
+	if (!d) {
+		dashing = false;
+		speed = originalSpeed;
+	} else if (!dashing) {
+		dashing = true;
+		speed *= mult;
+	}
 }

@@ -15,6 +15,7 @@ protected:
 	const static sf::Time MAX_FRAME_TIME;
 
 	bool moving = false;
+	bool dashing = false;
 	float speed;
 	const float originalSpeed;
 	float distTravelled = 0;
@@ -33,6 +34,12 @@ public:
 
 	float getDistTravelled() const { return distTravelled; }
 	void setDistTravelled(float d) { distTravelled = d; }
+
+	/** Make this entity dash, i.e. temporarily increase its speed by multiplying it by `mult`. 
+	 *  Passing `false` as argument resets the speed to `originalSpeed`.
+	 */
+	void setDashing(bool d, float mult = 4);
+	bool isDashing() const { return dashing; }
 
 	virtual void move();
 	virtual void stop();

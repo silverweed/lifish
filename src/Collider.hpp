@@ -12,7 +12,7 @@ class CollisionDetector;
 class Collider : public Game::Component {
 	friend class Game::CollisionDetector;
 
-	Game::Collider *colliding = nullptr;
+	std::vector<Game::Collider*> colliding;
 	/** Whether this entity is at a level's boundary */
 	bool atLimit = false;
 	const sf::Vector2i size;
@@ -30,17 +30,24 @@ public:
 			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
 			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE));
 
-	Game::Collider* getColliding() const { return colliding; }
+	/** @return the list of Colliders colliding with this one */
+	std::vector<Game::Collider*> getColliding() const { return colliding; }
 
+	/** @return the collision layer of this Collider */
 	Game::Layers::Layer getLayer() const { return layer; }
+	/** Sets the collision layer of this Collider */
 	void setLayer(Game::Layers::Layer l) { layer = l; }
 
 	bool contains(const Game::Collider& other) const {
 		return getRect().intersects(other.getRect());
 	}
 
+	/** @return whether this Collider is at the level boundary. This is set
+	 *  externally by CollisionDetector.
+	 */
 	bool isAtLimit() const { return atLimit; }
 
+	/** @return the bounding box of this Collider */
 	sf::IntRect getRect() const {
 		const auto pos = owner->getPosition();
 		return sf::IntRect(pos.x, pos.y, size.x, size.y);

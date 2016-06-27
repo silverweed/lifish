@@ -14,7 +14,6 @@ class AxisMoving : public Game::Moving {
 	Game::Direction direction;
 	Game::Direction prevDirection;
 	sf::Vector2i prevAlign;
-	bool dashing = false;
 
 
 	void _ensureAlign();
@@ -34,13 +33,6 @@ public:
 	void realign();
 	void stop() override;
 	void update() override;
-
-	bool isDashing() const { return dashing; }
-	/** Can only be called on an Entity with a Shooting component.
-	 *  If the dash cooldown has ended and the Entity is not dashing, make this entity dash
-	 *  and return true; else, return false.
-	 */
-	bool setDashing(bool d);
 
 	bool canGo(const Game::Direction dir, const Game::LevelManager *const lm) const;
 };

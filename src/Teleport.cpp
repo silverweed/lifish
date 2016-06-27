@@ -63,7 +63,7 @@ void Teleport::warp(Game::Collider *cld) {
 
 	Teleport *nxt = _next;
 	for ( ; nxt != nullptr && nxt != this; nxt = nxt->next()) {
-		if (nxt->isDisabled() || nxt->get<Game::Collider>()->getColliding() != nullptr)
+		if (nxt->isDisabled() || nxt->get<Game::Collider>()->getColliding().size() > 0)
 			continue;
 		break;
 	}

@@ -29,7 +29,9 @@ public:
 	const sf::Vector2i& getAttackAlign() const { return attackAlign; }
 	void setAttackAlign(const sf::Vector2i& aa) { attackAlign = aa; }
 
-	/** If attack is CONTACT, just reset the recharge clock and return nullptr.
+	/** If attack is CONTACT and not RANGED, just reset the recharge clock and return nullptr.
+	 *  If attack is also RANGED (i.e. "dashing"), also call setDashing(true) for the owner's
+	 *  Moving component (throws if no Moving component is found.)
 	 *  Else, create an AxisBullet described by `attack` and return it. 
 	 *  The callee must take care of its destruction.
 	 *  If dir is NONE, the bullet is shot in the direction of its owner. 
