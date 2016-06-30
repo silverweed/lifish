@@ -1,6 +1,6 @@
 #!/usr/bin/awk -f
-# Prettifies a JSON file: use like:
-#     cat myfile.json | ./prettyplz
+# Prettifies a JSON file. Use like:
+#     ./prettyplz < myfile.json
 # Author: Giacomo Parolini
 # License: WTFPL
 
@@ -25,8 +25,7 @@ function print_indent(ind,    i) {
 			if (in_args)
 				printf ", "
 			else {
-				printf ","
-				print ""
+				printf ",\n"
 				print_indent(indent)
 			}
 		} else if (ch == "]" || ch == "}") {
