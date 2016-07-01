@@ -23,8 +23,13 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player& source,
 		exploded = true;
 	}));
 	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", "bomb.png")));
-	addComponent(new Game::Collider(this));
+	addComponent(new Game::Collider(this, [this] (Game::Collider *cld) {
+		// On collide
+		if (cld->getLayer() == Game::Layers::EXPLOSIONS && !ignited)
+			ignite();
+	}, Game::Layers::BOMBS));
 	addComponent(new Game::Drawable(this, animated));
+
 	auto& a_normal_idle = animated->addAnimation("normal_idle", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),
 		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE)

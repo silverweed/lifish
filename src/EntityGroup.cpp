@@ -5,6 +5,10 @@
 
 using Game::EntityGroup;
 
+EntityGroup::EntityGroup() {
+	fixedEntities.fill(nullptr);
+}
+
 void EntityGroup::setOrigin(const sf::Vector2f& origin) {
 	WithOrigin::setOrigin(origin);
 
@@ -25,6 +29,9 @@ void EntityGroup::remove(Game::Entity *entity) {
 	const auto cld = entity->get<Game::Collider>();
 	const auto tmp = entity->get<Game::Temporary>();
 	const auto klb = entity->get<Game::Killable>();
+	const auto tile = Game::tile(entity->getPosition());
+	if (getFixedAt(tile.x, tile.y) == entity)
+		_setFixedAt(tile.x, tile.y, nullptr);
 	entities.remove_if([entity] (const std::unique_ptr<Game::Entity>& e) { return e.get() == entity; });
 	if (cld != nullptr)
 		collidingEntities.erase(std::remove(collidingEntities.begin(), collidingEntities.end(), cld));
@@ -39,15 +46,22 @@ Game::Entity* EntityGroup::release(Game::Entity *e) {
 	for (auto it = entities.begin(); it != entities.end(); ) {
 		if (it->get() == e) {
 			released = it->release();
+
 			// Remove it from internal collections
+			const auto tile = Game::tile(released->getPosition());
+			if (getFixedAt(tile.x, tile.y) == released)
+				_setFixedAt(tile.x, tile.y, nullptr);
+
 			auto cld = released->get<Game::Collider>();
 			if (cld != nullptr) {
 				collidingEntities.erase(
-						std::remove(collidingEntities.begin(), collidingEntities.end(), cld));
+					std::remove(collidingEntities.begin(), collidingEntities.end(), cld));
 			}
+
 			auto tmp = released->get<Game::Temporary>();
 			if (tmp != nullptr)
 				temporary.remove(tmp);
+
 			auto klb = released->get<Game::Killable>();
 			if (klb != nullptr)
 				dying.remove(klb);
@@ -65,6 +79,7 @@ void EntityGroup::clear() {
 	collidingEntities.clear();
 	temporary.clear();
 	dying.clear();
+	fixedEntities.fill(nullptr);
 }
 
 void EntityGroup::_removeExpiredTemporaries() {

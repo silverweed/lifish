@@ -45,7 +45,7 @@ public:
 		return nullptr;
 	}
 
-	virtual const sf::Vector2f& getPosition() const { return position; }
+	const sf::Vector2f& getPosition() const { return position; }
 	virtual void setPosition(const sf::Vector2f& p) { position = p; }
 
 	bool isAligned(const char axis = 'b') const;

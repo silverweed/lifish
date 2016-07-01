@@ -7,16 +7,18 @@ namespace Game {
 namespace Layers {
 
 enum Layer : unsigned short {
-	DEFAULT       = 0,
-	PLAYERS       = 1,
-	ENEMIES       = 2,
-	BOSSES        = 3,
-	ENEMY_BULLETS = 4,
-	BOSS_BULLETS  = 5,
-	WALLS         = 6,
-	TRANSP_WALLS  = 7,
-	TELEPORTS     = 8,
-	N_LAYERS      = 9
+	DEFAULT,
+	PLAYERS,
+	ENEMIES,
+	BOSSES,
+	ENEMY_BULLETS,
+	BOSS_BULLETS,
+	WALLS,
+	TRANSP_WALLS,
+	TELEPORTS,
+	EXPLOSIONS,
+	BOMBS,
+	N_LAYERS
 };
 
 extern Matrix<bool, Layers::N_LAYERS, Layers::N_LAYERS> collide, // whether levels "see" each other

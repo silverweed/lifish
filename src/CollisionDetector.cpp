@@ -89,7 +89,7 @@ void CollisionDetector::update() {
 		
 			auto& othcollider = colliding[j];
 
-			if (Game::Layers::collide[collider->getLayer()][othcollider->getLayer()]
+			if (collider->collidesWith(*othcollider)
 					&& _collide(collider, othcollider, moving->getDirection()))
 			{
 				collider->colliding.push_back(othcollider);

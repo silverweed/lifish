@@ -16,6 +16,12 @@ class Collider : public Game::Component {
 	/** Whether this entity is at a level's boundary */
 	bool atLimit = false;
 	const sf::Vector2i size;
+	/** If a Collider is phantom, it won't be automatically managed by EntityGroup
+	 *  (and therefore CollisionDetector). A phantom collider may be useful if you
+	 *  want to handle the collision logic yourself and you're only interested
+	 *  in giving a collision layer to the collider.
+	 */
+	const bool phantom;
 	/** Collision layer */
 	Game::Layers::Layer layer;
 	std::function<void(Game::Collider*)> onCollision;
@@ -23,12 +29,14 @@ class Collider : public Game::Component {
 public:
 	explicit Collider(Game::Entity *const owner, 
 			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
-			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE));
+			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE),
+			  bool phantom = false);
 
 	explicit Collider(Game::Entity *const owner,
 			  std::function<void(Game::Collider*)> onCollision,
 			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
-			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE));
+			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE), 
+			  bool phantom = false);
 
 	/** @return the list of Colliders colliding with this one */
 	std::vector<Game::Collider*> getColliding() const { return colliding; }
@@ -38,8 +46,18 @@ public:
 	/** Sets the collision layer of this Collider */
 	void setLayer(Game::Layers::Layer l) { layer = l; }
 
+	bool isPhantom() const { return phantom; }
+
 	bool contains(const Game::Collider& other) const {
 		return getRect().intersects(other.getRect());
+	}
+
+	bool collidesWith(const Game::Collider& other) const {
+		return Game::Layers::collide[layer][other.layer];
+	}
+
+	bool isSolidFor(const Game::Collider& other) const {
+		return Game::Layers::solid[layer][other.layer];
 	}
 
 	/** @return whether this Collider is at the level boundary. This is set

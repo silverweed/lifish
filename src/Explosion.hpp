@@ -3,6 +3,7 @@
 #include <array>
 #include <SFML/Graphics.hpp>
 #include "Animated.hpp"
+#include "Collider.hpp"
 
 namespace Game {
 
@@ -21,6 +22,9 @@ class Explosion : public Game::Entity, public sf::Drawable {
 	Game::Animated *explosionC = nullptr, // central explosion
 	               *explosionH = nullptr, // horizontal explosion
 		       *explosionV = nullptr; // vertical explosion
+
+	/** This is a phantom collider only used to determine the collision layer. */
+	Game::Collider *collider = nullptr;
 
 	/** The radius of this explosion */
 	unsigned short radius;

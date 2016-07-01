@@ -20,6 +20,8 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game
 	, radius(_radius)
 	, sourcePlayer(source)
 {
+	collider = addComponent(new Game::Collider(this, Game::Layers::EXPLOSIONS, 
+				sf::Vector2i(TILE_SIZE, TILE_SIZE), true));
 	addComponent(new Game::Sounded(this, { Game::getAsset("sounds", "explosion.ogg") }));
 	explosionC = addComponent(new Game::Animated(this, Game::getAsset("graphics", "explosionC.png")));
 	explosionC->addAnimation("explode", {
@@ -55,96 +57,96 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game
 Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 	const sf::Vector2i m_tile = Game::tile(position);
 	bool propagating[] = { true, true, true, true };
+	auto& entities = lm.getEntities();
 	
 	// TODO
-	propagation.fill(radius);
-	_checkHit(lm);
+	//propagation.fill(radius);
+	//_checkHit(lm);
 
-#if 0
-	const auto fixed = lr->getFixedEntities();
-	const auto level = lr->getLevel();
-	const auto bosses = lr->getBosses();
+	//const auto fixed = lr->getFixedEntities();
+	//const auto level = lr->getLevel();
+	//const auto bosses = lr->getBosses();
 
-	// Check for boss at the explosion center
-	for (auto& boss : bosses) {
-		if (!boss->isDying() && boss->occupies(m_tile)) {
-			boss->decLife(1);
-			if (boss->getLife() <= 0) {
-				boss->kill();
-				Game::cache.playSound(boss->getSoundFile(Game::Sounds::DEATH));
-			} else {
-				boss->hurt();
-				Game::cache.playSound(boss->getSoundFile(Game::Sounds::HURT));
-			}
-		}
-	}
+	// TODO Check for boss at the explosion center
+	//for (auto& boss : bosses) {
+		//if (!boss->isDying() && boss->occupies(m_tile)) {
+			//boss->decLife(1);
+			//if (boss->getLife() <= 0) {
+				//boss->kill();
+				//Game::cache.playSound(boss->getSoundFile(Game::Sounds::DEATH));
+			//} else {
+				//boss->hurt();
+				//Game::cache.playSound(boss->getSoundFile(Game::Sounds::HURT));
+			//}
+		//}
+	//}
 
 	for (unsigned short dir = 0; dir < 4; ++dir) {	
-		for (unsigned short d = 1; d <= radius; ++d) {
+		for (unsigned short r = 1; r <= radius; ++r) {
 			if (!propagating[dir]) continue;
 
 			sf::Vector2i new_tile = m_tile;
 			switch (dir) {
 			case Direction::UP:
-				new_tile.y -= d;
+				new_tile.y -= r;
 				break;
 			case Direction::LEFT:
-				new_tile.x -= d;
+				new_tile.x -= r;
 				break;
 			case Direction::DOWN:
-				new_tile.y += d;
+				new_tile.y += r;
 				break;
 			case Direction::RIGHT:
-				new_tile.x += d;
+				new_tile.x += r;
 				break;
 			}
 			
-			if (new_tile.x < 1 || new_tile.x > LEVEL_WIDTH 
-					|| new_tile.y < 1 || new_tile.y > LEVEL_HEIGHT) {
+			if (new_tile.x < 1 || new_tile.x > Game::LEVEL_WIDTH 
+					|| new_tile.y < 1 || new_tile.y > Game::LEVEL_HEIGHT) {
 				propagating[dir] = false;
 				continue;
 			}
 
-			Entity *fxd = fixed[(new_tile.y - 1) * LEVEL_WIDTH + (new_tile.x - 1)];
-			if (fxd == nullptr || fxd->transparentTo.explosions) {
-				// Check if bomb
-				Game::Bomb *bomb = lr->getBombAt(new_tile.x, new_tile.y);
-				if (bomb != nullptr && !bomb->isIgnited()) {
-					bomb->ignite();
-					continue;
-				}
-
+			Game::Entity *fxd = entities.getFixedAt(new_tile.y, new_tile.x);
+			if (fxd == nullptr) {
+				++propagation[dir];
+				continue;
+			}
+			const auto fxdcld = fxd->get<Game::Collider>();
+			if (fxdcld == nullptr || !fxdcld->collidesWith(*collider)) {
 				++propagation[dir];
 
-				// Check if boss
-				for (auto& boss : bosses) {
-					if (!boss->isDying() && boss->occupies(new_tile)) {
-						boss->decLife(1);
-						if (boss->getLife() <= 0) {
-							boss->kill();
-							Game::cache.playSound(boss->getSoundFile(Game::Sounds::DEATH));
-						} else {
-							boss->hurt();
-							Game::cache.playSound(boss->getSoundFile(Game::Sounds::HURT));
-						}
-					}
-				}
+				// TODO Check if boss (move to game_logic or Boss)
+				//for (auto& boss : bosses) {
+					//if (!boss->isDying() && boss->occupies(new_tile)) {
+						//boss->decLife(1);
+						//if (boss->getLife() <= 0) {
+							//boss->kill();
+							//Game::cache.playSound(boss->getSoundFile(Game::Sounds::DEATH));
+						//} else {
+							//boss->hurt();
+							//Game::cache.playSound(boss->getSoundFile(Game::Sounds::HURT));
+						//}
+					//}
+				//}
 
 			} else {
-				// It's a wall 
+				// It's a wall or a bomb
 				propagating[dir] = false;
-				const auto tile = level->getTile(new_tile.x - 1, new_tile.y - 1);
-				if (d == 1 && (tile == Game::EntityType::BREAKABLE 
-						 || tile == Game::EntityType::TRANSPARENT_WALL)) {
-					auto bw = static_cast<Game::BreakableWall*>(fxd);
-					bw->destroy();
-					Game::cache.playSound(bw->getSoundFile());
-					lr->givePointsTo(sourcePlayer, bw->getPosition(), bw->getPointsGiven());
-				}
+				// TODO move logic to game_logic
+				//const auto tile = level->getTile(new_tile.x - 1, new_tile.y - 1);
+				//if (r == 1 && (tile == Game::EntityType::BREAKABLE 
+						 //|| tile == Game::EntityType::TRANSPARENT_WALL)) {
+					//auto bw = static_cast<Game::BreakableWall*>(fxd);
+					//bw->destroy();
+					//Game::cache.playSound(bw->getSoundFile());
+					//lr->givePointsTo(sourcePlayer, bw->getPosition(), bw->getPointsGiven());
+				//}
 			}
 		}
 	}
-#endif
+
+	_setPropagatedAnims();
 	return this;
 }
 

@@ -42,8 +42,10 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	/** The colliders of entities which have one */
 	std::vector<Game::Collider*> collidingEntities;
 
-	/** The static entities, which are always grid-aligned and cannot move */
-	//std::array<Game::Entity*, LEVEL_WIDTH * LEVEL_HEIGHT> staticEntities;
+	/** The static entities, which are always grid-aligned and cannot move,
+	 *  except Temporary entities.
+	 */
+	std::array<Game::Entity*, Game::LEVEL_WIDTH * Game::LEVEL_HEIGHT> fixedEntities;
 
 	/** The list of the temporary entities, which have a brief lifetime
 	 *  and ought to be removed when their Temporary component tells they're expired.
@@ -65,11 +67,16 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	/** Removes any expired Killable in `dying`. */
 	void _removeDying();
 
+	void _setFixedAt(unsigned short x, unsigned short y, Game::Entity *e) {
+		if (0 < x && x <= Game::LEVEL_WIDTH + 1 && 0 < y && y <= Game::LEVEL_HEIGHT + 1)
+			fixedEntities[(y - 1) * Game::LEVEL_WIDTH + x - 1] = e;
+	}
+
 public:
 	/**
 	 * Constructs the EntityGroup as the owner of its entities.
 	 */
-	EntityGroup() {}
+	explicit EntityGroup();
 
 	/** Applies a void(Args...) function to all entities */
 	template<typename... Args>
@@ -104,6 +111,13 @@ public:
 	size_t size() const { return entities.size(); }
 
 	void updateAll();
+
+	/** Returns the fixed entity at tile (x, y), where x and y range from 1 to width/height */ 
+	Game::Entity* getFixedAt(unsigned short x, unsigned short y) const {
+		if (0 < x && x <= Game::LEVEL_WIDTH + 1 && 0 < y && y <= Game::LEVEL_HEIGHT + 1)
+			return fixedEntities[(y - 1) * Game::LEVEL_WIDTH + x - 1];
+		return nullptr;
+	}
 };
 
 ///// Implementation /////
@@ -131,12 +145,21 @@ T* EntityGroup::add(T *entity) {
 	entities.push_back(std::unique_ptr<Game::Entity>(entity));
 	entity->setOrigin(origin);
 
+	// Put in aux collections
 	auto tmp = entity->template get<Game::Temporary>();
-	if (tmp != nullptr)
+	if (tmp != nullptr) {
 		temporary.push_back(tmp);
+	} else if (entity->template get<Game::Moving>() == nullptr) {
+		// Put non-temporary fixed entity in fixedEntities
+		const auto tile = Game::tile(entity->getPosition());
+		if (getFixedAt(tile.x, tile.y) != nullptr)
+			throw std::logic_error("Two fixed entities share the same tile?!");
+
+		_setFixedAt(tile.x, tile.y, entity);
+	}
 
 	auto cld = entity->template get<Game::Collider>();
-	if (cld != nullptr)
+	if (cld != nullptr && !cld->isPhantom())
 		collidingEntities.push_back(cld);
 
 	return entity;

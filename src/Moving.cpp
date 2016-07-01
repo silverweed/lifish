@@ -26,7 +26,7 @@ bool Moving::_collidesWithSolid() const {
 	if (collider == nullptr) return false;
 	if (collider->isAtLimit()) return true;
 	for (auto c : collider->getColliding())
-		if (Game::Layers::solid[collider->getLayer()][c->getLayer()])
+		if (c->isSolidFor(*collider))
 			return true;
 	return false;
 }
