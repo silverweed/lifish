@@ -77,6 +77,10 @@ void LevelManager::rmBomb(Game::Bomb *bomb) {
 		}
 }
 
+unsigned short LevelManager::bombsDeployedBy(unsigned short id) const {
+	return std::count_if(bombs[id-1].begin(), bombs[id-1].end(), [] (Game::Bomb *b) { return b != nullptr; });
+}
+
 void LevelManager::spawn(Game::Entity *e) {
 	auto b = dynamic_cast<Game::Bomb*>(e);
 	if (b != nullptr)

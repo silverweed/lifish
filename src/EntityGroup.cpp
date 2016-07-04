@@ -3,6 +3,8 @@
 #include "Killable.hpp"
 #include <algorithm>
 
+#include <iostream>
+
 using Game::EntityGroup;
 
 EntityGroup::EntityGroup() {
@@ -116,6 +118,7 @@ void EntityGroup::_removeDying() {
 	for (auto it = dying.begin(); it != dying.end(); ) {
 		auto tmp = *it;
 		if (!tmp->isKillInProgress()) {
+			std::cerr << "Terminate " << tmp << std::endl;
 			// kill function has ended, we can safely destroy this.
 			auto eit = std::find_if(entities.begin(), entities.end(), 
 					[tmp] (std::unique_ptr<Game::Entity>& ptr) 
@@ -129,4 +132,14 @@ void EntityGroup::_removeDying() {
 		} else
 			++it;
 	}
+}
+
+void EntityGroup::kill(Game::Killable *k) {
+	auto owner_it = std::find_if(entities.begin(), entities.end(), [k] (const std::unique_ptr<Game::Entity>& ptr) {
+		return ptr.get() == k->getOwner();
+	});
+	if (owner_it == entities.end())
+		throw std::invalid_argument("EntityGroup::kill(): killed entity's owner not managed by us!");
+	k->kill();
+	dying.push_back(k);
 }

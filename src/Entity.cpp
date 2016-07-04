@@ -39,7 +39,8 @@ std::string Entity::_toString(unsigned short indent) const {
 			ss << "    ";
 		return ss;
 	};
-	put_indent(indent) << "[Entity @ " << position << " / " << Game::tile(position) << " ~ aligned = " << isAligned() << "]";
+	put_indent(indent) << "[Entity @ " << position << " / " << Game::tile(position) 
+		<< " ~ aligned = " << isAligned() << "]";
 	if (components.size() > 0) {
 		ss << "\r\n";
 		put_indent(indent) << "{\r\n";

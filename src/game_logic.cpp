@@ -16,9 +16,9 @@ void Game::Logic::bombExplosionLogic(Game::Entity *e, Game::LevelManager& lm,
 		auto killable = bomb->get<Game::Killable>();
 		if (killable->isKilled()) return;
 		killable->kill();
-		lm.rmBomb(bomb);
 		tbspawned.push_back((new Game::Explosion(bomb->getPosition(),
 				bomb->getRadius(), &bomb->getSourcePlayer()))->propagate(lm));
+		lm.rmBomb(bomb);
 		tbkilled.push_back(bomb);
 	}
 }
@@ -29,16 +29,31 @@ void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager &lm,
 	if (!lm.isPlayer(e)) return;
 	auto player = static_cast<Game::Player*>(e);
 
+	const auto pinfo = player->getInfo();
 	if (player->get<Game::Controllable>()->hasFocus() 
 		&& player->isAligned() 
 		&& sf::Keyboard::isKeyPressed(
 			Game::Controls::players[player->getInfo().id-1][Game::Controls::CTRL_BOMB])
+		&& lm.bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs
 		&& !lm.isBombAt(player->getPosition()))
 	{
-		const auto pw = player->getInfo().powers;
-		tbspawned.push_back(new Game::Bomb(player->getPosition(), *player, pw.bombFuseTime, pw.bombRadius));
+		tbspawned.push_back(new Game::Bomb(Game::aligned(player->getPosition()), 
+					*player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius));
 	}
 }
+
+//void Game::Logic::explosionDamageLogic(Game::Entity *e, Game::LevelManager &lm,
+		//EntityList& tbspawned, EntityList& tbkilled)
+//{
+	//auto expl = dynamic_cast<Game::Explosion*>(e);
+	//if (expl == nullptr) return;
+
+	//const auto& tiles = expl->getInvolvedTiles();
+	//for (const auto& tile : tiles) {
+		//// Check if someone is at that tile
+		
+	//}
+//}
 
 std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bombDeployLogic,

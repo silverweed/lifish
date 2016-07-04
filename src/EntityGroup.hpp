@@ -101,6 +101,11 @@ public:
 	 */
 	Game::Entity* release(Game::Entity *e);
 
+	/** Calls k->kill() and marks it as a dying entity so that this EntityGroup can manage
+	 *  its death cycle. Will throw if k's owner is not managed by this EntityGroup.
+	 */
+	void kill(Game::Killable *k);
+
 	/** Removes all entities from this EntityGroup. */
 	void clear();
 

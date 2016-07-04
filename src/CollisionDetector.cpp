@@ -1,11 +1,10 @@
 #include "CollisionDetector.hpp"
-#include "Player.hpp"
 #include "Game.hpp"
 #include "Collider.hpp"
 #include "Direction.hpp"
+#include "AxisMoving.hpp"
 #include "collision_layers.hpp"
 #include <algorithm>
-#include <iostream>
 
 using Game::Direction;
 using Game::CollisionDetector;
@@ -73,8 +72,10 @@ void CollisionDetector::update() {
 		if (checked[i]) continue;
 
 		auto collider = colliding[i];
+		// Reset collider
 		collider->colliding.clear();
 		collider->atLimit = false;
+
 		auto moving = collider->getOwner()->get<Game::AxisMoving>();
 		if (_isAtBoundaries(collider, moving)) {
 			collider->atLimit = true;	

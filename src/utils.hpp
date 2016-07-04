@@ -76,7 +76,8 @@ constexpr std::ostream& operator<<(std::ostream& stream, const sf::Rect<T>& rect
 		<< " x " << rect.width << ", " << rect.height << ")";
 }
 
-inline double sqrdistance(const sf::Vector2f& a, const sf::Vector2f& b) {
+template<typename T, typename R>
+constexpr double sqrdistance(const sf::Vector2<T>& a, const sf::Vector2<R>& b) {
 	return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
 }
 
@@ -107,6 +108,7 @@ inline bool startsWith(const std::string& haystack, const std::string& needle) {
 
 void playMusic();
 void stopMusic();
+/** Plays a brief sound */
 void testMusic();
 
 /** If Game::options.showFPS == true, then display FPS on screen */

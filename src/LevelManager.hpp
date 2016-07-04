@@ -78,6 +78,8 @@ public:
 	bool isBombAt(const sf::Vector2f& pos) const;
 	/** Removes `bomb` from `bombs` */
 	void rmBomb(Game::Bomb *bomb);
+	/** Returns the number of bombs currently deployed by id-th player */
+	unsigned short bombsDeployedBy(unsigned short id) const;
 };
 
 }

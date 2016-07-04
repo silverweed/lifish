@@ -6,7 +6,7 @@
 
 #define DEF_LOGIC(name) \
 	void name(Game::Entity *e, Game::LevelManager& lm, \
-			std::list<Game::Entity*>& tbspawned, std::list<Game::Entity*>& tbkilled);
+			std::list<Game::Entity*>& tbspawned, std::list<Game::Entity*>& tbkilled)
 
 namespace Game {
 
@@ -20,9 +20,11 @@ namespace Logic {
 			)>;
 
 	/** Make bombs explode */
-	DEF_LOGIC(bombExplosionLogic)
+	DEF_LOGIC(bombExplosionLogic);
 	/** Make players drop bombs */
-	DEF_LOGIC(bombDeployLogic)
+	DEF_LOGIC(bombDeployLogic);
+	/** Make explosions destroy stuff */
+	//DEF_LOGIC(explosionDamageLogic);
 
 	extern std::vector<GameLogicFunc> functions;
 }

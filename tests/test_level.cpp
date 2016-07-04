@@ -50,7 +50,7 @@ int main() {
 	LevelLoader::load(*level.get(), lm);
 
 	Game::EntityGroup& entities = lm.getEntities();
-
+	
 #if 0
 	// XXX For now, manually position players
 	players[0]->setPosition(sf::Vector2f(128, 128));
@@ -126,29 +126,30 @@ int main() {
 			shootClock.restart();
 		}
 
-		/*
-		if (turnClock.getElapsedTime().asSeconds() > 1) {
-			if (enemy->isAligned()) {
-				enemy->get<Game::AxisMoving>()->turn(1, false);
-				turnClock.restart();
+		//if (turnClock.getElapsedTime().asSeconds() > 1) {
+			//if (enemy->isAligned()) {
+				//enemy->get<Game::AxisMoving>()->turn(1, false);
+				//turnClock.restart();
 				//Explosion *expl = new Explosion(sf::Vector2f(7 * 32, 3 * 32), 2, players[0]);
 				//expl->propagate(&lm);
 				//entities.add(expl);
 				//if (rand() < RAND_MAX/2)
 					//entities.add(enemy->get<Game::Shooting>()->shoot());
-				if (!spawned) {
-					Points *pts = new Points(sf::Vector2f(320, 12*32), "100");
-					entities.add(pts);
-					spawned = true;
-				}
-			}
+				//if (!spawned) {
+					//Points *pts = new Points(sf::Vector2f(320, 12*32), "100");
+					//entities.add(pts);
+					//spawned = true;
+				//}
+			//}
 			//entities.add(new Game::Flash(sf::Vector2f(300, 300)));
-		}*/
+		//}
 
 		//if (!removed && cycle > 100) {
 			//entities.remove(wall1); 
 			//removed = true;
 		//}
+
+		std::cerr << "Entities: " << entities.size() << std::endl;
 
 		// Event loop
 		while (window.pollEvent(event)) {

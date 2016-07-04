@@ -51,10 +51,10 @@ public:
 	explicit Explosion(const sf::Vector2f& pos, unsigned short radius, 
 			const Game::Player *const sourcePlayer = nullptr);
 
-	/** Calculate the tiles this explosion propagates to
+	/** Calculate the tiles this explosion propagates to and fill `propagation`
 	 *  (fixed walls and borders stop the explosion). Also kills enemies and
 	 *  walls within the explosion. (called once in the Explosion's lifetime).
-	 * @return self
+	 *  @return self
 	 */
 	Game::Explosion* propagate(Game::LevelManager& lm);
 

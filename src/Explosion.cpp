@@ -11,6 +11,8 @@
 #include "Sounded.hpp"
 #include <list>
 
+#include <iostream>
+
 using Game::Explosion;
 using Game::TILE_SIZE;
 using Game::Direction;
@@ -107,7 +109,7 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 				continue;
 			}
 
-			Game::Entity *fxd = entities.getFixedAt(new_tile.y, new_tile.x);
+			Game::Entity *fxd = entities.getFixedAt(new_tile.x, new_tile.y);
 			if (fxd == nullptr) {
 				++propagation[dir];
 				continue;
@@ -133,6 +135,10 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 			} else {
 				// It's a wall or a bomb
 				propagating[dir] = false;
+				auto klb = fxd->get<Game::Killable>();
+				if (klb != nullptr && !klb->isKilled())
+					lm.getEntities().kill(klb);
+
 				// TODO move logic to game_logic
 				//const auto tile = level->getTile(new_tile.x - 1, new_tile.y - 1);
 				//if (r == 1 && (tile == Game::EntityType::BREAKABLE 

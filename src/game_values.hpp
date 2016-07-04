@@ -11,8 +11,8 @@ namespace Conf {
 	namespace Player {
 		constexpr unsigned short INITIAL_LIVES = 3;
 		constexpr unsigned short MAX_LIFE = 16;
-		constexpr unsigned short MAX_MAX_BOMBS = 8;
 		constexpr unsigned short DEFAULT_MAX_BOMBS = 5;
+		constexpr unsigned short MAX_MAX_BOMBS = 8;
 		constexpr unsigned short INITIAL_CONTINUES = 3;
 		constexpr float DEFAULT_SPEED = 150.f;
 	}
