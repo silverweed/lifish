@@ -26,15 +26,15 @@ void EntityGroup::updateAll() {
 	if (dying.size() > 0)
 		_removeDying();
 }
-
-void EntityGroup::remove(Game::Entity *entity) {
+	
+void EntityGroup::_removeFromInternal(const Game::Entity *const entity) {
+	if (entity == nullptr) return;
 	const auto cld = entity->get<Game::Collider>();
 	const auto tmp = entity->get<Game::Temporary>();
 	const auto klb = entity->get<Game::Killable>();
 	const auto tile = Game::tile(entity->getPosition());
 	if (getFixedAt(tile.x, tile.y) == entity)
 		_setFixedAt(tile.x, tile.y, nullptr);
-	entities.remove_if([entity] (const std::unique_ptr<Game::Entity>& e) { return e.get() == entity; });
 	if (cld != nullptr)
 		collidingEntities.erase(std::remove(collidingEntities.begin(), collidingEntities.end(), cld));
 	if (tmp != nullptr)
@@ -43,31 +43,17 @@ void EntityGroup::remove(Game::Entity *entity) {
 		dying.remove(klb);
 }
 
+void EntityGroup::remove(Game::Entity *entity) {
+	_removeFromInternal(entity);
+	entities.remove_if([entity] (const std::unique_ptr<Game::Entity>& e) { return e.get() == entity; });
+}
+
 Game::Entity* EntityGroup::release(Game::Entity *e) {
 	Game::Entity *released = nullptr;
 	for (auto it = entities.begin(); it != entities.end(); ) {
 		if (it->get() == e) {
 			released = it->release();
-
-			// Remove it from internal collections
-			const auto tile = Game::tile(released->getPosition());
-			if (getFixedAt(tile.x, tile.y) == released)
-				_setFixedAt(tile.x, tile.y, nullptr);
-
-			auto cld = released->get<Game::Collider>();
-			if (cld != nullptr) {
-				collidingEntities.erase(
-					std::remove(collidingEntities.begin(), collidingEntities.end(), cld));
-			}
-
-			auto tmp = released->get<Game::Temporary>();
-			if (tmp != nullptr)
-				temporary.remove(tmp);
-
-			auto klb = released->get<Game::Killable>();
-			if (klb != nullptr)
-				dying.remove(klb);
-
+			_removeFromInternal(it->get());
 			it = entities.erase(it);
 			break;
 		} else 
@@ -125,8 +111,20 @@ void EntityGroup::_removeDying() {
 			{
 				return ptr.get() == tmp->getOwner();
 			});
-			if (eit != entities.end()) 
+			if (eit != entities.end()) {
+				// Remove from internal collections, save for `temporary`, from which it was
+				// already removed by _removeExpiredTemporaries
+				auto cld = eit->get()->get<Game::Collider>();
+				const auto tile = Game::tile(eit->get()->getPosition());
+				if (cld != nullptr) {
+					collidingEntities.erase(std::remove(
+							collidingEntities.begin(), collidingEntities.end(), cld));
+				}
+				if (getFixedAt(tile.x, tile.y) == eit->get())
+					_setFixedAt(tile.x, tile.y, nullptr);
+
 				entities.erase(eit);
+			}
 			
 			it = dying.erase(it);
 		} else
@@ -135,11 +133,15 @@ void EntityGroup::_removeDying() {
 }
 
 void EntityGroup::kill(Game::Killable *k) {
-	auto owner_it = std::find_if(entities.begin(), entities.end(), [k] (const std::unique_ptr<Game::Entity>& ptr) {
+	auto owner_it = std::find_if(entities.begin(), entities.end(), 
+			[k] (const std::unique_ptr<Game::Entity>& ptr) 
+	{
 		return ptr.get() == k->getOwner();
 	});
 	if (owner_it == entities.end())
 		throw std::invalid_argument("EntityGroup::kill(): killed entity's owner not managed by us!");
+
 	k->kill();
-	dying.push_back(k);
+	if (k->isKillInProgress())
+		dying.push_back(k);
 }

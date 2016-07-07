@@ -149,7 +149,7 @@ int main() {
 			//removed = true;
 		//}
 
-		std::cerr << "Entities: " << entities.size() << std::endl;
+		//std::cerr << "Entities: " << entities.size() << std::endl;
 
 		// Event loop
 		while (window.pollEvent(event)) {

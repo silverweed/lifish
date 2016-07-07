@@ -32,6 +32,7 @@ namespace {
  * on all or a specific type of them.
  * EntityGroup is _not_ thread-safe.
  */
+// FIXME: refactor with shared/weak ptr?
 class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 
 	friend class Game::CollisionDetector;
@@ -57,6 +58,9 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	 */
 	std::list<Game::Killable*> dying;
 
+
+	/** Removes `e`'s components from internal collections */
+	void _removeFromInternal(const Game::Entity *const e);
 
 	/** Removes any expired temporary from both `temporary` and `entities`, and destroys them.
 	 *  If an entity is Killable and its `isKillInProgress()` is true, puts it in `dying`
