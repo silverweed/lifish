@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <list>
+#include <vector>
 #include <SFML/System.hpp>
 #include "WithOrigin.hpp"
 #include "Stringable.hpp"
@@ -14,7 +14,7 @@ class Component;
  * Base class for game entities (walls, enemies, players, ...)
  */
 class Entity : public Game::WithOrigin, public Game::Stringable {
-	std::list<std::unique_ptr<Game::Component>> components;
+	std::vector<std::unique_ptr<Game::Component>> components;
 
 protected:
 	sf::Vector2f position;

@@ -135,9 +135,9 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 			} else {
 				// It's a wall or a bomb
 				propagating[dir] = false;
-				auto klb = fxd->get<Game::Killable>();
-				if (klb != nullptr && !klb->isKilled())
-					lm.getEntities().kill(klb);
+				auto cld = fxd->get<Game::Collider>();
+				//if (cld != nullptr && cld->collidesWith(*collider))
+					// TODO
 
 				// TODO move logic to game_logic
 				//const auto tile = level->getTile(new_tile.x - 1, new_tile.y - 1);

@@ -22,7 +22,7 @@ class Teleport : public Game::Entity {
 	Game::Animated *animated = nullptr;
 
 
-	void warp(Game::Collider *cld);
+	void warp(Game::Collider& cld);
 
 public:
 	explicit Teleport(const sf::Vector2f& pos);

@@ -16,7 +16,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", "teleport.png")));
 	disableClock = addComponent(new Game::Clock(this));
 	addComponent(new Game::Drawable(this, animated));
-	addComponent(new Game::Collider(this, [this] (Game::Collider *c) { warp(c); }, Game::Layers::TELEPORTS));
+	addComponent(new Game::Collider(this, [this] (Game::Collider& c) { warp(c); }, Game::Layers::TELEPORTS));
 
 	auto& anim = animated->addAnimation("teleport");
 	// Teleports have 8 frames
@@ -44,14 +44,12 @@ void Teleport::disable() {
 	disableClock->restart();
 }
 
-#include <iostream>
-void Teleport::warp(Game::Collider *cld) {
-	std::cerr << "Called warp"<<std::endl;
+void Teleport::warp(Game::Collider& cld) {
 	if (disabled) return;
 	
-	const auto entity = cld->getOwner();
+	const auto entity = cld.getOwner();
 	auto am = entity->get<Game::AxisMoving>();
-	std::cerr << "pos = " << cld->getOwner()->getPosition()<<" (aligned: " << entity->isAligned()<<"); cur_tile = " << Game::tile(cld->getOwner()->getPosition()) << ", prev = " << am->getPrevAlign() << " [this tile = " << Game::tile(position) << "]"<<std::endl;
+	//std::cerr << "pos = " << cld->getOwner()->getPosition()<<" (aligned: " << entity->isAligned()<<"); cur_tile = " << Game::tile(cld->getOwner()->getPosition()) << ", prev = " << am->getPrevAlign() << " [this tile = " << Game::tile(position) << "]"<<std::endl;
 	if (am != nullptr && 
 			// entity must have moved here since latest warp FIXME
 			(//am->getPrevAlign() == Game::tile(position) ||
@@ -69,9 +67,9 @@ void Teleport::warp(Game::Collider *cld) {
 	}
 
 	// TODO spawn flashes
-	cld->getOwnerRW()->setPosition(nxt->getPosition());
+	cld.getOwnerRW()->setPosition(nxt->getPosition());
 	if (am != nullptr) {
-		std::cerr<<"nxt->pos = " << nxt->getPosition()<<" (tile = " <<Game::tile(nxt->getPosition())<<"\n";
+		//std::cerr<<"nxt->pos = " << nxt->getPosition()<<" (tile = " <<Game::tile(nxt->getPosition())<<"\n";
 		am->setPrevAlign(Game::tile(nxt->getPosition()));}
 
 	disable();

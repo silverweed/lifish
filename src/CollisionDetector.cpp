@@ -11,9 +11,9 @@ using Game::CollisionDetector;
 using Game::TILE_SIZE;
 
 // Checks if entity in `pos` and entity in `opos` collide, given that the one in `pos` has direction `dir`.
-static bool _collide(const Game::Collider *cld1, const Game::Collider *cld2, const Game::Direction dir) {
-	sf::IntRect rect = cld1->getRect(),
-		    orect = cld2->getRect();
+static bool _collide(const Game::Collider& cld1, const Game::Collider& cld2, const Game::Direction dir) {
+	sf::IntRect rect = cld1.getRect(),
+		    orect = cld2.getRect();
 
 	switch (dir) {
 	case Direction::UP: 
@@ -88,17 +88,16 @@ void CollisionDetector::update() {
 		for (unsigned short j = 0; j < len; ++j) {
 			if (i == j)  continue;
 		
-			auto& othcollider = colliding[j];
-
+			auto othcollider = colliding[j];
 			if (collider->collidesWith(*othcollider)
-					&& _collide(collider, othcollider, moving->getDirection()))
+					&& _collide(*collider, *othcollider, moving->getDirection()))
 			{
-				collider->colliding.push_back(othcollider);
+				collider->colliding.push_back(*othcollider);
 				auto othmoving = othcollider->getOwner()->get<Game::AxisMoving>();
 				if (othmoving == nullptr || othmoving->getDirection() == Game::oppositeDirection(
 							moving->getDirection()))
 				{
-					othcollider->colliding.push_back(collider);
+					othcollider->colliding.push_back(*collider);
 				}
 				checked[i] = checked[j] = true;
 			}

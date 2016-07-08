@@ -5,6 +5,8 @@
 #include "Collider.hpp"
 #include "Game.hpp"
 
+#include <iostream>
+
 using Game::Bomb;
 using Game::TILE_SIZE;
 using namespace Game::Conf::Bomb;
@@ -23,9 +25,9 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player& source,
 		exploded = true;
 	}));
 	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", "bomb.png")));
-	addComponent(new Game::Collider(this, [this] (Game::Collider *cld) {
+	addComponent(new Game::Collider(this, [this] (Game::Collider& cld) {
 		// On collide
-		if (cld->getLayer() == Game::Layers::EXPLOSIONS && !ignited)
+		if (cld.getLayer() == Game::Layers::EXPLOSIONS && !ignited)
 			ignite();
 	}, Game::Layers::BOMBS));
 	addComponent(new Game::Drawable(this, animated));
@@ -56,6 +58,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player& source,
 
 void Bomb::update() {
 	Game::Entity::update();
+	std::cerr<<"fuseClock = " << fuseClock->getElapsedTime().asMilliseconds() << " / " << fuseTime.asMilliseconds()<<std::endl;
 	if (!switched && fuseTime - fuseClock->getElapsedTime() < sf::milliseconds(2000)
 			&& !killable->isKilled())
 	{
@@ -66,6 +69,7 @@ void Bomb::update() {
 }
 
 void Bomb::ignite() {
+	std::cerr<<"ignited\n";
 	fuseTime = sf::milliseconds(50); 
 	fuseClock->restart();
 	ignited = true; 

@@ -9,7 +9,7 @@ Collider::Collider(Game::Entity *const owner, Game::Layers::Layer layer, const s
 	, layer(layer)
 {}
 
-Collider::Collider(Game::Entity *const owner, std::function<void(Game::Collider*)> onCollision,
+Collider::Collider(Game::Entity *const owner, CollisionFunc onCollision,
 		Game::Layers::Layer layer, const sf::Vector2i& size, bool phantom)
 	: Game::Component(owner)
 	, size(size)
@@ -21,6 +21,6 @@ Collider::Collider(Game::Entity *const owner, std::function<void(Game::Collider*
 void Collider::update() {
 	Game::Component::update();
 	if (onCollision)
-		for (auto cld : colliding)
+		for (auto& cld : colliding)
 			onCollision(cld);
 }

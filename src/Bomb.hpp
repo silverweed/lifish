@@ -22,6 +22,7 @@ class Bomb : public Game::Entity {
 	
 	bool ignited = false;
 	bool exploded = false;
+	/** Whether this bomb has already started the "near-explosion" animation or not */
 	bool switched = false;
 
 	Game::Animated *animated = nullptr;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <SFML/Graphics.hpp>
 #include "Component.hpp"
 #include "Game.hpp"
@@ -12,7 +13,10 @@ class CollisionDetector;
 class Collider : public Game::Component {
 	friend class Game::CollisionDetector;
 
-	std::vector<Game::Collider*> colliding;
+	using CollisionFunc = std::function<void(Game::Collider&)>;
+
+	/** All the Colliders which are colliding with this one */
+	std::vector<std::reference_wrapper<Game::Collider>> colliding;
 	/** Whether this entity is at a level's boundary */
 	bool atLimit = false;
 	const sf::Vector2i size;
@@ -24,7 +28,8 @@ class Collider : public Game::Component {
 	const bool phantom;
 	/** Collision layer */
 	Game::Layers::Layer layer;
-	std::function<void(Game::Collider*)> onCollision;
+	/** Optional callback to be called at every update */
+	CollisionFunc onCollision;
 
 public:
 	explicit Collider(Game::Entity *const owner, 
@@ -33,13 +38,15 @@ public:
 			  bool phantom = false);
 
 	explicit Collider(Game::Entity *const owner,
-			  std::function<void(Game::Collider*)> onCollision,
+			  CollisionFunc onCollision,
 			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
 			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE), 
 			  bool phantom = false);
 
 	/** @return the list of Colliders colliding with this one */
-	std::vector<Game::Collider*> getColliding() const { return colliding; }
+	std::vector<std::reference_wrapper<Game::Collider>> getColliding() const { return colliding; }
+	/** Manually sets `coll` to be colliding with this collider */
+	void addColliding(Game::Collider& coll) { colliding.push_back(coll); }
 
 	/** @return the collision layer of this Collider */
 	Game::Layers::Layer getLayer() const { return layer; }
