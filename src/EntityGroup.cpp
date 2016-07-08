@@ -19,12 +19,12 @@ void EntityGroup::setOrigin(const sf::Vector2f& origin) {
 }
 
 void EntityGroup::updateAll() {
-	for (auto& e : entities)
-		e->update();
-
 	_checkKilled();
 	if (dying.size() > 0)
 		_removeDying();
+
+	for (auto& e : entities)
+		e->update();
 }
 	
 void EntityGroup::_removeFromInternal(const Game::Entity *const entity) {

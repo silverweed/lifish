@@ -11,8 +11,6 @@
 #include "Sounded.hpp"
 #include <list>
 
-#include <iostream>
-
 using Game::Explosion;
 using Game::TILE_SIZE;
 using Game::Direction;

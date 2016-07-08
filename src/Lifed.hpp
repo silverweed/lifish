@@ -21,7 +21,7 @@ public:
 	bool isAlive() const { return life > 0; }
 	short getLife() const { return life; }
 	short getMaxLife() const { return maxLife; }
-	void decLife(short dam) { life -= dam; }
+	short decLife(short dam) { life -= dam; return life; }
 	void setLife(short lf) { life = lf; }
 };
 

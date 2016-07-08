@@ -3,6 +3,8 @@
 #include "Explosion.hpp"
 #include "Controllable.hpp"
 #include "Player.hpp"
+#include "Bonus.hpp"
+#include "BreakableWall.hpp"
 
 using EntityList = std::list<Game::Entity*>;
 
@@ -42,6 +44,22 @@ void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager &lm,
 	}
 }
 
+void Game::Logic::bonusDropLogic(Game::Entity *e, Game::LevelManager &lm,
+		EntityList& tbspawned, EntityList& tbkilled)
+{
+	auto wall = dynamic_cast<Game::BreakableWall*>(e);
+	if (wall == nullptr) return;
+
+	auto klb = wall->get<Game::Killable>();
+	if (klb->isKilled() && !klb->isKillInProgress()) {
+		const auto bonus_type = Game::bonusTypeDistribution(Game::rng);
+		if (bonus_type < Game::Bonus::N_BONUS_TYPES) {
+			tbspawned.push_back(new Game::Bonus(e->getPosition(),
+						static_cast<Game::Bonus::Type>(bonus_type)));
+		}
+	}
+}
+
 //void Game::Logic::explosionDamageLogic(Game::Entity *e, Game::LevelManager &lm,
 		//EntityList& tbspawned, EntityList& tbkilled)
 //{
@@ -57,5 +75,6 @@ void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager &lm,
 
 std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bombDeployLogic,
-	bombExplosionLogic
+	bombExplosionLogic,
+	bonusDropLogic
 };

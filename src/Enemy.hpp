@@ -71,6 +71,9 @@ class Enemy : public Game::Entity {
 	bool dashing = false;
 	const float originalSpeed;
 
+
+	void _checkCollision(Game::Collider& coll);
+
 public:
 	constexpr static float BASE_SPEED = 75.f;
 

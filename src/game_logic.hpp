@@ -25,6 +25,8 @@ namespace Logic {
 	DEF_LOGIC(bombDeployLogic);
 	/** Make explosions destroy stuff */
 	//DEF_LOGIC(explosionDamageLogic);
+	/** Make walls drop powerups */
+	DEF_LOGIC(bonusDropLogic);
 
 	extern std::vector<GameLogicFunc> functions;
 }

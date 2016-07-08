@@ -26,9 +26,9 @@ std::discrete_distribution<unsigned short> Game::bonusTypeDistribution
 	490 // no bonus
 };
 	
-Bonus::Bonus(const sf::Vector2f& pos, const Type _type)
+Bonus::Bonus(const sf::Vector2f& pos, const Type type)
 	: Game::Entity(pos)
-	, type(_type)
+	, type(type)
 {
 	sprite = addComponent(new Game::Sprite(this,
 				Game::getAsset("graphics", "bonuses.png"), 
@@ -44,6 +44,7 @@ Bonus::Bonus(const sf::Vector2f& pos, const Type _type)
 }
 
 void Bonus::update() {
+	Game::Entity::update();
 	const float s = expireClock->getElapsedTime().asSeconds();
 	if (EXPIRE_TIME.asSeconds() - s <= 3.) {
 		const float diff = s - std::floor(s);

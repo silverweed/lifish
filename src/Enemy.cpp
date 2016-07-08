@@ -18,7 +18,10 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attac
 {
 	animated = addComponent(new Game::Animated(this, 
 		Game::getAsset("graphics", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
-	addComponent(new Game::Collider(this, Game::Layers::ENEMIES));
+	addComponent(new Game::Collider(this, [this] (Game::Collider& coll) {
+		// on collision
+		_checkCollision(coll);
+	}, Game::Layers::ENEMIES));
 	addComponent(new Game::Sounded(this, {
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_death.ogg")),
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_yell.ogg")),
@@ -146,6 +149,14 @@ Game::Direction Enemy::seeingPlayer(const Game::LevelManager& lm) const {
 		}
 	}
 	return dir;
+}
+
+void Enemy::_checkCollision(Game::Collider& coll) {
+	if (coll.getLayer() != Game::Layers::EXPLOSIONS) return;
+	auto lifed = get<Game::Lifed>();
+	if (lifed->decLife(1) <= 0) {
+		get<Game::Killable>()->kill();	
+	}
 }
 
 /*void Enemy::draw(sf::RenderTarget& window) {
