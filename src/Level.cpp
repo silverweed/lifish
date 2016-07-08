@@ -85,12 +85,15 @@ void Level::_loadTiles() {
 	bgTiles[TILE_UPPER_RIGHT].setTexture(*borderTexture);
 	bgTiles[TILE_UPPER_RIGHT].setTextureRect(sf::IntRect(2 * TILE_SIZE + TILE_SIZE, b, -TILE_SIZE, TILE_SIZE));
 
+	// TILE_UPPER_LEFT x-mirrored and y-mirrored
 	bgTiles[TILE_LOWER_RIGHT].setTexture(*borderTexture);
-	bgTiles[TILE_LOWER_RIGHT].setTextureRect(sf::IntRect(3 * TILE_SIZE, b, TILE_SIZE, TILE_SIZE));
+	bgTiles[TILE_LOWER_RIGHT].setTextureRect(sf::IntRect(
+				2 * TILE_SIZE + TILE_SIZE, 
+				b + TILE_SIZE, -TILE_SIZE, -TILE_SIZE));
 
-	// TILE_LOWER_RIGHT x-mirrored
+	// TILE_UPPER_LEFT y-mirrored
 	bgTiles[TILE_LOWER_LEFT].setTexture(*borderTexture);
-	bgTiles[TILE_LOWER_LEFT].setTextureRect(sf::IntRect(3 * TILE_SIZE + TILE_SIZE, b, -TILE_SIZE, TILE_SIZE));
+	bgTiles[TILE_LOWER_LEFT].setTextureRect(sf::IntRect(2 * TILE_SIZE, b + TILE_SIZE, TILE_SIZE, -TILE_SIZE));
 
 	// Set angles' position once and for all
 	bgTiles[TILE_REGULAR].setPosition(TILE_SIZE, TILE_SIZE);

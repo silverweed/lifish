@@ -33,13 +33,11 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attac
 	dashClock = addComponent(new Game::Clock(this));
 	alienSprite = addComponent(new Game::AlienSprite(this));
 	addComponent(new Game::Scored(this, id * 100));
-	addComponent(new Game::Shooting(this, attack));
 	movingAnimator = addComponent(new Game::MovingAnimator(this));
 	addComponent(new Game::Killable(this, [this] () {
 		// on kill
 		Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
 	}));
-	alienSprite = addComponent(new Game::AlienSprite(this));
 	shooting = addComponent(new Game::Shooting(this, attack));
 	sighted = addComponent(new Game::Sighted(this));
 

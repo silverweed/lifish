@@ -10,6 +10,8 @@ class Clock : public Game::Component {
 	sftools::Chronometer clock;
 
 public:
+	static constexpr bool requiredUnique() { return false; }
+
 	explicit Clock(Game::Entity *const owner)
 		: Game::Component(owner)
 	{}

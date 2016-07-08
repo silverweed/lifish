@@ -12,6 +12,11 @@ protected:
 	Game::Entity *const owner;
 
 public:
+	/** If true, adding more than a component of this type to an Entity
+	 *  will raise a logic_error.
+	 */
+	static constexpr bool requiredUnique() { return true; }
+
 	explicit Component(Game::Entity *const owner) 
 		: owner(owner) {}
 
