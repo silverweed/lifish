@@ -3,7 +3,6 @@
 #include "AxisMoving.hpp"
 #include "Sounded.hpp"
 #include "Drawable.hpp"
-#include "Killable.hpp"
 #include "Game.hpp"
 #include "Temporary.hpp"
 #include "utils.hpp"
@@ -40,15 +39,6 @@ Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
 		Game::getAsset("test", std::string("bullet") + Game::to_string(attack.id) + std::string("_hit.ogg")),
 		Game::getAsset("test", std::string("bullet") + Game::to_string(attack.id) + std::string("_shot.ogg"))
 	}));
-	addComponent(new Game::Killable(this, [this] () {
-		// on kill
-		_destroy();
-	}, [this] () {
-		// kill in progress
-		auto& animatedSprite = get<Game::Animated>()->getSprite();
-		return animatedSprite.isPlaying();
-	}));
-
 
 	/*
 	switch (direction) {
@@ -70,9 +60,16 @@ Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
 	*/
 
 	addComponent(new Game::Temporary(this, [this] () {
-		// TODO: check collision
+		// expire condition
 		return position.x < 0 || position.x > Game::TILE_SIZE * Game::LEVEL_WIDTH 
 			|| position.y < 0 || position.y > Game::TILE_SIZE * Game::LEVEL_HEIGHT;
+	}, [this] () {
+		// on kill
+		_destroy();
+	}, [this] () {
+		// is kill in progress
+		auto& animatedSprite = get<Game::Animated>()->getSprite();
+		return animatedSprite.isPlaying();
 	}));
 }
 

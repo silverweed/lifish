@@ -1,33 +1,38 @@
 #pragma once
 
-#include "Component.hpp"
+#include "Killable.hpp"
 
 namespace Game {
 
 /**
- * A Temporary defines an entity which gets deleted by an EntityGroup
- * as soon as isExpired() returns true.
+ * A Temporary is a special Killable component which automatically checks
+ * if it's "expired" and kills itself if so.
  */
-class Temporary : public Game::Component {
-	bool expired = false;
-
+class Temporary : public Game::Killable {
 	std::function<bool()> expireCondition;
 
 public:
-	explicit Temporary(Game::Entity *const owner)
-		: Game::Component(owner) {}
-
 	explicit Temporary(Game::Entity *const owner, std::function<bool()> expireCondition)
-		: Game::Component(owner)
+		: Game::Killable(owner)
+		, expireCondition(expireCondition)
+	{}
+	explicit Temporary(Game::Entity *const owner,
+			std::function<bool()> expireCondition, 
+			OnKillCallback onKill)
+		: Game::Killable(owner, onKill)
+		, expireCondition(expireCondition)
+	{}
+	explicit Temporary(Game::Entity *const owner, 
+			std::function<bool()> expireCondition, 
+			OnKillCallback onKill, 
+			CheckKillCallback checkKill)
+		: Game::Killable(owner, onKill, checkKill)
 		, expireCondition(expireCondition)
 	{}
 
-	bool isExpired() const { return expired; }
-	void expire() { expired = true; }
-
 	void update() override {
-		if (!expired && expireCondition && expireCondition())
-			expired = true;
+		if (!killed && expireCondition())
+			kill();
 	}
 };
 

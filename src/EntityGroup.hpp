@@ -12,6 +12,7 @@
 #include "Killable.hpp"
 #include "Moving.hpp"
 #include "Collider.hpp"
+#include "Fixed.hpp"
 
 namespace Game {
 
@@ -48,10 +49,10 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	 */
 	std::array<Game::Entity*, Game::LEVEL_WIDTH * Game::LEVEL_HEIGHT> fixedEntities;
 
-	/** The list of the temporary entities, which have a brief lifetime
-	 *  and ought to be removed when their Temporary component tells they're expired.
+	/** The list of the killable entities, which ought to be removed when 
+	 *  their `isKilled()` method yields true.
 	 */
-	std::list<Game::Temporary*> temporary;
+	std::list<Game::Killable*> killables;
 
 	/** The list of Killable entities who are being destroyed (those whose isKilled() is
 	 *  true but isKillInProgress() is true as well).
@@ -62,11 +63,11 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	/** Removes `e`'s components from internal collections */
 	void _removeFromInternal(const Game::Entity *const e);
 
-	/** Removes any expired temporary from both `temporary` and `entities`, and destroys them.
-	 *  If an entity is Killable and its `isKillInProgress()` is true, puts it in `dying`
-	 *  instead of immediately destroing it.
+	/** Removes any killed entity from all internal collections and destroys them.
+	 *  If its `isKillInProgress()` is true, puts it in `dying`
+	 *  instead of immediately destroing it (it is not removed from `entities` until it's finalized)
 	 */
-	void _removeExpiredTemporaries();
+	void _checkKilled();
 
 	/** Removes any expired Killable in `dying`. */
 	void _removeDying();
@@ -104,11 +105,6 @@ public:
 	 *  `e` is then removed from all internal collections. 
 	 */
 	Game::Entity* release(Game::Entity *e);
-
-	/** Calls k->kill() and marks it as a dying entity so that this EntityGroup can manage
-	 *  its death cycle. Will throw if k's owner is not managed by this EntityGroup.
-	 */
-	void kill(Game::Killable *k);
 
 	/** Removes all entities from this EntityGroup. */
 	void clear();
@@ -155,11 +151,13 @@ T* EntityGroup::add(T *entity) {
 	entity->setOrigin(origin);
 
 	// Put in aux collections
-	auto tmp = entity->template get<Game::Temporary>();
-	if (tmp != nullptr) {
-		temporary.push_back(tmp);
-	} else if (entity->template get<Game::Moving>() == nullptr) {
-		// Put non-temporary fixed entity in fixedEntities
+	auto klb = entity->template get<Game::Killable>();
+	if (klb != nullptr) {
+		killables.push_back(klb);
+	} 
+
+	// Put an entity marked as `Fixed` in fixedEntities
+	if (entity->template get<Game::Fixed>() != nullptr) {
 		const auto tile = Game::tile(entity->getPosition());
 		if (getFixedAt(tile.x, tile.y) != nullptr)
 			throw std::logic_error("Two fixed entities share the same tile?!");

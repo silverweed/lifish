@@ -7,6 +7,7 @@
 #include "Killable.hpp"
 #include "Drawable.hpp"
 #include "Collider.hpp"
+#include "Fixed.hpp"
 
 using Game::Coin;
 using Game::TILE_SIZE;
@@ -16,6 +17,7 @@ const sf::Time Coin::GRAB_TIME = sf::milliseconds(3000);
 Coin::Coin(const sf::Vector2f& pos)
 	: Game::Entity(pos)
 {
+	addComponent(new Game::Fixed(this));
 	addComponent(new Game::Scored(this, VALUE));
 	addComponent(new Game::Sounded(this, { Game::getAsset("sounds", "coin.ogg") }));
 	grabClock = addComponent(new Game::Clock(this));

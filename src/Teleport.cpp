@@ -4,6 +4,7 @@
 #include "Drawable.hpp"
 #include "Collider.hpp"
 #include "AxisMoving.hpp"
+#include "Fixed.hpp"
 
 using Game::Teleport;
 using Game::TILE_SIZE;
@@ -13,6 +14,7 @@ const sf::Time Teleport::COOLDOWN_TIME = sf::milliseconds(1000);
 Teleport::Teleport(const sf::Vector2f& pos) 
 	: Game::Entity(pos)
 {
+	addComponent(new Game::Fixed(this));
 	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", "teleport.png")));
 	disableClock = addComponent(new Game::Clock(this));
 	addComponent(new Game::Drawable(this, animated));

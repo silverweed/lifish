@@ -4,8 +4,7 @@
 #include "Drawable.hpp"
 #include "Collider.hpp"
 #include "Game.hpp"
-
-#include <iostream>
+#include "Fixed.hpp"
 
 using Game::Bomb;
 using Game::TILE_SIZE;
@@ -18,6 +17,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player& source,
 	, radius(_radius)
 	, sourcePlayer(source)
 {
+	addComponent(new Game::Fixed(this));
 	fuseClock = addComponent(new Game::Clock(this));
 	addComponent(new Game::Sounded(this, { Game::getAsset("sounds", "fuse.ogg") })); 
 	killable = addComponent(new Game::Killable(this, [this] () {
@@ -58,7 +58,6 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player& source,
 
 void Bomb::update() {
 	Game::Entity::update();
-	std::cerr<<"fuseClock = " << fuseClock->getElapsedTime().asMilliseconds() << " / " << fuseTime.asMilliseconds()<<std::endl;
 	if (!switched && fuseTime - fuseClock->getElapsedTime() < sf::milliseconds(2000)
 			&& !killable->isKilled())
 	{
@@ -69,7 +68,6 @@ void Bomb::update() {
 }
 
 void Bomb::ignite() {
-	std::cerr<<"ignited\n";
 	fuseTime = sf::milliseconds(50); 
 	fuseClock->restart();
 	ignited = true; 

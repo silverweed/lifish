@@ -22,7 +22,7 @@ void EntityGroup::updateAll() {
 	for (auto& e : entities)
 		e->update();
 
-	_removeExpiredTemporaries();
+	_checkKilled();
 	if (dying.size() > 0)
 		_removeDying();
 }
@@ -38,7 +38,7 @@ void EntityGroup::_removeFromInternal(const Game::Entity *const entity) {
 	if (cld != nullptr)
 		collidingEntities.erase(std::remove(collidingEntities.begin(), collidingEntities.end(), cld));
 	if (tmp != nullptr)
-		temporary.remove(tmp);
+		killables.remove(tmp);
 	if (klb != nullptr)
 		dying.remove(klb);
 }
@@ -65,36 +65,32 @@ Game::Entity* EntityGroup::release(Game::Entity *e) {
 void EntityGroup::clear() {
 	entities.clear();
 	collidingEntities.clear();
-	temporary.clear();
+	killables.clear();
 	dying.clear();
 	fixedEntities.fill(nullptr);
 }
 
-void EntityGroup::_removeExpiredTemporaries() {
-	for (auto it = temporary.begin(); it != temporary.end(); ) {
-		auto tmp = *it;
-		if (tmp->isExpired()) {
-			// If object is Killable, call its onKill()
-			auto k = tmp->getOwner()->get<Game::Killable>();
-			if (k != nullptr) {
-				k->kill();
-				if (k->isKillInProgress()) {
-					// Will be finalized later
-					dying.push_back(k);
-					it = temporary.erase(it);
-					continue;
-				}
+void EntityGroup::_checkKilled() {
+	for (auto it = killables.begin(); it != killables.end(); ) {
+		auto klb = *it;
+		if (klb->isKilled()) {
+			klb->kill();
+			if (klb->isKillInProgress()) {
+				// Will be finalized later
+				dying.push_back(klb);
+				it = killables.erase(it);
+				continue;
 			}
 
 			auto eit = std::find_if(entities.begin(), entities.end(), 
-					[tmp] (const std::unique_ptr<Game::Entity>& ptr) 
+					[klb] (const std::unique_ptr<Game::Entity>& ptr) 
 			{
-				return ptr.get() == tmp->getOwner();
+				return ptr.get() == klb->getOwner();
 			});
 			if (eit != entities.end())
 				entities.erase(eit);
 			
-			it = temporary.erase(it);
+			it = killables.erase(it);
 		} else 
 			++it;
 	}
@@ -104,7 +100,6 @@ void EntityGroup::_removeDying() {
 	for (auto it = dying.begin(); it != dying.end(); ) {
 		auto tmp = *it;
 		if (!tmp->isKillInProgress()) {
-			std::cerr << "Terminate " << tmp << std::endl;
 			// kill function has ended, we can safely destroy this.
 			auto eit = std::find_if(entities.begin(), entities.end(), 
 					[tmp] (std::unique_ptr<Game::Entity>& ptr) 
@@ -112,7 +107,7 @@ void EntityGroup::_removeDying() {
 				return ptr.get() == tmp->getOwner();
 			});
 			if (eit != entities.end()) {
-				// Remove from internal collections, save for `temporary`, from which it was
+				// Remove from internal collections, save for `killables`, from which it was
 				// already removed by _removeExpiredTemporaries
 				auto cld = eit->get()->get<Game::Collider>();
 				const auto tile = Game::tile(eit->get()->getPosition());
@@ -130,18 +125,4 @@ void EntityGroup::_removeDying() {
 		} else
 			++it;
 	}
-}
-
-void EntityGroup::kill(Game::Killable *k) {
-	auto owner_it = std::find_if(entities.begin(), entities.end(), 
-			[k] (const std::unique_ptr<Game::Entity>& ptr) 
-	{
-		return ptr.get() == k->getOwner();
-	});
-	if (owner_it == entities.end())
-		throw std::invalid_argument("EntityGroup::kill(): killed entity's owner not managed by us!");
-
-	k->kill();
-	if (k->isKillInProgress())
-		dying.push_back(k);
 }

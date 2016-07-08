@@ -136,8 +136,8 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 				// It's a wall or a bomb
 				propagating[dir] = false;
 				auto cld = fxd->get<Game::Collider>();
-				//if (cld != nullptr && cld->collidesWith(*collider))
-					// TODO
+				if (cld != nullptr && cld->collidesWith(*collider))
+					cld->addColliding(*collider);
 
 				// TODO move logic to game_logic
 				//const auto tile = level->getTile(new_tile.x - 1, new_tile.y - 1);

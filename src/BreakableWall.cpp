@@ -3,10 +3,10 @@
 #include "GameCache.hpp"
 #include "Killable.hpp"
 #include "Lifed.hpp"
-#include "Collider.hpp"
 #include "Scored.hpp"
 #include "Sounded.hpp"
 #include "Drawable.hpp"
+#include "Fixed.hpp"
 
 using Game::BreakableWall;
 using Game::TILE_SIZE;
@@ -49,10 +49,14 @@ BreakableWall::BreakableWall(const sf::Vector2f& pos,
 }
 
 void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
+	addComponent(new Game::Fixed(this));
 	addComponent(new Game::Scored(this, score));
 	addComponent(new Game::Lifed(this, life));
 	addComponent(new Game::Sounded(this, { Game::getAsset("sounds", "wall_break.ogg") })); 
-	addComponent(new Game::Collider(this, Game::Layers::WALLS));
+	addComponent(new Game::Collider(this, [this] (Game::Collider& cld) { 
+		// on collision
+		_checkCollision(cld); 
+	}, Game::Layers::WALLS));
 	addComponent(new Game::Killable(this, [this] () {
 		// on kill
 		get<Game::Animated>()->getSprite().play();
@@ -73,4 +77,12 @@ Animation& BreakableWall::_setupAnimations(const std::string& texture_name) {
 	animatedSprite.pause();
 
 	return animation;
+}
+
+void BreakableWall::_checkCollision(Game::Collider& cld) {
+	if (cld.getLayer() != Game::Layers::EXPLOSIONS) return;
+	const auto etile = Game::tile(cld.getOwner()->getPosition());
+	const auto mtile = Game::tile(position);
+	if (Game::abs(etile.x - mtile.x) == 1 || Game::abs(etile.y - mtile.y) == 1)
+		get<Game::Killable>()->kill();
 }

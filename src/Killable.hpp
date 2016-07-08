@@ -6,20 +6,20 @@
 namespace Game {
 
 class Killable : public Game::Component {
-private:
-	using Callback = std::function<void()>;
+protected:
+	using OnKillCallback = std::function<void()>;
 	using CheckKillCallback = std::function<bool()>;
 
 	bool killed = false;
 
 	/** Function to be called on kill() */
-	Callback onKill;
+	OnKillCallback onKill;
 	CheckKillCallback checkKillProgress;
 
 public:
 	explicit Killable(Game::Entity *const owner); 
-	explicit Killable(Game::Entity *const owner, Callback callback); 
-	explicit Killable(Game::Entity *const owner, Callback callback, CheckKillCallback checkKill); 
+	explicit Killable(Game::Entity *const owner, OnKillCallback callback); 
+	explicit Killable(Game::Entity *const owner, OnKillCallback callback, CheckKillCallback checkKill); 
 
 	void kill();
 	bool isKilled() const { return killed; }

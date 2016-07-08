@@ -77,7 +77,7 @@ constexpr std::ostream& operator<<(std::ostream& stream, const sf::Rect<T>& rect
 }
 
 template<typename T, typename R>
-constexpr double sqrdistance(const sf::Vector2<T>& a, const sf::Vector2<R>& b) {
+constexpr double sqrDistance(const sf::Vector2<T>& a, const sf::Vector2<R>& b) {
 	return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
 }
 
