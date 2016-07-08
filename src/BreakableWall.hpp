@@ -2,6 +2,7 @@
 
 #include "Entity.hpp"
 #include "Animated.hpp"
+#include "Killable.hpp"
 #include "Collider.hpp"
 
 namespace Game {
@@ -10,6 +11,9 @@ namespace Game {
  * A breakable wall
  */
 class BreakableWall : public Game::Entity {
+	Game::Killable *killable = nullptr;
+	bool disabled = false;
+
 protected:
 	/** Constructor used by TransparentWall */
 	BreakableWall(const sf::Vector2f& pos, const std::string& texture_name, 
@@ -23,6 +27,8 @@ public:
 	constexpr static unsigned int SCORE = 10;
 
 	explicit BreakableWall(const sf::Vector2f& pos, const unsigned short id, unsigned short life = 1);
+
+	void update() override;
 };
 
 }

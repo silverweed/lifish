@@ -1,7 +1,6 @@
 #include "BreakableWall.hpp"
 #include "Game.hpp"
 #include "GameCache.hpp"
-#include "Killable.hpp"
 #include "Lifed.hpp"
 #include "Scored.hpp"
 #include "Player.hpp"
@@ -59,7 +58,7 @@ void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
 		// on collision
 		_checkCollision(cld); 
 	}, Game::Layers::WALLS));
-	addComponent(new Game::Killable(this, [this] () {
+	killable = addComponent(new Game::Killable(this, [this] () {
 		// on kill
 		get<Game::Animated>()->getSprite().play();
 	}, [this] () {
@@ -89,5 +88,16 @@ void BreakableWall::_checkCollision(Game::Collider& cld) {
 		get<Game::Killable>()->kill();
 		get<Game::Scored>()->setTarget(static_cast<const Game::Explosion*>(
 					cld.getOwner())->getSourcePlayer()->getInfo().id);
+	}
+}
+
+void BreakableWall::update() {
+	Game::Entity::update();
+	// XXX: this is a 'workaround' for hiding our sprite when this wall has finished
+	// being killed. Changing the order of update() and checkKilled() in EntityGroup
+	// would fix this, but other things would break. Maybe there is a win-win solution?
+	if (!disabled && killable->isKilled() && !killable->isKillInProgress()) {
+		get<Game::Animated>()->getSprite().setColor(sf::Color(0, 0, 0, 0));
+		disabled = true;
 	}
 }
