@@ -18,6 +18,7 @@ enum Layer : unsigned short {
 	TELEPORTS,
 	EXPLOSIONS,
 	BOMBS,
+	GRABBABLE,
 	N_LAYERS
 };
 

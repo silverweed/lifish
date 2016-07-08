@@ -59,6 +59,8 @@ public:
 	Game::Explosion* propagate(Game::LevelManager& lm);
 
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
+
+	const Game::Player* getSourcePlayer() const { return sourcePlayer; }
 };
 
 }

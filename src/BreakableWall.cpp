@@ -4,7 +4,9 @@
 #include "Killable.hpp"
 #include "Lifed.hpp"
 #include "Scored.hpp"
+#include "Player.hpp"
 #include "Sounded.hpp"
+#include "Explosion.hpp"
 #include "Drawable.hpp"
 #include "Fixed.hpp"
 
@@ -83,6 +85,9 @@ void BreakableWall::_checkCollision(Game::Collider& cld) {
 	if (cld.getLayer() != Game::Layers::EXPLOSIONS) return;
 	const auto etile = Game::tile(cld.getOwner()->getPosition());
 	const auto mtile = Game::tile(position);
-	if (Game::abs(etile.x - mtile.x) == 1 || Game::abs(etile.y - mtile.y) == 1)
+	if (Game::abs(etile.x - mtile.x) == 1 || Game::abs(etile.y - mtile.y) == 1) {
 		get<Game::Killable>()->kill();
+		get<Game::Scored>()->setTarget(static_cast<const Game::Explosion*>(
+					cld.getOwner())->getSourcePlayer()->getInfo().id);
+	}
 }

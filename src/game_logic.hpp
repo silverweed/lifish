@@ -27,6 +27,8 @@ namespace Logic {
 	//DEF_LOGIC(explosionDamageLogic);
 	/** Make walls drop powerups */
 	DEF_LOGIC(bonusDropLogic);
+	/** Make Scored entities give points when killed */
+	DEF_LOGIC(scoredKillablesLogic);
 
 	extern std::vector<GameLogicFunc> functions;
 }

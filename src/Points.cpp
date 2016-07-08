@@ -22,6 +22,10 @@ Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color,
 	}));
 }
 
+Points::Points(const sf::Vector2f& pos, int pts, sf::Color color, unsigned short charSize) 
+	: Game::Points(pos, Game::to_string(pts), color, charSize)
+{}
+
 void Points::update() {
 	Game::Entity::update();
 	text.setPosition(position);

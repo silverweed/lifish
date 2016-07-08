@@ -2,6 +2,8 @@
 #include "Bomb.hpp"
 #include "Explosion.hpp"
 #include "Controllable.hpp"
+#include "Scored.hpp"
+#include "Points.hpp"
 #include "Player.hpp"
 #include "Bonus.hpp"
 #include "BreakableWall.hpp"
@@ -60,6 +62,25 @@ void Game::Logic::bonusDropLogic(Game::Entity *e, Game::LevelManager &lm,
 	}
 }
 
+void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager &lm,
+		EntityList& tbspawned, EntityList& tbkilled)
+{
+	auto scored = e->get<Game::Scored>();
+	if (scored == nullptr || scored->hasGivenPoints()) return;
+	
+	auto klb = e->get<Game::Killable>();
+	if (klb != nullptr && klb->isKilled()) {
+		// Give and spawn points
+		auto target = scored->getTarget();
+		if (target < 0) 
+			std::cerr << "[ WARNING ] target of scored hasn't been set" << std::endl;
+		else {
+			Game::score[target - 1] += scored->givePoints();
+			tbspawned.push_back(new Game::Points(e->getPosition(), scored->getPointsGiven()));
+		}
+	}
+}
+
 //void Game::Logic::explosionDamageLogic(Game::Entity *e, Game::LevelManager &lm,
 		//EntityList& tbspawned, EntityList& tbkilled)
 //{
@@ -76,5 +97,6 @@ void Game::Logic::bonusDropLogic(Game::Entity *e, Game::LevelManager &lm,
 std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bombDeployLogic,
 	bombExplosionLogic,
-	bonusDropLogic
+	bonusDropLogic,
+	scoredKillablesLogic
 };
