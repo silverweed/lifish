@@ -47,6 +47,7 @@ private:
 
 	/** While true, the idle pose becomes ANIM_WIN */
 	bool winning = false;
+	short remainingLives = Game::Conf::Player::INITIAL_LIVES;
 
 	Game::AxisMoving *moving = nullptr;
 	Game::Animated *animated = nullptr;
@@ -65,6 +66,7 @@ public:
 	explicit Player(const sf::Vector2f& pos, const Game::PlayerInfo& info);
 
 	void resurrect();
+	short getRemainingLives() const { return remainingLives; }
 
 	void setWinning(bool b) { winning = b; }
 

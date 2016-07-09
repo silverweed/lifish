@@ -26,6 +26,7 @@
 #include "../src/ScreenHandler.hpp"
 #include "../src/Points.hpp"
 #include "../src/CollisionDetector.hpp"
+#include "../src/SidePanel.hpp"
 
 using namespace Game;
 
@@ -46,6 +47,8 @@ int main() {
 	auto players = lm.createNewPlayers();
 	for (auto p : players)
 		p->get<Game::Controllable>()->setWindow(&window);
+
+	SidePanel sidePanel(lm);
 
 	LevelLoader::load(*level.get(), lm);
 
@@ -89,7 +92,7 @@ int main() {
 	//}
 #endif
 
-	sf::Vector2f origin(-200, 0);
+	sf::Vector2f origin(-Game::SIDE_PANEL_WIDTH, 0);
 	lm.setOrigin(origin);
 
 	Game::music = level->get<Game::Music>()->getMusic();
@@ -106,6 +109,8 @@ int main() {
 	bool spawned = false;
 	int cycle = 0;
 	//bool removed = false;
+
+	lm.get<Game::LevelTime>()->resume();
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -219,9 +224,12 @@ int main() {
 		// Update level
 		lm.update();
 
+		sidePanel.update();
+
 		// Draw everything
 		window.clear();
 		window.draw(lm);
+		window.draw(sidePanel);
 		Game::maybeShowFPS(window);
 		window.display();
 

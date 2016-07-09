@@ -10,17 +10,20 @@ ShadedText::ShadedText(const std::string& fontname, const std::string& str,
 	: Game::Entity(pos)
 	, shadowSpacing(3.5, 3)
 {
-	auto font = Game::cache.loadFont(fontname);
-	fgtext.setFont(*font);
-	bgtext.setFont(*font);
-	fgtext.setString(str);
-	bgtext.setString(str);
+	setFont(fontname);
+	setString(str);
 	fgtext.setPosition(pos);
 	bgtext.setPosition(pos + shadowSpacing);
 	fgtext.setColor(fg);
 	bgtext.setColor(bg);
 
 	addComponent(new Game::Drawable(this, this));
+}
+
+void ShadedText::setFont(const std::string& fontname) {
+	auto font = Game::cache.loadFont(fontname);
+	fgtext.setFont(*font);
+	bgtext.setFont(*font);
 }
 
 void ShadedText::setStyle(sf::Text::Style style) {

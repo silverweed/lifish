@@ -24,6 +24,8 @@ LevelManager::LevelManager()
 {
 	for (auto& b : bombs)
 		b.fill(nullptr);
+
+	levelTime = addComponent(new Game::LevelTime(this));
 }
 
 auto LevelManager::createNewPlayers(unsigned short n) -> std::vector<Game::Player*> {

@@ -13,6 +13,7 @@ using Game::TILE_SIZE;
 bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 
 	lm.level = &level;
+	lm.levelTime->setTime(level.getInfo().time);
 
 	auto& entities = lm.getEntities();
 	if (entities.size() > 0) {

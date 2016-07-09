@@ -78,17 +78,13 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	/** The Bonus icons */
 	Matrix<sf::Sprite, Game::MAX_PLAYERS, Game::Bonus::N_PERMANENT_BONUS_TYPES> bonusesSprite;
 	sf::Texture *bonusesTexture;
-	std::array<Game::ShadedText, Game::MAX_PLAYERS> maxBombsText, bombRadiusText;
-
-	/** The texts showing the number of remaining lives */
-	std::array<Game::ShadedText,Game::MAX_PLAYERS> nLivesText;
-	/** The texts showing gameOver */
-	std::array<Game::ShadedText,Game::MAX_PLAYERS> gameOverText;
 
 	void _drawHealthSprites(sf::RenderTarget& window, sf::RenderStates states, 
 			const Game::Player *player) const;
 	void _drawExtraLetters(sf::RenderTarget& window, sf::RenderStates states, 
 			const Game::Player *player) const;
+	/** Draws the time remaining in format MM:SS */
+	void _drawTime(sf::RenderTarget& window, sf::RenderStates states) const;
 public:
 	explicit SidePanel(const Game::LevelManager& lm);
 	~SidePanel();

@@ -14,15 +14,17 @@ public:
 	};
 
 private:
-	Game::Clock<1> *clock;
-	const unsigned int initialTime;
+	Game::Clock *clock = nullptr;
+	unsigned int initialTime;
 	bool isHurryUp = false;
 	bool hurryUpWarningGiven = false;
 	HurryUpResponse hurryUpResponse = HurryUpResponse::HURRY_UP_OFF;
 
 public:
-	explicit LevelTime(Game::Entity *const owner, unsigned int time);
+	explicit LevelTime(Game::Entity *const owner, unsigned int time = 0);
 
+	/** Sets the initialTime to `time`, resets and pauses the clock */
+	void setTime(unsigned int time);
 	float getTime() const;
 	void update() override;
 	HurryUpResponse checkHurryUp() const;

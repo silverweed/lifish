@@ -30,6 +30,7 @@ public:
 	void setFGColor(const sf::Color& fg) { fgtext.setColor(fg); }
 	void setBGColor(const sf::Color& bg) { bgtext.setColor(bg); }
 	void setColor(const sf::Color& fg, const sf::Color& bg);
+	void setFont(const std::string& fontname);
 
 	void setPosition(const sf::Vector2f& pos) override;
 	void setOrigin(const sf::Vector2f& origin) override;

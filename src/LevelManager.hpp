@@ -10,6 +10,7 @@
 #include "Game.hpp"
 #include "Level.hpp"
 #include "LevelRenderer.hpp"
+#include "LevelTime.hpp"
 #include "utils.hpp"
 #include "game_values.hpp"
 
@@ -18,7 +19,7 @@ namespace Game {
 
 class LevelLoader;
 
-class LevelManager final : public sf::Drawable, public Game::WithOrigin, private sf::NonCopyable {
+class LevelManager final : public sf::Drawable, public Game::Entity, private sf::NonCopyable {
 
 	friend class Game::LevelLoader;
 	friend class Game::LevelRenderer;
@@ -26,6 +27,7 @@ class LevelManager final : public sf::Drawable, public Game::WithOrigin, private
 	/** The currently managed level */
 	const Game::Level *level = nullptr;
 	Game::LevelRenderer renderer;
+	Game::LevelTime *levelTime = nullptr;
 
 	Game::EntityGroup entities;
 	Game::CollisionDetector cd;
@@ -64,6 +66,8 @@ public:
 
 	const Game::EntityGroup& getEntities() const { return entities; }
 	Game::EntityGroup& getEntities() { return entities; }
+
+	const Game::Level* getLevel() const { return level; }
 
 	/** Updates all entities and collisions */
 	void update();

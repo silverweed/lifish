@@ -2,6 +2,8 @@
 #include "GameCache.hpp"
 #include "LevelManager.hpp"
 #include "Bonusable.hpp"
+#include "Lifed.hpp"
+#include "LevelTime.hpp"
 #include <iomanip>
 
 using Game::SidePanel;
@@ -9,23 +11,7 @@ using Game::SidePanel;
 SidePanel::SidePanel(const Game::LevelManager& lm)
 	: lm(lm)
 {
-	nLivesText.fill(Game::ShadedText(Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO), ""));
-	gameOverText.fill(Game::ShadedText(Game::getAsset("fonts", Game::Fonts::SIDE_PANEL), ""));
-	maxBombsText.fill(Game::ShadedText(Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO) ""));
-	bombRadiusText.fill(Game::ShadedText(Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO), ""));
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
-		nLivesText[i].setPosition(sf::Vector2f(N_LIVES_X, i == 0 ? N_LIVES_Y_1 : N_LIVES_Y_2));
-		nLivesText[i].setCharacterSize(20);
-		nLivesText[i].setStyle(sf::Text::Bold);
-		nLivesText[i].setShadowSpacing(2, 2);
-
-		gameOverText[i].setPosition(sf::Vector2f(HEALTH_SYM_POS_X, i == 0 
-					? HEALTH_SYM_POS_Y_1 : HEALTH_SYM_POS_Y_2));
-		gameOverText[i].setCharacterSize(HEALTH_SYM_HEIGHT);
-		maxBombsText[i].setCharacterSize(11);
-		bombRadiusText[i].setCharacterSize(11);
-		maxBombsText[i].setShadowSpacing(1, 1);
-		bombRadiusText[i].setShadowSpacing(1, 1);
 	}
 
 	// Load background
@@ -84,7 +70,7 @@ SidePanel::SidePanel(const Game::LevelManager& lm)
 SidePanel::~SidePanel() {}
 
 static void _drawWithShadow(sf::RenderTarget& window, sf::RenderStates states, const sf::Sprite& sprite) {
-	sf::Sprite shadow(sprite.getTexture(), sprite.getTextureRect());
+	sf::Sprite shadow(sprite);
 	shadow.setColor(sf::Color(0, 0, 0, 200));
 	shadow.setPosition(sprite.getPosition() + sf::Vector2f(3, 2));
 	window.draw(shadow, states);
@@ -94,15 +80,17 @@ static void _drawWithShadow(sf::RenderTarget& window, sf::RenderStates states, c
 void SidePanel::_drawHealthSprites(sf::RenderTarget& window, sf::RenderStates states, 
 		const Game::Player *player) const 
 {
-	const unsigned short n_tot = player->getMaxLife() / 2;
-	const unsigned short n_full = player->getLife() / 2;
-	const unsigned short n_half = player->getLife() % 2;
+	const auto lifed = player->get<Game::Lifed>();
+	const unsigned short n_tot = lifed->getMaxLife() / 2;
+	const unsigned short n_full = lifed->getLife() / 2;
+	const unsigned short n_half = lifed->getLife() % 2;
 
 	sf::Vector2f pos(HEALTH_SYM_POS_X, player->getInfo().id == 1 ? HEALTH_SYM_POS_Y_1 : HEALTH_SYM_POS_Y_2);
 	for (unsigned short j = 0; j < n_tot; ++j) {
-		sf::Sprite& sprite = healthSprite[j < n_full 
+		const auto& hs = healthSprite[j < n_full 
 						? HEALTH_FULL : j < n_full + n_half
 						? HEALTH_HALF : HEALTH_EMPTY];
+		sf::Sprite sprite(*healthTexture, hs.getTextureRect());
 		if (j < n_tot / 2)
 			sprite.setPosition(pos + sf::Vector2f((HEALTH_SYM_WIDTH - 1) * j, 0));
 		else
@@ -115,107 +103,19 @@ void SidePanel::_drawHealthSprites(sf::RenderTarget& window, sf::RenderStates st
 void SidePanel::_drawExtraLetters(sf::RenderTarget& window, sf::RenderStates states,
 		const Game::Player *player) const
 {
-	sf::Vector2f(EXTRA_LETTERS_POS_X, player->getInfo().id == 1 ? EXTRA_LETTERS_POS_Y_1 : EXTRA_LETTERS_POS_Y_2);
+	sf::Vector2f pos(EXTRA_LETTERS_POS_X, player->getInfo().id == 1 ? EXTRA_LETTERS_POS_Y_1 : EXTRA_LETTERS_POS_Y_2);
 	for (unsigned short j = 0; j < player->getInfo().extra.size(); ++j) {
 		const unsigned short i = player->getInfo().extra[j] ? j + 1 : 0;
-		sf::Sprite sprite(extraLettersTexture[i].getTexture(),
-				extraLettersTexture[i].getTextureRect());
-		sprite.setPosition(pos);
+		sf::Sprite sprite(extraLettersTexture[i], extraLettersSprite[i].getTextureRect());
+		sprite.setPosition(pos + sf::Vector2f(j * EXTRA_LETTERS_WIDTH, 0));
 		_drawWithShadow(window, states, sprite);
-		pos.x += EXTRA_LETTERS_WIDTH;
 	}
 }
 
-void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
-	window.draw(backgroundSprite, states);
-	for (unsigned short i = 0; i < playerHeadsSprite.size(); ++i) {
-		_drawWithShadow(window, states, playerHeadsSprite[i]);
-		window.draw(nLivesText[i], states);
-		window.draw(healthText[i], states);
-
-		// Draw health / game over
-		const auto player = lm.getPlayer(i + 1);
-		if (player == nullptr)
-			window.draw(gameOverText[i], states);
-		else {
-			_drawHealthSprites(window, states, player);
-			_drawExtraLetters(window, states, player);
-		}
-
-		window.draw(maxBombsText[i], states);
-		window.draw(bombRadiusText[i], states);
-		for (const auto& bsprite : bonusesSprite[i])
-			_drawWithShadow(window, states, bsprite);
-	}
-}
-
-void SidePanel::update() {
-	std::stringstream ss;
-	for (unsigned short i = 0; i < playerHeadsSprite.size(); ++i) {
-		const auto player = lm.getPlayer(i + 1);
-		
-		// Update remaining lives
-		sf::Vector2f pos(N_LIVES_X, i == 0 ? N_LIVES_Y_1 : N_LIVES_Y_2); 
-		ss.str("");
-		if (player == nullptr)
-			ss << "X0";
-		else
-			ss << "X" << player->getRemainingLives();
-
-		nLivesText[i].setString(ss.str());
-
-		if (player != nullptr) {
-			// Update bonuses
-			const auto powers = player->getInfo().powers;
-			const auto bonusable = player->get<Game::Bonusable>();
-			for (unsigned short j = 0; j < bonusesSprite[i].size(); ++j) {
-				switch (j) {
-					using B = Game::Bonus::Type;
-				case B::MAX_BOMBS:
-					ss.str("");
-					ss << "x" << player->powers.maxBombs;
-					maxBombsText[i].setString(ss.str());
-					break;
-				case B::MAX_RANGE:
-					ss.str("");
-					ss << "x" << player->powers.bombRadius;
-					bombRadiusText[i].setString(ss.str());
-					break;
-				case B::QUICK_FUSE:
-					bonusesSprite[i][j].setColor(powers.bombFuseTime == Game::Bomb::DEFAULT_FUSE
-							? DISABLED_COLOR : sf::Color::White);
-					break;
-				case B::SHIELD:
-				case B::SPEEDY:
-					bonusesSprite[i][j].setColor(bonusable->hasBonus(
-								static_cast<Game::Bonus::Type>(j))
-							? sf::Color::White : DISABLED_COLOR);
-					break;
-				default:
-					break;
-				}
-			}
-
-			// TODO
-
-			// Draw score
-			ss.str("");
-			ss << std::setfill('0') << std::setw(7) << Game::score[i];
-			pos.x = SCORE_POS_X;
-			pos.y = i == 0 ? SCORE_POS_Y_1 : SCORE_POS_Y_2;
-			Game::ShadedText scoreText(
-					Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO),
-					ss.str(), pos);
-			scoreText.setCharacterSize(16);
-			scoreText.setShadowSpacing(2, 2);
-			window.draw(scoreText);
-		}
-	}
-
-	// Draw the time remaining in format MM:SS
-	short seconds = short(lm.getLevel()->get<Game::LevelTime>()->getTime());
+void SidePanel::_drawTime(sf::RenderTarget& window, sf::RenderStates states) const {
+	short seconds = short(lm.get<Game::LevelTime>()->getTime());
 	const short minutes = seconds < 0 ? 0 : seconds / 60;
-	ss.str("");
+	std::stringstream ss;
 	if (minutes < 10)
 		ss << "0";
 	ss << minutes << ":";
@@ -239,7 +139,104 @@ void SidePanel::update() {
 		timeText.setColor(sf::Color(220, 0, 0, 255), sf::Color::Black);
 		timeText.setStyle(sf::Text::Bold);
 	}
-	window.draw(timeText);
+	window.draw(timeText, states);
+}
+
+void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
+	window.draw(backgroundSprite, states);
+	for (unsigned short i = 0; i < playerHeadsSprite.size(); ++i) {
+		_drawWithShadow(window, states, playerHeadsSprite[i]);
+		
+		// Draw remaining lives
+		sf::Vector2f pos(N_LIVES_X, i == 0 ? N_LIVES_Y_1 : N_LIVES_Y_2); 
+		std::stringstream ss;
+		const auto player = lm.getPlayer(i + 1);
+		if (player == nullptr)
+			ss << "X0";
+		else
+			ss << "X" << player->getRemainingLives();
+
+		Game::ShadedText text(Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO), ss.str(), pos);
+		text.setCharacterSize(20);
+		text.setStyle(sf::Text::Bold);
+		text.setShadowSpacing(2, 2);
+		window.draw(text, states);
+
+		// Draw health / game over
+		if (player == nullptr) {
+			text.setPosition(sf::Vector2f(HEALTH_SYM_POS_X, i == 0 
+						? HEALTH_SYM_POS_Y_1 : HEALTH_SYM_POS_Y_2));
+			text.setCharacterSize(HEALTH_SYM_HEIGHT);
+			window.draw(text, states);
+		} else {
+			_drawHealthSprites(window, states, player);
+			_drawExtraLetters(window, states, player);
+		}
+
+		// Draw max bombs
+		const auto powers = player->getInfo().powers;
+		pos.x = BONUS_ICON_POS_X;
+		pos.y = i == 0 ? BONUS_ICON_POS_Y_1 : BONUS_ICON_POS_Y_2;
+		text.setPosition(sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 2));
+		text.setCharacterSize(11);
+		text.setShadowSpacing(1, 1);
+		text.setString("x" + Game::to_string(powers.maxBombs));
+		window.draw(text, states);
+
+		// Draw bomb radius
+		text.setPosition(sf::Vector2f(pos.x + BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
+		text.setString("x" + Game::to_string(powers.bombRadius));
+		window.draw(text, states);
+
+		// Draw bonuses
+		for (const auto& bsprite : bonusesSprite[i])
+			_drawWithShadow(window, states, bsprite);
+
+		// Draw score
+		ss.str("");
+		ss << std::setfill('0') << std::setw(7) << Game::score[i];
+		pos.x = SCORE_POS_X;
+		pos.y = i == 0 ? SCORE_POS_Y_1 : SCORE_POS_Y_2;
+		Game::ShadedText scoreText(
+				Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO),
+				ss.str(), pos);
+		scoreText.setCharacterSize(16);
+		scoreText.setShadowSpacing(2, 2);
+		window.draw(scoreText, states);
+	}
+
+	_drawTime(window, states);
+}
+
+void SidePanel::update() {
+	std::stringstream ss;
+	for (unsigned short i = 0; i < playerHeadsSprite.size(); ++i) {
+		const auto player = lm.getPlayer(i + 1);
+
+		if (player != nullptr) {
+			// Update bonuses
+			const auto powers = player->getInfo().powers;
+			const auto bonusable = player->get<Game::Bonusable>();
+			for (unsigned short j = 0; j < bonusesSprite[i].size(); ++j) {
+				switch (j) {
+					using B = Game::Bonus::Type;
+				case B::QUICK_FUSE:
+					bonusesSprite[i][j].setColor(
+							powers.bombFuseTime == Game::Conf::Bomb::DEFAULT_FUSE
+							? DISABLED_COLOR : sf::Color::White);
+					break;
+				case B::SHIELD:
+				case B::SPEEDY:
+					bonusesSprite[i][j].setColor(bonusable->hasBonus(
+								static_cast<Game::Bonus::Type>(j))
+							? sf::Color::White : DISABLED_COLOR);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
 }
 
 //void SidePanel::_drawWithShadow(sf::RenderTarget& window, sf::Sprite& sprite, const sf::Color& color) {

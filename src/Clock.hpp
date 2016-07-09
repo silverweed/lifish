@@ -16,16 +16,20 @@ public:
 		: Game::Component(owner)
 	{}
 
-	sftools::Chronometer* getClock() {
-		return &clock;
-	}
-
 	sf::Time restart() {
 		return clock.restart();
 	}
 
 	sf::Time getElapsedTime() const {
 		return clock.getElapsedTime();
+	}
+
+	sf::Time pause() {
+		return clock.pause();
+	}
+
+	sf::Time resume() {
+		return clock.resume();
 	}
 };
 

@@ -6,15 +6,22 @@ LevelTime::LevelTime(Game::Entity *const owner, unsigned int time)
 	: Game::Component(owner)
 	, initialTime(time)
 {
-	clock = addComponent(new Game::Clock<1>(this)); 
+	clock = addComponent(new Game::Clock(this)); 
 }
 
 float LevelTime::getTime() const {
-	float time = clock->getClock()->getElapsedTime().asSeconds();
+	float time = clock->getElapsedTime().asSeconds();
 	return initialTime - time;
 }
 
+void LevelTime::setTime(unsigned int time) {
+	initialTime = time;
+	reset();
+	pause();
+}
+
 void LevelTime::update() {
+	Game::Component::update();
 	if (isHurryUp) return;
 
 	int diff = int(getTime());
