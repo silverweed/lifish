@@ -57,6 +57,10 @@ public:
 			if (e == p) return true;
 		return false;
 	}
+	/** Returns the id-th player (id starting from 1) */
+	const Game::Player* getPlayer(unsigned short id) const {
+		return players[id-1];
+	}
 
 	const Game::EntityGroup& getEntities() const { return entities; }
 	Game::EntityGroup& getEntities() { return entities; }

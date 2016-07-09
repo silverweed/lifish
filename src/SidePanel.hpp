@@ -2,9 +2,11 @@
 
 #include <array>
 #include <SFML/Graphics.hpp>
-#include "Drawable.hpp"
 #include "Bonus.hpp"
 #include "Game.hpp"
+#include "Player.hpp"
+#include "utils.hpp"
+#include "ShadedText.hpp"
 
 namespace Game {
 
@@ -21,7 +23,7 @@ class LevelManager;
  * A side panel always contains info about max 2 players,
  * independently from Game::MAX_PLAYERS.
  */
-class SidePanel final : public Game::Drawable, private sf::NonCopyable {
+class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	// Elements' coordinates (in pixel)
 	constexpr static unsigned short PLAYER_HEAD_WIDTH = 32,
 	                                PLAYER_HEAD_HEIGHT = 23,
@@ -46,10 +48,11 @@ class SidePanel final : public Game::Drawable, private sf::NonCopyable {
 	                                SCORE_POS_X = 12,
 	                                SCORE_POS_Y_1 = 195,
 	                                SCORE_POS_Y_2 = 403;
+	const sf::Color DISABLED_COLOR = sf::Color(100, 100, 100, 255);
 	const sf::Vector2f TIME_POS = sf::Vector2f(21, 230);
 
 	/** The LevelManager this panel is connected with */
-	const Game::LevelManager *const lr;
+	const Game::LevelManager& lm;
 
 	/** The background image */
 	sf::Sprite backgroundSprite;
@@ -73,17 +76,25 @@ class SidePanel final : public Game::Drawable, private sf::NonCopyable {
 	sf::Texture *extraLettersTexture;
 
 	/** The Bonus icons */
-	std::array<sf::Sprite, Game::Bonus::N_PERMANENT_BONUS_TYPES> bonusesSprite;
+	Matrix<sf::Sprite, Game::MAX_PLAYERS, Game::Bonus::N_PERMANENT_BONUS_TYPES> bonusesSprite;
 	sf::Texture *bonusesTexture;
+	std::array<Game::ShadedText, Game::MAX_PLAYERS> maxBombsText, bombRadiusText;
 
+	/** The texts showing the number of remaining lives */
+	std::array<Game::ShadedText,Game::MAX_PLAYERS> nLivesText;
+	/** The texts showing gameOver */
+	std::array<Game::ShadedText,Game::MAX_PLAYERS> gameOverText;
 
-	void _drawWithShadow(sf::RenderTarget& window, sf::Sprite& sprite, 
-			const sf::Color& color = sf::Color::White);
+	void _drawHealthSprites(sf::RenderTarget& window, sf::RenderStates states, 
+			const Game::Player *player) const;
+	void _drawExtraLetters(sf::RenderTarget& window, sf::RenderStates states, 
+			const Game::Player *player) const;
 public:
-	explicit SidePanel(const Game::LevelManager *const lm);
+	explicit SidePanel(const Game::LevelManager& lm);
 	~SidePanel();
 
-	void draw(sf::RenderTarget& window) override;
+	void update();
+	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 };
 
 }
