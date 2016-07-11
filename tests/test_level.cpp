@@ -38,7 +38,7 @@ int main() {
 	window.setJoystickThreshold(Game::JOYSTICK_INPUT_THRESHOLD);
 	Game::options.showFPS = true;
 
-	Game::LevelSet ls("levels.json");
+	Game::LevelSet ls("test.json");
 	int lvnum = 1;
 	std::unique_ptr<Game::Level> level(ls.getLevel(lvnum));
 

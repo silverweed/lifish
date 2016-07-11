@@ -15,27 +15,26 @@ namespace Game {
 class Enemy;
 class LevelManager;
 
-using AIBoundFunction = std::function<Game::Direction(const Game::LevelManager&)>;
+using AIBoundFunction = std::function<void(const Game::LevelManager&)>;
 using AIFunction = std::function<AIBoundFunction(Game::Entity&)>;
 
 constexpr unsigned short AI_FUNCTION_NUM = 6;
 
 extern std::array<AIFunction, Game::AI_FUNCTION_NUM> ai_functions;
 
+/**
+ * An AI component gets updated at each frame to specify what its owner should
+ * do next according to the current world state (represented by LevelManager).
+ */
 class AI : public Game::Component {
 	AIBoundFunction func;
 
 public:
-	explicit AI(Game::Entity *const owner)
+	explicit AI(Game::Entity *const owner, unsigned short aiNum)
 		: Game::Component(owner) 
 	{
 		if (owner == nullptr)
 			throw std::invalid_argument("AI has been given a null owner!");
-	}
-
-	explicit AI(Game::Entity *const owner, unsigned short aiNum)
-		: AI(owner)
-	{
 		if (aiNum >= ai_functions.size())
 			throw std::invalid_argument("Invalid aiNum passed: " + Game::to_string(aiNum));
 		setAI(ai_functions[aiNum]);
@@ -43,6 +42,10 @@ public:
 
 	void setAI(AIFunction newAI) {
 		func = newAI(*owner);
+	}
+
+	void call(const Game::LevelManager& lm) const {
+		func(lm);
 	}
 };
 

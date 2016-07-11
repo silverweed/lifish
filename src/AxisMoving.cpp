@@ -99,8 +99,8 @@ void AxisMoving::stop() {
 
 bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager& lm) const {
 	auto pos = owner->getPosition();
-	short iposx = (short)(pos.x / TILE_SIZE) - 1,
-	      iposy = (short)(pos.y / TILE_SIZE) - 1;
+	short iposx = (short)(pos.x / TILE_SIZE),
+	      iposy = (short)(pos.y / TILE_SIZE);
 	
 	switch (dir) {
 	case Direction::UP:
@@ -119,23 +119,25 @@ bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager& lm) 
 		return true;
 	}
 
-	if (iposx < 0 || iposx >= LEVEL_WIDTH || iposy < 0 || iposy >= LEVEL_HEIGHT)
+	if (iposx <= 0 || iposx > LEVEL_WIDTH || iposy <= 0 || iposy > LEVEL_HEIGHT)
 		return false;
 
-	const short idx = iposy * LEVEL_WIDTH + iposx;
+	const auto collider = owner->get<Game::Collider>();
+	if (collider == nullptr)
+		return true;
+
+	const auto fixed = lm.getEntities().getFixedAt(iposx, iposy);
+	if (fixed != nullptr) {
+		const auto fcollider = fixed->get<Game::Collider>();
+		if (fcollider != nullptr && collider->isSolidFor(*fcollider))
+			return false;
+	}
 
 	// TODO
-	/*
-	const auto& fixed = lm->getFixedEntities();
-	
-	if (fixed[idx] != nullptr && !_isTransparentTo(fixed[idx]))
-		return false;
-
-	const auto bosses = lm->getBosses();
-	const sf::FloatRect r(iposx, iposy, TILE_SIZE, TILE_SIZE);
-	for (auto& boss : bosses)
-		if (boss->intersects(r)) return false;
-	*/
+	//const auto bosses = lm->getBosses();
+	//const sf::FloatRect r(iposx, iposy, TILE_SIZE, TILE_SIZE);
+	//for (auto& boss : bosses)
+		//if (boss->intersects(r)) return false;
 
 	return true;
 }

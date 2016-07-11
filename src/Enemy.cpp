@@ -119,7 +119,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	animatedSprite.setFrameTime(sf::seconds(0.12));
 	animatedSprite.pause();
 	// FIXME
-	moving->stop();
+	//moving->stop();
 }
 
 void Enemy::update() {

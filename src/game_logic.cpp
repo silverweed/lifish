@@ -3,6 +3,7 @@
 #include "Explosion.hpp"
 #include "Controllable.hpp"
 #include "Scored.hpp"
+#include "AI.hpp"
 #include "Points.hpp"
 #include "Player.hpp"
 #include "Bonus.hpp"
@@ -81,6 +82,14 @@ void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager &lm,
 	}
 }
 
+void Game::Logic::aiLogic(Game::Entity *e, Game::LevelManager &lm,
+		EntityList& tbspawned, EntityList& tbkilled)
+{
+	const auto ai = e->get<Game::AI>();
+	if (ai != nullptr)
+		ai->call(lm);
+}
+
 //void Game::Logic::explosionDamageLogic(Game::Entity *e, Game::LevelManager &lm,
 		//EntityList& tbspawned, EntityList& tbkilled)
 //{
@@ -98,5 +107,6 @@ std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bombDeployLogic,
 	bombExplosionLogic,
 	bonusDropLogic,
-	scoredKillablesLogic
+	scoredKillablesLogic,
+	aiLogic
 };

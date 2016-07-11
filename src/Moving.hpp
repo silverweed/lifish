@@ -8,7 +8,8 @@ namespace Game {
 
 /** 
  * An object moving in a generic direction. Use its child
- * AxisMoving for restricting motion along axes.
+ * AxisMoving for restricting motion along axes or its child
+ * FreeMoving for generic 2d motion.
  */
 class Moving : public Game::Component {
 protected:
