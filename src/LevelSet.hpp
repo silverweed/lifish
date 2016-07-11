@@ -8,15 +8,9 @@
 #include "Track.hpp"
 #include "Game.hpp"
 #include "Stringable.hpp"
-#include "Attack.hpp"
+#include "Enemy.hpp"
 
 namespace Game {
-
-struct EnemyInfo {
-	unsigned short ai = 0;
-	unsigned short speed = 0;
-	Attack attack;	
-};
 
 /**
  * A LevelSet groups information about a set of Levels, along with

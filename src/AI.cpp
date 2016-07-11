@@ -14,32 +14,54 @@
 using Game::AIBoundFunction;
 using D = Game::Direction;
 
+std::array<Game::AIFunction, Game::AI_FUNCTION_NUM> Game::ai_functions = {{
+	ai_random,
+	ai_random_forward,
+	ai_random_forward_haunt,
+	ai_follow,
+	ai_follow_dash,
+	ai_chase
+}};
+
 static Game::Direction directions[] = {
 	D::UP, D::RIGHT, D::DOWN, D::LEFT
 };
 
-static Game::Direction selectRandomViable(
-		const Game::AxisMoving *const moving,
-		const Game::LevelManager *const lm, 
+static Game::Direction select_random_viable(
+		const Game::AxisMoving& moving,
+		const Game::LevelManager& lm, 
 		const Game::Direction opp)
 {
 	Game::Direction dirs[4];
 	unsigned short n = 0;
 	for (const auto& d : directions)
-		if (moving->canGo(d, lm) && d != opp) dirs[n++] = d;
+		if (moving.canGo(d, lm) && d != opp) dirs[n++] = d;
 	if (n == 0)
 		dirs[n++] = opp;
 	std::uniform_int_distribution<int> dist(0, n - 1);
 	return dirs[dist(Game::rng)];
 }
 
-AIBoundFunction Game::ai_random(Game::Entity *const entity) {
-	auto moving = entity->get<Game::AxisMoving>();
-	auto collider = entity->get<Game::Collider>();
+static Game::Direction seeing_player(const Game::LevelManager& lm, const Game::Sighted& sighted) {
+	auto& seen = sighted.entitiesSeen();
+	Game::Direction dir = Game::Direction::NONE;
+	unsigned short dist = Game::LEVEL_WIDTH + 1;
+	for (unsigned short i = 0; i < 4; ++i) {
+		if (lm.isPlayer(seen[i].first) && seen[i].second < dist) {
+			dir = static_cast<Game::Direction>(i);
+			dist = seen[i].second;
+		}
+	}
+	return dir;
+}
+
+AIBoundFunction Game::ai_random(Game::Entity& entity) {
+	auto moving = entity.get<Game::AxisMoving>();
+	auto collider = entity.get<Game::Collider>();
 	if (moving == nullptr || collider == nullptr)
 		throw std::invalid_argument("Entity passed to ai_random has no Moving or Collider component!");
 
-	return [entity, moving, collider] (const Game::LevelManager *const lm) { 
+	return [&entity, moving, collider] (const Game::LevelManager& lm) { 
 		if (!collider->isColliding()) {
 			if (moving->getDistTravelled() < Game::TILE_SIZE) 
 				return moving->getDirection();
@@ -51,11 +73,11 @@ AIBoundFunction Game::ai_random(Game::Entity *const entity) {
 		moving->setDistTravelled(0);
 		D dirs[4];
 		unsigned short n = 0;
-		if (entity->isAligned('x')) {
+		if (entity.isAligned('x')) {
 			if (moving->canGo(D::UP, lm)) dirs[n++] = D::UP;
 			if (moving->canGo(D::DOWN, lm)) dirs[n++] = D::DOWN;
 		}
-		if (entity->isAligned('y')) {
+		if (entity.isAligned('y')) {
 			if (moving->canGo(D::LEFT, lm)) dirs[n++] = D::LEFT;
 			if (moving->canGo(D::RIGHT, lm)) dirs[n++] = D::RIGHT;
 		}
@@ -65,14 +87,14 @@ AIBoundFunction Game::ai_random(Game::Entity *const entity) {
 	};
 }
 
-AIBoundFunction Game::ai_random_forward(Game::Entity *const entity) {
-	auto moving = entity->get<Game::AxisMoving>();
-	auto collider = entity->get<Game::Collider>();
+AIBoundFunction Game::ai_random_forward(Game::Entity& entity) {
+	auto moving = entity.get<Game::AxisMoving>();
+	auto collider = entity.get<Game::Collider>();
 	if (moving == nullptr || collider == nullptr)
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving"
 				" or Collider component!");
 
-	return [entity, moving, collider] (const Game::LevelManager *const lm) { 
+	return [&entity, moving, collider] (const Game::LevelManager& lm) { 
 		const D cur = moving->getDirection();
 		const auto cur_align = Game::tile(moving->getPosition());
 		if (moving->getPrevAlign() == cur_align && !collider->isColliding()) 
@@ -83,21 +105,21 @@ AIBoundFunction Game::ai_random_forward(Game::Entity *const entity) {
 		if (collider->isColliding() && moving->canGo(cur, lm))
 			return opp;
 
-		return selectRandomViable(moving, lm, opp);
+		return select_random_viable(*moving, lm, opp);
 	};
 }
 
-AIBoundFunction Game::ai_random_forward_haunt(Game::Entity *const entity) {
-	auto moving = entity->get<Game::AxisMoving>();
-	auto collider = entity->get<Game::Collider>();
-	auto shooting = entity->get<Game::Shooting>();
+AIBoundFunction Game::ai_random_forward_haunt(Game::Entity& entity) {
+	auto moving = entity.get<Game::AxisMoving>();
+	auto collider = entity.get<Game::Collider>();
+	auto shooting = entity.get<Game::Shooting>();
 	if (moving == nullptr || collider == nullptr || shooting == nullptr)
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving, "
 				"Shooting or Collider component!");
 
-	return [entity, moving, collider, shooting] (const Game::LevelManager *const lm) {
+	return [&entity, moving, collider, shooting] (const Game::LevelManager& lm) {
 		if (shooting->isShooting()) {
-			const auto cur_align = Game::tile(entity->getPosition());
+			const auto cur_align = Game::tile(entity.getPosition());
 			const D cur = moving->getDirection();
 			if (collider->isColliding() && moving->canGo(cur, lm)) 
 				return oppositeDirection(cur);
@@ -115,7 +137,7 @@ AIBoundFunction Game::ai_random_forward_haunt(Game::Entity *const entity) {
 				return D::DOWN;
 		} else if (shooting->getAttackAlign().x > 0) {
 			D dir = D::DOWN;
-			const auto cur_align = Game::tile(entity->getPosition());
+			const auto cur_align = Game::tile(entity.getPosition());
 			if (shooting->getAttackAlign().x < cur_align.x)
 				dir =  D::LEFT;
 			else if (shooting->getAttackAlign().x > cur_align.x)
@@ -129,17 +151,17 @@ AIBoundFunction Game::ai_random_forward_haunt(Game::Entity *const entity) {
 	};
 }
 
-AIBoundFunction Game::ai_follow(Game::Entity *const entity) {
-	auto moving = entity->get<Game::AxisMoving>();
-	auto collider = entity->get<Game::Collider>();
-	auto enemy = dynamic_cast<Game::Enemy*>(entity);
-	if (moving == nullptr || collider == nullptr || enemy == nullptr)
+AIBoundFunction Game::ai_follow(Game::Entity& entity) {
+	auto moving = entity.get<Game::AxisMoving>();
+	const auto collider = entity.get<Game::Collider>();
+	const auto sighted = entity.get<Game::Sighted>();
+	if (moving == nullptr || collider == nullptr || sighted == nullptr)
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving"
-				" or Collider component, or is no Enemy!");
+				", Collider or Sighted component!");
 
-	return [enemy, moving, collider] (const Game::LevelManager *const lm) {
+	return [&entity, moving, collider, sighted] (const Game::LevelManager& lm) {
 		const D cur = moving->getDirection();
-		const auto cur_align = Game::tile(enemy->getPosition());
+		const auto cur_align = Game::tile(entity.getPosition());
 		if (moving->getPrevAlign() == cur_align && !collider->isColliding()) 
 			return cur;
 
@@ -147,25 +169,28 @@ AIBoundFunction Game::ai_follow(Game::Entity *const entity) {
 		if (collider->isColliding() && moving->canGo(cur, lm))
 			return opp;
 
-		auto sp = enemy->seeingPlayer(*lm);
+		auto sp = seeing_player(lm, *sighted);
 		if (sp != Game::Direction::NONE) {	
-			Game::cache.playSound(enemy->get<Game::Sounded>()->getSoundFile(Game::Sounds::YELL));
+			auto sounded = entity.get<Game::Sounded>();
+			if (sounded != nullptr)
+				Game::cache.playSound(sounded->getSoundFile(Game::Sounds::YELL));
 			return sp;
 		}
 
-		return selectRandomViable(moving, lm, opp);
+		return select_random_viable(*moving, lm, opp);
 	};
 }
 
-AIBoundFunction Game::ai_follow_dash(Game::Entity *const entity) {
-	auto moving = entity->get<Game::AxisMoving>();
-	auto collider = entity->get<Game::Collider>();
-	auto enemy = dynamic_cast<Game::Enemy*>(entity);
-	if (moving == nullptr || collider == nullptr || enemy == nullptr)
+AIBoundFunction Game::ai_follow_dash(Game::Entity& entity) {
+	auto moving = entity.get<Game::AxisMoving>();
+	const auto collider = entity.get<Game::Collider>();
+	const auto sighted = entity.get<Game::Sighted>();
+	const auto shooting = entity.get<Game::Shooting>();
+	if (moving == nullptr || collider == nullptr || sighted == nullptr || shooting == nullptr)
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has "
-				"no Moving or Collider component, or is no Enemy!!");
+				"no Moving, Collider, Sighted or Shooting component!");
 
-	return [enemy, moving, collider] (const Game::LevelManager *const lm) {
+	return [&entity, shooting, moving, collider, sighted] (const Game::LevelManager& lm) {
 		const D cur = moving->getDirection();
 		const D opp = oppositeDirection(cur);
 
@@ -178,24 +203,26 @@ AIBoundFunction Game::ai_follow_dash(Game::Entity *const entity) {
 		if (moving->isDashing())
 			return cur;
 
-		const auto cur_align = Game::tile(enemy->getPosition());
+		const auto cur_align = Game::tile(entity.getPosition());
 		if (moving->getPrevAlign() == cur_align && !collider->isColliding()) 
 			return cur;
 
-		auto sp = enemy->seeingPlayer(*lm);
+		auto sp = seeing_player(lm, *sighted);
 		if (sp != Game::Direction::NONE) {
-			// FIXME: check cooldown somewhere!
-			if (moving->setDashing(true))
-				Game::cache.playSound(enemy->get<Game::Sounded>()
-						->getSoundFile(Game::Sounds::ATTACK));
+			if (!shooting->isRecharging()) {
+				shooting->shoot();
+				auto sounded = entity.get<Game::Sounded>();
+				if (sounded != nullptr)
+					Game::cache.playSound(sounded->getSoundFile(Game::Sounds::ATTACK));
+			}
 			return sp;
 		}
 
-		return selectRandomViable(moving, lm, opp);
+		return select_random_viable(*moving, lm, opp);
 	};
 }
 
-AIBoundFunction Game::ai_chase(Game::Entity *const entity) {
+AIBoundFunction Game::ai_chase(Game::Entity& entity) {
 	// TODO
 	return ai_follow(entity);
 }

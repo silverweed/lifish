@@ -14,7 +14,7 @@ using Game::LEVEL_HEIGHT;
 using Game::TILE_SIZE;
 using Game::EntityType;
 
-Level::Level(const Game::LevelSet *const _levelSet) 
+Level::Level(const Game::LevelSet& _levelSet) 
 	: Game::Entity()
 	, levelSet(_levelSet) 
 {}
@@ -196,14 +196,12 @@ std::string Level::toString() const {
 	   << "    border: " << levelInfo.tileIDs.border << "\r\n"
 	   << "    fixed: " << levelInfo.tileIDs.fixed << "\r\n"
 	   << "    breakable: " << levelInfo.tileIDs.breakable << "\r\n}\r\n"
-	   << "Music: " << get<Game::Music>()->getTrack().name << "\r\n";
-	if (levelSet != nullptr) {
-		ss << "Belongs to: >>>\r\n";
-		ss << levelSet->toString();
-		ss << "<<<\r\n";
-	}
-	ss << "Tilemap:\r\n";
-	ss << getTilemap();
+	   << "Music: " << get<Game::Music>()->getTrack().name << "\r\n"
+	   << "Belongs to: >>>\r\n"
+	   << levelSet.toString()
+	   << "<<<\r\n"
+	   << "Tilemap:\r\n"
+	   << getTilemap();
 
 	called = true;
 	return ss.str();

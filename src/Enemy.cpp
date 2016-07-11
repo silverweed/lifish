@@ -12,9 +12,9 @@
 using Game::Enemy;
 using Game::TILE_SIZE;
 
-Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attack& attack)
+Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	: Game::Entity(pos)
-	, originalSpeed(speed)
+	, originalSpeed(info.speed)
 {
 	animated = addComponent(new Game::Animated(this, 
 		Game::getAsset("graphics", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
@@ -30,7 +30,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attac
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_attack.ogg"))
 	}));
 	addComponent(new Game::Lifed(this, 1));
-	moving = addComponent(new Game::AxisMoving(this, BASE_SPEED * speed, Game::Direction::DOWN));
+	moving = addComponent(new Game::AxisMoving(this, BASE_SPEED * originalSpeed, Game::Direction::DOWN));
 	attackClock = addComponent(new Game::Clock(this));
 	yellClock = addComponent(new Game::Clock(this));
 	dashClock = addComponent(new Game::Clock(this));
@@ -41,11 +41,12 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attac
 		// on kill
 		Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
 	}));
-	shooting = addComponent(new Game::Shooting(this, attack));
+	shooting = addComponent(new Game::Shooting(this, info.attack));
 	sighted = addComponent(new Game::Sighted(this));
 
 	drawProxy = std::unique_ptr<Game::EnemyDrawableProxy>(new Game::EnemyDrawableProxy(*this));
 	addComponent(new Game::Drawable(this, drawProxy.get()));
+	ai = addComponent(new Game::AI(this, info.ai));
 
 	unsigned short death_n_frames = 2;
 	switch (id) {
@@ -136,19 +137,6 @@ void Enemy::update() {
 
 void Enemy::setMorphed(bool b) {
 	morphed = b;
-}
-
-Game::Direction Enemy::seeingPlayer(const Game::LevelManager& lm) const {
-	auto& seen = sighted->entitiesSeen();
-	Game::Direction dir = Game::Direction::NONE;
-	unsigned short dist = Game::LEVEL_WIDTH + 1;
-	for (unsigned short i = 0; i < (unsigned short)Game::Direction::NONE; ++i) {
-		if (lm.isPlayer(seen[i].first) && seen[i].second < dist) {
-			dir = static_cast<Game::Direction>(i);
-			dist = seen[i].second;
-		}
-	}
-	return dir;
 }
 
 void Enemy::_checkCollision(Game::Collider& coll) {

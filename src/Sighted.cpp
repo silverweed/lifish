@@ -5,7 +5,7 @@
 using Game::Sighted;
 
 // Helper functions for _fillLine
-static void _checkRight(const Game::Entity *e, const sf::Vector2i& mtile, 
+static void check_right(const Game::Entity *e, const sf::Vector2i& mtile, 
 		const Game::Entity *nearest, unsigned short *dist)
 {
 	const auto etile = Game::tile(e->getPosition());
@@ -19,7 +19,7 @@ static void _checkRight(const Game::Entity *e, const sf::Vector2i& mtile,
 		nearest = e;
 }
 
-static void _checkLeft(const Game::Entity *e, const sf::Vector2i& mtile,
+static void check_left(const Game::Entity *e, const sf::Vector2i& mtile,
 		const Game::Entity *nearest, unsigned short *dist)
 {
 	const auto etile = Game::tile(e->getPosition());
@@ -33,7 +33,7 @@ static void _checkLeft(const Game::Entity *e, const sf::Vector2i& mtile,
 		nearest = e;
 }
 
-static void _checkUp(const Game::Entity *e, const sf::Vector2i& mtile,
+static void check_up(const Game::Entity *e, const sf::Vector2i& mtile,
 		const Game::Entity *nearest, unsigned short *dist)
 {
 	const auto etile = Game::tile(e->getPosition());
@@ -47,7 +47,7 @@ static void _checkUp(const Game::Entity *e, const sf::Vector2i& mtile,
 		nearest = e;
 }
 
-static void _checkDown(const Game::Entity *e, const sf::Vector2i& mtile,
+static void check_down(const Game::Entity *e, const sf::Vector2i& mtile,
 		const Game::Entity *nearest, unsigned short *dist)
 {
 	const auto etile = Game::tile(e->getPosition());
@@ -82,9 +82,9 @@ auto Sighted::_fillLine(const Game::LevelManager *lm, const Game::Direction dir)
 {
 	auto mtile = Game::tile(owner->getPosition());
 	short r = 1; // distance of currently looked tile
-	auto func = dir == Game::Direction::UP ? _checkUp :
-		    dir == Game::Direction::DOWN ? _checkDown :
-		    dir == Game::Direction::RIGHT ? _checkRight : _checkLeft;
+	auto func = dir == Game::Direction::UP ? check_up :
+		    dir == Game::Direction::DOWN ? check_down :
+		    dir == Game::Direction::RIGHT ? check_right : check_left;
 	Game::Entity *nearest = nullptr;
 	unsigned short distance = Game::LEVEL_WIDTH + 1;
 

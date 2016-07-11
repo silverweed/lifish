@@ -31,7 +31,7 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 
 			const sf::Vector2f curPos = sf::Vector2f((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
 			unsigned short enemy_id = 0;
-			const Game::LevelSet *ls = level.getLevelSet();
+			const auto& ls = level.getLevelSet();
 
 			auto is_game_over = [&lm] (unsigned short id) -> bool {
 				return lm.players[id] == nullptr || (
@@ -138,9 +138,7 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 				break;
 			}
 			if (enemy_id > 0) {
-				auto info = ls->getEnemyInfo(enemy_id - 1);
-				entities.add(new Game::Enemy(curPos, enemy_id, info.speed, info.attack));
-				// TODO AI
+				entities.add(new Game::Enemy(curPos, enemy_id, ls.getEnemyInfo(enemy_id)));
 			}
 		}
 	}

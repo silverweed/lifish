@@ -34,7 +34,7 @@ public:
 	void stop() override;
 	void update() override;
 
-	bool canGo(const Game::Direction dir, const Game::LevelManager *const lm) const;
+	bool canGo(const Game::Direction dir, const Game::LevelManager& lm) const;
 };
 
 }

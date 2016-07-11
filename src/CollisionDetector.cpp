@@ -11,7 +11,7 @@ using Game::CollisionDetector;
 using Game::TILE_SIZE;
 
 // Checks if entity in `pos` and entity in `opos` collide, given that the one in `pos` has direction `dir`.
-static bool _collide(const Game::Collider& cld1, const Game::Collider& cld2, const Game::Direction dir) {
+static bool collide(const Game::Collider& cld1, const Game::Collider& cld2, const Game::Direction dir) {
 	sf::IntRect rect = cld1.getRect(),
 		    orect = cld2.getRect();
 
@@ -35,7 +35,7 @@ static bool _collide(const Game::Collider& cld1, const Game::Collider& cld2, con
 	return rect.intersects(orect);
 }
 
-static bool _isAtBoundaries(const Game::Collider *const cld, const Game::AxisMoving *const am) {
+static bool is_at_boundaries(const Game::Collider *const cld, const Game::AxisMoving *const am) {
 	const auto pos = cld->getOwner()->getPosition();
 	const auto rect = cld->getRect();
 	if (am != nullptr) {
@@ -77,7 +77,7 @@ void CollisionDetector::update() {
 		collider->atLimit = false;
 
 		auto moving = collider->getOwner()->get<Game::AxisMoving>();
-		if (_isAtBoundaries(collider, moving)) {
+		if (is_at_boundaries(collider, moving)) {
 			collider->atLimit = true;	
 			continue;
 		}
@@ -90,7 +90,7 @@ void CollisionDetector::update() {
 		
 			auto othcollider = colliding[j];
 			if (collider->collidesWith(*othcollider)
-					&& _collide(*collider, *othcollider, moving->getDirection()))
+					&& collide(*collider, *othcollider, moving->getDirection()))
 			{
 				collider->colliding.push_back(*othcollider);
 				auto othmoving = othcollider->getOwner()->get<Game::AxisMoving>();

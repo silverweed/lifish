@@ -92,7 +92,7 @@ class Level final
 	std::array<sf::Texture, 9> bgTextures;
 
 	/** The LevelSet this level belongs to */
-	const Game::LevelSet *const levelSet;
+	const Game::LevelSet& levelSet;
 
 	/** Whether this level has been initialized or not */
 	bool initialized = false;
@@ -116,7 +116,7 @@ public:
 	 *  be called before using this level. You need to specify a LevelSet
 	 *  this Level belongs to.
 	 */
-	Level(const LevelSet *const levelSet);
+	Level(const LevelSet& levelSet);
 
 	/** Loads the appropriate bgTexture, fills the bgTiles and makes this level
 	 *  usable. Must be called after setting levelInfo.
@@ -138,7 +138,7 @@ public:
 	/** Draws this level's background in the target window */
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 
-	const Game::LevelSet* getLevelSet() const { return levelSet; }
+	const Game::LevelSet& getLevelSet() const { return levelSet; }
 
 	std::string toString() const override;
 	std::string getTilemap() const;

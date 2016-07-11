@@ -7,7 +7,7 @@
 #include "Animated.hpp"
 #include "Direction.hpp"
 #include "MovingAnimator.hpp"
-//#include "AI.hpp"
+#include "AI.hpp"
 #include "AlienSprite.hpp"
 #include "Sighted.hpp"
 #include "Game.hpp"
@@ -16,6 +16,12 @@
 namespace Game {
 
 class Enemy;
+
+struct EnemyInfo {
+	unsigned short ai = 0;
+	unsigned short speed = 0;
+	Attack attack;	
+};
 
 /**
  * This class provides a Drawable proxy to draw the regular enemy's sprite
@@ -48,6 +54,7 @@ class Enemy : public Game::Entity {
 	Game::AxisMoving *moving = nullptr;
 	Game::MovingAnimator *movingAnimator = nullptr;
 	Game::Sighted *sighted = nullptr;
+	Game::AI *ai = nullptr;
 
 	std::unique_ptr<Game::EnemyDrawableProxy> drawProxy;
 
@@ -79,7 +86,7 @@ public:
 
 	unsigned short distanceWithNearestPlayer = 2 * Game::LEVEL_WIDTH * Game::TILE_SIZE;
 
-	explicit Enemy(sf::Vector2f pos, unsigned short id, float speed, const Game::Attack& attack);
+	explicit Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info);
 
 	//void setAI(AIFunction aifunc) { ai = aifunc(this); }
 	//AIBoundFunction getAI() const { return ai; }
@@ -89,17 +96,6 @@ public:
 
 	void setMorphed(bool b);
 	bool isMorphed() const { return morphed; }
-
-	/** Whether this enemy is currently seeing the player (i.e.
-	 *  it shares a coordinate with him and no walls are in the middle)
-	 */
-	Game::Direction seeingPlayer(const Game::LevelManager& lm) const;
-
-	/** Returns true if enemy wasn't already dashing and now is, else false. */
-	//bool setDashing(bool b);
-	//bool isDashing() const { return dashing; }
-
-	//void yell();
 
 	void update() override;
 };
