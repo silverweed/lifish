@@ -2,11 +2,13 @@
 #include "Game.hpp"
 #include "LevelSet.hpp"
 #include "FixedWall.hpp"
+#include "Teleport.hpp"
 #include "BreakableWall.hpp"
 #include "TransparentWall.hpp"
 #include "Coin.hpp"
 #include "Enemy.hpp"
 #include "Lifed.hpp"
+#include <iostream>
 
 using Game::TILE_SIZE;
 
@@ -14,6 +16,9 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 
 	lm.level = &level;
 	lm.levelTime->setTime(level.getInfo().time);
+
+	Game::Teleport *first_teleport = nullptr,
+		       *latest_teleport = nullptr;
 
 	auto& entities = lm.getEntities();
 	if (entities.size() > 0) {
@@ -29,7 +34,7 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 	for (unsigned short top = 0; top < Game::LEVEL_HEIGHT; ++top) {
 		for (unsigned short left = 0; left < Game::LEVEL_WIDTH; ++left) {
 
-			const sf::Vector2f curPos = sf::Vector2f((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
+			const sf::Vector2f curPos((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
 			unsigned short enemy_id = 0;
 			const auto& ls = level.getLevelSet();
 
@@ -74,24 +79,25 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 					entities.add(lm.players[1]);
 				}
 				break;
-			/*
 			case EntityType::TELEPORT:
 				{
 					auto teleport = new Game::Teleport(curPos);
+
 					// Save the first Teleport added
-					if (firstTeleport == nullptr)
-						firstTeleport = teleport;
+					if (first_teleport == nullptr)
+						first_teleport = teleport;
 					else
-						teleport->linkTo(firstTeleport);
+						teleport->linkTo(first_teleport);
 
 					// If we had already added a Teleport, link it to this one.
 					if (latest_teleport != nullptr)
 						latest_teleport->linkTo(teleport);
 					latest_teleport = teleport;
 
-					fixedEntities[top * LEVEL_WIDTH + left] = teleport;
+					entities.add(teleport);
 					break;
 				}
+			/*
 			case EntityType::BOSS:
 				if (_isFinalLevel()) {
 					if (finalBoss == nullptr) {
@@ -135,6 +141,8 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 				enemy_id = 10;
 				break;
 			default:
+				std::cerr << "Invalid tile at (" << left << ", " << top << "): "
+					<< level.getTile(left, top) << std::endl;
 				break;
 			}
 			if (enemy_id > 0) {

@@ -70,7 +70,7 @@ public:
 	const Game::Level* getLevel() const { return level; }
 
 	/** Updates all entities and collisions */
-	void update();
+	void update() override;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
 		renderer.draw(target, states);

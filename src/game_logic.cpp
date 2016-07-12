@@ -28,8 +28,8 @@ void Game::Logic::bombExplosionLogic(Game::Entity *e, Game::LevelManager& lm,
 	}
 }
 
-void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager &lm,
-		EntityList& tbspawned, EntityList& tbkilled)
+void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager& lm,
+		EntityList& tbspawned, EntityList&)
 {
 	if (!lm.isPlayer(e)) return;
 	auto player = static_cast<Game::Player*>(e);
@@ -47,8 +47,8 @@ void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager &lm,
 	}
 }
 
-void Game::Logic::bonusDropLogic(Game::Entity *e, Game::LevelManager &lm,
-		EntityList& tbspawned, EntityList& tbkilled)
+void Game::Logic::bonusDropLogic(Game::Entity *e, Game::LevelManager&,
+		EntityList& tbspawned, EntityList&)
 {
 	auto wall = dynamic_cast<Game::BreakableWall*>(e);
 	if (wall == nullptr) return;
@@ -63,8 +63,8 @@ void Game::Logic::bonusDropLogic(Game::Entity *e, Game::LevelManager &lm,
 	}
 }
 
-void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager &lm,
-		EntityList& tbspawned, EntityList& tbkilled)
+void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager&,
+		EntityList& tbspawned, EntityList&)
 {
 	auto scored = e->get<Game::Scored>();
 	if (scored == nullptr || scored->hasGivenPoints()) return;
@@ -82,8 +82,8 @@ void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager &lm,
 	}
 }
 
-void Game::Logic::aiLogic(Game::Entity *e, Game::LevelManager &lm,
-		EntityList& tbspawned, EntityList& tbkilled)
+void Game::Logic::aiLogic(Game::Entity *e, Game::LevelManager& lm,
+		EntityList&, EntityList&)
 {
 	const auto ai = e->get<Game::AI>();
 	if (ai != nullptr)

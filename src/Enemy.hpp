@@ -72,10 +72,6 @@ class Enemy : public Game::Entity {
 	bool morphed = false;
 	Game::AlienSprite *alienSprite = nullptr;
 
-	/** Only used when this enemy's AI is ai_follow_dash: true while
-	 *  the enemy is dashing towards the player
-	 */
-	bool dashing = false;
 	const float originalSpeed;
 
 
