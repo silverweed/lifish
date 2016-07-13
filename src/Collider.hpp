@@ -47,7 +47,9 @@ public:
 	std::vector<std::reference_wrapper<Game::Collider>> getColliding() const { return colliding; }
 	/** Manually sets `coll` to be colliding with this collider */
 	void addColliding(Game::Collider& coll) { colliding.push_back(coll); }
-	bool isColliding() const { return colliding.size() > 0; }
+	bool isColliding() const { return atLimit || colliding.size() > 0; }
+	/** Like `isColliding`, but only account for colliders which are solid for this one */
+	bool collidesWithSolid() const;
 
 	/** @return the collision layer of this Collider */
 	Game::Layers::Layer getLayer() const { return layer; }

@@ -177,6 +177,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 		const auto powers = player->getInfo().powers;
 		pos.x = BONUS_ICON_POS_X;
 		pos.y = i == 0 ? BONUS_ICON_POS_Y_1 : BONUS_ICON_POS_Y_2;
+		text.setStyle(sf::Text::Regular);
 		text.setPosition(sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 2));
 		text.setCharacterSize(11);
 		text.setShadowSpacing(1, 1);

@@ -109,6 +109,7 @@ int main() {
 	bool spawned = false;
 	int cycle = 0;
 	//bool removed = false;
+	bool paused = false;
 
 	lm.get<Game::LevelTime>()->resume();
 
@@ -186,6 +187,16 @@ int main() {
 					level->setOrigin(origin);
 					LevelLoader::load(*level.get(), lm);
 					break;
+				case sf::Keyboard::L:
+					if (paused) {
+						std::cerr << "\n==== CYCLE " << cycle << " ====" << std::endl;
+						lm.update();
+					} else
+						paused = true;
+					break;
+				case sf::Keyboard::K:
+					paused = !paused;
+					break;
 				case sf::Keyboard::P:
 					{
 						auto action = Game::Action::DO_NOTHING;
@@ -222,7 +233,8 @@ int main() {
 		//}
 
 		// Update level
-		lm.update();
+		if (!paused)
+			lm.update();
 
 		sidePanel.update();
 

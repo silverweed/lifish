@@ -65,9 +65,6 @@ class Enemy : public Game::Entity {
 	/** The function determining this enemy's movements */
 	//AIBoundFunction ai;
 
-	/** True when the enemy is shooting and atktype is BLOCKING */
-	bool blocked = false;
-
 	/** True when the enemy is morphed into a harmless Alien during EXTRA game */
 	bool morphed = false;
 	Game::AlienSprite *alienSprite = nullptr;
@@ -86,9 +83,6 @@ public:
 
 	//void setAI(AIFunction aifunc) { ai = aifunc(this); }
 	//AIBoundFunction getAI() const { return ai; }
-
-	void block() { blocked = true; }
-	bool isBlocked() const { return blocked; }
 
 	void setMorphed(bool b);
 	bool isMorphed() const { return morphed; }

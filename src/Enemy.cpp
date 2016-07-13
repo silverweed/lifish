@@ -17,7 +17,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	, originalSpeed(info.speed)
 {
 	animated = addComponent(new Game::Animated(this, 
-		Game::getAsset("graphics", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
+		Game::getAsset(/*"graphics"*/ "test", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
 	addComponent(new Game::Collider(this, [this] (Game::Collider& coll) {
 		// on collision
 		_checkCollision(coll);

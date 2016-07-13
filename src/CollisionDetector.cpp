@@ -6,6 +6,8 @@
 #include "collision_layers.hpp"
 #include <algorithm>
 
+#include <iostream>
+
 using Game::Direction;
 using Game::CollisionDetector;
 using Game::TILE_SIZE;
@@ -35,9 +37,9 @@ static bool collide(const Game::Collider& cld1, const Game::Collider& cld2, cons
 	return rect.intersects(orect);
 }
 
-static bool is_at_boundaries(const Game::Collider *const cld, const Game::AxisMoving *const am) {
-	const auto pos = cld->getOwner()->getPosition();
-	const auto rect = cld->getRect();
+static bool is_at_boundaries(const Game::Collider& cld, const Game::AxisMoving *const am) {
+	const auto pos = cld.getOwner()->getPosition();
+	const auto rect = cld.getRect();
 	if (am != nullptr) {
 		auto dir = am->getDirection();
 		switch (dir) {
@@ -59,6 +61,23 @@ static bool is_at_boundaries(const Game::Collider *const cld, const Game::AxisMo
 	}
 }
 
+bool direction_is_viable(Game::Collider& cld, Game::AxisMoving& moving, Game::Collider& ocld) {
+	const auto pos = cld.getOwner()->getPosition();
+	const auto opos = ocld.getOwner()->getPosition();
+	const auto size = cld.getRect();
+	const auto osize = ocld.getRect();
+
+	switch (moving.getDirection()) {
+	case Direction::UP: return opos.y + osize.height <= pos.y + TILE_SIZE;
+	case Direction::DOWN: return opos.y >= pos.y + size.height - TILE_SIZE;
+	case Direction::LEFT: return opos.x + osize.width <= pos.x + TILE_SIZE;
+	case Direction::RIGHT: return opos.x >= pos.x + size.width - TILE_SIZE;
+	default: break;
+	}
+
+	return true;
+}
+
 void CollisionDetector::update() {
 	/* For each moving entity, check (towards its direction):
 	 * 1) has it reached the level boundaries?
@@ -77,7 +96,7 @@ void CollisionDetector::update() {
 		collider->atLimit = false;
 
 		auto moving = collider->getOwner()->get<Game::AxisMoving>();
-		if (is_at_boundaries(collider, moving)) {
+		if (is_at_boundaries(*collider, moving)) {
 			collider->atLimit = true;	
 			continue;
 		}
@@ -87,11 +106,16 @@ void CollisionDetector::update() {
 		// Very simple (aka quadratic) check with all others
 		for (unsigned short j = 0; j < len; ++j) {
 			if (i == j)  continue;
-		
+
 			auto othcollider = colliding[j];
+			// Only check entities ahead of this one
+			if (!direction_is_viable(*collider, *moving, *othcollider))
+				continue;
+
 			if (collider->collidesWith(*othcollider)
 					&& collide(*collider, *othcollider, moving->getDirection()))
 			{
+				std::cerr << collider->getOwner() << " colliding with " << othcollider->getOwner()<<std::endl;
 				collider->colliding.push_back(*othcollider);
 				auto othmoving = othcollider->getOwner()->get<Game::AxisMoving>();
 				if (othmoving == nullptr || othmoving->getDirection() == Game::oppositeDirection(

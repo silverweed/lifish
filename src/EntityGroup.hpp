@@ -83,10 +83,6 @@ public:
 	 */
 	explicit EntityGroup();
 
-	/** Applies a void(Args...) function to all entities */
-	template<typename... Args>
-	void apply(AppliedFunc<Game::Entity, Args...> func, Args... args);
-
 	/** Applies a void(Args...) function to all entities (ref-args version)  */
 	template<typename... Args>
 	void apply(AppliedFunc<Game::Entity, Args&...> func, Args&... args);
@@ -126,12 +122,6 @@ public:
 };
 
 ///// Implementation /////
-
-template<typename... Args>
-void EntityGroup::apply(AppliedFunc<Game::Entity, Args...> func, Args... args) {
-	for (auto& e : entities)
-		func(e.get(), args...);
-}
 
 template<typename... Args>
 void EntityGroup::apply(AppliedFunc<Game::Entity, Args&...> func, Args&... args) {

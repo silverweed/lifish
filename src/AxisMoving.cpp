@@ -22,9 +22,6 @@ void AxisMoving::update() {
 
 	if (!moving) return;
 
-	if (prevDirection != direction)
-		realign();
-
 	sf::Vector2f shift(0.f, 0.f);
 	sf::Time frameTime = frameClock->restart();
 
@@ -49,20 +46,17 @@ void AxisMoving::update() {
 		return;
 	}
 
-	// TODO
 	if (!_collidesWithSolid()) {
 		owner->setPosition(owner->getPosition() + shift * frameTime.asSeconds());
 		const float delta = speed * frameTime.asSeconds();
 		distTravelled += delta;
 		if (delta > 1)
 			_ensureAlign();
-	} else realign();
+	} else if (autoRealign) {
+		realign();
+	}
 
 	prevDirection = direction;
-
-	// FIXME: why cannot set this here but must do it after entities.updateAll()?
-	if (owner->isAligned())
-		prevAlign = Game::tile(owner->getPosition());
 }
 
 // Realigns the entity by "bouncing it back" to the tile it occupies the most.
@@ -144,11 +138,25 @@ bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager& lm) 
 
 void AxisMoving::setDirection(Game::Direction dir) {
 	if (dir == direction) return;
+	const auto pos = owner->getPosition();
+	switch (dir) {
+		case Direction::UP:
+		case Direction::DOWN:
+			owner->setPosition(sf::Vector2f((unsigned short)pos.x, pos.y));
+			break;
+		case Direction::LEFT: 
+		case Direction::RIGHT:
+			owner->setPosition(sf::Vector2f(pos.x, (unsigned short)pos.y));
+			break;
+		default:
+			break;
+	}
 	direction = dir; 
 
 	moving = dir != Game::Direction::NONE;
-	realign();
-	if (!moving) stop();
+
+	//realign();
+	//if (!moving) stop();
 	//auto pos = owner->getPosition();
 	//switch (dir) {
 	//case Direction::UP: case Direction::DOWN:

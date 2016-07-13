@@ -29,11 +29,19 @@ Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 			throw std::logic_error("Called shoot(Direction::NONE) on a non-AxisMoving owner!");
 		
 		shooting = true;
+		if (attack.type & Game::AttackType::BLOCKING) {
+			blocked = true;
+			blockClock->restart();
+		}
 		rechargeClock->restart();
 		return new Game::AxisBullet(owner, ownerMoving->getDirection(), attack);
 	}
 
 	shooting = true;
+	if (attack.type & Game::AttackType::BLOCKING) {
+		blocked = true;
+		blockClock->restart();
+	}
 	rechargeClock->restart();
 	return new Game::AxisBullet(owner, dir, attack);
 }
@@ -49,4 +57,10 @@ Game::FreeBullet* Shooting::shoot(double angle) {
 
 bool Shooting::isRecharging() const {
 	return attack.fireRate > 0 && rechargeClock->getElapsedTime().asSeconds() < 1./attack.fireRate;
+}
+
+void Shooting::update() {
+	Game::Component::update();
+	if (blocked && blockClock->getElapsedTime() > attack.blockTime)
+		blocked = false;
 }

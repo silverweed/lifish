@@ -22,15 +22,6 @@ void Moving::stop() {
 	moving = false;
 }
 
-bool Moving::_collidesWithSolid() const {
-	if (collider == nullptr) return false;
-	if (collider->isAtLimit()) return true;
-	for (auto c : collider->getColliding())
-		if (c.get().isSolidFor(*collider))
-			return true;
-	return false;
-}
-
 void Moving::setDashing(bool d, float mult) {
 	if (!d) {
 		dashing = false;

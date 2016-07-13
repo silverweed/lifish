@@ -45,6 +45,14 @@ auto LevelManager::createNewPlayers(unsigned short n) -> std::vector<Game::Playe
 void LevelManager::update() {
 	std::list<Game::Entity*> to_be_spawned, to_be_killed;
 
+	// Set prevAligns for aligned entities
+	entities.apply([] (Game::Entity *e) {
+		if (!e->isAligned()) return;
+		auto moving = e->get<Game::AxisMoving>();
+		if (moving == nullptr) return;
+		moving->setPrevAlign(Game::tile(e->getPosition()));
+	});
+
 	// Apply game logic rules
 	for (auto logic : Game::Logic::functions)
 		entities.apply(logic, *this, to_be_spawned, to_be_killed);

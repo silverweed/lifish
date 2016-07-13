@@ -82,14 +82,6 @@ void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager&,
 	}
 }
 
-void Game::Logic::aiLogic(Game::Entity *e, Game::LevelManager& lm,
-		EntityList&, EntityList&)
-{
-	const auto ai = e->get<Game::AI>();
-	if (ai != nullptr)
-		ai->call(lm);
-}
-
 //void Game::Logic::explosionDamageLogic(Game::Entity *e, Game::LevelManager &lm,
 		//EntityList& tbspawned, EntityList& tbkilled)
 //{
@@ -107,6 +99,5 @@ std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bombDeployLogic,
 	bombExplosionLogic,
 	bonusDropLogic,
-	scoredKillablesLogic,
-	aiLogic
+	scoredKillablesLogic
 };

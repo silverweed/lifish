@@ -18,7 +18,11 @@ protected:
 	Attack attack;
 	bool shooting = false;
 
-	Game::Clock *rechargeClock = nullptr;
+	/** True when the entity is shooting and atktype is BLOCKING */
+	bool blocked = false;
+
+	Game::Clock *rechargeClock = nullptr,
+		    *blockClock = nullptr;
 	Game::AxisMoving *ownerMoving = nullptr;
 	
 public:
@@ -48,7 +52,11 @@ public:
 	Game::FreeBullet* shoot(double angle);
 	bool isShooting() const { return shooting; }
 
+	bool isBlocked() const { return blocked; }
+
 	bool isRecharging() const;
+
+	void update() override;
 };
 
 }

@@ -25,7 +25,9 @@ protected:
 	Game::Collider *collider = nullptr;
 
 
-	bool _collidesWithSolid() const;
+	bool _collidesWithSolid() const {
+		return collider != nullptr && collider->collidesWithSolid();
+	}
 
 public:
 	explicit Moving(Game::Entity *const owner, float speed);

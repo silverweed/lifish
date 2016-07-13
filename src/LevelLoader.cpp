@@ -4,6 +4,7 @@
 #include "FixedWall.hpp"
 #include "Teleport.hpp"
 #include "BreakableWall.hpp"
+#include "AI.hpp"
 #include "TransparentWall.hpp"
 #include "Coin.hpp"
 #include "Enemy.hpp"
@@ -146,7 +147,9 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 				break;
 			}
 			if (enemy_id > 0) {
-				entities.add(new Game::Enemy(curPos, enemy_id, ls.getEnemyInfo(enemy_id)));
+				auto enemy = new Game::Enemy(curPos, enemy_id, ls.getEnemyInfo(enemy_id));
+				enemy->get<Game::AI>()->setLevelManager(&lm);
+				entities.add(enemy);
 			}
 		}
 	}

@@ -7,6 +7,7 @@
 #include <exception>
 #include <array>
 #include "Component.hpp"
+#include "Shooting.hpp"
 #include "Direction.hpp"
 #include "utils.hpp"
 
@@ -28,6 +29,8 @@ extern std::array<AIFunction, Game::AI_FUNCTION_NUM> ai_functions;
  */
 class AI : public Game::Component {
 	AIBoundFunction func;
+	Game::LevelManager *lm = nullptr;
+	Game::Shooting *shooting = nullptr;
 
 public:
 	explicit AI(Game::Entity *const owner, unsigned short aiNum)
@@ -38,14 +41,21 @@ public:
 		if (aiNum >= ai_functions.size())
 			throw std::invalid_argument("Invalid aiNum passed: " + Game::to_string(aiNum));
 		setAI(ai_functions[aiNum]);
+		shooting = owner->get<Game::Shooting>();
 	}
 
 	void setAI(AIFunction newAI) {
 		func = newAI(*owner);
 	}
 
-	void call(const Game::LevelManager& lm) const {
-		func(lm);
+	void setLevelManager(Game::LevelManager *_lm) {
+		lm = _lm;
+	}
+
+	void update() override {
+		if (lm == nullptr || (shooting != nullptr && shooting->isBlocked()))
+			return;
+		func(*lm);
 	}
 };
 

@@ -20,7 +20,16 @@ Collider::Collider(Game::Entity *const owner, CollisionFunc onCollision,
 
 void Collider::update() {
 	Game::Component::update();
+	
 	if (onCollision)
 		for (auto& cld : colliding)
 			onCollision(cld);
+}
+
+bool Collider::collidesWithSolid() const {
+	if (atLimit) return true;
+	for (const auto& c : colliding)
+		if (c.get().isSolidFor(*this))
+			return true;
+	return false;
 }
