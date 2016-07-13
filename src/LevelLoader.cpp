@@ -141,6 +141,8 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 			case EntityType::ENEMY10: 
 				enemy_id = 10;
 				break;
+			case EntityType::EMPTY:
+				break;
 			default:
 				std::cerr << "Invalid tile at (" << left << ", " << top << "): "
 					<< level.getTile(left, top) << std::endl;

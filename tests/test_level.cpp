@@ -30,16 +30,58 @@
 
 using namespace Game;
 
-int main() {
+int main(int argc, char **argv) {
+	// Argument parsing
+	std::string levelSetName = "";
+	unsigned short start_level = 1;
+	{
+		bool args_ended = false;
+		int i = 1;
+		while (i < argc) {
+			if (!args_ended && argv[i][0] == '-') {
+				switch (argv[i][1]) {
+				case '-':
+					args_ended = true;
+					break;
+				case 'l':
+					start_level = std::atoi(argv[++i]);
+					break;
+				case 'v':
+					std::cout << "lifish v." VERSION " rev." COMMIT;
+#ifndef ARCH
+					std::cout << " (unknown arch)" << std::endl;
+#else
+					std::cout << " (" ARCH " bit)" << std::endl;
+#endif
+#ifdef HAVE_NFD
+					std::cout << "    | NFD support: yes" << std::endl;
+#else
+					std::cout << "    | NFD support: no" << std::endl;
+#endif
+					return 0;
+				default:
+					std::cout << "Usage: " << argv[0] << " [-l <levelnum>] [-v] [levelset.json]\n"
+						  << "\t-l: start at level <levelnum>\n"
+						  << "\t-v: print version and exit" << std::endl;
+					return 1;
+				}
+			} else {
+				levelSetName = std::string(argv[i]);
+			}
+			++i;
+		}
+	}
 	Game::init();
+	if (levelSetName.length() < 1)
+		levelSetName = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
 	
 	sf::RenderWindow window(sf::VideoMode(800, 600), "test level");
 	window.setVerticalSyncEnabled(true);
 	window.setJoystickThreshold(Game::JOYSTICK_INPUT_THRESHOLD);
 	Game::options.showFPS = true;
 
-	Game::LevelSet ls("test.json");
-	int lvnum = 1;
+	int lvnum = start_level;
+	Game::LevelSet ls(levelSetName);
 	std::unique_ptr<Game::Level> level(ls.getLevel(lvnum));
 
 	Game::LevelManager lm;
