@@ -55,14 +55,14 @@ inline std::string to_string(T val) {
  */
 inline sf::Vector2i tile(const sf::Vector2f& pos) {
 	return sf::Vector2i(
-			(unsigned short)pos.x / Game::TILE_SIZE, 
-			(unsigned short)pos.y / Game::TILE_SIZE);
+			short(pos.x) / Game::TILE_SIZE, 
+			short(pos.y) / Game::TILE_SIZE);
 }
 
 inline sf::Vector2f aligned(const sf::Vector2f& pos) {
 	return sf::Vector2f(
-		float(((unsigned short)pos.x/TILE_SIZE) * TILE_SIZE),
-		float(((unsigned short)pos.y/TILE_SIZE) * TILE_SIZE));
+		float((short(pos.x)/TILE_SIZE) * TILE_SIZE),
+		float((short(pos.y)/TILE_SIZE) * TILE_SIZE));
 }
 
 template<typename T>

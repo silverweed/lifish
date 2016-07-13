@@ -27,6 +27,7 @@
 #include "../src/Points.hpp"
 #include "../src/CollisionDetector.hpp"
 #include "../src/SidePanel.hpp"
+#include "../src/DroppingText.hpp"
 
 using namespace Game;
 
@@ -238,6 +239,15 @@ int main(int argc, char **argv) {
 					break;
 				case sf::Keyboard::K:
 					paused = !paused;
+					break;
+				case sf::Keyboard::T:
+					{
+						auto dt = new Game::DroppingText(
+								Game::getAsset("test", "gameover.png"),
+								sf::Vector2i(311, 59));
+						dt->play();
+						entities.add(dt);
+					}
 					break;
 				case sf::Keyboard::P:
 					{
