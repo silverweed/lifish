@@ -51,7 +51,9 @@ void Teleport::warp(Game::Collider& cld) {
 	
 	const auto entity = cld.getOwner();
 	auto am = entity->get<Game::AxisMoving>();
-	//std::cerr << "pos = " << cld->getOwner()->getPosition()<<" (aligned: " << entity->isAligned()<<"); cur_tile = " << Game::tile(cld->getOwner()->getPosition()) << ", prev = " << am->getPrevAlign() << " [this tile = " << Game::tile(position) << "]"<<std::endl;
+	//std::cerr << "pos = " << cld->getOwner()->getPosition()<<" (aligned: " << entity->isAligned()<<");
+	//cur_tile = " << Game::tile(cld->getOwner()->getPosition()) << ", prev = " << am->getPrevAlign()
+	//<< " [this tile = " << Game::tile(position) << "]"<<std::endl;
 	if (am != nullptr && 
 			// entity must have moved here since latest warp FIXME
 			(//am->getPrevAlign() == Game::tile(position) ||
@@ -67,6 +69,8 @@ void Teleport::warp(Game::Collider& cld) {
 			continue;
 		break;
 	}
+
+	if (nxt == nullptr) return;
 
 	// TODO spawn flashes
 	cld.getOwnerRW()->setPosition(nxt->getPosition());
