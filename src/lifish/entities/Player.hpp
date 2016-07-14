@@ -22,7 +22,7 @@ struct PlayerInfo {
 	short remainingLives = Game::Conf::Player::INITIAL_LIVES;
 
 	/** The EXTRA letters of this player */
-	std::array<bool, Game::N_EXTRA_LETTERS> extra;
+	std::array<bool, Game::Conf::Player::N_EXTRA_LETTERS> extra;
 
 	PlayerInfo(unsigned short id) : id(id) {
 		extra.fill(false);
@@ -71,6 +71,11 @@ public:
 	void setWinning(bool b) { winning = b; }
 
 	const Game::PlayerInfo& getInfo() const { return info; }
+	void setBombRadius(unsigned short r) { info.powers.bombRadius = r; }
+	void setMaxBombs(unsigned short m) { info.powers.maxBombs = m; }
+	void setBombFuseTime(sf::Time t) { info.powers.bombFuseTime = t; }
+	void setExtra(unsigned short n, bool e) { info.extra[n] = e; }
+	void setRemainingLives(short l) { info.remainingLives = l; }
 };
 
 }

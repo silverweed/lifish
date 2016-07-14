@@ -15,6 +15,8 @@ namespace Conf {
 		constexpr unsigned short MAX_MAX_BOMBS = 8;
 		constexpr unsigned short INITIAL_CONTINUES = 3;
 		constexpr float DEFAULT_SPEED = 150.f;
+		/** The number of letters needed to get an extra life */
+		constexpr unsigned short N_EXTRA_LETTERS = 5;
 	}
 
 	namespace Bomb {

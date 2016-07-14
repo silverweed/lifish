@@ -3,6 +3,7 @@
 #include <array>
 #include <SFML/Graphics.hpp>
 #include "Bonus.hpp"
+#include "game_values.hpp"
 #include "Game.hpp"
 #include "Player.hpp"
 #include "utils.hpp"
@@ -72,7 +73,7 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	sf::Texture *healthTexture;
 
 	/** The EXTRA letters icons: (empty, E, X, T, R, A) */
-	std::array<sf::Sprite, Game::N_EXTRA_LETTERS + 1> extraLettersSprite;
+	std::array<sf::Sprite, Game::Conf::Player::N_EXTRA_LETTERS + 1> extraLettersSprite;
 	sf::Texture *extraLettersTexture;
 
 	/** The Bonus icons */

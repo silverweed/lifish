@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "EntityGroup.hpp"
 #include "CollisionDetector.hpp"
+#include "SaveManager.hpp"
 #include "Player.hpp"
 #include "Bomb.hpp"
 #include "Game.hpp"
@@ -23,6 +24,7 @@ class LevelManager final : public sf::Drawable, public Game::Entity, private sf:
 
 	friend class Game::LevelLoader;
 	friend class Game::LevelRenderer;
+	friend class Game::SaveManager;
 
 	/** The currently managed level */
 	const Game::Level *level = nullptr;

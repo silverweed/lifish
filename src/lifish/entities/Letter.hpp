@@ -15,7 +15,7 @@ class Letter : public Game::Entity {
 	unsigned short id;
 
 	/** The clock driving the letter's transitions */
-	Game::Clock<1> *transitionClock = nullptr;
+	Game::Clock *transitionClock = nullptr;
 	AnimatedSprite* animatedSprite = nullptr;
 
 	/** Whether this letter is transitioning or not */

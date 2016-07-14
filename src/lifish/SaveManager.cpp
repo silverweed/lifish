@@ -1,6 +1,7 @@
 #include "SaveManager.hpp"
 #include "LevelManager.hpp"
 #include "json.hpp"
+#include "Lifed.hpp"
 #include <iostream>
 
 using Game::SaveManager;
@@ -11,9 +12,9 @@ bool SaveManager::saveGame(const std::string& filename, const Game::LevelManager
 	nlohmann::json save;
 
 	// Current level
-	save["level"] = lr.getLevel()->getLevelNum();
+	save["level"] = lr.getLevel()->getInfo().levelnum;
 	
-	const auto& players = lr._players;
+	const auto& players = lr.players;
 	for (unsigned short i = 0; i < players.size(); ++i) {
 		const auto& player = players[i];
 		if (player == nullptr) {
@@ -25,23 +26,25 @@ bool SaveManager::saveGame(const std::string& filename, const Game::LevelManager
 			continue;
 		}
 
+		const auto powers = player->getInfo().powers;
+		const auto info = player->getInfo();
 		save["players"][i] = {
 			{ "continues", Game::playerContinues[i] },
-			{ "remainingLives", player->getRemainingLives() },
-			{ "life", player->getLife() },
+			{ "remainingLives", info.remainingLives },
+			{ "life", player->get<Game::Lifed>()->getLife() },
 			{ "powers",
 				{
-					{ "bombFuseTime", player->powers.bombFuseTime },
-					{ "bombRadius", player->powers.bombRadius },
-					{ "maxBombs", player->powers.maxBombs }
+					{ "bombFuseTime", powers.bombFuseTime.asMilliseconds() },
+					{ "bombRadius",   powers.bombRadius },
+					{ "maxBombs",     powers.maxBombs }
 				}
 			},
 			{ "score", Game::score[i] }
 		};
 
 		// Letters
-		for (unsigned short j = 0; j < Game::N_EXTRA_LETTERS; ++j)
-			save["players"][i]["extra"][j] = player->extra[j];
+		for (unsigned short j = 0; j < Game::Conf::Player::N_EXTRA_LETTERS; ++j)
+			save["players"][i]["extra"][j] = info.extra[j];
 	}
 
 	saveFile << save;
@@ -59,7 +62,7 @@ bool SaveManager::loadGame(const std::string& filename,
 		
 		start_level = load["level"];
 		
-		const auto& players = lr._players;
+		const auto& players = lr.players;
 		for (unsigned short i = 0; i < players.size(); ++i) {
 			const auto& player = players[i];
 			const auto pldata = load["players"][i];
@@ -70,23 +73,23 @@ bool SaveManager::loadGame(const std::string& filename,
 			player->setRemainingLives(pldata["remainingLives"]);
 
 			// Current health
-			player->setLife(pldata["life"]);
+			player->get<Game::Lifed>()->setLife(pldata["life"]);
 
 			// Powers
 			const auto powdata = pldata["powers"];
 			/// Bomb fuse time (in ms)
-			player->powers.bombFuseTime = powdata["bombFuseTime"];
+			player->setBombFuseTime(sf::milliseconds(powdata["bombFuseTime"]));
 
 			/// Bomb radius
-			player->powers.bombRadius = powdata["bombRadius"];
+			player->setBombRadius(powdata["bombRadius"]);
 
 			/// Max bombs
-			player->powers.maxBombs = powdata["maxBombs"];
+			player->setMaxBombs(powdata["maxBombs"]);
 
 			// Letters
 			const auto exdata = pldata["extra"];
-			for (unsigned short j = 0; j < Game::N_EXTRA_LETTERS; ++j)
-				player->extra[j] = bool(exdata[j]);
+			for (unsigned short j = 0; j < Game::Conf::Player::N_EXTRA_LETTERS; ++j)
+				player->setExtra(j, pldata["extra"]);
 
 			// Score
 			Game::score[i] = pldata["score"];

@@ -61,7 +61,7 @@ void Bomb::update() {
 	if (!switched && fuseTime - fuseClock->getElapsedTime() < sf::milliseconds(2000)
 			&& !killable->isKilled())
 	{
-		animated->setAnimation(fuseTime < DEFAULT_FUSE 
+		animated->setAnimation(fuseTime < DEFAULT_FUSE && !ignited
 				? "fast_exploding" : "normal_exploding");
 		switched = true;
 	}

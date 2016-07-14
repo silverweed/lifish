@@ -81,9 +81,6 @@ constexpr unsigned short WINDOW_HEIGHT = (LEVEL_HEIGHT + 2) * TILE_SIZE;
  */
 constexpr float MAIN_WINDOW_SHIFT = 1 + SIDE_PANEL_WIDTH;
 
-/** The number of letters needed to get an extra life */
-constexpr unsigned short N_EXTRA_LETTERS = 5;
-
 constexpr unsigned short N_ENEMIES = 10;
 
 constexpr unsigned short PWD_BUFSIZE = 512;

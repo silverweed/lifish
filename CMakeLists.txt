@@ -15,7 +15,18 @@ else()
 endif()
 
 file(GLOB LIFISH_HEADERS src/*.hpp)
-set(LIFISH_SRC src/collision_layers.cpp src/Killable.cpp src/Animation.cpp src/Bomb.cpp src/AnimatedSprite.cpp src/Animated.cpp src/EntityType.cpp src/GameCache.cpp src/Level.cpp tests/test_level.cpp src/LevelSet.cpp src/LevelNumText.cpp src/Music.cpp src/Game.cpp src/Texture.cpp src/Points.cpp src/ShadedText.cpp src/Track.cpp src/utils.cpp src/Entity.cpp src/EntityGroup.cpp src/Coin.cpp src/AxisMoving.cpp src/Moving.cpp src/controls.cpp src/Shooting.cpp src/MovingAnimator.cpp src/Player.cpp src/Enemy.cpp src/AlienSprite.cpp src/Direction.cpp src/Teleport.cpp src/Flash.cpp src/BossExplosion.cpp src/FixedWall.cpp src/BreakableWall.cpp src/TransparentWall.cpp src/Sprite.cpp src/Bullet.cpp src/AxisBullet.cpp src/FreeBullet.cpp src/FreeMoving.cpp src/Explosion.cpp src/Screen.cpp src/ScreenHandler.cpp src/HomeScreen.cpp src/Controllable.cpp src/ControlsScreen.cpp src/PreferencesScreen.cpp src/AboutScreen.cpp src/PauseScreen.cpp src/Sighted.cpp src/CollisionDetector.cpp src/Collider.cpp src/LevelManager.cpp src/LevelLoader.cpp src/LevelRenderer.cpp src/game_logic.cpp src/Bonus.cpp src/SidePanel.cpp src/LevelTime.cpp src/AI.cpp src/DroppingText.cpp)
+include_directories(src)
+# core/ contains the "game-independent" source
+include_directories(src/core)
+# third_party/ contains all external code
+include_directories(src/third_party)
+# lifish/ contains Lifish-specific code
+include_directories(src/lifish)
+# lifish/components/ contains all the implemented Component classes
+include_directories(src/lifish/components)
+# lifish/entities/ contains all the implemented Entity classes
+include_directories(src/lifish/entities)
+file(GLOB LIFISH_SRC tests/test_level.cpp src/lifish/entities/*cpp src/lifish/components/*cpp src/core/*cpp src/third_party/*cpp src/lifish/*cpp src/*cpp)
 
 # Platform-specific source
 if(MSYS)

@@ -41,11 +41,6 @@ public:
 	void update() override;
 
 	void hurt();
-
-	/** Initiates kill animation */
-	void kill();
-	bool isDying() const { return dead; }
-	bool isDead() const { return dead && hurtClock.getElapsedTime().asMilliseconds() > DEATH_TIME; }
 };
 
 }

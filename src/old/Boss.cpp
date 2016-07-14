@@ -53,11 +53,11 @@ void Boss::update() {
 
 void Boss::hurt() { 
 	isHurt = true;
-	hurtClock.restart(); 
+	hurtClock->restart(); 
 }
 
 void Boss::kill() {
-	dead = true;
+	// TODO
 	sprite.setColor(sf::Color(sf::Color::White));
-	hurtClock.restart();
+	hurtClock->restart();
 }

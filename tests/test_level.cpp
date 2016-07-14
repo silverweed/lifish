@@ -2,32 +2,32 @@
 #include <memory>
 #include <cstdlib>
 #include <algorithm>
-#include "../src/Level.hpp"
-#include "../src/LevelLoader.hpp"
-#include "../src/dialogs.hpp"
-#include "../src/LevelManager.hpp"
-#include "../src/LevelSet.hpp"
-#include "../src/Bomb.hpp"
-#include "../src/Coin.hpp"
-#include "../src/Controllable.hpp"
-#include "../src/BossExplosion.hpp"
-#include "../src/FixedWall.hpp"
-#include "../src/BreakableWall.hpp"
-#include "../src/TransparentWall.hpp"
-#include "../src/Enemy.hpp"
-#include "../src/EntityGroup.hpp"
-#include "../src/Teleport.hpp"
-#include "../src/Shooting.hpp"
-#include "../src/Player.hpp"
-#include "../src/Flash.hpp"
-#include "../src/Options.hpp"
-#include "../src/Explosion.hpp"
-#include "../src/HomeScreen.hpp"
-#include "../src/ScreenHandler.hpp"
-#include "../src/Points.hpp"
-#include "../src/CollisionDetector.hpp"
-#include "../src/SidePanel.hpp"
-#include "../src/DroppingText.hpp"
+#include "Level.hpp"
+#include "LevelLoader.hpp"
+#include "dialogs.hpp"
+#include "LevelManager.hpp"
+#include "LevelSet.hpp"
+#include "Bomb.hpp"
+#include "Coin.hpp"
+#include "Controllable.hpp"
+#include "BossExplosion.hpp"
+#include "FixedWall.hpp"
+#include "BreakableWall.hpp"
+#include "TransparentWall.hpp"
+#include "Enemy.hpp"
+#include "EntityGroup.hpp"
+#include "Teleport.hpp"
+#include "Shooting.hpp"
+#include "Player.hpp"
+#include "Flash.hpp"
+#include "Options.hpp"
+#include "Explosion.hpp"
+#include "HomeScreen.hpp"
+#include "ScreenHandler.hpp"
+#include "Points.hpp"
+#include "CollisionDetector.hpp"
+#include "SidePanel.hpp"
+#include "DroppingText.hpp"
 #include <thread>
 
 #ifdef MULTITHREADED
@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
 	if (levelSetName.length() < 1)
 		levelSetName = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
 	
-	sf::RenderWindow window(sf::VideoMode(800, 600), "test level");
+	sf::RenderWindow window(sf::VideoMode(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT), "test level");
 	window.setVerticalSyncEnabled(true);
 	window.setJoystickThreshold(Game::JOYSTICK_INPUT_THRESHOLD);
 	Game::options.showFPS = true;
