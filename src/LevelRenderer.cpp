@@ -19,9 +19,7 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 
 	target.draw(*level, states);
 
-	const auto& entities = owner.entities;
-
-	entities.apply([&target, states] (const Game::Entity *e) {
+	owner.entities.apply([&target, states] (const Game::Entity *e) {
 		auto d = e->get<Game::Drawable>();
 		if (d != nullptr)
 			target.draw(*d, states);

@@ -70,10 +70,10 @@ void LevelManager::update() {
 	cd.update();
 }
 
-bool LevelManager::isBombAt(const sf::Vector2f& pos) const {
+bool LevelManager::isBombAt(const sf::Vector2i& tile) const {
 	for (unsigned short i = 0; i < bombs.size(); ++i)
 		for (auto bomb : bombs[i])
-			if (bomb != nullptr && bomb->getPosition() == pos)
+			if (bomb != nullptr && Game::tile(bomb->getPosition()) == tile)
 				return true;
 	return false;
 }

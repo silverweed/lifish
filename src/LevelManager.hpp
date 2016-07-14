@@ -83,7 +83,7 @@ public:
 	/** Adds the given entity to `entities` */
 	void spawn(Game::Entity *e);
 
-	bool isBombAt(const sf::Vector2f& pos) const;
+	bool isBombAt(const sf::Vector2i& tile) const;
 	/** Removes `bomb` from `bombs` */
 	void rmBomb(Game::Bomb *bomb);
 	/** Returns the number of bombs currently deployed by id-th player */

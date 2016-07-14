@@ -44,6 +44,22 @@ find_package(SFML 2.3 REQUIRED graphics window audio system)
 include_directories(${SFML_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES})
 
+# Use separate threads for logic and rendering (experimental)
+if(${MULTITHREADED})
+	message(STATUS "Compiling in MULTITHREADED mode")
+	add_definitions(-DMULTITHREADED=1)
+
+	find_package(Threads REQUIRED)
+	include_directories(${Threads_INCLUDE_DIR})
+	target_link_libraries(${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
+
+	if(UNIX AND NOT APPLE)
+		find_package(X11 REQUIRED)
+		include_directories(${X11_INCLUDE_DIR})
+		target_link_libraries(${PROJECT_NAME} ${X11_LIBRARIES})
+	endif()
+endif()
+
 # Check if we have support for PIE
 if(NOT ${HAS_CHECK_CXX} STREQUAL "")
 	check_cxx_compiler_flag("-pie -fPIE -Wl,-fPIE" SUPPORTS_PIE)
