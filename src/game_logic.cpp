@@ -40,7 +40,7 @@ void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager& lm,
 		&& sf::Keyboard::isKeyPressed(
 			Game::Controls::players[player->getInfo().id-1][Game::Controls::CTRL_BOMB])
 		&& lm.bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs
-		&& !lm.isBombAt(player->getPosition()))
+		&& !lm.isBombAt(Game::aligned(player->getPosition())))
 	{
 		tbspawned.push_back(new Game::Bomb(Game::aligned(player->getPosition()), 
 					*player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius));

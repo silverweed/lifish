@@ -28,10 +28,32 @@
 #include "../src/CollisionDetector.hpp"
 #include "../src/SidePanel.hpp"
 #include "../src/DroppingText.hpp"
+#include <thread>
+
+#ifdef MULTITHREADED
+#	ifdef SFML_SYSTEM_LINUX
+#		include <X11/Xlib.h>
+#	endif
+#endif
 
 using namespace Game;
 
+#ifdef MULTITHREADED
+static void rendering_loop(sf::RenderWindow& window, const Game::LevelManager& lm, const Game::SidePanel& sidePanel) {
+	while (window.isOpen()) {
+		window.clear();
+		window.draw(lm);
+		window.draw(sidePanel);
+		Game::maybeShowFPS(window);
+		window.display();
+	}
+}
+#endif
+
 int main(int argc, char **argv) {
+#if defined(MULTITHREADED) && defined(SFML_SYSTEM_LINUX)
+	XInitThreads();
+#endif
 	// Argument parsing
 	std::string levelSetName = "";
 	unsigned short start_level = 1;
@@ -58,6 +80,11 @@ int main(int argc, char **argv) {
 					std::cout << "    | NFD support: yes" << std::endl;
 #else
 					std::cout << "    | NFD support: no" << std::endl;
+#endif
+#ifdef MULTITHREADED 
+					std::cout << "    | Multithreaded: yes" << std::endl;
+#else
+					std::cout << "    | Multithreaded: no" << std::endl;
 #endif
 					return 0;
 				default:
@@ -155,6 +182,11 @@ int main(int argc, char **argv) {
 	bool paused = false;
 
 	lm.get<Game::LevelTime>()->resume();
+	
+#ifdef MULTITHREADED
+	window.setActive(false);
+	std::thread rendering_thread(rendering_loop, std::ref(window), std::cref(lm), std::cref(sidePanel));
+#endif
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -290,12 +322,14 @@ int main(int argc, char **argv) {
 
 		sidePanel.update();
 
+#ifndef MULTITHREADED
 		// Draw everything
 		window.clear();
 		window.draw(lm);
 		window.draw(sidePanel);
 		Game::maybeShowFPS(window);
 		window.display();
+#endif
 
 		// Garbage-collect sounds
 		if (++cycle >= Game::GameCache::SOUNDS_GC_DELAY) {

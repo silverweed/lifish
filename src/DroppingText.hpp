@@ -15,8 +15,7 @@ class DroppingText : public Game::Entity {
 	Game::Clock *pauseClock = nullptr;
 	Game::AxisMoving *moving = nullptr;
 	float height = 0;
-	bool stoppedAtMiddle = false,
-	     playing = false;
+	bool stoppedAtMiddle = false;
 
 public:
 	explicit DroppingText(const std::string& texture_name, 

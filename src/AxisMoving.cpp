@@ -66,16 +66,16 @@ void AxisMoving::realign() {
 
 	switch (direction) {
 	case Game::Direction::UP:
-		pos = sf::Vector2f(pos.x, (short(((pos.y-1) / TILE_SIZE) + 1)) * TILE_SIZE);
+		pos = sf::Vector2f(pos.x, (int(((pos.y-1) / TILE_SIZE) + 1)) * TILE_SIZE);
 		break;
 	case Game::Direction::LEFT:
-		pos = sf::Vector2f((short(((pos.x-1) / TILE_SIZE) + 1)) * TILE_SIZE, pos.y);
+		pos = sf::Vector2f((int(((pos.x-1) / TILE_SIZE) + 1)) * TILE_SIZE, pos.y);
 		break;
 	case Game::Direction::DOWN:
-		pos = sf::Vector2f(pos.x, short((pos.y / TILE_SIZE)) * TILE_SIZE);
+		pos = sf::Vector2f(pos.x, int((pos.y / TILE_SIZE)) * TILE_SIZE);
 		break;
 	case Game::Direction::RIGHT:
-		pos = sf::Vector2f(short((pos.x / TILE_SIZE)) * TILE_SIZE, pos.y);
+		pos = sf::Vector2f(int((pos.x / TILE_SIZE)) * TILE_SIZE, pos.y);
 		break;
 	default: 
 		pos = Game::aligned(pos);
@@ -93,8 +93,8 @@ void AxisMoving::stop() {
 
 bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager& lm) const {
 	auto pos = owner->getPosition();
-	short iposx = short(pos.x / TILE_SIZE),
-	      iposy = short(pos.y / TILE_SIZE);
+	int iposx = int(pos.x / TILE_SIZE),
+	    iposy = int(pos.y / TILE_SIZE);
 	
 	switch (dir) {
 	case Direction::UP:
@@ -142,11 +142,11 @@ void AxisMoving::setDirection(Game::Direction dir) {
 	switch (dir) {
 		case Direction::UP:
 		case Direction::DOWN:
-			owner->setPosition(sf::Vector2f(short(pos.x), pos.y));
+			owner->setPosition(sf::Vector2f(int(pos.x), pos.y));
 			break;
 		case Direction::LEFT: 
 		case Direction::RIGHT:
-			owner->setPosition(sf::Vector2f(pos.x, short(pos.y)));
+			owner->setPosition(sf::Vector2f(pos.x, int(pos.y)));
 			break;
 		default:
 			break;

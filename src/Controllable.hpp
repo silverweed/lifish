@@ -23,7 +23,7 @@ public:
 	void setWindow(const sf::Window *w) { window = w; }
 	void setJoystickUsed(short idx) { joystickUsed = idx; }
 
-	bool hasFocus() const { return window && window->hasFocus(); }
+	bool hasFocus() const { return window != nullptr && window->hasFocus(); }
 };
 
 }

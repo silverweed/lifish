@@ -55,14 +55,15 @@ inline std::string to_string(T val) {
  */
 inline sf::Vector2i tile(const sf::Vector2f& pos) {
 	return sf::Vector2i(
-			short(pos.x) / Game::TILE_SIZE, 
-			short(pos.y) / Game::TILE_SIZE);
+			int(pos.x) / Game::TILE_SIZE, 
+			int(pos.y) / Game::TILE_SIZE);
 }
 
+/** Returns the pixel position `pos` aligned to the nearest tile. */
 inline sf::Vector2f aligned(const sf::Vector2f& pos) {
 	return sf::Vector2f(
-		float((short(pos.x)/TILE_SIZE) * TILE_SIZE),
-		float((short(pos.y)/TILE_SIZE) * TILE_SIZE));
+		(int(pos.x)/TILE_SIZE) * TILE_SIZE,
+		(int(pos.y)/TILE_SIZE) * TILE_SIZE);
 }
 
 template<typename T>
