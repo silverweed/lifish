@@ -25,7 +25,10 @@ These are the valid element types:
 		* "name": string,	// only required for interactables
 		* "style": string	// if none is specified, 'default' will picked
 		* "consecutive": bool,
-		* "position": [int, int]
+		* "position": [int, int],
+		* "style-override": {	// overrides specific properties of the style
+			// <style here>
+		}
 		//
 
 		"string": string,	// the displayed string
@@ -34,6 +37,7 @@ These are the valid element types:
 - image
 	{
 		"src": string,		// the sprite, relative to assets/graphics/
+		"size": [int, int]	// pixel height/width of texture rect
 		* "interactable": bool
 	}
 

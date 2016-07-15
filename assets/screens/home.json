@@ -7,7 +7,7 @@
 			"default": {
 				"font": "pf_tempesta_seven_bold.ttf",
 				"character-size": 24,
-				"spacing": 10
+				"spacing": 15
 			}
 		},
 		"elements": [
