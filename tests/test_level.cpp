@@ -22,8 +22,8 @@
 #include "Flash.hpp"
 #include "Options.hpp"
 #include "Explosion.hpp"
-#include "HomeScreen.hpp"
-#include "ScreenHandler.hpp"
+//#include "HomeScreen.hpp"
+//#include "ScreenHandler.hpp"
 #include "Points.hpp"
 #include "CollisionDetector.hpp"
 #include "SidePanel.hpp"
@@ -168,9 +168,9 @@ int main(int argc, char **argv) {
 	Game::music = level->get<Game::Music>()->getMusic();
 	//Game::playMusic();
 
-	Game::HomeScreen& screen = HomeScreen::getInstance();
-	Game::ScreenHandler::getInstance().setOrigin(origin);
-	bool drawScreen = false;
+	//Game::HomeScreen& screen = HomeScreen::getInstance();
+	//Game::ScreenHandler::getInstance().setOrigin(origin);
+	//bool drawScreen = false;
 	//enemy->get<Game::AxisMoving>()->setDirection(Game::Direction::DOWN);
 
 	sf::Clock turnClock;
@@ -281,23 +281,23 @@ int main(int argc, char **argv) {
 						entities.add(dt);
 					}
 					break;
-				case sf::Keyboard::P:
-					{
-						auto action = Game::Action::DO_NOTHING;
-						do {
-							action = ScreenHandler::getInstance().handleScreenEvents(
-								window, PAUSE_SCREEN,
-								PAUSE_SCREEN | PREFERENCES_SCREEN | CONTROLS_SCREEN);
-							if (action == Game::Action::SAVE_GAME) {
-								const auto fname = Game::display_save_dialog();
-								if (fname.length() > 0) {
-									//Game::SaveManager::saveGame(fname, *lm);
-								}
-								// TODO: display some confirm screen
-							};
-						} while (action == Game::Action::SAVE_GAME);
-						break;
-					}
+				//case sf::Keyboard::P:
+					//{
+						//auto action = Game::Action::DO_NOTHING;
+						//do {
+							//action = ScreenHandler::getInstance().handleScreenEvents(
+								//window, PAUSE_SCREEN,
+								//PAUSE_SCREEN | PREFERENCES_SCREEN | CONTROLS_SCREEN);
+							//if (action == Game::Action::SAVE_GAME) {
+								//const auto fname = Game::display_save_dialog();
+								//if (fname.length() > 0) {
+									////Game::SaveManager::saveGame(fname, *lm);
+								//}
+								//// TODO: display some confirm screen
+							//};
+						//} while (action == Game::Action::SAVE_GAME);
+						//break;
+					//}
 				default: break;
 				}
 			default: break;

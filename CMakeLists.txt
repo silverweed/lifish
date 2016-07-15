@@ -14,10 +14,14 @@ else()
 	set(TARGET_ARCH 32)
 endif()
 
+# main
+set(MAIN_FILE tests/screens.cpp)
 file(GLOB LIFISH_HEADERS src/*.hpp)
 include_directories(src)
 # core/ contains the "game-independent" source
 include_directories(src/core)
+# ui/ contains the ui parts
+include_directories(src/ui)
 # third_party/ contains all external code
 include_directories(src/third_party)
 # lifish/ contains Lifish-specific code
@@ -26,7 +30,7 @@ include_directories(src/lifish)
 include_directories(src/lifish/components)
 # lifish/entities/ contains all the implemented Entity classes
 include_directories(src/lifish/entities)
-file(GLOB LIFISH_SRC tests/test_level.cpp src/lifish/entities/*cpp src/lifish/components/*cpp src/core/*cpp src/third_party/*cpp src/lifish/*cpp src/*cpp)
+file(GLOB LIFISH_SRC ${MAIN_FILE} src/lifish/entities/*cpp src/lifish/components/*cpp src/core/*cpp src/third_party/*cpp src/lifish/*cpp src/ui/*cpp src/*cpp)
 
 # Platform-specific source
 if(MSYS)

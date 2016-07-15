@@ -21,9 +21,9 @@ protected:
 	std::string _toString(unsigned short indent) const;
 
 public:
-	Entity() {}
+	explicit Entity() {}
 
-	Entity(const sf::Vector2f& pos) 
+	explicit Entity(const sf::Vector2f& pos) 
 		: position(pos)
 	{}
 	virtual ~Entity() {}

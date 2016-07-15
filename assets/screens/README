@@ -1,0 +1,55 @@
+# SCREEN FORMAT
+## Properties with a * ahead are optional.
+
+{
+	"name": string,     // must be unique among all screens
+	"parent": string?,  // is the name of the parent screen, or null
+	"bg": string,       // basename of the bg sprite, found in assets/graphics/
+	"layout": {
+		"styles": {
+			// styles here, see later
+		},
+		* "elements": [
+			// elements here, see later
+		]
+	}
+}
+
+## Elements
+These are the valid element types:
+
+- text
+	{
+		// common to all types
+		"type": string,
+		* "name": string,	// only required for interactables
+		* "style": string	// if none is specified, 'default' will picked
+		* "consecutive": bool,
+		* "position": [int, int]
+		//
+
+		"string": string,	// the displayed string
+		* "interactable": bool	// can be clicked
+	}
+- image
+	{
+		"src": string,		// the sprite, relative to assets/graphics/
+		* "interactable": bool
+	}
+
+By default, all elements are centered both on x and y. An element with a "position" property is
+drawn in that position instead, and it's not accounted for the centering.
+By default, an element is drawn on a newline after the previous. To change this, use
+"consecutive: true": the spacing will then apply laterally.
+
+## Styles
+Are objects (indexed with their name), with those properties:
+
+"stylename": {
+	// valid for all elements
+	* "spacing": int,
+	
+	// only valid for texts
+	* "font": string,		
+	* "character-size": uint,
+}

@@ -1,0 +1,46 @@
+{
+	"name": "home",
+	"parent": null,
+	"bg": "screenbg1.png",
+	"layout": {
+		"styles": {
+			"default": {
+				"font": "pf_tempesta_seven_bold.ttf",
+				"character-size": 24,
+				"spacing": 10
+			}
+		},
+		"elements": [
+			{
+				"type": "text",
+				"name": "start",
+				"string": "Start Game",
+				"interactable": true
+			},
+			{
+				"type": "text",
+				"name": "load",
+				"string": "Load Game",
+				"interactable": true
+			},
+			{
+				"type": "text",
+				"name": "preferences",
+				"string": "Preferences",
+				"interactable": true
+			},
+			{
+				"type": "text",
+				"name": "about",
+				"string": "About",
+				"interactable": true
+			},
+			{
+				"type": "text",
+				"name": "exit",
+				"string": "Exit",
+				"interactable": true
+			}
+		]
+	}
+}
