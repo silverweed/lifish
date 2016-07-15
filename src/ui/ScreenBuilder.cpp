@@ -1,6 +1,5 @@
 #include "ScreenBuilder.hpp"
 #include "ScreenStyle.hpp"
-#include "Game.hpp"
 #include "GameCache.hpp"
 #include "utils.hpp"
 #include <iostream>
@@ -176,13 +175,13 @@ void ScreenBuilder::_addElement(Game::UI::Screen& screen, const json& element) {
 }
 
 // center all non-absolute-positioned elements
-void ScreenBuilder::_fixAlign() {
-	const float yOffset = (Game::WINDOW_HEIGHT - totHeight) / 2;
+void ScreenBuilder::_fixAlign(Game::UI::Screen& screen) {
+	const float yOffset = (screen.size.y - totHeight) / 2;
 
 	for (auto& pair : toBeAligned) {
 		auto& e = pair.first;
 		unsigned short row = pair.second;
-		const float xOffset = (Game::WINDOW_WIDTH - rowWidths[row]) / 2;
+		const float xOffset = (screen.size.x - rowWidths[row]) / 2;
 		auto text = dynamic_cast<Game::ShadedText*>(e);
 		if (text != nullptr) {
 			text->setPosition(text->getPosition() + sf::Vector2f(xOffset, yOffset));
@@ -223,14 +222,14 @@ void ScreenBuilder::build(Game::UI::Screen& screen, const std::string& layoutFil
 		_addElement(screen, element);
 
 	// fix elements' align
-	_fixAlign();
+	_fixAlign(screen);
 
 	// load bg sprite
 	auto texture = Game::cache.loadTexture(bgSpritePath);
 	texture->setRepeated(true);
 	texture->setSmooth(true);
 	screen.bgSprite.setTexture(*texture);
-	screen.bgSprite.setTextureRect(sf::IntRect(0, 0, Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT));
+	screen.bgSprite.setTextureRect(sf::IntRect(0, 0, screen.size.x, screen.size.y));
 	
 	screen.built = true;
 

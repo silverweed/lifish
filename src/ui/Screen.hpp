@@ -19,6 +19,8 @@ class Screen : public sf::Drawable {
 	friend class Game::UI::ScreenBuilder;
 
 protected:
+	/** The expected size of the rendering target, used when positioning elements in this screen */
+	sf::Vector2u size;
 	/** The name of this screen */
 	std::string name;
 	/** The parent screen, if any */
@@ -40,7 +42,7 @@ protected:
 
 public:
 	explicit Screen() {}
-	explicit Screen(const std::string& layoutFileName);
+	explicit Screen(const std::string& layoutFileName, const sf::Vector2u& viewportSize);
 
 	bool wasBuilt() const { return built; }
 

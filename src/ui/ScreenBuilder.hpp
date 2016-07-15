@@ -22,7 +22,7 @@ class ScreenBuilder {
 	static void _addElement(Game::UI::Screen& screen, const nlohmann::json& screenJSON);
 	static void _addText(Game::UI::Screen& screen, const nlohmann::json& screenJSON);
 	static void _addImage(Game::UI::Screen& screen, const nlohmann::json& screenJSON);
-	static void _fixAlign();
+	static void _fixAlign(Game::UI::Screen& screen);
 
 public:
 	ScreenBuilder() = delete;

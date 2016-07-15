@@ -4,7 +4,9 @@
 
 using Game::UI::Screen;
 
-Screen::Screen(const std::string& layoutFileName) {
+Screen::Screen(const std::string& layoutFileName, const sf::Vector2u& viewportSize)
+	: size(viewportSize)
+{
 	Game::UI::ScreenBuilder::build(*this, layoutFileName);	
 }
 

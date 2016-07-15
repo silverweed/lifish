@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
 	
 	Game::init();
 	Game::options.showFPS = true;
-	Screen screen(argc > 1 ? argv[1] : "home.json");
+	Screen screen(argc > 1 ? argv[1] : "home.json", sf::Vector2u(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT));
 
 	while (window.isOpen()) {
 		sf::Event event;
