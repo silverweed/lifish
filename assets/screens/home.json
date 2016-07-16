@@ -13,6 +13,13 @@
 		"elements": [
 			{
 				"type": "text",
+				"string": "",
+				"style-override": {
+					"spacing": 100
+				}
+			},
+			{
+				"type": "text",
 				"name": "start",
 				"string": "Start Game",
 				"interactable": true

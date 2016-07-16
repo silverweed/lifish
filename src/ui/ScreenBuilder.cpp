@@ -2,6 +2,7 @@
 #include "ScreenStyle.hpp"
 #include "GameCache.hpp"
 #include "utils.hpp"
+#include "Interactable.hpp"
 #include <iostream>
 #include <exception>
 #include <fstream>
@@ -101,7 +102,8 @@ void ScreenBuilder::_addText(Game::UI::Screen& screen, const json& text) {
 
 	if (interactable) {
 		const auto name = text["name"].get<std::string>();
-		screen.texts[name] = std::unique_ptr<Game::ShadedText>(newtxt);
+		screen.interactables[name] = std::unique_ptr<Game::UI::Interactable>(
+				new Game::UI::Interactable(newtxt));
 	} else
 		screen.nonInteractables.push_back(std::unique_ptr<sf::Drawable>(newtxt));
 }
@@ -159,7 +161,8 @@ void ScreenBuilder::_addImage(Game::UI::Screen& screen, const json& image) {
 
 	if (interactable) {
 		const auto name = image["name"].get<std::string>();
-		screen.images[name] = std::unique_ptr<sf::Sprite>(newimg);
+		screen.interactables[name] = std::unique_ptr<Game::UI::Interactable>(
+				new Game::UI::Interactable(newimg));
 	} else
 		screen.nonInteractables.push_back(std::unique_ptr<sf::Drawable>(newimg));
 }
@@ -233,6 +236,6 @@ void ScreenBuilder::build(Game::UI::Screen& screen, const std::string& layoutFil
 	
 	screen.built = true;
 
-	std::cerr << "Screen loaded. Has " << screen.texts.size() << " texts, " << screen.images.size() 
-		<< " images and " << screen.nonInteractables.size() << " non-interactables." << std::endl;
+	//std::cerr << "Screen loaded. Has " << screen.texts.size() << " texts, " << screen.images.size() 
+		//<< " images and " << screen.nonInteractables.size() << " non-interactables." << std::endl;
 }

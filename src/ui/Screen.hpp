@@ -8,6 +8,7 @@
 #include "ShadedText.hpp"
 #include "Component.hpp"
 #include "ScreenStyle.hpp"
+#include "Interactable.hpp"
 
 namespace Game {
 
@@ -19,6 +20,8 @@ class Screen : public sf::Drawable {
 	friend class Game::UI::ScreenBuilder;
 
 protected:
+	/** The window this screen is rendered in */
+	const sf::RenderWindow& window;
 	/** The expected size of the rendering target, used when positioning elements in this screen */
 	sf::Vector2u size;
 	/** The name of this screen */
@@ -33,19 +36,20 @@ protected:
 
 	/** The styles */
 	std::unordered_map<std::string, Game::UI::ScreenStyle> styles;
-	/** The interactable texts */
-	std::unordered_map<std::string, std::unique_ptr<Game::ShadedText>> texts;
-	/** The interactable images */
-	std::unordered_map<std::string, std::unique_ptr<sf::Sprite>> images;
+	/** The interactable texts/images */
+	std::unordered_map<std::string, std::unique_ptr<Game::UI::Interactable>> interactables;
 	/** The non-interactable texts/images */
 	std::vector<std::unique_ptr<sf::Drawable>> nonInteractables;
 
+	/** The currently selected element, if any */
+	std::pair<std::string, Game::UI::Interactable*> selected;
+
 public:
-	explicit Screen() {}
-	explicit Screen(const std::string& layoutFileName, const sf::Vector2u& viewportSize);
+	explicit Screen(const std::string& layoutFileName, const sf::RenderWindow& window);
 
 	bool wasBuilt() const { return built; }
 
+	void update();
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
