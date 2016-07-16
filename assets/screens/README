@@ -5,6 +5,7 @@
 	"name": string,     // must be unique among all screens
 	"parent": string?,  // is the name of the parent screen, or null
 	"bg": string,       // basename of the bg sprite, found in assets/graphics/
+	* "v-align": string, 	// top, bottom or center (default) - valid for ALL elements
 	"layout": {
 		"styles": {
 			// styles here, see later
@@ -52,6 +53,7 @@ Are objects (indexed with their name), with those properties:
 "stylename": {
 	// valid for all elements
 	* "spacing": int,
+	* "h-align": string,	// left, right or center (default) - valid for the current row
 	
 	// only valid for texts
 	* "font": string,		

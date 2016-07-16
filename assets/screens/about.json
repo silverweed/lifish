@@ -1,0 +1,53 @@
+{
+	"name": "about",
+	"parent": "home",
+	"bg": "screenbg1.png",
+	"layout": {
+		"styles": {
+			"default": {
+				"font": "pf_tempesta_seven_bold.ttf",
+				"character-size": 14,
+				"spacing": 15
+			}
+		},
+		"elements": [
+			{
+				"type": "text",
+				"string": "Work in progress"
+			},
+			{
+				"type": "text",
+				"string": "Lifish - (c) 2016 Giacomo Parolini"
+			},
+			{
+				"type": "text",
+				"string": "Lifish is free software, licensed under"
+			},
+			{
+				"type": "text",
+				"string": "the GNU GPL v.3 or later."
+			},
+			{
+				"type": "text",
+				"string": "This is a pre-release! A lot of content"
+			},
+			{
+				"type": "text",
+				"string": "is missing and there may be bugs."
+			},
+			{
+				"type": "text",
+				"string": ""
+			},
+			{
+				"type": "text",
+				"name": "back",
+				"string": "Back",
+				"interactable": true,
+				"style-override": {
+					"character-size": 20
+				}
+			}
+		]
+	}
+}

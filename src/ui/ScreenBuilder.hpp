@@ -11,11 +11,16 @@ namespace Game {
 namespace UI {
 
 class ScreenBuilder {
+	constexpr static float H_PADDING = 4;
+	constexpr static float V_PADDING = 4;
+
 	static sf::Vector2f pos;
 	static sf::FloatRect prevElemBounds;
 	// pair (element, row)
 	static std::vector<std::pair<sf::Drawable*, unsigned short>> toBeAligned;
+	static std::vector<std::string> rowAligns;
 	static std::vector<float> rowWidths; 
+	static std::string vAlign;
 	static float totHeight;
 
 	static void _parseStyles(Game::UI::Screen& screen, const nlohmann::json& screenJSON);

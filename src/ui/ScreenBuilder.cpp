@@ -16,6 +16,8 @@ sf::Vector2f ScreenBuilder::pos;
 sf::FloatRect ScreenBuilder::prevElemBounds;
 std::vector<std::pair<sf::Drawable*, unsigned short>> ScreenBuilder::toBeAligned;
 std::vector<float> ScreenBuilder::rowWidths; 
+std::vector<std::string> ScreenBuilder::rowAligns; 
+std::string ScreenBuilder::vAlign;
 float ScreenBuilder::totHeight;
 
 static void add_style_property(Game::UI::ScreenStyle& style, const std::string& key, const json& value) {
@@ -86,13 +88,16 @@ void ScreenBuilder::_addText(Game::UI::Screen& screen, const json& text) {
 		newtxt->setPosition(manualPosition);
 	else {
 		const auto bounds = newtxt->getGlobalBounds();
+		const auto align = style.hAlign.length() > 0 ? style.hAlign : "center";
 		if (consecutive) {
 			pos.x += prevElemBounds.width + style.spacing;
 			rowWidths.back() = prevElemBounds.width + style.spacing + bounds.width;
+			rowAligns.back() = align;
 		} else {
 			pos.x = 0;
 			pos.y += prevElemBounds.height + style.spacing;
 			rowWidths.push_back(bounds.width);
+			rowAligns.push_back(align);
 			totHeight += bounds.height + style.spacing;
 		}
 		newtxt->setPosition(pos);
@@ -104,8 +109,10 @@ void ScreenBuilder::_addText(Game::UI::Screen& screen, const json& text) {
 		const auto name = text["name"].get<std::string>();
 		screen.interactables[name] = std::unique_ptr<Game::UI::Interactable>(
 				new Game::UI::Interactable(newtxt));
-	} else
+	} else {
+		newtxt->setShadowSpacing(1, 1);
 		screen.nonInteractables.push_back(std::unique_ptr<sf::Drawable>(newtxt));
+	}
 }
 
 void ScreenBuilder::_addImage(Game::UI::Screen& screen, const json& image) {
@@ -145,13 +152,16 @@ void ScreenBuilder::_addImage(Game::UI::Screen& screen, const json& image) {
 		newimg->setPosition(manualPosition);
 	else {
 		const auto bounds = newimg->getGlobalBounds();
+		const auto align = style.hAlign.length() > 0 ? style.hAlign : "center";
 		if (consecutive) {
 			pos.x += prevElemBounds.width + style.spacing;
 			rowWidths.back() = prevElemBounds.width + style.spacing + bounds.width;
+			rowAligns.back() = align;
 		} else {
 			pos.x = 0;
 			pos.y += prevElemBounds.height + style.spacing;
 			rowWidths.push_back(bounds.width);
+			rowAligns.push_back(align);
 			totHeight += bounds.height + style.spacing;
 		}
 		newimg->setPosition(pos);
@@ -179,12 +189,16 @@ void ScreenBuilder::_addElement(Game::UI::Screen& screen, const json& element) {
 
 // center all non-absolute-positioned elements
 void ScreenBuilder::_fixAlign(Game::UI::Screen& screen) {
-	const float yOffset = (screen.size.y - totHeight) / 2;
+	const float yOffset = vAlign == "top" ? V_PADDING
+				: vAlign == "bottom" ? (screen.size.y - totHeight - V_PADDING)
+				: (screen.size.y - totHeight) / 2;
 
 	for (auto& pair : toBeAligned) {
 		auto& e = pair.first;
 		unsigned short row = pair.second;
-		const float xOffset = (screen.size.x - rowWidths[row]) / 2;
+		const float xOffset = rowAligns[row] == "left" ? H_PADDING
+					: rowAligns[row] == "right" ? (screen.size.x - rowWidths[row] - H_PADDING)
+					: (screen.size.x - rowWidths[row]) / 2;
 		auto text = dynamic_cast<Game::ShadedText*>(e);
 		if (text != nullptr) {
 			text->setPosition(text->getPosition() + sf::Vector2f(xOffset, yOffset));
@@ -209,6 +223,12 @@ void ScreenBuilder::build(Game::UI::Screen& screen, const std::string& layoutFil
 	auto parent = screenJSON["parent"];
 	if (!parent.is_null())
 		screen.parent = parent.get<std::string>();
+	vAlign = "center";
+	{
+		auto it = screenJSON.find("v-align");
+		if (it != screenJSON.end())
+			vAlign = it->get<std::string>();
+	}
 	const auto bgSpritePath = Game::getAsset("graphics", screenJSON["bg"].get<std::string>());
 	auto layoutJSON = screenJSON["layout"];
 
