@@ -45,6 +45,7 @@ protected:
 	/** The currently selected element, if any */
 	std::pair<std::string, Game::UI::Interactable*> selected;
 
+	Screen();
 public:
 	explicit Screen(const std::string& layoutFileName, const sf::RenderWindow& window);
 

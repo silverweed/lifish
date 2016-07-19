@@ -11,8 +11,8 @@ namespace Game {
 namespace UI {
 
 class ScreenBuilder {
-	constexpr static float H_PADDING = 4;
-	constexpr static float V_PADDING = 4;
+	constexpr static float H_PADDING = 20;
+	constexpr static float V_PADDING = 10;
 
 	static sf::Vector2f pos;
 	static sf::FloatRect prevElemBounds;

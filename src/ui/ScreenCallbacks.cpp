@@ -6,11 +6,13 @@ using Game::UI::Action;
 
 std::string Game::UI::screenCallbackArg;
 
-static Action g_exit() { return Action::EXIT; }
-static Action g_back() { return Action::SWITCH_TO_PARENT; }
-static Action home_start() { return Action::START_GAME; }
-static Action home_about() { return Game::UI::screenCallbackArg = "about", Action::SWITCH_SCREEN; }
-static Action home_load() { 
+static Action cb_exit() { return Action::EXIT; }
+static Action cb_back() { return Action::SWITCH_TO_PARENT; }
+static Action cb_start() { return Action::START_GAME; }
+static Action cb_about() { return Game::UI::screenCallbackArg = "about", Action::SWITCH_SCREEN; }
+static Action cb_preferences() { return Game::UI::screenCallbackArg = "preferences", Action::SWITCH_SCREEN; }
+static Action cb_controls() { return Game::UI::screenCallbackArg = "controls", Action::SWITCH_SCREEN; }
+static Action cb_load() { 
 	const auto fname = Game::display_load_dialog();
 	if (fname.length() > 0) {
 		// TODO
@@ -29,9 +31,11 @@ static Action home_load() {
 }
 
 std::unordered_map<std::string, ScreenCallback> Game::UI::screenCallbacks = {
-	{ "exit", g_exit },
-	{ "back", g_back },
-	{ "home:start", home_start },
-	{ "home:about", home_about },
-	{ "home:load", home_load },
+	{ "exit", cb_exit },
+	{ "back", cb_back },
+	{ "home:start", cb_start },
+	{ "home:about", cb_about },
+	{ "home:load", cb_load },
+	{ "home:preferences", cb_preferences },
+	{ "preferences:controls", cb_controls }
 };

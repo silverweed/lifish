@@ -110,7 +110,7 @@ void ScreenBuilder::_addText(Game::UI::Screen& screen, const json& text) {
 		screen.interactables[name] = std::unique_ptr<Game::UI::Interactable>(
 				new Game::UI::Interactable(newtxt));
 	} else {
-		newtxt->setShadowSpacing(1, 1);
+		newtxt->setShadowSpacing(2, 2);
 		screen.nonInteractables.push_back(std::unique_ptr<sf::Drawable>(newtxt));
 	}
 }
@@ -235,6 +235,7 @@ void ScreenBuilder::build(Game::UI::Screen& screen, const std::string& layoutFil
 	pos.x = 0, pos.y = 0;
 	toBeAligned.clear();
 	rowWidths.clear();
+	rowAligns.clear();
 	totHeight = 0;
 
 	// styles
