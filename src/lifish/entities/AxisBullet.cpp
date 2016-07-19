@@ -2,7 +2,7 @@
 #include "AxisMoving.hpp"
 #include "Animated.hpp"
 #include "Drawable.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 
 using Game::AxisBullet;
 using Game::TILE_SIZE;

@@ -7,7 +7,7 @@
 #include <SFML/System/NonCopyable.hpp>
 #include "LoopingMusic.hpp"
 #include "Drawable.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "Track.hpp"
 #include "EntityType.hpp"
 #include "ShadedText.hpp"

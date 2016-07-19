@@ -1,7 +1,7 @@
 #pragma once
 
 #include <array>
-#include "Game.hpp"
+#include "game.hpp"
 
 namespace Game {
 

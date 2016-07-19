@@ -10,7 +10,7 @@ namespace UI {
 /** Wrapper class for the glue code needed to merge functionality of
  *  Game::ShadedText and sf::Sprite
  */
-class Interactable : public sf::Drawable {
+class Interactable : public sf::Drawable, public Game::WithOrigin {
 	enum class Type {
 		TEXT, SPRITE
 	};
@@ -70,6 +70,13 @@ public:
 		switch (type) {
 		case Type::TEXT: target.draw(*text, states); return;
 		case Type::SPRITE: target.draw(*sprite, states);  return;
+		}
+	}
+
+	void setOrigin(const sf::Vector2f& pos) override {
+		switch (type) {
+		case Type::TEXT: text->setOrigin(pos); return;
+		case Type::SPRITE: sprite->setOrigin(pos); return;
 		}
 	}
 };

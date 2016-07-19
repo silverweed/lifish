@@ -1,5 +1,5 @@
 #include "FixedWall.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "Sprite.hpp"
 #include "Drawable.hpp"
 #include "Collider.hpp"

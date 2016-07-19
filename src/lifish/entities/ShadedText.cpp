@@ -1,5 +1,5 @@
 #include "ShadedText.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "GameCache.hpp"
 #include "Drawable.hpp"
 

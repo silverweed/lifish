@@ -10,7 +10,7 @@
 #include "AI.hpp"
 #include "AlienSprite.hpp"
 #include "Sighted.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "Shooting.hpp"
 
 namespace Game {

@@ -1,5 +1,5 @@
 #include "CollisionDetector.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "Collider.hpp"
 #include "Direction.hpp"
 #include "AxisMoving.hpp"

@@ -1,5 +1,5 @@
 #include "LevelLoader.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "LevelSet.hpp"
 #include "FixedWall.hpp"
 #include "Teleport.hpp"

@@ -1,11 +1,6 @@
-#include "Game.hpp"
-#include "LoopingMusic.hpp"
-#include "collision_layers.hpp"
+#include "core.hpp"
 #include "Options.hpp"
 #include <cstring>
-#include <iostream>
-#include <array>
-#include "game_values.hpp"
 
 #if defined(SFML_SYSTEM_MACOS)
 #	include <mach-o/dyld.h>
@@ -17,33 +12,27 @@
 #	error "Unsupported platform."
 #endif
 
-// Define extern variables of Game.hpp
+// Define extern variables of core.hpp
 char Game::pwd[Game::PWD_BUFSIZE];
-
-std::array<unsigned int, Game::MAX_PLAYERS> Game::score;
-
 Game::GameCache Game::cache;
-
 std::default_random_engine Game::rng;
-
-LoopingMusic *Game::music = nullptr;
-
 Game::Options Game::options;
 
-std::array<unsigned short, Game::MAX_PLAYERS> Game::playerContinues;
-
-bool Game::init() {
-	using Game::pwd;
-
-	Game::playerContinues.fill(Game::Conf::Player::INITIAL_CONTINUES);
+static void _initOptions() {
+	using Game::options;
 
 	// Setup default options
-	Game::options.musicVolume = 100;
-	Game::options.soundsVolume = 100;
-	Game::options.soundsMute = false;
-	Game::options.useJoystick.fill(-1);
+	options.musicVolume = 100;
+	options.soundsVolume = 100;
+	options.soundsMute = false;
+	options.useJoystick.fill(-1);
+}
 
-	// Setup pwd variable
+static bool _initPwd() {
+	using Game::pwd;
+	using Game::DIRSEP;
+
+	// Setup pwd variable cross-platform
 	pwd[0] = '\0';
 
 #if defined(SFML_SYSTEM_WINDOWS)
@@ -81,8 +70,10 @@ bool Game::init() {
 		}
 	}
 
-	// Setup collision layers
-	Game::Layers::init();
-
 	return true;
+}
+
+bool Game::init() {
+	_initOptions();
+	return _initPwd();
 }

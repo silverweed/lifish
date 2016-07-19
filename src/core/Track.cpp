@@ -1,5 +1,5 @@
 #include "Track.hpp"
-#include "Game.hpp"
+#include "core.hpp"
 
 Game::Track Game::getNthTrack(unsigned short num, float start, float length) {
 	using Game::DIRSEP;

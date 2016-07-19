@@ -1,5 +1,5 @@
 #include "Teleport.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "GameCache.hpp"
 #include "Drawable.hpp"
 #include "Collider.hpp"

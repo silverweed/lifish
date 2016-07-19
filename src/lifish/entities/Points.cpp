@@ -1,6 +1,6 @@
 #include "Points.hpp"
 #include "Direction.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "Temporary.hpp"
 #include "AxisMoving.hpp"
 #include "Drawable.hpp"

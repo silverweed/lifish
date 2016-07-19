@@ -1,5 +1,5 @@
 #include "Flash.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "Drawable.hpp"
 #include "Temporary.hpp"
 

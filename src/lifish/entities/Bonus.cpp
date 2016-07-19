@@ -2,7 +2,7 @@
 #include "Drawable.hpp"
 #include "Sounded.hpp"
 #include "Scored.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 
 using Game::Bonus;
 using Game::TILE_SIZE;

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "../WithOrigin.hpp"
+#include "WithOrigin.hpp"
+#include "ScreenHandler.hpp"
 
 namespace Game {
 
@@ -21,18 +22,28 @@ public:
 		return instance;
 	}
 
+	/** Loads all screens from `scrNames` into `screenHandler`. Will ignore already-loaded screens. */
+	void load(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames);
+
 	bool isActive() const { return active; }
 	void setActive(bool b) { active = b; }
 
-	void handleEvent(sf::Window& event);
+	/** UI-specific event loop, to be called when UI is active (instead of the main event loop) */
+	void handleEvents(sf::Window& window);
 
 	void setOrigin(const sf::Vector2f& pos) override {
 		Game::WithOrigin::setOrigin(pos);
 		screenHandler.setOrigin(pos);
 	}
 
+	void update() {
+		if (active)
+			screenHandler.update();
+	}
+
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-		target.draw(screenHandler, states);
+		if (active)
+			target.draw(screenHandler, states);
 	}
 };
 

@@ -1,5 +1,5 @@
 #include "AxisMoving.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "utils.hpp"
 #include "Shooting.hpp"
 #include "LevelManager.hpp"

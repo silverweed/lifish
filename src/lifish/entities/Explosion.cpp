@@ -4,7 +4,7 @@
 #include "Scored.hpp"
 #include "Player.hpp"
 #include "utils.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "Drawable.hpp"
 #include "GameCache.hpp"
 #include "Temporary.hpp"

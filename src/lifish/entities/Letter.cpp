@@ -1,5 +1,5 @@
 #include "Letter.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "Scored.hpp"
 #include "Drawable.hpp"
 #include "Sounded.hpp"

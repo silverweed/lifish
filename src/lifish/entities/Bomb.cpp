@@ -3,7 +3,7 @@
 #include "Player.hpp"
 #include "Drawable.hpp"
 #include "Collider.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "Fixed.hpp"
 
 using Game::Bomb;

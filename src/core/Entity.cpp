@@ -1,6 +1,6 @@
 #include "Entity.hpp"
 #include "GameCache.hpp"
-#include "Game.hpp"
+#include "core.hpp"
 #include "Component.hpp"
 #include "utils.hpp"
 #include <type_traits>

@@ -1,5 +1,5 @@
 #include "BreakableWall.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "GameCache.hpp"
 #include "Lifed.hpp"
 #include "Scored.hpp"

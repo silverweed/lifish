@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Bonus.hpp"
 #include "game_values.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "Player.hpp"
 #include "utils.hpp"
 #include "ShadedText.hpp"

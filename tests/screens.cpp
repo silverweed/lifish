@@ -1,6 +1,7 @@
 #include "Screen.hpp"
+#include "UI.hpp"
 #include <SFML/Graphics.hpp>
-#include "Game.hpp"
+#include "game.hpp"
 #include "Options.hpp"
 #include "utils.hpp"
 
@@ -12,11 +13,17 @@ int main(int argc, char **argv) {
 	
 	Game::init();
 	Game::options.showFPS = true;
-	Screen screen(argc > 1 ? argv[1] : "home.json", window);
+	//Screen screen(argc > 1 ? argv[1] : "home.json", window);
+
+	UI& ui = UI::getInstance();
+	ui.load(window, { "home.json", "about.json" });
+	ui.setActive(true);
 
 	while (window.isOpen()) {
 		sf::Event event;
-		while (window.pollEvent(event)) {
+		if (ui.isActive())
+			ui.handleEvents(window);
+		else while (window.pollEvent(event)) {
 			switch (event.type) {
 			case sf::Event::Closed:
 				window.close();
@@ -37,9 +44,9 @@ int main(int argc, char **argv) {
 			}
 		}
 	
-		screen.update();
+		ui.update();
 		window.clear();
-		window.draw(screen);
+		window.draw(ui);
 		Game::maybeShowFPS(window);
 		window.display();
 	}

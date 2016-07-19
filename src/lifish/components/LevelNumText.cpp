@@ -1,5 +1,5 @@
 #include "LevelNumText.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "utils.hpp"
 
 using Game::LevelNumText;

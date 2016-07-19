@@ -1,5 +1,5 @@
 #include "Level.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "GameCache.hpp"
 #include "LevelSet.hpp"
 #include "utils.hpp"

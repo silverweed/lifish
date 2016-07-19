@@ -1,6 +1,6 @@
 #include "Texture.hpp"
 #include "GameCache.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 
 using Game::Texture;
 

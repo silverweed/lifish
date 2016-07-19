@@ -1,5 +1,5 @@
 #include "GameCache.hpp"
-#include "Game.hpp"
+#include "core.hpp"
 #include "Options.hpp"
 #include <iostream>
 

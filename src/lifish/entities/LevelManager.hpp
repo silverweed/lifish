@@ -8,7 +8,7 @@
 #include "SaveManager.hpp"
 #include "Player.hpp"
 #include "Bomb.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "Level.hpp"
 #include "LevelRenderer.hpp"
 #include "LevelTime.hpp"

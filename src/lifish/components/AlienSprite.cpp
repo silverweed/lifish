@@ -1,5 +1,5 @@
 #include "AlienSprite.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "GameCache.hpp"
 #include "utils.hpp"
 #include "Drawable.hpp"

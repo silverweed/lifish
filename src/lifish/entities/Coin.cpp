@@ -3,7 +3,7 @@
 #include "Coin.hpp"
 #include "Scored.hpp"
 #include "Sounded.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "GameCache.hpp"
 #include "Killable.hpp"
 #include "Drawable.hpp"

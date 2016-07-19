@@ -4,7 +4,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <string>
 #include <array>
-#include "Game.hpp"
+#include "game.hpp"
 
 namespace Game {
 

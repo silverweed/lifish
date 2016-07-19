@@ -28,6 +28,7 @@ void Screen::update() {
 			return;
 		else {
 			selected.second->setColor(sf::Color::White);
+			selected.first = "";
 			selected.second = nullptr;
 		}
 	}
@@ -41,4 +42,22 @@ void Screen::update() {
 	if (selected.second != nullptr) {
 		selected.second->setColor(sf::Color::Red);
 	}
+}
+
+std::string Screen::getSelected() const {
+	return selected.first;
+}
+
+void Screen::setOrigin(const sf::Vector2f& pos) {
+	Game::WithOrigin::setOrigin(pos);
+	bgSprite.setOrigin(pos);
+	for (auto& e : nonInteractables) {
+		auto t = dynamic_cast<Game::ShadedText*>(e.get());
+		if (t != nullptr)
+			t->setOrigin(pos);
+		else
+			static_cast<sf::Sprite*>(e.get())->setOrigin(pos);
+	}
+	for (auto& e : interactables)
+		e.second->setOrigin(pos);
 }

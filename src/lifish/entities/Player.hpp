@@ -2,7 +2,7 @@
 
 #include "Entity.hpp"
 #include "Bomb.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "MovingAnimator.hpp"
 #include "AxisMoving.hpp"
 #include "Animated.hpp"

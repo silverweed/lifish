@@ -9,6 +9,7 @@
 #include "Component.hpp"
 #include "ScreenStyle.hpp"
 #include "Interactable.hpp"
+#include "WithOrigin.hpp"
 
 namespace Game {
 
@@ -16,7 +17,7 @@ namespace UI {
 
 class ScreenBuilder;
 
-class Screen : public sf::Drawable {
+class Screen : public sf::Drawable, public Game::WithOrigin {
 	friend class Game::UI::ScreenBuilder;
 
 protected:
@@ -48,9 +49,16 @@ public:
 	explicit Screen(const std::string& layoutFileName, const sf::RenderWindow& window);
 
 	bool wasBuilt() const { return built; }
+	const std::string& getParent() const { return parent; }
+	const std::string& getName() const { return name; }
+
+	/** @return The name of the selected element, if any (else "") */
+	std::string getSelected() const;
 
 	void update();
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+	void setOrigin(const sf::Vector2f& pos) override;
 };
 
 }

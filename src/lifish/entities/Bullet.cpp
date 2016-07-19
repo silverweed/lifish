@@ -3,7 +3,7 @@
 #include "AxisMoving.hpp"
 #include "Sounded.hpp"
 #include "Drawable.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "Temporary.hpp"
 #include "utils.hpp"
 

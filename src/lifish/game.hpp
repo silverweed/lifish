@@ -27,41 +27,21 @@
 
 #include <string>
 #include <map>
-#include <sstream>
-#include <random>
 #include <SFML/Graphics.hpp>
-#include "GameCache.hpp"
-
-// Fallback in case the game wasn't compiled properly with cmake
-#ifndef VERSION
-#	define VERSION "unknown"
-#endif
-#ifndef COMMIT
-#	define COMMIT "unknown"
-#endif
+#include "core.hpp"
 
 class LoopingMusic;
 
 /**
- * Game definitions, global functions and variables
+ * Game-specific definitions, global functions and variables
  */
 namespace Game {
-
-class Options;
 
 /****************************************************************************/
 /*                         GLOBAL DEFINITIONS                               */
 /****************************************************************************/
 
-#ifdef SFML_SYSTEM_WINDOWS
-constexpr char DIRSEP = '\\';
-#else
-constexpr char DIRSEP = '/';
-#endif
-
 constexpr unsigned short MAX_PLAYERS = 2;
-
-constexpr unsigned short TILE_SIZE = 32; // pixels
 /**
  * Level width / height in tiles. Don't take the
  * level borders into accounts, so a level will
@@ -82,10 +62,6 @@ constexpr unsigned short WINDOW_HEIGHT = (LEVEL_HEIGHT + 2) * TILE_SIZE;
 constexpr float MAIN_WINDOW_SHIFT = 1 + SIDE_PANEL_WIDTH;
 
 constexpr unsigned short N_ENEMIES = 10;
-
-constexpr unsigned short PWD_BUFSIZE = 512;
-
-constexpr auto PI = 3.141592653589793238L;
 
 namespace Fonts {
 	constexpr auto POINTS = "pf_tempesta_seven_bold.ttf";
@@ -120,21 +96,9 @@ constexpr auto EXTRA_LIFE_SOUND  = "extralife.ogg";
 constexpr auto LEVEL_CLEAR_SOUND = "levelclear.ogg";
 constexpr auto TIME_BONUS_SOUND  = "timebonus.ogg";
 
-/** Threshold value to consider an input from joystick getAxisPosition(). */
-constexpr short JOYSTICK_INPUT_THRESHOLD = 50;
-
 /****************************************************************************/
 /*                         GLOBAL VARIABLES                                 */
 /****************************************************************************/
-
-/** The executable working directory */
-extern char pwd[PWD_BUFSIZE];
-
-/** Global game cache (caches textures in memory for faster loading) */
-extern GameCache cache;
-
-/** Random number generator */
-extern std::default_random_engine rng;
 
 /** The players' score */
 extern std::array<unsigned int, MAX_PLAYERS> score;
@@ -142,27 +106,9 @@ extern std::array<unsigned int, MAX_PLAYERS> score;
 /** The music */
 extern LoopingMusic *music;
 
-/** The game options */
-extern Options options;
-
 /** The remaining of 'continues' per player */
 extern std::array<unsigned short, MAX_PLAYERS> playerContinues;
 
-/****************************************************************************/
-/*                         GLOBAL FUNCTIONS                                 */
-/****************************************************************************/
-
-inline std::string getAssetDir(const std::string& dir) {
-	std::stringstream ss;
-	ss << pwd << DIRSEP << "assets" << DIRSEP << dir;
-	return ss.str();
-}
-
-inline std::string getAsset(const std::string& dir, const std::string& file) {
-	return getAssetDir(dir) + DIRSEP + file;
-}
-
-/** Initializes runtime variables */
-bool init();
+bool initGame();
 
 } // end namespace Game

@@ -1,5 +1,5 @@
 #include "TransparentWall.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "Collider.hpp"
 
 using Game::TransparentWall;

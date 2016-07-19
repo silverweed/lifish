@@ -3,7 +3,7 @@
 #include <functional>
 #include <SFML/Graphics.hpp>
 #include "Component.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "collision_layers.hpp"
 
 namespace Game {

@@ -1,6 +1,6 @@
 #include "AI.hpp"
 #include "utils.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 #include "LevelManager.hpp"
 #include "Sounded.hpp"
 #include "Enemy.hpp"

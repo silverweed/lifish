@@ -2,7 +2,7 @@
 
 #include <exception>
 #include "Component.hpp"
-#include "Game.hpp"
+#include "game.hpp"
 
 namespace Game {
 

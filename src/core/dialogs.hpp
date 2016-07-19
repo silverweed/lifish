@@ -5,6 +5,7 @@
  */
 #include <iostream>
 #include <string>
+#include "core.hpp"
 #ifdef SFML_SYSTEM_WINDOWS
 #	include "win/dialogs.hpp"
 #else

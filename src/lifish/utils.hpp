@@ -4,7 +4,7 @@
 #include <ostream>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/System/Vector2.hpp>
-#include "Game.hpp"
+#include "game.hpp"
 #include "Direction.hpp"
 #include "Animated.hpp"
 
