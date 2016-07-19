@@ -17,7 +17,7 @@
 
 namespace Game {
 
-class Options;
+struct Options;
 
 /****************************************************************************/
 /*                         GLOBAL DEFINITIONS                               */

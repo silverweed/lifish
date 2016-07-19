@@ -1,5 +1,6 @@
 #include "game.hpp"
 #include "LoopingMusic.hpp"
+#include "controls.hpp"
 #include "collision_layers.hpp"
 #include <cstring>
 #include <iostream>
@@ -13,6 +14,7 @@ LoopingMusic *Game::music = nullptr;
 bool Game::initGame() {
 	if (!Game::init()) return false;
 	Game::playerContinues.fill(Game::Conf::Player::INITIAL_CONTINUES);
+	Game::Controls::useJoystick.fill(-1);
 
 	// Setup collision layers
 	Game::Layers::init();

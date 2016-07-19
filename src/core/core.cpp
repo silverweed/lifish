@@ -25,7 +25,6 @@ static void _initOptions() {
 	options.musicVolume = 100;
 	options.soundsVolume = 100;
 	options.soundsMute = false;
-	options.useJoystick.fill(-1);
 }
 
 static bool _initPwd() {

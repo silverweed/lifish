@@ -19,3 +19,4 @@ std::array<sf::Keyboard::Key, Game::Controls::CONTROLS_NUM> Game::Controls::play
 };
 
 std::array<unsigned int, Game::MAX_PLAYERS> Game::Controls::joystickBombKey = {{ 0, 0 }};
+std::array<short, Game::MAX_PLAYERS> Game::Controls::useJoystick;

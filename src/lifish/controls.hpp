@@ -22,6 +22,8 @@ constexpr static unsigned short CONTROLS_NUM = 5;
 
 extern std::array<sf::Keyboard::Key, CONTROLS_NUM> players[Game::MAX_PLAYERS];
 extern std::array<unsigned int, Game::MAX_PLAYERS> joystickBombKey;
+/** -1 if i-th player doesn't use joystick, else the joystick index. */
+extern std::array<short, Game::MAX_PLAYERS> useJoystick;
 
 inline Control fromString(const std::string& name) {
 	if (name == "up" || name == "UP") return CTRL_UP;
