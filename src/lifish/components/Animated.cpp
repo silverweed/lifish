@@ -57,6 +57,7 @@ void Animated::setAnimation(Animation& anim) {
 }
 
 void Animated::update() {
+	Game::Component::update();
 	if (manualPosition)
 		animatedSprite.setPosition(position);
 	else

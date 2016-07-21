@@ -4,6 +4,7 @@
 #include <SFML/System.hpp>
 #include "Sprite.hpp"
 #include "Clock.hpp"
+#include "Player.hpp"
 #include "Entity.hpp"
 
 namespace Game {
@@ -35,8 +36,12 @@ private:
 
 	const Type type;
 
+	bool grabbed = false;
 	Game::Clock *expireClock = nullptr;
 	Game::Sprite *sprite = nullptr;
+
+
+	void _grab(const Game::Player& player);
 
 public:
 	constexpr static unsigned short N_BONUS_TYPES = 9;
@@ -44,7 +49,7 @@ public:
 	const static sf::Time SHIELD_DURATION;
 	const static sf::Time SPEEDY_DURATION;
 
-	Bonus(const sf::Vector2f& pos, const Type type);
+	explicit Bonus(const sf::Vector2f& pos, const Type type);
 
 	Type getType() const { return type; }
 

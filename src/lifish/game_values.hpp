@@ -20,7 +20,7 @@ namespace Conf {
 	}
 
 	namespace Bomb {
-		const sf::Time DEFAULT_FUSE = sf::milliseconds(5000);
+		const sf::Time DEFAULT_FUSE = sf::milliseconds(500);
 		constexpr unsigned short DEFAULT_RADIUS = 2;
 		constexpr unsigned short MAX_RADIUS = 4;
 	}

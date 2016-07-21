@@ -11,8 +11,8 @@ std::array<unsigned int, Game::MAX_PLAYERS> Game::score;
 std::array<unsigned short, Game::MAX_PLAYERS> Game::playerContinues;
 LoopingMusic *Game::music = nullptr;
 
-bool Game::initGame() {
-	if (!Game::init()) return false;
+bool Game::init() {
+	if (!Game::initCore()) return false;
 	Game::playerContinues.fill(Game::Conf::Player::INITIAL_CONTINUES);
 	Game::Controls::useJoystick.fill(-1);
 

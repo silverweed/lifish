@@ -109,6 +109,6 @@ extern LoopingMusic *music;
 /** The remaining of 'continues' per player */
 extern std::array<unsigned short, MAX_PLAYERS> playerContinues;
 
-bool initGame();
+bool init();
 
 } // end namespace Game

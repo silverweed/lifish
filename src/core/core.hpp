@@ -68,6 +68,6 @@ inline std::string getAsset(const std::string& dir, const std::string& file) {
 }
 
 /** Initializes runtime variables */
-bool init();
+bool initCore();
 
 }

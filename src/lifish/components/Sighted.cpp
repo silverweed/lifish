@@ -70,6 +70,7 @@ Sighted::Sighted(Game::Entity *const owner, short visionRadius)
 }
 
 void Sighted::update() {
+	Game::Component::update();
 	if (lm == nullptr || !owner->isAligned()) return;
 
 	for (unsigned short i = 0; i < (unsigned short)Game::Direction::NONE; ++i) {

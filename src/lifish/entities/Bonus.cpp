@@ -2,7 +2,12 @@
 #include "Drawable.hpp"
 #include "Sounded.hpp"
 #include "Scored.hpp"
+#include "collision_layers.hpp"
+#include "Temporary.hpp"
+#include "Collider.hpp"
 #include "game.hpp"
+
+#include <iostream>
 
 using Game::Bonus;
 using Game::TILE_SIZE;
@@ -22,7 +27,7 @@ std::discrete_distribution<unsigned short> Game::bonusTypeDistribution
 	1, // zapper
 	1, // sudden death
 	5, // health small
-	4, // health full
+	400000, // health full
 	490 // no bonus
 };
 	
@@ -37,10 +42,19 @@ Bonus::Bonus(const sf::Vector2f& pos, const Type type)
 					static_cast<unsigned short>(type) / 10 * TILE_SIZE, 
 					TILE_SIZE,
 					TILE_SIZE)));
+	addComponent(new Game::Collider(this, [this] (const Game::Collider& cld) {
+		if (grabbed) return;
+		// on collision (no check since its layer only collides with players)
+		_grab(*static_cast<const Game::Player*>(cld.getOwner()));
+	}, Game::Layers::GRABBABLE));
 	addComponent(new Game::Drawable(this, sprite));
 	addComponent(new Game::Scored(this, VALUE));
 	expireClock = addComponent(new Game::Clock(this));
 	addComponent(new Game::Sounded(this, { Game::getAsset("test", "bonus_grab.ogg") }));
+	addComponent(new Game::Temporary(this, [this] () {
+		// expire condition
+		return grabbed || expireClock->getElapsedTime() > EXPIRE_TIME;
+	}));
 }
 
 void Bonus::update() {
@@ -51,6 +65,11 @@ void Bonus::update() {
 		if (5*diff - std::floor(5*diff) < 0.5)
 			sprite->getSprite().setColor(sf::Color(0, 0, 0, 0));
 		else
-			sprite->getSprite().setColor(sf::Color(0, 0, 0, 255));
+			sprite->getSprite().setColor(sf::Color(255, 255, 255, 255));
 	}
+}
+
+void Bonus::_grab(const Game::Player& player) {
+	get<Game::Scored>()->setTarget(player.getInfo().id);
+	grabbed = true;
 }

@@ -64,6 +64,7 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 }
 
 void Letter::update() {
+	Game::Entity::update();
 	if (!animatedSprite->isPlaying() && transitioning) {
 		transitioning = false;
 		id = (id + 1) % N_EXTRA_LETTERS;

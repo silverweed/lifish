@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
 			++i;
 		}
 	}
-	Game::initGame();
+	Game::init();
 	if (levelSetName.length() < 1)
 		levelSetName = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
 	

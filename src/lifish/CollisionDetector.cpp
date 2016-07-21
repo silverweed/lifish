@@ -115,7 +115,7 @@ void CollisionDetector::update() {
 			if (collider->collidesWith(*othcollider)
 					&& collide(*collider, *othcollider, moving->getDirection()))
 			{
-				std::cerr << collider->getOwner() << " colliding with " << othcollider->getOwner()<<std::endl;
+				//std::cerr << collider->getOwner() << " colliding with " << othcollider->getOwner()<<std::endl;
 				collider->colliding.push_back(*othcollider);
 				auto othmoving = othcollider->getOwner()->get<Game::AxisMoving>();
 				if (othmoving == nullptr || othmoving->getDirection() == Game::oppositeDirection(

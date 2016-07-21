@@ -62,6 +62,9 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 
 	/** Removes `e`'s components from internal collections */
 	void _removeFromInternal(const Game::Entity *const e);
+	void _removeFromFixed(const Game::Entity *const e);
+	void _removeFromColliding(const Game::Entity *const e);
+	void _removeFromKillables(const Game::Entity *const e, bool removeFromDying);
 
 	/** Removes any killed entity from all internal collections and destroys them.
 	 *  If its `isKillInProgress()` is true, puts it in `dying`

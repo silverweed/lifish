@@ -14,6 +14,7 @@ Controllable::Controllable(Game::Entity *const owner,
 }
 
 void Controllable::update() {
+	Game::Component::update();
 	if (window == nullptr)
 		throw std::logic_error("window is null in Controllable::update()!");
 

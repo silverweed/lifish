@@ -72,7 +72,7 @@ static bool _initPwd() {
 	return true;
 }
 
-bool Game::init() {
+bool Game::initCore() {
 	_initOptions();
 	return _initPwd();
 }

@@ -23,5 +23,6 @@ void Sprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 }
 
 void Sprite::update() {
+	Game::Component::update();
 	sprite.setPosition(owner->getPosition());
 }

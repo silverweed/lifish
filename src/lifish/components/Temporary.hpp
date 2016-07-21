@@ -31,6 +31,7 @@ public:
 	{}
 
 	void update() override {
+		Game::Component::update();
 		if (!killed && expireCondition())
 			kill();
 	}

@@ -8,6 +8,7 @@ FreeMoving::FreeMoving(Game::Entity *const owner, float speed, sf::Vector2f velo
 {}
 
 void FreeMoving::update() {
+	Game::Component::update();
 	if (!moving) return;
 
 	sf::Vector2f shift(0.f, 0.f);
