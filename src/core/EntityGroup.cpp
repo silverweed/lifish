@@ -27,32 +27,19 @@ void EntityGroup::updateAll() {
 		e->update();
 }
 	
-void EntityGroup::_removeFromColliding(const Game::Entity *const entity) {
+void EntityGroup::_removeFromInternal(const Game::Entity *const entity) {
+	if (entity == nullptr) return;
 	const auto cld = entity->get<Game::Collider>();
-	if (cld != nullptr)
-		collidingEntities.erase(std::remove(collidingEntities.begin(), collidingEntities.end(), cld));
-}
-
-void EntityGroup::_removeFromFixed(const Game::Entity *const entity) {
+	const auto klb = entity->get<Game::Killable>();
 	const auto tile = Game::tile(entity->getPosition());
 	if (getFixedAt(tile.x, tile.y) == entity)
 		_setFixedAt(tile.x, tile.y, nullptr);
-}
-
-void EntityGroup::_removeFromKillables(const Game::Entity *const entity, bool removeFromDying) {
-	const auto klb = entity->get<Game::Killable>();
+	if (cld != nullptr)
+		collidingEntities.erase(std::remove(collidingEntities.begin(), collidingEntities.end(), cld));
 	if (klb != nullptr) {
 		killables.remove(klb);
-		if (removeFromDying)
-			dying.remove(klb);
+		dying.remove(klb);
 	}
-}
-
-void EntityGroup::_removeFromInternal(const Game::Entity *const entity) {
-	if (entity == nullptr) return;
-	_removeFromColliding(entity);
-	_removeFromFixed(entity);
-	_removeFromKillables(entity, true);
 }
 
 void EntityGroup::remove(Game::Entity *entity) {
@@ -86,27 +73,28 @@ void EntityGroup::_checkKilled() {
 	for (auto it = killables.begin(); it != killables.end(); ) {
 		auto klb = *it;
 		if (klb->isKilled()) {
-			klb->kill();
-			const auto entity = klb->getOwner();
 			if (klb->isKillInProgress()) {
 				// Will be finalized later
-				_removeFromFixed(entity);
 				dying.push_back(klb);
 				it = killables.erase(it);
 				continue;
 			}
-			
+
 			auto eit = std::find_if(entities.begin(), entities.end(), 
 					[klb] (const std::unique_ptr<Game::Entity>& ptr) 
 			{
 				return ptr.get() == klb->getOwner();
 			});
 			if (eit != entities.end()) {
-				_removeFromFixed(eit->get());
-				_removeFromColliding(eit->get());
+				const auto cld = eit->get()->get<Game::Collider>();
+				if (cld != nullptr) {
+					auto cit = std::find(collidingEntities.begin(), collidingEntities.end(), cld);
+					if (cit != collidingEntities.end())
+						*cit = nullptr;
+				}
 				entities.erase(eit);
-			}
-			
+			}	
+
 			it = killables.erase(it);
 		} else 
 			++it;
@@ -126,8 +114,15 @@ void EntityGroup::_removeDying() {
 			if (eit != entities.end()) {
 				// Remove from internal collections, save for `killables`, from which it was
 				// already removed by _removeExpiredTemporaries
-				_removeFromFixed(eit->get());
-				_removeFromColliding(eit->get());
+				auto cld = eit->get()->get<Game::Collider>();
+				const auto tile = Game::tile(eit->get()->getPosition());
+				if (cld != nullptr) {
+					auto cit = std::find(collidingEntities.begin(), collidingEntities.end(), cld);
+					if (cit != collidingEntities.end())
+						*cit = nullptr;
+				}
+				if (getFixedAt(tile.x, tile.y) == eit->get())
+					_setFixedAt(tile.x, tile.y, nullptr);
 
 				entities.erase(eit);
 			}

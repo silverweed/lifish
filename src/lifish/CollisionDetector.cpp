@@ -91,6 +91,8 @@ void CollisionDetector::update() {
 		if (checked[i]) continue;
 
 		auto collider = colliding[i];
+		if (collider == nullptr) continue;
+
 		// Reset collider
 		collider->colliding.clear();
 		collider->atLimit = false;
@@ -108,6 +110,7 @@ void CollisionDetector::update() {
 			if (i == j)  continue;
 
 			auto othcollider = colliding[j];
+			if (othcollider == nullptr) continue;
 			// Only check entities ahead of this one
 			if (!direction_is_viable(*collider, *moving, *othcollider))
 				continue;
