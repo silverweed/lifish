@@ -39,7 +39,7 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	friend class Game::CollisionDetector;
 
 	/** All the entities (owning references) */
-	std::list<std::unique_ptr<Game::Entity>> entities;
+	std::list<std::shared_ptr<Game::Entity>> entities;
 
 	/** The colliders of entities which have one */
 	std::vector<Game::Collider*> collidingEntities;
@@ -77,6 +77,8 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 			fixedEntities[(y - 1) * Game::LEVEL_WIDTH + x - 1] = e;
 	}
 
+	Game::Entity* _putInAux(Game::Entity *entity);
+
 public:
 	/**
 	 * Constructs the EntityGroup as the owner of its entities.
@@ -92,7 +94,10 @@ public:
 	void apply(AppliedFunc<const Game::Entity, Args...> func, Args... args) const;
 
 	template<class T>
-	T* add(T *entity);
+	Game::Entity* add(T *entity);
+
+	template<class T>
+	Game::Entity* add(std::shared_ptr<T>& entity);
 
 	/** Removes an entity from all internal collections. */
 	void remove(Game::Entity *entity);
@@ -100,7 +105,7 @@ public:
 	/** Relinquishes the ownership of `e` to the callee.
 	 *  `e` is then removed from all internal collections. 
 	 */
-	Game::Entity* release(Game::Entity *e);
+	//Game::Entity* release(Game::Entity *e);
 
 	/** Removes all entities from this EntityGroup. */
 	void clear();
@@ -136,30 +141,15 @@ void EntityGroup::apply(AppliedFunc<const Game::Entity, Args...> func, Args... a
 }
 
 template<class T>
-T* EntityGroup::add(T *entity) {
-	entities.push_back(std::unique_ptr<Game::Entity>(entity));
-	entity->setOrigin(origin);
+Game::Entity* EntityGroup::add(T *entity) {
+	entities.push_back(std::shared_ptr<Game::Entity>(entity));
+	return _putInAux(entity);
+}
 
-	// Put in aux collections
-	auto klb = entity->template get<Game::Killable>();
-	if (klb != nullptr) {
-		killables.push_back(klb);
-	} 
-
-	// Put an entity marked as `Fixed` in fixedEntities
-	if (entity->template get<Game::Fixed>() != nullptr) {
-		const auto tile = Game::tile(entity->getPosition());
-		if (getFixedAt(tile.x, tile.y) != nullptr)
-			throw std::logic_error("Two fixed entities share the same tile?!");
-
-		_setFixedAt(tile.x, tile.y, entity);
-	}
-
-	auto cld = entity->template get<Game::Collider>();
-	if (cld != nullptr && !cld->isPhantom())
-		collidingEntities.push_back(cld);
-
-	return entity;
+template<class T>
+Game::Entity* EntityGroup::add(std::shared_ptr<T>& entity) {
+	entities.push_back(entity);
+	return _putInAux(entity.get());
 }
 
 template<class T>

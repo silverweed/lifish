@@ -44,22 +44,47 @@ void EntityGroup::_removeFromInternal(const Game::Entity *const entity) {
 
 void EntityGroup::remove(Game::Entity *entity) {
 	_removeFromInternal(entity);
-	entities.remove_if([entity] (const std::unique_ptr<Game::Entity>& e) { return e.get() == entity; });
+	entities.remove_if([entity] (const std::shared_ptr<Game::Entity>& e) { return e.get() == entity; });
 }
 
-Game::Entity* EntityGroup::release(Game::Entity *e) {
-	Game::Entity *released = nullptr;
-	for (auto it = entities.begin(); it != entities.end(); ) {
-		if (it->get() == e) {
-			released = it->release();
-			_removeFromInternal(it->get());
-			it = entities.erase(it);
-			break;
-		} else 
-			++it;
+Game::Entity* EntityGroup::_putInAux(Game::Entity *entity) {
+	entity->setOrigin(origin);
+
+	// Put in aux collections
+	auto klb = entity->template get<Game::Killable>();
+	if (klb != nullptr) {
+		killables.push_back(klb);
+	} 
+
+	// Put an entity marked as `Fixed` in fixedEntities
+	if (entity->template get<Game::Fixed>() != nullptr) {
+		const auto tile = Game::tile(entity->getPosition());
+		if (getFixedAt(tile.x, tile.y) != nullptr)
+			throw std::logic_error("Two fixed entities share the same tile?!");
+
+		_setFixedAt(tile.x, tile.y, entity);
 	}
-	return released;
+
+	auto cld = entity->template get<Game::Collider>();
+	if (cld != nullptr && !cld->isPhantom())
+		collidingEntities.push_back(cld);
+
+	return entity;
 }
+
+//Game::Entity* EntityGroup::release(Game::Entity *e) {
+	//Game::Entity *released = nullptr;
+	//for (auto it = entities.begin(); it != entities.end(); ) {
+		//if (it->get() == e) {
+			//released = it->release();
+			//_removeFromInternal(it->get());
+			//it = entities.erase(it);
+			//break;
+		//} else 
+			//++it;
+	//}
+	//return released;
+//}
 
 void EntityGroup::clear() {
 	entities.clear();
@@ -86,7 +111,7 @@ void EntityGroup::_checkKilled() {
 			}
 
 			auto eit = std::find_if(entities.begin(), entities.end(), 
-					[klb] (const std::unique_ptr<Game::Entity>& ptr) 
+					[klb] (const std::shared_ptr<Game::Entity>& ptr) 
 			{
 				return ptr.get() == klb->getOwner();
 			});
@@ -112,7 +137,7 @@ void EntityGroup::_removeDying() {
 		if (!tmp->isKillInProgress()) {
 			// kill function has ended, we can safely destroy this.
 			auto eit = std::find_if(entities.begin(), entities.end(), 
-					[tmp] (std::unique_ptr<Game::Entity>& ptr) 
+					[tmp] (std::shared_ptr<Game::Entity>& ptr) 
 			{
 				return ptr.get() == tmp->getOwner();
 			});

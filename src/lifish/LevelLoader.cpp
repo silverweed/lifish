@@ -24,9 +24,9 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 	auto& entities = lm.getEntities();
 	if (entities.size() > 0) {
 		// Release the players so they're not destroyed with other entities.
-		for (Game::Player *p : lm.players)
-			if (p != nullptr)
-				entities.release(p);
+		//for (Game::Player *p : lm.players)
+			//if (p != nullptr)
+				//entities.release(p);
 
 		// Destroy everything else
 		entities.clear();

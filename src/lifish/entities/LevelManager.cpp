@@ -1,5 +1,6 @@
 #include "LevelManager.hpp"
 #include "game_logic.hpp"
+#include <memory>
 //#include "EntityType.hpp"
 //#include "FixedWall.hpp"
 //#include "BreakableWall.hpp"
@@ -31,13 +32,12 @@ LevelManager::LevelManager()
 auto LevelManager::createNewPlayers(unsigned short n) -> std::vector<Game::Player*> {
 	std::vector<Game::Player*> pls;
 	for (int i = 0; i < n && i < Game::MAX_PLAYERS; ++i) {
-		auto p = new Game::Player(sf::Vector2f(0, 0), i + 1);
 		// Pointers kept by LevelManager
-		players[i] = p;
+		players[i] = std::make_shared<Game::Player>(sf::Vector2f(0, 0), i + 1);
 		// Pointers owned by EntityGroup
-		entities.add(p);
+		entities.add(players[i]);
 		// Returned (unowned) pointers
-		pls.push_back(p);
+		pls.push_back(players[i].get());
 	}
 	return pls;
 }

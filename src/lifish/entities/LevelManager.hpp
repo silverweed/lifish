@@ -42,7 +42,7 @@ class LevelManager final : public sf::Drawable, public Game::Entity, private sf:
 	 *  4) the new level is loaded: `entities` gets cleared;
 	 *  5) the players are handed back to the EntityGroup.
 	 */
-	std::array<Game::Player*, Game::MAX_PLAYERS> players;
+	std::array<std::shared_ptr<Game::Player>, Game::MAX_PLAYERS> players;
 
 	/** Unowned references to bombs, used for efficiency */
 	Matrix<Game::Bomb*, Game::MAX_PLAYERS, Game::Conf::Player::MAX_MAX_BOMBS> bombs;
@@ -58,12 +58,12 @@ public:
 
 	bool isPlayer(const Game::Entity *const e) const {
 		for (const auto& p : players)
-			if (e == p) return true;
+			if (e == p.get()) return true;
 		return false;
 	}
 	/** Returns the id-th player (id starting from 1) */
 	const Game::Player* getPlayer(unsigned short id) const {
-		return players[id-1];
+		return players[id-1].get();
 	}
 
 	const Game::EntityGroup& getEntities() const { return entities; }
