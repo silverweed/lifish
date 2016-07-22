@@ -3,8 +3,6 @@
 #include "utils.hpp"
 #include "Collider.hpp"
 
-#include <iostream>
-
 using Game::Sighted;
 
 // Helper functions for _fillLine
@@ -77,7 +75,6 @@ void Sighted::_fillLine(const Game::Direction dir) {
 			}
 		}
 	}
-	std::cerr << "#seen[" << Game::directionToString(dir) << "]: " << seen[dir].size() << std::endl;
 }
 
 void Sighted::setOpaque(std::initializer_list<Game::Layers::Layer> layers, bool opaque) {

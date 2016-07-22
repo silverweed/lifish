@@ -9,10 +9,6 @@
 #include "Collider.hpp"
 #include <random>
 #include <exception>
-#include <iostream>
-
-using std::cout;
-using std::endl;
 
 #define NEW_DIRECTION(d) \
 { \
@@ -109,8 +105,6 @@ AIBoundFunction Game::ai_random(Game::Entity& entity) {
 	return [&entity, moving, collider] (const Game::LevelManager& lm) { 
 		HANDLE_UNALIGNED;
 		if (!collider->isColliding()) {
-			//cout << "not colliding (dist = " << moving->getDistTravelled()<< ", dir = " 
-				//<< Game::directionToString(moving->getDirection()) << ")" << endl;
 			if (moving->getDistTravelled() < Game::TILE_SIZE) 
 				SAME_DIRECTION
 
@@ -131,7 +125,6 @@ AIBoundFunction Game::ai_random(Game::Entity& entity) {
 		}
 		if (n < 1) NEW_DIRECTION(D::NONE)
 
-		//cout << "viable dirs = " << n << endl;
 
 		std::uniform_int_distribution<int> d(0, n - 1);
 		NEW_DIRECTION(dirs[d(Game::rng)])
@@ -153,18 +146,15 @@ AIBoundFunction Game::ai_random_forward(Game::Entity& entity) {
 		const bool colliding = collider->collidesWithSolid();
 
 		if (moving->getPrevAlign() == cur_align && !colliding) {
-			cout << "Choosing SAME_DIRECTION" <<endl;
 			SAME_DIRECTION
 		}
 
 		const D opp = oppositeDirection(cur);
 		// colliding with a moving entity
 		if (colliding && moving->canGo(cur, lm)) {
-			cout << "Choosing OPPOSITE_DIRECTION"<<endl;
 			NEW_DIRECTION(opp)
 		}
 
-		cout << "Selecting RANDOM_VIABLE"<<endl;
 		NEW_DIRECTION(select_random_viable(*moving, lm, opp))
 	};
 }
@@ -229,9 +219,6 @@ AIBoundFunction Game::ai_follow(Game::Entity& entity) {
 		const D cur = moving->getDirection();
 		const auto cur_align = Game::tile(entity.getPosition());
 		const bool colliding = collider->collidesWithSolid();
-		cout << "[ " << &entity << "]\ncur_align = " << cur_align << "; prev_align = "
-			<<moving->getPrevAlign()<< "\ncolliding = "
-			<<colliding<<std::endl;
 		if (moving->getPrevAlign() == cur_align && !colliding) 
 			SAME_DIRECTION
 
@@ -240,7 +227,6 @@ AIBoundFunction Game::ai_follow(Game::Entity& entity) {
 			NEW_DIRECTION(opp)
 
 		auto sp = seeing_player(lm, *sighted);
-		cout << "seeing_player = " << sp << endl;
 		if (sp != Game::Direction::NONE) {	
 			auto sounded = entity.get<Game::Sounded>();
 			if (sounded != nullptr)

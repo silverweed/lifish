@@ -104,7 +104,8 @@ int main(int argc, char **argv) {
 		levelSetName = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
 	
 	sf::RenderWindow window(sf::VideoMode(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT), "test level");
-	window.setVerticalSyncEnabled(true);
+	bool vsync = true;
+	window.setVerticalSyncEnabled(vsync);
 	window.setJoystickThreshold(Game::JOYSTICK_INPUT_THRESHOLD);
 	Game::options.showFPS = true;
 
@@ -242,6 +243,9 @@ int main(int argc, char **argv) {
 				switch (event.key.code) {
 				case sf::Keyboard::Q:
 					window.close();
+					break;
+				case sf::Keyboard::Y:
+					window.setVerticalSyncEnabled(vsync = !vsync);
 					break;
 				case sf::Keyboard::M:
 					//enemy->setMorphed(!enemy->isMorphed());
