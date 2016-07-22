@@ -73,6 +73,11 @@ void EntityGroup::_checkKilled() {
 	for (auto it = killables.begin(); it != killables.end(); ) {
 		auto klb = *it;
 		if (klb->isKilled()) {
+			// Remove this from fixedEntities
+			const auto tile = Game::tile(klb->getOwner()->getPosition());
+			if (getFixedAt(tile.x, tile.y) == klb->getOwner())
+				_setFixedAt(tile.x, tile.y, nullptr);
+
 			if (klb->isKillInProgress()) {
 				// Will be finalized later
 				dying.push_back(klb);
