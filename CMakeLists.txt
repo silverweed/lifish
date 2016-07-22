@@ -138,7 +138,7 @@ if(${RELEASE})
 	message(STATUS "Compiling in RELEASE mode")
 	# Disable assertions
 	add_definitions(-DNDEBUG=1)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -Wall -pedantic -Wextra")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORTIFY_SOURCE=2 -O2 -Wall -pedantic -Wextra")
 
 	# Hardening
 	if(NOT ${HAS_CHECK_CXX} STREQUAL "")

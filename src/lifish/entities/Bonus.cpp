@@ -27,7 +27,7 @@ std::discrete_distribution<unsigned short> Game::bonusTypeDistribution
 	1, // zapper
 	1, // sudden death
 	5, // health small
-	400000, // health full
+	4, // health full
 	490 // no bonus
 };
 	
