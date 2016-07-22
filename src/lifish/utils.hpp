@@ -82,6 +82,10 @@ constexpr double sqrDistance(const sf::Vector2<T>& a, const sf::Vector2<R>& b) {
 	return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
 }
 
+constexpr short manhattanDistance(const sf::Vector2i& tileA, const sf::Vector2i& tileB) {
+	return Game::abs(tileA.x - tileB.x) + Game::abs(tileA.y - tileB.y);
+}
+
 constexpr float centerX(const sf::FloatRect& bounds, const sf::FloatRect& rect) {
 	return rect.left + (rect.width - bounds.width) / 2.;
 }

@@ -12,6 +12,7 @@ using L = Game::Layers::Layer;
 
 Game::Matrix<bool, L::N_LAYERS, L::N_LAYERS> Game::Layers::collide,
 	                                     Game::Layers::solid;
+
 void Game::Layers::init() {
 	for (auto& l : collide)
 		l.fill(false);

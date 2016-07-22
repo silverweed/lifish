@@ -5,7 +5,6 @@
 #include "Lifed.hpp"
 #include "LevelManager.hpp"
 #include "Sounded.hpp"
-#include "Killable.hpp"
 #include "Collider.hpp"
 #include "utils.hpp"
 
@@ -37,7 +36,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	alienSprite = addComponent(new Game::AlienSprite(this));
 	addComponent(new Game::Scored(this, id * 100));
 	movingAnimator = addComponent(new Game::MovingAnimator(this));
-	addComponent(new Game::Killable(this, [this] () {
+	killable = addComponent(new Game::Killable(this, [this] () {
 		// on kill
 		Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
 	}));
@@ -128,11 +127,28 @@ void Enemy::update() {
 	if (shooting->isShooting()) {
 		const auto s = "shoot_" + Game::directionToString(moving->getDirection());
 		if (!animated->isPlaying(s)) {
+			animated->getSprite().setLooped(false);
 			animated->setAnimation(s);
 			animated->getSprite().play();
 		}
 		return;
-	}
+	} else 
+		animated->getSprite().setLooped(true);
+
+	if (killable->isKilled() || shooting->isRecharging())
+		return;
+	
+	//const auto lm = sighted->getLevelManager();
+	//if (lm == nullptr)
+		//return;
+
+	//const auto& entitiesSeen = sighted->entitiesSeen(moving->getDirection());
+	//for (const auto& pair : entitiesSeen) {
+		//if (lm->isPlayer(pair.first)) {
+			//shooting->shoot();
+			//break;
+		//}
+	//}
 }
 
 void Enemy::setMorphed(bool b) {
@@ -143,7 +159,7 @@ void Enemy::_checkCollision(Game::Collider& coll) {
 	if (coll.getLayer() != Game::Layers::EXPLOSIONS) return;
 	auto lifed = get<Game::Lifed>();
 	if (lifed->decLife(1) <= 0) {
-		get<Game::Killable>()->kill();	
+		killable->kill();	
 	}
 }
 

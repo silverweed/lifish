@@ -9,6 +9,7 @@ Shooting::Shooting(Game::Entity *const owner, const Attack& attack)
 	, attack(attack) 
 {
 	rechargeClock = addComponent(new Game::Clock(this));
+	blockClock = addComponent(new Game::Clock(this));
 	ownerMoving = owner->get<Game::AxisMoving>();
 }
 
@@ -63,4 +64,6 @@ void Shooting::update() {
 	Game::Component::update();
 	if (blocked && blockClock->getElapsedTime() > attack.blockTime)
 		blocked = false;
+	if (shooting && rechargeClock->getElapsedTime().asSeconds() > 0.1)
+		shooting = false;
 }

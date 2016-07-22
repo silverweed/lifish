@@ -60,13 +60,15 @@ static Game::Direction select_random_viable(
 }
 
 static Game::Direction seeing_player(const Game::LevelManager& lm, const Game::Sighted& sighted) {
-	auto& seen = sighted.entitiesSeen();
+	const auto& seen = sighted.entitiesSeen();
 	Game::Direction dir = Game::Direction::NONE;
 	unsigned short dist = Game::LEVEL_WIDTH + 1;
 	for (unsigned short i = 0; i < 4; ++i) {
-		if (lm.isPlayer(seen[i].first) && seen[i].second < dist) {
-			dir = static_cast<Game::Direction>(i);
-			dist = seen[i].second;
+		for (const auto& pair : seen[i]) {
+			if (lm.isPlayer(pair.first) && pair.second < dist) {
+				dir = static_cast<Game::Direction>(i);
+				dist = pair.second;
+			}
 		}
 	}
 	return dir;
@@ -238,6 +240,7 @@ AIBoundFunction Game::ai_follow(Game::Entity& entity) {
 			NEW_DIRECTION(opp)
 
 		auto sp = seeing_player(lm, *sighted);
+		cout << "seeing_player = " << sp << endl;
 		if (sp != Game::Direction::NONE) {	
 			auto sounded = entity.get<Game::Sounded>();
 			if (sounded != nullptr)

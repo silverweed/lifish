@@ -6,7 +6,7 @@ namespace Game {
 
 namespace Layers {
 
-enum Layer : unsigned short {
+enum Layer : unsigned {
 	DEFAULT,
 	PLAYERS,
 	ENEMIES,

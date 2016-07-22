@@ -3,6 +3,7 @@
 #include <SFML/System.hpp>
 #include <memory>
 #include "Entity.hpp"
+#include "Killable.hpp"
 #include "Clock.hpp"
 #include "Animated.hpp"
 #include "Direction.hpp"
@@ -52,6 +53,7 @@ class Enemy : public Game::Entity {
 	Game::Shooting *shooting = nullptr;
 	Game::Animated *animated = nullptr;
 	Game::AxisMoving *moving = nullptr;
+	Game::Killable *killable = nullptr;
 	Game::MovingAnimator *movingAnimator = nullptr;
 	Game::Sighted *sighted = nullptr;
 	Game::AI *ai = nullptr;
