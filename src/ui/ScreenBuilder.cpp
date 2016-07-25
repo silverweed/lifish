@@ -249,11 +249,7 @@ void ScreenBuilder::build(Game::UI::Screen& screen, const std::string& layoutFil
 	_fixAlign(screen);
 
 	// load bg sprite
-	auto texture = Game::cache.loadTexture(bgSpritePath);
-	texture->setRepeated(true);
-	texture->setSmooth(true);
-	screen.bgSprite.setTexture(*texture);
-	screen.bgSprite.setTextureRect(sf::IntRect(0, 0, screen.size.x, screen.size.y));
+	screen._loadBGSprite(bgSpritePath);
 	
 	screen.built = true;
 

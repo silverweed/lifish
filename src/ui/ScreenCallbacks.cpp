@@ -1,7 +1,7 @@
 #include "ScreenCallbacks.hpp"
 #include "dialogs.hpp"
 
-using Game::UI::ScreenCallback;
+using ScreenCallback = Game::UI::Screen::Callback;
 using Game::UI::Action;
 
 std::string Game::UI::screenCallbackArg;
@@ -33,9 +33,9 @@ static Action cb_load() {
 std::unordered_map<std::string, ScreenCallback> Game::UI::screenCallbacks = {
 	{ "exit", cb_exit },
 	{ "back", cb_back },
-	{ "home:start", cb_start },
-	{ "home:about", cb_about },
-	{ "home:load", cb_load },
-	{ "home:preferences", cb_preferences },
-	{ "preferences:controls", cb_controls }
+	{ "start", cb_start },
+	{ "about", cb_about },
+	{ "load", cb_load },
+	{ "preferences", cb_preferences },
+	{ "controls", cb_controls }
 };

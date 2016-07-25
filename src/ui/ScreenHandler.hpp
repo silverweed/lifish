@@ -20,6 +20,8 @@ public:
 	ScreenHandler(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames);
 
 	void load(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames);
+
+	void add(Game::UI::Screen *screen) { screens[screen->getName()] = std::unique_ptr<Game::UI::Screen>(screen); }
 	
 	void update() {
 		if (curScreen != nullptr)
@@ -32,6 +34,12 @@ public:
 	}
 
 	void fireClick();
+	/** Dispatch a signal to curScreen->receiveEvent. 
+	 *  @return true if signal should be ignored by UI's event loop.
+	 */
+	bool signalEvent(const sf::Event& evt) {
+		return curScreen != nullptr && curScreen->receiveEvent(evt);
+	}
 	void setCurrent(const std::string& name);
 	void setCurrentToParent();
 };

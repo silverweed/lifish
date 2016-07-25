@@ -1,4 +1,4 @@
-#include "Screen.hpp"
+#include "ControlsScreen.hpp"
 #include "UI.hpp"
 #include <SFML/Graphics.hpp>
 #include "game.hpp"
@@ -16,7 +16,8 @@ int main(int argc, char **argv) {
 	//Screen screen(argc > 1 ? argv[1] : "home.json", window);
 
 	UI& ui = UI::getInstance();
-	ui.load(window, { "home.json", "about.json", "preferences.json", "controls.json" });
+	ui.load(window, { "home.json", "about.json", "preferences.json" });
+	ui.add(new Game::UI::ControlsScreen(window));
 	ui.setActive(true);
 
 	while (window.isOpen()) {

@@ -25,8 +25,13 @@ public:
 	/** Loads all screens from `scrNames` into `screenHandler`. Will ignore already-loaded screens. */
 	void load(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames);
 
+	void add(Game::UI::Screen *screen) {
+		screenHandler.add(screen);
+	}
+
 	bool isActive() const { return active; }
 	void setActive(bool b) { active = b; }
+	void toggleActive() { active = !active; }
 
 	/** UI-specific event loop, to be called when UI is active (instead of the main event loop) */
 	void handleEvents(sf::Window& window);

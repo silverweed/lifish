@@ -21,7 +21,7 @@ std::string display_load_dialog() {
 #if defined(SFML_SYSTEM_WINDOWS)
 	return Game::Dialog::openFile();
 #elif !defined(HAVE_NFD)
-	std::cerr << "[ WARNING ] lifish was compiled without GTK support:\n"
+	std::cout << "[ WARNING ] lifish was compiled without GTK support:\n"
 		     "if you want to load a game, place a file named `save.lifish`\n"
 		     "in the directory where the lifish executable resides."
 		  << std::endl;
@@ -52,7 +52,7 @@ std::string display_save_dialog() {
 #if defined(SFML_SYSTEM_WINDOWS)
 	return Game::Dialog::saveFile();
 #elif !defined(HAVE_NFD)
-	std::cerr << "[ WARNING ] lifish was compiled without GTK support:\n"
+	std::cout << "[ WARNING ] lifish was compiled without GTK support:\n"
 		     "the game will be saved in `" << Game::pwd << Game::DIRSEP << "save.lifish`."
 		  << std::endl;
 	return "save.lifish";

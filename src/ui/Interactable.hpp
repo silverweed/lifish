@@ -1,5 +1,6 @@
 #pragma once
 
+#include <exception>
 #include <SFML/Graphics.hpp>
 #include "ShadedText.hpp"
 
@@ -78,6 +79,18 @@ public:
 		case Type::TEXT: text->setOrigin(pos); return;
 		case Type::SPRITE: sprite->setOrigin(pos); return;
 		}
+	}
+
+	Game::ShadedText* getText() const {
+		if (type != Type::TEXT)
+			throw std::bad_cast();
+		return text;
+	}
+
+	sf::Sprite* getSprite() const {
+		if (type != Type::SPRITE)
+			throw std::bad_cast();
+		return sprite;
 	}
 };
 

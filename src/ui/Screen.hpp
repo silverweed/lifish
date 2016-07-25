@@ -10,6 +10,7 @@
 #include "ScreenStyle.hpp"
 #include "Interactable.hpp"
 #include "WithOrigin.hpp"
+#include "Action.hpp"
 
 namespace Game {
 
@@ -18,6 +19,10 @@ namespace UI {
 class ScreenBuilder;
 
 class Screen : public sf::Drawable, public Game::WithOrigin {
+public:
+	using Callback = std::function<Game::UI::Action()>;
+
+private:
 	friend class Game::UI::ScreenBuilder;
 
 protected:
@@ -42,10 +47,16 @@ protected:
 	/** The non-interactable texts/images */
 	std::vector<std::unique_ptr<sf::Drawable>> nonInteractables;
 
+	/** The internal callbacks, if any. Internal callbacks have priority over external ones. */
+	std::unordered_map<std::string, Callback> callbacks;
+
 	/** The currently selected element, if any */
 	std::pair<std::string, Game::UI::Interactable*> selected;
 
-	Screen();
+
+	Screen(const sf::RenderWindow& window);
+	void _loadBGSprite(const std::string& bgSpritePath);
+
 public:
 	explicit Screen(const std::string& layoutFileName, const sf::RenderWindow& window);
 
@@ -56,10 +67,17 @@ public:
 	/** @return The name of the selected element, if any (else "") */
 	std::string getSelected() const;
 
-	void update();
+	virtual void update();
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void setOrigin(const sf::Vector2f& pos) override;
+
+	bool hasCallback(const std::string& name) const;
+	Game::UI::Action fireCallback(const std::string& name);
+	/** This may be used by child classes to do specific logic;
+	 *  @return true if signal should be ignored by UI's event loop.
+	 */
+	virtual bool receiveEvent(const sf::Event&) { return false; }
 };
 
 }

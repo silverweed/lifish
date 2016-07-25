@@ -28,15 +28,19 @@ void ScreenHandler::fireClick() {
 	if (curScreen == nullptr) return;
 	auto cbname = curScreen->getSelected();
 	std::cerr << "Clicked on " << cbname << std::endl;
-	
-	// "Reserved" callback names
-	if (!(cbname == "back" || cbname == "exit"))
-		cbname = curScreen->getName() + ":" + cbname;
 
-	auto it = Game::UI::screenCallbacks.find(cbname);
-	if (it == Game::UI::screenCallbacks.end()) return;
-	
-	switch (it->second()) {
+	Game::UI::Action action;
+
+	// Check if screen has an internal registered callback for that element; if not, call an external one.
+	if (curScreen->hasCallback(cbname)) {
+		action = curScreen->fireCallback(cbname);
+	} else {
+		auto it = Game::UI::screenCallbacks.find(cbname);
+		if (it == Game::UI::screenCallbacks.end()) return;
+		action = it->second();
+	}
+
+	switch (action) {
 	case Action::EXIT:
 		exit(0);
 	case Action::START_GAME:

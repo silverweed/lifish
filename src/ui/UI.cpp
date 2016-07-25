@@ -9,6 +9,10 @@ void UI::load(const sf::RenderWindow& window, std::initializer_list<std::string>
 void UI::handleEvents(sf::Window& window) {
 	sf::Event event;
 	while (window.pollEvent(event)) {
+		// In case the current screen is expecting an event, tell it.
+		if (screenHandler.signalEvent(event))
+			continue;
+
 		switch (event.type) {
 		case sf::Event::Closed:
 			window.close();

@@ -5,6 +5,11 @@
 
 using Game::UI::Screen;
 
+Screen::Screen(const sf::RenderWindow& window)
+	: window(window)
+	, size(window.getSize())
+{}
+
 Screen::Screen(const std::string& layoutFileName, const sf::RenderWindow& window)
 	: window(window)
 	, size(window.getSize())
@@ -60,4 +65,20 @@ void Screen::setOrigin(const sf::Vector2f& pos) {
 	}
 	for (auto& e : interactables)
 		e.second->setOrigin(pos);
+}
+
+bool Screen::hasCallback(const std::string& name) const {
+	return callbacks.find(name) != callbacks.end();
+}
+
+Game::UI::Action Screen::fireCallback(const std::string& name) {
+	return callbacks[name]();
+}
+
+void Screen::_loadBGSprite(const std::string& bgSpritePath) {
+	auto texture = Game::cache.loadTexture(bgSpritePath);
+	texture->setRepeated(true);
+	texture->setSmooth(true);
+	bgSprite.setTexture(*texture);
+	bgSprite.setTextureRect(sf::IntRect(0, 0, size.x, size.y));
 }

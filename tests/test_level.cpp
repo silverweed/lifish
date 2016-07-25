@@ -4,7 +4,6 @@
 #include <algorithm>
 #include "Level.hpp"
 #include "LevelLoader.hpp"
-#include "dialogs.hpp"
 #include "LevelManager.hpp"
 #include "LevelSet.hpp"
 #include "Bomb.hpp"
@@ -22,18 +21,18 @@
 #include "Flash.hpp"
 #include "Options.hpp"
 #include "Explosion.hpp"
-//#include "HomeScreen.hpp"
-//#include "ScreenHandler.hpp"
 #include "Points.hpp"
 #include "CollisionDetector.hpp"
 #include "SidePanel.hpp"
 #include "DroppingText.hpp"
-#include <thread>
+#include "UI.hpp"
+#include "ControlsScreen.hpp"
 
 #ifdef MULTITHREADED
 #	ifdef SFML_SYSTEM_LINUX
 #		include <X11/Xlib.h>
 #	endif
+#	include <thread>
 #endif
 
 using namespace Game;
@@ -109,6 +108,10 @@ int main(int argc, char **argv) {
 	window.setJoystickThreshold(Game::JOYSTICK_INPUT_THRESHOLD);
 	Game::options.showFPS = true;
 
+	Game::UI::UI& ui = Game::UI::UI::getInstance();
+	ui.load(window, { "home.json", "about.json", "preferences.json" });
+	ui.add(new Game::UI::ControlsScreen(window));
+
 	int lvnum = start_level;
 	Game::LevelSet ls(levelSetName);
 	std::unique_ptr<Game::Level> level(ls.getLevel(lvnum));
@@ -177,7 +180,6 @@ int main(int argc, char **argv) {
 	sf::Clock turnClock;
 	sf::Clock shootClock;
 
-	bool spawned = false;
 	int cycle = 0;
 	//bool removed = false;
 	bool paused = false;
@@ -234,7 +236,9 @@ int main(int argc, char **argv) {
 		//std::cerr << "Entities: " << entities.size() << std::endl;
 
 		// Event loop
-		while (window.pollEvent(event)) {
+		if (ui.isActive()) 
+			ui.handleEvents(window);
+		else while (window.pollEvent(event)) {
 			switch (event.type) {
 			case sf::Event::Closed:
 				window.close();
@@ -285,7 +289,9 @@ int main(int argc, char **argv) {
 						entities.add(dt);
 					}
 					break;
-				//case sf::Keyboard::P:
+				case sf::Keyboard::P:
+					ui.toggleActive();
+					break;
 					//{
 						//auto action = Game::Action::DO_NOTHING;
 						//do {
@@ -320,17 +326,21 @@ int main(int argc, char **argv) {
 			//}
 		//}
 
-		// Update level
-		if (!paused)
-			lm.update();
-
-		sidePanel.update();
-
 #ifndef MULTITHREADED
-		// Draw everything
-		window.clear();
-		window.draw(lm);
-		window.draw(sidePanel);
+		if (ui.isActive()) {
+			ui.update();
+			window.draw(ui);
+		} else {
+			// Update level
+			if (!paused)
+				lm.update();
+
+			sidePanel.update();
+			// Draw everything
+			window.clear();
+			window.draw(lm);
+			window.draw(sidePanel);
+		}
 		Game::maybeShowFPS(window);
 		window.display();
 #endif
