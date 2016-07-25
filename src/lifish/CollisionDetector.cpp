@@ -5,6 +5,8 @@
 #include "AxisMoving.hpp"
 #include "collision_layers.hpp"
 #include <algorithm>
+#include <unordered_set>
+//#include <iostream>
 
 using Game::Direction;
 using Game::CollisionDetector;
@@ -82,46 +84,59 @@ void CollisionDetector::update() {
 	 * 2) is there another non-trasparent entity occupying the cell ahead?
 	 */
 	auto& colliding = group.collidingEntities;
+	std::unordered_set<Game::Collider*> checked;
+
+	// Prune all expired colliders
+	for (auto it = colliding.begin(); it != colliding.end(); ) {
+		if (it->expired()) it = colliding.erase(it);
+		else ++it;
+	}
 	
 	// Collision detection loop
-	for (unsigned short i = 0, len = colliding.size(); i < len; ++i) {
-		auto collider = colliding[i];
-		if (collider == nullptr) continue;
+	for (auto it = colliding.begin(); it != colliding.end(); ++it) {
+		auto collider = it->lock();
 
-		// Reset collider
-		collider->colliding.clear();
-		collider->atLimit = false;
+		if (checked.find(collider.get()) == checked.end()) {
+			// Reset collider, if we didn't already filled it during this update
+			collider->colliding.clear();
+			collider->atLimit = false;
+		}
 
 		auto moving = collider->getOwner().get<Game::AxisMoving>();
 		if (is_at_boundaries(*collider, moving)) {
 			collider->atLimit = true;	
 			continue;
 		}
-
-		if (!moving) continue;
+		
+		if (group.isFixed(collider->getOwner()))
+			continue;
 
 		// Very simple (aka quadratic) check with all others
-		for (unsigned short j = 0; j < len; ++j) {
-			if (i == j)  continue;
+		for (auto jt = colliding.begin(); jt != colliding.end(); ++jt) {
+			if (it == jt)  continue;
 
-			auto othcollider = colliding[j];
-			if (othcollider == nullptr) continue;
-			// Only check entities ahead of this one
-			if (!direction_is_viable(*collider, *moving, *othcollider))
-				continue;
+			auto othcollider = jt->lock();
 
-			if (collider->collidesWith(*othcollider)
-					&& collide(*collider, *othcollider, moving->getDirection()))
-			{
-				//std::cerr << &collider->getOwner() << " colliding with " << &othcollider->getOwner()<<std::endl;
-				collider->colliding.push_back(*othcollider);
-				auto othmoving = othcollider->getOwner().get<Game::AxisMoving>();
-				if (othmoving == nullptr || othmoving->getDirection() == Game::oppositeDirection(
-							moving->getDirection()))
+			if (moving) {
+				// Only check entities ahead of this one
+				if (!direction_is_viable(*collider, *moving, *othcollider))
+					continue;
+
+				if (collider->collidesWith(*othcollider)
+						&& collide(*collider, *othcollider, moving->getDirection()))
 				{
-					//std::cerr << "also setting othcollider" << std::endl;
-					othcollider->colliding.push_back(*collider);
+					//std::cerr << &collider->getOwner() << " colliding with " << &othcollider->getOwner()<<std::endl;
+					collider->colliding.push_back(*othcollider);
+					if (othcollider->getOwner().get<Game::Moving>() == nullptr) {
+						// Let the entity know we collided with it.
+						// We only do that for non-moving entities to avoid problems with
+						// multiple collisions between two moving entities.
+						othcollider->colliding.push_back(*collider);
+						checked.insert(othcollider.get());
+					}
 				}
+			} else if (collider->collidesWith(*othcollider)) {
+				collider->colliding.push_back(*othcollider);
 			}
 		}
 	}

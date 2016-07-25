@@ -27,37 +27,32 @@ void EntityGroup::updateAll() {
 		e->update();
 }
 	
-void EntityGroup::_removeFromInternal(const Game::Entity *const entity) {
-	if (entity == nullptr) return;
-	const auto cld = entity->get<Game::Collider>();
-	const auto klb = entity->get<Game::Killable>();
-	const auto tile = Game::tile(entity->getPosition());
-	if (getFixedAt(tile.x, tile.y) == entity)
+void EntityGroup::_removeFromInternal(const Game::Entity& entity) {
+	const auto tile = Game::tile(entity.getPosition());
+	if (getFixedAt(tile.x, tile.y) == &entity)
 		_setFixedAt(tile.x, tile.y, nullptr);
-	if (cld != nullptr)
-		collidingEntities.erase(std::remove(collidingEntities.begin(), collidingEntities.end(), cld));
-	if (klb != nullptr) {
-		killables.remove(klb);
-		dying.remove(klb);
-	}
 }
 
-void EntityGroup::remove(Game::Entity *entity) {
+void EntityGroup::remove(const Game::Entity& entity) {
 	_removeFromInternal(entity);
-	entities.remove_if([entity] (const std::shared_ptr<Game::Entity>& e) { return e.get() == entity; });
+	entities.remove_if([entity] (const std::shared_ptr<Game::Entity>& e) { return e.get() == &entity; });
 }
 
 Game::Entity* EntityGroup::_putInAux(Game::Entity *entity) {
 	entity->setOrigin(origin);
 
 	// Put in aux collections
-	auto klb = entity->template get<Game::Killable>();
+	auto klb = entity->getShared<Game::Killable>();
 	if (klb != nullptr) {
 		killables.push_back(klb);
 	} 
 
+	auto cld = entity->getShared<Game::Collider>();
+	if (cld != nullptr && !cld->isPhantom())
+		collidingEntities.push_back(cld);
+
 	// Put an entity marked as `Fixed` in fixedEntities
-	if (entity->template get<Game::Fixed>() != nullptr) {
+	if (entity->get<Game::Fixed>() != nullptr) {
 		const auto tile = Game::tile(entity->getPosition());
 		if (getFixedAt(tile.x, tile.y) != nullptr)
 			throw std::logic_error("Two fixed entities share the same tile?!");
@@ -65,26 +60,8 @@ Game::Entity* EntityGroup::_putInAux(Game::Entity *entity) {
 		_setFixedAt(tile.x, tile.y, entity);
 	}
 
-	auto cld = entity->template get<Game::Collider>();
-	if (cld != nullptr && !cld->isPhantom())
-		collidingEntities.push_back(cld);
-
 	return entity;
 }
-
-//Game::Entity* EntityGroup::release(Game::Entity *e) {
-	//Game::Entity *released = nullptr;
-	//for (auto it = entities.begin(); it != entities.end(); ) {
-		//if (it->get() == e) {
-			//released = it->release();
-			//_removeFromInternal(it->get());
-			//it = entities.erase(it);
-			//break;
-		//} else 
-			//++it;
-	//}
-	//return released;
-//}
 
 void EntityGroup::clear() {
 	entities.clear();
@@ -96,7 +73,11 @@ void EntityGroup::clear() {
 
 void EntityGroup::_checkKilled() {
 	for (auto it = killables.begin(); it != killables.end(); ) {
-		auto klb = *it;
+		if (it->expired()) {
+			it = killables.erase(it);
+			continue;
+		}
+		auto klb = it->lock();
 		if (klb->isKilled()) {
 			// Remove this from fixedEntities
 			const auto tile = Game::tile(klb->getOwner().getPosition());
@@ -116,12 +97,6 @@ void EntityGroup::_checkKilled() {
 				return ptr.get() == &klb->getOwner();
 			});
 			if (eit != entities.end()) {
-				const auto cld = eit->get()->get<Game::Collider>();
-				if (cld != nullptr) {
-					auto cit = std::find(collidingEntities.begin(), collidingEntities.end(), cld);
-					if (cit != collidingEntities.end())
-						*cit = nullptr;
-				}
 				entities.erase(eit);
 			}	
 
@@ -133,7 +108,11 @@ void EntityGroup::_checkKilled() {
 
 void EntityGroup::_removeDying() {
 	for (auto it = dying.begin(); it != dying.end(); ) {
-		auto tmp = *it;
+		if (it->expired()) {
+			it = dying.erase(it);
+			continue;
+		}
+		auto tmp = it->lock();
 		if (!tmp->isKillInProgress()) {
 			// kill function has ended, we can safely destroy this.
 			auto eit = std::find_if(entities.begin(), entities.end(), 
@@ -144,13 +123,7 @@ void EntityGroup::_removeDying() {
 			if (eit != entities.end()) {
 				// Remove from internal collections, save for `killables`, from which it was
 				// already removed by _removeExpiredTemporaries
-				auto cld = eit->get()->get<Game::Collider>();
 				const auto tile = Game::tile(eit->get()->getPosition());
-				if (cld != nullptr) {
-					auto cit = std::find(collidingEntities.begin(), collidingEntities.end(), cld);
-					if (cit != collidingEntities.end())
-						*cit = nullptr;
-				}
 				if (getFixedAt(tile.x, tile.y) == eit->get())
 					_setFixedAt(tile.x, tile.y, nullptr);
 
@@ -161,4 +134,10 @@ void EntityGroup::_removeDying() {
 		} else
 			++it;
 	}
+}
+
+bool EntityGroup::isFixed(const Game::Entity& entity) const {
+	const auto tile = Game::tile(entity.getPosition());
+	const auto fixed = getFixedAt(tile.x, tile.y);
+	return fixed == &entity;
 }

@@ -15,7 +15,7 @@ class Component;
  */
 class Entity : public Game::WithOrigin, public Game::Stringable {
 protected:
-	std::vector<std::unique_ptr<Game::Component>> components;
+	std::vector<std::shared_ptr<Game::Component>> components;
 	sf::Vector2f position;
 	std::string _toString(unsigned short indent) const;
 
@@ -30,6 +30,9 @@ public:
 
 	template<class T>
 	T* get() const;
+
+	template<class T>
+	std::shared_ptr<T> getShared();
 
 	const sf::Vector2f& getPosition() const; 
 	virtual void setPosition(const sf::Vector2f& p); 
@@ -65,6 +68,17 @@ T* Entity::get() const {
 			return derived;
 	}
 	return nullptr;
+}
+
+template<class T>
+std::shared_ptr<T> Entity::getShared() {
+	for (auto& comp : components) {
+		Component *ptr = comp.get();
+		T* derived = nullptr;
+		if (ptr && (derived = dynamic_cast<T*>(ptr)))
+			return std::static_pointer_cast<T>(comp);
+	}
+	return std::shared_ptr<T>();
 }
 
 }

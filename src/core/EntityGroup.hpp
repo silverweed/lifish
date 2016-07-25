@@ -42,7 +42,7 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	std::list<std::shared_ptr<Game::Entity>> entities;
 
 	/** The colliders of entities which have one */
-	std::vector<Game::Collider*> collidingEntities;
+	std::vector<std::weak_ptr<Game::Collider>> collidingEntities;
 
 	/** The static entities, which are always grid-aligned and cannot move,
 	 *  except Temporary entities.
@@ -52,16 +52,16 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	/** The list of the killable entities, which ought to be removed when 
 	 *  their `isKilled()` method yields true.
 	 */
-	std::list<Game::Killable*> killables;
+	std::list<std::weak_ptr<Game::Killable>> killables;
 
 	/** The list of Killable entities who are being destroyed (those whose isKilled() is
 	 *  true but isKillInProgress() is true as well).
 	 */
-	std::list<Game::Killable*> dying;
+	std::list<std::weak_ptr<Game::Killable>> dying;
 
 
 	/** Removes `e`'s components from internal collections */
-	void _removeFromInternal(const Game::Entity *const e);
+	void _removeFromInternal(const Game::Entity& e);
 
 	/** Removes any killed entity from all internal collections and destroys them.
 	 *  If its `isKillInProgress()` is true, puts it in `dying`
@@ -100,12 +100,7 @@ public:
 	Game::Entity* add(std::shared_ptr<T>& entity);
 
 	/** Removes an entity from all internal collections. */
-	void remove(Game::Entity *entity);
-
-	/** Relinquishes the ownership of `e` to the callee.
-	 *  `e` is then removed from all internal collections. 
-	 */
-	//Game::Entity* release(Game::Entity *e);
+	void remove(const Game::Entity& entity);
 
 	/** Removes all entities from this EntityGroup. */
 	void clear();
@@ -115,6 +110,8 @@ public:
 	template<class T>
 	size_t size() const;
 	size_t size() const { return entities.size(); }
+
+	bool isFixed(const Game::Entity& entity) const;
 
 	void updateAll();
 

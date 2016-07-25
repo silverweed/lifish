@@ -64,7 +64,7 @@ void LevelManager::update() {
 		spawn(e);
 
 	for (auto e : to_be_killed)
-		entities.remove(e);
+		entities.remove(*e);
 
 	// Update entities and their components
 	entities.updateAll();
