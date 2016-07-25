@@ -47,6 +47,12 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	addComponent(new Game::Drawable(*this, drawProxy.get()));
 	ai = addComponent(new Game::AI(*this, info.ai));
 
+	// Ensure AI is updated _before_ moving
+	auto it = std::find_if(components.begin(), components.end(), [this] (std::unique_ptr<Game::Component>& c) {
+		return c.get() == ai;
+	});
+	std::rotate(components.begin(), it, components.end());
+
 	unsigned short death_n_frames = 2;
 	switch (id) {
 	case 3:

@@ -53,6 +53,9 @@ void LevelManager::update() {
 		moving->setPrevAlign(Game::tile(e->getPosition()));
 	});
 
+	// Update collisions
+	cd.update();
+
 	// Apply game logic rules
 	for (auto logic : Game::Logic::functions)
 		entities.apply(logic, *this, to_be_spawned, to_be_killed);
@@ -65,9 +68,6 @@ void LevelManager::update() {
 
 	// Update entities and their components
 	entities.updateAll();
-
-	// Update collisions
-	cd.update();
 }
 
 bool LevelManager::isBombAt(const sf::Vector2i& tile) const {

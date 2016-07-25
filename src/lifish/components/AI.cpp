@@ -10,9 +10,6 @@
 #include <random>
 #include <exception>
 
-#include <iostream>
-#include "utils.hpp"
-
 using std::cout;
 using std::endl;
 
@@ -81,7 +78,6 @@ static Game::Direction seeing_player(const Game::LevelManager& lm, const Game::S
  *  and returns oppositeDirection(moving.direction).
  */
 static Game::Direction adjust_prev_align(Game::Entity& entity, Game::AxisMoving& moving) {
-	cout << "adjust_prev_align(" << &entity << ", dir = " << moving.getDirection() << "); old align = " << moving.getPrevAlign().x << ", " << moving.getPrevAlign().y;
 	switch (moving.getDirection()) {
 	case D::LEFT: 
 	case D::UP:
@@ -96,7 +92,6 @@ static Game::Direction adjust_prev_align(Game::Entity& entity, Game::AxisMoving&
 	case D::NONE:
 		break;
 	}
-	cout << "-> new align = " << moving.getPrevAlign().x <<", " << moving.getPrevAlign().y << endl;
 	moving.setDashing(false);
 
 	return Game::oppositeDirection(moving.getDirection());
@@ -131,8 +126,7 @@ AIBoundFunction Game::ai_random(Game::Entity& entity) {
 			if (moving->canGo(D::RIGHT, lm)) dirs[n++] = D::RIGHT;
 		}
 		if (n < 1) NEW_DIRECTION(D::NONE)
-
-
+		
 		std::uniform_int_distribution<int> d(0, n - 1);
 		NEW_DIRECTION(dirs[d(Game::rng)])
 	};

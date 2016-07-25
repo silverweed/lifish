@@ -6,8 +6,6 @@
 #include "collision_layers.hpp"
 #include <algorithm>
 
-#include <iostream>
-
 using Game::Direction;
 using Game::CollisionDetector;
 using Game::TILE_SIZE;
@@ -84,12 +82,9 @@ void CollisionDetector::update() {
 	 * 2) is there another non-trasparent entity occupying the cell ahead?
 	 */
 	auto& colliding = group.collidingEntities;
-	std::vector<bool> checked(colliding.size(), false);
 	
 	// Collision detection loop
 	for (unsigned short i = 0, len = colliding.size(); i < len; ++i) {
-		if (checked[i]) continue;
-
 		auto collider = colliding[i];
 		if (collider == nullptr) continue;
 
@@ -118,15 +113,15 @@ void CollisionDetector::update() {
 			if (collider->collidesWith(*othcollider)
 					&& collide(*collider, *othcollider, moving->getDirection()))
 			{
-				//std::cerr << collider->getOwner() << " colliding with " << othcollider->getOwner()<<std::endl;
+				//std::cerr << &collider->getOwner() << " colliding with " << &othcollider->getOwner()<<std::endl;
 				collider->colliding.push_back(*othcollider);
 				auto othmoving = othcollider->getOwner().get<Game::AxisMoving>();
 				if (othmoving == nullptr || othmoving->getDirection() == Game::oppositeDirection(
 							moving->getDirection()))
 				{
+					//std::cerr << "also setting othcollider" << std::endl;
 					othcollider->colliding.push_back(*collider);
 				}
-				checked[i] = checked[j] = true;
 			}
 		}
 	}

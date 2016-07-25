@@ -14,9 +14,8 @@ class Component;
  * Base class for game entities (walls, enemies, players, ...)
  */
 class Entity : public Game::WithOrigin, public Game::Stringable {
-	std::vector<std::unique_ptr<Game::Component>> components;
-
 protected:
+	std::vector<std::unique_ptr<Game::Component>> components;
 	sf::Vector2f position;
 	std::string _toString(unsigned short indent) const;
 
