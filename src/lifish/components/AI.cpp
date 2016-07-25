@@ -10,6 +10,12 @@
 #include <random>
 #include <exception>
 
+#include <iostream>
+#include "utils.hpp"
+
+using std::cout;
+using std::endl;
+
 #define NEW_DIRECTION(d) \
 { \
 	moving->setDirection(d); \
@@ -71,10 +77,11 @@ static Game::Direction seeing_player(const Game::LevelManager& lm, const Game::S
 }
 
 /** To be called when `entity` is colliding and is not aligned:
- *  sets `moving.prevAlign` to the tile it's have reached if it hadn't collided,
+ *  sets `moving.prevAlign` to the tile it'd have reached if it hadn't collided,
  *  and returns oppositeDirection(moving.direction).
  */
 static Game::Direction adjust_prev_align(Game::Entity& entity, Game::AxisMoving& moving) {
+	cout << "adjust_prev_align(" << &entity << ", dir = " << moving.getDirection() << "); old align = " << moving.getPrevAlign().x << ", " << moving.getPrevAlign().y;
 	switch (moving.getDirection()) {
 	case D::LEFT: 
 	case D::UP:
@@ -89,7 +96,7 @@ static Game::Direction adjust_prev_align(Game::Entity& entity, Game::AxisMoving&
 	case D::NONE:
 		break;
 	}
-	
+	cout << "-> new align = " << moving.getPrevAlign().x <<", " << moving.getPrevAlign().y << endl;
 	moving.setDashing(false);
 
 	return Game::oppositeDirection(moving.getDirection());
