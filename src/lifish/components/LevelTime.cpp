@@ -2,11 +2,11 @@
 
 using Game::LevelTime;
 
-LevelTime::LevelTime(Game::Entity *const owner, unsigned int time)
+LevelTime::LevelTime(Game::Entity& owner, unsigned int time)
 	: Game::Component(owner)
 	, initialTime(time)
 {
-	clock = addComponent(new Game::Clock(this)); 
+	clock = addComponent(new Game::Clock(*this)); 
 }
 
 float LevelTime::getTime() const {

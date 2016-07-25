@@ -26,7 +26,7 @@ protected:
 public:
 	static constexpr bool requiredUnique() { return false; }
 
-	explicit Animated(Game::Entity *const owner, const std::string& texture_name);
+	explicit Animated(Game::Entity& owner, const std::string& texture_name);
 	
 	/** Adds a new empty animation to this Animated and returns it */
 	Animation& addAnimation(const std::string& name);

@@ -38,7 +38,7 @@ static bool collide(const Game::Collider& cld1, const Game::Collider& cld2, cons
 }
 
 static bool is_at_boundaries(const Game::Collider& cld, const Game::AxisMoving *const am) {
-	const auto pos = cld.getOwner()->getPosition();
+	const auto pos = cld.getOwner().getPosition();
 	const auto rect = cld.getRect();
 	if (am != nullptr) {
 		auto dir = am->getDirection();
@@ -62,8 +62,8 @@ static bool is_at_boundaries(const Game::Collider& cld, const Game::AxisMoving *
 }
 
 bool direction_is_viable(Game::Collider& cld, Game::AxisMoving& moving, Game::Collider& ocld) {
-	const auto pos = cld.getOwner()->getPosition();
-	const auto opos = ocld.getOwner()->getPosition();
+	const auto pos = cld.getOwner().getPosition();
+	const auto opos = ocld.getOwner().getPosition();
 	const auto size = cld.getRect();
 	const auto osize = ocld.getRect();
 
@@ -97,7 +97,7 @@ void CollisionDetector::update() {
 		collider->colliding.clear();
 		collider->atLimit = false;
 
-		auto moving = collider->getOwner()->get<Game::AxisMoving>();
+		auto moving = collider->getOwner().get<Game::AxisMoving>();
 		if (is_at_boundaries(*collider, moving)) {
 			collider->atLimit = true;	
 			continue;
@@ -120,7 +120,7 @@ void CollisionDetector::update() {
 			{
 				//std::cerr << collider->getOwner() << " colliding with " << othcollider->getOwner()<<std::endl;
 				collider->colliding.push_back(*othcollider);
-				auto othmoving = othcollider->getOwner()->get<Game::AxisMoving>();
+				auto othmoving = othcollider->getOwner().get<Game::AxisMoving>();
 				if (othmoving == nullptr || othmoving->getDirection() == Game::oppositeDirection(
 							moving->getDirection()))
 				{

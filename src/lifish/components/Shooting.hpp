@@ -26,7 +26,7 @@ protected:
 	Game::AxisMoving *ownerMoving = nullptr;
 	
 public:
-	explicit Shooting(Game::Entity *const owner, const Attack& attack);
+	explicit Shooting(Game::Entity& owner, const Attack& attack);
 
 	const Attack& getAttack() const { return attack; }
 	

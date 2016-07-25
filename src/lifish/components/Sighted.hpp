@@ -36,7 +36,7 @@ class Sighted : public Game::Component {
 	void _fillLine(const Game::Direction dir);
 
 public:
-	explicit Sighted(Game::Entity *const owner, short visionRadius = -1);
+	explicit Sighted(Game::Entity& owner, short visionRadius = -1);
 
 	const TotSeenEntitiesList& entitiesSeen() const { 
 		return seen;

@@ -8,7 +8,7 @@
 using Game::AxisMoving;
 using Game::TILE_SIZE;
 
-AxisMoving::AxisMoving(Game::Entity *const owner, float speed, Game::Direction dir)
+AxisMoving::AxisMoving(Game::Entity& owner, float speed, Game::Direction dir)
 	: Game::Moving(owner, speed)
 	, direction(dir)
 	, prevDirection(Game::Direction::NONE)
@@ -47,7 +47,7 @@ void AxisMoving::update() {
 	}
 
 	if (!_collidesWithSolid()) {
-		owner->setPosition(owner->getPosition() + shift * frameTime.asSeconds());
+		owner.setPosition(owner.getPosition() + shift * frameTime.asSeconds());
 		const float delta = speed * frameTime.asSeconds();
 		distTravelled += delta;
 		if (delta > 1)
@@ -62,7 +62,7 @@ void AxisMoving::update() {
 // Realigns the entity by "bouncing it back" to the tile it occupies the most.
 // If direction is NONE, just aligns it to its current tile
 void AxisMoving::realign() {
-	auto pos = owner->getPosition();
+	auto pos = owner.getPosition();
 
 	switch (direction) {
 	case Game::Direction::UP:
@@ -82,7 +82,7 @@ void AxisMoving::realign() {
 		break;
 	}
 	
-	owner->setPosition(pos);
+	owner.setPosition(pos);
 }
 
 void AxisMoving::stop() {
@@ -92,7 +92,7 @@ void AxisMoving::stop() {
 }
 
 bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager& lm) const {
-	auto pos = owner->getPosition();
+	auto pos = owner.getPosition();
 	int iposx = int(pos.x / TILE_SIZE),
 	    iposy = int(pos.y / TILE_SIZE);
 	
@@ -116,7 +116,7 @@ bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager& lm) 
 	if (iposx <= 0 || iposx > LEVEL_WIDTH || iposy <= 0 || iposy > LEVEL_HEIGHT)
 		return false;
 
-	const auto collider = owner->get<Game::Collider>();
+	const auto collider = owner.get<Game::Collider>();
 	if (collider == nullptr)
 		return true;
 
@@ -138,15 +138,15 @@ bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager& lm) 
 
 void AxisMoving::setDirection(Game::Direction dir) {
 	if (dir == direction) return;
-	const auto pos = owner->getPosition();
+	const auto pos = owner.getPosition();
 	switch (dir) {
 		case Direction::UP:
 		case Direction::DOWN:
-			owner->setPosition(sf::Vector2f(int(pos.x), pos.y));
+			owner.setPosition(sf::Vector2f(int(pos.x), pos.y));
 			break;
 		case Direction::LEFT: 
 		case Direction::RIGHT:
-			owner->setPosition(sf::Vector2f(pos.x, int(pos.y)));
+			owner.setPosition(sf::Vector2f(pos.x, int(pos.y)));
 			break;
 		default:
 			break;
@@ -157,7 +157,7 @@ void AxisMoving::setDirection(Game::Direction dir) {
 
 	//realign();
 	//if (!moving) stop();
-	//auto pos = owner->getPosition();
+	//auto pos = owner.getPosition();
 	//switch (dir) {
 	//case Direction::UP: case Direction::DOWN:
 		//pos.x = (unsigned short)pos.x;
@@ -167,7 +167,7 @@ void AxisMoving::setDirection(Game::Direction dir) {
 		//break;
 	//case Direction::NONE: break;
 	//}
-	//owner->setPosition(pos);
+	//owner.setPosition(pos);
 }
 
 void AxisMoving::turn(short straightAngles, bool clockwise) {
@@ -180,7 +180,7 @@ void AxisMoving::turn(short straightAngles, bool clockwise) {
 void AxisMoving::_ensureAlign() {
 	// Ensure we are always aligned at least for one frame for
 	// each tile we step in (this may not be the case if FPS are too low)
-	auto pos = owner->getPosition();
+	auto pos = owner.getPosition();
 	switch (direction) {
 	case Direction::RIGHT:
 	case Direction::DOWN:
@@ -198,5 +198,5 @@ void AxisMoving::_ensureAlign() {
 	case Direction::NONE:
 		return;
 	}
-	owner->setPosition(pos);
+	owner.setPosition(pos);
 }

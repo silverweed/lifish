@@ -8,16 +8,16 @@ using Game::DroppingText;
 DroppingText::DroppingText(const std::string& texture_name, const sf::Vector2i& texture_rect, float speed)
 	: Game::Entity(sf::Vector2f(0.f, -texture_rect.y))
 {
-	auto sprite = addComponent(new Game::Sprite(this, texture_name, 
+	auto sprite = addComponent(new Game::Sprite(*this, texture_name, 
 				sf::IntRect(0, 0, texture_rect.x, texture_rect.y)));
 	height = texture_rect.y/2.0;
 	position.x = (Game::TILE_SIZE*(Game::LEVEL_WIDTH + 2) - texture_rect.x) / 2;
 	position.y = -Game::TILE_SIZE;
-	pauseClock = addComponent(new Game::Clock(this));
+	pauseClock = addComponent(new Game::Clock(*this));
 	pauseClock->pause();
-	addComponent(new Game::Drawable(this, sprite));
-	moving = addComponent(new Game::AxisMoving(this, speed));
-	addComponent(new Game::Temporary(this, [this] () {
+	addComponent(new Game::Drawable(*this, sprite));
+	moving = addComponent(new Game::AxisMoving(*this, speed));
+	addComponent(new Game::Temporary(*this, [this] () {
 		// expire condition
 		return position.y > (Game::LEVEL_HEIGHT + 2) * Game::TILE_SIZE;
 	}));

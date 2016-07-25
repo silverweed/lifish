@@ -17,7 +17,7 @@ class Music : public Game::Component {
 	Game::Track track;
 
 public:
-	explicit Music(Game::Entity *const owner, const Game::Track& track);
+	explicit Music(Game::Entity& owner, const Game::Track& track);
 	
 	LoopingMusic* getMusic() const { return music.get(); }
 	const Game::Track& getTrack() const { return track; }

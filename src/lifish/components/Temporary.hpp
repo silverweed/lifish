@@ -12,17 +12,17 @@ class Temporary : public Game::Killable {
 	std::function<bool()> expireCondition;
 
 public:
-	explicit Temporary(Game::Entity *const owner, std::function<bool()> expireCondition)
+	explicit Temporary(Game::Entity& owner, std::function<bool()> expireCondition)
 		: Game::Killable(owner)
 		, expireCondition(expireCondition)
 	{}
-	explicit Temporary(Game::Entity *const owner,
+	explicit Temporary(Game::Entity& owner,
 			std::function<bool()> expireCondition, 
 			OnKillCallback onKill)
 		: Game::Killable(owner, onKill)
 		, expireCondition(expireCondition)
 	{}
-	explicit Temporary(Game::Entity *const owner, 
+	explicit Temporary(Game::Entity& owner, 
 			std::function<bool()> expireCondition, 
 			OnKillCallback onKill, 
 			CheckKillCallback checkKill)

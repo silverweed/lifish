@@ -23,7 +23,7 @@ static bool check_right(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
 }
 // end helper functions
 
-Sighted::Sighted(Game::Entity *const owner, short visionRadius)
+Sighted::Sighted(Game::Entity& owner, short visionRadius)
 	: Game::Component(owner)
 	, visionRadius(visionRadius)
 {}
@@ -40,7 +40,7 @@ void Sighted::update() {
 void Sighted::_fillLine(const Game::Direction dir) {
 	// no check for lm != nullptr as it's done beforehand by update()
 
-	const auto mtile = Game::tile(owner->getPosition());
+	const auto mtile = Game::tile(owner.getPosition());
 	auto same_line = dir == Game::Direction::UP ? check_up :
 			dir == Game::Direction::DOWN ? check_down :
 			dir == Game::Direction::LEFT ? check_left : check_right;
@@ -48,7 +48,7 @@ void Sighted::_fillLine(const Game::Direction dir) {
 	seen[dir].clear();
 
 	lm->getEntities().apply([=] (const Game::Entity *e) {
-		if (e == owner) return;
+		if (e == &owner) return;
 		const auto etile = Game::tile(e->getPosition());
 		if (!same_line(etile, mtile)) return;
 		const auto dist = Game::manhattanDistance(etile, mtile);

@@ -17,7 +17,7 @@ ShadedText::ShadedText(const std::string& fontname, const std::string& str,
 	fgtext.setColor(fg);
 	bgtext.setColor(bg);
 
-	addComponent(new Game::Drawable(this, this));
+	addComponent(new Game::Drawable(*this, this));
 }
 
 void ShadedText::setFont(const std::string& fontname) {

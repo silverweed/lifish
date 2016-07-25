@@ -15,10 +15,10 @@ protected:
 	std::array<Game::Clock*, Game::Bonus::N_BONUS_TYPES> bonusClock;
 
 public:
-	explicit Bonusable(Game::Entity *const owner)
+	explicit Bonusable(Game::Entity& owner)
 		: Game::Component(owner)
 	{
-		bonusClock.fill(addComponent(new Game::Clock(this)));
+		bonusClock.fill(addComponent(new Game::Clock(*this)));
 		bonusTime.fill(sf::Time::Zero);
 	}
 

@@ -30,7 +30,7 @@ protected:
 	}
 
 public:
-	explicit Moving(Game::Entity *const owner, float speed);
+	explicit Moving(Game::Entity& owner, float speed);
 
 	float getSpeed() const { return speed; }
 	void setSpeed(const float _speed) { speed = _speed; }

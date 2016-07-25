@@ -10,9 +10,9 @@ using Game::TILE_SIZE;
 AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction dir, const Game::Attack& attack)
 	: Game::Bullet(source, attack)
 {
-	addComponent(new Game::AxisMoving(this, BASE_SPEED * attack.speed, dir));
-	auto animated = addComponent(new Game::Animated(this, Game::getAsset("test", "bullets.png")));
-	addComponent(new Game::Drawable(this, animated));
+	addComponent(new Game::AxisMoving(*this, BASE_SPEED * attack.speed, dir));
+	auto animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "bullets.png")));
+	addComponent(new Game::Drawable(*this, animated));
 
 	// Bullets have a variable number of frames, up to 13:
 	// motion frames: 1 ~ 8 (max 8 / directional per direction)

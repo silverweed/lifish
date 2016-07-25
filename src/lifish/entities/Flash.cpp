@@ -9,8 +9,8 @@ using Game::TILE_SIZE;
 Flash::Flash(const sf::Vector2f& pos) 
 	: Game::Entity(pos)
 {
-	animated = addComponent(new Game::Animated(this, Game::getAsset("test", "flash.png")));
-	addComponent(new Game::Drawable(this, animated));
+	animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "flash.png")));
+	addComponent(new Game::Drawable(*this, animated));
 
 	animated->addAnimation("flash", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),
@@ -27,7 +27,7 @@ Flash::Flash(const sf::Vector2f& pos)
 	animatedSprite.setFrameTime(sf::seconds(0.10));
 	animatedSprite.play();
 
-	addComponent(new Game::Temporary(this, [&animatedSprite] () {
+	addComponent(new Game::Temporary(*this, [&animatedSprite] () {
 		return !animatedSprite.isPlaying();
 	}));
 }

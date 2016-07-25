@@ -21,7 +21,7 @@ private:
 	HurryUpResponse hurryUpResponse = HurryUpResponse::HURRY_UP_OFF;
 
 public:
-	explicit LevelTime(Game::Entity *const owner, unsigned int time = 0);
+	explicit LevelTime(Game::Entity& owner, unsigned int time = 0);
 
 	/** Sets the initialTime to `time`, resets and pauses the clock */
 	void setTime(unsigned int time);

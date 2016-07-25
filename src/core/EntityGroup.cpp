@@ -99,8 +99,8 @@ void EntityGroup::_checkKilled() {
 		auto klb = *it;
 		if (klb->isKilled()) {
 			// Remove this from fixedEntities
-			const auto tile = Game::tile(klb->getOwner()->getPosition());
-			if (getFixedAt(tile.x, tile.y) == klb->getOwner())
+			const auto tile = Game::tile(klb->getOwner().getPosition());
+			if (getFixedAt(tile.x, tile.y) == &klb->getOwner())
 				_setFixedAt(tile.x, tile.y, nullptr);
 
 			if (klb->isKillInProgress()) {
@@ -113,7 +113,7 @@ void EntityGroup::_checkKilled() {
 			auto eit = std::find_if(entities.begin(), entities.end(), 
 					[klb] (const std::shared_ptr<Game::Entity>& ptr) 
 			{
-				return ptr.get() == klb->getOwner();
+				return ptr.get() == &klb->getOwner();
 			});
 			if (eit != entities.end()) {
 				const auto cld = eit->get()->get<Game::Collider>();
@@ -139,7 +139,7 @@ void EntityGroup::_removeDying() {
 			auto eit = std::find_if(entities.begin(), entities.end(), 
 					[tmp] (std::shared_ptr<Game::Entity>& ptr) 
 			{
-				return ptr.get() == tmp->getOwner();
+				return ptr.get() == &tmp->getOwner();
 			});
 			if (eit != entities.end()) {
 				// Remove from internal collections, save for `killables`, from which it was

@@ -29,21 +29,21 @@ Player::Player(const sf::Vector2f& pos, const unsigned short id)
 }
 
 void Player::_init() {
-	addComponent(new Game::Lifed(this, Game::Conf::Player::MAX_LIFE));
-	addComponent(new Game::Collider(this, Game::Layers::PLAYERS));
-	moving = addComponent(new Game::AxisMoving(this, Game::Conf::Player::DEFAULT_SPEED));
-	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", std::string("player") +
+	addComponent(new Game::Lifed(*this, Game::Conf::Player::MAX_LIFE));
+	addComponent(new Game::Collider(*this, Game::Layers::PLAYERS));
+	moving = addComponent(new Game::AxisMoving(*this, Game::Conf::Player::DEFAULT_SPEED));
+	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", std::string("player") +
 				Game::to_string(info.id) + std::string(".png"))));
-	addComponent(new Game::Drawable(this, animated));
-	addComponent(new Game::Sounded(this, {
+	addComponent(new Game::Drawable(*this, animated));
+	addComponent(new Game::Sounded(*this, {
 		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_death.ogg")),
 		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_hurt.ogg")),
 		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_win.ogg")),
 	}));
-	addComponent(new Game::Killable(this, [this] () { _kill(); }));
-	addComponent(new Game::Bonusable(this));
-	movingAnimator = addComponent(new Game::MovingAnimator(this));
-	addComponent(new Game::Controllable(this, Game::Controls::players[info.id-1]));
+	addComponent(new Game::Killable(*this, [this] () { _kill(); }));
+	addComponent(new Game::Bonusable(*this));
+	movingAnimator = addComponent(new Game::MovingAnimator(*this));
+	addComponent(new Game::Controllable(*this, Game::Controls::players[info.id-1]));
 
 	auto& a_down = animated->addAnimation("walk_down");
 	auto& a_up = animated->addAnimation("walk_up");

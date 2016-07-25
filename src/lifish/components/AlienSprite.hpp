@@ -23,7 +23,7 @@ class AlienSprite : public Game::Component {
 	Game::MovingAnimator *movingAnimator = nullptr;
 
 public:
-	explicit AlienSprite(Game::Entity *const owner);
+	explicit AlienSprite(Game::Entity& owner);
 };
 
 }

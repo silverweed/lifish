@@ -32,12 +32,12 @@ class Collider : public Game::Component {
 	CollisionFunc onCollision;
 
 public:
-	explicit Collider(Game::Entity *const owner, 
+	explicit Collider(Game::Entity& owner, 
 			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
 			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE),
 			  bool phantom = false);
 
-	explicit Collider(Game::Entity *const owner,
+	explicit Collider(Game::Entity& owner,
 			  CollisionFunc onCollision,
 			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
 			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE), 
@@ -77,7 +77,7 @@ public:
 
 	/** @return the bounding box of this Collider */
 	sf::IntRect getRect() const {
-		const auto pos = owner->getPosition();
+		const auto pos = owner.getPosition();
 		return sf::IntRect(pos.x, pos.y, size.x, size.y);
 	}
 

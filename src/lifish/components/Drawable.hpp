@@ -9,7 +9,7 @@ class Drawable : public Game::Component, public sf::Drawable {
 	sf::Drawable *delegate;
 
 public:
-	explicit Drawable(Game::Entity *const owner, sf::Drawable *delegate)
+	explicit Drawable(Game::Entity& owner, sf::Drawable *delegate)
 		: Game::Component(owner)
 		, delegate(delegate) {}
 

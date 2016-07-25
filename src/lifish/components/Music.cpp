@@ -3,7 +3,7 @@
 
 using Game::Music;
 
-Music::Music(Game::Entity *const owner, const Game::Track& track)
+Music::Music(Game::Entity& owner, const Game::Track& track)
 	: Game::Component(owner)
 	, track(track)
 {

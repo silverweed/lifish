@@ -17,7 +17,7 @@ protected:
 	short target = -1;
 
 public:
-	explicit Scored(Game::Entity *const owner, const int points) 
+	explicit Scored(Game::Entity& owner, const int points) 
 		: Game::Component(owner)
 		, pointsGiven(points)
 	{}

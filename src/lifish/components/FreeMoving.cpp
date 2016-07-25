@@ -2,7 +2,7 @@
 
 using Game::FreeMoving;
 
-FreeMoving::FreeMoving(Game::Entity *const owner, float speed, sf::Vector2f velocity)
+FreeMoving::FreeMoving(Game::Entity& owner, float speed, sf::Vector2f velocity)
 	: Game::Moving(owner, speed)
 	, velocity(velocity)
 {}
@@ -21,7 +21,7 @@ void FreeMoving::update() {
 
 	// TODO
 	//if (!colliding) {
-		owner->setPosition(owner->getPosition() + shift * frameTime.asSeconds());
+		owner.setPosition(owner.getPosition() + shift * frameTime.asSeconds());
 		distTravelled += speed * frameTime.asSeconds();
 	//}
 }

@@ -20,7 +20,7 @@ class AxisMoving : public Game::Moving {
 	void _ensureAlign();
 
 public:
-	explicit AxisMoving(Game::Entity *const owner, float speed, 
+	explicit AxisMoving(Game::Entity& owner, float speed, 
 			Game::Direction dir = Game::Direction::NONE);
 
 	Game::Direction getDirection() const { return direction; }

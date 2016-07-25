@@ -23,7 +23,7 @@ public:
 	/** `spawnCondition` is a function which returns whether it has spawned something or not
 	 *  and fills the given list with the spawned Entities, if any.
 	 */
-	explicit Spawning(Game::Entity *const owner, SpawnCondition spawnCondition)
+	explicit Spawning(Game::Entity& owner, SpawnCondition spawnCondition)
 		: Game::Component(owner)
 		, spawnCondition(spawnCondition)
 	{}

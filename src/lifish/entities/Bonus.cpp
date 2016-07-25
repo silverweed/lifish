@@ -35,23 +35,23 @@ Bonus::Bonus(const sf::Vector2f& pos, const Type type)
 	: Game::Entity(pos)
 	, type(type)
 {
-	sprite = addComponent(new Game::Sprite(this,
+	sprite = addComponent(new Game::Sprite(*this,
 				Game::getAsset("graphics", "bonuses.png"), 
 				sf::IntRect(
 					static_cast<unsigned short>(type) * TILE_SIZE, 
 					static_cast<unsigned short>(type) / 10 * TILE_SIZE, 
 					TILE_SIZE,
 					TILE_SIZE)));
-	addComponent(new Game::Collider(this, [this] (const Game::Collider& cld) {
+	addComponent(new Game::Collider(*this, [this] (const Game::Collider& cld) {
 		if (grabbed) return;
 		// on collision (no check since its layer only collides with players)
-		_grab(*static_cast<const Game::Player*>(cld.getOwner()));
+		_grab(static_cast<const Game::Player&>(cld.getOwner()));
 	}, Game::Layers::GRABBABLE));
-	addComponent(new Game::Drawable(this, sprite));
-	addComponent(new Game::Scored(this, VALUE));
-	expireClock = addComponent(new Game::Clock(this));
-	addComponent(new Game::Sounded(this, { Game::getAsset("test", "bonus_grab.ogg") }));
-	addComponent(new Game::Temporary(this, [this] () {
+	addComponent(new Game::Drawable(*this, sprite));
+	addComponent(new Game::Scored(*this, VALUE));
+	expireClock = addComponent(new Game::Clock(*this));
+	addComponent(new Game::Sounded(*this, { Game::getAsset("test", "bonus_grab.ogg") }));
+	addComponent(new Game::Temporary(*this, [this] () {
 		// expire condition
 		return grabbed || expireClock->getElapsedTime() > EXPIRE_TIME;
 	}));

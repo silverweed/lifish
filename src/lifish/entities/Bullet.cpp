@@ -35,7 +35,7 @@ Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
 	, damage(attack.damage)
 	, range(attack.rangeInTiles ? attack.tileRange : attack.pixelRange)
 {
-	addComponent(new Game::Sounded(this, {
+	addComponent(new Game::Sounded(*this, {
 		Game::getAsset("test", std::string("bullet") + Game::to_string(attack.id) + std::string("_hit.ogg")),
 		Game::getAsset("test", std::string("bullet") + Game::to_string(attack.id) + std::string("_shot.ogg"))
 	}));
@@ -59,7 +59,7 @@ Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
 	}
 	*/
 
-	addComponent(new Game::Temporary(this, [this] () {
+	addComponent(new Game::Temporary(*this, [this] () {
 		// expire condition
 		return position.x < 0 || position.x > Game::TILE_SIZE * Game::LEVEL_WIDTH 
 			|| position.y < 0 || position.y > Game::TILE_SIZE * Game::LEVEL_HEIGHT;

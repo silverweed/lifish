@@ -12,7 +12,7 @@ class Clock : public Game::Component {
 public:
 	static constexpr bool requiredUnique() { return false; }
 
-	explicit Clock(Game::Entity *const owner)
+	explicit Clock(Game::Entity& owner)
 		: Game::Component(owner)
 	{}
 

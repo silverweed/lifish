@@ -4,11 +4,11 @@
 
 using Game::Animated;
 
-Animated::Animated(Game::Entity *const owner, const std::string& texture_name) 
+Animated::Animated(Game::Entity& owner, const std::string& texture_name) 
 	: Game::Component(owner)
 {
 	texture = Game::cache.loadTexture(texture_name);
-	frameClock = addComponent(new Game::Clock(this));
+	frameClock = addComponent(new Game::Clock(*this));
 }
 
 Animation& Animated::addAnimation(const std::string& name) {
@@ -61,7 +61,7 @@ void Animated::update() {
 	if (manualPosition)
 		animatedSprite.setPosition(position);
 	else
-		animatedSprite.setPosition(owner->getPosition());
+		animatedSprite.setPosition(owner.getPosition());
 	animatedSprite.update(frameClock->restart());
 }
 

@@ -50,15 +50,15 @@ BreakableWall::BreakableWall(const sf::Vector2f& pos,
 }
 
 void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
-	addComponent(new Game::Fixed(this));
-	addComponent(new Game::Scored(this, score));
-	addComponent(new Game::Lifed(this, life));
-	addComponent(new Game::Sounded(this, { Game::getAsset("sounds", "wall_break.ogg") })); 
-	addComponent(new Game::Collider(this, [this] (Game::Collider& cld) { 
+	addComponent(new Game::Fixed(*this));
+	addComponent(new Game::Scored(*this, score));
+	addComponent(new Game::Lifed(*this, life));
+	addComponent(new Game::Sounded(*this, { Game::getAsset("sounds", "wall_break.ogg") })); 
+	addComponent(new Game::Collider(*this, [this] (Game::Collider& cld) { 
 		// on collision
 		_checkCollision(cld); 
 	}, Game::Layers::WALLS));
-	killable = addComponent(new Game::Killable(this, [this] () {
+	killable = addComponent(new Game::Killable(*this, [this] () {
 		// on kill
 		get<Game::Animated>()->getSprite().play();
 	}, [this] () {
@@ -68,8 +68,8 @@ void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
 }
 
 Animation& BreakableWall::_setupAnimations(const std::string& texture_name) {
-	auto animated = addComponent(new Game::Animated(this, texture_name));
-	addComponent(new Game::Drawable(this, animated));
+	auto animated = addComponent(new Game::Animated(*this, texture_name));
+	addComponent(new Game::Drawable(*this, animated));
 	auto& animation = animated->addAnimation("break");
 	auto& animatedSprite = animated->getSprite();
 
@@ -82,12 +82,12 @@ Animation& BreakableWall::_setupAnimations(const std::string& texture_name) {
 
 void BreakableWall::_checkCollision(Game::Collider& cld) {
 	if (cld.getLayer() != Game::Layers::EXPLOSIONS) return;
-	const auto etile = Game::tile(cld.getOwner()->getPosition());
+	const auto etile = Game::tile(cld.getOwner().getPosition());
 	const auto mtile = Game::tile(position);
 	if (Game::abs(etile.x - mtile.x) == 1 || Game::abs(etile.y - mtile.y) == 1) {
 		get<Game::Killable>()->kill();
-		get<Game::Scored>()->setTarget(static_cast<const Game::Explosion*>(
-					cld.getOwner())->getSourcePlayer()->getInfo().id);
+		get<Game::Scored>()->setTarget(static_cast<const Game::Explosion&>(
+					cld.getOwner()).getSourcePlayer()->getInfo().id);
 	}
 }
 

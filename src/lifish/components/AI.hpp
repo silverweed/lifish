@@ -33,19 +33,17 @@ class AI : public Game::Component {
 	Game::Shooting *shooting = nullptr;
 
 public:
-	explicit AI(Game::Entity *const owner, unsigned short aiNum)
+	explicit AI(Game::Entity& owner, unsigned short aiNum)
 		: Game::Component(owner) 
 	{
-		if (owner == nullptr)
-			throw std::invalid_argument("AI has been given a null owner!");
 		if (aiNum >= ai_functions.size())
 			throw std::invalid_argument("Invalid aiNum passed: " + Game::to_string(aiNum));
 		setAI(ai_functions[aiNum]);
-		shooting = owner->get<Game::Shooting>();
+		shooting = owner.get<Game::Shooting>();
 	}
 
 	void setAI(AIFunction newAI) {
-		func = newAI(*owner);
+		func = newAI(owner);
 	}
 
 	void setLevelManager(Game::LevelManager *_lm) {

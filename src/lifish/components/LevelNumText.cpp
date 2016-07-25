@@ -4,7 +4,7 @@
 
 using Game::LevelNumText;
 
-LevelNumText::LevelNumText(Game::Entity *const owner, const unsigned short levelnum)
+LevelNumText::LevelNumText(Game::Entity& owner, const unsigned short levelnum)
 	: Game::Component(owner)
 	, text(Game::getAsset("fonts", Game::Fonts::LEVELNUM),
 		Game::to_string(levelnum),

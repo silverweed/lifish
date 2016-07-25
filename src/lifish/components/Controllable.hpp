@@ -15,7 +15,7 @@ class Controllable : public Game::Component {
 	Game::AxisMoving *moving = nullptr;
 
 public:
-	explicit Controllable(Game::Entity *const owner, 
+	explicit Controllable(Game::Entity& owner, 
 			const std::array<sf::Keyboard::Key, Game::Controls::CONTROLS_NUM>& controls);
 
 	void update() override;

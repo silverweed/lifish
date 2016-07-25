@@ -25,10 +25,10 @@ bool Level::init() {
 	if (!_setTilemap(levelInfo.tilemap))
 		return false;
 
-	addComponent(new Game::Music(this, levelInfo.track));
+	addComponent(new Game::Music(*this, levelInfo.track));
 	_loadTextures();
 
-	levelnumtext = addComponent(new Game::LevelNumText(this, levelInfo.levelnum));
+	levelnumtext = addComponent(new Game::LevelNumText(*this, levelInfo.levelnum));
 
 	return initialized = true;
 }

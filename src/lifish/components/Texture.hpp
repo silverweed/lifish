@@ -14,7 +14,7 @@ class Texture : public Game::Component {
 protected:
 	sf::Texture *texture;
 public:
-	explicit Texture(Game::Entity *const entity, const std::string& texture_name);
+	explicit Texture(Game::Entity& owner, const std::string& texture_name);
 
 	sf::Texture* getTexture() const { return texture; }
 };

@@ -4,14 +4,14 @@
 
 using Game::Sprite;
 
-Sprite::Sprite(Game::Entity *const owner, const std::string& texture_name) 
+Sprite::Sprite(Game::Entity& owner, const std::string& texture_name) 
 	: Game::Component(owner)
 {
 	texture = Game::cache.loadTexture(texture_name);
 	sprite.setTexture(*texture);
 }
 
-Sprite::Sprite(Game::Entity *const owner, const std::string& texture_name,
+Sprite::Sprite(Game::Entity& owner, const std::string& texture_name,
 		const sf::IntRect& division) 
 	: Sprite(owner, texture_name)
 {
@@ -24,5 +24,5 @@ void Sprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
 void Sprite::update() {
 	Game::Component::update();
-	sprite.setPosition(owner->getPosition());
+	sprite.setPosition(owner.getPosition());
 }

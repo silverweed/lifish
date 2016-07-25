@@ -2,14 +2,14 @@
 
 using Game::Collider;
 
-Collider::Collider(Game::Entity *const owner, Game::Layers::Layer layer, const sf::Vector2i& size, bool phantom)
+Collider::Collider(Game::Entity& owner, Game::Layers::Layer layer, const sf::Vector2i& size, bool phantom)
 	: Game::Component(owner)
 	, size(size)
 	, phantom(phantom)
 	, layer(layer)
 {}
 
-Collider::Collider(Game::Entity *const owner, CollisionFunc onCollision,
+Collider::Collider(Game::Entity& owner, CollisionFunc onCollision,
 		Game::Layers::Layer layer, const sf::Vector2i& size, bool phantom)
 	: Game::Component(owner)
 	, size(size)

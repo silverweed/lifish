@@ -12,7 +12,7 @@ class FreeMoving : public Game::Moving {
 	sf::Vector2f velocity;
 
 public:
-	explicit FreeMoving(Game::Entity *const owner, float speed, 
+	explicit FreeMoving(Game::Entity& owner, float speed, 
 			sf::Vector2f velocity = sf::Vector2f(0.f, 0.f));
 
 	const sf::Vector2f& getVelocity() const { return velocity; }

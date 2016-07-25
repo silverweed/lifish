@@ -9,7 +9,7 @@ namespace Game {
  */
 class Component : public Game::Entity {
 protected:
-	Game::Entity *const owner;
+	Game::Entity& owner;
 
 public:
 	/** If true, adding more than a component of this type to an Entity
@@ -17,14 +17,14 @@ public:
 	 */
 	static constexpr bool requiredUnique() { return true; }
 
-	explicit Component(Game::Entity *const owner) 
+	explicit Component(Game::Entity& owner) 
 		: owner(owner) {}
 
 	/** Gets the owner of this component */
-	const Game::Entity* getOwner() const { return owner; }
+	const Game::Entity& getOwner() const { return owner; }
 
 	/** Gets the owner of this component (non-const) */
-	Game::Entity* getOwnerRW() const { return owner; }
+	Game::Entity& getOwnerRW() const { return owner; }
 };
 
 }

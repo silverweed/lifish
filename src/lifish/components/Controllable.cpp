@@ -3,12 +3,12 @@
 
 using Game::Controllable;
 
-Controllable::Controllable(Game::Entity *const owner,
+Controllable::Controllable(Game::Entity& owner,
 		const std::array<sf::Keyboard::Key, Game::Controls::CONTROLS_NUM>& controls)
 	: Game::Component(owner)
 	, controls(controls)
 {
-	moving = owner->get<Game::AxisMoving>();
+	moving = owner.get<Game::AxisMoving>();
 	if (moving == nullptr)
 		throw std::invalid_argument("Entity passed to Controllable has no AxisMoving component!");
 }
@@ -44,6 +44,6 @@ void Controllable::update() {
 		}
 	}
 
-	if (owner->isAligned())
+	if (owner.isAligned())
 		moving->setDirection(dir);
 }

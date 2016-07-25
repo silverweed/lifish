@@ -11,7 +11,7 @@ namespace Game {
  */
 class Fixed : public Game::Component {
 public:
-	explicit Fixed(Game::Entity *const owner)
+	explicit Fixed(Game::Entity& owner)
 		: Game::Component(owner)
 	{}
 };

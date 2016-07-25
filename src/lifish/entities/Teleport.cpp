@@ -14,11 +14,11 @@ const sf::Time Teleport::COOLDOWN_TIME = sf::milliseconds(1000);
 Teleport::Teleport(const sf::Vector2f& pos) 
 	: Game::Entity(pos)
 {
-	addComponent(new Game::Fixed(this));
-	animated = addComponent(new Game::Animated(this, Game::getAsset("graphics", "teleport.png")));
-	disableClock = addComponent(new Game::Clock(this));
-	addComponent(new Game::Drawable(this, animated));
-	addComponent(new Game::Collider(this, [this] (Game::Collider& c) { warp(c); }, Game::Layers::TELEPORTS));
+	addComponent(new Game::Fixed(*this));
+	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "teleport.png")));
+	disableClock = addComponent(new Game::Clock(*this));
+	addComponent(new Game::Drawable(*this, animated));
+	addComponent(new Game::Collider(*this, [this] (Game::Collider& c) { warp(c); }, Game::Layers::TELEPORTS));
 
 	auto& anim = animated->addAnimation("teleport");
 	// Teleports have 8 frames
@@ -49,8 +49,8 @@ void Teleport::disable() {
 void Teleport::warp(Game::Collider& cld) {
 	if (disabled) return;
 	
-	const auto entity = cld.getOwner();
-	auto am = entity->get<Game::AxisMoving>();
+	const auto& entity = cld.getOwner();
+	auto am = entity.get<Game::AxisMoving>();
 	//std::cerr << "pos = " << cld->getOwner()->getPosition()<<" (aligned: " << entity->isAligned()<<");
 	//cur_tile = " << Game::tile(cld->getOwner()->getPosition()) << ", prev = " << am->getPrevAlign()
 	//<< " [this tile = " << Game::tile(position) << "]"<<std::endl;
@@ -58,7 +58,7 @@ void Teleport::warp(Game::Collider& cld) {
 			// entity must have moved here since latest warp FIXME
 			(//am->getPrevAlign() == Game::tile(position) ||
 			// entity must be in the same tile as this teleport, not only be touching it
-			!(entity->isAligned() && Game::tile(entity->getPosition()) == Game::tile(position))))
+			!(entity.isAligned() && Game::tile(entity.getPosition()) == Game::tile(position))))
 	{
 		return;
 	}
@@ -73,7 +73,7 @@ void Teleport::warp(Game::Collider& cld) {
 	if (nxt == nullptr) return;
 
 	// TODO spawn flashes
-	cld.getOwnerRW()->setPosition(nxt->getPosition());
+	cld.getOwnerRW().setPosition(nxt->getPosition());
 	if (am != nullptr) {
 		//std::cerr<<"nxt->pos = " << nxt->getPosition()<<" (tile = " <<Game::tile(nxt->getPosition())<<"\n";
 		am->setPrevAlign(Game::tile(nxt->getPosition()));}

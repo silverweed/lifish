@@ -15,37 +15,37 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	: Game::Entity(pos)
 	, originalSpeed(info.speed)
 {
-	animated = addComponent(new Game::Animated(this, 
+	animated = addComponent(new Game::Animated(*this, 
 		Game::getAsset(/*"graphics"*/ "test", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
-	addComponent(new Game::Collider(this, [this] (Game::Collider& coll) {
+	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
 		// on collision
 		_checkCollision(coll);
 	}, Game::Layers::ENEMIES));
-	addComponent(new Game::Sounded(this, {
+	addComponent(new Game::Sounded(*this, {
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_death.ogg")),
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_yell.ogg")),
-		// Note: this is an invalid sound if enemy.attackType is not CONTACT. This is not an issue,
+		// Note: *this is an invalid sound if enemy.attackType is not CONTACT. This is not an issue,
 		// since in that case the sound never gets played, so the cache doesn't even load it.
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_attack.ogg"))
 	}));
-	addComponent(new Game::Lifed(this, 1));
-	moving = addComponent(new Game::AxisMoving(this, BASE_SPEED * originalSpeed, Game::Direction::DOWN));
-	attackClock = addComponent(new Game::Clock(this));
-	yellClock = addComponent(new Game::Clock(this));
-	dashClock = addComponent(new Game::Clock(this));
-	alienSprite = addComponent(new Game::AlienSprite(this));
-	addComponent(new Game::Scored(this, id * 100));
-	movingAnimator = addComponent(new Game::MovingAnimator(this));
-	killable = addComponent(new Game::Killable(this, [this] () {
+	addComponent(new Game::Lifed(*this, 1));
+	moving = addComponent(new Game::AxisMoving(*this, BASE_SPEED * originalSpeed, Game::Direction::DOWN));
+	attackClock = addComponent(new Game::Clock(*this));
+	yellClock = addComponent(new Game::Clock(*this));
+	dashClock = addComponent(new Game::Clock(*this));
+	alienSprite = addComponent(new Game::AlienSprite(*this));
+	addComponent(new Game::Scored(*this, id * 100));
+	movingAnimator = addComponent(new Game::MovingAnimator(*this));
+	killable = addComponent(new Game::Killable(*this, [this] () {
 		// on kill
 		Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
 	}));
-	shooting = addComponent(new Game::Shooting(this, info.attack));
-	sighted = addComponent(new Game::Sighted(this));
+	shooting = addComponent(new Game::Shooting(*this, info.attack));
+	sighted = addComponent(new Game::Sighted(*this));
 
 	drawProxy = std::unique_ptr<Game::EnemyDrawableProxy>(new Game::EnemyDrawableProxy(*this));
-	addComponent(new Game::Drawable(this, drawProxy.get()));
-	ai = addComponent(new Game::AI(this, info.ai));
+	addComponent(new Game::Drawable(*this, drawProxy.get()));
+	ai = addComponent(new Game::AI(*this, info.ai));
 
 	unsigned short death_n_frames = 2;
 	switch (id) {

@@ -17,9 +17,9 @@ protected:
 	CheckKillCallback checkKillProgress;
 
 public:
-	explicit Killable(Game::Entity *const owner); 
-	explicit Killable(Game::Entity *const owner, OnKillCallback callback); 
-	explicit Killable(Game::Entity *const owner, OnKillCallback callback, CheckKillCallback checkKill); 
+	explicit Killable(Game::Entity& owner); 
+	explicit Killable(Game::Entity& owner, OnKillCallback callback); 
+	explicit Killable(Game::Entity& owner, OnKillCallback callback, CheckKillCallback checkKill); 
 
 	void kill();
 	bool isKilled() const { return killed; }

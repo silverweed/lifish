@@ -2,19 +2,19 @@
 
 using Game::MovingAnimator;
 
-MovingAnimator::MovingAnimator(Game::Entity *const owner)
+MovingAnimator::MovingAnimator(Game::Entity& owner)
 	: Game::Component(owner)
 {
-	moving = owner->get<Game::AxisMoving>();
+	moving = owner.get<Game::AxisMoving>();
 	if (moving == nullptr)
 		throw std::invalid_argument("owner has no Moving!");
 
-	animated = owner->get<Game::Animated>();
+	animated = owner.get<Game::Animated>();
 	if (animated == nullptr)
 		throw std::invalid_argument("owner has no Animated!");
 }
 
-MovingAnimator::MovingAnimator(Game::Entity *const owner, Game::AxisMoving *m, Game::Animated *a)
+MovingAnimator::MovingAnimator(Game::Entity& owner, Game::AxisMoving *m, Game::Animated *a)
 	: Game::Component(owner)
 	, moving(m)
 	, animated(a)

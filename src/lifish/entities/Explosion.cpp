@@ -20,10 +20,10 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game
 	, radius(_radius)
 	, sourcePlayer(source)
 {
-	collider = addComponent(new Game::Collider(this, Game::Layers::EXPLOSIONS, 
+	collider = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS, 
 				sf::Vector2i(TILE_SIZE, TILE_SIZE), true));
-	addComponent(new Game::Sounded(this, { Game::getAsset("sounds", "explosion.ogg") }));
-	explosionC = addComponent(new Game::Animated(this, Game::getAsset("graphics", "explosionC.png")));
+	addComponent(new Game::Sounded(*this, { Game::getAsset("sounds", "explosion.ogg") }));
+	explosionC = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "explosionC.png")));
 	explosionC->addAnimation("explode", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),
 		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
@@ -33,12 +33,12 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game
 		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE)
 	}, true);
-	explosionV = addComponent(new Game::Animated(this, Game::getAsset("graphics", "explosionV.png")));
+	explosionV = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "explosionV.png")));
 	explosionV->getTexture()->setRepeated(true);
-	explosionH = addComponent(new Game::Animated(this, Game::getAsset("graphics", "explosionH.png")));
+	explosionH = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "explosionH.png")));
 	explosionH->getTexture()->setRepeated(true);
 
-	addComponent(new Game::Drawable(this, this));
+	addComponent(new Game::Drawable(*this, this));
 
 	explosionC->getSprite().setFrameTime(sf::seconds(0.05));
 	explosionH->getSprite().setFrameTime(sf::seconds(0.05));
@@ -47,7 +47,7 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game
 	explosionH->getSprite().setLooped(false);
 	explosionV->getSprite().setLooped(false);
 
-	addComponent(new Game::Temporary(this, [this] () {
+	addComponent(new Game::Temporary(*this, [this] () {
 		return !explosionC->getSprite().isPlaying();
 	}));
 

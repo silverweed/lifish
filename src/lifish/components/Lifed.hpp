@@ -12,7 +12,7 @@ protected:
 	short life;
 	const short maxLife;
 public:
-	explicit Lifed(Game::Entity *const owner, const short life)
+	explicit Lifed(Game::Entity& owner, const short life)
 		: Game::Component(owner)
 		, life(life) 
 		, maxLife(life) 
