@@ -3,19 +3,22 @@
 #include "core.hpp"
 #include "Component.hpp"
 #include "utils.hpp"
-#include <type_traits>
 #include <sstream>
 
 using Game::Entity;
 
+Entity::Entity() {}
+
+Entity::Entity(const sf::Vector2f& pos)
+	: position(pos)
+{}
+
+Entity::~Entity() {}
+
 void Entity::setOrigin(const sf::Vector2f& origin) {
 	WithOrigin::setOrigin(origin);
-
-	for (auto& c : components) {
-		auto o = dynamic_cast<Game::WithOrigin*>(c.get());
-		if (o != nullptr)
-			o->setOrigin(origin);
-	}
+	for (auto& c : components)
+		c->setOrigin(origin);
 }
 
 bool Entity::isAligned(const char axis) const {
@@ -50,4 +53,16 @@ std::string Entity::_toString(unsigned short indent) const {
 		put_indent(indent) << "}";
 	}
 	return ss.str();
+}
+
+const sf::Vector2f& Entity::getPosition() const { 
+	return position;
+} 
+
+void Entity::setPosition(const sf::Vector2f& p) { 
+	position = p;
+}
+
+std::string Entity::toString() const {
+	return _toString(0);
 }
