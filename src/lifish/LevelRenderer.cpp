@@ -1,5 +1,9 @@
 #include "LevelRenderer.hpp"
 #include "LevelManager.hpp"
+#include "Sprite.hpp"
+#include "ZIndexed.hpp"
+#include <map>
+#include <vector>
 
 using Game::LevelRenderer;
 
@@ -19,11 +23,23 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 
 	target.draw(*level, states);
 
-	owner.entities.apply([&target, states] (const Game::Entity *e) {
+	// Draw according to z-index
+	std::map<int, std::vector<Game::Drawable*>> toDraw;
+
+	owner.entities.apply([&target, &toDraw] (const Game::Entity *e) {
 		auto d = e->get<Game::Drawable>();
-		if (d != nullptr)
-			target.draw(*d, states);
+		if (d != nullptr) {
+			auto zidx = e->get<Game::ZIndexed>();
+			if (zidx != nullptr)
+				toDraw[zidx->getZIndex()].push_back(d);
+			else
+				toDraw[0].push_back(d);
+		}
 	});
+
+	for (const auto& pair : toDraw)
+		for (const auto d : pair.second)
+			target.draw(*d, states);
 }
 
 #if 0

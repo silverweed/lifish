@@ -2,7 +2,7 @@
 
 #include "Entity.hpp"
 #include "ShadedText.hpp"
-#include <iostream>
+
 namespace Game {
 
 /**

@@ -6,6 +6,7 @@
 #include "Collider.hpp"
 #include "Killable.hpp"
 #include "Controllable.hpp"
+#include "ZIndexed.hpp"
 #include "utils.hpp"
 #include <sstream>
 
@@ -34,6 +35,7 @@ void Player::_init() {
 	moving = addComponent(new Game::AxisMoving(*this, Game::Conf::Player::DEFAULT_SPEED));
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", std::string("player") +
 				Game::to_string(info.id) + std::string(".png"))));
+	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::Player));
 	addComponent(new Game::Drawable(*this, animated));
 	addComponent(new Game::Sounded(*this, {
 		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_death.ogg")),

@@ -8,6 +8,7 @@
 #include "Drawable.hpp"
 #include "GameCache.hpp"
 #include "Temporary.hpp"
+#include "ZIndexed.hpp"
 #include "Sounded.hpp"
 #include <list>
 
@@ -24,6 +25,7 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game
 				sf::Vector2i(TILE_SIZE, TILE_SIZE), true));
 	addComponent(new Game::Sounded(*this, { Game::getAsset("sounds", "explosion.ogg") }));
 	explosionC = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "explosionC.png")));
+	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::Explosion));
 	explosionC->addAnimation("explode", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),
 		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),

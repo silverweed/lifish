@@ -24,6 +24,14 @@ namespace Conf {
 		constexpr unsigned short DEFAULT_RADIUS = 2;
 		constexpr unsigned short MAX_RADIUS = 4;
 	}
+
+	namespace ZIndex {
+		constexpr int Explosion = 1;
+		constexpr int Player    = 2;
+		constexpr int Enemy     = 3;
+		constexpr int Boss      = 4;
+		constexpr int Points    = 5;
+	}
 }
 
 }

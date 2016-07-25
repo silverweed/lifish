@@ -6,6 +6,7 @@
 #include "LevelManager.hpp"
 #include "Sounded.hpp"
 #include "Collider.hpp"
+#include "ZIndexed.hpp"
 #include "utils.hpp"
 
 using Game::Enemy;
@@ -17,6 +18,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 {
 	animated = addComponent(new Game::Animated(*this, 
 		Game::getAsset(/*"graphics"*/ "test", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
+	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::Enemy));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
 		// on collision
 		_checkCollision(coll);
