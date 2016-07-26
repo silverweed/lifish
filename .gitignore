@@ -8,6 +8,7 @@ CMakeFiles/
 *.swo
 *.o
 lifish
+!lifish/
 lifish.exe
 assets/test
 cmake_install.cmake
