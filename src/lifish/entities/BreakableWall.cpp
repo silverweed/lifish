@@ -81,11 +81,11 @@ Animation& BreakableWall::_setupAnimations(const std::string& texture_name) {
 }
 
 void BreakableWall::_checkCollision(Game::Collider& cld) {
-	if (cld.getLayer() != Game::Layers::EXPLOSIONS) return;
+	if (cld.getLayer() != Game::Layers::EXPLOSIONS || killable->isKilled()) return;
 	const auto etile = Game::tile(cld.getOwner().getPosition());
 	const auto mtile = Game::tile(position);
 	if (Game::abs(etile.x - mtile.x) == 1 || Game::abs(etile.y - mtile.y) == 1) {
-		get<Game::Killable>()->kill();
+		killable->kill();
 		get<Game::Scored>()->setTarget(static_cast<const Game::Explosion&>(
 					cld.getOwner()).getSourcePlayer()->getInfo().id);
 	}
