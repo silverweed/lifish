@@ -11,6 +11,9 @@
 namespace Game {
 
 class Shooting : public Game::Component {
+	/** The duration of the shooting frame */
+	const static sf::Time SHOOT_FRAME_TIME;
+
 protected:
 	/** Used by CONTACT attack AI */
 	sf::Vector2i attackAlign;

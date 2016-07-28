@@ -10,7 +10,7 @@ Flash::Flash(const sf::Vector2f& pos)
 	: Game::Entity(pos)
 {
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "flash.png")));
-	addComponent(new Game::Drawable(*this, animated));
+	addComponent(new Game::Drawable(*this, *animated));
 
 	animated->addAnimation("flash", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),

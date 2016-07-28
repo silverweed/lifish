@@ -6,15 +6,15 @@
 namespace Game {
 
 class Drawable : public Game::Component, public sf::Drawable {
-	sf::Drawable *delegate;
+	const sf::Drawable& delegate;
 
 public:
-	explicit Drawable(Game::Entity& owner, sf::Drawable *delegate)
+	explicit Drawable(Game::Entity& owner, const sf::Drawable& delegate)
 		: Game::Component(owner)
 		, delegate(delegate) {}
 
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override {
-		window.draw(*delegate, states);
+		window.draw(delegate, states);
 	}
 };
 

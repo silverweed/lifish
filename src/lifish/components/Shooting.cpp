@@ -3,6 +3,8 @@
 
 using Game::Shooting;
 
+const sf::Time Shooting::SHOOT_FRAME_TIME = sf::milliseconds(250); 
+
 Shooting::Shooting(Game::Entity& owner, const Attack& attack)
 	: Game::Component(owner)
 	, attackAlign(-1.f, -1.f)
@@ -64,6 +66,6 @@ void Shooting::update() {
 	Game::Component::update();
 	if (blocked && blockClock->getElapsedTime() > attack.blockTime)
 		blocked = false;
-	if (shooting && rechargeClock->getElapsedTime().asSeconds() > 0.1)
+	if (shooting && rechargeClock->getElapsedTime() > SHOOT_FRAME_TIME)
 		shooting = false;
 }

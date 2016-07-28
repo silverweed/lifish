@@ -69,7 +69,7 @@ void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
 
 Animation& BreakableWall::_setupAnimations(const std::string& texture_name) {
 	auto animated = addComponent(new Game::Animated(*this, texture_name));
-	addComponent(new Game::Drawable(*this, animated));
+	addComponent(new Game::Drawable(*this, *animated));
 	auto& animation = animated->addAnimation("break");
 	auto& animatedSprite = animated->getSprite();
 

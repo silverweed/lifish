@@ -36,7 +36,7 @@ void Player::_init() {
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", std::string("player") +
 				Game::to_string(info.id) + std::string(".png"))));
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::Player));
-	addComponent(new Game::Drawable(*this, animated));
+	addComponent(new Game::Drawable(*this, *animated));
 	addComponent(new Game::Sounded(*this, {
 		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_death.ogg")),
 		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_hurt.ogg")),

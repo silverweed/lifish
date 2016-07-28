@@ -1,7 +1,8 @@
 #pragma once
 
-#include <SFML/System.hpp>
 #include <memory>
+#include <array>
+#include <SFML/System.hpp>
 #include "Entity.hpp"
 #include "Killable.hpp"
 #include "Clock.hpp"
@@ -30,8 +31,8 @@ struct EnemyInfo {
  */
 class EnemyDrawableProxy : public sf::Drawable {
 	Game::Enemy& enemy;
-	Game::Animated *enemyAnim = nullptr,
-		       *morphedAnim = nullptr;
+	Game::Animated *morphedAnim = nullptr;
+	sf::Drawable& drawable;
 
 public:
 	explicit EnemyDrawableProxy(Enemy& e);
@@ -44,12 +45,12 @@ public:
  * when they see them and is vulnerable to Bombs.
  */
 class Enemy : public Game::Entity {
+
+	friend class EnemyDrawableProxy;
+
 	constexpr static unsigned short WALK_N_FRAMES = 4;
 	constexpr static int YELL_DELAY = 1000;
 	
-	/** The duration of the shooting frame */
-	sf::Time shootFrameTime = sf::milliseconds(250); // ms
-
 	Game::Shooting *shooting = nullptr;
 	Game::Animated *animated = nullptr;
 	Game::AxisMoving *moving = nullptr;
@@ -57,6 +58,7 @@ class Enemy : public Game::Entity {
 	Game::MovingAnimator *movingAnimator = nullptr;
 	Game::Sighted *sighted = nullptr;
 	Game::AI *ai = nullptr;
+	std::array<sf::Sprite, 4> shootFrame;
 
 	std::unique_ptr<Game::EnemyDrawableProxy> drawProxy;
 
@@ -83,13 +85,15 @@ public:
 
 	explicit Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info);
 
-	//void setAI(AIFunction aifunc) { ai = aifunc(this); }
-	//AIBoundFunction getAI() const { return ai; }
-
 	void setMorphed(bool b);
 	bool isMorphed() const { return morphed; }
 
 	void update() override;
+	void setOrigin(const sf::Vector2f& pos) override {
+		Game::Entity::setOrigin(pos);
+		for (auto& frame : shootFrame)
+			frame.setOrigin(pos);
+	}
 };
 
 }

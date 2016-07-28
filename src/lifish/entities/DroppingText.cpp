@@ -15,7 +15,7 @@ DroppingText::DroppingText(const std::string& texture_name, const sf::Vector2i& 
 	position.y = -Game::TILE_SIZE;
 	pauseClock = addComponent(new Game::Clock(*this));
 	pauseClock->pause();
-	addComponent(new Game::Drawable(*this, sprite));
+	addComponent(new Game::Drawable(*this, *sprite));
 	moving = addComponent(new Game::AxisMoving(*this, speed));
 	addComponent(new Game::Temporary(*this, [this] () {
 		// expire condition

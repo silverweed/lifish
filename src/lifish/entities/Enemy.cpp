@@ -11,6 +11,7 @@
 
 using Game::Enemy;
 using Game::TILE_SIZE;
+using Game::Direction;
 
 Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	: Game::Entity(pos)
@@ -40,13 +41,14 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	movingAnimator = addComponent(new Game::MovingAnimator(*this));
 	killable = addComponent(new Game::Killable(*this, [this] () {
 		// on kill
+		animated->setAnimation("death");
 		Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
 	}));
 	shooting = addComponent(new Game::Shooting(*this, info.attack));
 	sighted = addComponent(new Game::Sighted(*this));
 
 	drawProxy = std::unique_ptr<Game::EnemyDrawableProxy>(new Game::EnemyDrawableProxy(*this));
-	addComponent(new Game::Drawable(*this, drawProxy.get()));
+	addComponent(new Game::Drawable(*this, *drawProxy.get()));
 	ai = addComponent(new Game::AI(*this, info.ai));
 
 	// Ensure AI is updated _before_ moving
@@ -68,10 +70,6 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	auto& a_up = animated->addAnimation("walk_up");
 	auto& a_right = animated->addAnimation("walk_right");
 	auto& a_left = animated->addAnimation("walk_left");
-	auto& a_shoot_down = animated->addAnimation("shoot_down");
-	auto& a_shoot_up = animated->addAnimation("shoot_up");
-	auto& a_shoot_right = animated->addAnimation("shoot_right");
-	auto& a_shoot_left = animated->addAnimation("shoot_left");
 
 	for (unsigned short i = 0; i < WALK_N_FRAMES; ++i) {
 		a_down.addFrame(sf::IntRect(
@@ -95,22 +93,28 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 					TILE_SIZE, 
 					TILE_SIZE));
 	}
-	a_shoot_down.addFrame(sf::IntRect(
+
+	for (auto& frame : shootFrame) {
+		frame.setTexture(*a_down.getSpriteSheet());
+		frame.setOrigin(origin);
+	}
+
+	shootFrame[Direction::DOWN].setTextureRect(sf::IntRect(
 				0,
 				2 * TILE_SIZE, 
 				TILE_SIZE, 
 				TILE_SIZE));
-	a_shoot_up.addFrame(sf::IntRect(
+	shootFrame[Direction::UP].setTextureRect(sf::IntRect(
 				TILE_SIZE, 
 				2 * TILE_SIZE, 
 				TILE_SIZE, 
 				TILE_SIZE));
-	a_shoot_right.addFrame(sf::IntRect(
+	shootFrame[Direction::RIGHT].setTextureRect(sf::IntRect(
 				2 * TILE_SIZE, 
 				2 * TILE_SIZE, 
 				TILE_SIZE, 
 				TILE_SIZE));
-	a_shoot_left.addFrame(sf::IntRect(
+	shootFrame[Direction::LEFT].setTextureRect(sf::IntRect(
 				3 * TILE_SIZE, 
 				2 * TILE_SIZE, 
 				TILE_SIZE, 
@@ -125,38 +129,28 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	animatedSprite.setLooped(true);
 	animatedSprite.setFrameTime(sf::seconds(0.12));
 	animatedSprite.pause();
-	// FIXME
-	//moving->stop();
 }
 
 void Enemy::update() {
 	Game::Entity::update();
 
-	if (shooting->isShooting()) {
-		const auto s = "shoot_" + Game::directionToString(moving->getDirection());
-		if (!animated->isPlaying(s)) {
-			animated->getSprite().setLooped(false);
-			animated->setAnimation(s);
-			animated->getSprite().play();
-		}
-		return;
-	} else 
-		animated->getSprite().setLooped(true);
+	shootFrame[moving->getDirection()].setPosition(position);
 
 	if (killable->isKilled() || shooting->isRecharging())
 		return;
 	
-	//const auto lm = sighted->getLevelManager();
-	//if (lm == nullptr)
-		//return;
+	const auto lm = sighted->getLevelManager();
+	if (lm == nullptr)
+		return;
 
-	//const auto& entitiesSeen = sighted->entitiesSeen(moving->getDirection());
-	//for (const auto& pair : entitiesSeen) {
-		//if (lm->isPlayer(pair.first)) {
-			//shooting->shoot();
-			//break;
-		//}
-	//}
+	const auto& entitiesSeen = sighted->entitiesSeen(moving->getDirection());
+	for (const auto& pair : entitiesSeen) {
+		if (lm->isPlayer(pair.first)) {
+			shooting->shoot();
+			attackClock->restart();
+			break;
+		}
+	}
 }
 
 void Enemy::setMorphed(bool b) {
@@ -171,78 +165,22 @@ void Enemy::_checkCollision(Game::Collider& coll) {
 	}
 }
 
-/*void Enemy::draw(sf::RenderTarget& window) {
-	if (dashing && !dead) {
-		const unsigned short d = Game::directionToUshort(direction);
-		shootFrame[d].setPosition(pos);
-		window.draw(shootFrame[d]);
-		return;
-	} else if (shooting && !dead) {
-		if (attackClock.getElapsedTime().asMilliseconds() < shootFrameTime) {
-			const unsigned short d = Game::directionToUshort(direction);
-			if (d < ANIM_DEATH) {
-				shootFrame[d].setPosition(pos);
-				window.draw(shootFrame[d]);
-			}
-			return;
-		} else {
-			shooting = false;
-		}
-	} else if (morphed) {
-		alienSprite->draw(window, pos, dead ? Game::Direction::NONE : direction);
-		return;
-	}
-	Game::MovingEntity::draw(window);
-}
-
-void Enemy::move(const Game::Direction dir) {
-	if (blocked) {
-		if (attackClock.getElapsedTime().asMilliseconds() < attack.blockTime) {
-			animatedSprite.update(frameClock.restart());
-			return;
-		}
-		blocked = false;
-	}
-	MovingEntity::move(dir);
-}
-
-bool Enemy::setDashing(bool b) {
-	if (!b) {
-		dashing = false;
-		speed = originalSpeed;
-		dashClock.restart();
-	} else if (dashClock.getElapsedTime().asMilliseconds() >= 1000./attack.fireRate
-			&& speed == originalSpeed) {
-		dashing = true;
-		speed *= 4;
-		return true;
-	}
-	return false;
-}
-
-const std::string& Enemy::getSoundFile(unsigned short n) const {
-	if (alienSprite != nullptr)
-		return alienSprite->getSoundFile();
-	return Game::Sounded::getSoundFile(n);
-}
-
-void Enemy::yell() {
-	if (clocks->getElapsedTime("yell") >= YELL_DELAY) {
-		Game::cache.playSound(getSoundFile(Game::Sounds::YELL));
-		clocks->restart("yell");
-	}
-}*/
+//////// EnemyDrawableProxy //////////
 
 Game::EnemyDrawableProxy::EnemyDrawableProxy(Game::Enemy& e)
 	: enemy(e)
+	, drawable(*enemy.animated)
 {
-	enemyAnim = e.get<Game::Animated>();
 	morphedAnim = e.get<Game::AlienSprite>()->get<Game::Animated>();
 }
 
 void Game::EnemyDrawableProxy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	if (enemy.isMorphed())
-		morphedAnim->draw(target, states);
-	else
-		enemyAnim->draw(target, states);
+	if (enemy.isMorphed()) {
+		target.draw(*morphedAnim, states);
+	} else if (enemy.moving->isDashing() || enemy.shooting->isShooting()) {
+		target.draw(enemy.shootFrame[enemy.moving->getDirection()], states);
+	} else {
+		target.draw(*enemy.animated, states);
+	}
 }
+

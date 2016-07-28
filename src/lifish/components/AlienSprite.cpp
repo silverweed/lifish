@@ -12,7 +12,7 @@ AlienSprite::AlienSprite(Game::Entity& owner)
 	: Game::Component(owner)
 {
 	animated = addComponent(new Game::Animated(owner, Game::getAsset("test", "aliensprite.png")));
-	addComponent(new Game::Drawable(*this, animated));
+	addComponent(new Game::Drawable(*this, *animated));
 	movingAnimator = addComponent(new Game::MovingAnimator(*this, owner.get<Game::AxisMoving>(), animated));
 
 	auto& a_down = animated->addAnimation("walk_down");

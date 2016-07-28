@@ -18,7 +18,7 @@ Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color,
 	text.setShadowSpacing(1.5, 1);
 
 	addComponent(new Game::AxisMoving(*this, SPEED, Game::Direction::UP));
-	addComponent(new Game::Drawable(*this, &text));
+	addComponent(new Game::Drawable(*this, text));
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::Points));
 	addComponent(new Game::Temporary(*this, [this] () {
 		return (initialPos - position).y >= 20;

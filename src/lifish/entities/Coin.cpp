@@ -27,7 +27,7 @@ Coin::Coin(const sf::Vector2f& pos)
 	std::string texname = Game::getAsset("graphics", "coin.png");
 	animated = addComponent(new Game::Animated(*this, texname));
 	Game::cache.loadTexture(texname)->setSmooth(true);
-	addComponent(new Game::Drawable(*this, animated));
+	addComponent(new Game::Drawable(*this, *animated));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
 		// only collides with player, so no check
 		get<Game::Killable>()->kill();			

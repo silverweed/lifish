@@ -47,7 +47,7 @@ Bonus::Bonus(const sf::Vector2f& pos, const Type type)
 		// on collision (no check since its layer only collides with players)
 		_grab(static_cast<const Game::Player&>(cld.getOwner()));
 	}, Game::Layers::GRABBABLE));
-	addComponent(new Game::Drawable(*this, sprite));
+	addComponent(new Game::Drawable(*this, *sprite));
 	addComponent(new Game::Scored(*this, VALUE));
 	expireClock = addComponent(new Game::Clock(*this));
 	addComponent(new Game::Sounded(*this, { Game::getAsset("test", "bonus_grab.ogg") }));

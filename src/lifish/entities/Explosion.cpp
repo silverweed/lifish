@@ -40,7 +40,7 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game
 	explosionH = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "explosionH.png")));
 	explosionH->getTexture()->setRepeated(true);
 
-	addComponent(new Game::Drawable(*this, this));
+	addComponent(new Game::Drawable(*this, *this));
 
 	explosionC->getSprite().setFrameTime(sf::seconds(0.05));
 	explosionH->getSprite().setFrameTime(sf::seconds(0.05));

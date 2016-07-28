@@ -10,7 +10,7 @@ BossExplosion::BossExplosion(const sf::Vector2f& pos)
 	: Game::Entity(pos)
 {
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "bossbullet.png")));
-	addComponent(new Game::Drawable(*this, animated));
+	addComponent(new Game::Drawable(*this, *animated));
 
 	animated->addAnimation("explosion", {
 		sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),

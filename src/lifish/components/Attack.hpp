@@ -65,7 +65,7 @@ struct Attack {
 	bool rangeInTiles;
 	
 	/** If attacktype is SIMPLE | BLOCKING, this is the time
-	 *  the enemy stops after shooting (should be more than shootFrameTime);
+	 *  the enemy stops after shooting (should be more than Shooting::SHOOT_FRAME_TIME);
 	 */
 	sf::Time blockTime;
 };

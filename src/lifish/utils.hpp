@@ -54,9 +54,7 @@ inline std::string to_string(T val) {
  *  flooring its components and dividing by TILE_SIZE.
  */
 inline sf::Vector2i tile(const sf::Vector2f& pos) {
-	return sf::Vector2i(
-			int(pos.x) / Game::TILE_SIZE, 
-			int(pos.y) / Game::TILE_SIZE);
+	return sf::Vector2i(pos.x / Game::TILE_SIZE, pos.y / Game::TILE_SIZE);
 }
 
 /** Returns the pixel position `pos` aligned to the nearest tile. */
