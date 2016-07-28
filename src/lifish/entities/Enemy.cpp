@@ -170,7 +170,6 @@ void Enemy::_checkCollision(Game::Collider& coll) {
 
 Game::EnemyDrawableProxy::EnemyDrawableProxy(Game::Enemy& e)
 	: enemy(e)
-	, drawable(*enemy.animated)
 {
 	morphedAnim = e.get<Game::AlienSprite>()->get<Game::Animated>();
 }

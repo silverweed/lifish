@@ -32,7 +32,6 @@ struct EnemyInfo {
 class EnemyDrawableProxy : public sf::Drawable {
 	Game::Enemy& enemy;
 	Game::Animated *morphedAnim = nullptr;
-	sf::Drawable& drawable;
 
 public:
 	explicit EnemyDrawableProxy(Enemy& e);
