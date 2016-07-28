@@ -33,7 +33,6 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	}));
 	addComponent(new Game::Lifed(*this, 1));
 	moving = addComponent(new Game::AxisMoving(*this, BASE_SPEED * originalSpeed, Game::Direction::DOWN));
-	attackClock = addComponent(new Game::Clock(*this));
 	yellClock = addComponent(new Game::Clock(*this));
 	dashClock = addComponent(new Game::Clock(*this));
 	alienSprite = addComponent(new Game::AlienSprite(*this));
@@ -135,22 +134,24 @@ void Enemy::update() {
 	Game::Entity::update();
 
 	shootFrame[moving->getDirection()].setPosition(position);
+}
 
+Game::Bullet* Enemy::checkShoot() const {
 	if (killable->isKilled() || shooting->isRecharging())
-		return;
+		return nullptr;
 	
 	const auto lm = sighted->getLevelManager();
 	if (lm == nullptr)
-		return;
+		return nullptr;
 
 	const auto& entitiesSeen = sighted->entitiesSeen(moving->getDirection());
 	for (const auto& pair : entitiesSeen) {
 		if (lm->isPlayer(pair.first)) {
-			shooting->shoot();
-			attackClock->restart();
-			break;
+			return shooting->shoot();
 		}
 	}
+
+	return nullptr;
 }
 
 void Enemy::setMorphed(bool b) {

@@ -29,6 +29,8 @@ namespace Logic {
 	DEF_LOGIC(bonusDropLogic);
 	/** Make Scored entities give points when killed */
 	DEF_LOGIC(scoredKillablesLogic);
+	/** Make enemies shoot */
+	DEF_LOGIC(enemiesShootLogic);
 
 	extern std::vector<GameLogicFunc> functions;
 }

@@ -2,6 +2,7 @@
 #include "Bomb.hpp"
 #include "Explosion.hpp"
 #include "Controllable.hpp"
+#include "Enemy.hpp"
 #include "Scored.hpp"
 #include "AI.hpp"
 #include "Points.hpp"
@@ -82,6 +83,17 @@ void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager&,
 	}
 }
 
+void Game::Logic::enemiesShootLogic(Game::Entity *e, Game::LevelManager&,
+		EntityList& tbspawned, EntityList&)
+{
+	auto enemy = dynamic_cast<const Game::Enemy*>(e);
+	if (enemy == nullptr) return;
+
+	auto bullet = enemy->checkShoot();
+	if (bullet != nullptr)
+		tbspawned.push_back(bullet);
+}
+
 //void Game::Logic::explosionDamageLogic(Game::Entity *e, Game::LevelManager &lm,
 		//EntityList& tbspawned, EntityList& tbkilled)
 //{
@@ -99,5 +111,6 @@ std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bombDeployLogic,
 	bombExplosionLogic,
 	bonusDropLogic,
-	scoredKillablesLogic
+	scoredKillablesLogic,
+	enemiesShootLogic
 };

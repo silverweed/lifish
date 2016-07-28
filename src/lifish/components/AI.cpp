@@ -215,10 +215,7 @@ AIBoundFunction Game::ai_follow(Game::Entity& entity) {
 	return [&entity, moving, collider, sighted] (const Game::LevelManager& lm) {
 		HANDLE_UNALIGNED;
 		const D cur = moving->getDirection();
-		const auto cur_align = Game::tile(entity.getPosition());
 		const bool colliding = collider->collidesWithSolid();
-		//if (moving->getPrevAlign() == cur_align && !colliding) 
-			//SAME_DIRECTION
 
 		const D opp = oppositeDirection(cur);
 		if (colliding && moving->canGo(cur, lm))

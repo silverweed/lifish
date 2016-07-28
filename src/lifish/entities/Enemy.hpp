@@ -62,8 +62,7 @@ class Enemy : public Game::Entity {
 
 	std::unique_ptr<Game::EnemyDrawableProxy> drawProxy;
 
-	Game::Clock *attackClock = nullptr,
-		    *yellClock = nullptr,
+	Game::Clock *yellClock = nullptr,
 		    *dashClock = nullptr;
 
 	/** The function determining this enemy's movements */
@@ -87,6 +86,8 @@ public:
 
 	void setMorphed(bool b);
 	bool isMorphed() const { return morphed; }
+
+	Game::Bullet* checkShoot() const;
 
 	void update() override;
 	void setOrigin(const sf::Vector2f& pos) override {

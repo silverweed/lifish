@@ -61,8 +61,8 @@ Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
 
 	addComponent(new Game::Temporary(*this, [this] () {
 		// expire condition
-		return position.x < 0 || position.x > Game::TILE_SIZE * Game::LEVEL_WIDTH 
-			|| position.y < 0 || position.y > Game::TILE_SIZE * Game::LEVEL_HEIGHT;
+		return position.x < 0 || position.x > (Game::TILE_SIZE + 2) * Game::LEVEL_WIDTH 
+			|| position.y < 0 || position.y > (Game::TILE_SIZE + 2) * Game::LEVEL_HEIGHT;
 	}, [this] () {
 		// on kill
 		_destroy();
