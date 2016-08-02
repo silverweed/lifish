@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 
+getversion() {
+	paste -d. <(grep -m1 MAJOR CMakeLists.txt|cut -f2 -d' '|cut -f1 -d\)) \
+		  <(grep -m1 MINOR CMakeLists.txt|cut -f2 -d' '|cut -f1 -d\))
+}
+
 # Settings
 
 PROJECT_NAME=lifish
 EMAIL=silverweed1991@gmail.com
 COVERITY_PATH=$HOME/Public/cov-analysis-linux64-8.5.0.1/bin
+VERSION=$(getversion)
 
 ###########
 

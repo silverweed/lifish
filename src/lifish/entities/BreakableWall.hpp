@@ -12,7 +12,6 @@ namespace Game {
  */
 class BreakableWall : public Game::Entity {
 	Game::Killable *killable = nullptr;
-	bool disabled = false;
 
 protected:
 	/** Constructor used by TransparentWall */
