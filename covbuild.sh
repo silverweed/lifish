@@ -4,11 +4,11 @@
 
 PROJECT_NAME=lifish
 EMAIL=silverweed1991@gmail.com
-COVERITY_PATH=$HOME/Public/cov-analysis-linux64-7.7.0/bin
+COVERITY_PATH=$HOME/Public/cov-analysis-linux64-8.5.0.1/bin
 
 ###########
 
-while [[ $# > 1 ]]; do
+while [[ $# > 0 ]]; do
 	case $1 in
 	-s|--skip-build)
 		SKIP_BUILD=1
@@ -26,7 +26,7 @@ getbuild() {
 }
 
 getreadiness() {
-	tail cov-int/build-log.txt | grep compilation | cut -f2 -d\( | cut -f1 -d%
+	tail cov-int/build-log.txt | grep compilation | cut -f2 -d\( | cut -f1 -d% | tail -1
 }
 
 PATH=$PATH:$COVERITY_PATH
