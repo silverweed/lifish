@@ -20,7 +20,9 @@ protected:
 	/** The Entity that shot this bullet */
 	const Game::Entity *const source;
 	/** The Entity that this bullet has hit, if any. Only valid when bullet is killed */
-	const Game::Entity *hit = nullptr;
+	Game::Entity *hit = nullptr;
+	/** Whether this bullet already dealt its damage */
+	bool dealtDamage = false;
 	/** The damage dealt to the impacted Entity */
 	unsigned short damage;
 	/** How many pixels does this bullet travel; -1 means infinite. */
@@ -45,9 +47,10 @@ public:
 
 	const Game::Entity* getSource() const { return source; }
 
-	//bool hits(const sf::Vector2f& pos) const;
-
+	bool hasDealtDamage() const { return dealtDamage; }
+	void dealDamage() { dealtDamage = true; }
 	unsigned short getDamage() const { return damage; }
+	Game::Entity* getEntityHit() const { return hit; }
 
 	//unsigned short getSize() const { return size; }
 };

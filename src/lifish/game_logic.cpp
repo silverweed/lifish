@@ -2,6 +2,8 @@
 #include "Bomb.hpp"
 #include "Explosion.hpp"
 #include "Controllable.hpp"
+#include "Lifed.hpp"
+#include "Bonusable.hpp"
 #include "Enemy.hpp"
 #include "Scored.hpp"
 #include "AI.hpp"
@@ -94,6 +96,30 @@ void Game::Logic::enemiesShootLogic(Game::Entity *e, Game::LevelManager&,
 		tbspawned.push_back(bullet);
 }
 
+void Game::Logic::bulletsHitLogic(Game::Entity *e, Game::LevelManager&,
+		EntityList&, EntityList&)
+{
+	auto bullet = dynamic_cast<Game::Bullet*>(e);
+	if (bullet == nullptr) return;
+
+	if (bullet->get<Game::Killable>()->isKilled() && !bullet->hasDealtDamage()) {
+		bullet->dealDamage(); // don't process this bullet again
+
+		auto hit = bullet->getEntityHit();
+		if (hit == nullptr) return;
+
+		auto lifed = hit->get<Game::Lifed>();
+		if (lifed == nullptr) return;
+
+		auto bns = hit->get<Game::Bonusable>();
+		if (bns == nullptr || !bns->hasBonus(Game::Bonus::SHIELD)) {
+			lifed->decLife(bullet->getDamage());
+			if (bns != nullptr)
+				bns->giveBonus(Game::Bonus::SHIELD, Game::Conf::DAMAGE_SHIELD_TIME);
+		}
+	}
+}
+
 //void Game::Logic::explosionDamageLogic(Game::Entity *e, Game::LevelManager &lm,
 		//EntityList& tbspawned, EntityList& tbkilled)
 //{
@@ -112,5 +138,6 @@ std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bombExplosionLogic,
 	bonusDropLogic,
 	scoredKillablesLogic,
-	enemiesShootLogic
+	enemiesShootLogic,
+	bulletsHitLogic
 };

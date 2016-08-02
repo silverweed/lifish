@@ -49,7 +49,7 @@ AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction d
 	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
 		auto klb = get<Game::Killable>();
 		if (!klb->isKilled()) {
-			hit = &coll.getOwner();
+			hit = &coll.getOwnerRW();
 			klb->kill();
 		}
 	}, Game::Layers::ENEMY_BULLETS, sf::Vector2i(size, size)));

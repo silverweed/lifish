@@ -76,18 +76,10 @@ void Player::_init() {
 }
 
 void Player::_kill() {
-	//MovingEntity::kill();
 	get<Game::Lifed>()->setLife(0);
 	get<Game::Bonusable>()->reset();
 	info.reset();
 }
-
-// TODO
-//void Player::move(const Game::Direction dir) {
-	//MovingEntity::move(dir);
-	//if (colliding)
-		//realign();
-//}
 
 void Player::resurrect() {
 	auto& animatedSprite = get<Game::Animated>()->getSprite();
