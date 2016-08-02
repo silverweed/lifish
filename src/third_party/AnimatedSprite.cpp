@@ -28,7 +28,7 @@
 #include "utils.hpp"
 
 AnimatedSprite::AnimatedSprite(sf::Time frameTime, bool paused, bool looped) :
-    m_animation(NULL), m_frameTime(frameTime), m_currentFrame(0), m_isPaused(paused), m_isLooped(looped), m_texture(NULL)
+    m_animation(NULL), m_frameTime(frameTime), m_currentFrame(0), m_isPaused(paused), m_isLooped(looped), m_texture(NULL), m_origColor(sf::Color::White)
 {
 }
 
@@ -48,6 +48,7 @@ void AnimatedSprite::setFrameTime(sf::Time time)
 void AnimatedSprite::play()
 {
     m_isPaused = false;
+    setColor(m_origColor);
 }
 
 void AnimatedSprite::play(const Animation& animation)
@@ -81,6 +82,7 @@ void AnimatedSprite::setColor(const sf::Color& color)
     m_vertices[1].color = color;
     m_vertices[2].color = color;
     m_vertices[3].color = color;
+    m_origColor = color;
 }
 
 const sf::Color& AnimatedSprite::getColor() const {
@@ -174,6 +176,8 @@ void AnimatedSprite::update(sf::Time deltaTime)
                 if (!m_isLooped)
                 {
                     m_isPaused = true;
+		    // hide this sprite when loop is ended
+		    setColor(sf::Color(0, 0, 0, 0));
                 }
 
             }

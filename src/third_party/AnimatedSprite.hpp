@@ -67,6 +67,7 @@ private:
     bool m_isLooped;
     const sf::Texture* m_texture;
     sf::Vertex m_vertices[4];
+    sf::Color m_origColor;
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 

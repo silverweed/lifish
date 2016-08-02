@@ -2,7 +2,11 @@
 #include "AxisMoving.hpp"
 #include "Animated.hpp"
 #include "Drawable.hpp"
+#include "Killable.hpp"
 #include "game.hpp"
+
+#include <iostream>
+#include "utils.hpp"
 
 using Game::AxisBullet;
 using Game::TILE_SIZE;
@@ -42,7 +46,15 @@ AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction d
 		break;
 	}
 
-	addComponent(new Game::AxisMoving(*this, BASE_SPEED * attack.speed, dir));
+	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
+		auto klb = get<Game::Killable>();
+		if (!klb->isKilled()) {
+			hit = &coll.getOwner();
+			klb->kill();
+		}
+	}, Game::Layers::ENEMY_BULLETS, sf::Vector2i(size, size)));
+	auto moving = addComponent(new Game::AxisMoving(*this, BASE_SPEED * attack.speed, dir));
+	moving->setEnsureAlignEnabled(false);
 	auto animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "bullets.png")));
 	addComponent(new Game::Drawable(*this, *animated));
 
@@ -56,16 +68,15 @@ AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction d
 	// 	- if directionality == 1, [motion frames] [destroy frames]
 	//	- if == 2, [up/down frames] [left/right frames] [destroy frames]
 	//	- if == 4, [down] [up] [right] [left] [destroy]
-	unsigned short j = 0;
 	for (unsigned short i = 0; i < nMotionFrames && i < 8 / directionality; ++i)
 		a_move.addFrame(sf::IntRect(
-				(nMotionFrames * d + j++) * TILE_SIZE, 
-				(attack.id-1) * TILE_SIZE, 
+				(nMotionFrames * d + i) * TILE_SIZE, 
+				(attack.id - 1) * TILE_SIZE, 
 				TILE_SIZE, 
 				TILE_SIZE));
 
 	// destroy animations are non-directional
-	for (unsigned short i = j; i < j + nDestroyFrames && i < j + 5; ++i)
+	for (unsigned short i = 0; i < nDestroyFrames && i < 5; ++i)
 		a_destroy.addFrame(sf::IntRect(
 				(nMotionFrames * directionality + i) * TILE_SIZE, 
 				(attack.id-1) * TILE_SIZE, 
@@ -77,6 +88,12 @@ AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction d
 	animatedSprite.setLooped(true);
 	animatedSprite.setFrameTime(sf::seconds(0.10));
 	animatedSprite.play();
+}
+
+void AxisBullet::update() {
+	Game::Bullet::update();
+	if (collider->isAtLimit())
+		get<Game::Killable>()->kill();
 }
 
 void Game::BulletPresets::setup(Game::AxisBullet& b, unsigned short id) {

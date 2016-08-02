@@ -27,8 +27,6 @@ public:
 	constexpr static unsigned int SCORE = 10;
 
 	explicit BreakableWall(const sf::Vector2f& pos, const unsigned short id, unsigned short life = 1);
-
-	void update() override;
 };
 
 }

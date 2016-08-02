@@ -14,7 +14,10 @@ class AxisMoving : public Game::Moving {
 	Game::Direction direction;
 	Game::Direction prevDirection;
 	sf::Vector2i prevAlign;
+	/** Whether this entity will auto-realign when colliding with a solid entity */
 	bool autoRealign = true;
+	/** Whether this entity will adjust its align at each tile */
+	bool ensureAlign = true;
 
 
 	void _ensureAlign();
@@ -35,6 +38,14 @@ public:
 	 */
 	void setAutoRealignEnabled(bool b) {
 		autoRealign = b;
+	}
+	/** If set to `false`, entity won't guarantee to always be aligned to the tile
+	 *  it's passing through for at least 1 frame. This should never be true
+	 *  for entities which check for their alignment to accomplish some logic.
+	 *  Useful for bullets.
+	 */
+	void setEnsureAlignEnabled(bool b) {
+		ensureAlign = b;
 	}
 
 	void realign();

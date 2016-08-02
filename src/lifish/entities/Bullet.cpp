@@ -62,7 +62,8 @@ Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
 	addComponent(new Game::Temporary(*this, [this] () {
 		// expire condition
 		return position.x < 0 || position.x > (Game::TILE_SIZE + 1) * Game::LEVEL_WIDTH 
-			|| position.y < 0 || position.y > (Game::TILE_SIZE + 1) * Game::LEVEL_HEIGHT;
+			|| position.y < 0 || position.y > (Game::TILE_SIZE + 1) * Game::LEVEL_HEIGHT
+			|| (range > 0 && get<Game::Moving>()->getDistTravelled() > range);
 	}, [this] () {
 		// on kill
 		_destroy();
@@ -106,17 +107,12 @@ void Bullet::_destroy() {
 	auto animated = get<Game::Animated>();
 	auto moving = get<Game::AxisMoving>();
 	auto& animatedSprite = animated->getSprite();
-	if (nDestroyFrames > 0) {
-		switch (moving->getDirection()) {
-		case Game::Direction::UP: case Game::Direction::DOWN:
-			position.x = Game::aligned(position).x;
-			break; 
-		default:
-			position.y = Game::aligned(position).y;
-			break; 
-		}
-		animated->setAnimation("destroy");
-	}
 	animatedSprite.setLooped(false);
 	moving->stop();
+	if (nDestroyFrames > 0) {
+		animatedSprite.stop();
+		animated->setAnimation("destroy");
+		animatedSprite.play();
+		animatedSprite.setPosition(Game::aligned(position));
+	}
 }

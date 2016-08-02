@@ -15,20 +15,18 @@ class Bullet : public Game::Entity {
 protected:
 	/** The actual size of this bullet in pixels */
 	unsigned short size;
-
 	/** The position this bullet was shot from (used for range) */
 	const sf::Vector2f origin;
-
 	/** The Entity that shot this bullet */
 	const Game::Entity *const source;
-
+	/** The Entity that this bullet has hit, if any. Only valid when bullet is killed */
+	const Game::Entity *hit = nullptr;
 	/** The damage dealt to the impacted Entity */
 	unsigned short damage;
-
 	/** How many pixels does this bullet travel; -1 means infinite. */
 	float range;
 
-	unsigned short nMotionFrames = 1,  // up to 2
+	unsigned short nMotionFrames = 1,  // up to 8/directionality for AxisBullet
 		       nDestroyFrames = 4; // up to 5
 
 	/** This constructor is used by BossBullet */

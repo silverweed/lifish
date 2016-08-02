@@ -90,14 +90,3 @@ void BreakableWall::_checkCollision(Game::Collider& cld) {
 					cld.getOwner()).getSourcePlayer()->getInfo().id);
 	}
 }
-
-void BreakableWall::update() {
-	Game::Entity::update();
-	// XXX: this is a 'workaround' for hiding our sprite when this wall has finished
-	// being killed. Changing the order of update() and checkKilled() in EntityGroup
-	// would fix this, but other things would break. Maybe there is a win-win solution?
-	if (!disabled && killable->isKilled() && !killable->isKillInProgress()) {
-		get<Game::Animated>()->getSprite().setColor(sf::Color(0, 0, 0, 0));
-		disabled = true;
-	}
-}

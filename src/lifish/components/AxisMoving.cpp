@@ -50,7 +50,7 @@ void AxisMoving::update() {
 		owner.setPosition(owner.getPosition() + shift * frameTime.asSeconds());
 		const float delta = speed * frameTime.asSeconds();
 		distTravelled += delta;
-		if (delta > 1)
+		if (delta > 1 && ensureAlign)
 			_ensureAlign();
 	} else if (autoRealign) {
 		realign();
@@ -151,23 +151,9 @@ void AxisMoving::setDirection(Game::Direction dir) {
 		default:
 			break;
 	}
+
 	direction = dir; 
-
 	moving = dir != Game::Direction::NONE;
-
-	//realign();
-	//if (!moving) stop();
-	//auto pos = owner.getPosition();
-	//switch (dir) {
-	//case Direction::UP: case Direction::DOWN:
-		//pos.x = (unsigned short)pos.x;
-		//break;
-	//case Direction::LEFT: case Direction::RIGHT:
-		//pos.y = (unsigned short)pos.y;
-		//break;
-	//case Direction::NONE: break;
-	//}
-	//owner.setPosition(pos);
 }
 
 void AxisMoving::turn(short straightAngles, bool clockwise) {

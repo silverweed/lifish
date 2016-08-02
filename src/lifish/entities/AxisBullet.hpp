@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Bullet.hpp"
+#include "Collider.hpp"
 
 namespace Game {
 
@@ -16,9 +17,13 @@ class AxisBullet : public Game::Bullet {
 	 */
 	unsigned short directionality = 1;
 
+	Game::Collider *collider = nullptr;
+
 public:
 	/** Constructs a Bullet with a source Entity (using that Entity's position) */
 	explicit AxisBullet(const Game::Entity *const source, const Game::Direction dir, const Game::Attack& attack);
+
+	void update() override;
 
 };
 
