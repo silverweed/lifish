@@ -11,17 +11,18 @@ namespace Game {
 
 namespace UI {
 
+class UI;
+
 class ScreenHandler : public sf::Drawable, public Game::WithOrigin {
 	std::unordered_map<std::string, std::unique_ptr<Game::UI::Screen>> screens;
 	Game::UI::Screen *curScreen = nullptr;
+	Game::UI::UI& ui;
 
 public:
-	ScreenHandler() {}
-	ScreenHandler(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames);
+	ScreenHandler(Game::UI::UI& ui) : ui(ui) {}
 
 	void load(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames);
-
-	void add(Game::UI::Screen *screen) { screens[screen->getName()] = std::unique_ptr<Game::UI::Screen>(screen); }
+	void add(Game::UI::Screen *screen);
 	
 	void update() {
 		if (curScreen != nullptr)
@@ -40,7 +41,7 @@ public:
 	bool signalEvent(const sf::Event& evt) {
 		return curScreen != nullptr && curScreen->receiveEvent(evt);
 	}
-	void setCurrent(const std::string& name);
+	void setCurrent(const std::string& name, bool overrideParent = false);
 	void setCurrentToParent();
 };
 

@@ -26,7 +26,7 @@ These are the valid element types:
 		* "name": string,	// only required for interactables
 		* "style": string	// if none is specified, 'default' will picked
 		* "consecutive": bool,
-		* "position": [int, int],
+		* "position": [int, int], // can be negative, in which case it's (width/height) - coord
 		* "style-override": {	// overrides specific properties of the style
 			// <style here>
 		}

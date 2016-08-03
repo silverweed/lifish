@@ -70,6 +70,47 @@ void LevelManager::update() {
 	entities.updateAll();
 }
 
+bool LevelManager::isPlayer(const Game::Entity *const e) const {
+	for (const auto& p : players)
+		if (e == p.get()) return true;
+	return false;
+}
+
+const Game::Player* LevelManager::getPlayer(unsigned short id) const {
+	return players[id-1].get();
+}
+
+void LevelManager::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	renderer.draw(target, states);
+}
+
+void LevelManager::setOrigin(const sf::Vector2f& pos) {
+	Game::Entity::setOrigin(pos);
+	renderer.setOrigin(pos);
+}
+
+void LevelManager::pause() {
+	for (auto clock : getAllRecursive<Game::Clock>())
+		clock->pause();
+	entities.apply([] (Game::Entity *e) {
+		auto clocks = e->getAllRecursive<Game::Clock>();
+		for (auto clock : clocks)
+			clock->pause();
+	});
+	paused = true;
+}
+
+void LevelManager::resume() {
+	for (auto clock : getAllRecursive<Game::Clock>())
+		clock->resume();
+	entities.apply([] (Game::Entity *e) {
+		auto clocks = e->getAllRecursive<Game::Clock>();
+		for (auto clock : clocks)
+			clock->resume();
+	});
+	paused = false;
+}
+
 bool LevelManager::isBombAt(const sf::Vector2i& tile) const {
 	for (unsigned short i = 0; i < bombs.size(); ++i)
 		for (auto bomb : bombs[i])

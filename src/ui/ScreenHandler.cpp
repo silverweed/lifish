@@ -1,13 +1,10 @@
 #include "ScreenHandler.hpp"
 #include "ScreenCallbacks.hpp"
+#include "UI.hpp"
 #include <iostream>
 
 using Game::UI::ScreenHandler;
 using Game::UI::Action;
-
-ScreenHandler::ScreenHandler(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames) {
-	load(window, scrNames);
-}
 
 void ScreenHandler::load(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames) {
 	for (const auto& name : scrNames) {
@@ -22,6 +19,10 @@ void ScreenHandler::load(const sf::RenderWindow& window, std::initializer_list<s
 		}
 		screens[screen->getName()] = std::unique_ptr<Game::UI::Screen>(screen);
 	}
+} 
+
+void ScreenHandler::add(Game::UI::Screen *screen) {
+	screens[screen->getName()] = std::unique_ptr<Game::UI::Screen>(screen); 
 }
 
 void ScreenHandler::fireClick() {
@@ -52,22 +53,31 @@ void ScreenHandler::fireClick() {
 	case Action::SWITCH_SCREEN:
 		setCurrent(Game::UI::screenCallbackArg);
 		break;
+	case Action::SWITCH_SCREEN_OVERRIDE_PARENT:
+		setCurrent(Game::UI::screenCallbackArg, true);
+		break;
 	case Action::SWITCH_TO_PARENT:
 		setCurrentToParent();
+		break;
+	case Action::DEACTIVATE_UI:
+		ui.setActive(false);
 		break;
 	default:
 		break;
 	}
 }
 
-void ScreenHandler::setCurrent(const std::string& name) {
+void ScreenHandler::setCurrent(const std::string& name, bool overrideParent) {
 	if (name.length() == 0) return;
 
+	auto oldScreen = curScreen->getName();
 	auto it = screens.find(name);
 	if (it == screens.end())
 		throw std::invalid_argument("Screen " + name + " was not loaded!");
 	curScreen = it->second.get();
 	curScreen->setOrigin(origin);
+	if (overrideParent)
+		curScreen->setParent(oldScreen);
 }
 
 void ScreenHandler::setCurrentToParent() {

@@ -30,6 +30,7 @@ class LevelManager final : public sf::Drawable, public Game::Entity, private sf:
 	const Game::Level *level = nullptr;
 	Game::LevelRenderer renderer;
 	Game::LevelTime *levelTime = nullptr;
+	bool paused = false;
 
 	Game::EntityGroup entities;
 	Game::CollisionDetector cd;
@@ -56,15 +57,10 @@ public:
 	/** Generates n players and returns them. If n > MAX_PLAYERS, only generate MAX_PLAYERS players. */
 	auto createNewPlayers(unsigned short n = Game::MAX_PLAYERS) -> std::vector<Game::Player*>;
 
-	bool isPlayer(const Game::Entity *const e) const {
-		for (const auto& p : players)
-			if (e == p.get()) return true;
-		return false;
-	}
+	bool isPlayer(const Game::Entity *const e) const;
+
 	/** Returns the id-th player (id starting from 1) */
-	const Game::Player* getPlayer(unsigned short id) const {
-		return players[id-1].get();
-	}
+	const Game::Player* getPlayer(unsigned short id) const;
 
 	const Game::EntityGroup& getEntities() const { return entities; }
 	Game::EntityGroup& getEntities() { return entities; }
@@ -74,13 +70,9 @@ public:
 	/** Updates all entities and collisions */
 	void update() override;
 
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-		renderer.draw(target, states);
-	}
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-	void setOrigin(const sf::Vector2f& o) override {
-		renderer.setOrigin(o);
-	}
+	void setOrigin(const sf::Vector2f& o) override;
 
 	/** Adds the given entity to `entities` */
 	void spawn(Game::Entity *e);
@@ -90,6 +82,12 @@ public:
 	void rmBomb(Game::Bomb *bomb);
 	/** Returns the number of bombs currently deployed by id-th player */
 	unsigned short bombsDeployedBy(unsigned short id) const;
+
+	/** Pauses all Clock components of all entities */
+	void pause();
+	/** Resumes all Clock components of all entities */
+	void resume();
+	bool isPaused() const { return paused; }
 };
 
 }

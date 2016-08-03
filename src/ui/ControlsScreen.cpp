@@ -42,7 +42,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window)
 	auto bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font, " / ", sf::Vector2f(bounds.left + bounds.width, ipady));
 	text->setCharacterSize(fontSize);
-	nonInteractables.push_back(std::unique_ptr<Drawable>(text));
+	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font, "P2", sf::Vector2f(bounds.left + bounds.width, ipady));
@@ -54,7 +54,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window)
 	const auto small_size = 20;
 	text = new Game::ShadedText(font, "UP: ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
-	nonInteractables.push_back(std::unique_ptr<Drawable>(text));
+	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font,
@@ -66,7 +66,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window)
 	y += 2 * bounds.height;
 	text = new Game::ShadedText(font, "DOWN: ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
-	nonInteractables.push_back(std::unique_ptr<Drawable>(text));
+	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	text = new Game::ShadedText(font,
 			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Controls::CTRL_DOWN]),
@@ -77,7 +77,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window)
 	y += 2 * bounds.height;
 	text = new Game::ShadedText(font, "LEFT: ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
-	nonInteractables.push_back(std::unique_ptr<Drawable>(text));
+	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	text = new Game::ShadedText(font,
 			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Controls::CTRL_LEFT]),
@@ -88,7 +88,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window)
 	y += 2 * bounds.height;
 	text = new Game::ShadedText(font, "RIGHT: ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
-	nonInteractables.push_back(std::unique_ptr<Drawable>(text));
+	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	text = new Game::ShadedText(font,
 			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Controls::CTRL_RIGHT]),
@@ -99,7 +99,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window)
 	y += 2 * bounds.height;
 	text = new Game::ShadedText(font, "BOMB: ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
-	nonInteractables.push_back(std::unique_ptr<Drawable>(text));
+	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	text = new Game::ShadedText(font,
 			Game::KeyUtils::keyToString(Game::Controls::players[selectedPlayer-1][Controls::CTRL_BOMB]),
@@ -110,7 +110,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window)
 	y += 3 * bounds.height;
 	text = new Game::ShadedText(font, "Use Joystick?", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
-	nonInteractables.push_back(std::unique_ptr<Drawable>(text));
+	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	bounds = text->getGlobalBounds();
 	text = new Game::ShadedText(font, "NO", sf::Vector2f(bounds.left + bounds.width + 20, y));

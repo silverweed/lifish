@@ -1,0 +1,124 @@
+{
+	"name": "controls",
+	"parent": "preferences",
+	"bg": "screenbg1.png",
+	"v-align": "top",
+	"layout": {
+		"styles": {
+			"default": {
+				"font": "pf_tempesta_seven_bold.ttf",
+				"character-size": 20,
+				"spacing": 10,
+				"h-align": "left"
+			},
+			"big": {
+				"font": "pf_tempesta_seven_bold.ttf",
+				"character-size": 32,
+				"spacing": 4,
+				"h-align": "left"
+			}
+		},
+		"elements": [
+			{
+				"type": "text",
+				"name": "p1",
+				"string": "P1",
+				"interactable": true
+			},
+			{
+				"consecutive": true,
+				"type": "text",
+				"string": "/"
+			},
+			{
+				"consecutive": true,
+				"type": "text",
+				"name": "p2",
+				"string": "P2",
+				"interactable": true
+			},
+			{
+				"style-override": {
+					"spacing": 30
+				},
+				"type": "text",
+				"string": "UP:       "
+			},
+			{
+				"consecutive": true,
+				"type": "text",
+				"name": "up",
+				"string": "Up",
+				"interactable": true
+			},
+			{
+				"type": "text",
+				"string": "DOWN:   "
+			},
+			{
+				"consecutive": true,
+				"type": "text",
+				"name": "down",
+				"string": "Down",
+				"interactable": true
+			},
+			{
+				"type": "text",
+				"string": "LEFT:     "
+			},
+			{
+				"consecutive": true,
+				"type": "text",
+				"name": "left",
+				"string": "Left",
+				"interactable": true
+			},
+			{
+				"type": "text",
+				"string": "RIGHT:    "
+			},
+			{
+				"consecutive": true,
+				"type": "text",
+				"name": "right",
+				"string": "Right",
+				"interactable": true
+			},
+			{
+				"type": "text",
+				"string": "BOMB:     "
+			},
+			{
+				"consecutive": true,
+				"type": "text",
+				"name": "bomb",
+				"string": "RControl",
+				"interactable": true
+			},
+			{
+				"style-override": {
+					"spacing": 18
+				},
+				"type": "text",
+				"string": "Use Joystick?"
+			},
+			{
+				"consecutive": true,
+				"type": "text",
+				"name": "joystick",
+				"string": "NO",
+				"interactable": true
+			},
+			{
+				"style-override": {
+					"spacing": 35,
+					"h-align": "center"
+				},
+				"type": "text",
+				"name": "back",
+				"string": "OK",
+				"interactable": true
+			}
+		]
+	}
+}

@@ -32,6 +32,9 @@ public:
 	T* get() const;
 
 	template<class T>
+	std::vector<T*> getAllRecursive() const;
+
+	template<class T>
 	std::shared_ptr<T> getShared();
 
 	const sf::Vector2f& getPosition() const; 
@@ -68,6 +71,20 @@ T* Entity::get() const {
 			return derived;
 	}
 	return nullptr;
+}
+
+template<class T>
+std::vector<T*> Entity::getAllRecursive() const {
+	std::vector<T*> all;
+	for (auto& comp : components) {
+		Component *ptr = comp.get();
+		T* derived = nullptr;
+		if (ptr && (derived = dynamic_cast<T*>(ptr)))
+			all.push_back(derived);
+		auto sub = static_cast<Game::Entity*>(ptr)->getAllRecursive<T>();
+		all.insert(all.end(), sub.begin(), sub.end());
+	}
+	return all;
 }
 
 template<class T>

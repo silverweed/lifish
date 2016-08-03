@@ -1,0 +1,99 @@
+{
+	"name": "preferences",
+	"parent": "home",
+	"bg": "screenbg1.png",
+	"v-align": "top",
+	"layout": {
+		"styles": {
+			"default": {
+				"font": "pf_tempesta_seven_bold.ttf",
+				"character-size": 24,
+				"spacing": 3,
+				"h-align": "left"
+			},
+			"big": {
+				"font": "pf_tempesta_seven_bold.ttf",
+				"character-size": 32,
+				"spacing": 3,
+				"h-align": "left"
+			}
+		},
+		"elements": [
+			{
+				"type": "text",
+				"string": "Music:  "
+			},
+			{
+				"consecutive": true,
+				"type": "text",
+				"name": "-music",
+				"string": "-",
+				"style": "big",
+				"interactable": true
+			},
+			{
+				"consecutive": true,
+				"type": "text",
+				"string": "               "
+			},
+			{
+				"consecutive": true,
+				"type": "text",
+				"name": "+music",
+				"string": "+",
+				"style": "big",
+				"interactable": true
+			},
+			{
+				"type": "text",
+				"string": "FX:      ",
+				"style-override": {
+					"spacing": 15
+				}
+			},
+			{
+				"consecutive": true,
+				"style-override": {
+					"spacing": 11
+				},
+				"type": "text",
+				"name": "-fx",
+				"string": "-",
+				"style": "big",
+				"interactable": true
+			},
+			{
+				"consecutive": true,
+				"type": "text",
+				"string": "               "
+			},
+			{
+				"consecutive": true,
+				"type": "text",
+				"name": "+fx",
+				"string": "+",
+				"style": "big",
+				"interactable": true
+			},
+			{
+				"type": "text",
+				"name": "controls",
+				"string": "Controls",
+				"style-override": {
+					"spacing": 15
+				},
+				"interactable": true
+			},
+			{
+				"style-override": {
+					"spacing": 35,
+					"h-align": "center"
+				},
+				"type": "text",
+				"name": "back",
+				"string": "Back",
+				"interactable": true
+			}
+		]
+	}
+}

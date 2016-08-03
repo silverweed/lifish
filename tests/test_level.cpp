@@ -27,6 +27,7 @@
 #include "DroppingText.hpp"
 #include "UI.hpp"
 #include "ControlsScreen.hpp"
+#include "PreferencesScreen.hpp"
 
 #ifdef MULTITHREADED
 #	ifdef SFML_SYSTEM_LINUX
@@ -109,8 +110,10 @@ int main(int argc, char **argv) {
 	Game::options.showFPS = true;
 
 	Game::UI::UI& ui = Game::UI::UI::getInstance();
-	ui.load(window, { "home.json", "about.json", "preferences.json" });
+	ui.load(window, { "home.json", "about.json", "pause.json" });
 	ui.add(new Game::UI::ControlsScreen(window));
+	ui.add(new Game::UI::PreferencesScreen(window));
+	ui.getScreenHandler().setCurrent("pause");
 
 	int lvnum = start_level;
 	Game::LevelSet ls(levelSetName);
@@ -182,7 +185,7 @@ int main(int argc, char **argv) {
 
 	int cycle = 0;
 	//bool removed = false;
-	bool paused = false;
+	bool was_ui_active = false;
 
 	lm.get<Game::LevelTime>()->resume();
 	
@@ -271,14 +274,17 @@ int main(int argc, char **argv) {
 					LevelLoader::load(*level.get(), lm);
 					break;
 				case sf::Keyboard::L:
-					if (paused) {
+					if (lm.isPaused()) {
 						std::cerr << "\n==== CYCLE " << cycle << " ====" << std::endl;
 						lm.update();
 					} else
-						paused = true;
+						lm.pause();
 					break;
 				case sf::Keyboard::K:
-					paused = !paused;
+					if (!lm.isPaused())
+						lm.pause();
+					else
+						lm.resume();
 					break;
 				case sf::Keyboard::T:
 					{
@@ -290,7 +296,10 @@ int main(int argc, char **argv) {
 					}
 					break;
 				case sf::Keyboard::P:
-					ui.toggleActive();
+					if (ui.toggleActive()) {
+						lm.pause();
+						was_ui_active = true;
+					}
 					break;
 					//{
 						//auto action = Game::Action::DO_NOTHING;
@@ -331,8 +340,13 @@ int main(int argc, char **argv) {
 			ui.update();
 			window.draw(ui);
 		} else {
+			if (was_ui_active) {
+				lm.resume();
+				was_ui_active = false;
+			}
+
 			// Update level
-			if (!paused)
+			if (!lm.isPaused())
 				lm.update();
 
 			sidePanel.update();

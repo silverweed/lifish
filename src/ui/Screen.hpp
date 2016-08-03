@@ -61,6 +61,7 @@ public:
 	explicit Screen(const std::string& layoutFileName, const sf::RenderWindow& window);
 
 	bool wasBuilt() const { return built; }
+	void setParent(const std::string& name) { parent = name; }
 	const std::string& getParent() const { return parent; }
 	const std::string& getName() const { return name; }
 

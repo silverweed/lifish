@@ -29,8 +29,7 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 #include "core.hpp"
-
-class LoopingMusic;
+#include "LoopingMusic.hpp"
 
 /**
  * Game-specific definitions, global functions and variables

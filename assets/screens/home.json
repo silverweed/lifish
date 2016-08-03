@@ -8,6 +8,11 @@
 				"font": "pf_tempesta_seven_bold.ttf",
 				"character-size": 24,
 				"spacing": 15
+			},
+			"version": {
+				"font": "pf_tempesta_seven_bold.ttf",
+				"character-size": 10,
+				"spacing": 5
 			}
 		},
 		"elements": [
@@ -47,6 +52,12 @@
 				"name": "exit",
 				"string": "Exit",
 				"interactable": true
+			},
+			{
+				"type": "text",
+				"string": "{{FULL_VERSION}}",
+				"style": "version",
+				"position": [ 5, -18 ]
 			}
 		]
 	}

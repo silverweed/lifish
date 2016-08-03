@@ -13,7 +13,7 @@ class UI final : public sf::Drawable, public Game::WithOrigin {
 	Game::UI::ScreenHandler screenHandler;
 	bool active = false;
 
-	UI() {}
+	UI() : screenHandler(*this) {}
 public:
 	UI(const UI&) = delete;
 
@@ -29,9 +29,12 @@ public:
 		screenHandler.add(screen);
 	}
 
+	Game::UI::ScreenHandler& getScreenHandler() { return screenHandler; }
+
 	bool isActive() const { return active; }
 	void setActive(bool b) { active = b; }
-	void toggleActive() { active = !active; }
+	/** @return The active state of UI after the change */
+	bool toggleActive() { return active = !active; }
 
 	/** UI-specific event loop, to be called when UI is active (instead of the main event loop) */
 	void handleEvents(sf::Window& window);

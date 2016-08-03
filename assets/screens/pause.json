@@ -1,0 +1,41 @@
+{
+	"name": "pause",
+	"parent": null,
+	"bg": "screenbg1.png",
+	"v-align": "center",
+	"layout": {
+		"styles": {
+			"default": {
+				"font": "pf_tempesta_seven_bold.ttf",
+				"character-size": 24,
+				"spacing": 15
+			}
+		},
+		"elements": [
+			{
+				"type": "text",
+				"name": "save",
+				"string": "Save Game",
+				"interactable": true
+			},
+			{
+				"type": "text",
+				"name": "preferences",
+				"string": "Preferences",
+				"interactable": true
+			},
+			{
+				"type": "text",
+				"name": "resume",
+				"string": "Resume",
+				"interactable": true
+			},
+			{
+				"type": "text",
+				"name": "exit",
+				"string": "Exit",
+				"interactable": true
+			}
+		]
+	}
+}

@@ -25,6 +25,9 @@ void UI::handleEvents(sf::Window& window) {
 			case sf::Keyboard::Escape:
 				screenHandler.setCurrentToParent();
 				break;
+			case sf::Keyboard::P:
+				active = !active;
+				break;
 			default:
 				break;
 			}

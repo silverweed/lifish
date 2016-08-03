@@ -37,6 +37,11 @@ static void add_style_property(Game::UI::ScreenStyle& style, const std::string& 
 		std::cerr << "Invalid style property: " << key << std::endl;
 }
 
+static std::string convert_special_string(const std::string& s) {
+	if (s == "{{FULL_VERSION}}") return "lifish v." VERSION " rev." COMMIT;
+	return s;
+}
+
 void ScreenBuilder::_parseStyles(Game::UI::Screen& screen, const json& stylesJSON) {
 	for (auto it = stylesJSON.begin(); it != stylesJSON.end(); ++it) {
 		auto style = it.value();
@@ -61,7 +66,11 @@ void ScreenBuilder::_addText(Game::UI::Screen& screen, const json& text) {
 		it = text.find("position");
 		if (it != text.end()) {
 			manualPosition.x = (*it)[0].get<int>();
+			if (manualPosition.x < 0)
+				manualPosition.x += Game::WINDOW_WIDTH;
 			manualPosition.y = (*it)[1].get<int>();
+			if (manualPosition.y < 0)
+				manualPosition.y += Game::WINDOW_HEIGHT;
 		}
 	}
 	auto newtxt = new Game::ShadedText;
@@ -81,7 +90,7 @@ void ScreenBuilder::_addText(Game::UI::Screen& screen, const json& text) {
 	// set font
 	newtxt->setFont(Game::getAsset("fonts", style.font));
 	// set string
-	newtxt->setString(text["string"].get<std::string>());
+	newtxt->setString(convert_special_string(text["string"].get<std::string>()));
 
 	// set position
 	if (manualPosition.x >= 0 && manualPosition.y >= 0)
@@ -130,7 +139,11 @@ void ScreenBuilder::_addImage(Game::UI::Screen& screen, const json& image) {
 		it = image.find("position");
 		if (it != image.end()) {
 			manualPosition.x = (*it)[0].get<int>();
+			if (manualPosition.x < 0)
+				manualPosition.x += Game::WINDOW_WIDTH;
 			manualPosition.y = (*it)[1].get<int>();
+			if (manualPosition.y < 0)
+				manualPosition.y += Game::WINDOW_HEIGHT;
 		}
 	}
 	auto newimg = new sf::Sprite;
