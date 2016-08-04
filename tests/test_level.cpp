@@ -150,8 +150,8 @@ int main(int argc, char **argv) {
 	lm.setOrigin(origin);
 
 	// Setup the music
-	Game::musicManager->set(level->get<Game::Music>()->getMusic());
-	Game::musicManager->play();
+	Game::options.musicVolume = 0; // FIXME
+	Game::musicManager->set(level->get<Game::Music>()->getMusic()).setVolume(Game::options.musicVolume).play();
 
 	int cycle = 0;
 	bool was_ui_active = false;
@@ -188,13 +188,21 @@ int main(int argc, char **argv) {
 						if (en) en->setMorphed(!en->isMorphed());
 					});
 					break;
+				case sf::Keyboard::N:
+					lm.getEntities().apply([] (Game::Entity *e) {
+						auto en = dynamic_cast<Game::Enemy*>(e);
+						//auto en = dynamic_cast<Game::BreakableWall*>(e);
+						if (en) en->get<Game::Killable>()->kill();
+					});
+					break;
 				case sf::Keyboard::Add:
 					lvnum = level->getInfo().levelnum + 1;
 					if (lvnum > ls.getLevelsNum())
 						lvnum = 1;
 					level.reset(ls.getLevel(lvnum));
 					level->setOrigin(origin);
-					Game::musicManager->set(level->get<Game::Music>()->getMusic())->play();
+					Game::musicManager->set(level->get<Game::Music>()->getMusic())
+						.setVolume(Game::options.musicVolume).play();
 					LevelLoader::load(*level.get(), lm);
 					break;
 				case sf::Keyboard::Subtract:
@@ -203,7 +211,8 @@ int main(int argc, char **argv) {
 						lvnum = ls.getLevelsNum();
 					level.reset(ls.getLevel(lvnum));
 					level->setOrigin(origin);
-					Game::musicManager->set(level->get<Game::Music>()->getMusic())->play();
+					Game::musicManager->set(level->get<Game::Music>()->getMusic())
+						.setVolume(Game::options.musicVolume).play();
 					LevelLoader::load(*level.get(), lm);
 					break;
 				case sf::Keyboard::L:
@@ -255,6 +264,8 @@ int main(int argc, char **argv) {
 			default: break;
 			}
 		}
+
+		std::cerr << "# Entities: " << lm.getEntities().size() << std::endl;
 
 #ifndef MULTITHREADED
 		if (ui.isActive()) {

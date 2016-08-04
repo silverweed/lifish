@@ -88,6 +88,7 @@ void EntityGroup::_checkKilled() {
 				// Will be finalized later
 				dying.push_back(klb);
 				it = killables.erase(it);
+				std::cerr << "Finalize later (count of klb = " << (--dying.end())->use_count() << ")\n";
 				continue;
 			}
 
@@ -113,7 +114,9 @@ void EntityGroup::_removeDying() {
 			continue;
 		}
 		auto tmp = it->lock();
+		std::cerr<<"calling killinprogress (count of it = " << it->use_count() << ")\n";
 		if (!tmp->isKillInProgress()) {
+			std::cerr<<"ended\n";
 			// kill function has ended, we can safely destroy this.
 			auto eit = std::find_if(entities.begin(), entities.end(), 
 					[tmp] (std::shared_ptr<Game::Entity>& ptr) 

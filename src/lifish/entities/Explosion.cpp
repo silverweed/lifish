@@ -22,7 +22,7 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game
 	, sourcePlayer(source)
 {
 	collider = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS, 
-				sf::Vector2i(TILE_SIZE, TILE_SIZE), true));
+				sf::Vector2i(TILE_SIZE, TILE_SIZE)));
 	addComponent(new Game::Sounded(*this, { Game::getAsset("sounds", "explosion.ogg") }));
 	explosionC = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "explosionC.png")));
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::Explosion));

@@ -7,8 +7,6 @@
 #include "Collider.hpp"
 #include "game.hpp"
 
-#include <iostream>
-
 using Game::Bonus;
 using Game::TILE_SIZE;
 

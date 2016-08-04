@@ -76,9 +76,12 @@ void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager&,
 	if (klb != nullptr && klb->isKilled()) {
 		// Give and spawn points
 		auto target = scored->getTarget();
-		if (target < 0) 
-			std::cerr << "[ WARNING ] target of scored hasn't been set" << std::endl;
-		else {
+		if (target < 0) {
+			// give points to all players
+			for (auto& s : Game::score)
+				s += scored->getPointsGiven();
+			scored->givePoints();
+		} else {
 			Game::score[target - 1] += scored->givePoints();
 			tbspawned.push_back(new Game::Points(e->getPosition(), scored->getPointsGiven()));
 		}

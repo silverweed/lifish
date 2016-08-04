@@ -2,18 +2,26 @@
 
 using Game::MusicManager;
 
-void MusicManager::play() {
+MusicManager& MusicManager::set(LoopingMusic *m) {
+	music = m;
+	return *this;
+}
+
+MusicManager& MusicManager::play() {
 	if (music != nullptr) {
 		music->play();
 	}
+	return *this;
 }
 
-void MusicManager::stop() {
+MusicManager& MusicManager::stop() {
 	if (music != nullptr)
 		music->stop();
+	return *this;
 }
 
-void MusicManager::setVolume(float volume) {
+MusicManager& MusicManager::setVolume(float volume) {
 	if (music != nullptr)
 		music->setVolume(volume);
+	return *this;
 }

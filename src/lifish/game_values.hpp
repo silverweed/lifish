@@ -18,6 +18,10 @@ namespace Conf {
 		/** The number of letters needed to get an extra life */
 		constexpr unsigned short N_EXTRA_LETTERS = 5;
 	}
+	
+	namespace Enemy {
+		const sf::Time DEATH_TIME = sf::milliseconds(2000);
+	}
 
 	namespace Bomb {
 		const sf::Time DEFAULT_FUSE = sf::milliseconds(500);

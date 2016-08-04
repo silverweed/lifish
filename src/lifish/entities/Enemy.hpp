@@ -62,7 +62,8 @@ class Enemy : public Game::Entity {
 	std::unique_ptr<Game::EnemyDrawableProxy> drawProxy;
 
 	Game::Clock *yellClock = nullptr,
-		    *dashClock = nullptr;
+		    *dashClock = nullptr,
+		    *deathClock = nullptr;
 
 	/** The function determining this enemy's movements */
 	//AIBoundFunction ai;
@@ -75,7 +76,7 @@ class Enemy : public Game::Entity {
 
 
 	void _checkCollision(Game::Collider& coll);
-
+	void _kill();
 public:
 	constexpr static float BASE_SPEED = 75.f;
 

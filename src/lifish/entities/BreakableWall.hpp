@@ -12,6 +12,7 @@ namespace Game {
  */
 class BreakableWall : public Game::Entity {
 	Game::Killable *killable = nullptr;
+	Game::Animated *animated = nullptr;
 
 protected:
 	/** Constructor used by TransparentWall */

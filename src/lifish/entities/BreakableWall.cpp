@@ -31,7 +31,7 @@ BreakableWall::BreakableWall(const sf::Vector2f& pos, const std::string& texture
 					TILE_SIZE, 
 					TILE_SIZE));
 
-	get<Game::Animated>()->setAnimation(animation);
+	animated->setAnimation(animation);
 }
 
 BreakableWall::BreakableWall(const sf::Vector2f& pos, 
@@ -46,7 +46,7 @@ BreakableWall::BreakableWall(const sf::Vector2f& pos,
 					(id-1) * TILE_SIZE, 
 					TILE_SIZE,
 					TILE_SIZE));
-	get<Game::Animated>()->setAnimation(animation);
+	animated->setAnimation(animation);
 }
 
 void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
@@ -60,15 +60,15 @@ void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
 	}, Game::Layers::WALLS));
 	killable = addComponent(new Game::Killable(*this, [this] () {
 		// on kill
-		get<Game::Animated>()->getSprite().play();
+		animated->getSprite().play();
 	}, [this] () {
 		// is kill in progress
-		return get<Game::Animated>()->getSprite().isPlaying();
+		return animated->getSprite().isPlaying();
 	}));
 }
 
 Animation& BreakableWall::_setupAnimations(const std::string& texture_name) {
-	auto animated = addComponent(new Game::Animated(*this, texture_name));
+	animated = addComponent(new Game::Animated(*this, texture_name));
 	addComponent(new Game::Drawable(*this, *animated));
 	auto& animation = animated->addAnimation("break");
 	auto& animatedSprite = animated->getSprite();

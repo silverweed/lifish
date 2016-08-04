@@ -135,7 +135,7 @@ void CollisionDetector::update() {
 						checked.insert(othcollider.get());
 					}
 				}
-			} else if (collider->collidesWith(*othcollider)) {
+			} else if (collider->contains(*othcollider) && collider->collidesWith(*othcollider)) {
 				collider->colliding.push_back(*othcollider);
 			}
 		}
