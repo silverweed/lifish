@@ -26,6 +26,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window)
 	 * LEFT: key
 	 * RIGHT: key
 	 * BOMB: key
+	 * Joystick: no.
 	 *
 	 * Exit
 	 */

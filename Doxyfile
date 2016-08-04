@@ -86,3 +86,4 @@ GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
 GENERATE_LEGEND        = YES
 HAVE_DOT               = YES
+EXCLUDE_PATTERNS       = */src/old/*
