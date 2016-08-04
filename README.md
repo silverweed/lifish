@@ -80,32 +80,32 @@ sprites should be, it means that asset hasn't been created yet.
     - [x] ThickLizzy/etc AI
     - [x] Thing/etc AI
   - [x] Enemies shoot
-  - [x] Enemies die when hit by explosions
-- [x] Bosses   
-  - [x] Boss collisions
-  - [x] Bosses shoot
-  - [x] Bosses are hit by explosions
-  - [x] Bosses die correctly
+  - [ ] Enemies die when hit by explosions
+- [ ] Bosses   
+  - [ ] Boss collisions
+  - [ ] Bosses shoot
+  - [ ] Bosses are hit by explosions
+  - [ ] Bosses die correctly
   - [ ] Final Boss
 - [x] Players   
   - [x] Players move
   - [x] Players drop bombs
-  - [x] Players are hurt by explosions
-  - [x] Players die when they should
+  - [ ] Players are hurt by explosions
+  - [ ] Players die when they should
 - [x] Bombs
 - [x] Coins   
   - [x] Coins can be taken
-  - [x] Taking all coins causes Extra Game
+  - [ ] Taking all coins causes Extra Game
 - [x] Bullets
   - [x] Directional bullets use correct sprites
-- [x] Hurry Up
-- [x] Level-wise Victory
+- [ ] Hurry Up
+- [ ] Level-wise Victory
   - [ ] FINAL VICTORY
-- [x] Game Over
+- [ ] Game Over
 - [x] Points
 - [x] Extra
   - [x] Enemies become harmless in EXTRA
-  - [x] Enemies drop letters in EXTRA
+  - [ ] Enemies drop letters in EXTRA
 - [x] Side panel
 - [ ] Sounds
 - [ ] Music
