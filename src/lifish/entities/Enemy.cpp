@@ -137,7 +137,7 @@ void Enemy::update() {
 }
 
 Game::Bullet* Enemy::checkShoot() const {
-	if (killable->isKilled() || shooting->isRecharging())
+	if (killable->isKilled() || shooting->isRecharging() || morphed)
 		return nullptr;
 	
 	const auto lm = sighted->getLevelManager();

@@ -8,7 +8,7 @@ class MusicManager final {
 	LoopingMusic *music = nullptr;
 
 public:
-	void set(LoopingMusic *m) { music = m; }
+	LoopingMusic* set(LoopingMusic *m) { return music = m; }
 	void play();
 	void stop();
 	void setVolume(float volume);

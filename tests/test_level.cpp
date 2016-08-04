@@ -39,11 +39,17 @@
 using namespace Game;
 
 #ifdef MULTITHREADED
-static void rendering_loop(sf::RenderWindow& window, const Game::LevelManager& lm, const Game::SidePanel& sidePanel) {
+static void rendering_loop(sf::RenderWindow& window, const Game::LevelManager& lm, 
+		const Game::SidePanel& sidePanel, const Game::UI::UI& ui)
+{
 	while (window.isOpen()) {
 		window.clear();
-		window.draw(lm);
-		window.draw(sidePanel);
+		if (ui.isActive()) {
+			window.draw(ui);	
+		} else {
+			window.draw(lm);
+			window.draw(sidePanel);
+		}
 		Game::maybeShowFPS(window);
 		window.display();
 	}
@@ -104,7 +110,11 @@ int main(int argc, char **argv) {
 	Game::MusicManager mm;
 	Game::musicManager = &mm;
 
-	Game::init();
+	if (!Game::init()) {
+		std::cerr << "[ FATAL ] Failed to initialize the game!" << std::endl;
+		return 1;
+	}
+
 	if (levelSetName.length() < 1)
 		levelSetName = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
 	
@@ -114,12 +124,14 @@ int main(int argc, char **argv) {
 	window.setJoystickThreshold(Game::JOYSTICK_INPUT_THRESHOLD);
 	Game::options.showFPS = true;
 
+	// Setup UI
 	Game::UI::UI& ui = Game::UI::UI::getInstance();
 	ui.load(window, { "home.json", "about.json", "pause.json" });
 	ui.add(new Game::UI::ControlsScreen(window));
 	ui.add(new Game::UI::PreferencesScreen(window));
 	ui.getScreenHandler().setCurrent("pause");
 
+	// Load level set
 	int lvnum = start_level;
 	Game::LevelSet ls(levelSetName);
 	std::unique_ptr<Game::Level> level(ls.getLevel(lvnum));
@@ -134,115 +146,26 @@ int main(int argc, char **argv) {
 
 	LevelLoader::load(*level.get(), lm);
 
-	Game::EntityGroup& entities = lm.getEntities();
-	
-#if 0
-	// XXX For now, manually position players
-	players[0]->setPosition(sf::Vector2f(128, 128));
-	players[1]->setPosition(sf::Vector2f(128, 128+32));
-
-	// XXX For now, we manually fill the entities
-
-	Attack atype;
-	atype.type = AttackType::SIMPLE;
-	atype.damage = 1;
-	atype.id = 1;
-	atype.speed = 1;
-	Enemy *enemy = new Enemy(sf::Vector2f(32*6, 32*8), 1, 1, atype);
-	Bomb *bomb = new Bomb(sf::Vector2f(64, 64), nullptr);
-	Coin *coin = new Coin(sf::Vector2f(96, 96));
-	Teleport *teleport = new Teleport(sf::Vector2f(256, 224));
-	Teleport *teleport2 = new Teleport(sf::Vector2f(32*11, 320));
-	teleport->linkTo(teleport2);
-	teleport2->linkTo(teleport);
-	FixedWall *wall1 = new FixedWall(sf::Vector2f(32, 64), 5);
-	BreakableWall *wall2 = new BreakableWall(sf::Vector2f(32, 96), 3);
-	TransparentWall *wall3 = new TransparentWall(sf::Vector2f(32, 128));
-	
-	entities.add(bomb);
-	entities.add(coin);
-	entities.add(teleport);
-	entities.add(teleport2);
-	entities.add(wall1);
-	entities.add(wall2);
-	entities.add(wall3);
-	entities.add(enemy);
-	//for (int i = 0; i < 64; ++i) {
-		//entities.add(new BreakableWall(sf::Vector2f((i%Game::LEVEL_WIDTH)*32, int(i/Game::LEVEL_WIDTH)*32.0), 2));
-		//entities.add(new BreakableWall(sf::Vector2f((i%Game::LEVEL_WIDTH)*32, (Game::LEVEL_HEIGHT-int(i/Game::LEVEL_WIDTH))*32.0), 2));
-		//entities.add(new Enemy(sf::Vector2f((i%Game::LEVEL_WIDTH)*32, int(i/Game::LEVEL_WIDTH)*32.0), 1, 1, atype));
-	//}
-#endif
-
 	sf::Vector2f origin(-Game::SIDE_PANEL_WIDTH, 0);
 	lm.setOrigin(origin);
 
+	// Setup the music
 	Game::musicManager->set(level->get<Game::Music>()->getMusic());
 	Game::musicManager->play();
 
-	//Game::HomeScreen& screen = HomeScreen::getInstance();
-	//Game::ScreenHandler::getInstance().setOrigin(origin);
-	//bool drawScreen = false;
-	//enemy->get<Game::AxisMoving>()->setDirection(Game::Direction::DOWN);
-
-	sf::Clock turnClock;
-	sf::Clock shootClock;
-
 	int cycle = 0;
-	//bool removed = false;
 	bool was_ui_active = false;
 
 	lm.get<Game::LevelTime>()->resume();
 	
 #ifdef MULTITHREADED
 	window.setActive(false);
-	std::thread rendering_thread(rendering_loop, std::ref(window), std::cref(lm), std::cref(sidePanel));
+	std::thread rendering_thread(rendering_loop, std::ref(window), std::cref(lm), std::cref(sidePanel), std::cref(ui));
 #endif
 
 	while (window.isOpen() && !Game::terminated) {
 		sf::Event event;
 		
-		//enemy.get<Game::Shooting>()->shoot();
-		if (shootClock.getElapsedTime().asMilliseconds() > 200) {
-			//float x = float(rand())/RAND_MAX, y = float(rand())/RAND_MAX;
-			//float xx = float(rand())/RAND_MAX, yy = float(rand())/RAND_MAX;
-			//entities.add(new Game::BossExplosion(sf::Vector2f(
-						//Game::LEVEL_WIDTH * Game::TILE_SIZE * xx,
-						//Game::LEVEL_HEIGHT * Game::TILE_SIZE * yy)));
-			//auto e = new Game::Explosion(sf::Vector2f(
-						//Game::LEVEL_WIDTH * Game::TILE_SIZE * x,
-						//Game::LEVEL_HEIGHT * Game::TILE_SIZE * y), 2, player);
-			//e->propagate(lm);
-			//entities.add(e);
-			//entities.add(enemy->get<Game::Shooting>()->shoot());
-			shootClock.restart();
-		}
-
-		//if (turnClock.getElapsedTime().asSeconds() > 1) {
-			//if (enemy->isAligned()) {
-				//enemy->get<Game::AxisMoving>()->turn(1, false);
-				//turnClock.restart();
-				//Explosion *expl = new Explosion(sf::Vector2f(7 * 32, 3 * 32), 2, players[0]);
-				//expl->propagate(&lm);
-				//entities.add(expl);
-				//if (rand() < RAND_MAX/2)
-					//entities.add(enemy->get<Game::Shooting>()->shoot());
-				//if (!spawned) {
-					//Points *pts = new Points(sf::Vector2f(320, 12*32), "100");
-					//entities.add(pts);
-					//spawned = true;
-				//}
-			//}
-			//entities.add(new Game::Flash(sf::Vector2f(300, 300)));
-		//}
-
-		//if (!removed && cycle > 100) {
-			//entities.remove(wall1); 
-			//removed = true;
-		//}
-
-		//std::cerr << "Entities: " << entities.size() << std::endl;
-
 		// Event loop
 		if (ui.isActive()) 
 			ui.handleEvents(window);
@@ -260,7 +183,10 @@ int main(int argc, char **argv) {
 					window.setVerticalSyncEnabled(vsync = !vsync);
 					break;
 				case sf::Keyboard::M:
-					//enemy->setMorphed(!enemy->isMorphed());
+					lm.getEntities().apply([] (Game::Entity *e) {
+						auto en = dynamic_cast<Game::Enemy*>(e);
+						if (en) en->setMorphed(!en->isMorphed());
+					});
 					break;
 				case sf::Keyboard::Add:
 					lvnum = level->getInfo().levelnum + 1;
@@ -268,6 +194,7 @@ int main(int argc, char **argv) {
 						lvnum = 1;
 					level.reset(ls.getLevel(lvnum));
 					level->setOrigin(origin);
+					Game::musicManager->set(level->get<Game::Music>()->getMusic())->play();
 					LevelLoader::load(*level.get(), lm);
 					break;
 				case sf::Keyboard::Subtract:
@@ -276,6 +203,7 @@ int main(int argc, char **argv) {
 						lvnum = ls.getLevelsNum();
 					level.reset(ls.getLevel(lvnum));
 					level->setOrigin(origin);
+					Game::musicManager->set(level->get<Game::Music>()->getMusic())->play();
 					LevelLoader::load(*level.get(), lm);
 					break;
 				case sf::Keyboard::L:
@@ -297,7 +225,7 @@ int main(int argc, char **argv) {
 								Game::getAsset("test", "gameover.png"),
 								sf::Vector2i(311, 59));
 						dt->play();
-						entities.add(dt);
+						lm.getEntities().add(dt);
 					}
 					break;
 				case sf::Keyboard::P:
@@ -328,18 +256,6 @@ int main(int argc, char **argv) {
 			}
 		}
 
-
-		// FIXME
-		//for (auto player : players) {
-			//if (player->get<Game::Controllable>()->hasFocus() 
-				//&& player->isAligned() 
-				//&& sf::Keyboard::isKeyPressed(
-					//Game::Controls::players[player->getInfo().id-1][Game::Controls::CTRL_BOMB]))
-			//{
-				//entities.add(new Game::Bomb(player->getPosition(), *player));	
-			//}
-		//}
-
 #ifndef MULTITHREADED
 		if (ui.isActive()) {
 			ui.update();
@@ -362,6 +278,17 @@ int main(int argc, char **argv) {
 		}
 		Game::maybeShowFPS(window);
 		window.display();
+#else
+		if (ui.isActive()) {
+			ui.update();
+		} else {
+			if (was_ui_active) {
+				lm.resume();
+				was_ui_active = false;
+			}
+			if (!lm.isPaused())
+				lm.update();
+		}
 #endif
 
 		// Garbage-collect sounds
