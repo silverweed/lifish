@@ -9,7 +9,6 @@
 
 std::array<unsigned int, Game::MAX_PLAYERS> Game::score;
 std::array<unsigned short, Game::MAX_PLAYERS> Game::playerContinues;
-LoopingMusic *Game::music = nullptr;
 
 bool Game::init() {
 	if (!Game::initCore()) return false;

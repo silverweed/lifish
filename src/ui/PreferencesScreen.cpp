@@ -130,8 +130,8 @@ Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {
 			interactables["music_mute_toggle"]->getSprite()->setTextureRect(
 					sf::IntRect(prevMusicVolume >= 0 ? SPEAKER_SPRITE_SIZE : 0,
 						0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
-			if (Game::music != nullptr)
-				Game::music->setVolume(Game::options.musicVolume);
+			if (Game::musicManager != nullptr)
+				Game::musicManager->setVolume(Game::options.musicVolume);
 			break;
 		case VolumeType::SOUND:
 			Game::options.soundsMute = !Game::options.soundsMute;
@@ -161,8 +161,8 @@ Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {
 	if (which == VolumeType::MUSIC) {
 		Game::options.musicVolume = vol * 100 / MAX_VOLUME;
 		musicVolumeBar->setString(ss.str());
-		if (Game::music != nullptr)
-			Game::music->setVolume(Game::options.musicVolume);
+		if (Game::musicManager != nullptr)
+			Game::musicManager->setVolume(Game::options.musicVolume);
 	} else {
 		Game::options.soundsVolume = vol * 100 / MAX_VOLUME;
 		soundsVolumeBar->setString(ss.str());

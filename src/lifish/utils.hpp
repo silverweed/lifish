@@ -109,8 +109,6 @@ inline bool startsWith(const std::string& haystack, const std::string& needle) {
 	return haystack.substr(0, needle.size()) == needle;
 }
 
-void playMusic();
-void stopMusic();
 /** Plays a brief sound */
 void testMusic();
 

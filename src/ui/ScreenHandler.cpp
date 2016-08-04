@@ -1,6 +1,7 @@
 #include "ScreenHandler.hpp"
 #include "ScreenCallbacks.hpp"
 #include "UI.hpp"
+#include "game.hpp"
 #include <iostream>
 
 using Game::UI::ScreenHandler;
@@ -43,7 +44,10 @@ void ScreenHandler::fireClick() {
 
 	switch (action) {
 	case Action::EXIT:
-		exit(0);
+		// terminate the game
+		Game::exitCode = 0;
+		Game::terminated = true;
+		break;
 	case Action::START_GAME:
 		// TODO
 		break;

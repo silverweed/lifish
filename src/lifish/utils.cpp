@@ -148,28 +148,6 @@ std::string Game::KeyUtils::keyToString(sf::Keyboard::Key key) {
 	}
 }
 
-void Game::testMusic() {
-	sf::Music sample;
-	sample.openFromFile(Game::getAsset("music", "music1.ogg"));
-	sample.play();
-	sample.setVolume(Game::options.musicVolume);
-	SLEEP_MS(200);
-	sample.stop();
-}
-
-void Game::playMusic() {
-	if (Game::music != nullptr) {
-		Game::music->setVolume(Game::options.musicVolume);
-		Game::music->play();
-	}
-}
-
-void Game::stopMusic() {
-	if (Game::music != nullptr) {
-		Game::music->stop();
-	}
-}
-
 void Game::maybeShowFPS(sf::RenderWindow& window) {
 	static double cur_time;
 	static int n_updates = 0;
@@ -202,4 +180,13 @@ void Game::maybeShowFPS(sf::RenderWindow& window) {
 		}	
 		window.draw(fps_text);
 	}
+}
+
+void Game::testMusic() {
+	sf::Music sample;
+	sample.openFromFile(Game::getAsset("music", "music1.ogg"));
+	sample.play();
+	sample.setVolume(Game::options.musicVolume);
+	SLEEP_MS(200);
+	sample.stop();
 }

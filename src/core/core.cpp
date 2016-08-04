@@ -17,6 +17,9 @@ char Game::pwd[Game::PWD_BUFSIZE];
 Game::GameCache Game::cache;
 std::default_random_engine Game::rng;
 Game::Options Game::options;
+bool Game::terminated = false;
+int Game::exitCode = 0;
+Game::MusicManager *Game::musicManager = nullptr;
 
 static void _initOptions() {
 	using Game::options;

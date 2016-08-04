@@ -99,6 +99,11 @@ int main(int argc, char **argv) {
 			++i;
 		}
 	}
+	
+	// Create the MusicManager (in a local scope)
+	Game::MusicManager mm;
+	Game::musicManager = &mm;
+
 	Game::init();
 	if (levelSetName.length() < 1)
 		levelSetName = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
@@ -172,8 +177,8 @@ int main(int argc, char **argv) {
 	sf::Vector2f origin(-Game::SIDE_PANEL_WIDTH, 0);
 	lm.setOrigin(origin);
 
-	Game::music = level->get<Game::Music>()->getMusic();
-	//Game::playMusic();
+	Game::musicManager->set(level->get<Game::Music>()->getMusic());
+	Game::musicManager->play();
 
 	//Game::HomeScreen& screen = HomeScreen::getInstance();
 	//Game::ScreenHandler::getInstance().setOrigin(origin);
@@ -194,7 +199,7 @@ int main(int argc, char **argv) {
 	std::thread rendering_thread(rendering_loop, std::ref(window), std::cref(lm), std::cref(sidePanel));
 #endif
 
-	while (window.isOpen()) {
+	while (window.isOpen() && !Game::terminated) {
 		sf::Event event;
 		
 		//enemy.get<Game::Shooting>()->shoot();
@@ -366,5 +371,8 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	//Game::stopMusic();
+	// Perform cleanup
+	mm.stop();
+
+	return Game::exitCode;
 }

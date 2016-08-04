@@ -29,7 +29,6 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 #include "core.hpp"
-#include "LoopingMusic.hpp"
 
 /**
  * Game-specific definitions, global functions and variables
@@ -101,9 +100,6 @@ constexpr auto TIME_BONUS_SOUND  = "timebonus.ogg";
 
 /** The players' score */
 extern std::array<unsigned int, MAX_PLAYERS> score;
-
-/** The music */
-extern LoopingMusic *music;
 
 /** The remaining of 'continues' per player */
 extern std::array<unsigned short, MAX_PLAYERS> playerContinues;

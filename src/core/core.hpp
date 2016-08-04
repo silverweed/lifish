@@ -6,6 +6,7 @@
 #include <sstream>
 #include <SFML/System.hpp>
 #include "GameCache.hpp"
+#include "MusicManager.hpp"
 
 // Fallback in case the game wasn't compiled properly with cmake
 #ifndef VERSION
@@ -45,13 +46,23 @@ constexpr short JOYSTICK_INPUT_THRESHOLD = 50;
 extern char pwd[PWD_BUFSIZE];
 
 /** Global game cache (caches textures in memory for faster loading) */
-extern GameCache cache;
+extern Game::GameCache cache;
 
 /** Random number generator */
 extern std::default_random_engine rng;
 
 /** The game options */
-extern Options options;
+extern Game::Options options;
+
+/** Pointer to an unowned MusicManager, which *MUST* be created in the main function.
+ *  Allows easy access to the music manager throughout the code, but the object
+ *  itself has automatic lifetime and is guaranteed to die before the main's exit.
+ */
+extern Game::MusicManager *musicManager;
+
+/** If true, the game exits after the current loop */
+extern bool terminated;
+extern int exitCode;
 
 /****************************************************************************/
 /*                         GLOBAL FUNCTIONS                                 */
