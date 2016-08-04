@@ -12,14 +12,6 @@
 using Game::UI::ScreenBuilder;
 using json = nlohmann::json;
 
-sf::Vector2f ScreenBuilder::pos;
-sf::FloatRect ScreenBuilder::prevElemBounds;
-std::vector<std::pair<sf::Drawable*, unsigned short>> ScreenBuilder::toBeAligned;
-std::vector<float> ScreenBuilder::rowWidths; 
-std::vector<std::string> ScreenBuilder::rowAligns; 
-std::string ScreenBuilder::vAlign;
-float ScreenBuilder::totHeight;
-
 static void add_style_property(Game::UI::ScreenStyle& style, const std::string& key, const json& value) {
 	if (key == "spacing")
 		style.spacing = value.get<int>();
@@ -244,12 +236,6 @@ void ScreenBuilder::build(Game::UI::Screen& screen, const std::string& layoutFil
 	}
 	const auto bgSpritePath = Game::getAsset("graphics", screenJSON["bg"].get<std::string>());
 	auto layoutJSON = screenJSON["layout"];
-
-	pos.x = 0, pos.y = 0;
-	toBeAligned.clear();
-	rowWidths.clear();
-	rowAligns.clear();
-	totHeight = 0;
 
 	// styles
 	_parseStyles(screen, layoutJSON["styles"]);

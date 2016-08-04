@@ -14,7 +14,8 @@ Screen::Screen(const std::string& layoutFileName, const sf::RenderWindow& window
 	: window(window)
 	, size(window.getSize())
 {
-	Game::UI::ScreenBuilder::build(*this, layoutFileName);	
+	Game::UI::ScreenBuilder builder;
+	builder.build(*this, layoutFileName);	
 }
 
 void Screen::draw(sf::RenderTarget& target, sf::RenderStates states) const {
