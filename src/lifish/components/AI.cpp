@@ -16,6 +16,9 @@
 	return; \
 }
 #define SAME_DIRECTION return;
+#define HANDLE_NOT_MOVING \
+	if (!moving->isMoving()) \
+		SAME_DIRECTION
 #define HANDLE_UNALIGNED \
 	if (!entity.isAligned()) { \
 		if (collider->collidesWithSolid()) \
@@ -102,6 +105,7 @@ AIBoundFunction Game::ai_random(Game::Entity& entity) {
 	moving->setAutoRealignEnabled(false);
 
 	return [&entity, moving, collider] (const Game::LevelManager& lm) { 
+		HANDLE_NOT_MOVING;
 		HANDLE_UNALIGNED;
 		if (!collider->isColliding()) {
 			if (moving->getDistTravelled() < Game::TILE_SIZE) 
@@ -138,6 +142,7 @@ AIBoundFunction Game::ai_random_forward(Game::Entity& entity) {
 	moving->setAutoRealignEnabled(false);
 
 	return [&entity, moving, collider] (const Game::LevelManager& lm) { 
+		HANDLE_NOT_MOVING;
 		HANDLE_UNALIGNED;
 		const D cur = moving->getDirection();
 		const bool colliding = collider->collidesWithSolid();
@@ -162,6 +167,7 @@ AIBoundFunction Game::ai_random_forward_haunt(Game::Entity& entity) {
 	moving->setAutoRealignEnabled(false);
 
 	return [&entity, moving, collider, shooting] (const Game::LevelManager& lm) {
+		HANDLE_NOT_MOVING;
 		HANDLE_UNALIGNED;
 		if (shooting->isShooting()) {
 			const auto cur_align = Game::tile(entity.getPosition());
@@ -208,6 +214,7 @@ AIBoundFunction Game::ai_follow(Game::Entity& entity) {
 	moving->setAutoRealignEnabled(false);
 
 	return [&entity, moving, collider, sighted] (const Game::LevelManager& lm) {
+		HANDLE_NOT_MOVING;
 		HANDLE_UNALIGNED;
 		const D cur = moving->getDirection();
 		const bool colliding = collider->collidesWithSolid();
@@ -239,6 +246,7 @@ AIBoundFunction Game::ai_follow_dash(Game::Entity& entity) {
 	moving->setAutoRealignEnabled(false);
 
 	return [&entity, shooting, moving, collider, sighted] (const Game::LevelManager& lm) {
+		HANDLE_NOT_MOVING;
 		HANDLE_UNALIGNED;
 		const D cur = moving->getDirection();
 		const D opp = oppositeDirection(cur);

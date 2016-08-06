@@ -9,8 +9,6 @@
 #include "ZIndexed.hpp"
 #include "utils.hpp"
 
-#include <iostream>
-
 using Game::Enemy;
 using Game::TILE_SIZE;
 using Game::Direction;
@@ -34,6 +32,8 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_attack.ogg"))
 	}));
 	addComponent(new Game::Lifed(*this, 1));
+	// AI must be called BEFORE moving
+	ai = addComponent(new Game::AI(*this, info.ai));
 	moving = addComponent(new Game::AxisMoving(*this, BASE_SPEED * originalSpeed, Game::Direction::DOWN));
 	yellClock = addComponent(new Game::Clock(*this));
 	dashClock = addComponent(new Game::Clock(*this));
@@ -41,26 +41,16 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	alienSprite = addComponent(new Game::AlienSprite(*this));
 	addComponent(new Game::Scored(*this, id * 100));
 	movingAnimator = addComponent(new Game::MovingAnimator(*this));
-	killable = addComponent(new Game::Killable(*this, [this] () { _kill(); }
-	, [this] () {
-		// is kill in progress
-		//std::cerr << this << " " << (animated->getSprite().isPlaying() && deathClock->getElapsedTime() < Game::Conf::Enemy::DEATH_TIME) << std::endl;
-		//std::cerr << "   time = " << deathClock->getElapsedTime().asMilliseconds() << std::endl;
-		//return deathClock->getElapsedTime() < Game::Conf::Enemy::DEATH_TIME; 
-		return true;
+	killable = addComponent(new Game::Killable(*this, [this] () { _kill(); }, [this] () {
+		return _killInProgress(); 
 	}));
 	shooting = addComponent(new Game::Shooting(*this, info.attack));
 	sighted = addComponent(new Game::Sighted(*this));
 
 	drawProxy = std::unique_ptr<Game::EnemyDrawableProxy>(new Game::EnemyDrawableProxy(*this));
 	addComponent(new Game::Drawable(*this, *drawProxy.get()));
-	ai = addComponent(new Game::AI(*this, info.ai));
 
-	// Ensure AI is updated _before_ moving
-	auto it = std::find_if(components.begin(), components.end(), [this] (std::shared_ptr<Game::Component>& c) {
-		return c.get() == ai;
-	});
-	std::rotate(components.begin(), it, components.end());
+	ai->bind();
 
 	unsigned short death_n_frames = 2;
 	switch (id) {
@@ -139,8 +129,8 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 void Enemy::update() {
 	Game::Entity::update();
 
-	shootFrame[moving->getDirection()].setPosition(position);
-	std::cerr<<"["<<deathClock<<"] "<<deathClock->getElapsedTime().asSeconds()<<std::endl;
+	if (moving->getDirection() != Game::Direction::NONE)
+		shootFrame[moving->getDirection()].setPosition(position);
 }
 
 Game::Bullet* Enemy::checkShoot() const {
@@ -177,11 +167,16 @@ void Enemy::_kill() {
 	// on kill
 	std::cerr << deathClock << std::endl;
 	moving->stop();
+	movingAnimator->setActive(false);
 	auto& animatedSprite = animated->getSprite();
 	animated->setAnimation("death");
 	animatedSprite.play();
 	deathClock->restart();
 	Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
+}
+
+bool Enemy::_killInProgress() const {
+	return deathClock->getElapsedTime() < Game::Conf::Enemy::DEATH_TIME;	
 }
 
 //////// EnemyDrawableProxy //////////
@@ -201,4 +196,3 @@ void Game::EnemyDrawableProxy::draw(sf::RenderTarget& target, sf::RenderStates s
 		target.draw(*enemy.animated, states);
 	}
 }
-

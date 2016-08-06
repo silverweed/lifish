@@ -59,11 +59,12 @@ LevelSet::LevelSet(const std::string& path) {
 	 *	"attack": {
 	 *		"type": string,
 	 *		"damage": short,
-	 *		"id": ushort        [opt]
-	 *		"speed": float,     [opt]
-	 *		"fireRate": float,  [opt]
-	 *		"blockTime": float, [opt]
-	 *		"range": short,     [opt, default=-1]
+	 *		"id": ushort         [opt]
+	 *		"speed": float,      [opt]
+	 *		"fireRate": float,   [opt]
+	 *		"blockTime": float,  [opt]
+	 *		"tileRange": short,  [opt, default=-1]
+	 *		"pixelRange": float, [opt, only valid if tileRange is not specified]
 	 *	}
 	 *
 	 * }

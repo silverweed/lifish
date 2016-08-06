@@ -11,6 +11,8 @@ namespace Game {
  */
 class MovingAnimator : public Game::Component {
 	
+	bool active = true;
+
 	Game::AxisMoving *moving = nullptr;
 	Game::Animated *animated = nullptr;
 	Game::Direction prev = Game::Direction::NONE;
@@ -20,6 +22,8 @@ public:
 	explicit MovingAnimator(Game::Entity& owner, Game::AxisMoving *m, Game::Animated *a);
 
 	void update() override;
+
+	void setActive(bool a) { active = a; }
 };
 
 }

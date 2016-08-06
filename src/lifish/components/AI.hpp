@@ -28,6 +28,7 @@ extern std::array<AIFunction, Game::AI_FUNCTION_NUM> ai_functions;
  * do next according to the current world state (represented by LevelManager).
  */
 class AI : public Game::Component {
+	const int aiNum;
 	AIBoundFunction func;
 	Game::LevelManager *lm = nullptr;
 	Game::Shooting *shooting = nullptr;
@@ -35,11 +36,19 @@ class AI : public Game::Component {
 public:
 	explicit AI(Game::Entity& owner, unsigned short aiNum)
 		: Game::Component(owner) 
+		, aiNum(aiNum)
 	{
 		if (aiNum >= ai_functions.size())
 			throw std::invalid_argument("Invalid aiNum passed: " + Game::to_string(aiNum));
-		setAI(ai_functions[aiNum]);
 		shooting = owner.get<Game::Shooting>();
+	}
+
+	/** bind() must be called before actually using the AI. This is not done in the
+	 *  constructor because this allows the callee to add the due Moving component
+	 *  to the owner after adding the AI itself.
+	 */
+	void bind() {
+		setAI(ai_functions[aiNum]);
 	}
 
 	void setAI(AIFunction newAI) {

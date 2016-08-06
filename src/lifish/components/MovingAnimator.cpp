@@ -26,6 +26,8 @@ MovingAnimator::MovingAnimator(Game::Entity& owner, Game::AxisMoving *m, Game::A
 }
 
 void MovingAnimator::update() {
+	if (!active) return;
+
 	Game::Component::update();
 
 	Game::Direction dir = moving->getDirection();

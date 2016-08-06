@@ -65,9 +65,6 @@ class Enemy : public Game::Entity {
 		    *dashClock = nullptr,
 		    *deathClock = nullptr;
 
-	/** The function determining this enemy's movements */
-	//AIBoundFunction ai;
-
 	/** True when the enemy is morphed into a harmless Alien during EXTRA game */
 	bool morphed = false;
 	Game::AlienSprite *alienSprite = nullptr;
@@ -77,6 +74,7 @@ class Enemy : public Game::Entity {
 
 	void _checkCollision(Game::Collider& coll);
 	void _kill();
+	bool _killInProgress() const;
 public:
 	constexpr static float BASE_SPEED = 75.f;
 
