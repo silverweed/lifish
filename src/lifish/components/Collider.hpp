@@ -19,6 +19,9 @@ class Collider : public Game::Component {
 	std::vector<std::reference_wrapper<Game::Collider>> colliding;
 	/** Whether this entity is at a level's boundary */
 	bool atLimit = false;
+	
+	/** Offset relative to the owner's position */
+	const sf::Vector2f offset; 
 	const sf::Vector2i size;
 	/** If a Collider is phantom, it won't be automatically managed by EntityGroup
 	 *  (and therefore CollisionDetector). A phantom collider may be useful if you
@@ -35,21 +38,20 @@ public:
 	explicit Collider(Game::Entity& owner, 
 			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
 			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE),
+			  const sf::Vector2f& offset = sf::Vector2f(0, 0),
 			  bool phantom = false);
 
 	explicit Collider(Game::Entity& owner,
 			  CollisionFunc onCollision,
 			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
 			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE), 
+			  const sf::Vector2f& offset = sf::Vector2f(0, 0),
 			  bool phantom = false);
 
 	/** @return the list of Colliders colliding with this one */
 	std::vector<std::reference_wrapper<Game::Collider>> getColliding() const { return colliding; }
 	/** Manually sets `coll` to be colliding with this collider */
 	void addColliding(Game::Collider& coll) { colliding.push_back(coll); }
-	bool isColliding() const { return atLimit || colliding.size() > 0; }
-	/** Like `isColliding`, but only account for colliders which are solid for this one */
-	bool collidesWithSolid() const;
 
 	/** @return the collision layer of this Collider */
 	Game::Layers::Layer getLayer() const { return layer; }
@@ -58,30 +60,26 @@ public:
 
 	bool isPhantom() const { return phantom; }
 
-	bool contains(const Game::Collider& other) const {
-		return getRect().intersects(other.getRect());
-	}
-
-	bool collidesWith(const Game::Collider& other) const {
-		return Game::Layers::collide[layer][other.layer];
-	}
-
-	bool isSolidFor(const Game::Collider& other) const {
-		return Game::Layers::solid[layer][other.layer];
-	}
+	/** @return whether this collider's layer collides with other's layer */
+	bool collidesWith(const Game::Collider& other) const;
+	/** @return whether this collider's layer is solid for other's layer */
+	bool isSolidFor(const Game::Collider& other) const;
 
 	/** @return whether this Collider is at the level boundary. This is set
 	 *  externally by CollisionDetector.
 	 */
 	bool isAtLimit() const { return atLimit; }
 
-	/** @return the bounding box of this Collider */
-	sf::IntRect getRect() const {
-		const auto pos = owner.getPosition();
-		return sf::IntRect(pos.x, pos.y, size.x, size.y);
+	virtual bool isColliding() const { return atLimit || colliding.size() > 0; }
+	/** Like `isColliding`, but only account for colliders which are solid for this one */
+	virtual bool collidesWithSolid() const;
+	virtual bool contains(const Game::Collider& other) const {
+		return getRect().intersects(other.getRect());
 	}
+	/** @return the bounding box of this Collider */
+	virtual sf::IntRect getRect() const;
 
-	void update() override;
+	virtual void update() override;
 };
 
 }

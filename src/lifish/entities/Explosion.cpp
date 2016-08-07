@@ -10,6 +10,7 @@
 #include "Temporary.hpp"
 #include "ZIndexed.hpp"
 #include "Sounded.hpp"
+#include "CompoundCollider.hpp"
 #include <list>
 
 using Game::Explosion;
@@ -21,11 +22,11 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game
 	, radius(_radius)
 	, sourcePlayer(source)
 {
-	collider = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS, 
-				sf::Vector2i(TILE_SIZE, TILE_SIZE)));
+	//collider = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS, 
+				//sf::Vector2i(TILE_SIZE, TILE_SIZE)));
 	addComponent(new Game::Sounded(*this, { Game::getAsset("sounds", "explosion.ogg") }));
 	explosionC = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "explosionC.png")));
-	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::Explosion));
+	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::EXPLOSIONS));
 	explosionC->addAnimation("explode", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),
 		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
@@ -109,13 +110,14 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 				continue;
 			}
 
+			// Check if a solid fixed entity blocks propagation in this direction
 			Game::Entity *fxd = entities.getFixedAt(new_tile.x, new_tile.y);
 			if (fxd == nullptr) {
 				++propagation[dir];
 				continue;
 			}
 			const auto fxdcld = fxd->get<Game::Collider>();
-			if (fxdcld == nullptr || !fxdcld->collidesWith(*collider)) {
+			if (fxdcld == nullptr || !Game::Layers::solid[fxdcld->getLayer()][Game::Layers::EXPLOSIONS]) { 
 				++propagation[dir];
 
 				// TODO Check if boss (move to game_logic or Boss)
@@ -133,11 +135,12 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 				//}
 
 			} else {
+				++propagation[dir];
 				// It's a wall or a bomb
 				propagating[dir] = false;
-				auto cld = fxd->get<Game::Collider>();
-				if (cld != nullptr && cld->collidesWith(*collider))
-					cld->addColliding(*collider);
+				//auto cld = fxd->get<Game::Collider>();
+				//if (cld != nullptr && cld->collidesWith(*collider))
+					//cld->addColliding(*collider);
 
 				// TODO move logic to game_logic
 				//const auto tile = level->getTile(new_tile.x - 1, new_tile.y - 1);
@@ -153,10 +156,31 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 	}
 
 	_setPropagatedAnims();
+	explCollider = addComponent(new Game::CompoundCollider(*this, Game::Layers::EXPLOSIONS,
+			// size
+			sf::Vector2i(TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT] + 1),
+				     TILE_SIZE),
+			// offset
+			sf::Vector2f(-TILE_SIZE * propagation[Direction::LEFT], 0),
+		{ Game::Collider(*this, Game::Layers::EXPLOSIONS,
+			// size
+			sf::Vector2i(TILE_SIZE,
+				     TILE_SIZE * (propagation[Direction::UP] + propagation[Direction::DOWN] + 1)),
+			// offset
+			sf::Vector2f(0, -TILE_SIZE * propagation[Direction::UP]))
+		}));
+
 	return this;
 }
 
-void Explosion::_checkHit(Game::LevelManager& lm) {
+void Explosion::checkHit(Game::LevelManager& lm) {
+	lm.getEntities().apply([this] (Game::Entity *e) {
+		auto cld = e->get<Game::Collider>();
+		if (cld == nullptr) return;
+		if (!explCollider->contains(*cld)) return;
+		if (explCollider->collidesWith(*cld))
+			cld->addColliding(*explCollider);
+	});
 #if 0
 	std::array<std::vector<Game::LifedMovingEntity*>, 5> moving;
 
@@ -248,8 +272,6 @@ void Explosion::_checkHit(Game::LevelManager& lm) {
 		}
 	}
 #endif
-
-	_setPropagatedAnims();
 }
 
 void Explosion::_setPropagatedAnims() {

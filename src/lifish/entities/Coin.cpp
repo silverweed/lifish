@@ -1,5 +1,6 @@
 #include <cmath>
 #include <forward_list>
+#include <cassert>
 #include "Coin.hpp"
 #include "Scored.hpp"
 #include "Sounded.hpp"
@@ -29,6 +30,7 @@ Coin::Coin(const sf::Vector2f& pos)
 	Game::cache.loadTexture(texname)->setSmooth(true);
 	addComponent(new Game::Drawable(*this, *animated));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
+		assert(coll.getLayer() == Game::Layers::PLAYERS);
 		// only collides with player, so no check
 		get<Game::Killable>()->kill();			
 		get<Game::Scored>()->setTarget(static_cast<const Game::Player&>(coll.getOwner()).getInfo().id);

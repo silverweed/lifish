@@ -33,7 +33,7 @@ public:
 	void setDirection(Game::Direction dir);
 	void turn(short straightAngles, bool clockwise);
 	void setPrevAlign(const sf::Vector2i& a) { prevAlign = a; }
-	/** If set to `false`, entity won't auto-realign when colliding with solid.
+	/** If set to `false`, entity won't auto-realign when colliding with solid OR when stop()ped.
 	 *  This is useful for AI-managed moving entities. Default: true
 	 */
 	void setAutoRealignEnabled(bool b) {

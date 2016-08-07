@@ -88,7 +88,8 @@ void AxisMoving::realign() {
 void AxisMoving::stop() {
 	Game::Moving::stop();
 	direction = prevDirection = Game::Direction::NONE;
-	realign();
+	if (autoRealign)
+		realign();
 }
 
 bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager& lm) const {

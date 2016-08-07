@@ -2,6 +2,7 @@
 #include "Bomb.hpp"
 #include "Explosion.hpp"
 #include "Controllable.hpp"
+#include "Sounded.hpp"
 #include "Lifed.hpp"
 #include "Bonusable.hpp"
 #include "Enemy.hpp"
@@ -24,8 +25,10 @@ void Game::Logic::bombExplosionLogic(Game::Entity *e, Game::LevelManager& lm,
 		auto killable = bomb->get<Game::Killable>();
 		if (killable->isKilled()) return;
 		killable->kill();
-		tbspawned.push_back((new Game::Explosion(bomb->getPosition(),
-				bomb->getRadius(), &bomb->getSourcePlayer()))->propagate(lm));
+		auto expl = new Game::Explosion(bomb->getPosition(),
+				bomb->getRadius(), &bomb->getSourcePlayer());
+		Game::cache.playSound(expl->get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
+		tbspawned.push_back(expl->propagate(lm));
 		lm.rmBomb(bomb);
 		tbkilled.push_back(bomb);
 	}
@@ -45,8 +48,10 @@ void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager& lm,
 		&& lm.bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs
 		&& !lm.isBombAt(Game::tile(player->getPosition())))
 	{
-		tbspawned.push_back(new Game::Bomb(Game::aligned(player->getPosition()), 
-					*player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius));
+		auto bomb = new Game::Bomb(Game::aligned(player->getPosition()), 
+					*player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius);
+		Game::cache.playSound(bomb->get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
+		tbspawned.push_back(bomb);
 	}
 }
 
@@ -95,8 +100,10 @@ void Game::Logic::enemiesShootLogic(Game::Entity *e, Game::LevelManager&,
 	if (enemy == nullptr) return;
 
 	auto bullet = enemy->checkShoot();
-	if (bullet != nullptr)
+	if (bullet != nullptr) {
+		Game::cache.playSound(bullet->get<Game::Sounded>()->getSoundFile(Game::Sounds::SHOT));
 		tbspawned.push_back(bullet);
+	}
 }
 
 void Game::Logic::bulletsHitLogic(Game::Entity *e, Game::LevelManager&,
@@ -106,6 +113,7 @@ void Game::Logic::bulletsHitLogic(Game::Entity *e, Game::LevelManager&,
 	if (bullet == nullptr) return;
 
 	if (bullet->get<Game::Killable>()->isKilled() && !bullet->hasDealtDamage()) {
+		Game::cache.playSound(bullet->get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
 		bullet->dealDamage(); // don't process this bullet again
 
 		auto hit = bullet->getEntityHit();
@@ -117,30 +125,28 @@ void Game::Logic::bulletsHitLogic(Game::Entity *e, Game::LevelManager&,
 		auto bns = hit->get<Game::Bonusable>();
 		if (bns == nullptr || !bns->hasBonus(Game::Bonus::SHIELD)) {
 			lifed->decLife(bullet->getDamage());
+			auto snd = hit->get<Game::Sounded>();
+			if (snd != nullptr)
+				Game::cache.playSound(snd->getSoundFile(Game::Sounds::HURT));
 			if (bns != nullptr)
 				bns->giveBonus(Game::Bonus::SHIELD, Game::Conf::DAMAGE_SHIELD_TIME);
 		}
 	}
 }
 
-//void Game::Logic::explosionDamageLogic(Game::Entity *e, Game::LevelManager &lm,
-		//EntityList& tbspawned, EntityList& tbkilled)
-//{
-	//auto expl = dynamic_cast<Game::Explosion*>(e);
-	//if (expl == nullptr) return;
-
-	//const auto& tiles = expl->getInvolvedTiles();
-	//for (const auto& tile : tiles) {
-		//// Check if someone is at that tile
-		
-	//}
-//}
+void Game::Logic::explosionDamageLogic(Game::Entity *e, Game::LevelManager &lm,	EntityList&, EntityList&)
+{
+	auto expl = dynamic_cast<Game::Explosion*>(e);
+	if (expl == nullptr) return;
+	expl->checkHit(lm);
+}
 
 std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bombDeployLogic,
 	bombExplosionLogic,
 	bonusDropLogic,
 	scoredKillablesLogic,
+	explosionDamageLogic,
 	enemiesShootLogic,
 	bulletsHitLogic
 };

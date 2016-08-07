@@ -10,6 +10,7 @@ protected:
 public:
 	virtual ~WithOrigin() {}
 
+	sf::Vector2f getOrigin() const { return origin; }
 	virtual void setOrigin(const sf::Vector2f& o) {
 		origin = o;
 	}

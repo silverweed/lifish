@@ -19,7 +19,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 {
 	animated = addComponent(new Game::Animated(*this, 
 		Game::getAsset(/*"graphics"*/ "test", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
-	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::Enemy));
+	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::ENEMIES));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
 		// on collision
 		_checkCollision(coll);
@@ -165,7 +165,7 @@ void Enemy::_checkCollision(Game::Collider& coll) {
 
 void Enemy::_kill() {
 	// on kill
-	std::cerr << deathClock << std::endl;
+	moving->setAutoRealignEnabled(false);
 	moving->stop();
 	movingAnimator->setActive(false);
 	auto& animatedSprite = animated->getSprite();
@@ -190,7 +190,7 @@ Game::EnemyDrawableProxy::EnemyDrawableProxy(Game::Enemy& e)
 void Game::EnemyDrawableProxy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	if (enemy.isMorphed()) {
 		target.draw(*morphedAnim, states);
-	} else if (enemy.moving->isDashing() || enemy.shooting->isShooting()) {
+	} else if (!enemy.killable->isKilled() && (enemy.moving->isDashing() || enemy.shooting->isShooting())) {
 		target.draw(enemy.shootFrame[enemy.moving->getDirection()], states);
 	} else {
 		target.draw(*enemy.animated, states);

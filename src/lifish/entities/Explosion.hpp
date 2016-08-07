@@ -23,8 +23,8 @@ class Explosion : public Game::Entity, public sf::Drawable {
 	               *explosionH = nullptr, // horizontal explosion
 		       *explosionV = nullptr; // vertical explosion
 
-	/** This is a phantom collider only used to determine the collision layer. */
-	Game::Collider *collider = nullptr;
+	/** Compound collider used to check explosion's hits */
+	Game::Collider *explCollider = nullptr;
 
 	/** The radius of this explosion */
 	unsigned short radius;
@@ -41,7 +41,6 @@ class Explosion : public Game::Entity, public sf::Drawable {
 
 	/** To be called after `propagate()`; sets the correct positions for explosionH/V */
 	void _setPropagatedAnims();
-	void _checkHit(Game::LevelManager& lm);
 
 public:
 	/** If sourcePlayer == nullptr, the explosion wasn't originated by a bomb.
@@ -61,6 +60,9 @@ public:
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 
 	const Game::Player* getSourcePlayer() const { return sourcePlayer; }
+
+	/** Hits any entity involved in this explosion */
+	void checkHit(Game::LevelManager& lm);
 };
 
 }

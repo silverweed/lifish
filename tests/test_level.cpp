@@ -28,6 +28,7 @@
 #include "UI.hpp"
 #include "ControlsScreen.hpp"
 #include "PreferencesScreen.hpp"
+#include "DebugRenderer.hpp"
 
 #ifdef MULTITHREADED
 #	ifdef SFML_SYSTEM_LINUX
@@ -120,6 +121,7 @@ int main(int argc, char **argv) {
 	
 	sf::RenderWindow window(sf::VideoMode(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT), "test level");
 	bool vsync = true;
+	bool debug = false;
 	window.setVerticalSyncEnabled(vsync);
 	window.setJoystickThreshold(Game::JOYSTICK_INPUT_THRESHOLD);
 	Game::options.showFPS = true;
@@ -151,6 +153,7 @@ int main(int argc, char **argv) {
 
 	// Setup the music
 	Game::options.musicVolume = 0; // FIXME
+	Game::options.soundsVolume = 0; // FIXME
 	Game::musicManager->set(level->get<Game::Music>()->getMusic()).setVolume(Game::options.musicVolume).play();
 
 	int cycle = 0;
@@ -228,6 +231,9 @@ int main(int argc, char **argv) {
 					else
 						lm.resume();
 					break;
+				case sf::Keyboard::G:
+					debug = !debug;
+					break;
 				case sf::Keyboard::T:
 					{
 						auto dt = new Game::DroppingText(
@@ -265,7 +271,7 @@ int main(int argc, char **argv) {
 			}
 		}
 
-		std::cerr << "# Entities: " << lm.getEntities().size() << std::endl;
+		//std::cerr << "# Entities: " << lm.getEntities().size() << std::endl;
 
 #ifndef MULTITHREADED
 		if (ui.isActive()) {
@@ -286,6 +292,8 @@ int main(int argc, char **argv) {
 			window.clear();
 			window.draw(lm);
 			window.draw(sidePanel);
+			if (debug)
+				Debug::DebugRenderer::drawColliders(window, lm.getEntities());
 		}
 		Game::maybeShowFPS(window);
 		window.display();

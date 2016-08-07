@@ -2,12 +2,14 @@
 #include "game.hpp"
 #include "GameCache.hpp"
 #include "Lifed.hpp"
+#include "ZIndexed.hpp"
 #include "Scored.hpp"
 #include "Player.hpp"
 #include "Sounded.hpp"
 #include "Explosion.hpp"
 #include "Drawable.hpp"
 #include "Fixed.hpp"
+#include "utils.hpp"
 
 using Game::BreakableWall;
 using Game::TILE_SIZE;
@@ -54,6 +56,7 @@ void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
 	addComponent(new Game::Scored(*this, score));
 	addComponent(new Game::Lifed(*this, life));
 	addComponent(new Game::Sounded(*this, { Game::getAsset("sounds", "wall_break.ogg") })); 
+	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::WALLS));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& cld) { 
 		// on collision
 		_checkCollision(cld); 
@@ -84,7 +87,7 @@ void BreakableWall::_checkCollision(Game::Collider& cld) {
 	if (cld.getLayer() != Game::Layers::EXPLOSIONS || killable->isKilled()) return;
 	const auto etile = Game::tile(cld.getOwner().getPosition());
 	const auto mtile = Game::tile(position);
-	if (Game::abs(etile.x - mtile.x) == 1 || Game::abs(etile.y - mtile.y) == 1) {
+	if (Game::manhattanDistance(etile, mtile) == 1) {
 		killable->kill();
 		get<Game::Scored>()->setTarget(static_cast<const Game::Explosion&>(
 					cld.getOwner()).getSourcePlayer()->getInfo().id);

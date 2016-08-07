@@ -30,11 +30,12 @@ namespace Conf {
 	}
 
 	namespace ZIndex {
-		constexpr int Explosion = 1;
-		constexpr int Player    = 2;
-		constexpr int Enemy     = 3;
-		constexpr int Boss      = 4;
-		constexpr int Points    = 5;
+		constexpr int EXPLOSIONS = 1;
+		constexpr int WALLS      = 2;   
+		constexpr int PLAYERS    = 3;
+		constexpr int ENEMIES    = 4;
+		constexpr int BOSSES     = 5;
+		constexpr int POINTS     = 6;
 	}
 }
 

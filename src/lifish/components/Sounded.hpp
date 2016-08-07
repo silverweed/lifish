@@ -19,7 +19,9 @@ public:
 			soundFiles.push_back(s);
 	}
 
-	const std::string& getSoundFile(unsigned short n = 0) const { return soundFiles[n]; }
+	std::string getSoundFile(unsigned short n = 0) const { 
+		return n >= soundFiles.size() ? "" : soundFiles[n];
+	}
 };
 
 }
