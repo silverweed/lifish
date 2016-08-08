@@ -28,7 +28,6 @@ public:
 	/** @return true if any collider is colliding */
 	bool isColliding() const override;
 	/** @return true if any collider contains `other` */
-	bool contains(const Game::CompoundCollider& other) const;
 	bool contains(const Game::Collider& other) const override;
 	/** @return The bounding rectangle of all colliders */
 	sf::IntRect getRect() const override;

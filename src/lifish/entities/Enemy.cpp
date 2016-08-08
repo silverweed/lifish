@@ -27,7 +27,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	addComponent(new Game::Sounded(*this, {
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_death.ogg")),
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_yell.ogg")),
-		// Note: *this is an invalid sound if enemy.attackType is not CONTACT. This is not an issue,
+		// Note: this is an invalid sound if enemy.attackType is not CONTACT. This is not an issue,
 		// since in that case the sound never gets played, so the cache doesn't even load it.
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_attack.ogg"))
 	}));

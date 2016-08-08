@@ -16,20 +16,8 @@ bool CompoundCollider::isColliding() const {
 	return false;
 }
 
-bool CompoundCollider::contains(const CompoundCollider& other) const {
-	if (Collider::contains(static_cast<Collider>(other))) return true;
-	for (const auto& c : colliders)
-		if (c.contains(static_cast<Collider>(other))) return true;
-	for (const auto& oc : other.colliders) {
-		if (Collider::contains(oc)) return true;
-		for (const auto& c : colliders)
-			if (c.contains(oc)) return true;
-	}
-	return false;
-}
-
 bool CompoundCollider::contains(const Collider& other) const {
-	if (Collider::contains(other)) return true;
+	if (Collider::getRect().intersects(other.getRect())) return true;
 	for (const auto& c : colliders)
 		if (c.contains(other)) return true;
 	return false;
@@ -41,13 +29,17 @@ sf::IntRect CompoundCollider::getRect() const {
 	for (const auto& c : colliders) {
 		auto crect = c.getRect();
 		if (crect.left < rect.left) {
+			rect.width += rect.left - crect.left;
 			rect.left = crect.left;
-			rect.width += crect.left;
 		}
 		if (crect.top < rect.top) {
+			rect.height += rect.top - crect.top;
 			rect.top = crect.top;
-			rect.height += crect.top;
 		}
+		if (crect.width > rect.width)
+			rect.width = crect.width;
+		if (crect.height > rect.height)
+			rect.height = crect.height;
 	}
 	return rect;
 }

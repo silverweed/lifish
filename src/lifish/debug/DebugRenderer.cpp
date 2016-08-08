@@ -3,6 +3,7 @@
 
 #define COLLIDER_REGULAR_COLOR sf::Color(255, 0, 255, 128)
 #define COLLIDER_PHANTOM_COLOR sf::Color(194, 194, 194, 128)
+#define COLLIDER_COMPOUND_COLOR sf::Color(194, 194, 194, 92)
 
 using Debug::DebugRenderer;
 
@@ -26,6 +27,7 @@ void DebugRenderer::drawColliders(sf::RenderTarget& target, const Game::EntityGr
 					? COLLIDER_PHANTOM_COLOR
 					: COLLIDER_REGULAR_COLOR);
 		} else {
+			draw_coll_rect(target, *cc, COLLIDER_COMPOUND_COLOR);
 			draw_coll_rect(target, static_cast<Game::Collider>(*c), COLLIDER_PHANTOM_COLOR);
 			for (const auto& cld : cc->getColliders())
 				draw_coll_rect(target, cld, COLLIDER_PHANTOM_COLOR);
