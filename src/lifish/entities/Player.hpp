@@ -5,10 +5,13 @@
 #include "game.hpp"
 #include "MovingAnimator.hpp"
 #include "AxisMoving.hpp"
+#include "Collider.hpp"
 #include "Animated.hpp"
 #include "game_values.hpp"
 
 namespace Game {
+
+class Bonusable;
 
 /** This structs contains all the data which is persistent through different levels. */
 struct PlayerInfo {
@@ -36,11 +39,23 @@ struct PlayerInfo {
 	}
 };
 
+class Player;
+
+class PlayerDrawProxy : public sf::Drawable {
+	const Game::Player& player;
+public:
+	explicit PlayerDrawProxy(const Game::Player& player);
+
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+};
+
 /**
  * The player entity
  */
 class Player : public Game::Entity {
-private:
+
+	friend class Game::PlayerDrawProxy;
+
 	constexpr static unsigned short WALK_N_FRAMES = 8;
 	constexpr static unsigned short DEATH_N_FRAMES = 3;
 	const static sf::Time DEATH_TIME;
@@ -51,13 +66,15 @@ private:
 
 	Game::AxisMoving *moving = nullptr;
 	Game::Animated *animated = nullptr;
+	Game::Bonusable *bonusable = nullptr;
 	Game::MovingAnimator *movingAnimator = nullptr;
 
 	Game::PlayerInfo info;
-
+	PlayerDrawProxy drawProxy;
 
 	void _init();
 	void _kill();
+	void _checkCollision(Game::Collider& cld);
 
 public:
 	/** Creates a player with the default state and id `id` */

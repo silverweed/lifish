@@ -61,7 +61,8 @@ Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
 
 	addComponent(new Game::Temporary(*this, [this] () {
 		// expire condition
-		return position.x < 0 || position.x > (Game::TILE_SIZE + 1) * Game::LEVEL_WIDTH 
+		return dealtDamage
+			|| position.x < 0 || position.x > (Game::TILE_SIZE + 1) * Game::LEVEL_WIDTH 
 			|| position.y < 0 || position.y > (Game::TILE_SIZE + 1) * Game::LEVEL_HEIGHT
 			|| (range > 0 && get<Game::Moving>()->getDistTravelled() > range);
 	}, [this] () {
@@ -73,35 +74,6 @@ Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
 		return animatedSprite.isPlaying();
 	}));
 }
-
-//void Bullet::move() {
-	//if (direction == Game::Direction::NONE) {
-		//animatedSprite.update(frameClock.restart());
-		//return;
-	//}
-	//if (range > 0 && (Game::abs(pos.x - origin.x) > Game::TILE_SIZE * range 
-				//|| Game::abs(pos.y - origin.y) > Game::TILE_SIZE * range)) {
-		//destroy();
-		//return;
-	//}
-
-	//sf::Time frameTime = frameClock.restart();
-
-	//if (!colliding) {
-		//animatedSprite.move(shift * frameTime.asSeconds());
-		//pos = animatedSprite.getPosition();
-		//// Ensure we are always aligned at least for one frame for
-		//// each tile we step in (this may not be the case if FPS are too low)
-		//_ensureAlign();
-	//} 
-	//animatedSprite.update(frameTime);
-//}
-
-//bool Bullet::hits(const sf::Vector2f& epos) const {
-	//sf::FloatRect me(pos.x, pos.y, size, size);
-	//sf::FloatRect it(epos.x, epos.y, TILE_SIZE, TILE_SIZE);
-	//return me.intersects(it);
-//}
 
 void Bullet::_destroy() {
 	auto animated = get<Game::Animated>();

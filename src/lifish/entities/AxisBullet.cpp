@@ -17,7 +17,7 @@ AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction d
 	// Bullets have a variable number of frames, up to 13:
 	// motion frames: 1 ~ 8 (max 8 / directional per direction)
 	// destroy frames: 0 ~ 5
-	// TODO: refactor
+	// TODO: refactor?
 	BulletPresets::setup(*this, attack.id);
 
 	unsigned short d = 0;
@@ -46,10 +46,9 @@ AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction d
 		break;
 	}
 
-	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
+	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider&) {
 		auto klb = get<Game::Killable>();
 		if (!klb->isKilled()) {
-			hit = &coll.getOwnerRW();
 			klb->kill();
 		}
 	}, Game::Layers::ENEMY_BULLETS, sf::Vector2i(size, size)));

@@ -37,6 +37,10 @@ namespace Conf {
 		constexpr int BOSSES     = 5;
 		constexpr int POINTS     = 6;
 	}
+
+	namespace Bullet {
+		constexpr float BASE_SPEED = 200.;
+	}
 }
 
 }

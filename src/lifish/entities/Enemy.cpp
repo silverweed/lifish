@@ -181,15 +181,14 @@ bool Enemy::_killInProgress() const {
 
 //////// EnemyDrawableProxy //////////
 
-Game::EnemyDrawableProxy::EnemyDrawableProxy(Game::Enemy& e)
+Game::EnemyDrawableProxy::EnemyDrawableProxy(const Game::Enemy& e)
 	: enemy(e)
-{
-	morphedAnim = e.get<Game::AlienSprite>()->get<Game::Animated>();
-}
+	, morphedAnim(*e.get<Game::AlienSprite>()->get<Game::Animated>())
+{}
 
 void Game::EnemyDrawableProxy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	if (enemy.isMorphed()) {
-		target.draw(*morphedAnim, states);
+		target.draw(morphedAnim, states);
 	} else if (!enemy.killable->isKilled() && (enemy.moving->isDashing() || enemy.shooting->isShooting())) {
 		target.draw(enemy.shootFrame[enemy.moving->getDirection()], states);
 	} else {

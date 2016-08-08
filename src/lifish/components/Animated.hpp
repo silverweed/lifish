@@ -49,6 +49,7 @@ public:
 	sf::Texture* getTexture() const { return texture; }
 	void setTexture(sf::Texture *t) { texture = t; }
 
+	const AnimatedSprite& getSprite() const { return animatedSprite; }
 	AnimatedSprite& getSprite() { return animatedSprite; }
 
 	void update() override;

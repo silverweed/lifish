@@ -106,34 +106,6 @@ void Game::Logic::enemiesShootLogic(Game::Entity *e, Game::LevelManager&,
 	}
 }
 
-void Game::Logic::bulletsHitLogic(Game::Entity *e, Game::LevelManager&,
-		EntityList&, EntityList&)
-{
-	auto bullet = dynamic_cast<Game::Bullet*>(e);
-	if (bullet == nullptr) return;
-
-	if (bullet->get<Game::Killable>()->isKilled() && !bullet->hasDealtDamage()) {
-		Game::cache.playSound(bullet->get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
-		bullet->dealDamage(); // don't process this bullet again
-
-		auto hit = bullet->getEntityHit();
-		if (hit == nullptr) return;
-
-		auto lifed = hit->get<Game::Lifed>();
-		if (lifed == nullptr) return;
-
-		auto bns = hit->get<Game::Bonusable>();
-		if (bns == nullptr || !bns->hasBonus(Game::Bonus::SHIELD)) {
-			lifed->decLife(bullet->getDamage());
-			auto snd = hit->get<Game::Sounded>();
-			if (snd != nullptr)
-				Game::cache.playSound(snd->getSoundFile(Game::Sounds::HURT));
-			if (bns != nullptr)
-				bns->giveBonus(Game::Bonus::SHIELD, Game::Conf::DAMAGE_SHIELD_TIME);
-		}
-	}
-}
-
 void Game::Logic::explosionDamageLogic(Game::Entity *e, Game::LevelManager &lm,	EntityList&, EntityList&)
 {
 	auto expl = dynamic_cast<Game::Explosion*>(e);
@@ -147,6 +119,5 @@ std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bonusDropLogic,
 	scoredKillablesLogic,
 	explosionDamageLogic,
-	enemiesShootLogic,
-	bulletsHitLogic
+	enemiesShootLogic
 };

@@ -31,8 +31,6 @@ namespace Logic {
 	DEF_LOGIC(scoredKillablesLogic);
 	/** Make enemies shoot */
 	DEF_LOGIC(enemiesShootLogic);
-	/** Make bullets hit players */
-	DEF_LOGIC(bulletsHitLogic);
 
 	extern std::vector<GameLogicFunc> functions;
 }

@@ -3,6 +3,7 @@
 #include "Component.hpp"
 #include "Direction.hpp"
 #include "Attack.hpp"
+#include "game_values.hpp"
 
 namespace Game {
 
@@ -19,8 +20,6 @@ protected:
 	const sf::Vector2f origin;
 	/** The Entity that shot this bullet */
 	const Game::Entity *const source;
-	/** The Entity that this bullet has hit, if any. Only valid when bullet is killed */
-	Game::Entity *hit = nullptr;
 	/** Whether this bullet already dealt its damage */
 	bool dealtDamage = false;
 	/** The damage dealt to the impacted Entity */
@@ -37,7 +36,7 @@ protected:
 	void _destroy();
 
 public:
-	constexpr static float BASE_SPEED = 200.f;
+	constexpr static float BASE_SPEED = Game::Conf::Bullet::BASE_SPEED;
 
 	/** Constructs a Bullet without a source (must specify the position) */
 	explicit Bullet(const sf::Vector2f& pos, const Game::Attack& attack);
@@ -50,9 +49,6 @@ public:
 	bool hasDealtDamage() const { return dealtDamage; }
 	void dealDamage() { dealtDamage = true; }
 	unsigned short getDamage() const { return damage; }
-	Game::Entity* getEntityHit() const { return hit; }
-
-	//unsigned short getSize() const { return size; }
 };
 
 }

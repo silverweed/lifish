@@ -30,11 +30,11 @@ struct EnemyInfo {
  * or its AlienSprite according to the morphed state of the Enemy.
  */
 class EnemyDrawableProxy : public sf::Drawable {
-	Game::Enemy& enemy;
-	Game::Animated *morphedAnim = nullptr;
+	const Game::Enemy& enemy;
+	const Game::Animated& morphedAnim;
 
 public:
-	explicit EnemyDrawableProxy(Enemy& e);
+	explicit EnemyDrawableProxy(const Game::Enemy& e);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
