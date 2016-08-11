@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////
 #include <SFML/Audio.hpp>
 #include <iomanip>
-#include <iostream>
 
 class LoopingMusic : public sf::SoundStream
 {

@@ -1,7 +1,8 @@
-#include <SFML/Window.hpp>
 #include <memory>
 #include <cstdlib>
 #include <algorithm>
+#include <iostream>
+#include <SFML/Window.hpp>
 #include "Level.hpp"
 #include "LevelLoader.hpp"
 #include "LevelManager.hpp"

@@ -21,6 +21,7 @@ Killable::Killable(Game::Entity& owner, OnKillCallback callback, CheckKillCallba
 void Killable::kill() {
 	if (!killed) {
 		killed = true;
+		deathClock.restart();
 		if (onKill)
 			onKill();
 	}
@@ -28,6 +29,5 @@ void Killable::kill() {
 
 bool Killable::isKillInProgress() const {
 	if (!killed) return false;
-
 	return checkKillProgress ? checkKillProgress() : false;
 }

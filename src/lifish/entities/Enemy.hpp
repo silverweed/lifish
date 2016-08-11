@@ -14,6 +14,7 @@
 #include "Sighted.hpp"
 #include "game.hpp"
 #include "Shooting.hpp"
+#include "RegularEntityDeath.hpp"
 
 namespace Game {
 
@@ -57,13 +58,13 @@ class Enemy : public Game::Entity {
 	Game::MovingAnimator *movingAnimator = nullptr;
 	Game::Sighted *sighted = nullptr;
 	Game::AI *ai = nullptr;
+	Game::RegularEntityDeath *death = nullptr;
 	std::array<sf::Sprite, 4> shootFrame;
 
 	std::unique_ptr<Game::EnemyDrawableProxy> drawProxy;
 
 	Game::Clock *yellClock = nullptr,
-		    *dashClock = nullptr,
-		    *deathClock = nullptr;
+		    *dashClock = nullptr;
 
 	/** True when the enemy is morphed into a harmless Alien during EXTRA game */
 	bool morphed = false;
@@ -73,8 +74,7 @@ class Enemy : public Game::Entity {
 
 
 	void _checkCollision(Game::Collider& coll);
-	void _kill();
-	bool _killInProgress() const;
+
 public:
 	constexpr static float BASE_SPEED = 75.f;
 

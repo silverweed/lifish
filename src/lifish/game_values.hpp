@@ -5,8 +5,8 @@ namespace Game {
 
 namespace Conf {
 
-	const sf::Time DAMAGE_SHIELD_TIME = sf::milliseconds(1000);
-	const sf::Time RESURRECT_SHIELD_TIME = sf::milliseconds(5000);
+	const sf::Time DAMAGE_SHIELD_TIME = sf::seconds(1);
+	const sf::Time RESURRECT_SHIELD_TIME = sf::seconds(5);
 
 	namespace Player {
 		constexpr unsigned short INITIAL_LIVES = 3;
@@ -17,10 +17,12 @@ namespace Conf {
 		constexpr float DEFAULT_SPEED = 150.f;
 		/** The number of letters needed to get an extra life */
 		constexpr unsigned short N_EXTRA_LETTERS = 5;
+		const sf::Time DEATH_TIME = sf::seconds(5);
+		const sf::Time DEATH_STOP_ANIM_TIME = sf::seconds(2);
 	}
 	
 	namespace Enemy {
-		const sf::Time DEATH_TIME = sf::milliseconds(2000);
+		const sf::Time DEATH_TIME = sf::seconds(2);
 	}
 
 	namespace Bomb {

@@ -47,10 +47,15 @@ void Player::_init() {
 		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_hurt.ogg")),
 		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_win.ogg")),
 	}));
-	addComponent(new Game::Killable(*this, [this] () { _kill(); }));
+	killable = addComponent(new Game::Killable(*this, [this] () { 
+		_kill(); 
+	}, [this] () {
+		return death->isKillInProgress();
+	}));
 	bonusable = addComponent(new Game::Bonusable(*this));
 	movingAnimator = addComponent(new Game::MovingAnimator(*this));
 	addComponent(new Game::Controllable(*this, Game::Controls::players[info.id-1]));
+	death = addComponent(new Game::RegularEntityDeath(*this, Game::Conf::Player::DEATH_TIME));
 
 	auto& a_down = animated->addAnimation("walk_down");
 	auto& a_up = animated->addAnimation("walk_up");
@@ -80,10 +85,20 @@ void Player::_init() {
 	animatedSprite.pause();
 }
 
+void Player::update() {
+	Game::Entity::update();
+	if (killable->isKilled() && killable->timeSinceDeath() > Game::Conf::Player::DEATH_STOP_ANIM_TIME
+			&& animated->getSprite().isPlaying())
+	{
+		animated->getSprite().stop();
+		animated->getSprite().setFrame(1);
+	}
+}
+
 void Player::_kill() {
-	get<Game::Lifed>()->setLife(0);
 	get<Game::Bonusable>()->reset();
 	info.reset();
+	death->kill();
 }
 
 void Player::_checkCollision(Game::Collider& cld) {
@@ -123,7 +138,7 @@ void Player::_checkCollision(Game::Collider& cld) {
 	auto lifed = get<Game::Lifed>();
 	Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::HURT));
 	if (lifed->decLife(damage) <= 0) {
-		get<Game::Killable>()->kill();
+		killable->kill();
 		return;
 	}
 

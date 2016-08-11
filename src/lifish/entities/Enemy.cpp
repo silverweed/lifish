@@ -37,13 +37,16 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	moving = addComponent(new Game::AxisMoving(*this, BASE_SPEED * originalSpeed, Game::Direction::DOWN));
 	yellClock = addComponent(new Game::Clock(*this));
 	dashClock = addComponent(new Game::Clock(*this));
-	deathClock = addComponent(new Game::Clock(*this));
 	alienSprite = addComponent(new Game::AlienSprite(*this));
 	addComponent(new Game::Scored(*this, id * 100));
 	movingAnimator = addComponent(new Game::MovingAnimator(*this));
-	killable = addComponent(new Game::Killable(*this, [this] () { _kill(); }, [this] () {
-		return _killInProgress(); 
+	killable = addComponent(new Game::Killable(*this, [this] () {
+		// on kill
+		death->kill(); 
+	}, [this] () {
+		return death->isKillInProgress(); 
 	}));
+	death = addComponent(new Game::RegularEntityDeath(*this, Game::Conf::Enemy::DEATH_TIME));
 	shooting = addComponent(new Game::Shooting(*this, info.attack));
 	sighted = addComponent(new Game::Sighted(*this));
 
@@ -161,22 +164,6 @@ void Enemy::_checkCollision(Game::Collider& coll) {
 	if (lifed->decLife(1) <= 0) {
 		killable->kill();	
 	}
-}
-
-void Enemy::_kill() {
-	// on kill
-	moving->setAutoRealignEnabled(false);
-	moving->stop();
-	movingAnimator->setActive(false);
-	auto& animatedSprite = animated->getSprite();
-	animated->setAnimation("death");
-	animatedSprite.play();
-	deathClock->restart();
-	Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
-}
-
-bool Enemy::_killInProgress() const {
-	return deathClock->getElapsedTime() < Game::Conf::Enemy::DEATH_TIME;	
 }
 
 //////// EnemyDrawableProxy //////////

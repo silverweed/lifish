@@ -11,6 +11,7 @@ protected:
 	using CheckKillCallback = std::function<bool()>;
 
 	bool killed = false;
+	sf::Clock deathClock;
 
 	/** Function to be called on kill() */
 	OnKillCallback onKill;
@@ -30,6 +31,9 @@ public:
 	 * Note that isKillInProgress() implies isKilled()
 	 */ 
 	bool isKillInProgress() const;
+
+	/** @return The time passed since kill() was called last. Only valid if `isKilled()`. */
+	sf::Time timeSinceDeath() const { return deathClock.getElapsedTime(); }
 };
 
 }

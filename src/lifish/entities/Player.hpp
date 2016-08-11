@@ -7,6 +7,7 @@
 #include "AxisMoving.hpp"
 #include "Collider.hpp"
 #include "Animated.hpp"
+#include "RegularEntityDeath.hpp"
 #include "game_values.hpp"
 
 namespace Game {
@@ -68,6 +69,8 @@ class Player : public Game::Entity {
 	Game::Animated *animated = nullptr;
 	Game::Bonusable *bonusable = nullptr;
 	Game::MovingAnimator *movingAnimator = nullptr;
+	Game::Killable *killable = nullptr;
+	Game::RegularEntityDeath *death = nullptr;
 
 	Game::PlayerInfo info;
 	PlayerDrawProxy drawProxy;
@@ -93,6 +96,8 @@ public:
 	void setBombFuseTime(sf::Time t) { info.powers.bombFuseTime = t; }
 	void setExtra(unsigned short n, bool e) { info.extra[n] = e; }
 	void setRemainingLives(short l) { info.remainingLives = l; }
+
+	void update() override;
 };
 
 }

@@ -3,7 +3,7 @@
 #include <SFML/System.hpp>
 #include "Entity.hpp"
 #include "Animated.hpp"
-#include <iostream>
+
 namespace Game {
 
 /**
