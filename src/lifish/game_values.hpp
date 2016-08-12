@@ -31,6 +31,10 @@ namespace Conf {
 		constexpr unsigned short MAX_RADIUS = 4;
 	}
 
+	namespace Teleport {
+		const sf::Time COOLDOWN_TIME = sf::seconds(1);
+	}
+
 	namespace ZIndex {
 		constexpr int EXPLOSIONS = 1;
 		constexpr int WALLS      = 2;   

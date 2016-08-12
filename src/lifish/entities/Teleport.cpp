@@ -5,11 +5,10 @@
 #include "Collider.hpp"
 #include "AxisMoving.hpp"
 #include "Fixed.hpp"
+#include "game_values.hpp"
 
 using Game::Teleport;
 using Game::TILE_SIZE;
-
-const sf::Time Teleport::COOLDOWN_TIME = sf::milliseconds(1000);
 
 Teleport::Teleport(const sf::Vector2f& pos) 
 	: Game::Entity(pos)
@@ -21,8 +20,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& c) { warp(c); }, Game::Layers::TELEPORTS));
 
 	auto& anim = animated->addAnimation("teleport");
-	// Teleports have 8 frames
-	for (unsigned short i = 0; i < 8; ++i)
+	for (unsigned short i = 0; i < N_ANIM_FRAMES; ++i)
 		anim.addFrame(sf::IntRect(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 	
 	auto& animatedSprite = animated->getSprite();
@@ -34,7 +32,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 
 void Teleport::update() {
 	Game::Entity::update();
-	if (disabled && disableClock->getElapsedTime() >= COOLDOWN_TIME) {
+	if (disabled && disableClock->getElapsedTime() >= Game::Conf::Teleport::COOLDOWN_TIME) {
 		disabled = false;
 		animated->getSprite().play();
 	}
@@ -70,13 +68,14 @@ void Teleport::warp(Game::Collider& cld) {
 		break;
 	}
 
-	if (nxt == nullptr) return;
+	if (nxt == nullptr || nxt == this) return;
 
 	// TODO spawn flashes
 	cld.getOwnerRW().setPosition(nxt->getPosition());
 	if (am != nullptr) {
 		//std::cerr<<"nxt->pos = " << nxt->getPosition()<<" (tile = " <<Game::tile(nxt->getPosition())<<"\n";
-		am->setPrevAlign(Game::tile(nxt->getPosition()));}
+		am->setPrevAlign(Game::tile(nxt->getPosition()));
+	}
 
 	disable();
 	nxt->disable();

@@ -11,7 +11,7 @@ namespace Game {
  * A teleport can be used both by players and enemies.
  */
 class Teleport : public Game::Entity {
-	const static sf::Time COOLDOWN_TIME;
+	static constexpr unsigned int N_ANIM_FRAMES = 8;
 
 	/** The Teleport this one teleports to */
 	Teleport *_next = nullptr;
