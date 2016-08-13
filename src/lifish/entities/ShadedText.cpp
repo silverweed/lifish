@@ -14,8 +14,8 @@ ShadedText::ShadedText(const std::string& fontname, const std::string& str,
 	setString(str);
 	fgtext.setPosition(pos);
 	bgtext.setPosition(pos + shadowSpacing);
-	fgtext.setColor(fg);
-	bgtext.setColor(bg);
+	fgtext.setFillColor(fg);
+	bgtext.setFillColor(bg);
 
 	addComponent(new Game::Drawable(*this, *this));
 }
@@ -60,8 +60,8 @@ void ShadedText::setShadowSpacing(float spx, float spy) {
 }
 
 void ShadedText::setColor(const sf::Color& fg, const sf::Color& bg) {
-	fgtext.setColor(fg);
-	bgtext.setColor(bg);
+	fgtext.setFillColor(fg);
+	bgtext.setFillColor(bg);
 }
 
 void ShadedText::draw(sf::RenderTarget& window, sf::RenderStates states) const {

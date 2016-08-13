@@ -32,8 +32,8 @@ public:
 	void setString(const std::string& str);
 	void setCharacterSize(unsigned int size);
 	void setShadowSpacing(float spx, float spy);
-	void setFGColor(const sf::Color& fg) { fgtext.setColor(fg); }
-	void setBGColor(const sf::Color& bg) { bgtext.setColor(bg); }
+	void setFGColor(const sf::Color& fg) { fgtext.setFillColor(fg); }
+	void setBGColor(const sf::Color& bg) { bgtext.setFillColor(bg); }
 	void setColor(const sf::Color& fg, const sf::Color& bg);
 	void setFont(const std::string& fontname);
 

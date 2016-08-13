@@ -66,7 +66,7 @@ endif()
 add_definitions(-DVERSION="${MAJOR}.${MINOR}" -DCOMMIT="${CURRENTREV}" -DARCH="${TARGET_ARCH}")
 
 # SFML
-find_package(SFML 2.3 REQUIRED graphics window audio system)
+find_package(SFML 2.4 REQUIRED graphics window audio system)
 include_directories(${SFML_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES})
 
