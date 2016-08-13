@@ -17,13 +17,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	: Game::Entity(pos)
 	, originalSpeed(info.speed)
 {
-	animated = addComponent(new Game::Animated(*this, 
-		Game::getAsset(/*"graphics"*/ "test", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::ENEMIES));
-	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
-		// on collision
-		_checkCollision(coll);
-	}, Game::Layers::ENEMIES));
 	addComponent(new Game::Sounded(*this, {
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_death.ogg")),
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_yell.ogg")),
@@ -35,6 +29,12 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	// AI must be called BEFORE moving
 	ai = addComponent(new Game::AI(*this, info.ai));
 	moving = addComponent(new Game::AxisMoving(*this, BASE_SPEED * originalSpeed, Game::Direction::DOWN));
+	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
+		// on collision
+		_checkCollision(coll);
+	}, Game::Layers::ENEMIES));
+	animated = addComponent(new Game::Animated(*this, 
+		Game::getAsset(/*"graphics"*/ "test", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
 	yellClock = addComponent(new Game::Clock(*this));
 	dashClock = addComponent(new Game::Clock(*this));
 	alienSprite = addComponent(new Game::AlienSprite(*this));
@@ -52,8 +52,6 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 
 	drawProxy = std::unique_ptr<Game::EnemyDrawableProxy>(new Game::EnemyDrawableProxy(*this));
 	addComponent(new Game::Drawable(*this, *drawProxy.get()));
-
-	ai->bind();
 
 	unsigned short death_n_frames = 2;
 	switch (id) {

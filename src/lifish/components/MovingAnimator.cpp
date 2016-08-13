@@ -4,7 +4,9 @@ using Game::MovingAnimator;
 
 MovingAnimator::MovingAnimator(Game::Entity& owner)
 	: Game::Component(owner)
-{
+{}
+
+Game::Entity* MovingAnimator::init() {
 	moving = owner.get<Game::AxisMoving>();
 	if (moving == nullptr)
 		throw std::invalid_argument("owner has no Moving!");
@@ -12,6 +14,8 @@ MovingAnimator::MovingAnimator(Game::Entity& owner)
 	animated = owner.get<Game::Animated>();
 	if (animated == nullptr)
 		throw std::invalid_argument("owner has no Animated!");
+	
+	return this;
 }
 
 MovingAnimator::MovingAnimator(Game::Entity& owner, Game::AxisMoving *m, Game::Animated *a)

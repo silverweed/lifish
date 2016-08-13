@@ -14,6 +14,8 @@ class Component;
  * Base class for game entities (walls, enemies, players, ...)
  */
 class Entity : public Game::WithOrigin, public Game::Stringable {
+	bool _initialized = false;
+
 protected:
 	std::vector<std::shared_ptr<Game::Component>> components;
 	sf::Vector2f position;
@@ -42,6 +44,12 @@ public:
 
 	bool isAligned(const char axis = 'b') const;
 
+	/** Called after the constructor; all components should have been already
+	 *  added at this time.
+	 *  @return this
+	 */
+	virtual Game::Entity* init();
+	/** Called every frame */
 	virtual void update();
 
 	/** Implements WithOrigin */

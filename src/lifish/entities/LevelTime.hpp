@@ -5,7 +5,7 @@
 
 namespace Game {
 
-class LevelTime : public Game::Component {
+class LevelTime : public Game::Entity {
 public:
 	enum class HurryUpResponse {
 		HURRY_UP_ON,
@@ -15,22 +15,24 @@ public:
 
 private:
 	Game::Clock *clock = nullptr;
-	unsigned int initialTime;
+	sf::Time initialTime;
 	bool isHurryUp = false;
 	bool hurryUpWarningGiven = false;
 	HurryUpResponse hurryUpResponse = HurryUpResponse::HURRY_UP_OFF;
 
 public:
-	explicit LevelTime(Game::Entity& owner, unsigned int time = 0);
+	explicit LevelTime(sf::Time time = sf::Time::Zero);
 
 	/** Sets the initialTime to `time`, resets and pauses the clock */
-	void setTime(unsigned int time);
-	float getTime() const;
-	void update() override;
+	void setTime(sf::Time time);
+	/** Gets the remaining time */
+	sf::Time getRemainingTime() const;
 	HurryUpResponse checkHurryUp() const;
 	void pause();
 	void resume();
 	void reset();
+
+	void update() override;
 };
 
 }

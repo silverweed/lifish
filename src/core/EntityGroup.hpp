@@ -139,12 +139,14 @@ void EntityGroup::apply(AppliedFunc<const Game::Entity, Args...> func, Args... a
 
 template<class T>
 Game::Entity* EntityGroup::add(T *entity) {
+	entity->init();
 	entities.push_back(std::shared_ptr<Game::Entity>(entity));
 	return _putInAux(entity);
 }
 
 template<class T>
 Game::Entity* EntityGroup::add(std::shared_ptr<T>& entity) {
+	entity->init();
 	entities.push_back(entity);
 	return _putInAux(entity.get());
 }

@@ -59,6 +59,7 @@ public:
 
 	bool isRecharging() const;
 
+	Game::Entity* init() override;
 	void update() override;
 };
 

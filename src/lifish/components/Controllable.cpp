@@ -7,10 +7,13 @@ Controllable::Controllable(Game::Entity& owner,
 		const std::array<sf::Keyboard::Key, Game::Controls::CONTROLS_NUM>& controls)
 	: Game::Component(owner)
 	, controls(controls)
-{
+{}
+
+Game::Entity* Controllable::init() {
 	moving = owner.get<Game::AxisMoving>();
 	if (moving == nullptr)
 		throw std::invalid_argument("Entity passed to Controllable has no AxisMoving component!");
+	return this;
 }
 
 void Controllable::update() {

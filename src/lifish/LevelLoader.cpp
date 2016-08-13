@@ -16,7 +16,7 @@ using Game::TILE_SIZE;
 bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 
 	lm.level = &level;
-	lm.levelTime->setTime(level.getInfo().time);
+	lm.levelTime.setTime(sf::seconds(level.getInfo().time));
 
 	Game::Teleport *first_teleport = nullptr,
 		       *latest_teleport = nullptr;

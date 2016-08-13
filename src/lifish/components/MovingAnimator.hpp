@@ -21,6 +21,7 @@ public:
 	explicit MovingAnimator(Game::Entity& owner);
 	explicit MovingAnimator(Game::Entity& owner, Game::AxisMoving *m, Game::Animated *a);
 
+	Game::Entity* init() override;
 	void update() override;
 
 	void setActive(bool a) { active = a; }

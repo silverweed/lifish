@@ -160,7 +160,7 @@ int main(int argc, char **argv) {
 	int cycle = 0;
 	bool was_ui_active = false;
 
-	lm.get<Game::LevelTime>()->resume();
+	lm.resume();
 	
 #ifdef MULTITHREADED
 	window.setActive(false);

@@ -18,6 +18,7 @@ public:
 	explicit Controllable(Game::Entity& owner, 
 			const std::array<sf::Keyboard::Key, Game::Controls::CONTROLS_NUM>& controls);
 
+	Game::Entity* init() override;
 	void update() override;
 
 	void setWindow(const sf::Window *w) { window = w; }

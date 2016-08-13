@@ -2,29 +2,28 @@
 
 using Game::LevelTime;
 
-LevelTime::LevelTime(Game::Entity& owner, unsigned int time)
-	: Game::Component(owner)
+LevelTime::LevelTime(sf::Time time)
+	: Game::Entity()
 	, initialTime(time)
 {
 	clock = addComponent(new Game::Clock(*this)); 
 }
 
-float LevelTime::getTime() const {
-	float time = clock->getElapsedTime().asSeconds();
-	return initialTime - time;
+sf::Time LevelTime::getRemainingTime() const {
+	return initialTime - clock->getElapsedTime();
 }
 
-void LevelTime::setTime(unsigned int time) {
+void LevelTime::setTime(sf::Time time) {
 	initialTime = time;
 	reset();
 	pause();
 }
 
 void LevelTime::update() {
-	Game::Component::update();
+	Game::Entity::update();
 	if (isHurryUp) return;
 
-	int diff = int(getTime());
+	int diff = int(getRemainingTime().asSeconds());
 
 	if (diff <= 0) {
 		isHurryUp = true;

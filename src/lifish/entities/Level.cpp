@@ -19,18 +19,20 @@ Level::Level(const Game::LevelSet& _levelSet)
 	, levelSet(_levelSet) 
 {}
 
-bool Level::init() {
-	if (initialized) return true;
+Game::Entity* Level::init() {
+	if (initialized) return this;
 	
 	if (!_setTilemap(levelInfo.tilemap))
-		return false;
+		return nullptr;
 
 	addComponent(new Game::Music(*this, levelInfo.track));
 	_loadTextures();
 
 	levelnumtext = addComponent(new Game::LevelNumText(*this, levelInfo.levelnum));
 
-	return initialized = true;
+	initialized = true;
+
+	return this;
 }
 
 void Level::_loadTextures() {

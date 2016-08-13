@@ -10,8 +10,15 @@ Moving::Moving(Game::Entity& owner, float speed)
 	, originalSpeed(speed)
 {
 	frameClock = addComponent(new Game::Clock(*this));
+}
+
+Game::Entity* Moving::init() {
+	Game::Component::init();
+
 	// optional
 	collider = owner.get<Game::Collider>();
+
+	return this;
 }
 
 void Moving::move() {

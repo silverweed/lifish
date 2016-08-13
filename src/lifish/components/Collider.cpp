@@ -50,3 +50,4 @@ bool Collider::collidesWith(const Game::Collider& other) const {
 bool Collider::isSolidFor(const Game::Collider& other) const {
 	return Game::Layers::solid[layer][other.layer];
 }
+

@@ -3,7 +3,6 @@
 #include "LevelManager.hpp"
 #include "Bonusable.hpp"
 #include "Lifed.hpp"
-#include "LevelTime.hpp"
 #include <iomanip>
 
 using Game::SidePanel;
@@ -113,7 +112,7 @@ void SidePanel::_drawExtraLetters(sf::RenderTarget& window, sf::RenderStates sta
 }
 
 void SidePanel::_drawTime(sf::RenderTarget& window, sf::RenderStates states) const {
-	short seconds = short(lm.get<Game::LevelTime>()->getTime());
+	short seconds = short(lm.getLevelTime().getRemainingTime().asSeconds());
 	const short minutes = seconds < 0 ? 0 : seconds / 60;
 	std::stringstream ss;
 	if (minutes < 10)

@@ -30,6 +30,16 @@ bool Entity::isAligned(const char axis) const {
 		&& int(position.y) % Game::TILE_SIZE == 0;
 }
 
+Game::Entity* Entity::init() {
+	if (_initialized) return this;
+
+	for (auto& c : components)
+		c->init();
+	
+	_initialized = true;
+	return this;
+}
+
 void Entity::update() {
 	for (auto& c : components)
 		c->update();

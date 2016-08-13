@@ -12,7 +12,11 @@ Shooting::Shooting(Game::Entity& owner, const Attack& attack)
 {
 	rechargeClock = addComponent(new Game::Clock(*this));
 	blockClock = addComponent(new Game::Clock(*this));
+}
+
+Game::Entity* Shooting::init() {
 	ownerMoving = owner.get<Game::AxisMoving>();
+	return this;
 }
 
 Game::AxisBullet* Shooting::shoot(Game::Direction dir) {

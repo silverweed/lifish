@@ -24,6 +24,8 @@ class AlienSprite : public Game::Component {
 
 public:
 	explicit AlienSprite(Game::Entity& owner);
+
+	Game::Entity* init() override;
 };
 
 }

@@ -20,7 +20,7 @@ namespace Game {
 
 class LevelLoader;
 
-class LevelManager final : public sf::Drawable, public Game::Entity, private sf::NonCopyable {
+class LevelManager final : public sf::Drawable, public Game::WithOrigin, private sf::NonCopyable {
 
 	friend class Game::LevelLoader;
 	friend class Game::LevelRenderer;
@@ -29,7 +29,7 @@ class LevelManager final : public sf::Drawable, public Game::Entity, private sf:
 	/** The currently managed level */
 	const Game::Level *level = nullptr;
 	Game::LevelRenderer renderer;
-	Game::LevelTime *levelTime = nullptr;
+	Game::LevelTime levelTime;
 	bool paused = false;
 
 	Game::EntityGroup entities;
@@ -58,7 +58,6 @@ public:
 	auto createNewPlayers(unsigned short n = Game::MAX_PLAYERS) -> std::vector<Game::Player*>;
 
 	bool isPlayer(const Game::Entity *const e) const;
-
 	/** Returns the id-th player (id starting from 1) */
 	const Game::Player* getPlayer(unsigned short id) const;
 
@@ -67,8 +66,10 @@ public:
 
 	const Game::Level* getLevel() const { return level; }
 
+	const Game::LevelTime& getLevelTime() const { return levelTime; }
+
 	/** Updates all entities and collisions */
-	void update() override;
+	void update();
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

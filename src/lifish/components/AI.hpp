@@ -40,15 +40,13 @@ public:
 	{
 		if (aiNum >= ai_functions.size())
 			throw std::invalid_argument("Invalid aiNum passed: " + Game::to_string(aiNum));
-		shooting = owner.get<Game::Shooting>();
 	}
 
-	/** bind() must be called before actually using the AI. This is not done in the
-	 *  constructor because this allows the callee to add the due Moving component
-	 *  to the owner after adding the AI itself.
-	 */
-	void bind() {
+	Game::Entity* init() override {
+		Game::Component::init();
+		shooting = owner.get<Game::Shooting>();
 		setAI(ai_functions[aiNum]);
+		return this;
 	}
 
 	void setAI(AIFunction newAI) {

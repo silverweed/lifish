@@ -13,7 +13,6 @@ AlienSprite::AlienSprite(Game::Entity& owner)
 {
 	animated = addComponent(new Game::Animated(owner, Game::getAsset("test", "aliensprite.png")));
 	addComponent(new Game::Drawable(*this, *animated));
-	movingAnimator = addComponent(new Game::MovingAnimator(*this, owner.get<Game::AxisMoving>(), animated));
 
 	auto& a_down = animated->addAnimation("walk_down");
 	auto& a_up = animated->addAnimation("walk_up");
@@ -45,4 +44,10 @@ AlienSprite::AlienSprite(Game::Entity& owner)
 	animatedSprite.setLooped(true);
 	animatedSprite.setFrameTime(sf::seconds(0.12));
 	animatedSprite.play();
+}
+
+Game::Entity* AlienSprite::init() {
+	Game::Component::init();
+	movingAnimator = addComponent(new Game::MovingAnimator(*this, owner.get<Game::AxisMoving>(), animated));
+	return this;
 }

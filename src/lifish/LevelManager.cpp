@@ -26,7 +26,7 @@ LevelManager::LevelManager()
 	for (auto& b : bombs)
 		b.fill(nullptr);
 
-	levelTime = addComponent(new Game::LevelTime(*this));
+	levelTime.init();
 }
 
 auto LevelManager::createNewPlayers(unsigned short n) -> std::vector<Game::Player*> {
@@ -43,6 +43,9 @@ auto LevelManager::createNewPlayers(unsigned short n) -> std::vector<Game::Playe
 }
 
 void LevelManager::update() {
+	// Update level time
+	levelTime.update();
+
 	std::list<Game::Entity*> to_be_spawned, to_be_killed;
 
 	// Set prevAligns for aligned entities
@@ -85,13 +88,11 @@ void LevelManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
 }
 
 void LevelManager::setOrigin(const sf::Vector2f& pos) {
-	Game::Entity::setOrigin(pos);
 	renderer.setOrigin(pos);
 }
 
 void LevelManager::pause() {
-	for (auto clock : getAllRecursive<Game::Clock>())
-		clock->pause();
+	levelTime.pause();
 	entities.apply([] (Game::Entity *e) {
 		auto clocks = e->getAllRecursive<Game::Clock>();
 		for (auto clock : clocks)
@@ -101,8 +102,7 @@ void LevelManager::pause() {
 }
 
 void LevelManager::resume() {
-	for (auto clock : getAllRecursive<Game::Clock>())
-		clock->resume();
+	levelTime.resume();
 	entities.apply([] (Game::Entity *e) {
 		auto clocks = e->getAllRecursive<Game::Clock>();
 		for (auto clock : clocks)

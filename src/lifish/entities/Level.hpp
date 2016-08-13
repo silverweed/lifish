@@ -120,9 +120,9 @@ public:
 
 	/** Loads the appropriate bgTexture, fills the bgTiles and makes this level
 	 *  usable. Must be called after setting levelInfo.
-	 *  Returns false if there were errors, true otherwise.
+	 *  Returns nullptr if there were errors, self otherwise.
 	 */
-	bool init();
+	Game::Entity* init() override;
 	bool isInitialized() const { return initialized; }
 
 	const LevelInfo& getInfo() const { return levelInfo; }

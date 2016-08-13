@@ -49,6 +49,7 @@ public:
 
 	virtual bool isMoving() const { return moving; }
 
+	virtual Game::Entity* init() override;
 	virtual void update() override = 0;
 };
 
