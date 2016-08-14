@@ -89,7 +89,8 @@ std::vector<T*> Entity::getAllRecursive() const {
 		T* derived = nullptr;
 		if (ptr && (derived = dynamic_cast<T*>(ptr)))
 			all.push_back(derived);
-		auto sub = static_cast<Game::Entity*>(ptr)->getAllRecursive<T>();
+		// XXX: yuck! Is this cast safe? Is there a better way around this?
+		auto sub = reinterpret_cast<Game::Entity*>(ptr)->getAllRecursive<T>();
 		all.insert(all.end(), sub.begin(), sub.end());
 	}
 	return all;

@@ -40,14 +40,14 @@ See later for instructions on how to build the game from the sources.
 
 ## DEPENDENCIES ##
 
-* [SFML](https://github.com/SFML/SFML) >= 2.3
+* [SFML](https://github.com/SFML/SFML) >= 2.4
 * [GTK3](http://www.gtk.org/) (optional)
 * [nlohmann/json](https://github.com/nlohmann/json) (included in the source)
 * [mlabbe/nativefiledialog](https://github.com/mlabbe/nativefiledialog) (optional, included in the source)
 
 ### Building ###
 The game can be compiled on *nix (tested on Linux, OSX and FreeBSD) via `cmake . && make`
-(you need to have SFML >=2.3 installed).
+(you need to have SFML >=2.4 installed).
 
 On Windows, I'm able to compile the game via gcc under MinGW-w64 (I use the TDM-GCC compiler).
 Avoid the Visual Studio compiler, as it lacks decent C++11 support (it can't compile nlohmann/json).
