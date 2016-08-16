@@ -9,7 +9,9 @@ getversion() {
 
 PROJECT_NAME=lifish
 EMAIL=silverweed1991@gmail.com
-COVERITY_PATH=$HOME/Public/cov-analysis-linux64-8.5.0.1/bin
+[[ `uname` == "FreeBSD" ]] \
+	&& COVERITY_PATH=$HOME/cov-analysis-freebsd64-8.5.0.1/bin \
+	|| COVERITY_PATH=$HOME/Public/cov-analysis-linux64-8.5.0.1/bin
 VERSION=$(getversion)
 
 ###########
@@ -61,7 +63,7 @@ if [[ $? == 0 ]]; then
 				curl	--form token=$(< ./cov-token) \
 					--form email=$EMAIL \
 					--form file=@./${PROJECT_NAME}.tgz \
-					--form version="0.0" \
+					--form version="${VERSION}" \
 					--form description="${PROJECT_NAME} build rev.$(getbuild)" \
 					https://scan.coverity.com/builds?project=${PROJECT_NAME}
 				set +x
