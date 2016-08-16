@@ -29,7 +29,6 @@ void EntityGroup::updateAll() {
 }
 
 void EntityGroup::remove(const Game::Entity& entity) {
-	_removeFromInternal(entity);
 	entities.remove_if([entity] (const std::shared_ptr<Game::Entity>& e) { return e.get() == &entity; });
 }
 
@@ -53,11 +52,6 @@ std::vector<std::reference_wrapper<Game::Entity>> EntityGroup::getFixedAt(unsign
 	return fxd;
 }
 	
-void EntityGroup::_removeFromInternal(const Game::Entity& entity) {
-	const auto tile = Game::tile(entity.getPosition());
-	_rmFixedAt(tile.x, tile.y, entity);
-}
-
 void EntityGroup::_pruneFixed() {
 	for (auto& f : fixedEntities) {
 		for (auto it = f.begin(); it != f.end(); ) {
@@ -100,7 +94,7 @@ void EntityGroup::_addFixedAt(unsigned short x, unsigned short y, const std::sha
 void EntityGroup::_rmFixedAt(unsigned short x, unsigned short y, const Game::Entity& entity) {
 	if (x < 1 || x > Game::LEVEL_WIDTH || y < 1 || y > Game::LEVEL_HEIGHT)
 		return;
-	auto& fixed = fixedEntities[y * Game::LEVEL_WIDTH + x];
+	auto& fixed = fixedEntities[(y - 1) * Game::LEVEL_WIDTH + x - 1];
 	std::remove_if(fixed.begin(), fixed.end(), [entity] (const std::weak_ptr<Game::Entity>& e) {
 		return !e.expired() && e.lock().get() == &entity;
 	});

@@ -58,9 +58,6 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	std::list<std::weak_ptr<Game::Killable>> dying;
 
 
-	/** Removes `e`'s components from internal collections */
-	void _removeFromInternal(const Game::Entity& e);
-
 	/** Removes any killed entity from all internal collections and destroys them.
 	 *  If its `isKillInProgress()` is true, puts it in `dying`
 	 *  instead of immediately destroing it (it is not removed from `entities` until it's finalized)
