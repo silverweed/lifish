@@ -129,9 +129,12 @@ int main(int argc, char **argv) {
 
 	// Setup UI
 	Game::UI::UI& ui = Game::UI::UI::getInstance();
+	// load static screens
 	ui.load(window, { "home.json", "about.json", "pause.json" });
+	// load dynamic screens
 	ui.add(new Game::UI::ControlsScreen(window));
 	ui.add(new Game::UI::PreferencesScreen(window));
+	// TODO
 	ui.getScreenHandler().setCurrent("pause");
 
 	// Load level set
@@ -149,6 +152,7 @@ int main(int argc, char **argv) {
 
 	LevelLoader::load(*level.get(), lm);
 
+	// Adjust the origin to make room for side panel
 	sf::Vector2f origin(-Game::SIDE_PANEL_WIDTH, 0);
 	lm.setOrigin(origin);
 
@@ -164,7 +168,8 @@ int main(int argc, char **argv) {
 	
 #ifdef MULTITHREADED
 	window.setActive(false);
-	std::thread rendering_thread(rendering_loop, std::ref(window), std::cref(lm), std::cref(sidePanel), std::cref(ui));
+	std::thread rendering_thread(rendering_loop, std::ref(window),
+			std::cref(lm), std::cref(sidePanel), std::cref(ui));
 #endif
 
 	while (window.isOpen() && !Game::terminated) {
@@ -220,10 +225,9 @@ int main(int argc, char **argv) {
 					LevelLoader::load(*level.get(), lm);
 					break;
 				case sf::Keyboard::L:
-					if (lm.isPaused()) {
-						std::cerr << "\n==== CYCLE " << cycle << " ====" << std::endl;
+					if (lm.isPaused())
 						lm.update();
-					} else
+					else
 						lm.pause();
 					break;
 				case sf::Keyboard::K:

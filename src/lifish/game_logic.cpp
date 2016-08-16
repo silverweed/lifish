@@ -29,7 +29,6 @@ void Game::Logic::bombExplosionLogic(Game::Entity *e, Game::LevelManager& lm,
 				bomb->getRadius(), &bomb->getSourcePlayer());
 		Game::cache.playSound(expl->get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
 		tbspawned.push_back(expl->propagate(lm));
-		lm.rmBomb(bomb);
 		tbkilled.push_back(bomb);
 	}
 }

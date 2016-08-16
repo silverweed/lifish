@@ -13,6 +13,8 @@ namespace Game {
  * works as an associative set name => pointer-to-resource 
  */
 class GameCache final : private sf::NonCopyable {
+	constexpr static std::size_t MAX_PARALLEL_SOUNDS = 6;
+
 	/** The game textures */
 	std::unordered_map<std::string, sf::Texture> textures;
 	

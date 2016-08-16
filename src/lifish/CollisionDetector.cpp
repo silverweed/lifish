@@ -108,7 +108,7 @@ void CollisionDetector::update() {
 			continue;
 		}
 		
-		if (group.isFixed(collider->getOwner()))
+		if (collider->getOwner().get<Game::Fixed>() != nullptr)
 			continue;
 
 		// Very simple (aka quadratic) check with all others

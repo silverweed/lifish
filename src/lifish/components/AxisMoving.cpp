@@ -122,8 +122,8 @@ bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager& lm) 
 		return true;
 
 	const auto fixed = lm.getEntities().getFixedAt(iposx, iposy);
-	if (fixed != nullptr) {
-		const auto fcollider = fixed->get<Game::Collider>();
+	for (const auto& f : fixed) {
+		const auto fcollider = f.get().get<Game::Collider>();
 		if (fcollider != nullptr && collider->isSolidFor(*fcollider))
 			return false;
 	}

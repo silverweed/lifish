@@ -6,7 +6,7 @@
 using Game::GameCache;
 
 GameCache::GameCache() {
-	sounds.reserve(1024);
+	sounds.reserve(MAX_PARALLEL_SOUNDS);
 }
 
 sf::Texture* GameCache::loadTexture(const std::string& texture_name) {
@@ -52,7 +52,7 @@ bool GameCache::loadSound(sf::Sound& sound, const std::string& sound_name) {
 }
 
 void GameCache::playSound(const std::string& sound_name) {
-	if (Game::options.soundsMute) return;
+	if (Game::options.soundsMute || sounds.size() == MAX_PARALLEL_SOUNDS) return;
 	sounds.push_back(sf::Sound());
 	auto& sound = sounds.back();
 	if (!loadSound(sound, sound_name))
@@ -70,7 +70,6 @@ void GameCache::gcSounds() {
 			++it;
 	}
 }
-
 
 sf::Font* GameCache::loadFont(const std::string& font_name) {
 	auto it = fonts.find(font_name);

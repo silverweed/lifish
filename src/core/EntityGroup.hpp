@@ -31,9 +31,7 @@ namespace {
 /**
  * A container for Entities, providing convenient methods for operating
  * on all or a specific type of them.
- * EntityGroup is _not_ thread-safe.
  */
-// FIXME: refactor with shared/weak ptr?
 class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 
 	friend class Game::CollisionDetector;
@@ -47,7 +45,7 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	/** The static entities, which are always grid-aligned and cannot move,
 	 *  except Temporary entities.
 	 */
-	std::array<Game::Entity*, Game::LEVEL_WIDTH * Game::LEVEL_HEIGHT> fixedEntities;
+	std::array<std::vector<std::weak_ptr<Game::Entity>>, Game::LEVEL_WIDTH * Game::LEVEL_HEIGHT> fixedEntities;
 
 	/** The list of the killable entities, which ought to be removed when 
 	 *  their `isKilled()` method yields true.
@@ -72,12 +70,15 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	/** Removes any expired Killable in `dying`. */
 	void _removeDying();
 
-	void _setFixedAt(unsigned short x, unsigned short y, Game::Entity *e) {
-		if (0 < x && x <= Game::LEVEL_WIDTH + 1 && 0 < y && y <= Game::LEVEL_HEIGHT + 1)
-			fixedEntities[(y - 1) * Game::LEVEL_WIDTH + x - 1] = e;
-	}
+	/** Adds a fixed entity at tile x, y. Fails silently if x or y are out of bounds. */
+	void _addFixedAt(unsigned short x, unsigned short y, const std::shared_ptr<Game::Entity>& e);
+	/** Removes fixed entity `e` from tile x, y. Fails silently if x or y are out of bounds or if `e` is not
+	 *  at that tile.
+	 */
+	void _rmFixedAt(unsigned short x, unsigned short y, const Game::Entity& e);
+	void _pruneFixed();
 
-	Game::Entity* _putInAux(Game::Entity *entity);
+	Game::Entity* _putInAux(const std::shared_ptr<Game::Entity>& entity);
 
 public:
 	/**
@@ -111,16 +112,12 @@ public:
 	size_t size() const;
 	size_t size() const { return entities.size(); }
 
-	bool isFixed(const Game::Entity& entity) const;
-
 	void updateAll();
 
-	/** Returns the fixed entity at tile (x, y), where x and y range from 1 to width/height */ 
-	Game::Entity* getFixedAt(unsigned short x, unsigned short y) const {
-		if (0 < x && x <= Game::LEVEL_WIDTH + 1 && 0 < y && y <= Game::LEVEL_HEIGHT + 1)
-			return fixedEntities[(y - 1) * Game::LEVEL_WIDTH + x - 1];
-		return nullptr;
-	}
+	/** Returns the fixed entity at tile (x, y), where x and y range from 1 to width/height.
+	 *  Returns an empty vector if x or y are out of bounds.
+	 */ 
+	std::vector<std::reference_wrapper<Game::Entity>> getFixedAt(unsigned short x, unsigned short y) const;
 };
 
 ///// Implementation /////
@@ -141,14 +138,14 @@ template<class T>
 Game::Entity* EntityGroup::add(T *entity) {
 	entity->init();
 	entities.push_back(std::shared_ptr<Game::Entity>(entity));
-	return _putInAux(entity);
+	return _putInAux(entities.back());
 }
 
 template<class T>
 Game::Entity* EntityGroup::add(std::shared_ptr<T>& entity) {
 	entity->init();
 	entities.push_back(entity);
-	return _putInAux(entity.get());
+	return _putInAux(entities.back());
 }
 
 template<class T>

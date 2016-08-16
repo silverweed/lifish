@@ -2,11 +2,13 @@
 #include "Component.hpp"
 #include "Killable.hpp"
 #include <algorithm>
+#include <sstream>
 
 using Game::EntityGroup;
 
 EntityGroup::EntityGroup() {
-	fixedEntities.fill(nullptr);
+	for (auto& f : fixedEntities)
+		f.clear();
 }
 
 void EntityGroup::setOrigin(const sf::Vector2f& origin) {
@@ -17,6 +19,7 @@ void EntityGroup::setOrigin(const sf::Vector2f& origin) {
 }
 
 void EntityGroup::updateAll() {
+	_pruneFixed();
 	_checkKilled();
 	if (dying.size() > 0)
 		_removeDying();
@@ -24,19 +27,49 @@ void EntityGroup::updateAll() {
 	for (auto& e : entities)
 		e->update();
 }
-	
-void EntityGroup::_removeFromInternal(const Game::Entity& entity) {
-	const auto tile = Game::tile(entity.getPosition());
-	if (getFixedAt(tile.x, tile.y) == &entity)
-		_setFixedAt(tile.x, tile.y, nullptr);
-}
 
 void EntityGroup::remove(const Game::Entity& entity) {
 	_removeFromInternal(entity);
 	entities.remove_if([entity] (const std::shared_ptr<Game::Entity>& e) { return e.get() == &entity; });
 }
 
-Game::Entity* EntityGroup::_putInAux(Game::Entity *entity) {
+void EntityGroup::clear() {
+	entities.clear();
+	collidingEntities.clear();
+}
+
+std::vector<std::reference_wrapper<Game::Entity>> EntityGroup::getFixedAt(unsigned short x, unsigned short y) const {
+	std::vector<std::reference_wrapper<Game::Entity>> fxd;
+
+	if (x < 1 || x > Game::LEVEL_WIDTH || y < 1 || y > Game::LEVEL_HEIGHT)
+		return fxd;
+
+	for (const auto& f : fixedEntities[(y - 1) * Game::LEVEL_WIDTH + x - 1]) 
+		if (!f.expired()) {
+			auto shd = f.lock();
+			if (shd.get() != nullptr)
+				fxd.push_back(*shd.get());
+		}
+	return fxd;
+}
+	
+void EntityGroup::_removeFromInternal(const Game::Entity& entity) {
+	const auto tile = Game::tile(entity.getPosition());
+	_rmFixedAt(tile.x, tile.y, entity);
+}
+
+void EntityGroup::_pruneFixed() {
+	for (auto& f : fixedEntities) {
+		for (auto it = f.begin(); it != f.end(); ) {
+			if (it->expired())
+				it = f.erase(it);
+			else
+				++it;
+		}
+	}
+}
+
+Game::Entity* EntityGroup::_putInAux(const std::shared_ptr<Game::Entity>& entity) {
 	entity->setOrigin(origin);
 
 	// Put in aux collections
@@ -52,21 +85,25 @@ Game::Entity* EntityGroup::_putInAux(Game::Entity *entity) {
 	// Put an entity marked as `Fixed` in fixedEntities
 	if (entity->get<Game::Fixed>() != nullptr) {
 		const auto tile = Game::tile(entity->getPosition());
-		if (getFixedAt(tile.x, tile.y) != nullptr)
-			throw std::logic_error("Two fixed entities share the same tile?!");
-
-		_setFixedAt(tile.x, tile.y, entity);
+		_addFixedAt(tile.x, tile.y, entity);
 	}
 
-	return entity;
+	return entity.get();
 }
 
-void EntityGroup::clear() {
-	entities.clear();
-	collidingEntities.clear();
-	killables.clear();
-	dying.clear();
-	fixedEntities.fill(nullptr);
+void EntityGroup::_addFixedAt(unsigned short x, unsigned short y, const std::shared_ptr<Game::Entity>& e) {
+	if (x < 1 || x > Game::LEVEL_WIDTH || y < 1 || y > Game::LEVEL_HEIGHT)
+		return;
+	fixedEntities[(y - 1) * Game::LEVEL_WIDTH + x - 1].push_back(e);
+}
+
+void EntityGroup::_rmFixedAt(unsigned short x, unsigned short y, const Game::Entity& entity) {
+	if (x < 1 || x > Game::LEVEL_WIDTH || y < 1 || y > Game::LEVEL_HEIGHT)
+		return;
+	auto& fixed = fixedEntities[y * Game::LEVEL_WIDTH + x];
+	std::remove_if(fixed.begin(), fixed.end(), [entity] (const std::weak_ptr<Game::Entity>& e) {
+		return !e.expired() && e.lock().get() == &entity;
+	});
 }
 
 void EntityGroup::_checkKilled() {
@@ -79,8 +116,7 @@ void EntityGroup::_checkKilled() {
 		if (klb->isKilled()) {
 			// Remove this from fixedEntities
 			const auto tile = Game::tile(klb->getOwner().getPosition());
-			if (getFixedAt(tile.x, tile.y) == &klb->getOwner())
-				_setFixedAt(tile.x, tile.y, nullptr);
+			_rmFixedAt(tile.x, tile.y, klb->getOwner());
 
 			if (klb->isKillInProgress()) {
 				// Will be finalized later
@@ -94,13 +130,13 @@ void EntityGroup::_checkKilled() {
 			{
 				return ptr.get() == &klb->getOwner();
 			});
-			if (eit != entities.end()) {
+			if (eit != entities.end())
 				entities.erase(eit);
-			}	
 
 			it = killables.erase(it);
-		} else 
+		} else {
 			++it;
+		}
 	}
 }
 
@@ -118,24 +154,12 @@ void EntityGroup::_removeDying() {
 			{
 				return ptr.get() == &tmp->getOwner();
 			});
-			if (eit != entities.end()) {
-				// Remove from internal collections, save for `killables`, from which it was
-				// already removed by _removeExpiredTemporaries
-				const auto tile = Game::tile(eit->get()->getPosition());
-				if (getFixedAt(tile.x, tile.y) == eit->get())
-					_setFixedAt(tile.x, tile.y, nullptr);
-
+			if (eit != entities.end())
 				entities.erase(eit);
-			}
 			
 			it = dying.erase(it);
-		} else
+		} else {
 			++it;
+		}
 	}
-}
-
-bool EntityGroup::isFixed(const Game::Entity& entity) const {
-	const auto tile = Game::tile(entity.getPosition());
-	const auto fixed = getFixedAt(tile.x, tile.y);
-	return fixed == &entity;
 }

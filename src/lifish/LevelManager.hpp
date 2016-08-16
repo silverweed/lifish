@@ -45,8 +45,8 @@ class LevelManager final : public sf::Drawable, public Game::WithOrigin, private
 	 */
 	std::array<std::shared_ptr<Game::Player>, Game::MAX_PLAYERS> players;
 
-	/** Unowned references to bombs, used for efficiency */
-	Matrix<Game::Bomb*, Game::MAX_PLAYERS, Game::Conf::Player::MAX_MAX_BOMBS> bombs;
+	/** Unowned references to bombs currently deployed by players */
+	Matrix<std::weak_ptr<Game::Bomb>, Game::MAX_PLAYERS, Game::Conf::Player::MAX_MAX_BOMBS> bombs;
 
 
 	void _spawnBomb(Game::Bomb *b);
@@ -79,8 +79,6 @@ public:
 	void spawn(Game::Entity *e);
 
 	bool isBombAt(const sf::Vector2i& tile) const;
-	/** Removes `bomb` from `bombs` */
-	void rmBomb(Game::Bomb *bomb);
 	/** Returns the number of bombs currently deployed by id-th player */
 	unsigned short bombsDeployedBy(unsigned short id) const;
 

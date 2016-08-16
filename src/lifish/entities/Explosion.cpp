@@ -110,47 +110,16 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 				continue;
 			}
 
+			++propagation[dir];
+
 			// Check if a solid fixed entity blocks propagation in this direction
-			Game::Entity *fxd = entities.getFixedAt(new_tile.x, new_tile.y);
-			if (fxd == nullptr) {
-				++propagation[dir];
-				continue;
-			}
-			const auto fxdcld = fxd->get<Game::Collider>();
-			if (fxdcld == nullptr || !Game::Layers::solid[fxdcld->getLayer()][Game::Layers::EXPLOSIONS]) { 
-				++propagation[dir];
-
-				// TODO Check if boss (move to game_logic or Boss)
-				//for (auto& boss : bosses) {
-					//if (!boss->isDying() && boss->occupies(new_tile)) {
-						//boss->decLife(1);
-						//if (boss->getLife() <= 0) {
-							//boss->kill();
-							//Game::cache.playSound(boss->getSoundFile(Game::Sounds::DEATH));
-						//} else {
-							//boss->hurt();
-							//Game::cache.playSound(boss->getSoundFile(Game::Sounds::HURT));
-						//}
-					//}
-				//}
-
-			} else {
-				++propagation[dir];
-				// It's a wall or a bomb
-				propagating[dir] = false;
-				//auto cld = fxd->get<Game::Collider>();
-				//if (cld != nullptr && cld->collidesWith(*collider))
-					//cld->addColliding(*collider);
-
-				// TODO move logic to game_logic
-				//const auto tile = level->getTile(new_tile.x - 1, new_tile.y - 1);
-				//if (r == 1 && (tile == Game::EntityType::BREAKABLE 
-						 //|| tile == Game::EntityType::TRANSPARENT_WALL)) {
-					//auto bw = static_cast<Game::BreakableWall*>(fxd);
-					//bw->destroy();
-					//Game::cache.playSound(bw->getSoundFile());
-					//lr->givePointsTo(sourcePlayer, bw->getPosition(), bw->getPointsGiven());
-				//}
+			auto fxdlist = entities.getFixedAt(new_tile.x, new_tile.y);
+			for (const auto& fxd : fxdlist) {
+				const auto fxdcld = fxd.get().get<Game::Collider>();
+				if (fxdcld != nullptr && Game::Layers::solid[fxdcld->getLayer()][Game::Layers::EXPLOSIONS]) { 
+					propagating[dir] = false;
+					break;
+				}
 			}
 		}
 	}
