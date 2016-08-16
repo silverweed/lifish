@@ -3,6 +3,7 @@
 #include "AxisMoving.hpp"
 #include "Sounded.hpp"
 #include "Drawable.hpp"
+#include "ZIndexed.hpp"
 #include "game.hpp"
 #include "Temporary.hpp"
 #include "utils.hpp"
@@ -39,25 +40,7 @@ Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
 		Game::getAsset("test", std::string("bullet") + Game::to_string(attack.id) + std::string("_hit.ogg")),
 		Game::getAsset("test", std::string("bullet") + Game::to_string(attack.id) + std::string("_shot.ogg"))
 	}));
-
-	/*
-	switch (direction) {
-	case Direction::UP:
-		shift.y -= speed;
-		break;
-	case Direction::LEFT:
-		shift.x -= speed;
-		break;
-	case Direction::DOWN:
-		shift.y += speed;
-		break;
-	case Direction::RIGHT:
-		shift.x += speed;
-		break;
-	case Direction::NONE:
-		return;
-	}
-	*/
+	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::BULLETS));
 
 	addComponent(new Game::Temporary(*this, [this] () {
 		// expire condition

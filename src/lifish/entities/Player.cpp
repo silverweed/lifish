@@ -116,6 +116,9 @@ void Player::_checkCollision(Game::Collider& cld) {
 	unsigned short damage = 0;
 	switch (cld.getLayer()) {
 	case L::ENEMIES:
+		if (cld.getOwner().get<Game::Killable>()->isKilled())
+			return;
+		// fallthrough
 	case L::EXPLOSIONS:
 		damage = 1;
 		break;
