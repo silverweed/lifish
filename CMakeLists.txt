@@ -30,11 +30,14 @@ include_directories(src/lifish)
 include_directories(src/lifish/components)
 # lifish/entities/ contains all the implemented Entity classes
 include_directories(src/lifish/entities)
+# lifish/level/ contains classes for managing game levels
+include_directories(src/lifish/level)
 # lifish/debug/ contains debug utils
 include_directories(src/lifish/debug)
 file(GLOB LIFISH_SRC ${MAIN_FILE} 
 	src/lifish/entities/*cpp
 	src/lifish/components/*cpp 
+	src/lifish/level/*cpp 
 	src/lifish/debug/*cpp 
 	src/core/*cpp 
 	src/third_party/*cpp

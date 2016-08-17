@@ -1,5 +1,5 @@
 #include "ScreenHandler.hpp"
-#include "ScreenCallbacks.hpp"
+#include "screen_callbacks.hpp"
 #include "UI.hpp"
 #include "game.hpp"
 #include <iostream>

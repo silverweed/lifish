@@ -1,4 +1,4 @@
-#include "ScreenCallbacks.hpp"
+#include "screen_callbacks.hpp"
 #include "dialogs.hpp"
 
 using ScreenCallback = Game::UI::Screen::Callback;
