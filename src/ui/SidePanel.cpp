@@ -182,7 +182,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 		window.draw(text, states);
 
 		// Draw bomb radius
-		text.setPosition(sf::Vector2f(pos.x + BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
+		text.setPosition(sf::Vector2f(pos.x + 2 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
 		text.setString("x" + Game::to_string(powers.bombRadius));
 		window.draw(text, states);
 

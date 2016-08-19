@@ -18,16 +18,19 @@ class Bonus : public Game::Entity {
 	bool grabbed = false;
 	Game::Clock *expireClock = nullptr;
 	Game::Sprite *sprite = nullptr;
+	Game::Player *grabbingPlayer = nullptr;
 
-
-	void _grab(const Game::Player& player);
-
+	void _grab(Game::Player& player);
 public:
 	explicit Bonus(const sf::Vector2f& pos, const Game::BonusType type);
 
 	Game::BonusType getType() const { return type; }
 
-	bool isExpired() const;
+	/** `grab` shall be called when the Bonus triggers its effect to avoid reprocess it */
+	void grab() { grabbed = true; }
+	bool isGrabbed() const { return grabbed; }
+
+	Game::Player* getGrabbingPlayer() const { return grabbingPlayer; }
 
 	void update() override;
 };

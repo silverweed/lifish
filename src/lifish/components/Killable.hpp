@@ -23,6 +23,7 @@ public:
 	explicit Killable(Game::Entity& owner, OnKillCallback callback, CheckKillCallback checkKill); 
 
 	void kill();
+	void resurrect() { killed = false; }
 	bool isKilled() const { return killed; }
 	/** 
 	 * If checkKill callback is provided, this will return true if the kill is still

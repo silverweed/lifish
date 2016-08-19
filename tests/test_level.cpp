@@ -75,7 +75,10 @@ int main(int argc, char **argv) {
 					args_ended = true;
 					break;
 				case 'l':
-					start_level = std::atoi(argv[++i]);
+					if (i < argc - 1)
+						start_level = std::atoi(argv[++i]);
+					else
+						std::cerr << "[ WARNING ] Expected numeral after -l flag" << std::endl;
 					break;
 				case 'v':
 					std::cout << "lifish v." VERSION " rev." COMMIT;
@@ -140,6 +143,8 @@ int main(int argc, char **argv) {
 	// Load level set
 	int lvnum = start_level;
 	Game::LevelSet ls(levelSetName);
+	if (lvnum > ls.getLevelsNum())
+		lvnum %= ls.getLevelsNum();
 	std::unique_ptr<Game::Level> level(ls.getLevel(lvnum));
 
 	Game::LevelManager lm;

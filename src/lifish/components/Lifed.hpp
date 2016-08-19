@@ -26,6 +26,7 @@ public:
 	short getMaxLife() const { return maxLife; }
 	short decLife(short dam) { life -= dam > life ? life : dam; return life; }
 	void setLife(short lf) { life = lf < 0 ? 0 : lf; }
+	void refillLife() { life = maxLife; }
 };
 
 }

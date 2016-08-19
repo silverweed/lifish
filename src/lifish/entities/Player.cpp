@@ -35,7 +35,8 @@ Player::Player(const sf::Vector2f& pos, const unsigned short id)
 void Player::_init() {
 	addComponent(new Game::Lifed(*this, Game::Conf::Player::MAX_LIFE));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& cld) {
-		_checkCollision(cld);
+		if (!killable->isKilled())
+			_checkCollision(cld);
 	}, Game::Layers::PLAYERS));
 	moving = addComponent(new Game::AxisMoving(*this, Game::Conf::Player::DEFAULT_SPEED));
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", std::string("player") +
@@ -88,6 +89,13 @@ void Player::_init() {
 
 void Player::update() {
 	Game::Entity::update();
+
+	// Check for speedy bonus
+	if (bonusable->hasBonus(Game::BonusType::SPEEDY) && !moving->isDashing())
+		moving->setDashing(true, 2);
+	else if (moving->isDashing())
+		moving->setDashing(false);
+
 	if (killable->isKilled() && killable->timeSinceDeath() > Game::Conf::Player::DEATH_STOP_ANIM_TIME
 			&& animated->getSprite().isPlaying())
 	{
@@ -96,8 +104,13 @@ void Player::update() {
 	} else if (animated->getAnimationName() == "hurt" && 
 			hurtClock->getElapsedTime() > Game::Conf::Player::HURT_ANIM_DURATION)
 	{
-		animated->setAnimation("walk_down");
-		animated->getSprite().stop();
+		const auto dir = moving->getDirection();
+		if (dir != Game::Direction::NONE)
+			animated->setAnimation("walk_" + Game::directionToString(dir));
+		else {
+			animated->setAnimation("walk_down");
+			moving->stop();
+		}
 	}
 }
 
@@ -172,6 +185,7 @@ void Player::resurrect() {
 	animatedSprite.pause();
 	get<Game::Lifed>()->setLife(Game::Conf::Player::MAX_LIFE);
 	moving->realign();
+	killable->resurrect();
 }
 
 void Player::_hurt() {

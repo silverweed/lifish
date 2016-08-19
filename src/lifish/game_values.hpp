@@ -22,7 +22,6 @@ namespace Conf {
 		const sf::Time HURT_ANIM_DURATION = sf::milliseconds(120);
 		const sf::Time RESURRECT_SHIELD_TIME = sf::seconds(5);
 		const sf::Time DAMAGE_SHIELD_TIME = sf::seconds(1);
-
 	}
 	
 	namespace Enemy {
@@ -30,7 +29,8 @@ namespace Conf {
 	}
 
 	namespace Bomb {
-		const sf::Time DEFAULT_FUSE = sf::seconds(5);
+		const sf::Time DEFAULT_FUSE = sf::seconds(0.5);
+		const sf::Time QUICK_FUSE = DEFAULT_FUSE / 2.f;
 		constexpr unsigned short DEFAULT_RADIUS = 2;
 		constexpr unsigned short MAX_RADIUS = 4;
 	}
@@ -40,6 +40,7 @@ namespace Conf {
 	}
 
 	namespace ZIndex {
+		// Default layer is 0
 		constexpr int EXPLOSIONS = 1;
 		constexpr int BULLETS    = 2;
 		constexpr int WALLS      = 3;   

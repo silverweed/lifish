@@ -26,7 +26,7 @@ Bonus::Bonus(const sf::Vector2f& pos, const Game::BonusType type)
 	addComponent(new Game::Collider(*this, [this] (const Game::Collider& cld) {
 		if (grabbed) return;
 		// on collision (no check since its layer only collides with players)
-		_grab(static_cast<const Game::Player&>(cld.getOwner()));
+		_grab(static_cast<Game::Player&>(cld.getOwnerRW()));
 	}, Game::Layers::GRABBABLE));
 	addComponent(new Game::Drawable(*this, *sprite));
 	addComponent(new Game::Scored(*this, Game::Conf::Bonus::VALUE));
@@ -43,18 +43,14 @@ void Bonus::update() {
 	const float s = expireClock->getElapsedTime().asSeconds();
 	if (EXPIRE_TIME.asSeconds() - s <= 3.) {
 		const float diff = s - std::floor(s);
-		if (5*diff - std::floor(5*diff) < 0.5)
+		if (5 * diff - std::floor(5 * diff) < 0.5)
 			sprite->getSprite().setColor(sf::Color(0, 0, 0, 0));
 		else
 			sprite->getSprite().setColor(sf::Color(255, 255, 255, 255));
 	}
 }
 
-void Bonus::_grab(const Game::Player& player) {
+void Bonus::_grab(Game::Player& player) {
 	get<Game::Scored>()->setTarget(player.getInfo().id);
-	grabbed = true;
-}
-
-bool Bonus::isExpired() const {
-	return expireClock->getElapsedTime() >= EXPIRE_TIME; 
+	grabbingPlayer = &player;
 }

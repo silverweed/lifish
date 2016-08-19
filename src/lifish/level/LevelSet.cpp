@@ -145,13 +145,13 @@ LevelSet::LevelSet(const std::string& path) {
 	for (const auto& lvinfo : levelsdata) {
 		LevelInfo info;
 		info.levelnum          = lvnum++;
-		info.time              = lvinfo["time"].get<unsigned int>();
+		info.time              = lvinfo["time"];
 		info.track             = tracks[lvinfo["music"].get<unsigned short>()-1];
 		info.tilemap           = lvinfo["tilemap"];
-		info.tileIDs.border    = lvinfo["tileIDs"]["border"].get<unsigned short>();
-		info.tileIDs.bg        = lvinfo["tileIDs"]["bg"].get<unsigned short>();
-		info.tileIDs.fixed     = lvinfo["tileIDs"]["fixed"].get<unsigned short>();
-		info.tileIDs.breakable = lvinfo["tileIDs"]["breakable"].get<unsigned short>();
+		info.tileIDs.border    = lvinfo["tileIDs"]["border"];
+		info.tileIDs.bg        = lvinfo["tileIDs"]["bg"];
+		info.tileIDs.fixed     = lvinfo["tileIDs"]["fixed"];
+		info.tileIDs.breakable = lvinfo["tileIDs"]["breakable"];
 		levels.push_back(info);
 	}
 }
