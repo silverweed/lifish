@@ -92,7 +92,7 @@ static Game::Direction adjust_prev_align(Game::Entity& entity, Game::AxisMoving&
 	case D::NONE:
 		break;
 	}
-	moving.setDashing(false);
+	moving.setDashing(0);
 
 	return Game::oppositeDirection(moving.getDirection());
 }
@@ -254,7 +254,7 @@ AIBoundFunction Game::ai_follow_dash(Game::Entity& entity) {
 
 		// XXX: is this necessary?
 		if (colliding) {
-			moving->setDashing(false);
+			moving->setDashing(0);
 			if (moving->canGo(cur, lm))
 				NEW_DIRECTION(opp)
 		}

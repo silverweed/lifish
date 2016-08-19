@@ -15,17 +15,21 @@ class Moving : public Game::Component {
 protected:
 	const static sf::Time MAX_FRAME_TIME;
 
-	bool moving = false;
-	bool dashing = false;
-	bool blocked = false;
-	float speed;
+	/** The speed that was initially given when constructing this component */
 	const float originalSpeed;
+	float dashAmount = 0;
+	float speed;
+
+	bool moving = false;
 	float distTravelled = 0;
+
+	sf::Time blockTime;
+	bool blocked = false;
+	
 	sf::Vector2f prevAlign;
 	Game::Clock *frameClock = nullptr,
 		    *blockClock = nullptr;
 	Game::Collider *collider = nullptr;
-	sf::Time blockTime;
 
 
 	bool _collidesWithSolid() const;
@@ -33,20 +37,29 @@ protected:
 	 *  @return true if entity is still blocked, false otherwise.
 	 */
 	bool _handleBlock();	
+	/** @return the actual speed of this entity, which is the summation of
+	 *  the base `speed` and `dashAmount * originalSpeed`.
+	 *  Always use this, not directly `speed`.
+	 */
+	float _effectiveSpeed() const;
 public:
 	explicit Moving(Game::Entity& owner, float speed);
 
 	float getSpeed() const { return speed; }
-	void setSpeed(const float _speed) { speed = _speed; }
+	float getOriginalSpeed() const { return originalSpeed; }
+	/** Sets the base speed of this entity. This differs from `setDashing`, as it is just a
+	 *  temporary effect (used for example in DASHING shooting attacks).
+	 */
+	void setSpeed(float _speed) { speed = _speed; }
 
 	float getDistTravelled() const { return distTravelled; }
 	void setDistTravelled(float d) { distTravelled = d; }
 
-	/** Make this entity dash, i.e. temporarily increase its speed by multiplying it by `mult`. 
-	 *  Passing `false` as argument resets the speed to `originalSpeed`.
+	/** Make this entity dash, i.e. temporarily increase its speed by `mult * originalSpeed`. 
+	 *  Passing `0` as argument cancels the dash.
 	 */
-	void setDashing(bool d, float mult = 4);
-	bool isDashing() const { return dashing; }
+	void setDashing(float mult);
+	bool isDashing() const { return dashAmount != 0; }
 
 	/** Prevent this entity's owner to move for `duration`. 
 	 *  Give sf::Time::Zero as argument to unblock.

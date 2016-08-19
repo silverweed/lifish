@@ -28,18 +28,20 @@ void AxisMoving::update() {
 	if (frameTime > MAX_FRAME_TIME)
 		frameTime = MAX_FRAME_TIME;
 	
+	const float effSpeed = _effectiveSpeed();
+
 	switch (direction) {
 	case Direction::UP:
-		shift.y -= speed;
+		shift.y -= effSpeed;
 		break;
 	case Direction::LEFT:
-		shift.x -= speed;
+		shift.x -= effSpeed;
 		break;
 	case Direction::DOWN:
-		shift.y += speed;
+		shift.y += effSpeed;
 		break;
 	case Direction::RIGHT:
-		shift.x += speed;
+		shift.x += effSpeed;
 		break;
 	case Direction::NONE:
 		return;
@@ -47,7 +49,7 @@ void AxisMoving::update() {
 
 	if (!_collidesWithSolid()) {
 		owner.setPosition(owner.getPosition() + shift * frameTime.asSeconds());
-		const float delta = speed * frameTime.asSeconds();
+		const float delta = effSpeed * frameTime.asSeconds();
 		distTravelled += delta;
 		if (delta > 1 && ensureAlign)
 			_ensureAlign();

@@ -7,6 +7,7 @@
 #include "Attack.hpp"
 #include "AxisBullet.hpp"
 #include "FreeBullet.hpp"
+#include <exception>
 
 namespace Game {
 
@@ -20,6 +21,8 @@ protected:
 	
 	Attack attack;
 	bool shooting = false;
+
+	float fireRateMult = 1;
 
 	Game::Clock *rechargeClock = nullptr;
 	Game::AxisMoving *ownerMoving = nullptr;
@@ -52,6 +55,12 @@ public:
 	bool isShooting() const { return shooting; }
 
 	bool isRecharging() const;
+
+	void setFireRateMult(float fr) {
+		if (fr <= 0)
+			throw std::invalid_argument("Fire rate multiplier cannot be <= 0!");
+		fireRateMult = fr; 
+	}
 
 	Game::Entity* init() override;
 	void update() override;

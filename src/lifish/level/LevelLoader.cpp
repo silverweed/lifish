@@ -22,10 +22,8 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 		       *latest_teleport = nullptr;
 
 	auto& entities = lm.getEntities();
-	if (entities.size() > 0) {
-		// Destroy everything
-		entities.clear();
-	}
+	// Destroy everything
+	entities.clear();
 
 	for (unsigned short top = 0; top < Game::LEVEL_HEIGHT; ++top) {
 		for (unsigned short left = 0; left < Game::LEVEL_WIDTH; ++left) {
@@ -154,6 +152,8 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 			}
 		}
 	}
+
+	lm.levelTime.resume();
 
 	return true;
 }

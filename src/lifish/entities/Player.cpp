@@ -92,9 +92,9 @@ void Player::update() {
 
 	// Check for speedy bonus
 	if (bonusable->hasBonus(Game::BonusType::SPEEDY) && !moving->isDashing())
-		moving->setDashing(true, 2);
+		moving->setSpeed(moving->getOriginalSpeed() * 2);
 	else if (moving->isDashing())
-		moving->setDashing(false);
+		moving->setSpeed(moving->getOriginalSpeed());
 
 	if (killable->isKilled() && killable->timeSinceDeath() > Game::Conf::Player::DEATH_STOP_ANIM_TIME
 			&& animated->getSprite().isPlaying())

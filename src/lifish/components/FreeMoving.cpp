@@ -11,13 +11,15 @@ void FreeMoving::update() {
 	Game::Component::update();
 	if (!moving || _handleBlock()) return;
 
+	const auto effSpeed = _effectiveSpeed();
+
 	sf::Vector2f shift(0.f, 0.f);
 	sf::Time frameTime = frameClock->restart();
 
 	if (frameTime > MAX_FRAME_TIME)
 		frameTime = MAX_FRAME_TIME;
 	
-	shift += velocity * speed;
+	shift += velocity * effSpeed;
 
 	// TODO
 	//if (!colliding) {

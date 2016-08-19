@@ -26,7 +26,7 @@ Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 			auto moving = owner.get<Game::Moving>();
 			if (moving == nullptr)
 				throw std::logic_error("Called shoot() for a dashing attack on a non-Moving owner!");
-			moving->setDashing(true);
+			moving->setDashing(4);
 		}
 		return nullptr;
 	}
@@ -63,7 +63,8 @@ Game::FreeBullet* Shooting::shoot(double angle) {
 }
 
 bool Shooting::isRecharging() const {
-	return attack.fireRate > 0 && rechargeClock->getElapsedTime().asSeconds() < 1./attack.fireRate;
+	return attack.fireRate > 0 && 
+		rechargeClock->getElapsedTime().asSeconds() < 1./(fireRateMult * attack.fireRate);
 }
 
 void Shooting::update() {

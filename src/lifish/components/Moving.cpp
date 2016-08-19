@@ -6,8 +6,8 @@ const sf::Time Moving::MAX_FRAME_TIME = sf::seconds(1 / 60.f);
 
 Moving::Moving(Game::Entity& owner, float speed)
 	: Game::Component(owner)
-	, speed(speed)
 	, originalSpeed(speed)
+	, speed(speed)
 {
 	frameClock = addComponent(new Game::Clock(*this));
 	blockClock = addComponent(new Game::Clock(*this));
@@ -40,14 +40,8 @@ void Moving::block(sf::Time duration) {
 	}
 }
 
-void Moving::setDashing(bool d, float mult) {
-	if (!d) {
-		dashing = false;
-		speed = originalSpeed;
-	} else if (!dashing) {
-		dashing = true;
-		speed *= mult;
-	}
+void Moving::setDashing(float mult) {
+	dashAmount = mult;
 }
 
 bool Moving::_collidesWithSolid() const {
@@ -61,4 +55,8 @@ bool Moving::_handleBlock() {
 		return false;
 	}
 	return true;
+}
+
+float Moving::_effectiveSpeed() const {
+	return speed + dashAmount * originalSpeed;
 }

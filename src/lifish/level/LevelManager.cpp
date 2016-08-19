@@ -1,5 +1,6 @@
 #include "LevelManager.hpp"
 #include "game_logic.hpp"
+#include "Enemy.hpp"
 #include <memory>
 //#include <iostream>
 
@@ -54,6 +55,10 @@ void LevelManager::update() {
 
 	// Update entities and their components
 	entities.updateAll();
+
+	// If time is up, trigger HURRY UP
+	if (!hurryUp && levelTime.checkHurryUp() == Game::LevelTime::HurryUpResponse::HURRY_UP_ON)
+		_triggerHurryUp();
 }
 
 bool LevelManager::isPlayer(const Game::Entity *const e) const {
@@ -127,4 +132,16 @@ void LevelManager::_spawnBomb(Game::Bomb *b) {
 			break;
 		}
 	}
+}
+
+void LevelManager::_triggerHurryUp() {
+	entities.apply([] (Game::Entity *e) {
+		auto enemy = dynamic_cast<Game::Enemy*>(e);
+		if (enemy == nullptr) return;
+
+		auto moving = enemy->get<Game::Moving>();
+		moving->setSpeed(moving->getOriginalSpeed() * 2);
+		enemy->get<Game::Shooting>()->setFireRateMult(2);
+	});
+	hurryUp = true;
 }
