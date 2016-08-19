@@ -31,7 +31,7 @@ class AI : public Game::Component {
 	const int aiNum;
 	AIBoundFunction func;
 	Game::LevelManager *lm = nullptr;
-	Game::Shooting *shooting = nullptr;
+	Game::Moving *moving = nullptr;
 
 public:
 	explicit AI(Game::Entity& owner, unsigned short aiNum)
@@ -44,7 +44,7 @@ public:
 
 	Game::Entity* init() override {
 		Game::Component::init();
-		shooting = owner.get<Game::Shooting>();
+		moving = owner.get<Game::Moving>();
 		setAI(ai_functions[aiNum]);
 		return this;
 	}
@@ -58,7 +58,7 @@ public:
 	}
 
 	void update() override {
-		if (lm == nullptr || (shooting != nullptr && shooting->isBlocked()))
+		if (lm == nullptr || (moving != nullptr && moving->isBlocked()))
 			return;
 		func(*lm);
 	}

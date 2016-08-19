@@ -35,6 +35,7 @@ public:
 
 	/** If an animation tagged `name` exists, returns it. Else returns nullptr */
 	Animation* getAnimation(const std::string& name);
+	std::string getAnimationName() const;
 
 	/** Sets the current animation to the one tagged `name`, if any.
 	 *  Throws if `name` doesn't exist.

@@ -9,7 +9,7 @@ FreeMoving::FreeMoving(Game::Entity& owner, float speed, sf::Vector2f velocity)
 
 void FreeMoving::update() {
 	Game::Component::update();
-	if (!moving) return;
+	if (!moving || _handleBlock()) return;
 
 	sf::Vector2f shift(0.f, 0.f);
 	sf::Time frameTime = frameClock->restart();

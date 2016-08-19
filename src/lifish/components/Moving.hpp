@@ -17,18 +17,22 @@ protected:
 
 	bool moving = false;
 	bool dashing = false;
+	bool blocked = false;
 	float speed;
 	const float originalSpeed;
 	float distTravelled = 0;
 	sf::Vector2f prevAlign;
-	Game::Clock *frameClock = nullptr;
+	Game::Clock *frameClock = nullptr,
+		    *blockClock = nullptr;
 	Game::Collider *collider = nullptr;
+	sf::Time blockTime;
 
 
-	bool _collidesWithSolid() const {
-		return collider != nullptr && collider->collidesWithSolid();
-	}
-
+	bool _collidesWithSolid() const;
+	/** Checks if entity is blocked and unblocks it if block expired.
+	 *  @return true if entity is still blocked, false otherwise.
+	 */
+	bool _handleBlock();	
 public:
 	explicit Moving(Game::Entity& owner, float speed);
 
@@ -43,6 +47,12 @@ public:
 	 */
 	void setDashing(bool d, float mult = 4);
 	bool isDashing() const { return dashing; }
+
+	/** Prevent this entity's owner to move for `duration`. 
+	 *  Give sf::Time::Zero as argument to unblock.
+	 */
+	void block(sf::Time duration);
+	bool isBlocked() const { return blocked; }
 
 	virtual void move();
 	virtual void stop();

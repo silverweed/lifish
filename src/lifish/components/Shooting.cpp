@@ -11,10 +11,10 @@ Shooting::Shooting(Game::Entity& owner, const Attack& attack)
 	, attack(attack) 
 {
 	rechargeClock = addComponent(new Game::Clock(*this));
-	blockClock = addComponent(new Game::Clock(*this));
 }
 
 Game::Entity* Shooting::init() {
+	// optional
 	ownerMoving = owner.get<Game::AxisMoving>();
 	return this;
 }
@@ -37,8 +37,8 @@ Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 		
 		shooting = true;
 		if (attack.type & Game::AttackType::BLOCKING) {
-			blocked = true;
-			blockClock->restart();
+			if (ownerMoving != nullptr)
+				ownerMoving->block(attack.blockTime);
 		}
 		rechargeClock->restart();
 		return new Game::AxisBullet(&owner, ownerMoving->getDirection(), attack);
@@ -46,8 +46,8 @@ Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 
 	shooting = true;
 	if (attack.type & Game::AttackType::BLOCKING) {
-		blocked = true;
-		blockClock->restart();
+		if (ownerMoving != nullptr)
+			ownerMoving->block(attack.blockTime);
 	}
 	rechargeClock->restart();
 	return new Game::AxisBullet(&owner, dir, attack);
@@ -68,8 +68,6 @@ bool Shooting::isRecharging() const {
 
 void Shooting::update() {
 	Game::Component::update();
-	if (blocked && blockClock->getElapsedTime() > attack.blockTime)
-		blocked = false;
 	if (shooting && rechargeClock->getElapsedTime() > SHOOT_FRAME_TIME)
 		shooting = false;
 }

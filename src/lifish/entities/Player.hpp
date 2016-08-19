@@ -71,12 +71,14 @@ class Player : public Game::Entity {
 	Game::MovingAnimator *movingAnimator = nullptr;
 	Game::Killable *killable = nullptr;
 	Game::RegularEntityDeath *death = nullptr;
+	Game::Clock *hurtClock = nullptr;
 
 	Game::PlayerInfo info;
 	PlayerDrawProxy drawProxy;
 
 	void _init();
 	void _kill();
+	void _hurt();
 	void _checkCollision(Game::Collider& cld);
 
 public:

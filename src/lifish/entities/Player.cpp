@@ -55,6 +55,7 @@ void Player::_init() {
 	bonusable = addComponent(new Game::Bonusable(*this));
 	movingAnimator = addComponent(new Game::MovingAnimator(*this));
 	addComponent(new Game::Controllable(*this, Game::Controls::players[info.id-1]));
+	hurtClock = addComponent(new Game::Clock(*this));
 	death = addComponent(new Game::RegularEntityDeath(*this, Game::Conf::Player::DEATH_TIME));
 
 	auto& a_down = animated->addAnimation("walk_down");
@@ -92,6 +93,11 @@ void Player::update() {
 	{
 		animated->getSprite().stop();
 		animated->getSprite().setFrame(1);
+	} else if (animated->getAnimationName() == "hurt" && 
+			hurtClock->getElapsedTime() > Game::Conf::Player::HURT_ANIM_DURATION)
+	{
+		animated->setAnimation("walk_down");
+		animated->getSprite().stop();
 	}
 }
 
@@ -140,6 +146,7 @@ void Player::_checkCollision(Game::Collider& cld) {
 
 	auto lifed = get<Game::Lifed>();
 	Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::HURT));
+	_hurt();
 	if (lifed->decLife(damage) <= 0) {
 		killable->kill();
 		return;
@@ -153,8 +160,7 @@ void Player::_checkCollision(Game::Collider& cld) {
 		if (sprite.getCurrentFrame() == sprite.getAnimation()->getSize() - 1) 
 			bonusable->giveBonus(Game::Bonus::SHIELD, Game::Conf::DAMAGE_SHIELD_TIME);
 		else
-			bonusable->giveBonus(Game::Bonus::SHIELD, sf::seconds(
-						Game::Conf::DAMAGE_SHIELD_TIME.asSeconds() / 40.));
+			bonusable->giveBonus(Game::Bonus::SHIELD, Game::Conf::DAMAGE_SHIELD_TIME / 40.f);
 	} else {
 		bonusable->giveBonus(Game::Bonus::SHIELD, Game::Conf::DAMAGE_SHIELD_TIME);
 	}
@@ -162,10 +168,16 @@ void Player::_checkCollision(Game::Collider& cld) {
 
 void Player::resurrect() {
 	auto& animatedSprite = get<Game::Animated>()->getSprite();
-	animatedSprite.setAnimation(*get<Game::Animated>()->getAnimation("down"));
+	animatedSprite.setAnimation(*get<Game::Animated>()->getAnimation("walk_down"));
 	animatedSprite.pause();
 	get<Game::Lifed>()->setLife(Game::Conf::Player::MAX_LIFE);
 	moving->realign();
+}
+
+void Player::_hurt() {
+	animated->setAnimation("hurt");
+	moving->block(Game::Conf::Player::HURT_ANIM_DURATION);
+	hurtClock->restart();
 }
 
 //// PlayerDrawProxy ////

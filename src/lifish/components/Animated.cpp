@@ -44,6 +44,13 @@ Animation* Animated::getAnimation(const std::string& name) {
 	return &it->second;
 }
 
+std::string Animated::getAnimationName() const {
+	for (const auto& anim : animations)
+		if (&anim.second == animatedSprite.getAnimation())
+			return anim.first;
+	return "";
+}
+
 void Animated::setAnimation(const std::string& name) {
 	auto anim = getAnimation(name);
 	if (anim == nullptr)
