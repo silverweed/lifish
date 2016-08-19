@@ -6,30 +6,13 @@
 #include "Temporary.hpp"
 #include "Collider.hpp"
 #include "game.hpp"
+#include "game_values.hpp"
 
 using Game::Bonus;
 using Game::TILE_SIZE;
-
-const sf::Time Bonus::EXPIRE_TIME = sf::seconds(10);
-const sf::Time Bonus::SHIELD_DURATION = sf::milliseconds(20000);
-const sf::Time Bonus::SPEEDY_DURATION = sf::milliseconds(20000);
-
-/** Relative bonus probabilities */
-std::discrete_distribution<unsigned short> Game::bonusTypeDistribution
-{ 
-	5, // max bombs
-	4, // quick fuse
-	5, // max range
-	5, // shield
-	5, // speedy
-	1, // zapper
-	1, // sudden death
-	5, // health small
-	4, // health full
-	490 // no bonus
-};
+using Game::Conf::Bonus::EXPIRE_TIME;
 	
-Bonus::Bonus(const sf::Vector2f& pos, const Type type)
+Bonus::Bonus(const sf::Vector2f& pos, const Game::BonusType type)
 	: Game::Entity(pos)
 	, type(type)
 {
@@ -46,7 +29,7 @@ Bonus::Bonus(const sf::Vector2f& pos, const Type type)
 		_grab(static_cast<const Game::Player&>(cld.getOwner()));
 	}, Game::Layers::GRABBABLE));
 	addComponent(new Game::Drawable(*this, *sprite));
-	addComponent(new Game::Scored(*this, VALUE));
+	addComponent(new Game::Scored(*this, Game::Conf::Bonus::VALUE));
 	expireClock = addComponent(new Game::Clock(*this));
 	addComponent(new Game::Sounded(*this, { Game::getAsset("test", "bonus_grab.ogg") }));
 	addComponent(new Game::Temporary(*this, [this] () {
@@ -70,4 +53,8 @@ void Bonus::update() {
 void Bonus::_grab(const Game::Player& player) {
 	get<Game::Scored>()->setTarget(player.getInfo().id);
 	grabbed = true;
+}
+
+bool Bonus::isExpired() const {
+	return expireClock->getElapsedTime() >= EXPIRE_TIME; 
 }

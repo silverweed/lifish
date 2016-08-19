@@ -62,10 +62,10 @@ void Game::Logic::bonusDropLogic(Game::Entity *e, Game::LevelManager&,
 
 	auto klb = wall->get<Game::Killable>();
 	if (klb->isKilled() && !klb->isKillInProgress()) {
-		const auto bonus_type = Game::bonusTypeDistribution(Game::rng);
-		if (bonus_type < Game::Bonus::N_BONUS_TYPES) {
+		const auto bonus_type = Game::Conf::Bonus::distribution(Game::rng);
+		if (bonus_type < Game::Conf::Bonus::N_BONUS_TYPES) {
 			tbspawned.push_back(new Game::Bonus(e->getPosition(),
-						static_cast<Game::Bonus::Type>(bonus_type)));
+						static_cast<Game::BonusType>(bonus_type)));
 		}
 	}
 }

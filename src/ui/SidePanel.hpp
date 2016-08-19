@@ -77,7 +77,7 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	sf::Texture *extraLettersTexture;
 
 	/** The Bonus icons */
-	Matrix<sf::Sprite, Game::MAX_PLAYERS, Game::Bonus::N_PERMANENT_BONUS_TYPES> bonusesSprite;
+	Matrix<sf::Sprite, Game::MAX_PLAYERS, Game::Conf::Bonus::N_PERMANENT_BONUS_TYPES> bonusesSprite;
 	sf::Texture *bonusesTexture;
 
 	void _drawHealthSprites(sf::RenderTarget& window, sf::RenderStates states, 
@@ -88,7 +88,6 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	void _drawTime(sf::RenderTarget& window, sf::RenderStates states) const;
 public:
 	explicit SidePanel(const Game::LevelManager& lm);
-	~SidePanel();
 
 	void update();
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;

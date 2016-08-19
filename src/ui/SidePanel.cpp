@@ -66,8 +66,6 @@ SidePanel::SidePanel(const Game::LevelManager& lm)
 	}
 }
 
-SidePanel::~SidePanel() {}
-
 static void _drawWithShadow(sf::RenderTarget& window, sf::RenderStates states, const sf::Sprite& sprite) {
 	sf::Sprite shadow(sprite);
 	shadow.setColor(sf::Color(0, 0, 0, 200));
@@ -219,7 +217,7 @@ void SidePanel::update() {
 			const auto bonusable = player->get<Game::Bonusable>();
 			for (unsigned short j = 0; j < bonusesSprite[i].size(); ++j) {
 				switch (j) {
-					using B = Game::Bonus::Type;
+					using B = Game::BonusType;
 				case B::QUICK_FUSE:
 					bonusesSprite[i][j].setColor(
 							powers.bombFuseTime == Game::Conf::Bomb::DEFAULT_FUSE
@@ -228,7 +226,7 @@ void SidePanel::update() {
 				case B::SHIELD:
 				case B::SPEEDY:
 					bonusesSprite[i][j].setColor(bonusable->hasBonus(
-								static_cast<Game::Bonus::Type>(j))
+								static_cast<Game::BonusType>(j))
 							? sf::Color::White : DISABLED_COLOR);
 					break;
 				default:
@@ -238,13 +236,3 @@ void SidePanel::update() {
 		}
 	}
 }
-
-//void SidePanel::_drawWithShadow(sf::RenderTarget& window, sf::Sprite& sprite, const sf::Color& color) {
-	//sprite.setColor(sf::Color(0, 0, 0, 200));
-	//auto pos = sprite.getPosition();
-	//sprite.setPosition(pos + sf::Vector2f(3, 2));
-	//window.draw(sprite);
-	//sprite.setColor(color);
-	//sprite.setPosition(pos);
-	//window.draw(sprite);
-//}

@@ -1,12 +1,12 @@
 #pragma once
 
+#include <random>
+#include <SFML/System/Time.hpp>
+
 /** This file basically contains numeric values for the gameplay-related (balanceable) constants */
 namespace Game {
 
 namespace Conf {
-
-	const sf::Time DAMAGE_SHIELD_TIME = sf::seconds(1);
-	const sf::Time RESURRECT_SHIELD_TIME = sf::seconds(5);
 
 	namespace Player {
 		constexpr unsigned short INITIAL_LIVES = 3;
@@ -20,6 +20,9 @@ namespace Conf {
 		const sf::Time DEATH_TIME = sf::seconds(5);
 		const sf::Time DEATH_STOP_ANIM_TIME = sf::seconds(2);
 		const sf::Time HURT_ANIM_DURATION = sf::milliseconds(120);
+		const sf::Time RESURRECT_SHIELD_TIME = sf::seconds(5);
+		const sf::Time DAMAGE_SHIELD_TIME = sf::seconds(1);
+
 	}
 	
 	namespace Enemy {
@@ -27,7 +30,7 @@ namespace Conf {
 	}
 
 	namespace Bomb {
-		const sf::Time DEFAULT_FUSE = sf::milliseconds(5000);
+		const sf::Time DEFAULT_FUSE = sf::seconds(5);
 		constexpr unsigned short DEFAULT_RADIUS = 2;
 		constexpr unsigned short MAX_RADIUS = 4;
 	}
@@ -48,6 +51,16 @@ namespace Conf {
 
 	namespace Bullet {
 		constexpr float BASE_SPEED = 200.;
+	}
+
+	namespace Bonus {
+		constexpr unsigned int VALUE = 100; // FIXME
+		constexpr unsigned short N_BONUS_TYPES = 9;
+		constexpr unsigned short N_PERMANENT_BONUS_TYPES = 5;
+		const sf::Time EXPIRE_TIME = sf::seconds(10);
+		const sf::Time SHIELD_DURATION = sf::seconds(20);
+		const sf::Time SPEEDY_DURATION = sf::seconds(20);
+		extern std::discrete_distribution<unsigned short> distribution;
 	}
 }
 

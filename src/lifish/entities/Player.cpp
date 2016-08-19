@@ -116,7 +116,7 @@ void Player::_checkCollision(Game::Collider& cld) {
 	 */
 	using L = Game::Layers::Layer;
 	
-	if (bonusable->hasBonus(Game::Bonus::SHIELD))
+	if (bonusable->hasBonus(Game::BonusType::SHIELD))
 		return;
 
 	unsigned short damage = 0;
@@ -158,11 +158,11 @@ void Player::_checkCollision(Game::Collider& cld) {
 		const auto& sprite = expl.get<Game::Animated>()->getSprite();
 		// Give the "long" shield only if this is the explosion's last frame
 		if (sprite.getCurrentFrame() == sprite.getAnimation()->getSize() - 1) 
-			bonusable->giveBonus(Game::Bonus::SHIELD, Game::Conf::DAMAGE_SHIELD_TIME);
+			bonusable->giveBonus(Game::BonusType::SHIELD, Game::Conf::Player::DAMAGE_SHIELD_TIME);
 		else
-			bonusable->giveBonus(Game::Bonus::SHIELD, Game::Conf::DAMAGE_SHIELD_TIME / 40.f);
+			bonusable->giveBonus(Game::BonusType::SHIELD, Game::Conf::Player::DAMAGE_SHIELD_TIME / 40.f);
 	} else {
-		bonusable->giveBonus(Game::Bonus::SHIELD, Game::Conf::DAMAGE_SHIELD_TIME);
+		bonusable->giveBonus(Game::BonusType::SHIELD, Game::Conf::Player::DAMAGE_SHIELD_TIME);
 	}
 }
 
@@ -187,10 +187,10 @@ Game::PlayerDrawProxy::PlayerDrawProxy(const Player& player)
 
 void Game::PlayerDrawProxy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(*player.animated, states);
-	if (player.bonusable->hasBonus(Game::Bonus::SHIELD)) {
-		const float s = player.bonusable->getElapsedTime(Game::Bonus::SHIELD).asSeconds();
+	if (player.bonusable->hasBonus(Game::BonusType::SHIELD)) {
+		const float s = player.bonusable->getElapsedTime(Game::BonusType::SHIELD).asSeconds();
 		const float diff = s - std::floor(s);
-		if (player.bonusable->getRemainingTime(Game::Bonus::SHIELD) > sf::seconds(3)
+		if (player.bonusable->getRemainingTime(Game::BonusType::SHIELD) > sf::seconds(3)
 				|| 4 * diff - std::floor(4 * diff) < 0.5)
 		{
 			AnimatedSprite shieldSprite(player.animated->getSprite());
