@@ -147,7 +147,7 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 				auto sighted = enemy->get<Game::Sighted>();
 				sighted->setLevelManager(&lm);
 				// FIXME: can we avoid to hardcode the opaque layers here?
-				sighted->setOpaque({ Game::Layers::WALLS, Game::Layers::TRANSP_WALLS });
+				sighted->setOpaque({ Game::Layers::WALLS });
 				entities.add(enemy);
 			}
 		}

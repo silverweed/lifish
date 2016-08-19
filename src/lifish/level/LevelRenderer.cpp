@@ -24,10 +24,10 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 	target.draw(*level, states);
 
 	// Draw according to z-index
-	std::map<int, std::vector<Game::Drawable*>> toDraw;
+	std::map<int, std::vector<const Game::Drawable*>> toDraw;
 
 	owner.entities.apply([&target, &toDraw] (const Game::Entity *e) {
-		auto d = e->get<Game::Drawable>();
+		const auto d = e->get<Game::Drawable>();
 		if (d != nullptr) {
 			auto zidx = e->get<Game::ZIndexed>();
 			if (zidx != nullptr)

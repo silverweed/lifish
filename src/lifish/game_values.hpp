@@ -41,13 +41,14 @@ namespace Conf {
 
 	namespace ZIndex {
 		// Default layer is 0
-		constexpr int EXPLOSIONS = 1;
-		constexpr int BULLETS    = 2;
-		constexpr int WALLS      = 3;   
-		constexpr int PLAYERS    = 4;
-		constexpr int ENEMIES    = 5;
-		constexpr int BOSSES     = 6;
-		constexpr int POINTS     = 7;
+		constexpr int EXPLOSIONS   = 1;
+		constexpr int TRANSP_WALLS = 2;
+		constexpr int BULLETS      = 3;
+		constexpr int WALLS        = 4;   
+		constexpr int PLAYERS      = 5;
+		constexpr int ENEMIES      = 6;
+		constexpr int BOSSES       = 7;
+		constexpr int POINTS       = 8;
 	}
 
 	namespace Bullet {
