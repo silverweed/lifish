@@ -15,15 +15,13 @@ using Game::TILE_SIZE;
 
 bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 
-	lm.level = &level;
 	lm.levelTime.setTime(sf::seconds(level.getInfo().time));
 
 	Game::Teleport *first_teleport = nullptr,
 		       *latest_teleport = nullptr;
 
+	lm.reset();
 	auto& entities = lm.getEntities();
-	// Destroy everything
-	entities.clear();
 
 	for (unsigned short top = 0; top < Game::LEVEL_HEIGHT; ++top) {
 		for (unsigned short left = 0; left < Game::LEVEL_WIDTH; ++left) {

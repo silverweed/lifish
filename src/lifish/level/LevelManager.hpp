@@ -27,11 +27,12 @@ class LevelManager final : public sf::Drawable, public Game::WithOrigin, private
 	friend class Game::SaveManager;
 
 	/** The currently managed level */
-	const Game::Level *level = nullptr;
+	Game::Level *level = nullptr;
 	Game::LevelRenderer renderer;
 	Game::LevelTime levelTime;
 	/** Whether hurry up has already been triggered or not */
 	bool hurryUp = false;
+	bool extraGameTriggered = false;
 	bool paused = false;
 
 	Game::EntityGroup entities;
@@ -68,6 +69,7 @@ public:
 	Game::EntityGroup& getEntities() { return entities; }
 
 	const Game::Level* getLevel() const { return level; }
+	void setLevel(Game::Level& level);
 
 	const Game::LevelTime& getLevelTime() const { return levelTime; }
 
@@ -90,6 +92,9 @@ public:
 	/** Resumes all Clock components of all entities */
 	void resume();
 	bool isPaused() const { return paused; }
+
+	/** Clears `entities` and resets internal variables */
+	void reset();
 };
 
 }

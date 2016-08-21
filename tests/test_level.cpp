@@ -155,7 +155,7 @@ int main(int argc, char **argv) {
 
 	SidePanel sidePanel(lm);
 
-	LevelLoader::load(*level.get(), lm);
+	lm.setLevel(*level.get());
 
 	// Adjust the origin to make room for side panel
 	sf::Vector2f origin(-Game::SIDE_PANEL_WIDTH, 0);
@@ -217,7 +217,7 @@ int main(int argc, char **argv) {
 					level->setOrigin(origin);
 					Game::musicManager->set(level->get<Game::Music>()->getMusic())
 						.setVolume(Game::options.musicVolume).play();
-					LevelLoader::load(*level.get(), lm);
+					lm.setLevel(*level.get());
 					break;
 				case sf::Keyboard::Subtract:
 					lvnum = level->getInfo().levelnum - 1;
@@ -227,7 +227,7 @@ int main(int argc, char **argv) {
 					level->setOrigin(origin);
 					Game::musicManager->set(level->get<Game::Music>()->getMusic())
 						.setVolume(Game::options.musicVolume).play();
-					LevelLoader::load(*level.get(), lm);
+					lm.setLevel(*level.get());
 					break;
 				case sf::Keyboard::L:
 					if (lm.isPaused())

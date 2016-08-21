@@ -1,6 +1,7 @@
 #include "LevelManager.hpp"
 #include "game_logic.hpp"
 #include "Enemy.hpp"
+#include "LevelLoader.hpp"
 #include <memory>
 //#include <iostream>
 
@@ -76,7 +77,14 @@ void LevelManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
 }
 
 void LevelManager::setOrigin(const sf::Vector2f& pos) {
-	renderer.setOrigin(pos);
+	if (level == nullptr) return;
+	level->setOrigin(pos);
+	entities.setOrigin(pos);
+}
+
+void LevelManager::setLevel(Game::Level& lv) {
+	level = &lv;
+	Game::LevelLoader::load(lv, *this);
 }
 
 void LevelManager::pause() {
@@ -97,6 +105,13 @@ void LevelManager::resume() {
 			clock->resume();
 	});
 	paused = false;
+}
+
+void LevelManager::reset() {
+	entities.clear();
+
+	hurryUp = false;
+	extraGameTriggered = false;
 }
 
 bool LevelManager::isBombAt(const sf::Vector2i& tile) const {

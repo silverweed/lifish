@@ -80,7 +80,7 @@ sprites should be, it means that asset hasn't been created yet.
     - [x] ThickLizzy/etc AI
     - [x] Thing/etc AI
   - [x] Enemies shoot
-  - [ ] Enemies die when hit by explosions
+  - [x] Enemies die when hit by explosions
 - [ ] Bosses   
   - [ ] Boss collisions
   - [ ] Bosses shoot
@@ -90,8 +90,8 @@ sprites should be, it means that asset hasn't been created yet.
 - [x] Players   
   - [x] Players move
   - [x] Players drop bombs
-  - [ ] Players are hurt by explosions
-  - [ ] Players die when they should
+  - [x] Players are hurt by explosions
+  - [x] Players die when they should
 - [x] Bombs
 - [x] Coins   
   - [x] Coins can be taken
