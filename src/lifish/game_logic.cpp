@@ -11,6 +11,7 @@
 #include "Points.hpp"
 #include "Player.hpp"
 #include "Bonus.hpp"
+#include "Letter.hpp"
 #include "BreakableWall.hpp"
 
 using EntityList = std::list<Game::Entity*>;
@@ -70,6 +71,17 @@ void Game::Logic::bonusDropLogic(Game::Entity *e, Game::LevelManager&,
 	}
 }
 
+void Game::Logic::lettersDropLogic(Game::Entity *e, Game::LevelManager&,
+		EntityList& tbspawned, EntityList&)
+{
+	auto enemy = dynamic_cast<Game::Enemy*>(e);
+	if (enemy == nullptr || !enemy->isMorphed()) return;
+
+	auto klb = enemy->get<Game::Killable>();
+	if (klb->isKilled() && !klb->isKillInProgress())
+		tbspawned.push_back(new Game::Letter(e->getPosition(), Game::Letter::randomId()));
+}
+
 void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager&,
 		EntityList& tbspawned, EntityList&)
 {
@@ -113,19 +125,23 @@ void Game::Logic::explosionDamageLogic(Game::Entity *e, Game::LevelManager &lm, 
 
 void Game::Logic::bonusGrabLogic(Game::Entity *e, Game::LevelManager &lm, EntityList&, EntityList&) {
 	auto bonus = dynamic_cast<Game::Bonus*>(e);
-	if (bonus == nullptr || bonus->isGrabbed()) return;
+	if (bonus == nullptr) return;
 	
-	auto player = bonus->getGrabbingPlayer();
+	auto grb = bonus->get<Game::Grabbable>();
+	if (grb->isGrabbed()) return;
+	
+	auto player = grb->getGrabbingEntity();
 	if (player == nullptr) return;
 	
-	Game::triggerBonus(lm, bonus->getType(), *player);
-	bonus->grab();
+	Game::triggerBonus(lm, bonus->getType(), *static_cast<Game::Player*>(player));
+	grb->grab();
 }
 
 std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bombDeployLogic,
 	bombExplosionLogic,
 	bonusDropLogic,
+	lettersDropLogic,
 	scoredKillablesLogic,
 	explosionDamageLogic,
 	enemiesShootLogic,

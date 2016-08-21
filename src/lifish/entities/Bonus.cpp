@@ -24,7 +24,7 @@ Bonus::Bonus(const sf::Vector2f& pos, const Game::BonusType type)
 					TILE_SIZE,
 					TILE_SIZE)));
 	addComponent(new Game::Collider(*this, [this] (const Game::Collider& cld) {
-		if (grabbed) return;
+		if (grabbable->isGrabbed()) return;
 		// on collision (no check since its layer only collides with players)
 		_grab(static_cast<Game::Player&>(cld.getOwnerRW()));
 	}, Game::Layers::GRABBABLE));
@@ -34,8 +34,9 @@ Bonus::Bonus(const sf::Vector2f& pos, const Game::BonusType type)
 	addComponent(new Game::Sounded(*this, { Game::getAsset("test", "bonus_grab.ogg") }));
 	addComponent(new Game::Temporary(*this, [this] () {
 		// expire condition
-		return grabbed || expireClock->getElapsedTime() > EXPIRE_TIME;
+		return grabbable->isGrabbed() || expireClock->getElapsedTime() > EXPIRE_TIME;
 	}));
+	grabbable = addComponent(new Game::Grabbable(*this));
 }
 
 void Bonus::update() {
@@ -52,5 +53,5 @@ void Bonus::update() {
 
 void Bonus::_grab(Game::Player& player) {
 	get<Game::Scored>()->setTarget(player.getInfo().id);
-	grabbingPlayer = &player;
+	grabbable->setGrabbingEntity(&player);
 }

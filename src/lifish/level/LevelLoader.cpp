@@ -26,7 +26,7 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 	for (unsigned short top = 0; top < Game::LEVEL_HEIGHT; ++top) {
 		for (unsigned short left = 0; left < Game::LEVEL_WIDTH; ++left) {
 
-			const sf::Vector2f curPos((left+1) * TILE_SIZE, (top+1) * TILE_SIZE);
+			const sf::Vector2f curPos((left + 1) * TILE_SIZE, (top + 1) * TILE_SIZE);
 			unsigned short enemy_id = 0;
 			const auto& ls = level.getLevelSet();
 
@@ -53,7 +53,6 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 
 			case EntityType::COIN:
 				entities.add(new Game::Coin(curPos));
-				++lm.nCoins;
 				break;
 
 			case EntityType::PLAYER1: 
@@ -141,7 +140,6 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 				enemy->get<Game::AI>()->setLevelManager(&lm);
 				auto sighted = enemy->get<Game::Sighted>();
 				sighted->setLevelManager(&lm);
-				// FIXME: can we avoid to hardcode the opaque layers here?
 				sighted->setOpaque({ Game::Layers::WALLS });
 				entities.add(enemy);
 			}

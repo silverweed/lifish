@@ -1,9 +1,11 @@
 #include "LevelManager.hpp"
 #include "game_logic.hpp"
 #include "Enemy.hpp"
+#include "Letter.hpp"
 #include "LevelLoader.hpp"
 #include "Coin.hpp"
 #include <memory>
+#include <forward_list>
 #include <iostream>
 
 using Game::LevelManager;
@@ -52,13 +54,8 @@ void LevelManager::update() {
 	for (auto e : to_be_spawned)
 		spawn(e);
 
-	for (auto e : to_be_killed) {
+	for (auto e : to_be_killed)
 		entities.remove(*e);
-		std::cerr << dynamic_cast<Game::Coin*>(e) << std::endl;
-		if (dynamic_cast<Game::Coin*>(e) != nullptr)
-			if (--nCoins == 0) 
-				_triggerExtraGame();
-	}
 
 	// Update entities and their components
 	entities.updateAll();
@@ -66,6 +63,10 @@ void LevelManager::update() {
 	// If time is up, trigger HURRY UP
 	if (!hurryUp && levelTime.checkHurryUp() == Game::LevelTime::HurryUpResponse::HURRY_UP_ON)
 		_triggerHurryUp();
+	if (!extraGameTriggered && _shouldTriggerExtraGame()) 
+		_triggerExtraGame();
+	else if (extraGame && levelTime.getRemainingExtraGameTime() <= sf::Time::Zero)
+		_endExtraGame();
 }
 
 bool LevelManager::isPlayer(const Game::Entity& e) const {
@@ -91,6 +92,9 @@ void LevelManager::setOrigin(const sf::Vector2f& pos) {
 void LevelManager::setLevel(Game::Level& lv) {
 	level = &lv;
 	Game::LevelLoader::load(lv, *this);
+	// Don't trigger EXTRA game if there were no coins in the level
+	if (entities.size<Game::Coin>() == 0)
+		extraGameTriggered = true;
 }
 
 void LevelManager::pause() {
@@ -117,8 +121,7 @@ void LevelManager::reset() {
 	entities.clear();
 
 	hurryUp = false;
-	extraGameTriggered = false;
-	nCoins = 0;
+	extraGameTriggered = extraGame = false;
 }
 
 bool LevelManager::isBombAt(const sf::Vector2i& tile) const {
@@ -173,7 +176,48 @@ void LevelManager::_triggerExtraGame() {
 		auto enemy = dynamic_cast<Game::Enemy*>(e);
 		if (enemy == nullptr) return;
 		
-		enemy->setMorphed(true, Game::Conf::Enemy::COIN_MORPH_DURATION);
+		enemy->setMorphed(true);
 	});
-	extraGameTriggered = true;
+	levelTime.startExtraGame();
+	extraGameTriggered = extraGame = true;
+}
+
+void LevelManager::_endExtraGame() {
+	std::forward_list<Game::Entity*> letters;
+
+	entities.apply([&letters] (Game::Entity *e) {
+		auto letter = dynamic_cast<Game::Letter*>(e);
+		if (letter != nullptr) {
+			letters.push_front(e);
+			return;
+		}
+
+		auto enemy = dynamic_cast<Game::Enemy*>(e);
+		if (enemy == nullptr) return;
+		
+		enemy->setMorphed(false);
+	});
+	
+	for (auto letter : letters)
+		entities.remove(*letter);
+
+	extraGame = false;
+}
+
+bool LevelManager::_shouldTriggerExtraGame() const {
+	bool there_are_coins = false;
+
+	entities.apply([&there_are_coins] (const Game::Entity *e) {
+		if (there_are_coins) return;
+
+		auto coin = dynamic_cast<const Game::Coin*>(e);
+		if (coin == nullptr) return;
+
+		if (!coin->get<Game::Killable>()->isKilled()) {
+			there_are_coins = true;
+			return;
+		}
+	});
+
+	return !there_are_coins;
 }

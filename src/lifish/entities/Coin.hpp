@@ -4,6 +4,7 @@
 #include "Entity.hpp"
 #include "Clock.hpp"
 #include "Animated.hpp"
+#include "Grabbable.hpp"
 
 namespace Game {
 
@@ -16,7 +17,7 @@ class Coin : public Game::Entity {
 	constexpr static unsigned int VALUE = 150;
 
 	Game::Clock *grabClock;
-	bool grabbed = false;
+	Game::Grabbable *grabbable = nullptr;
 
 	Game::Animated *animated = nullptr;
 

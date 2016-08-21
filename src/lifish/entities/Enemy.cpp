@@ -37,7 +37,6 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 		Game::getAsset(/*"graphics"*/ "test", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
 	yellClock = addComponent(new Game::Clock(*this));
 	dashClock = addComponent(new Game::Clock(*this));
-	morphClock = addComponent(new Game::Clock(*this));
 	alienSprite = addComponent(new Game::AlienSprite(*this));
 	addComponent(new Game::Scored(*this, id * 100));
 	movingAnimator = addComponent(new Game::MovingAnimator(*this));
@@ -133,12 +132,6 @@ void Enemy::update() {
 
 	if (moving->getDirection() != Game::Direction::NONE)
 		shootFrame[moving->getDirection()].setPosition(position);
-	
-	if (morphed && morphDuration > sf::Time::Zero 
-		&& morphClock->getElapsedTime() > morphDuration)
-	{
-		setMorphed(false);
-	}
 }
 
 Game::Bullet* Enemy::checkShoot() const {
@@ -159,12 +152,8 @@ Game::Bullet* Enemy::checkShoot() const {
 	return nullptr;
 }
 
-void Enemy::setMorphed(bool b, sf::Time duration) {
+void Enemy::setMorphed(bool b) {
 	morphed = b;
-	if (b) {
-		morphDuration = duration;
-		morphClock->restart();
-	}
 }
 
 void Enemy::_checkCollision(Game::Collider& coll) {

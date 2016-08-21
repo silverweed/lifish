@@ -15,11 +15,14 @@
 #include "utils.hpp"
 #include "game_values.hpp"
 
-// MOCK
 namespace Game {
 
 class LevelLoader;
 
+/** The class that manages all the level's entities and events.
+ *  In particular, its update() method updates all entities,
+ *  the collisions and the game logic.
+ */
 class LevelManager final : public sf::Drawable, public Game::WithOrigin, private sf::NonCopyable {
 
 	friend class Game::LevelLoader;
@@ -32,8 +35,10 @@ class LevelManager final : public sf::Drawable, public Game::WithOrigin, private
 	Game::LevelTime levelTime;
 	/** Whether hurry up has already been triggered or not */
 	bool hurryUp = false;
+	/** Whether EXTRA game was already triggered or not */
 	bool extraGameTriggered = false;
-	unsigned short nCoins = 0;
+	/** Whether we're currently in EXTRA game or not */
+	bool extraGame = false;
 	bool paused = false;
 
 	Game::EntityGroup entities;
@@ -56,6 +61,8 @@ class LevelManager final : public sf::Drawable, public Game::WithOrigin, private
 	void _spawnBomb(Game::Bomb *b);
 	void _triggerHurryUp();
 	void _triggerExtraGame();
+	void _endExtraGame();
+	bool _shouldTriggerExtraGame() const;
 
 public:
 	explicit LevelManager();
@@ -78,10 +85,6 @@ public:
 	/** Updates all entities and collisions */
 	void update();
 
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
-	void setOrigin(const sf::Vector2f& o) override;
-
 	/** Adds the given entity to `entities` */
 	void spawn(Game::Entity *e);
 
@@ -97,6 +100,11 @@ public:
 
 	/** Clears `entities` and resets internal variables */
 	void reset();
+
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+	void setOrigin(const sf::Vector2f& o) override;
+
 };
 
 }

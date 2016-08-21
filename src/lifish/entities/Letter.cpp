@@ -3,10 +3,12 @@
 #include "Scored.hpp"
 #include "Drawable.hpp"
 #include "Sounded.hpp"
-#include "Animated.hpp"
 #include "Collider.hpp"
+#include "Temporary.hpp"
+#include "Player.hpp"
 #include "utils.hpp"
 #include "game_values.hpp"
+#include <cassert>
 #include <random>
 
 using Game::Letter;
@@ -28,9 +30,23 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	addComponent(new Game::Scored(*this, 100));
 	addComponent(new Game::Sounded(*this,{ Game::getAsset("test", "letter_grab.ogg") }));
 	transitionClock = addComponent(new Game::Clock(*this));
-	auto animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "extra_letters.png")));
+	animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "extra_letters.png")));
 	addComponent(new Game::Drawable(*this, *animated));
-	addComponent(new Game::Component(*this));
+	addComponent(new Game::Killable(*this));
+	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
+		assert(coll.getLayer() == Game::Layers::PLAYERS);
+		if (grabbable->isGrabbed()) return;
+
+		get<Game::Killable>()->kill();			
+		grabbable->grab();
+		get<Game::Scored>()->setTarget(static_cast<const Game::Player&>(coll.getOwner()).getInfo().id);
+		Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
+		
+		// Give letter to player
+		auto& player = static_cast<Game::Player&>(coll.getOwnerRW());
+		player.setExtra(id, true);
+	}));
+	grabbable = addComponent(new Game::Grabbable(*this));
 
 	// Letters are indexed 0 to N_EXTRA_LETTERS - 1.
 	if (id > N_EXTRA_LETTERS - 1) 
@@ -56,23 +72,24 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 		}
 	}
 
-	animatedSprite = &animated->getSprite();
-	animatedSprite->setAnimation(animations[id]);
-	animatedSprite->setLooped(false);
-	animatedSprite->setFrameTime(sf::seconds(0.1));
-	animatedSprite->pause();
+	auto& animatedSprite = animated->getSprite();
+	animatedSprite.setAnimation(animations[id]);
+	animatedSprite.setLooped(false);
+	animatedSprite.setFrameTime(sf::seconds(0.1));
+	animatedSprite.pause();
 }
 
 void Letter::update() {
 	Game::Entity::update();
-	if (!animatedSprite->isPlaying() && transitioning) {
+	auto& animatedSprite = animated->getSprite();
+	if (!animatedSprite.isPlaying() && transitioning) {
 		transitioning = false;
 		id = (id + 1) % N_EXTRA_LETTERS;
-		animatedSprite->setAnimation(*get<Game::Animated>()->getAnimation(Game::to_string(id)));
-		animatedSprite->pause();
+		animatedSprite.setAnimation(*get<Game::Animated>()->getAnimation(Game::to_string(id)));
+		animatedSprite.pause();
 	} else if (transitionClock->getElapsedTime() >= TRANSITION_DELAY) {
 		transitionClock->restart();
 		transitioning = true;
-		animatedSprite->play();
+		animatedSprite.play();
 	}
 }

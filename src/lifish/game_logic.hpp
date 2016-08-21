@@ -27,6 +27,8 @@ namespace Logic {
 	DEF_LOGIC(explosionDamageLogic);
 	/** Make walls drop powerups */
 	DEF_LOGIC(bonusDropLogic);
+	/** Make morphed enemies drop letters */
+	DEF_LOGIC(lettersDropLogic);
 	/** Make Scored entities give points when killed */
 	DEF_LOGIC(scoredKillablesLogic);
 	/** Make enemies shoot */

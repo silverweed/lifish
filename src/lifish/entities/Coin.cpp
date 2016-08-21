@@ -26,18 +26,20 @@ Coin::Coin(const sf::Vector2f& pos)
 	animated = addComponent(new Game::Animated(*this, texname));
 	Game::cache.loadTexture(texname)->setSmooth(true);
 	addComponent(new Game::Drawable(*this, *animated));
+	grabbable = addComponent(new Game::Grabbable(*this));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
 		assert(coll.getLayer() == Game::Layers::PLAYERS);
 		// only collides with player, so no check
 		get<Game::Killable>()->kill();			
 		get<Game::Scored>()->setTarget(static_cast<const Game::Player&>(coll.getOwner()).getInfo().id);
+		Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
 	}));
 	addComponent(new Game::Killable(*this, [this] () {
 		// on kill
 		_grab();
 	}, [this] () {
 		// is kill in progress
-		return grabbed && grabClock->getElapsedTime() < GRAB_TIME;
+		return grabbable->isGrabbed() && grabClock->getElapsedTime() < GRAB_TIME;
 	}));
 
 	auto& anim = animated->addAnimation("spin");
@@ -54,8 +56,8 @@ Coin::Coin(const sf::Vector2f& pos)
 }
 
 void Coin::_grab() {
-	if (!grabbed) {
-		grabbed = true;
+	if (!grabbable->isGrabbed()) {
+		grabbable->grab();
 		grabClock->restart();
 		animated->getSprite().play();
 	}

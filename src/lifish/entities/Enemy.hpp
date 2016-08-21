@@ -64,8 +64,7 @@ class Enemy : public Game::Entity {
 	std::unique_ptr<Game::EnemyDrawableProxy> drawProxy;
 
 	Game::Clock *yellClock = nullptr,
-		    *dashClock = nullptr,
-		    *morphClock = nullptr;
+		    *dashClock = nullptr;
 	sf::Time morphDuration;
 
 	/** True when the enemy is morphed into a harmless Alien during EXTRA game */
@@ -84,10 +83,7 @@ public:
 
 	explicit Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info);
 
-	/** If 'b', morphs the enemy for 'duration'; if duration == sf::Time::Zero, 
-	 *  morphs indefinitely. If !'b', unmorph.
-	 */
-	void setMorphed(bool b, sf::Time duration = sf::Time::Zero);
+	void setMorphed(bool b);
 	bool isMorphed() const { return morphed; }
 
 	Game::Bullet* checkShoot() const;

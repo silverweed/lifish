@@ -3,7 +3,8 @@
 #include <SFML/System.hpp>
 #include "Entity.hpp"
 #include "Clock.hpp"
-#include "AnimatedSprite.hpp"
+#include "Grabbable.hpp"
+#include "Animated.hpp"
 
 namespace Game {
 
@@ -16,7 +17,8 @@ class Letter : public Game::Entity {
 
 	/** The clock driving the letter's transitions */
 	Game::Clock *transitionClock = nullptr;
-	AnimatedSprite* animatedSprite = nullptr;
+	Game::Grabbable *grabbable = nullptr;
+	Game::Animated *animated = nullptr;
 
 	/** Whether this letter is transitioning or not */
 	bool transitioning = false;

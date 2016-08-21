@@ -8,6 +8,8 @@ namespace Game {
 
 namespace Conf {
 
+	const sf::Time EXTRA_GAME_DURATION = sf::seconds(30);
+
 	namespace Player {
 		constexpr unsigned short INITIAL_LIVES = 3;
 		constexpr unsigned short MAX_LIFE = 16;
@@ -26,7 +28,6 @@ namespace Conf {
 	
 	namespace Enemy {
 		const sf::Time DEATH_TIME = sf::seconds(2);
-		const sf::Time COIN_MORPH_DURATION = sf::seconds(30);
 	}
 
 	namespace Bomb {

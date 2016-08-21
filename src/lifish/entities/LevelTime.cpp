@@ -1,4 +1,5 @@
 #include "LevelTime.hpp"
+#include "game_values.hpp"
 
 using Game::LevelTime;
 
@@ -7,10 +8,19 @@ LevelTime::LevelTime(sf::Time time)
 	, initialTime(time)
 {
 	clock = addComponent(new Game::Clock(*this)); 
+	extraGameClock = addComponent(new Game::Clock(*this)); 
 }
 
 sf::Time LevelTime::getRemainingTime() const {
 	return initialTime - clock->getElapsedTime();
+}
+
+sf::Time LevelTime::getRemainingExtraGameTime() const {
+	return Game::Conf::EXTRA_GAME_DURATION - extraGameClock->getElapsedTime();
+}
+
+void LevelTime::startExtraGame() {
+	extraGameClock->restart();
 }
 
 void LevelTime::setTime(sf::Time time) {
@@ -43,12 +53,15 @@ void LevelTime::reset() {
 	hurryUpWarningGiven = false;
 	hurryUpResponse = HurryUpResponse::HURRY_UP_OFF;
 	clock->restart();
+	extraGameClock->restart();
 }
 
 void LevelTime::pause() {
 	clock->pause();
+	extraGameClock->pause();
 }
 
 void LevelTime::resume() {
 	clock->resume();
+	extraGameClock->resume();
 }
