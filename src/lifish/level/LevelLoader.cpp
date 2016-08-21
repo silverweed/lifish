@@ -40,23 +40,20 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 
 			switch (level.getTile(left, top)) {
 			case EntityType::FIXED: 
-				//fixedEntities[top * LEVEL_WIDTH + left] = 
 				entities.add(new Game::FixedWall(curPos, level.getInfo().tileIDs.fixed));
 				break;
 
 			case EntityType::BREAKABLE:
-				//fixedEntities[top * LEVEL_WIDTH + left] = 
 				entities.add(new Game::BreakableWall(curPos, level.getInfo().tileIDs.breakable));
 				break;
 
 			case EntityType::TRANSPARENT_WALL:
-				//fixedEntities[top * LEVEL_WIDTH + left] =
 				entities.add(new Game::TransparentWall(curPos));
 				break;
 
 			case EntityType::COIN:
 				entities.add(new Game::Coin(curPos));
-				//fixedEntities[top * LEVEL_WIDTH + left] = new Game::Coin(curPos);
+				++lm.nCoins;
 				break;
 
 			case EntityType::PLAYER1: 

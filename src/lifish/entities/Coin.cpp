@@ -1,5 +1,3 @@
-#include <cmath>
-#include <forward_list>
 #include <cassert>
 #include "Coin.hpp"
 #include "Scored.hpp"
@@ -11,7 +9,6 @@
 #include "Collider.hpp"
 #include "Player.hpp"
 #include "Fixed.hpp"
-#include "Spawning.hpp"
 
 using Game::Coin;
 using Game::TILE_SIZE;

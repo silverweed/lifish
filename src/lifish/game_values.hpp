@@ -26,6 +26,7 @@ namespace Conf {
 	
 	namespace Enemy {
 		const sf::Time DEATH_TIME = sf::seconds(2);
+		const sf::Time COIN_MORPH_DURATION = sf::seconds(30);
 	}
 
 	namespace Bomb {

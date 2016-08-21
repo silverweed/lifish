@@ -36,7 +36,7 @@ void Game::Logic::bombExplosionLogic(Game::Entity *e, Game::LevelManager& lm,
 void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager& lm,
 		EntityList& tbspawned, EntityList&)
 {
-	if (!lm.isPlayer(e)) return;
+	if (!lm.isPlayer(*e)) return;
 	auto player = static_cast<Game::Player*>(e);
 
 	const auto pinfo = player->getInfo();

@@ -329,6 +329,7 @@ int main(int argc, char **argv) {
 
 	// Perform cleanup
 	mm.stop();
+	cache.finalize();
 
 	return Game::exitCode;
 }

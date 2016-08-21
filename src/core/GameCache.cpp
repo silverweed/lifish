@@ -89,3 +89,10 @@ sf::Font* GameCache::loadFont(const std::string& font_name) {
 #endif
 	return &font;
 }
+
+void GameCache::finalize() {
+	textures.clear();
+	sounds.clear();
+	soundBuffers.clear();
+	fonts.clear();
+}

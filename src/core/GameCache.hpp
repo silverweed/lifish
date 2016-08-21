@@ -61,6 +61,12 @@ public:
 	 *  and returns a pointer to it.
 	 */
 	sf::Font* loadFont(const std::string& font_name);
+
+	/** If the GameCache is a global object, this method must be called
+	 *  before exiting the program to prevent crashes due to improper
+	 *  automatic cleanup.
+	 */
+	void finalize();
 };
 
 }

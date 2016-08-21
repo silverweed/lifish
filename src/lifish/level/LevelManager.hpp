@@ -33,6 +33,7 @@ class LevelManager final : public sf::Drawable, public Game::WithOrigin, private
 	/** Whether hurry up has already been triggered or not */
 	bool hurryUp = false;
 	bool extraGameTriggered = false;
+	unsigned short nCoins = 0;
 	bool paused = false;
 
 	Game::EntityGroup entities;
@@ -54,6 +55,7 @@ class LevelManager final : public sf::Drawable, public Game::WithOrigin, private
 
 	void _spawnBomb(Game::Bomb *b);
 	void _triggerHurryUp();
+	void _triggerExtraGame();
 
 public:
 	explicit LevelManager();
@@ -61,7 +63,7 @@ public:
 	/** Generates n players and returns them. If n > MAX_PLAYERS, only generate MAX_PLAYERS players. */
 	auto createNewPlayers(unsigned short n = Game::MAX_PLAYERS) -> std::vector<Game::Player*>;
 
-	bool isPlayer(const Game::Entity *const e) const;
+	bool isPlayer(const Game::Entity& e) const;
 	/** Returns the id-th player (id starting from 1) */
 	const Game::Player* getPlayer(unsigned short id) const;
 

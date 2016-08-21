@@ -64,7 +64,7 @@ static Game::Direction seeing_player(const Game::LevelManager& lm, const Game::S
 	unsigned short dist = Game::LEVEL_WIDTH + 1;
 	for (unsigned short i = 0; i < 4; ++i) {
 		for (const auto& pair : seen[i]) {
-			if (lm.isPlayer(pair.first) && pair.second < dist) {
+			if (lm.isPlayer(*pair.first) && pair.second < dist) {
 				dir = static_cast<Game::Direction>(i);
 				dist = pair.second;
 			}

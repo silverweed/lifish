@@ -10,10 +10,9 @@ namespace Game {
  * during its lifetime (either once or several times).
  */
 class Spawning : public Game::Component {
-public:
+
 	using SpawnCondition = std::function<bool(std::forward_list<Game::Entity*>&)>;
 
-private:
 	SpawnCondition spawnCondition;
 	std::forward_list<Game::Entity*> spawned;
 	bool _hasSpawned = false;

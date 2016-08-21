@@ -2,8 +2,9 @@
 #include "game_logic.hpp"
 #include "Enemy.hpp"
 #include "LevelLoader.hpp"
+#include "Coin.hpp"
 #include <memory>
-//#include <iostream>
+#include <iostream>
 
 using Game::LevelManager;
 
@@ -51,8 +52,13 @@ void LevelManager::update() {
 	for (auto e : to_be_spawned)
 		spawn(e);
 
-	for (auto e : to_be_killed)
+	for (auto e : to_be_killed) {
 		entities.remove(*e);
+		std::cerr << dynamic_cast<Game::Coin*>(e) << std::endl;
+		if (dynamic_cast<Game::Coin*>(e) != nullptr)
+			if (--nCoins == 0) 
+				_triggerExtraGame();
+	}
 
 	// Update entities and their components
 	entities.updateAll();
@@ -62,9 +68,9 @@ void LevelManager::update() {
 		_triggerHurryUp();
 }
 
-bool LevelManager::isPlayer(const Game::Entity *const e) const {
+bool LevelManager::isPlayer(const Game::Entity& e) const {
 	for (const auto& p : players)
-		if (e == p.get()) return true;
+		if (&e == p.get()) return true;
 	return false;
 }
 
@@ -112,6 +118,7 @@ void LevelManager::reset() {
 
 	hurryUp = false;
 	extraGameTriggered = false;
+	nCoins = 0;
 }
 
 bool LevelManager::isBombAt(const sf::Vector2i& tile) const {
@@ -159,4 +166,14 @@ void LevelManager::_triggerHurryUp() {
 		enemy->get<Game::Shooting>()->setFireRateMult(2);
 	});
 	hurryUp = true;
+}
+
+void LevelManager::_triggerExtraGame() {
+	entities.apply([] (Game::Entity *e) {
+		auto enemy = dynamic_cast<Game::Enemy*>(e);
+		if (enemy == nullptr) return;
+		
+		enemy->setMorphed(true, Game::Conf::Enemy::COIN_MORPH_DURATION);
+	});
+	extraGameTriggered = true;
 }
