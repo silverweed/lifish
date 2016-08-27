@@ -115,6 +115,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window)
 }
 
 Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {
+	// TODO better mute handling
 	if (what == VolumeAction::MUTE_TOGGLE) {
 		switch (which) {
 		case VolumeType::MUSIC: 
@@ -123,7 +124,7 @@ Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {
 				prevMusicVolume = Game::options.musicVolume;
 				Game::options.musicVolume = 0;
 			} else {
-				//mute->unmute
+				// mute->unmute
 				Game::options.musicVolume = prevMusicVolume;
 				prevMusicVolume = -1;
 			}
