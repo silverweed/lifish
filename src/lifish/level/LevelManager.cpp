@@ -5,7 +5,6 @@
 #include "LevelLoader.hpp"
 #include "Coin.hpp"
 #include <memory>
-#include <forward_list>
 #include <iostream>
 
 using Game::LevelManager;
@@ -183,12 +182,10 @@ void LevelManager::_triggerExtraGame() {
 }
 
 void LevelManager::_endExtraGame() {
-	std::forward_list<Game::Entity*> letters;
-
-	entities.apply([&letters] (Game::Entity *e) {
+	entities.apply([] (Game::Entity *e) {
 		auto letter = dynamic_cast<Game::Letter*>(e);
 		if (letter != nullptr) {
-			letters.push_front(e);
+			letter->get<Game::Killable>()->kill();
 			return;
 		}
 
@@ -198,9 +195,6 @@ void LevelManager::_endExtraGame() {
 		enemy->setMorphed(false);
 	});
 	
-	for (auto letter : letters)
-		entities.remove(*letter);
-
 	extraGame = false;
 }
 

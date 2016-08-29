@@ -52,10 +52,10 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	if (id > N_EXTRA_LETTERS - 1) 
 		id = N_EXTRA_LETTERS - 1;
 
-	std::array<Animation, N_EXTRA_LETTERS> animations;
+	auto& animatedSprite = animated->getSprite();
 
 	for (unsigned short i = 0; i < N_EXTRA_LETTERS; ++i) {	
-		animations[i] = animated->addAnimation(Game::to_string(i));
+		auto& anim = animated->addAnimation(Game::to_string(i));
 		// Total different frames are 4 * N_EXTRA_LETTERS
 		// (full letter + 3 transitions to next, cyclic).
 		// Here, animations[i] is _5_ frames long, because it contains:
@@ -65,16 +65,16 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 		// that is when animations[i].isPlaying() == false.
 		for (unsigned short j = 0; j < 5; ++j) {
 			const unsigned short idx = i * 4 + j;
-			animations[i].addFrame(sf::IntRect(
+			anim.addFrame(sf::IntRect(
 					(idx % 10) * TILE_SIZE,
 					((idx % (N_EXTRA_LETTERS * 4)) / 10)  * TILE_SIZE,
 					TILE_SIZE, TILE_SIZE));
 		}
+		if (i == id)
+			animatedSprite.setAnimation(anim);
 	}
 
-	auto& animatedSprite = animated->getSprite();
-	animatedSprite.setAnimation(animations[id]);
-	animatedSprite.setLooped(false);
+	animatedSprite.setLooped(false, false);
 	animatedSprite.setFrameTime(sf::seconds(0.1));
 	animatedSprite.pause();
 }

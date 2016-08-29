@@ -37,7 +37,8 @@
 class AnimatedSprite : public sf::Drawable, public sf::Transformable
 {
 public:
-    explicit AnimatedSprite(sf::Time frameTime = sf::seconds(0.2f), bool paused = false, bool looped = true);
+    explicit AnimatedSprite(sf::Time frameTime = sf::seconds(0.2f), bool paused = false, 
+		    bool looped = true, bool hideNonLoopedOnStop = true);
 
     void update(sf::Time deltaTime);
     void setAnimation(const Animation& animation);
@@ -46,7 +47,7 @@ public:
     void play(const Animation& animation);
     void pause();
     void stop();
-    void setLooped(bool looped);
+    void setLooped(bool looped, bool hideNonLoopedOnStop = true);
     void setColor(const sf::Color& color);
     const sf::Color& getColor() const;
     const Animation* getAnimation() const;
@@ -65,6 +66,7 @@ private:
     std::size_t m_currentFrame;
     bool m_isPaused;
     bool m_isLooped;
+    bool m_hideNonLoopedOnStop;
     const sf::Texture* m_texture;
     sf::Vertex m_vertices[4];
     sf::Color m_origColor;

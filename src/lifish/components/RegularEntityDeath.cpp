@@ -17,20 +17,28 @@ RegularEntityDeath::RegularEntityDeath(Game::Entity& owner, sf::Time deathTime)
 }
 
 void RegularEntityDeath::kill() {
-	auto moving = owner.get<Game::AxisMoving>();
-	if (moving != nullptr) {
-		moving->setAutoRealignEnabled(false);
-		moving->stop();
-		auto movingAnimator = owner.get<Game::MovingAnimator>();
-		if (movingAnimator != nullptr)
-			movingAnimator->setActive(false);
+	// Stop all moving components
+	auto moving = owner.getAllRecursive<Game::AxisMoving>();
+	for (auto mv : moving) {
+		mv->setAutoRealignEnabled(false);
+		mv->stop();
 	}
-	auto animated = owner.get<Game::Animated>();
-	if (animated != nullptr) {
-		auto& animatedSprite = animated->getSprite();
-		animated->setAnimation("death");
-		animatedSprite.play();
+	
+	// Disable all MovingAnimators
+	auto movingAnimators = owner.getAllRecursive<Game::MovingAnimator>();
+	for (auto movingAnimator : movingAnimators)
+		movingAnimator->setActive(false);
+
+	// Switch to death animation
+	auto animated = owner.getAllRecursive<Game::Animated>();
+	for (auto anim : animated) {
+		if (!anim->hasAnimation("death")) continue;
+		auto& animSprite = anim->getSprite();
+		anim->setAnimation("death");
+		animSprite.play();
 	}
+
+	// Play death sound
 	auto sounded = owner.get<Game::Sounded>();
 	if (sounded != nullptr)
 		Game::cache.playSound(sounded->getSoundFile(Game::Sounds::DEATH));

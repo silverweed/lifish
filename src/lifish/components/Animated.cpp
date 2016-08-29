@@ -51,6 +51,10 @@ std::string Animated::getAnimationName() const {
 	return "";
 }
 
+bool Animated::hasAnimation(const std::string& name) const {
+	return animations.find(name) != animations.end();
+}
+
 void Animated::setAnimation(const std::string& name) {
 	auto anim = getAnimation(name);
 	if (anim == nullptr)
