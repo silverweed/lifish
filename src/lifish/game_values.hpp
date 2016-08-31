@@ -64,7 +64,13 @@ namespace Conf {
 		const sf::Time EXPIRE_TIME = sf::seconds(10);
 		const sf::Time SHIELD_DURATION = sf::seconds(20);
 		const sf::Time SPEEDY_DURATION = sf::seconds(20);
+
 		extern std::discrete_distribution<unsigned short> distribution;
+	}
+
+	namespace Boss {
+		constexpr unsigned int ALIEN_BOSS_VALUE = 5000;
+		constexpr unsigned int BIG_ALIEN_BOSS_VALUE = 50000;
 	}
 }
 

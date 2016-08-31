@@ -28,6 +28,9 @@ class Explosion : public Game::Entity, public sf::Drawable {
 
 	/** The radius of this explosion */
 	unsigned short radius;
+	
+	/** The damage caused by this explosion per tick */
+	unsigned short damage;
 
 	/** The tiles involved in this explosion (valid after calling propagate());
 	 *  more specifically, this is a 4-element array containing the propagation
@@ -48,7 +51,8 @@ public:
 	 *  are given at all.
 	 */
 	explicit Explosion(const sf::Vector2f& pos, unsigned short radius, 
-			const Game::Player *const sourcePlayer = nullptr);
+			const Game::Player *const sourcePlayer = nullptr,
+			unsigned short damage = 1);
 
 	/** Calculate the tiles this explosion propagates to and fill `propagation`
 	 *  (fixed walls and borders stop the explosion). Also kills enemies and
@@ -60,6 +64,8 @@ public:
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 
 	const Game::Player* getSourcePlayer() const { return sourcePlayer; }
+
+	unsigned short getDamage() const { return damage; }
 
 	/** Hits any entity involved in this explosion */
 	void checkHit(Game::LevelManager& lm);

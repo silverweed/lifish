@@ -47,6 +47,6 @@ void Controllable::update() {
 		}
 	}
 
-	if (owner.isAligned())
+	if (active && owner.isAligned())
 		moving->setDirection(dir);
 }

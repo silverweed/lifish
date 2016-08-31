@@ -115,6 +115,7 @@ void Player::update() {
 }
 
 void Player::_kill() {
+	get<Game::Controllable>()->setActive(false);
 	get<Game::Bonusable>()->reset();
 	info.reset();
 	death->kill();
@@ -139,7 +140,7 @@ void Player::_checkCollision(Game::Collider& cld) {
 			return;
 		// fallthrough
 	case L::EXPLOSIONS:
-		damage = 1;
+		damage = static_cast<const Game::Explosion&>(cld.getOwner()).getDamage();
 		break;
 	case L::ENEMY_BULLETS:
 	case L::BOSS_BULLETS:
@@ -186,6 +187,7 @@ void Player::resurrect() {
 	get<Game::Lifed>()->setLife(Game::Conf::Player::MAX_LIFE);
 	moving->realign();
 	killable->resurrect();
+	get<Game::Controllable>()->setActive(true);
 }
 
 void Player::_hurt() {

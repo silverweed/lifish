@@ -13,6 +13,7 @@ class Controllable : public Game::Component {
 	const std::array<sf::Keyboard::Key, Game::Controls::CONTROLS_NUM>& controls;
 	short joystickUsed = -1;
 	Game::AxisMoving *moving = nullptr;
+	bool active = true;
 
 public:
 	explicit Controllable(Game::Entity& owner, 
@@ -25,6 +26,7 @@ public:
 	void setJoystickUsed(short idx) { joystickUsed = idx; }
 
 	bool hasFocus() const { return window != nullptr && window->hasFocus(); }
+	void setActive(bool a) { active = a; }
 };
 
 }

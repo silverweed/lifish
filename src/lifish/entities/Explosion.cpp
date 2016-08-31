@@ -17,9 +17,11 @@ using Game::Explosion;
 using Game::TILE_SIZE;
 using Game::Direction;
 
-Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, const Game::Player *const source)
+Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, 
+		const Game::Player *const source, unsigned short damage)
 	: Game::Entity(pos)
 	, radius(_radius)
+	, damage(damage)
 	, sourcePlayer(source)
 {
 	//collider = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS, 

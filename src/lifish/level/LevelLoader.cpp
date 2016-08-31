@@ -4,6 +4,7 @@
 #include "FixedWall.hpp"
 #include "Teleport.hpp"
 #include "BreakableWall.hpp"
+#include "AlienBoss.hpp"
 #include "AI.hpp"
 #include "TransparentWall.hpp"
 #include "Coin.hpp"
@@ -85,19 +86,18 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 					entities.add(teleport);
 					break;
 				}
-			/*
 			case EntityType::BOSS:
-				if (_isFinalLevel()) {
-					if (finalBoss == nullptr) {
-						finalBoss = std::unique_ptr<Game::FinalBoss>(new Game::FinalBoss(curPos));
-					} else {
-						std::cerr << "[ WARNING ] Duplicate Final Boss! Not adding more..." << std::endl;
-					}
-				} else {
-					bosses.push_back(new Game::Boss(curPos));
-				}
+				entities.add(new Game::AlienBoss(curPos));
+				//if (_isFinalLevel()) {
+					//if (finalBoss == nullptr) {
+						//finalBoss = std::unique_ptr<Game::FinalBoss>(new Game::FinalBoss(curPos));
+					//} else {
+						//std::cerr << "[ WARNING ] Duplicate Final Boss! Not adding more..." << std::endl;
+					//}
+				//} else {
+					//bosses.push_back(new Game::Boss(curPos));
+				//}
 				break;
-			*/
 			case EntityType::ENEMY1: 
 				enemy_id = 1;
 				break;

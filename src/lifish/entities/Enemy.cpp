@@ -4,6 +4,7 @@
 #include "Scored.hpp"
 #include "Lifed.hpp"
 #include "LevelManager.hpp"
+#include "Explosion.hpp"
 #include "Sounded.hpp"
 #include "Collider.hpp"
 #include "ZIndexed.hpp"
@@ -159,7 +160,7 @@ void Enemy::setMorphed(bool b) {
 void Enemy::_checkCollision(Game::Collider& coll) {
 	if (coll.getLayer() != Game::Layers::EXPLOSIONS) return;
 	auto lifed = get<Game::Lifed>();
-	if (lifed->decLife(1) <= 0) {
+	if (lifed->decLife(static_cast<const Game::Explosion&>(coll.getOwner()).getDamage()) <= 0) {
 		killable->kill();	
 	}
 }
