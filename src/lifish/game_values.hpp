@@ -69,8 +69,14 @@ namespace Conf {
 	}
 
 	namespace Boss {
-		constexpr unsigned int ALIEN_BOSS_VALUE = 5000;
-		constexpr unsigned int BIG_ALIEN_BOSS_VALUE = 50000;
+		namespace AlienBoss {
+			constexpr unsigned int VALUE = 5000;
+			constexpr unsigned short LIFE = 20;
+		}
+		namespace BigAlienBoss {
+			constexpr unsigned int VALUE = 50000;
+			constexpr unsigned short LIFE = 100;
+		}
 	}
 }
 

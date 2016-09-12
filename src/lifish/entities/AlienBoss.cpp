@@ -3,6 +3,7 @@
 #include "Collider.hpp"
 #include "Sounded.hpp"
 #include "Drawable.hpp"
+#include "Lifed.hpp"
 #include "Scored.hpp"
 #include "Sprite.hpp"
 
@@ -17,7 +18,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 		Game::getAsset("test", std::string("alienboss_death.ogg")),
 		Game::getAsset("test", std::string("alienboss_hurt.ogg"))
 	}));
-	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
+	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
 		// on collision
 		_checkCollision(coll);
 	}, Game::Layers::BOSSES, SIZE));
@@ -29,9 +30,10 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 		// TODO
 		return false;
 	}));
-	addComponent(new Game::Scored(*this, Game::Conf::Boss::ALIEN_BOSS_VALUE));
+	addComponent(new Game::Scored(*this, Game::Conf::Boss::AlienBoss::VALUE));
 	addComponent(new Game::Drawable(*this, *addComponent(new Game::Sprite(*this, 
 				Game::getAsset("test", "alien_boss.png"), sf::IntRect(0, 0, SIZE.x, SIZE.y)))));
+	addComponent(new Game::Lifed(*this, Game::Conf::Boss::AlienBoss::LIFE));
 }
 
 void AlienBoss::_kill() {

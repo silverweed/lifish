@@ -8,6 +8,8 @@
 #include "game_values.hpp"
 #include <cassert>
 
+#include <iostream>
+
 using Game::Boss;
 
 Boss::Boss(const sf::Vector2f& pos)
@@ -33,7 +35,10 @@ void Boss::update() {
 void Boss::_checkCollision(Game::Collider& coll) {
 	if (coll.getLayer() != Game::Layers::EXPLOSIONS) return;
 
-	const auto& expl = static_cast<const Game::Explosion&>(coll.getOwner());
+	auto& expl = static_cast<Game::Explosion&>(coll.getOwnerRW());
+	if (expl.hasDamaged(this)) return;
+
+	std::cerr<<"ahead\n";
 
 	assert(collider != nullptr);
 	
@@ -51,5 +56,6 @@ void Boss::_checkCollision(Game::Collider& coll) {
 	
 	get<Game::Lifed>()->decLife(damage);
 	_hurt();
+	expl.dealDamageTo(this);
 	Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::HURT));
 }

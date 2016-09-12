@@ -12,6 +12,8 @@
 #include "Sounded.hpp"
 #include "CompoundCollider.hpp"
 #include <list>
+#include <algorithm>
+#include <iostream>
 
 using Game::Explosion;
 using Game::TILE_SIZE;
@@ -186,4 +188,14 @@ void Explosion::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	window.draw(*explosionV, states);
 	// Draw center
 	window.draw(*explosionC, states);
+}
+
+void Explosion::dealDamageTo(const Game::Entity* entity) {
+	std::cerr<<this<<" push back " << entity<<std::endl;
+	damagedEntities.push_back(entity);
+}
+
+bool Explosion::hasDamaged(const Game::Entity* entity) const {
+	std::cerr<<this<<" find " << entity<<" "<<(std::find(damagedEntities.begin(), damagedEntities.end(), entity) != damagedEntities.end())<<std::endl;
+	return std::find(damagedEntities.begin(), damagedEntities.end(), entity) != damagedEntities.end();
 }

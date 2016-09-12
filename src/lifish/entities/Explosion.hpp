@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <vector>
 #include <SFML/Graphics.hpp>
 #include "Animated.hpp"
 #include "Collider.hpp"
@@ -41,6 +42,12 @@ class Explosion : public Game::Entity, public sf::Drawable {
 	/** The player who dropped the bomb this explosion originated from */
 	const Game::Player *const sourcePlayer;
 
+	/** The set of the entities already damaged by this Explosion.
+	 *  Note: we keep const pointers instead of references because
+	 *  reference_wrapper is not trivially hashable.
+	 */
+	std::vector<const Game::Entity*> damagedEntities;
+
 
 	/** To be called after `propagate()`; sets the correct positions for explosionH/V */
 	void _setPropagatedAnims();
@@ -66,6 +73,14 @@ public:
 	const Game::Player* getSourcePlayer() const { return sourcePlayer; }
 
 	unsigned short getDamage() const { return damage; }
+
+	/** Use this function to tell this Explosion it damaged this Entity;
+	 *  Explosion can be then queries via `hasDamaged(Entity)`.
+	 *  Useful for interacting with entities that can only take 1 hit from
+	 *  an Explosion.
+	 */
+	void dealDamageTo(const Game::Entity* entity); 
+	bool hasDamaged(const Game::Entity* entity) const;
 
 	/** Hits any entity involved in this explosion */
 	void checkHit(Game::LevelManager& lm);
