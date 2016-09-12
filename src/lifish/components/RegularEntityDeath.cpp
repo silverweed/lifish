@@ -12,8 +12,12 @@ RegularEntityDeath::RegularEntityDeath(Game::Entity& owner, sf::Time deathTime)
 	, deathTime(deathTime)
 {
 	killable = owner.get<Game::Killable>();
+}
+
+Game::Entity* RegularEntityDeath::init() {
 	if (killable == nullptr)
 		throw std::invalid_argument("RegularEntityDeath's owner has no Killable component!");
+	return this;
 }
 
 void RegularEntityDeath::kill() {

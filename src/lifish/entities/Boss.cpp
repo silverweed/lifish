@@ -8,8 +8,6 @@
 #include "game_values.hpp"
 #include <cassert>
 
-#include <iostream>
-
 using Game::Boss;
 
 Boss::Boss(const sf::Vector2f& pos)
@@ -37,8 +35,6 @@ void Boss::_checkCollision(Game::Collider& coll) {
 
 	auto& expl = static_cast<Game::Explosion&>(coll.getOwnerRW());
 	if (expl.hasDamaged(this)) return;
-
-	std::cerr<<"ahead\n";
 
 	assert(collider != nullptr);
 	

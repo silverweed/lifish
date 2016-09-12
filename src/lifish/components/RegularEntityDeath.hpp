@@ -19,6 +19,8 @@ public:
 
 	void kill();
 	bool isKillInProgress() const;
+
+	Game::Entity* init() override;
 };
 
 }
