@@ -47,6 +47,7 @@ AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction d
 	}
 
 	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider&) {
+		// on collision
 		auto klb = get<Game::Killable>();
 		if (!klb->isKilled()) {
 			klb->kill();

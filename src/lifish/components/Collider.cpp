@@ -26,14 +26,15 @@ void Collider::update() {
 	Game::Component::update();
 	
 	if (onCollision)
-		for (auto& cld : colliding)
-			onCollision(cld);
+		for (auto cld : colliding)
+			if (!cld.expired())
+				onCollision(*cld.lock().get());
 }
 
 bool Collider::collidesWithSolid() const {
 	if (atLimit) return true;
-	for (const auto& c : colliding)
-		if (c.get().isSolidFor(*this))
+	for (auto c : colliding)
+		if (!c.expired() && c.lock().get()->isSolidFor(*this))
 			return true;
 	return false;
 }

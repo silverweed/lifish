@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 #include <SFML/Graphics.hpp>
 #include "Component.hpp"
 #include "game.hpp"
@@ -11,12 +12,13 @@ namespace Game {
 class CollisionDetector;
 
 class Collider : public Game::Component {
+
 	friend class Game::CollisionDetector;
 
 	using CollisionFunc = std::function<void(Game::Collider&)>;
 
 	/** All the Colliders which are colliding with this one */
-	std::vector<std::reference_wrapper<Game::Collider>> colliding;
+	std::vector<std::weak_ptr<Game::Collider>> colliding;
 	/** Whether this entity is at a level's boundary */
 	bool atLimit = false;
 	
@@ -49,9 +51,9 @@ public:
 			  bool phantom = false);
 
 	/** @return the list of Colliders colliding with this one */
-	std::vector<std::reference_wrapper<Game::Collider>> getColliding() const { return colliding; }
+	std::vector<std::weak_ptr<Game::Collider>> getColliding() const { return colliding; }
 	/** Manually sets `coll` to be colliding with this collider */
-	void addColliding(Game::Collider& coll) { colliding.push_back(coll); }
+	void addColliding(const std::weak_ptr<Game::Collider>& coll) { colliding.push_back(coll); }
 
 	/** @return the collision layer of this Collider */
 	Game::Layers::Layer getLayer() const { return layer; }

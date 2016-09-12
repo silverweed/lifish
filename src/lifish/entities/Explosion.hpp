@@ -1,7 +1,7 @@
 #pragma once
 
 #include <array>
-#include <vector>
+#include <unordered_set>
 #include <SFML/Graphics.hpp>
 #include "Animated.hpp"
 #include "Collider.hpp"
@@ -46,7 +46,7 @@ class Explosion : public Game::Entity, public sf::Drawable {
 	 *  Note: we keep const pointers instead of references because
 	 *  reference_wrapper is not trivially hashable.
 	 */
-	std::vector<const Game::Entity*> damagedEntities;
+	std::unordered_set<const Game::Entity*> damagedEntities;
 
 
 	/** To be called after `propagate()`; sets the correct positions for explosionH/V */

@@ -13,7 +13,6 @@
 #include "CompoundCollider.hpp"
 #include <list>
 #include <algorithm>
-#include <iostream>
 
 using Game::Explosion;
 using Game::TILE_SIZE;
@@ -152,7 +151,7 @@ void Explosion::checkHit(Game::LevelManager& lm) {
 		if (cld == nullptr) return;
 		if (!explCollider->contains(*cld)) return;
 		if (explCollider->collidesWith(*cld))
-			cld->addColliding(*explCollider);
+			cld->addColliding(getShared<Game::Collider>());
 	});
 }
 
@@ -191,11 +190,9 @@ void Explosion::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 }
 
 void Explosion::dealDamageTo(const Game::Entity* entity) {
-	std::cerr<<this<<" push back " << entity<<std::endl;
-	damagedEntities.push_back(entity);
+	damagedEntities.insert(entity);
 }
 
 bool Explosion::hasDamaged(const Game::Entity* entity) const {
-	std::cerr<<this<<" find " << entity<<" "<<(std::find(damagedEntities.begin(), damagedEntities.end(), entity) != damagedEntities.end())<<std::endl;
-	return std::find(damagedEntities.begin(), damagedEntities.end(), entity) != damagedEntities.end();
+	return damagedEntities.find(entity) != damagedEntities.end();
 }
