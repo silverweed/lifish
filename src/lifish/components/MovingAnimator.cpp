@@ -41,8 +41,8 @@ void MovingAnimator::update() {
 
 	if (!moving->isMoving()) {
 		if (prev != Game::Direction::NONE) {
-			animated->setAnimation("walk_down");
-			sprite.stop();	
+			animated->setAnimation("idle");
+			sprite.play();
 		}
 		prev = dir;
 		return;

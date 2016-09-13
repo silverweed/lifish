@@ -33,6 +33,7 @@ Player::Player(const sf::Vector2f& pos, const unsigned short id)
 }
 
 void Player::_init() {
+	// Setup components
 	addComponent(new Game::Lifed(*this, Game::Conf::Player::MAX_LIFE));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& cld) {
 		if (!killable->isKilled())
@@ -59,6 +60,7 @@ void Player::_init() {
 	hurtClock = addComponent(new Game::Clock(*this));
 	death = addComponent(new Game::RegularEntityDeath(*this, Game::Conf::Player::DEATH_TIME));
 
+	// Setup animations
 	auto& a_down = animated->addAnimation("walk_down");
 	auto& a_up = animated->addAnimation("walk_up");
 	auto& a_right = animated->addAnimation("walk_right");
@@ -77,14 +79,20 @@ void Player::_init() {
 
 	for (unsigned short i = 0; i < DEATH_N_FRAMES; ++i)
 		a_death.addFrame(sf::IntRect(i * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
-	a_win.addFrame(sf::IntRect(3 * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
-	a_hurt.addFrame(sf::IntRect(4 * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+	a_win.addFrame(sf::IntRect(DEATH_N_FRAMES * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+	a_hurt.addFrame(sf::IntRect((DEATH_N_FRAMES + 1) * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+
+	auto& a_idle = animated->addAnimation("idle");
+	for (unsigned short i = 0; i < IDLE_N_FRAMES; ++i)
+		a_idle.addFrame(sf::IntRect((DEATH_N_FRAMES + 2) * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+	a_idle.addFrame(sf::IntRect((DEATH_N_FRAMES + 3) * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
 	auto& animatedSprite = animated->getSprite();
-	animatedSprite.setAnimation(a_down);
+	animated->setDefaultFrameTime(sf::seconds(0.06));
+	animated->setFrameTime("idle", sf::seconds(0.15));
+	animated->setAnimation(a_idle);
 	animatedSprite.setLooped(true);
-	animatedSprite.setFrameTime(sf::seconds(0.06));
-	animatedSprite.pause();
+	animatedSprite.play();
 }
 
 void Player::update() {
@@ -108,7 +116,7 @@ void Player::update() {
 		if (dir != Game::Direction::NONE)
 			animated->setAnimation("walk_" + Game::directionToString(dir));
 		else {
-			animated->setAnimation("walk_down");
+			animated->setAnimation("idle");
 			moving->stop();
 		}
 	}
@@ -182,8 +190,8 @@ void Player::_checkCollision(Game::Collider& cld) {
 
 void Player::resurrect() {
 	auto& animatedSprite = get<Game::Animated>()->getSprite();
-	animatedSprite.setAnimation(*get<Game::Animated>()->getAnimation("walk_down"));
-	animatedSprite.pause();
+	animatedSprite.setAnimation(*get<Game::Animated>()->getAnimation("idle"));
+	animatedSprite.play();
 	get<Game::Lifed>()->setLife(Game::Conf::Player::MAX_LIFE);
 	moving->realign();
 	killable->resurrect();

@@ -59,6 +59,7 @@ class Player : public Game::Entity {
 
 	constexpr static unsigned short WALK_N_FRAMES = 8;
 	constexpr static unsigned short DEATH_N_FRAMES = 3;
+	constexpr static unsigned short IDLE_N_FRAMES = 20;
 	const static sf::Time DEATH_TIME;
 
 	/** While true, the idle pose becomes ANIM_WIN */

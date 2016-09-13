@@ -20,6 +20,8 @@ protected:
 	sf::Texture *texture;
 	Game::Clock *frameClock;
 	std::unordered_map<std::string, Animation> animations;
+	std::unordered_map<std::string, sf::Time> frameTimes;
+	sf::Time defaultFrameTime = sf::Time::Zero;
 	AnimatedSprite animatedSprite;
 	bool manualPosition = false;
 
@@ -44,6 +46,11 @@ public:
 	void setAnimation(const std::string& name);
 	/** Sets the current animation to `anim` */
 	void setAnimation(Animation& anim);
+
+	/** Sets the default frame time of all animations */
+	void setDefaultFrameTime(sf::Time time);
+	/** Sets the default frame time of animation `name` (overrides default frame time) */
+	void setFrameTime(const std::string& name, sf::Time time);
 
 	/** Returns true if cur animation == `name` and animatedSprite is playing */
 	bool isPlaying(const std::string& name);

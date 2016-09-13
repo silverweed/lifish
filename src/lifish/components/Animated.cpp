@@ -61,6 +61,12 @@ void Animated::setAnimation(const std::string& name) {
 		throw std::invalid_argument("Animation set to non-existing `" + name + "`!");
 
 	animatedSprite.setAnimation(*anim);
+	// Set the frame time, if specified.
+	auto it = frameTimes.find(name);
+	if (it != frameTimes.end())
+		animatedSprite.setFrameTime(it->second);
+	else if (defaultFrameTime != sf::Time::Zero)
+		animatedSprite.setFrameTime(defaultFrameTime);
 }
 
 void Animated::setAnimation(Animation& anim) {
@@ -78,4 +84,12 @@ void Animated::update() {
 
 bool Animated::isPlaying(const std::string& name) {
 	return getAnimation(name) == animatedSprite.getAnimation() && animatedSprite.isPlaying();
+}
+
+void Animated::setDefaultFrameTime(sf::Time time) {
+	defaultFrameTime = time;
+}
+
+void Animated::setFrameTime(const std::string& name, sf::Time time) {
+	frameTimes[name] = time;
 }

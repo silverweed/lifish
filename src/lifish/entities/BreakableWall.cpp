@@ -18,12 +18,6 @@ BreakableWall::BreakableWall(const sf::Vector2f& pos, const std::string& texture
 		unsigned short life, unsigned int score)
 	: Game::Entity(pos)
 {
-	// TODO
-	//transparentTo.players = false;
-	//transparentTo.enemies = false;
-	//transparentTo.bullets = false;
-	//transparentTo.explosions = false;
-	
 	_setupComponents(life, score);
 	auto& animation = _setupAnimations(texture_name);
 	for (unsigned short i = 0; i < 4; ++i)
