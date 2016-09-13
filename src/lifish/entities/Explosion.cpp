@@ -25,8 +25,6 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 	, damage(damage)
 	, sourcePlayer(source)
 {
-	//collider = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS, 
-				//sf::Vector2i(TILE_SIZE, TILE_SIZE)));
 	addComponent(new Game::Sounded(*this, { Game::getAsset("sounds", "explosion.ogg") }));
 	explosionC = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "explosionC.png")));
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::EXPLOSIONS));
@@ -128,31 +126,23 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 	}
 
 	_setPropagatedAnims();
-	explCollider = addComponent(new Game::CompoundCollider(*this, Game::Layers::EXPLOSIONS,
+	explCollider = addComponent(new Game::CompoundCollider(*this, Game::Layers::EXPLOSIONS, {
+		Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
 			sf::Vector2i(TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT] + 1),
 				     TILE_SIZE),
 			// offset
-			sf::Vector2f(-TILE_SIZE * propagation[Direction::LEFT], 0),
-		{ Game::Collider(*this, Game::Layers::EXPLOSIONS,
+			sf::Vector2f(-TILE_SIZE * propagation[Direction::LEFT], 0)),
+		Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
 			sf::Vector2i(TILE_SIZE,
 				     TILE_SIZE * (propagation[Direction::UP] + propagation[Direction::DOWN] + 1)),
 			// offset
 			sf::Vector2f(0, -TILE_SIZE * propagation[Direction::UP]))
-		}));
+	}));
+	lm.getEntities().refresh(*this);
 
 	return this;
-}
-
-void Explosion::checkHit(Game::LevelManager& lm) {
-	lm.getEntities().apply([this] (Game::Entity *e) {
-		auto cld = e->get<Game::Collider>();
-		if (cld == nullptr) return;
-		if (!explCollider->contains(*cld)) return;
-		if (explCollider->collidesWith(*cld))
-			cld->addColliding(getShared<Game::Collider>());
-	});
 }
 
 void Explosion::_setPropagatedAnims() {

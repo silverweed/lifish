@@ -58,8 +58,7 @@ void Screen::setOrigin(const sf::Vector2f& pos) {
 	Game::WithOrigin::setOrigin(pos);
 	bgSprite.setOrigin(pos);
 	for (auto& e : nonInteractables) {
-		auto t = dynamic_cast<Game::ShadedText*>(e.get());
-		if (t != nullptr)
+		if (auto t = dynamic_cast<Game::ShadedText*>(e.get()))
 			t->setOrigin(pos);
 		else
 			static_cast<sf::Sprite*>(e.get())->setOrigin(pos);

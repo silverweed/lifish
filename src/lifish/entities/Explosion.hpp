@@ -81,9 +81,6 @@ public:
 	 */
 	void dealDamageTo(const Game::Entity* entity); 
 	bool hasDamaged(const Game::Entity* entity) const;
-
-	/** Hits any entity involved in this explosion */
-	void checkHit(Game::LevelManager& lm);
 };
 
 }

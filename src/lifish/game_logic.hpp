@@ -23,8 +23,6 @@ namespace Logic {
 	DEF_LOGIC(bombExplosionLogic);
 	/** Make players drop bombs */
 	DEF_LOGIC(bombDeployLogic);
-	/** Make explosions destroy stuff */
-	DEF_LOGIC(explosionDamageLogic);
 	/** Make walls drop powerups */
 	DEF_LOGIC(bonusDropLogic);
 	/** Make morphed enemies drop letters */

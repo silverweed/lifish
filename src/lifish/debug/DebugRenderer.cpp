@@ -9,9 +9,8 @@ using Debug::DebugRenderer;
 
 void DebugRenderer::drawColliders(sf::RenderTarget& target, const Game::EntityGroup& group) {
 	group.apply([&target] (const Game::Entity *e) {
-		auto c = e->get<Game::Collider>();
-		if (c == nullptr) return;
-	
+		auto cls = e->getAllRecursive<Game::Collider>();
+
 		auto draw_coll_rect = [] (sf::RenderTarget& target, const Game::Collider& c, sf::Color color) {
 			const auto cr = c.getRect();
 			sf::RectangleShape rect(sf::Vector2f(cr.width, cr.height));
@@ -21,16 +20,20 @@ void DebugRenderer::drawColliders(sf::RenderTarget& target, const Game::EntityGr
 			target.draw(rect);
 		};
 
-		auto cc = dynamic_cast<Game::CompoundCollider*>(c);
-		if (cc == nullptr) {
-			draw_coll_rect(target, *c, c->isPhantom() 
-					? COLLIDER_PHANTOM_COLOR
-					: COLLIDER_REGULAR_COLOR);
-		} else {
-			draw_coll_rect(target, *cc, COLLIDER_COMPOUND_COLOR);
-			draw_coll_rect(target, static_cast<Game::Collider>(*c), COLLIDER_PHANTOM_COLOR);
-			for (const auto& cld : cc->getColliders())
-				draw_coll_rect(target, cld, COLLIDER_PHANTOM_COLOR);
+		for (const auto c : cls) {
+			auto cc = dynamic_cast<Game::CompoundCollider*>(c);
+			if (cc == nullptr) {
+				draw_coll_rect(target, *c, c->isPhantom() 
+						? COLLIDER_PHANTOM_COLOR
+						: COLLIDER_REGULAR_COLOR);
+			} else {
+				draw_coll_rect(target, *cc, COLLIDER_COMPOUND_COLOR);
+				draw_coll_rect(target, static_cast<Game::Collider>(*c), COLLIDER_PHANTOM_COLOR);
+				for (const auto& cld : cc->getColliders())
+					draw_coll_rect(target, cld, cld.isPhantom() 
+							? COLLIDER_PHANTOM_COLOR
+							: COLLIDER_REGULAR_COLOR);
+			}
 		}
 	});
 }

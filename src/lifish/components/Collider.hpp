@@ -10,6 +10,7 @@
 namespace Game {
 
 class CollisionDetector;
+class CompoundCollider;
 
 class Collider : public Game::Component {
 
@@ -36,6 +37,7 @@ class Collider : public Game::Component {
 	/** Optional callback to be called at every update */
 	CollisionFunc onCollision;
 
+	virtual bool _contains(const Game::Collider& other) const;
 public:
 	explicit Collider(Game::Entity& owner, 
 			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
@@ -51,9 +53,10 @@ public:
 			  bool phantom = false);
 
 	/** @return the list of Colliders colliding with this one */
-	std::vector<std::weak_ptr<Game::Collider>> getColliding() const { return colliding; }
+	std::vector<std::weak_ptr<Game::Collider>> getColliding() const;
+
 	/** Manually sets `coll` to be colliding with this collider */
-	void addColliding(const std::weak_ptr<Game::Collider>& coll) { colliding.push_back(coll); }
+	void addColliding(const std::weak_ptr<Game::Collider>& coll);
 
 	/** @return the collision layer of this Collider */
 	Game::Layers::Layer getLayer() const { return layer; }
@@ -64,6 +67,7 @@ public:
 
 	/** @return whether this collider's layer collides with other's layer */
 	bool collidesWith(const Game::Collider& other) const;
+
 	/** @return whether this collider's layer is solid for other's layer */
 	bool isSolidFor(const Game::Collider& other) const;
 
@@ -72,16 +76,20 @@ public:
 	 */
 	bool isAtLimit() const { return atLimit; }
 
-	virtual bool isColliding() const { return atLimit || colliding.size() > 0; }
+	/** @return whether this Collider intersects `other` */
+	virtual bool contains(const Game::Collider& other) const;
+
+	/** @return whether this Collider is either "at limit" or has more than 0 colliding Colliders */
+	virtual bool isColliding() const;
 	/** Like `isColliding`, but only account for colliders which are solid for this one */
 	virtual bool collidesWithSolid() const;
-	virtual bool contains(const Game::Collider& other) const {
-		return getRect().intersects(other.getRect());
-	}
+
 	/** @return the bounding box of this Collider */
 	virtual sf::IntRect getRect() const;
 
 	virtual void update() override;
+
+	std::string toString() const override;
 };
 
 }

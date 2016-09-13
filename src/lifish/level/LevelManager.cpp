@@ -138,8 +138,7 @@ unsigned short LevelManager::bombsDeployedBy(unsigned short id) const {
 }
 
 void LevelManager::spawn(Game::Entity *e) {
-	auto b = dynamic_cast<Game::Bomb*>(e);
-	if (b != nullptr)
+	if (auto b = dynamic_cast<Game::Bomb*>(e))
 		_spawnBomb(b);
 	else
 		entities.add(e);
@@ -183,8 +182,7 @@ void LevelManager::_triggerExtraGame() {
 
 void LevelManager::_endExtraGame() {
 	entities.apply([] (Game::Entity *e) {
-		auto letter = dynamic_cast<Game::Letter*>(e);
-		if (letter != nullptr) {
+		if (auto letter = dynamic_cast<Game::Letter*>(e)) {
 			letter->get<Game::Killable>()->kill();
 			return;
 		}

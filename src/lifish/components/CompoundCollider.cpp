@@ -3,43 +3,67 @@
 using Game::CompoundCollider;
 using Game::Collider;
 
-void CompoundCollider::update() {
-	// Don't call Collider::update, since a CompoundCollider
-	// cannot have onCollision callbacks
-	Game::Component::update();
+CompoundCollider::CompoundCollider(Game::Entity& owner, Game::Layers::Layer layer,
+		std::initializer_list<Game::Collider> clds)
+	: Game::Collider(owner, layer)
+	, colliders(clds)
+{
+	_calcBoundingRect();
+}
+
+void CompoundCollider::_calcBoundingRect() {
+	int minX = Game::TILE_SIZE * Game::LEVEL_WIDTH,
+	    minY = Game::TILE_SIZE * Game::LEVEL_HEIGHT,
+	    maxX = 0,
+	    maxY = 0;
+	for (const auto& c : colliders) {
+		const auto crect = c.getRect();
+		if (crect.left < minX)
+			minX = crect.left;
+		if (crect.left + crect.width > maxX)
+			maxX = crect.left + crect.width;
+		if (crect.top < minY)
+			minY = crect.top;
+		if (crect.top + crect.height > maxY)
+			maxY = crect.top + crect.height;
+	}
+
+	boundingRect = sf::IntRect(minX, minY, maxX - minX, maxY - minY);
 }
 
 bool CompoundCollider::isColliding() const {
-	if (Collider::isColliding()) return true;
 	for (const auto& c : colliders)
-		if (c.isColliding()) return true;
+		if (c.isColliding()) 
+			return true;
 	return false;
 }
 
-bool CompoundCollider::contains(const Collider& other) const {
-	if (Collider::getRect().intersects(other.getRect())) return true;
+bool CompoundCollider::contains(const Game::Collider& other) const {
+	return _contains(other);
+}
+
+bool CompoundCollider::_contains(const Game::Collider& other) const {
 	for (const auto& c : colliders)
-		if (c.contains(other)) return true;
+		if (c.contains(other))
+			return true;
 	return false;
+}
+
+bool CompoundCollider::containsLoose(const Game::Collider& other) const {
+	return boundingRect.intersects(other.getRect());
+}
+
+std::vector<Game::Collider> CompoundCollider::getSubCollidingWith(const Game::Collider& other) const {
+	std::vector<Game::Collider> clds;
+	clds.reserve(colliders.size());
+
+	for (const auto& c : colliders)
+		if (c.contains(other))
+			clds.push_back(c);
+
+	return clds;
 }
 
 sf::IntRect CompoundCollider::getRect() const {
-	auto rect = Collider::getRect();
-
-	for (const auto& c : colliders) {
-		auto crect = c.getRect();
-		if (crect.left < rect.left) {
-			rect.width += rect.left - crect.left;
-			rect.left = crect.left;
-		}
-		if (crect.top < rect.top) {
-			rect.height += rect.top - crect.top;
-			rect.top = crect.top;
-		}
-		if (crect.width > rect.width)
-			rect.width = crect.width;
-		if (crect.height > rect.height)
-			rect.height = crect.height;
-	}
-	return rect;
+	return boundingRect;
 }

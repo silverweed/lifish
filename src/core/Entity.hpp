@@ -37,7 +37,7 @@ public:
 	std::vector<T*> getAllRecursive() const;
 
 	template<class T>
-	std::shared_ptr<T> getShared();
+	std::shared_ptr<T> getShared() const;
 
 	const sf::Vector2f& getPosition() const; 
 	virtual void setPosition(const sf::Vector2f& p); 
@@ -97,7 +97,7 @@ std::vector<T*> Entity::getAllRecursive() const {
 }
 
 template<class T>
-std::shared_ptr<T> Entity::getShared() {
+std::shared_ptr<T> Entity::getShared() const {
 	for (auto& comp : components) {
 		Component *ptr = comp.get();
 		T* derived = nullptr;

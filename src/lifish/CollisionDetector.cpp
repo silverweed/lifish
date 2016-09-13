@@ -1,12 +1,12 @@
 #include "CollisionDetector.hpp"
 #include "game.hpp"
-#include "Collider.hpp"
+#include "CompoundCollider.hpp"
 #include "Direction.hpp"
 #include "AxisMoving.hpp"
 #include "collision_layers.hpp"
 #include <algorithm>
-#include <unordered_set>
 #include <iostream>
+#include "Explosion.hpp"
 
 using Game::Direction;
 using Game::CollisionDetector;
@@ -14,6 +14,22 @@ using Game::TILE_SIZE;
 
 // Checks if entity in `pos` and entity in `opos` collide, given that the one in `pos` has direction `dir`.
 static bool collide(const Game::Collider& cld1, const Game::Collider& cld2, const Game::Direction dir) {
+	if (auto cc1 = dynamic_cast<const Game::CompoundCollider*>(&cld1)) {
+		for (const auto& c : cc1->getColliders())
+			if (collide(cld2, c, dir)) {
+				std::cerr << c.toString() << " colliding with " << cld2.toString() << std::endl;
+				return true;
+			}
+		return false;
+	} else if (auto cc2 = dynamic_cast<const Game::CompoundCollider*>(&cld2)) {
+		for (const auto& c : cc2->getColliders())
+			if (collide(c, cld1, dir)) {
+				std::cerr << c.toString() << " colliding with " << cld1.toString() << std::endl;
+				return true;
+			}
+		return false;
+	}
+
 	sf::IntRect rect = cld1.getRect(),
 		    orect = cld2.getRect();
 
@@ -84,23 +100,25 @@ void CollisionDetector::update() {
 	 * 2) is there another non-trasparent entity occupying the cell ahead?
 	 */
 	auto& colliding = group.collidingEntities;
-	std::unordered_set<Game::Collider*> checked;
 
 	// Prune all expired colliders
 	for (auto it = colliding.begin(); it != colliding.end(); ) {
 		if (it->expired()) it = colliding.erase(it);
-		else ++it;
+		else {
+			auto collider = it->lock();
+			// reset collider
+			collider->colliding.clear();
+			collider->atLimit = false;
+			++it;
+		}
 	}
 	
 	// Collision detection loop
 	for (auto it = colliding.begin(); it != colliding.end(); ++it) {
 		auto collider = it->lock();
 
-		if (checked.find(collider.get()) == checked.end()) {
-			// Reset collider, if we didn't already filled it during this update
-			collider->colliding.clear();
-			collider->atLimit = false;
-		}
+		if (collider->getOwner().get<Game::Fixed>() != nullptr)
+			continue;
 
 		auto moving = collider->getOwner().get<Game::AxisMoving>();
 		if (is_at_boundaries(*collider, moving)) {
@@ -108,14 +126,13 @@ void CollisionDetector::update() {
 			continue;
 		}
 		
-		if (collider->getOwner().get<Game::Fixed>() != nullptr)
-			continue;
-
 		// Very simple (aka quadratic) check with all others
 		for (auto jt = colliding.begin(); jt != colliding.end(); ++jt) {
 			if (it == jt)  continue;
 
 			auto othcollider = jt->lock();
+			//if (dynamic_cast<const Game::Explosion*>(&collider->getOwner()))
+				//std::cerr << collider->contains(*othcollider) << " " << collider->collidesWith(*othcollider) << std::endl;
 
 			if (moving) {
 				// Only check entities ahead of this one
@@ -132,11 +149,11 @@ void CollisionDetector::update() {
 						// We only do that for non-moving entities to avoid problems with
 						// multiple collisions between two moving entities.
 						othcollider->colliding.push_back(*it);
-						checked.insert(othcollider.get());
+						std::cerr << "[moving] colliding\n";
 					}
 				}
 			} else if (collider->contains(*othcollider) && collider->collidesWith(*othcollider)) {
-				//std::cerr << &collider->getOwner() << " colliding with " << &othcollider->getOwner()<<std::endl;
+				std::cerr << &collider->getOwner() << " colliding with " << &othcollider->getOwner()<<std::endl;
 				collider->colliding.push_back(*jt);
 			}
 		}

@@ -117,12 +117,6 @@ void Game::Logic::enemiesShootLogic(Game::Entity *e, Game::LevelManager&,
 	}
 }
 
-void Game::Logic::explosionDamageLogic(Game::Entity *e, Game::LevelManager &lm, EntityList&, EntityList&) {
-	auto expl = dynamic_cast<Game::Explosion*>(e);
-	if (expl == nullptr) return;
-	expl->checkHit(lm);
-}
-
 void Game::Logic::bonusGrabLogic(Game::Entity *e, Game::LevelManager &lm, EntityList&, EntityList&) {
 	auto bonus = dynamic_cast<Game::Bonus*>(e);
 	if (bonus == nullptr) return;
@@ -143,7 +137,6 @@ std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bonusDropLogic,
 	lettersDropLogic,
 	scoredKillablesLogic,
-	explosionDamageLogic,
 	enemiesShootLogic,
 	bonusGrabLogic
 };

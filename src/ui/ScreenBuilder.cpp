@@ -204,8 +204,7 @@ void ScreenBuilder::_fixAlign(Game::UI::Screen& screen) {
 		const float xOffset = rowAligns[row] == "left" ? H_PADDING
 					: rowAligns[row] == "right" ? (screen.size.x - rowWidths[row] - H_PADDING)
 					: (screen.size.x - rowWidths[row]) / 2;
-		auto text = dynamic_cast<Game::ShadedText*>(e);
-		if (text != nullptr) {
+		if (auto text = dynamic_cast<Game::ShadedText*>(e)) {
 			text->setPosition(text->getPosition() + sf::Vector2f(xOffset, yOffset));
 		} else {
 			auto sprite = static_cast<sf::Sprite*>(e);

@@ -5,36 +5,38 @@
 
 namespace Game {
 
-/** A CompoundCollider is a main Collider plus a collection of other Colliders.
- *  Neither the main collider nor the children colliders can have an `onCollision` callback, as this class
- *  is meant to be used only for its `isColliding`, `contains` and `getRect` methods.
- *  These methods are overridden to be the union of all the internal colliders.
- *  Properties like layer and phantomness are given by the main Collider.
- *  Since CollisionDetector doesn't know how to treat such a Collider properly, a CompoundCollider is always phantom.
+/** A CompoundCollider is a collection of Colliders.
+ *  The `contains`, `isColliding` and `getRect` methods are overridden to be the union of all the internal colliders.
  */
 class CompoundCollider : public Game::Collider {
 	std::vector<Game::Collider> colliders;
+	/** The rectangle containing all colliders */
+	sf::IntRect boundingRect;
+
+
+	void _calcBoundingRect();
+	bool _contains(const Game::Collider& other) const override;
 
 public:
-	explicit CompoundCollider(Game::Entity& owner, 
-			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
-			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE),
-			  const sf::Vector2f& offset = sf::Vector2f(0, 0),
-			  std::initializer_list<Game::Collider> clds = {})
-		: Game::Collider(owner, layer, size, offset, true)
-		, colliders(clds)
-	{}
+	explicit CompoundCollider(Game::Entity& owner, Game::Layers::Layer layer, 
+			std::initializer_list<Game::Collider> clds);
 
 	/** @return true if any collider is colliding */
 	bool isColliding() const override;
+
 	/** @return true if any collider contains `other` */
 	bool contains(const Game::Collider& other) const override;
+
+	/** @return true if `other` is contained in the bounding rect */
+	bool containsLoose(const Game::Collider& other) const;
+
+	/** @return all the subcolliders that collide with the given one */
+	std::vector<Game::Collider> getSubCollidingWith(const Game::Collider& coll) const;
+
 	/** @return The bounding rectangle of all colliders */
 	sf::IntRect getRect() const override;
 
 	const std::vector<Game::Collider>& getColliders() const { return colliders; }
-
-	void update() override;
 };
 
 }

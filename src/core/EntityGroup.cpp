@@ -32,6 +32,46 @@ void EntityGroup::remove(const Game::Entity& entity) {
 	entities.remove_if([entity] (const std::shared_ptr<Game::Entity>& e) { return e.get() == &entity; });
 }
 
+void EntityGroup::refresh(const Game::Entity& entity) {
+	// FIXME
+	/*auto eit = std::find_if(entities.begin(), entities.end(), [&entity] (const std::shared_ptr<Game::Entity>& e) {
+		return e.get() == &entity;
+	});
+	if (eit == entities.end()) 
+		throw std::invalid_argument("entity passed to EntityGroup::refresh() is not in this group!");
+	*/
+
+	std::remove_if(killables.begin(), killables.end(), [&entity] (const std::weak_ptr<Game::Killable>& k) {
+		return k.expired() || &k.lock().get()->getOwner() == &entity;
+	});
+	auto klb = entity.getShared<Game::Killable>();
+	if (klb != nullptr) {
+		killables.push_back(klb);
+	} 
+
+	std::remove_if(collidingEntities.begin(), collidingEntities.end(),
+		[&entity] (const std::weak_ptr<Game::Collider>& c) 
+	{
+		return c.expired() || &c.lock().get()->getOwner() == &entity;
+	});
+	auto cld = entity.getShared<Game::Collider>();
+	if (cld != nullptr && !cld->isPhantom()) {
+		collidingEntities.push_back(cld);
+	}
+
+	// FIXME
+	/*
+	const auto tile = Game::tile(entity.getPosition());
+	auto& fxd = fixedEntities[(tile.y - 1) * Game::LEVEL_WIDTH + tile.x - 1];
+	std::remove_if(fxd.begin(), fxd.end(), [&entity] (const std::weak_ptr<Game::Entity>& e) {
+		return e.expired() || e.lock().get() == &entity;
+	});
+	if (entity.get<Game::Fixed>() != nullptr) {
+		_addFixedAt(tile.x, tile.y, *eit);
+	}
+	*/
+}
+
 void EntityGroup::clear() {
 	entities.clear();
 	collidingEntities.clear();
