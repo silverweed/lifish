@@ -61,30 +61,9 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 	const sf::Vector2i m_tile = Game::tile(position);
 	bool propagating[] = { true, true, true, true };
+	bool blocked[] = { false, false, false, false };
 	auto& entities = lm.getEntities();
 	
-	// TODO
-	//propagation.fill(radius);
-	//_checkHit(lm);
-
-	//const auto fixed = lr->getFixedEntities();
-	//const auto level = lr->getLevel();
-	//const auto bosses = lr->getBosses();
-
-	// TODO Check for boss at the explosion center
-	//for (auto& boss : bosses) {
-		//if (!boss->isDying() && boss->occupies(m_tile)) {
-			//boss->decLife(1);
-			//if (boss->getLife() <= 0) {
-				//boss->kill();
-				//Game::cache.playSound(boss->getSoundFile(Game::Sounds::DEATH));
-			//} else {
-				//boss->hurt();
-				//Game::cache.playSound(boss->getSoundFile(Game::Sounds::HURT));
-			//}
-		//}
-	//}
-
 	for (unsigned short dir = 0; dir < 4; ++dir) {	
 		for (unsigned short r = 1; r <= radius; ++r) {
 			if (!propagating[dir]) continue;
@@ -119,27 +98,44 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 				const auto fxdcld = fxd.get().get<Game::Collider>();
 				if (fxdcld != nullptr && Game::Layers::solid[fxdcld->getLayer()][Game::Layers::EXPLOSIONS]) { 
 					propagating[dir] = false;
+					blocked[dir] = true;
 					break;
 				}
 			}
 		}
 	}
 
-	_setPropagatedAnims();
+	/* Here be some shanenigans. If the explosion is blocked in some direction due to solid entities,
+	 * we want to both tell those entities they impacted with an Explosion and to tell Explosion
+	 * not to propagate further in that direction. Therefore, we create a collider which only
+	 * extends for 1px to the solid entity we encountered (enough for the collision to happen, but
+	 * also prevents accidental impacts with other entities beyond the solid one), then we reduce
+	 * the propagation by 1 tile so that the explosion sprites aren't drawn in the solid entity's tile,
+	 * which would be ugly.
+	 */
 	explCollider = addComponent(new Game::CompoundCollider(*this, Game::Layers::EXPLOSIONS, {
 		Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
-			sf::Vector2i(TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT] + 1),
+			sf::Vector2i(TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT] + 1)
+				- (blocked[Direction::RIGHT] ? TILE_SIZE - 1 : 0),
 				     TILE_SIZE),
 			// offset
-			sf::Vector2f(-TILE_SIZE * propagation[Direction::LEFT], 0)),
+			sf::Vector2f(-TILE_SIZE * propagation[Direction::LEFT]
+				+ (blocked[Direction::LEFT] ? TILE_SIZE - 1 : 0), 0)),
 		Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
 			sf::Vector2i(TILE_SIZE,
-				     TILE_SIZE * (propagation[Direction::UP] + propagation[Direction::DOWN] + 1)),
+				     TILE_SIZE * (propagation[Direction::UP] + propagation[Direction::DOWN] + 1)
+				- (blocked[Direction::DOWN] ? TILE_SIZE - 1 : 0)),
 			// offset
-			sf::Vector2f(0, -TILE_SIZE * propagation[Direction::UP]))
+			sf::Vector2f(0, -TILE_SIZE * propagation[Direction::UP]
+				+ (blocked[Direction::UP] ? TILE_SIZE - 1 : 0)))
 	}));
+
+	for (unsigned short i = 0; i < 4; ++i)
+		if (blocked[i]) --propagation[i];
+	_setPropagatedAnims();
+
 	lm.getEntities().refresh(*this);
 
 	return this;

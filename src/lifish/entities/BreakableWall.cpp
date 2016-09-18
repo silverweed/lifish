@@ -11,7 +11,6 @@
 #include "Fixed.hpp"
 #include "utils.hpp"
 
-#include <iostream>
 using Game::BreakableWall;
 using Game::TILE_SIZE;
 
@@ -79,7 +78,6 @@ Animation& BreakableWall::_setupAnimations(const std::string& texture_name) {
 }
 
 void BreakableWall::_checkCollision(Game::Collider& cld) {
-	std::cerr << "exploding wall\n";
 	if (cld.getLayer() != Game::Layers::EXPLOSIONS || killable->isKilled()) return;
 	const auto etile = Game::tile(cld.getOwner().getPosition());
 	const auto mtile = Game::tile(position);

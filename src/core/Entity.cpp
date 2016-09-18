@@ -73,6 +73,10 @@ void Entity::setPosition(const sf::Vector2f& p) {
 	position = p;
 }
 
+void Entity::translate(const sf::Vector2f& offset) {
+	setPosition(getPosition() + offset);
+}
+
 std::string Entity::toString() const {
 	return _toString(0);
 }

@@ -11,6 +11,11 @@ CompoundCollider::CompoundCollider(Game::Entity& owner, Game::Layers::Layer laye
 	_calcBoundingRect();
 }
 
+CompoundCollider::CompoundCollider(const Game::CompoundCollider& other)
+	: Game::Collider(other.owner, other.layer)
+	, colliders(other.colliders)
+{}
+
 void CompoundCollider::_calcBoundingRect() {
 	int minX = Game::TILE_SIZE * Game::LEVEL_WIDTH,
 	    minY = Game::TILE_SIZE * Game::LEVEL_HEIGHT,

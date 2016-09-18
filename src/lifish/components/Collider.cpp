@@ -26,6 +26,13 @@ Collider::Collider(Game::Entity& owner, CollisionFunc onCollision,
 	, onCollision(onCollision)
 {}
 
+Collider::Collider(const Game::Collider& other)
+	: Game::Component(other.owner)
+	, offset(other.offset)
+	, size(other.size)
+	, phantom(other.phantom)
+{}
+
 void Collider::update() {
 	Game::Component::update();
 	

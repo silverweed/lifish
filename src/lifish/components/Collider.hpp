@@ -13,7 +13,7 @@ class CollisionDetector;
 class CompoundCollider;
 
 class Collider : public Game::Component {
-
+protected:
 	friend class Game::CollisionDetector;
 
 	using CollisionFunc = std::function<void(Game::Collider&)>;
@@ -24,8 +24,8 @@ class Collider : public Game::Component {
 	bool atLimit = false;
 	
 	/** Offset relative to the owner's position */
-	const sf::Vector2f offset; 
-	const sf::Vector2i size;
+	sf::Vector2f offset; 
+	sf::Vector2i size;
 	/** If a Collider is phantom, it won't be automatically managed by EntityGroup
 	 *  (and therefore CollisionDetector). A phantom collider may be useful if you
 	 *  want to handle the collision logic yourself and you're only interested
@@ -51,6 +51,8 @@ public:
 			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE), 
 			  const sf::Vector2f& offset = sf::Vector2f(0, 0),
 			  bool phantom = false);
+	
+	Collider(const Game::Collider& other);
 
 	/** @return the list of Colliders colliding with this one */
 	std::vector<std::weak_ptr<Game::Collider>> getColliding() const;
@@ -62,6 +64,12 @@ public:
 	Game::Layers::Layer getLayer() const { return layer; }
 	/** Sets the collision layer of this Collider */
 	void setLayer(Game::Layers::Layer l) { layer = l; }
+
+	const sf::Vector2f& getOffset() const { return offset; }
+	void setOffset(const sf::Vector2f& off) { offset = off; }
+
+	const sf::Vector2i& getSize() const { return size; }
+	void setSize(const sf::Vector2i& sz) { size = sz; }
 
 	bool isPhantom() const { return phantom; }
 

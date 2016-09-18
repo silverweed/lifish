@@ -1,8 +1,8 @@
 #include "DebugRenderer.hpp"
 #include "CompoundCollider.hpp"
 
-#define COLLIDER_REGULAR_COLOR sf::Color(255, 0, 255, 128)
-#define COLLIDER_PHANTOM_COLOR sf::Color(194, 194, 194, 128)
+#define COLLIDER_REGULAR_COLOR sf::Color(255, 0, 255, 110)
+#define COLLIDER_PHANTOM_COLOR sf::Color(194, 194, 194, 110)
 #define COLLIDER_COMPOUND_COLOR sf::Color(194, 194, 194, 92)
 
 using Debug::DebugRenderer;

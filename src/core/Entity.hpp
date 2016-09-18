@@ -41,6 +41,7 @@ public:
 
 	const sf::Vector2f& getPosition() const; 
 	virtual void setPosition(const sf::Vector2f& p); 
+	void translate(const sf::Vector2f& p);
 
 	bool isAligned(const char axis = 'b') const;
 

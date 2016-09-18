@@ -21,6 +21,8 @@ public:
 	explicit CompoundCollider(Game::Entity& owner, Game::Layers::Layer layer, 
 			std::initializer_list<Game::Collider> clds);
 
+	CompoundCollider(const Game::CompoundCollider& other);
+
 	/** @return true if any collider is colliding */
 	bool isColliding() const override;
 
