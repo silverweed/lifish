@@ -155,6 +155,7 @@ void CollisionDetector::update() {
 			} else if (collider->contains(*othcollider) && collider->collidesWith(*othcollider)) {
 				std::cerr << &collider->getOwner() << " colliding with " << &othcollider->getOwner()<<std::endl;
 				collider->colliding.push_back(*jt);
+				othcollider->colliding.push_back(*it);
 			}
 		}
 	}
