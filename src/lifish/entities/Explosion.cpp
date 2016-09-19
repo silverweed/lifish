@@ -116,20 +116,20 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 	explCollider = addComponent(new Game::CompoundCollider(*this, Game::Layers::EXPLOSIONS, {
 		Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
-			sf::Vector2i(TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT] + 1)
-				- (blocked[Direction::RIGHT] ? TILE_SIZE - 1 : 0),
-				     TILE_SIZE),
+			sf::Vector2i(
+				TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT] + 1)
+					- (blocked[Direction::RIGHT] ? TILE_SIZE - 1 : 0),
+				TILE_SIZE),
 			// offset
-			sf::Vector2f(-TILE_SIZE * propagation[Direction::LEFT]
-				+ (blocked[Direction::LEFT] ? TILE_SIZE - 1 : 0), 0)),
+			sf::Vector2f(-TILE_SIZE * propagation[Direction::LEFT], 0)),
 		Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
-			sf::Vector2i(TILE_SIZE,
-				     TILE_SIZE * (propagation[Direction::UP] + propagation[Direction::DOWN] + 1)
-				- (blocked[Direction::DOWN] ? TILE_SIZE - 1 : 0)),
+			sf::Vector2i(
+				TILE_SIZE,
+				TILE_SIZE * (propagation[Direction::UP] + propagation[Direction::DOWN] + 1)
+					- (blocked[Direction::DOWN] ? TILE_SIZE - 1 : 0)),
 			// offset
-			sf::Vector2f(0, -TILE_SIZE * propagation[Direction::UP]
-				+ (blocked[Direction::UP] ? TILE_SIZE - 1 : 0)))
+			sf::Vector2f(0, -TILE_SIZE * propagation[Direction::UP]))
 	}));
 
 	for (unsigned short i = 0; i < 4; ++i)
