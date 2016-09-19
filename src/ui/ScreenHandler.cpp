@@ -29,7 +29,6 @@ void ScreenHandler::add(Game::UI::Screen *screen) {
 void ScreenHandler::fireClick() {
 	if (curScreen == nullptr) return;
 	auto cbname = curScreen->getSelected();
-	std::cerr << "Clicked on " << cbname << std::endl;
 
 	Game::UI::Action action;
 
