@@ -3,6 +3,7 @@
 #include "Killable.hpp"
 #include <algorithm>
 #include <sstream>
+#include <iostream>
 
 using Game::EntityGroup;
 
@@ -83,7 +84,7 @@ std::vector<std::reference_wrapper<Game::Entity>> EntityGroup::getFixedAt(unsign
 	if (x < 1 || x > Game::LEVEL_WIDTH || y < 1 || y > Game::LEVEL_HEIGHT)
 		return fxd;
 
-	for (const auto& f : fixedEntities[(y - 1) * Game::LEVEL_WIDTH + x - 1]) 
+	for (const auto& f : _fixedAt(sf::Vector2i(x, y))) 
 		if (!f.expired()) {
 			auto shd = f.lock();
 			if (shd.get() != nullptr)
@@ -91,7 +92,15 @@ std::vector<std::reference_wrapper<Game::Entity>> EntityGroup::getFixedAt(unsign
 		}
 	return fxd;
 }
-	
+
+auto EntityGroup::_fixedAt(const sf::Vector2i& tile) -> std::vector<std::weak_ptr<Game::Entity>>& {
+	return fixedEntities[(tile.y - 1) * Game::LEVEL_WIDTH + tile.x - 1];
+}
+
+auto EntityGroup::_fixedAt(const sf::Vector2i& tile) const -> const std::vector<std::weak_ptr<Game::Entity>>& {
+	return fixedEntities[(tile.y - 1) * Game::LEVEL_WIDTH + tile.x - 1];
+}
+
 void EntityGroup::_pruneFixed() {
 	for (auto& f : fixedEntities) {
 		for (auto it = f.begin(); it != f.end(); ) {
@@ -106,20 +115,22 @@ void EntityGroup::_pruneFixed() {
 Game::Entity* EntityGroup::_putInAux(const std::shared_ptr<Game::Entity>& entity) {
 	entity->setOrigin(origin);
 
-	// Put in aux collections
+	// Put in aux collections, if not already managed
 	auto klb = entity->getShared<Game::Killable>();
-	if (klb != nullptr) {
+	if (klb != nullptr && !_isManagedKillable(entity)) {
 		killables.push_back(klb);
 	} 
 
 	auto cld = entity->getShared<Game::Collider>();
-	if (cld != nullptr && !cld->isPhantom())
+	if (cld != nullptr && !cld->isPhantom() && !_isManagedCollider(entity)) {
 		collidingEntities.push_back(cld);
+	}
 
 	// Put an entity marked as `Fixed` in fixedEntities
 	if (entity->get<Game::Fixed>() != nullptr) {
 		const auto tile = Game::tile(entity->getPosition());
-		_addFixedAt(tile.x, tile.y, entity);
+		if (!_isManagedFixed(entity))
+			_addFixedAt(tile.x, tile.y, entity);
 	}
 
 	return entity.get();
@@ -196,4 +207,26 @@ void EntityGroup::_removeDying() {
 			++it;
 		}
 	}
+}
+
+bool EntityGroup::_isManagedKillable(const std::shared_ptr<Game::Entity>& entity) const {
+	return std::find_if(killables.begin(), killables.end(), 
+		[&entity] (const std::weak_ptr<Game::Killable>& p) {
+			return !p.expired() && &p.lock().get()->getOwner() == entity.get();
+		}) != killables.end();
+}
+
+bool EntityGroup::_isManagedCollider(const std::shared_ptr<Game::Entity>& entity) const {
+	return std::find_if(collidingEntities.begin(), collidingEntities.end(), 
+		[&entity] (const std::weak_ptr<Game::Collider>& p) {
+			return !p.expired() && &p.lock().get()->getOwner() == entity.get();
+		}) != collidingEntities.end();
+}
+
+bool EntityGroup::_isManagedFixed(const std::shared_ptr<Game::Entity>& entity) const {
+	const auto& fx = _fixedAt(Game::tile(entity.get()->getPosition()));
+	return std::find_if(fx.begin(), fx.end(),
+		[&entity] (const std::weak_ptr<Game::Entity>& p) {
+			return !p.expired() && p.lock().get() == entity.get();
+		}) != fx.end();
 }

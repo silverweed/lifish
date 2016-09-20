@@ -23,7 +23,7 @@ struct PlayerInfo {
 		sf::Time bombFuseTime     = Game::Conf::Bomb::DEFAULT_FUSE;
 	} powers;
 
-	short remainingLives = Game::Conf::Player::INITIAL_LIVES;
+	short remainingLives = Game::Conf::Player::INITIAL_LIVES - 1;
 
 	/** The EXTRA letters of this player */
 	std::array<bool, Game::Conf::Player::N_EXTRA_LETTERS> extra;
@@ -32,8 +32,9 @@ struct PlayerInfo {
 		extra.fill(false);
 	}
 
-	void reset() {
-		extra.fill(false);
+	void reset(bool resetExtra) {
+		if (resetExtra)
+			extra.fill(false);
 		powers.bombRadius = Game::Conf::Bomb::DEFAULT_RADIUS;
 		powers.maxBombs = Game::Conf::Player::DEFAULT_MAX_BOMBS;
 		powers.bombFuseTime = Game::Conf::Bomb::DEFAULT_FUSE;
@@ -64,7 +65,6 @@ class Player : public Game::Entity {
 
 	/** While true, the idle pose becomes ANIM_WIN */
 	bool winning = false;
-	short remainingLives = Game::Conf::Player::INITIAL_LIVES;
 
 	Game::AxisMoving *moving = nullptr;
 	Game::Animated *animated = nullptr;
@@ -89,7 +89,6 @@ public:
 	explicit Player(const sf::Vector2f& pos, const Game::PlayerInfo& info);
 
 	void resurrect();
-	short getRemainingLives() const { return remainingLives; }
 
 	void setWinning(bool b) { winning = b; }
 

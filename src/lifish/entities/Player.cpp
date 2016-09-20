@@ -91,7 +91,7 @@ void Player::_init() {
 	animated->setDefaultFrameTime(sf::seconds(0.06));
 	animated->setFrameTime("idle", sf::seconds(0.15));
 	animated->setAnimation(a_idle);
-	animatedSprite.setLooped(true);
+	animatedSprite.setLooped(true, false);
 	animatedSprite.play();
 }
 
@@ -125,7 +125,7 @@ void Player::update() {
 void Player::_kill() {
 	get<Game::Controllable>()->setActive(false);
 	get<Game::Bonusable>()->reset();
-	info.reset();
+	info.reset(false);
 	death->kill();
 }
 
@@ -189,12 +189,10 @@ void Player::_checkCollision(Game::Collider& cld) {
 }
 
 void Player::resurrect() {
-	auto& animatedSprite = get<Game::Animated>()->getSprite();
-	animatedSprite.setAnimation(*get<Game::Animated>()->getAnimation("idle"));
-	animatedSprite.play();
 	get<Game::Lifed>()->setLife(Game::Conf::Player::MAX_LIFE);
 	moving->realign();
 	killable->resurrect();
+	death->resurrect();
 	get<Game::Controllable>()->setActive(true);
 }
 

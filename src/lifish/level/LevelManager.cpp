@@ -4,6 +4,7 @@
 #include "Letter.hpp"
 #include "LevelLoader.hpp"
 #include "Coin.hpp"
+#include "Bonusable.hpp"
 #include <memory>
 #include <iostream>
 
@@ -59,13 +60,11 @@ void LevelManager::update() {
 	// Update entities and their components
 	entities.updateAll();
 
-	// If time is up, trigger HURRY UP
-	if (!hurryUp && levelTime.checkHurryUp() == Game::LevelTime::HurryUpResponse::HURRY_UP_ON)
-		_triggerHurryUp();
-	if (!extraGameTriggered && _shouldTriggerExtraGame()) 
-		_triggerExtraGame();
-	else if (extraGame && levelTime.getRemainingExtraGameTime() <= sf::Time::Zero)
-		_endExtraGame();
+	// Check if should resurrect players
+	_checkResurrect();
+
+	// Hurry up, extra game
+	_checkSpecialConditions();
 }
 
 bool LevelManager::isPlayer(const Game::Entity& e) const {
@@ -212,4 +211,29 @@ bool LevelManager::_shouldTriggerExtraGame() const {
 	});
 
 	return !there_are_coins;
+}
+
+void LevelManager::_checkSpecialConditions() {
+	if (!hurryUp && levelTime.checkHurryUp() == Game::LevelTime::HurryUpResponse::HURRY_UP_ON)
+		_triggerHurryUp();
+
+	if (!extraGameTriggered && _shouldTriggerExtraGame()) 
+		_triggerExtraGame();
+	else if (extraGame && levelTime.getRemainingExtraGameTime() <= sf::Time::Zero)
+		_endExtraGame();
+}
+
+void LevelManager::_checkResurrect() {
+	for (auto& player : players) {
+		auto klb = player->get<Game::Killable>();
+		if (klb->isKilled() && !klb->isKillInProgress()) {
+			if (player->getInfo().remainingLives > 0) {
+				player->resurrect();
+				player->get<Game::Bonusable>()->giveBonus(Game::BonusType::SHIELD, 
+						Game::Conf::Player::RESURRECT_SHIELD_TIME);
+				player->setRemainingLives(player->getInfo().remainingLives - 1);
+				entities.add(player);
+			}
+		}
+	}
 }

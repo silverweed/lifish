@@ -2,7 +2,6 @@
 #include "CompoundCollider.hpp"
 #include <sstream>
 #include <iostream>
-#include "Explosion.hpp"
 
 using Game::Collider;
 
@@ -44,7 +43,7 @@ void Collider::update() {
 
 bool Collider::collidesWithSolid() const {
 	if (atLimit) return true;
-	for (auto c : colliding)
+	for (auto c : colliding) 
 		if (!c.expired() && c.lock().get()->isSolidFor(*this))
 			return true;
 	return false;
@@ -88,4 +87,8 @@ std::string Collider::toString() const {
 	std::stringstream ss;
 	ss << "[Collider @ (" << rect.left << ", " << rect.top << ") x (" << rect.width << ", " << rect.height << ")]";
 	return ss.str();
+}
+
+void Collider::reset() {
+	colliding.clear();
 }

@@ -21,6 +21,8 @@ void Controllable::update() {
 	if (window == nullptr)
 		throw std::logic_error("window is null in Controllable::update()!");
 
+	if (!active) return;
+
 	Game::Direction dir(Game::Direction::NONE);
 
 	if (window->hasFocus()) {
@@ -47,6 +49,6 @@ void Controllable::update() {
 		}
 	}
 
-	if (active && owner.isAligned())
+	if (owner.isAligned())
 		moving->setDirection(dir);
 }

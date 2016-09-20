@@ -59,6 +59,8 @@ class LevelManager final : public sf::Drawable, public Game::WithOrigin, private
 
 
 	void _spawnBomb(Game::Bomb *b);
+	void _checkResurrect();
+	void _checkSpecialConditions();
 	void _triggerHurryUp();
 	void _triggerExtraGame();
 	void _endExtraGame();

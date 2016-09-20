@@ -24,6 +24,7 @@ void RegularEntityDeath::kill() {
 	// Stop all moving components
 	auto moving = owner.getAllRecursive<Game::AxisMoving>();
 	for (auto mv : moving) {
+		origAutoRealign[mv] = mv->isAutoRealignEnabled();
 		mv->setAutoRealignEnabled(false);
 		mv->stop();
 	}
@@ -42,10 +43,38 @@ void RegularEntityDeath::kill() {
 		animSprite.play();
 	}
 
+	auto colliders = owner.getAllRecursive<Game::Collider>();
+	for (auto cld : colliders)
+		cld->reset();
+
 	// Play death sound
 	auto sounded = owner.get<Game::Sounded>();
 	if (sounded != nullptr)
 		Game::cache.playSound(sounded->getSoundFile(Game::Sounds::DEATH));
+}
+
+void RegularEntityDeath::resurrect() {
+	// Reset all moving components
+	auto moving = owner.getAllRecursive<Game::AxisMoving>();
+	for (auto mv : moving) {
+		auto ar = origAutoRealign.find(mv);
+		if (ar != origAutoRealign.end())
+			mv->setAutoRealignEnabled(ar->second);
+	}
+	
+	// Reset all MovingAnimators
+	auto movingAnimators = owner.getAllRecursive<Game::MovingAnimator>();
+	for (auto movingAnimator : movingAnimators)
+		movingAnimator->setActive(true);
+
+	// Switch to idle animation
+	auto animated = owner.getAllRecursive<Game::Animated>();
+	for (auto anim : animated) {
+		if (!anim->hasAnimation("death")) continue;
+		auto& animSprite = anim->getSprite();
+		anim->setAnimation("idle");
+		animSprite.play();
+	}
 }
 
 bool RegularEntityDeath::isKillInProgress() const {

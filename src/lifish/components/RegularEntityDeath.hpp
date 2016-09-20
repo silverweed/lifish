@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include "Component.hpp"
 #include "Clock.hpp"
 #include "Killable.hpp"
@@ -13,12 +14,15 @@ namespace Game {
 class RegularEntityDeath : public Game::Component {
 	const sf::Time deathTime;
 	Game::Killable *killable = nullptr;
+	std::unordered_map<Game::Component*, bool> origAutoRealign;
 
 public:
 	explicit RegularEntityDeath(Game::Entity& owner, sf::Time deathTime);
 
 	void kill();
 	bool isKillInProgress() const;
+	/** Restores all owner's components altered by kill() */
+	void resurrect();
 
 	Game::Entity* init() override;
 };

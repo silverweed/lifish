@@ -151,7 +151,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 		if (player == nullptr)
 			ss << "X0";
 		else
-			ss << "X" << player->getRemainingLives();
+			ss << "X" << player->getInfo().remainingLives;
 
 		Game::ShadedText text(Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO), ss.str(), pos);
 		text.setCharacterSize(20);
@@ -164,6 +164,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			text.setPosition(sf::Vector2f(HEALTH_SYM_POS_X, i == 0 
 						? HEALTH_SYM_POS_Y_1 : HEALTH_SYM_POS_Y_2));
 			text.setCharacterSize(HEALTH_SYM_HEIGHT);
+			text.setString("GAME\nOVER");
 			window.draw(text, states);
 		} else {
 			_drawHealthSprites(window, states, player);

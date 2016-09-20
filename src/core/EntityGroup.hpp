@@ -67,6 +67,8 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	/** Removes any expired Killable in `dying`. */
 	void _removeDying();
 
+	auto _fixedAt(const sf::Vector2i& tile) -> std::vector<std::weak_ptr<Game::Entity>>&;
+	auto _fixedAt(const sf::Vector2i& tile) const -> const std::vector<std::weak_ptr<Game::Entity>>&;
 	/** Adds a fixed entity at tile x, y. Fails silently if x or y are out of bounds. */
 	void _addFixedAt(unsigned short x, unsigned short y, const std::shared_ptr<Game::Entity>& e);
 	/** Removes fixed entity `e` from tile x, y. Fails silently if x or y are out of bounds or if `e` is not
@@ -76,6 +78,13 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	void _pruneFixed();
 
 	Game::Entity* _putInAux(const std::shared_ptr<Game::Entity>& entity);
+
+	/** @return whether `entity` is in this group's fixedEntities */
+	bool _isManagedFixed(const std::shared_ptr<Game::Entity>& entity) const;
+	/** @return whether a Killable in this group's `killables` refers to `entity` */
+	bool _isManagedKillable(const std::shared_ptr<Game::Entity>& entity) const;
+	/** @return whether a Collider in this group's `killables` refers to `entity` */
+	bool _isManagedCollider(const std::shared_ptr<Game::Entity>& entity) const;
 
 public:
 	/**

@@ -56,6 +56,7 @@ public:
 
 	/** @return the list of Colliders colliding with this one */
 	std::vector<std::weak_ptr<Game::Collider>> getColliding() const;
+	void reset();
 
 	/** Manually sets `coll` to be colliding with this collider */
 	void addColliding(const std::weak_ptr<Game::Collider>& coll);
