@@ -2,6 +2,7 @@
 
 #include "Boss.hpp"
 #include "Clock.hpp"
+#include "FreeSighted.hpp"
 #include "game.hpp"
 
 namespace Game {
@@ -11,6 +12,7 @@ class AlienBoss : public Game::Boss {
 
 	unsigned short shotsFired = 0;
 	Game::Clock *shootClock = nullptr;
+	std::array<Game::FreeSighted*, 2> eyes;
 
 	void _kill();
 	void _shoot();

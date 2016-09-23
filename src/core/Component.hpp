@@ -2,6 +2,9 @@
 
 #include "Entity.hpp"
 
+#define COMP_NOT_UNIQUE \
+	static constexpr bool requiredUnique() { return false; }
+
 namespace Game {
 
 /**

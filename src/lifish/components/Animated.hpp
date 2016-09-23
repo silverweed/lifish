@@ -26,7 +26,7 @@ protected:
 	bool manualPosition = false;
 
 public:
-	static constexpr bool requiredUnique() { return false; }
+	COMP_NOT_UNIQUE
 
 	explicit Animated(Game::Entity& owner, const std::string& texture_name);
 	

@@ -75,6 +75,7 @@ namespace Conf {
 			const sf::Time SHOOT_INTERVAL = sf::seconds(2);
 			const sf::Time SHOOT_SHORT_INTERVAL = sf::milliseconds(400);
 			constexpr unsigned short N_SHOTS = 3;
+			constexpr float SIGHT_RADIUS = 9;
 		}
 		namespace BigAlienBoss {
 			constexpr unsigned int VALUE = 50000;

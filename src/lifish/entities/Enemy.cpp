@@ -50,7 +50,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	death = addComponent(new Game::RegularEntityDeath(*this, Game::Conf::Enemy::DEATH_TIME));
 	shooting = addComponent(new Game::Shooting(*this, info.attack));
 	autoShooting = addComponent(new Game::AutoShooting(*this));
-	sighted = addComponent(new Game::Sighted(*this));
+	sighted = addComponent(new Game::AxisSighted(*this));
 
 	drawProxy = std::unique_ptr<Game::EnemyDrawableProxy>(new Game::EnemyDrawableProxy(*this));
 	addComponent(new Game::Drawable(*this, *drawProxy.get()));

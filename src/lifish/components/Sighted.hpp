@@ -13,38 +13,26 @@ namespace Game {
 
 class LevelManager;
 
+/** A Sighted entity has knowledge of entities around it.
+ *  Use either the specializations AxisSighted or FreeSighted for sight along axes or in all directions.
+ */
 class Sighted : public Game::Component {
-	using PartSeenEntitiesList = std::vector<std::pair<const Game::Entity*, unsigned short>>;
-	using TotSeenEntitiesList = std::array<
-		PartSeenEntitiesList,
-		static_cast<unsigned short>(Game::Direction::NONE)>;
-
+protected:
 	/** Bitmask for opaque layers (entities with no Collider are always transparent) */
 	intmax_t opaqueMask = 0;
 
-	// vision radius in number of tiles. Negative means infinite.
-	short visionRadius;
-
-	// all entities seen in each direction, and their distance (nearest first) 
-	TotSeenEntitiesList seen;
-
 	const Game::LevelManager *lm = nullptr;
+
+	/** Vision radius in number of tiles. Negative means infinite. */
+	float visionRadius;
 
 
 	bool _isOpaque(Game::Layers::Layer layer) const;
-	/** Fills seen[dir] with entities seen in that direction */
-	void _fillLine(const Game::Direction dir);
 
 public:
-	explicit Sighted(Game::Entity& owner, short visionRadius = -1);
+	COMP_NOT_UNIQUE
 
-	const TotSeenEntitiesList& entitiesSeen() const { 
-		return seen;
-	}
-
-	const PartSeenEntitiesList& entitiesSeen(Game::Direction dir) const { 
-		return seen[static_cast<size_t>(dir)];
-	}
+	explicit Sighted(Game::Entity& owner, float visionRadius);
 
 	/** Sets all layers in `layers` as (`opaque` ? opaque : transparent) */
 	void setOpaque(std::initializer_list<Game::Layers::Layer> layers, bool opaque = true);
@@ -52,7 +40,7 @@ public:
 	void setLevelManager(const Game::LevelManager *_lm) { lm = _lm; }
 	const Game::LevelManager* getLevelManager() const { return lm; }
 
-	void update() override;
+	virtual void update() = 0;
 };
 
 }

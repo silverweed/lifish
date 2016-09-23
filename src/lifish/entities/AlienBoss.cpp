@@ -31,11 +31,16 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 		// TODO
 		return false;
 	}));
-	addComponent(new Game::Scored(*this, Game::Conf::Boss::AlienBoss::VALUE));
+	addComponent(new Game::Scored(*this, VALUE));
 	addComponent(new Game::Drawable(*this, *addComponent(new Game::Sprite(*this, 
 				Game::getAsset("test", "alien_boss.png"), sf::IntRect(0, 0, SIZE.x, SIZE.y)))));
-	addComponent(new Game::Lifed(*this, Game::Conf::Boss::AlienBoss::LIFE));
+	addComponent(new Game::Lifed(*this, LIFE));
 	shootClock = addComponent(new Game::Clock(*this));
+	// Shooting points
+	eyes[0] = addComponent(new Game::FreeSighted(*this, SIGHT_RADIUS));
+	eyes[0]->setPosition(position + sf::Vector2f(34, 36));
+	eyes[1] = addComponent(new Game::FreeSighted(*this, SIGHT_RADIUS));
+	eyes[1]->setPosition(position + sf::Vector2f(63, 36));
 }
 
 void AlienBoss::_kill() {
@@ -43,6 +48,7 @@ void AlienBoss::_kill() {
 }
 
 void AlienBoss::update() {
+	Game::Entity::update();
 	if (killable->isKilled()) return;
 	
 	if ((shotsFired > 0 && shootClock->getElapsedTime() > SHOOT_SHORT_INTERVAL)
@@ -55,5 +61,22 @@ void AlienBoss::update() {
 }
 
 void AlienBoss::_shoot() {
+	for (auto eye : eyes) {
+		const auto player = eye->nearest<Game::Player>();
+		if (player == nullptr) return;
 
+		const auto& ppos = player->getPosition();
+
+		// calculate angle with ppos: a = pi - arctan(dy / dx)
+		const double dx = eye->getPosition().x - ppos.x,
+			     dy = ppos.y - eye->getPosition().y,
+			     angle = Game::PI - std::atan2(dy, dx);
+
+		// TODO
+		//auto bullet = new Game::BossBullet(eye, angle);
+		//bullet->setOrigin(origin);
+		//bullet->setSource(boss);
+		//bullets.push_back(bullet);
+		//Game::cache.playSound(bullet->getSoundFile(Game::Sounds::SHOT));
+	}
 }

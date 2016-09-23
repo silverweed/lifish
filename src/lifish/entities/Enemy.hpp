@@ -11,7 +11,7 @@
 #include "MovingAnimator.hpp"
 #include "AI.hpp"
 #include "AlienSprite.hpp"
-#include "Sighted.hpp"
+#include "AxisSighted.hpp"
 #include "game.hpp"
 #include "Shooting.hpp"
 #include "AutoShooting.hpp"
@@ -58,7 +58,7 @@ class Enemy : public Game::Entity {
 	Game::AxisMoving *moving = nullptr;
 	Game::Killable *killable = nullptr;
 	Game::MovingAnimator *movingAnimator = nullptr;
-	Game::Sighted *sighted = nullptr;
+	Game::AxisSighted *sighted = nullptr;
 	Game::AI *ai = nullptr;
 	Game::RegularEntityDeath *death = nullptr;
 	std::array<sf::Sprite, 4> shootFrame;
