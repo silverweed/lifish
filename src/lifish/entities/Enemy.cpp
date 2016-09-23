@@ -49,6 +49,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	}));
 	death = addComponent(new Game::RegularEntityDeath(*this, Game::Conf::Enemy::DEATH_TIME));
 	shooting = addComponent(new Game::Shooting(*this, info.attack));
+	autoShooting = addComponent(new Game::AutoShooting(*this));
 	sighted = addComponent(new Game::Sighted(*this));
 
 	drawProxy = std::unique_ptr<Game::EnemyDrawableProxy>(new Game::EnemyDrawableProxy(*this));
@@ -133,24 +134,25 @@ void Enemy::update() {
 
 	if (moving->getDirection() != Game::Direction::NONE)
 		shootFrame[moving->getDirection()].setPosition(position);
+
+	_checkShoot();
 }
 
-Game::Bullet* Enemy::checkShoot() const {
+void Enemy::_checkShoot() {
 	if (killable->isKilled() || shooting->isRecharging() || morphed)
-		return nullptr;
+		return;
 	
 	const auto lm = sighted->getLevelManager();
 	if (lm == nullptr)
-		return nullptr;
+		return;
 
 	const auto& entitiesSeen = sighted->entitiesSeen(moving->getDirection());
 	for (const auto& pair : entitiesSeen) {
 		if (lm->isPlayer(*pair.first)) {
-			return shooting->shoot();
+			autoShooting->shoot();
+			return;
 		}
 	}
-
-	return nullptr;
 }
 
 void Enemy::setMorphed(bool b) {

@@ -85,7 +85,8 @@
 				"type": ["blocking"],
 				"speed": 1,
 				"damage": 2,
-				"fireRate": 10
+				"fireRate": 10,
+				"blockTime": 150
 			}
 		},
 		{

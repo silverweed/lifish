@@ -72,3 +72,9 @@ void Shooting::update() {
 	if (shooting && rechargeClock->getElapsedTime() > SHOOT_FRAME_TIME)
 		shooting = false;
 }
+
+void Shooting::setFireRateMult(float fr) {
+	if (fr <= 0)
+		throw std::invalid_argument("Fire rate multiplier cannot be <= 0!");
+	fireRateMult = fr; 
+}

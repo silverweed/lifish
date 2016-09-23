@@ -14,6 +14,7 @@
 #include "Sighted.hpp"
 #include "game.hpp"
 #include "Shooting.hpp"
+#include "AutoShooting.hpp"
 #include "RegularEntityDeath.hpp"
 
 namespace Game {
@@ -52,6 +53,7 @@ class Enemy : public Game::Entity {
 	constexpr static int YELL_DELAY = 1000;
 	
 	Game::Shooting *shooting = nullptr;
+	Game::AutoShooting *autoShooting = nullptr;
 	Game::Animated *animated = nullptr;
 	Game::AxisMoving *moving = nullptr;
 	Game::Killable *killable = nullptr;
@@ -75,6 +77,7 @@ class Enemy : public Game::Entity {
 
 
 	void _checkCollision(Game::Collider& coll);
+	void _checkShoot();
 
 public:
 	constexpr static float BASE_SPEED = 75.f;
@@ -85,8 +88,6 @@ public:
 
 	void setMorphed(bool b);
 	bool isMorphed() const { return morphed; }
-
-	Game::Bullet* checkShoot() const;
 
 	void update() override;
 	void setOrigin(const sf::Vector2f& pos) override {

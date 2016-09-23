@@ -7,6 +7,7 @@
 #include "Scored.hpp"
 #include "Sprite.hpp"
 
+using namespace Game::Conf::Boss::AlienBoss;
 using Game::AlienBoss;
  
 const sf::Vector2i AlienBoss::SIZE = sf::Vector2i(3 * Game::TILE_SIZE, 3 * Game::TILE_SIZE);
@@ -22,7 +23,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 		// on collision
 		_checkCollision(coll);
 	}, Game::Layers::BOSSES, SIZE));
-	addComponent(new Game::Killable(*this, [this] () {
+	killable = addComponent(new Game::Killable(*this, [this] () {
 		// on kill
 		_kill();
 	}, [this] () {
@@ -34,8 +35,25 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	addComponent(new Game::Drawable(*this, *addComponent(new Game::Sprite(*this, 
 				Game::getAsset("test", "alien_boss.png"), sf::IntRect(0, 0, SIZE.x, SIZE.y)))));
 	addComponent(new Game::Lifed(*this, Game::Conf::Boss::AlienBoss::LIFE));
+	shootClock = addComponent(new Game::Clock(*this));
 }
 
 void AlienBoss::_kill() {
 	// TODO
+}
+
+void AlienBoss::update() {
+	if (killable->isKilled()) return;
+	
+	if ((shotsFired > 0 && shootClock->getElapsedTime() > SHOOT_SHORT_INTERVAL)
+			|| shootClock->getElapsedTime() > SHOOT_INTERVAL)
+	{
+		shootClock->restart();
+		shotsFired = (shotsFired + 1) % N_SHOTS;
+		_shoot();
+	}
+}
+
+void AlienBoss::_shoot() {
+
 }

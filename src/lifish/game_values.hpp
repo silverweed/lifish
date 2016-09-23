@@ -72,6 +72,9 @@ namespace Conf {
 		namespace AlienBoss {
 			constexpr unsigned int VALUE = 5000;
 			constexpr unsigned short LIFE = 20;
+			const sf::Time SHOOT_INTERVAL = sf::seconds(2);
+			const sf::Time SHOOT_SHORT_INTERVAL = sf::milliseconds(400);
+			constexpr unsigned short N_SHOTS = 3;
 		}
 		namespace BigAlienBoss {
 			constexpr unsigned int VALUE = 50000;

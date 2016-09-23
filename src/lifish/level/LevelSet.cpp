@@ -103,6 +103,10 @@ LevelSet::LevelSet(const std::string& path) {
 		if (it != atk.end())
 			enemies[enemynum].attack.fireRate = it->get<float>();
 
+		it = atk.find("blockTime");
+		if (it != atk.end())
+			enemies[enemynum].attack.blockTime = sf::milliseconds(it->get<float>());
+
 		bool range_found = false;
 		enemies[enemynum].attack.rangeInTiles = true;
 		it = atk.find("tileRange");

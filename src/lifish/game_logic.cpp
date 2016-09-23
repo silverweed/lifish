@@ -104,16 +104,16 @@ void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager&,
 	}
 }
 
-void Game::Logic::enemiesShootLogic(Game::Entity *e, Game::LevelManager&,
+void Game::Logic::shootLogic(Game::Entity *e, Game::LevelManager&,
 		EntityList& tbspawned, EntityList&)
 {
-	auto enemy = dynamic_cast<const Game::Enemy*>(e);
-	if (enemy == nullptr) return;
+	auto shooting = e->get<AutoShooting>();
+	if (shooting == nullptr) return;
 
-	auto bullet = enemy->checkShoot();
+	auto bullet = shooting->pollShot();
 	if (bullet != nullptr) {
 		Game::cache.playSound(bullet->get<Game::Sounded>()->getSoundFile(Game::Sounds::SHOT));
-		tbspawned.push_back(bullet);
+		tbspawned.push_back(bullet.release());
 	}
 }
 
@@ -137,6 +137,6 @@ std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bonusDropLogic,
 	lettersDropLogic,
 	scoredKillablesLogic,
-	enemiesShootLogic,
+	shootLogic,
 	bonusGrabLogic
 };

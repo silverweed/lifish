@@ -56,11 +56,8 @@ public:
 
 	bool isRecharging() const;
 
-	void setFireRateMult(float fr) {
-		if (fr <= 0)
-			throw std::invalid_argument("Fire rate multiplier cannot be <= 0!");
-		fireRateMult = fr; 
-	}
+	void setFireRateMult(float fr);
+	float getFireRateMult() const { return fireRateMult; }
 
 	Game::Entity* init() override;
 	void update() override;

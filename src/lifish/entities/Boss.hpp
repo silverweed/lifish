@@ -2,6 +2,7 @@
 
 #include "Entity.hpp"
 #include "Collider.hpp"
+#include "Killable.hpp"
 
 namespace Game {
 
@@ -10,6 +11,7 @@ class Boss : public Game::Entity {
 protected:
 	/** A Collider can be implemented by children */
 	Game::Collider *collider = nullptr;
+	Game::Killable *killable = nullptr;
 
 	bool isHurt = false, wasHurt = false;
 
