@@ -2,12 +2,15 @@
 #include "Temporary.hpp"
 #include "Sprite.hpp"
 #include "Drawable.hpp"
+#include "ZIndexed.hpp"
+#include "game_values.hpp"
 
 using Game::DroppingText;
 
 DroppingText::DroppingText(const std::string& texture_name, const sf::Vector2i& texture_rect, float speed)
 	: Game::Entity(sf::Vector2f(0.f, -texture_rect.y))
 {
+	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::DROPPING_TEXTS));
 	auto sprite = addComponent(new Game::Sprite(*this, texture_name, 
 				sf::IntRect(0, 0, texture_rect.x, texture_rect.y)));
 	height = texture_rect.y/2.0;
