@@ -14,7 +14,7 @@ void FreeSighted::update() {
 
 	seen.clear();
 
-	const double sqrVR = visionRadius * visionRadius;
+	const double sqrVR = visionRadius * Game::TILE_SIZE * visionRadius * Game::TILE_SIZE;
 	lm->getEntities().apply([this, sqrVR] (const Game::Entity *e) {
 		double dist = Game::sqrDistance(e->getPosition(), position);
 		if (sqrVR > 0 && dist > sqrVR) return;

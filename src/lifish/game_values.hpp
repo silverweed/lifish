@@ -45,10 +45,10 @@ namespace Conf {
 		// Default layer is 0
 		constexpr int EXPLOSIONS   = 1;
 		constexpr int TRANSP_WALLS = 2;
-		constexpr int BULLETS      = 3;
 		constexpr int WALLS        = 4;   
 		constexpr int PLAYERS      = 5;
 		constexpr int ENEMIES      = 6;
+		constexpr int BULLETS      = 7;
 		constexpr int BOSSES       = 7;
 		constexpr int POINTS       = 8;
 	}

@@ -5,9 +5,6 @@
 #include "Killable.hpp"
 #include "game.hpp"
 
-#include <iostream>
-#include "utils.hpp"
-
 using Game::AxisBullet;
 using Game::TILE_SIZE;
 
@@ -55,6 +52,7 @@ AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction d
 	}, Game::Layers::ENEMY_BULLETS, sf::Vector2i(size, size)));
 	auto moving = addComponent(new Game::AxisMoving(*this, BASE_SPEED * attack.speed, dir));
 	moving->setEnsureAlignEnabled(false);
+	moving->setAutoRealignEnabled(false);
 	auto animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "bullets.png")));
 	addComponent(new Game::Drawable(*this, *animated));
 

@@ -119,17 +119,17 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 			sf::Vector2i(
 				TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT] + 1)
 					- (blocked[Direction::RIGHT] ? TILE_SIZE - 1 : 0),
-				TILE_SIZE),
+				TILE_SIZE - 2),
 			// offset
-			sf::Vector2f(-TILE_SIZE * propagation[Direction::LEFT], 0)),
+			sf::Vector2f(-TILE_SIZE * propagation[Direction::LEFT], 1)),
 		Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
 			sf::Vector2i(
-				TILE_SIZE,
+				TILE_SIZE - 2,
 				TILE_SIZE * (propagation[Direction::UP] + propagation[Direction::DOWN] + 1)
 					- (blocked[Direction::DOWN] ? TILE_SIZE - 1 : 0)),
 			// offset
-			sf::Vector2f(0, -TILE_SIZE * propagation[Direction::UP]))
+			sf::Vector2f(1, -TILE_SIZE * propagation[Direction::UP]))
 	}));
 
 	for (unsigned short i = 0; i < 4; ++i)

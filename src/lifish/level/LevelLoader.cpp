@@ -87,16 +87,12 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 					break;
 				}
 			case EntityType::BOSS:
-				entities.add(new Game::AlienBoss(curPos));
-				//if (_isFinalLevel()) {
-					//if (finalBoss == nullptr) {
-						//finalBoss = std::unique_ptr<Game::FinalBoss>(new Game::FinalBoss(curPos));
-					//} else {
-						//std::cerr << "[ WARNING ] Duplicate Final Boss! Not adding more..." << std::endl;
-					//}
-				//} else {
-					//bosses.push_back(new Game::Boss(curPos));
-				//}
+				{
+					auto boss = new Game::AlienBoss(curPos);
+					for (auto s : boss->getAll<Game::Sighted>())
+						s->setLevelManager(&lm);
+					entities.add(boss);
+				}
 				break;
 			case EntityType::ENEMY1: 
 				enemy_id = 1;

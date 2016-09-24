@@ -34,6 +34,9 @@ public:
 	T* get() const;
 
 	template<class T>
+	std::vector<T*> getAll() const;
+
+	template<class T>
 	std::vector<T*> getAllRecursive() const;
 
 	template<class T>
@@ -80,6 +83,18 @@ T* Entity::get() const {
 			return derived;
 	}
 	return nullptr;
+}
+
+template<class T>
+std::vector<T*> Entity::getAll() const {
+	std::vector<T*> all;
+	for (auto& comp : components) {
+		Component *ptr = comp.get();
+		T* derived = nullptr;
+		if (ptr && (derived = dynamic_cast<T*>(ptr)))
+			all.push_back(derived);
+	}
+	return all;
 }
 
 template<class T>
