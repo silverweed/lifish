@@ -62,6 +62,13 @@ If you manage to build the game in some other way or on some other platform, let
 **IMPORTANT**: currently, many sprites are missing. If you see white rectangles where
 sprites should be, it means that asset hasn't been created yet.
 
+#### Multithreaded mode ####
+The game can be compiled in multithreaded mode (separate logic and rendering), but
+at the moment it's not really a good idea to do so, as:  
+- the framerate won't improve (and it needs not, should be already smooth 60fps)  
+- the CPU usage will increase  
+- odd behaviours and occasional crashes may occur.
+
 ### Current Status ###
 
 **MASSIVE REFACTOR IN PROGRESS** (see branch [refactor](https://github.com/silverweed/lifish/tree/refactor))
