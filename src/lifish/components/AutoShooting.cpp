@@ -15,19 +15,18 @@ Game::Entity* AutoShooting::init() {
 }
 
 void AutoShooting::shoot(Game::Direction dir) {
-	if (latestShot != nullptr)
-		delete latestShot;
-	latestShot = shooting->shoot(dir);
+	latestShot.push(std::unique_ptr<Game::Bullet>(shooting->shoot(dir)));
 }
 
 void AutoShooting::shoot(double angle) {
-	if (latestShot != nullptr)
-		delete latestShot;
-	latestShot = shooting->shoot(angle);
+	latestShot.push(std::unique_ptr<Game::Bullet>(shooting->shoot(angle)));
 }
 
 std::unique_ptr<Game::Bullet> AutoShooting::pollShot() {
-	std::unique_ptr<Game::Bullet> ls(latestShot);
-	latestShot = nullptr;
-	return ls;
+	std::unique_ptr<Game::Bullet> result;
+	if (!latestShot.empty()) {
+		result = std::unique_ptr<Game::Bullet>(latestShot.front().release());
+		latestShot.pop();
+	}
+	return result;
 }

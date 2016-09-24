@@ -42,7 +42,7 @@ public:
 	template<class T>
 	std::shared_ptr<T> getShared() const;
 
-	const sf::Vector2f& getPosition() const; 
+	virtual sf::Vector2f getPosition() const; 
 	virtual void setPosition(const sf::Vector2f& p); 
 	void translate(const sf::Vector2f& p);
 

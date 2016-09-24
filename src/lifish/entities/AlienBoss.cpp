@@ -35,6 +35,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	addComponent(new Game::Drawable(*this, *addComponent(new Game::Sprite(*this, 
 				Game::getAsset("test", "alien_boss.png"), sf::IntRect(0, 0, SIZE.x, SIZE.y)))));
 	addComponent(new Game::Lifed(*this, LIFE));
+	shootClock = addComponent(new Game::Clock(*this));
 
 	Game::Attack attack;
 	attack.type = Game::AttackType::SIMPLE;
@@ -43,15 +44,11 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	attack.speed = 160;
 	attack.fireRate = 1. / SHOOT_SHORT_INTERVAL.asSeconds();
 
-	shooting = addComponent(new Game::Shooting(*this, attack));
-	autoShooting = addComponent(new Game::AutoShooting(*this));
-	shootClock = addComponent(new Game::Clock(*this));
-
 	// Shooting points
-	eyes[0] = addComponent(new Game::FreeSighted(*this, SIGHT_RADIUS));
-	eyes[0]->setPosition(position + sf::Vector2f(34, 36));
-	eyes[1] = addComponent(new Game::FreeSighted(*this, SIGHT_RADIUS));
-	eyes[1]->setPosition(position + sf::Vector2f(63, 36));
+	eyes[0] = addComponent(new Game::ShootingPoint(*this, attack, SIGHT_RADIUS));
+	eyes[0]->setOffset(sf::Vector2f(17, 18));
+	eyes[1] = addComponent(new Game::ShootingPoint(*this, attack, SIGHT_RADIUS));
+	eyes[1]->setOffset(sf::Vector2f(50, 18));
 }
 
 void AlienBoss::_kill() {
@@ -60,7 +57,7 @@ void AlienBoss::_kill() {
 
 void AlienBoss::update() {
 	Game::Boss::update();
-	if (killable->isKilled() || shooting->isRecharging()) return;
+	if (killable->isKilled() || eyes[0]->get<Game::Shooting>()->isRecharging()) return;
 	
 	if (shotsFired > 0 || shootClock->getElapsedTime() > SHOOT_INTERVAL) {
 		_shoot();
@@ -71,9 +68,11 @@ void AlienBoss::update() {
 }
 
 void AlienBoss::_shoot() {
+	int i = 0;
 	for (auto eye : eyes) {
-		const auto player = eye->nearest<Game::Player>();
-		if (player == nullptr) return;
+		++i;
+		const auto player = eye->get<Game::FreeSighted>()->nearest<Game::Player>();
+		if (player == nullptr) continue;
 
 		const auto& ppos = player->getPosition();
 
@@ -82,12 +81,6 @@ void AlienBoss::_shoot() {
 			     dy = ppos.y - eye->getPosition().y,
 			     angle = Game::PI - std::atan2(dy, dx);
 
-		autoShooting->shoot(angle);
-		// TODO
-		//auto bullet = new Game::BossBullet(eye, angle);
-		//bullet->setOrigin(origin);
-		//bullet->setSource(boss);
-		//bullets.push_back(bullet);
-		//Game::cache.playSound(bullet->getSoundFile(Game::Sounds::SHOT));
+		eye->get<Game::AutoShooting>()->shoot(angle);
 	}
 }

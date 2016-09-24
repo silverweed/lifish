@@ -89,7 +89,7 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 			case EntityType::BOSS:
 				{
 					auto boss = new Game::AlienBoss(curPos);
-					for (auto s : boss->getAll<Game::Sighted>())
+					for (auto s : boss->getAllRecursive<Game::Sighted>())
 						s->setLevelManager(&lm);
 					entities.add(boss);
 				}

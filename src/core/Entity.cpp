@@ -65,7 +65,7 @@ std::string Entity::_toString(unsigned short indent) const {
 	return ss.str();
 }
 
-const sf::Vector2f& Entity::getPosition() const { 
+sf::Vector2f Entity::getPosition() const { 
 	return position;
 } 
 

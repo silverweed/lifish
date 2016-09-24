@@ -10,6 +10,7 @@ Shooting::Shooting(Game::Entity& owner, const Attack& attack)
 	, attackAlign(-1.f, -1.f)
 	, attack(attack) 
 {
+	position = owner.getPosition();
 	rechargeClock = addComponent(new Game::Clock(*this));
 }
 
@@ -41,7 +42,7 @@ Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 				ownerMoving->block(attack.blockTime);
 		}
 		rechargeClock->restart();
-		return new Game::AxisBullet(&owner, ownerMoving->getDirection(), attack);
+		return new Game::AxisBullet(getPosition(), &owner, ownerMoving->getDirection(), attack);
 	}
 
 	shooting = true;
@@ -50,7 +51,7 @@ Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 			ownerMoving->block(attack.blockTime);
 	}
 	rechargeClock->restart();
-	return new Game::AxisBullet(&owner, dir, attack);
+	return new Game::AxisBullet(getPosition(), &owner, dir, attack);
 }
 
 Game::FreeBullet* Shooting::shoot(double angle) {
@@ -59,7 +60,7 @@ Game::FreeBullet* Shooting::shoot(double angle) {
 
 	shooting = true;
 	rechargeClock->restart();
-	return new Game::FreeBullet(&owner, angle, attack);
+	return new Game::FreeBullet(getPosition(), &owner, angle, attack);
 }
 
 bool Shooting::isRecharging() const {
@@ -77,4 +78,13 @@ void Shooting::setFireRateMult(float fr) {
 	if (fr <= 0)
 		throw std::invalid_argument("Fire rate multiplier cannot be <= 0!");
 	fireRateMult = fr; 
+}
+
+void Shooting::setPosition(const sf::Vector2f& pos) {
+	Game::Component::setPosition(pos);
+	manualPosition = true;
+}
+
+sf::Vector2f Shooting::getPosition() const {
+	return manualPosition ? position : owner.getPosition() + offset;
 }

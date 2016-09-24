@@ -1,16 +1,17 @@
 #pragma once
 
 #include <memory>
+#include <queue>
 #include "Shooting.hpp"
 
 namespace Game {
 
 /** This component allows easy management of a Shooting entity.
  *  Instead of returning the bullet directly, the method shoot() 
- *  stores it in an internal buffer field which can be polled later.
+ *  stores it in an internal buffer which can be polled later.
  */
 class AutoShooting : public Game::Component {
-	Game::Bullet *latestShot = nullptr;
+	std::queue<std::unique_ptr<Game::Bullet>> latestShot;
 	Game::Shooting *shooting = nullptr;
 
 public:

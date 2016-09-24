@@ -14,6 +14,8 @@ namespace Game {
 class Shooting : public Game::Component {
 	/** The duration of the shooting frame */
 	const static sf::Time SHOOT_FRAME_TIME;
+	
+	bool manualPosition = false;
 
 protected:
 	/** Used by CONTACT attack AI */
@@ -21,8 +23,8 @@ protected:
 	
 	Attack attack;
 	bool shooting = false;
-
 	float fireRateMult = 1;
+	sf::Vector2f offset;
 
 	Game::Clock *rechargeClock = nullptr;
 	Game::AxisMoving *ownerMoving = nullptr;
@@ -58,6 +60,10 @@ public:
 
 	void setFireRateMult(float fr);
 	float getFireRateMult() const { return fireRateMult; }
+
+	void setPosition(const sf::Vector2f& pos) override;
+	sf::Vector2f getPosition() const override;
+	void setOffset(const sf::Vector2f& off) { offset = off; }
 
 	Game::Entity* init() override;
 	void update() override;

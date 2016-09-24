@@ -107,13 +107,14 @@ void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager&,
 void Game::Logic::shootLogic(Game::Entity *e, Game::LevelManager&,
 		EntityList& tbspawned, EntityList&)
 {
-	auto shooting = e->get<AutoShooting>();
-	if (shooting == nullptr) return;
-
-	auto bullet = shooting->pollShot();
-	if (bullet != nullptr) {
-		Game::cache.playSound(bullet->get<Game::Sounded>()->getSoundFile(Game::Sounds::SHOT));
-		tbspawned.push_back(bullet.release());
+	auto shootings = e->getAllRecursive<AutoShooting>();
+	for (auto shooting : shootings) {
+		auto bullet = shooting->pollShot();
+		while (bullet != nullptr) {
+			Game::cache.playSound(bullet->get<Game::Sounded>()->getSoundFile(Game::Sounds::SHOT));
+			tbspawned.push_back(bullet.release());
+			bullet = shooting->pollShot();
+		}
 	}
 }
 

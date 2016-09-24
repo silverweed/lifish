@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Bullet.hpp"
-#include "Collider.hpp"
 
 namespace Game {
 
+class AxisBulletPresets;
+
 /** A Bullet which travels along axes */
 class AxisBullet : public Game::Bullet {
-	friend class Game::BulletPresets;
+	friend class Game::AxisBulletPresets;
 
 	/** If 1 => this bullet has the same animation for any direction, up to 8.
 	 *  If 2 => this bullet has 2 different animations when traveling UP/DOWN or
@@ -17,17 +18,13 @@ class AxisBullet : public Game::Bullet {
 	 */
 	unsigned short directionality = 1;
 
-	Game::Collider *collider = nullptr;
-
 public:
 	/** Constructs a Bullet with a source Entity (using that Entity's position) */
-	explicit AxisBullet(const Game::Entity *const source, const Game::Direction dir, const Game::Attack& attack);
-
-	void update() override;
-
+	explicit AxisBullet(const sf::Vector2f& pos, const Game::Entity *const source, 
+			const Game::Direction dir, const Game::Attack& attack);
 };
 
-class BulletPresets {
+class AxisBulletPresets {
 	friend class Game::AxisBullet;
 
 	static void setup(Game::AxisBullet& b, unsigned short id);

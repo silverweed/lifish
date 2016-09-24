@@ -8,14 +8,15 @@
 using Game::AxisBullet;
 using Game::TILE_SIZE;
 
-AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction dir, const Game::Attack& attack)
-	: Game::Bullet(source, attack)
+AxisBullet::AxisBullet(const sf::Vector2f& pos, const Game::Entity *const source, 
+		const Game::Direction dir, const Game::Attack& attack)
+	: Game::Bullet(pos, source, attack)
 {
 	// Bullets have a variable number of frames, up to 13:
 	// motion frames: 1 ~ 8 (max 8 / directional per direction)
 	// destroy frames: 0 ~ 5
 	// TODO: refactor?
-	BulletPresets::setup(*this, attack.id);
+	AxisBulletPresets::setup(*this, attack.id);
 
 	unsigned short d = 0;
 	switch (dir) {
@@ -88,13 +89,8 @@ AxisBullet::AxisBullet(const Game::Entity *const source, const Game::Direction d
 	animatedSprite.play();
 }
 
-void AxisBullet::update() {
-	Game::Bullet::update();
-	if (collider->isAtLimit())
-		get<Game::Killable>()->kill();
-}
-
-void Game::BulletPresets::setup(Game::AxisBullet& b, unsigned short id) {
+/// AxisBulletPresets
+void Game::AxisBulletPresets::setup(Game::AxisBullet& b, unsigned short id) {
 	switch (id) {
 	case 1:
 		// shot

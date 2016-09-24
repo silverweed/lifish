@@ -5,7 +5,9 @@ using Game::FreeMoving;
 FreeMoving::FreeMoving(Game::Entity& owner, float speed, sf::Vector2f velocity)
 	: Game::Moving(owner, speed)
 	, velocity(velocity)
-{}
+{
+	moving = true;
+}
 
 void FreeMoving::update() {
 	Game::Component::update();

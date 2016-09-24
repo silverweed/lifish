@@ -23,18 +23,19 @@ using Game::Bullet;
 //}
 
 Bullet::Bullet(const sf::Vector2f& pos, const Game::Attack& attack)
-	: Game::Bullet(nullptr, attack)
+	: Game::Bullet(pos, nullptr, attack)
 {
-	position = pos;
 	setOrigin(pos);
 }
 
-Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
-	: Game::Entity(source != nullptr ? source->getPosition() : sf::Vector2f(0, 0))
+Bullet::Bullet(const sf::Vector2f& pos, const Game::Entity *const source, const Game::Attack& attack)
+	: Game::Entity(pos)
 	, origin(position)
 	, source(source)
 	, damage(attack.damage)
-	, range(attack.rangeInTiles ? attack.tileRange : attack.pixelRange)
+	, range(attack.type & Game::AttackType::RANGED 
+			? attack.rangeInTiles ? attack.tileRange : attack.pixelRange
+			: -1)
 {
 	addComponent(new Game::Sounded(*this, {
 		Game::getAsset("test", std::string("bullet") + Game::to_string(attack.id) + std::string("_hit.ogg")),
@@ -45,9 +46,9 @@ Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
 	addComponent(new Game::Temporary(*this, [this] () {
 		// expire condition
 		return dealtDamage
+			|| (range > 0 && get<Game::Moving>()->getDistTravelled() > range)
 			|| position.x < 0 || position.x > (Game::TILE_SIZE + 1) * Game::LEVEL_WIDTH 
-			|| position.y < 0 || position.y > (Game::TILE_SIZE + 1) * Game::LEVEL_HEIGHT
-			|| (range > 0 && get<Game::Moving>()->getDistTravelled() > range);
+			|| position.y < 0 || position.y > (Game::TILE_SIZE + 1) * Game::LEVEL_HEIGHT;
 	}, [this] () {
 		// on kill
 		_destroy();
@@ -58,9 +59,15 @@ Bullet::Bullet(const Game::Entity *const source, const Game::Attack& attack)
 	}));
 }
 
+void Bullet::update() {
+	Game::Entity::update();
+	if (collider->isAtLimit())
+		get<Game::Killable>()->kill();
+}
+
 void Bullet::_destroy() {
 	auto animated = get<Game::Animated>();
-	auto moving = get<Game::AxisMoving>();
+	auto moving = get<Game::Moving>();
 	auto& animatedSprite = animated->getSprite();
 	animatedSprite.setLooped(false);
 	moving->stop();
