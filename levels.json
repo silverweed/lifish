@@ -62,7 +62,7 @@
 				"type": ["simple", "blocking"],
 				"speed": 0.66,
 				"damage": 1,
-				"fireRate": 2,
+				"fireRate": 1,
 				"blockTime": 200
 			}
 		},

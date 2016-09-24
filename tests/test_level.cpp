@@ -28,7 +28,7 @@ using namespace Game;
 static void rendering_loop(sf::RenderWindow& window, const Game::LevelManager& lm, 
 		const Game::SidePanel& sidePanel, const Game::UI::UI& ui)
 {
-	while (window.isOpen()) {
+	while (window.isOpen() && !Game::terminated) {
 		window.clear();
 		if (ui.isActive()) {
 			window.draw(ui);	
@@ -38,7 +38,10 @@ static void rendering_loop(sf::RenderWindow& window, const Game::LevelManager& l
 		}
 		Game::maybeShowFPS(window);
 		window.display();
+		SLEEP_MS(10);
 	}
+	if (window.isOpen())
+		window.close();
 }
 #endif
 
@@ -175,10 +178,12 @@ int main(int argc, char **argv) {
 			case sf::Event::KeyPressed:
 				switch (event.key.code) {
 				case sf::Keyboard::Q:
-					window.close();
+					Game::terminated = true;
 					break;
 				case sf::Keyboard::Y:
+#ifndef MULTITHREADED
 					window.setVerticalSyncEnabled(vsync = !vsync);
+#endif
 					break;
 				case sf::Keyboard::M:
 					lm.getEntities().apply([] (Game::Entity *e) {
@@ -310,7 +315,13 @@ int main(int argc, char **argv) {
 			Game::cache.gcSounds();
 		}
 	}
-
+	
+#ifndef MULTITHREADED
+	if (window.isOpen())
+		window.close();
+#else
+	rendering_thread.join();
+#endif
 	// Perform cleanup
 	mm.stop();
 	cache.finalize();
