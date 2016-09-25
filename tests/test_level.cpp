@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
 #endif
 #ifdef HAVE_NFD
 					std::cout << "    | NFD support: yes" << std::endl;
-#else
+#elif !defined(SFML_SYSTEM_WINDOWS)
 					std::cout << "    | NFD support: no" << std::endl;
 #endif
 #ifdef MULTITHREADED 
