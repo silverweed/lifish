@@ -1,6 +1,10 @@
 #include "RegularEntityDeath.hpp"
 #include "Sounded.hpp"
+#include "Clock.hpp"
+#include "Killable.hpp"
 #include "MovingAnimator.hpp"
+#include "AxisMoving.hpp"
+#include "Collider.hpp"
 #include "GameCache.hpp"
 #include "game.hpp"
 #include <exception>

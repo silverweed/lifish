@@ -1,6 +1,6 @@
 #pragma once
 
-#include "LoopingMusic.hpp"
+class LoopingMusic;
 
 namespace Game {
 

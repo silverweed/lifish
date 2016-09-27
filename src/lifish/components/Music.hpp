@@ -1,8 +1,10 @@
 #pragma once
 
+#include <SFML/Audio/InputSoundFile.hpp>
 #include "Component.hpp"
 #include "Track.hpp"
-#include "LoopingMusic.hpp"
+
+class LoopingMusic;
 
 namespace Game {
 

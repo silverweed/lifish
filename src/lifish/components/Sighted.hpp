@@ -6,7 +6,6 @@
 #include <cstdint>
 #include <initializer_list>
 #include "collision_layers.hpp"
-#include "Direction.hpp"
 #include "Component.hpp"
 
 namespace Game {
@@ -37,8 +36,8 @@ public:
 	/** Sets all layers in `layers` as (`opaque` ? opaque : transparent) */
 	void setOpaque(std::initializer_list<Game::Layers::Layer> layers, bool opaque = true);
 
-	void setLevelManager(const Game::LevelManager *_lm) { lm = _lm; }
-	const Game::LevelManager* getLevelManager() const { return lm; }
+	void setLevelManager(const Game::LevelManager *_lm);
+	const Game::LevelManager* getLevelManager() const;
 
 	virtual void update() = 0;
 };

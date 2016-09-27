@@ -1,15 +1,17 @@
 #pragma once
 
 #include "Component.hpp"
-#include "Clock.hpp"
-#include "Bullet.hpp"
-#include "AxisMoving.hpp"
 #include "Attack.hpp"
-#include "AxisBullet.hpp"
-#include "FreeBullet.hpp"
+#include "Direction.hpp"
 #include <exception>
 
 namespace Game {
+
+class Clock;
+class Bullet;
+class AxisBullet;
+class FreeBullet;
+class AxisMoving;
 
 class Shooting : public Game::Component {
 	/** The duration of the shooting frame */

@@ -1,4 +1,5 @@
 #include "Controllable.hpp"
+#include "AxisMoving.hpp"
 #include <exception>
 
 using Game::Controllable;

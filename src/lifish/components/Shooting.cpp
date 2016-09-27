@@ -1,4 +1,9 @@
 #include "Shooting.hpp"
+#include "Clock.hpp"
+#include "Bullet.hpp"
+#include "AxisMoving.hpp"
+#include "AxisBullet.hpp"
+#include "FreeBullet.hpp"
 #include <exception>
 
 using Game::Shooting;

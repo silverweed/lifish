@@ -2,7 +2,6 @@
 
 #include <exception>
 #include "Component.hpp"
-#include "game.hpp"
 
 namespace Game {
 
@@ -33,12 +32,7 @@ public:
 
 	short getTarget() const { return target; }
 	/** Sets this component to give points to `t`-th player */
-	void setTarget(unsigned short t) {
-		if (target != -1) return; // can only set target once
-		if (0 >= t || t > Game::MAX_PLAYERS)
-			throw std::logic_error("setTarget set to a number greater than MAX_PLAYERS or < 1!");
-		target = t;
-	}
+	void setTarget(unsigned short t);
 };
 
 }

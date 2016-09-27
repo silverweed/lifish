@@ -1,8 +1,5 @@
 #pragma once
 
-#include <array>
-#include "game.hpp"
-
 namespace Game {
 
 struct Options {

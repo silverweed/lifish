@@ -1,6 +1,8 @@
 #include "game_logic.hpp"
 #include "Bomb.hpp"
 #include "Explosion.hpp"
+#include "GameCache.hpp"
+#include "Bullet.hpp"
 #include "Controllable.hpp"
 #include "Sounded.hpp"
 #include "Lifed.hpp"

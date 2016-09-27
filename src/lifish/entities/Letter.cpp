@@ -8,6 +8,7 @@
 #include "Player.hpp"
 #include "utils.hpp"
 #include "game_values.hpp"
+#include "GameCache.hpp"
 #include <cassert>
 #include <random>
 

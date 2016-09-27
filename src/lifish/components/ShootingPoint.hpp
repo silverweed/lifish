@@ -1,9 +1,13 @@
 #pragma once
 
-#include "AutoShooting.hpp"
-#include "FreeSighted.hpp"
+#include "Component.hpp"
 
 namespace Game {
+
+struct Attack;
+class AutoShooting;
+class FreeSighted;
+class Shooting;
 
 /** A ShootingPoint is a component with a sight and an AutoShooting.
  *  Can be used to give an entity multiple "weapons".

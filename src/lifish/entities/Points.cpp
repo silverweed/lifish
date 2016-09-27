@@ -2,6 +2,7 @@
 #include "Direction.hpp"
 #include "game.hpp"
 #include "Temporary.hpp"
+#include "utils.hpp"
 #include "game_values.hpp"
 #include "AxisMoving.hpp"
 #include "Drawable.hpp"

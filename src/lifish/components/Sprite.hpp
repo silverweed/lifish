@@ -1,9 +1,11 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "Texture.hpp"
+#include "Component.hpp"
 
 namespace Game {
+
+class Texture;
 
 /**
  * A drawable non-animated sprite

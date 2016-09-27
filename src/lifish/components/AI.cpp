@@ -27,8 +27,38 @@
 			SAME_DIRECTION \
 	} 
 
+using Game::AI;
 using Game::AIBoundFunction;
 using D = Game::Direction;
+
+AI::AI(Game::Entity& owner, unsigned short aiNum)
+	: Game::Component(owner) 
+	, aiNum(aiNum)
+{
+	if (aiNum >= ai_functions.size())
+		throw std::invalid_argument("Invalid aiNum passed: " + Game::to_string(aiNum));
+}
+
+Game::Entity* AI::init() {
+	Game::Component::init();
+	moving = owner.get<Game::Moving>();
+	setAI(ai_functions[aiNum]);
+	return this;
+}
+
+void AI::update() {
+	if (lm == nullptr || (moving != nullptr && moving->isBlocked()))
+		return;
+	func(*lm);
+}
+
+void AI::setLevelManager(Game::LevelManager *_lm) {
+	lm = _lm;
+}
+
+void AI::setAI(AIFunction newAI) {
+	func = newAI(owner);
+}
 
 std::array<Game::AIFunction, Game::AI_FUNCTION_NUM> Game::ai_functions = {{
 	ai_random,

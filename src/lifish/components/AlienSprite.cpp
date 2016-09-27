@@ -1,6 +1,9 @@
 #include "AlienSprite.hpp"
 #include "game.hpp"
 #include "GameCache.hpp"
+#include "MovingAnimator.hpp"
+#include "AxisMoving.hpp"
+#include "Animated.hpp"
 #include "utils.hpp"
 #include "Drawable.hpp"
 

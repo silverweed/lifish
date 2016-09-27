@@ -3,7 +3,6 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "Component.hpp"
-#include "Entity.hpp"
 
 namespace Game {
 

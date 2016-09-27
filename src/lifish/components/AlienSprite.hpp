@@ -2,10 +2,11 @@
 
 #include <SFML/Graphics.hpp>
 #include "Component.hpp"
-#include "Animated.hpp"
-#include "MovingAnimator.hpp"
 
 namespace Game {
+
+class Animated;
+class MovingAnimator;
 
 /**
  * The harmless Extra-game alien sprite which is drawn

@@ -1,4 +1,6 @@
 #include "Animated.hpp"
+#include "GameCache.hpp"
+#include "Clock.hpp"
 #include "game.hpp"
 #include "utils.hpp"
 

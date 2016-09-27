@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Component.hpp"
-#include "Clock.hpp"
-#include "Collider.hpp"
 
 namespace Game {
+
+class Clock;
+class Collider;
 
 /** 
  * An object moving in a generic direction. Use its child

@@ -2,10 +2,13 @@
 #include "Player.hpp"
 #include "Collider.hpp"
 #include "Sounded.hpp"
+#include "FreeSighted.hpp"
+#include "AutoShooting.hpp"
 #include "Drawable.hpp"
 #include "Lifed.hpp"
 #include "Scored.hpp"
 #include "Sprite.hpp"
+#include "Shooting.hpp"
 
 using namespace Game::Conf::Boss::AlienBoss;
 using Game::AlienBoss;

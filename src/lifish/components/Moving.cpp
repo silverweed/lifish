@@ -1,4 +1,6 @@
 #include "Moving.hpp"
+#include "Clock.hpp"
+#include "Collider.hpp"
 
 using Game::Moving;
 

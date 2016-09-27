@@ -1,5 +1,8 @@
 #include <exception>
 #include "AutoShooting.hpp"
+#include "AxisBullet.hpp"
+#include "FreeBullet.hpp"
+#include "Shooting.hpp"
 
 using Game::AutoShooting;
 

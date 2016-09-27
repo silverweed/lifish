@@ -2,10 +2,11 @@
 
 #include <unordered_map>
 #include "Component.hpp"
-#include "Clock.hpp"
-#include "Killable.hpp"
 
 namespace Game {
+
+class Clock;
+class Killable;
 
 /** A generic component that handles the typical death of a Killable entity.
  *  In particular, it handles the case where owner has an Animated, an AxisMoving,

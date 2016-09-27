@@ -1,10 +1,12 @@
 #pragma once
 
 #include "Component.hpp"
-#include "Animated.hpp"
-#include "AxisMoving.hpp"
+#include "Direction.hpp"
 
 namespace Game {
+
+class AxisMoving;
+class Animated;
 
 /** 
  * A Component which animates an Animated entity based on its direction.

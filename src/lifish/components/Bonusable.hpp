@@ -1,10 +1,10 @@
 #pragma once
 
 #include <array>
+#include <SFML/System/Time.hpp>
 #include "Clock.hpp"
-#include "Bonus.hpp"
 #include "Entity.hpp"
-#include "game_values.hpp"
+#include "BonusType.hpp"
 
 namespace Game {
 

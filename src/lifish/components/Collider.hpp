@@ -4,13 +4,11 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 #include "Component.hpp"
-#include "game.hpp"
 #include "collision_layers.hpp"
 
 namespace Game {
 
 class CollisionDetector;
-class CompoundCollider;
 
 class Collider : public Game::Component {
 protected:

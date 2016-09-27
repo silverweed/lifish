@@ -2,9 +2,13 @@
 
 #include <memory>
 #include <queue>
-#include "Shooting.hpp"
+#include "Component.hpp"
+#include "Direction.hpp"
 
 namespace Game {
+
+class Shooting;
+class Bullet;
 
 /** This component allows easy management of a Shooting entity.
  *  Instead of returning the bullet directly, the method shoot() 

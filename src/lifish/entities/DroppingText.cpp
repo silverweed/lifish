@@ -4,6 +4,7 @@
 #include "Drawable.hpp"
 #include "ZIndexed.hpp"
 #include "game_values.hpp"
+#include "game.hpp"
 
 using Game::DroppingText;
 

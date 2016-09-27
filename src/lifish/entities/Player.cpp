@@ -7,6 +7,7 @@
 #include "Explosion.hpp"
 #include "Killable.hpp"
 #include "Controllable.hpp"
+#include "GameCache.hpp"
 #include "ZIndexed.hpp"
 #include "utils.hpp"
 #include <sstream>

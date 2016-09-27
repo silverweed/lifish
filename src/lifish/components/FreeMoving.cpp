@@ -1,4 +1,5 @@
 #include "FreeMoving.hpp"
+#include "Clock.hpp"
 
 using Game::FreeMoving;
 

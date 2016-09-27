@@ -21,3 +21,11 @@ void Sighted::setOpaque(std::initializer_list<Game::Layers::Layer> layers, bool 
 bool Sighted::_isOpaque(Game::Layers::Layer layer) const {
 	return (opaqueMask >> static_cast<unsigned>(layer)) & 1;
 }
+
+void Sighted::setLevelManager(const Game::LevelManager *_lm) {
+	lm = _lm;
+}
+
+const Game::LevelManager* Sighted::getLevelManager() const {
+	return lm;
+}

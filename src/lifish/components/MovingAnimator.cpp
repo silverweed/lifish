@@ -1,4 +1,6 @@
 #include "MovingAnimator.hpp"
+#include "AxisMoving.hpp"
+#include "Animated.hpp"
 
 using Game::MovingAnimator;
 

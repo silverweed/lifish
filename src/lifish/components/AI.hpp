@@ -4,17 +4,14 @@
  */
 
 #include <functional>
-#include <exception>
 #include <array>
 #include "Component.hpp"
-#include "Shooting.hpp"
-#include "Direction.hpp"
 #include "utils.hpp"
 
 namespace Game {
 
-class Enemy;
 class LevelManager;
+class Moving;
 
 using AIBoundFunction = std::function<void(const Game::LevelManager&)>;
 using AIFunction = std::function<AIBoundFunction(Game::Entity&)>;
@@ -34,34 +31,14 @@ class AI : public Game::Component {
 	Game::Moving *moving = nullptr;
 
 public:
-	explicit AI(Game::Entity& owner, unsigned short aiNum)
-		: Game::Component(owner) 
-		, aiNum(aiNum)
-	{
-		if (aiNum >= ai_functions.size())
-			throw std::invalid_argument("Invalid aiNum passed: " + Game::to_string(aiNum));
-	}
+	explicit AI(Game::Entity& owner, unsigned short aiNum);
 
-	Game::Entity* init() override {
-		Game::Component::init();
-		moving = owner.get<Game::Moving>();
-		setAI(ai_functions[aiNum]);
-		return this;
-	}
+	void setAI(AIFunction newAI);
 
-	void setAI(AIFunction newAI) {
-		func = newAI(owner);
-	}
+	void setLevelManager(Game::LevelManager *_lm);
 
-	void setLevelManager(Game::LevelManager *_lm) {
-		lm = _lm;
-	}
-
-	void update() override {
-		if (lm == nullptr || (moving != nullptr && moving->isBlocked()))
-			return;
-		func(*lm);
-	}
+	Game::Entity* init() override; 
+	void update() override;
 };
 
 /** Choose a random direction; allow turning around */

@@ -1,5 +1,6 @@
 #include "core.hpp"
 #include "Options.hpp"
+#include "GameCache.hpp"
 #include <cstring>
 
 #if defined(SFML_SYSTEM_MACOS)

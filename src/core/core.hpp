@@ -5,8 +5,6 @@
 #include <random>
 #include <sstream>
 #include <SFML/System.hpp>
-#include "GameCache.hpp"
-#include "MusicManager.hpp"
 
 // Fallback in case the game wasn't compiled properly with cmake
 #ifndef VERSION
@@ -19,6 +17,8 @@
 namespace Game {
 
 struct Options;
+class MusicManager;
+class GameCache;
 
 /****************************************************************************/
 /*                         GLOBAL DEFINITIONS                               */

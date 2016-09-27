@@ -1,6 +1,8 @@
 #include "PreferencesScreen.hpp"
 #include "game.hpp"
+#include "MusicManager.hpp"
 #include "Options.hpp"
+#include "GameCache.hpp"
 #include "utils.hpp"
 #include <memory>
 #include <iostream>

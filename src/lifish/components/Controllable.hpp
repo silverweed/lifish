@@ -1,11 +1,13 @@
 #pragma once
 
 #include <array>
+#include <SFML/Window.hpp>
 #include "Component.hpp"
-#include "AxisMoving.hpp"
 #include "controls.hpp"
 
 namespace Game {
+
+class AxisMoving;
 
 /** Controllable makes an AxisMoving Entity move taking input from the user. */
 class Controllable : public Game::Component {

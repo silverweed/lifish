@@ -4,12 +4,13 @@
 #include <unordered_map>
 #include <vector>
 #include <SFML/Graphics.hpp>
+#include "Component.hpp"
 #include "AnimatedSprite.hpp"
 #include "Animation.hpp"
-#include "Clock.hpp"
-#include "Texture.hpp"
 
 namespace Game {
+
+class Clock;
 
 /**
  * An Animated is a drawable object whose sprite has a certain

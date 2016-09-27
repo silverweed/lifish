@@ -1,4 +1,7 @@
 #include "ShootingPoint.hpp"
+#include "Shooting.hpp"
+#include "AutoShooting.hpp"
+#include "FreeSighted.hpp"
 
 using Game::ShootingPoint;
 

@@ -20,6 +20,7 @@
 namespace Game {
 
 class Enemy;
+class Collider;
 
 struct EnemyInfo {
 	unsigned short ai = 0;

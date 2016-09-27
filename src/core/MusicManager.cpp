@@ -1,4 +1,5 @@
 #include "MusicManager.hpp"
+#include "LoopingMusic.hpp"
 
 using Game::MusicManager;
 
