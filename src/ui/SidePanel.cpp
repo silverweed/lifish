@@ -2,6 +2,8 @@
 #include "GameCache.hpp"
 #include "LevelManager.hpp"
 #include "Bonusable.hpp"
+#include "ShadedText.hpp"
+#include "Player.hpp"
 #include "Lifed.hpp"
 #include <iomanip>
 

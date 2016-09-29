@@ -24,23 +24,16 @@ public:
 	void load(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames);
 	void add(Game::UI::Screen *screen);
 	
-	void update() {
-		if (curScreen != nullptr)
-			curScreen->update();
-	}
+	void update();
 
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-		if (curScreen != nullptr)
-			target.draw(*curScreen, states);
-	}
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void fireClick();
 	/** Dispatch a signal to curScreen->receiveEvent. 
 	 *  @return true if signal should be ignored by UI's event loop.
 	 */
-	bool signalEvent(const sf::Event& evt) {
-		return curScreen != nullptr && curScreen->receiveEvent(evt);
-	}
+	bool signalEvent(const sf::Event& evt);
+
 	void setCurrent(const std::string& name, bool overrideParent = false);
 	void setCurrentToParent();
 };

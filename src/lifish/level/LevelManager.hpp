@@ -5,19 +5,17 @@
 #include <SFML/Graphics.hpp>
 #include "EntityGroup.hpp"
 #include "CollisionDetector.hpp"
-#include "SaveManager.hpp"
-#include "Player.hpp"
-#include "Bomb.hpp"
-#include "game.hpp"
-#include "Level.hpp"
 #include "LevelRenderer.hpp"
 #include "LevelTime.hpp"
-#include "utils.hpp"
 #include "game_values.hpp"
 
 namespace Game {
 
 class LevelLoader;
+class SaveManager;
+class Player;
+class Bomb;
+class Level;
 
 /** The class that manages all the level's entities and events.
  *  In particular, its update() method updates all entities,

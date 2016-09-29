@@ -3,13 +3,15 @@
 #include <array>
 #include <unordered_set>
 #include <SFML/Graphics.hpp>
-#include "Animated.hpp"
-#include "Collider.hpp"
+#include "Entity.hpp"
 
 namespace Game {
 
 class LevelManager;
+class Collider;
 class Player;
+class Animated;
+class Explosion;
 
 /**
  * A bomb's explosion; like in original BOOM, the explosion

@@ -6,7 +6,6 @@
 #include <SFML/System/NonCopyable.hpp>
 #include "Level.hpp"
 #include "Track.hpp"
-#include "game.hpp"
 #include "Stringable.hpp"
 #include "Enemy.hpp"
 

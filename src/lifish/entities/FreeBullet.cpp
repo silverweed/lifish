@@ -1,6 +1,10 @@
 #include "FreeBullet.hpp"
 #include "FreeMoving.hpp"
+#include "Attack.hpp"
 #include "Killable.hpp"
+#include "core.hpp"
+#include "collision_layers.hpp"
+#include "Collider.hpp"
 #include "Drawable.hpp"
 #include "Animated.hpp"
 #include <cmath>

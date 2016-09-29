@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Bullet.hpp"
+#include "Direction.hpp"
 
 namespace Game {
 

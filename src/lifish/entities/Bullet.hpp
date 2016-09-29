@@ -1,14 +1,12 @@
 #pragma once
 
-#include "Component.hpp"
-#include "Direction.hpp"
-#include "Attack.hpp"
-#include "Collider.hpp"
+#include "Entity.hpp"
 #include "game_values.hpp"
 
 namespace Game {
 
-class BulletPresets;
+class Collider;
+struct Attack;
 
 /**
  * A bullet travels until it impacts with another Entity which is not transparent to it.

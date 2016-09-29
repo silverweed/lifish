@@ -1,6 +1,7 @@
 #include "RegularEntityDeath.hpp"
 #include "Sounded.hpp"
 #include "Clock.hpp"
+#include "Animated.hpp"
 #include "Killable.hpp"
 #include "MovingAnimator.hpp"
 #include "AxisMoving.hpp"

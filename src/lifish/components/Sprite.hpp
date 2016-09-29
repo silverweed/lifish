@@ -5,8 +5,6 @@
 
 namespace Game {
 
-class Texture;
-
 /**
  * A drawable non-animated sprite
  */

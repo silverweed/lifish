@@ -2,6 +2,9 @@
 #include "Sounded.hpp"
 #include "Player.hpp"
 #include "Drawable.hpp"
+#include "Clock.hpp"
+#include "Animated.hpp"
+#include "Killable.hpp"
 #include "Collider.hpp"
 #include "game.hpp"
 #include "Fixed.hpp"
@@ -71,4 +74,8 @@ void Bomb::ignite() {
 	fuseTime = sf::milliseconds(50); 
 	fuseClock->restart();
 	ignited = true; 
+}
+ 
+bool Bomb::isFuseOver() const {
+	return fuseClock->getElapsedTime() >= fuseTime; 
 }

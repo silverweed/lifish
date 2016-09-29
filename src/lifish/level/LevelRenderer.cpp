@@ -1,5 +1,7 @@
 #include "LevelRenderer.hpp"
 #include "LevelManager.hpp"
+#include "Level.hpp"
+#include "Drawable.hpp"
 #include "Sprite.hpp"
 #include "ZIndexed.hpp"
 #include <map>

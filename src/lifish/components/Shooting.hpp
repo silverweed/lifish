@@ -8,7 +8,6 @@
 namespace Game {
 
 class Clock;
-class Bullet;
 class AxisBullet;
 class FreeBullet;
 class AxisMoving;

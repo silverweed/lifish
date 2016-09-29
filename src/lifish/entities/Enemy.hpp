@@ -4,23 +4,24 @@
 #include <array>
 #include <SFML/System.hpp>
 #include "Entity.hpp"
-#include "Killable.hpp"
-#include "Clock.hpp"
-#include "Animated.hpp"
-#include "Direction.hpp"
-#include "MovingAnimator.hpp"
-#include "AI.hpp"
-#include "AlienSprite.hpp"
-#include "AxisSighted.hpp"
+#include "Attack.hpp"
 #include "game.hpp"
-#include "Shooting.hpp"
-#include "AutoShooting.hpp"
-#include "RegularEntityDeath.hpp"
 
 namespace Game {
 
 class Enemy;
 class Collider;
+class Animated;
+class Clock;
+class Killable;
+class MovingAnimator;
+class AI;
+class AlienSprite;
+class AxisSighted;
+class AxisMoving;
+class Shooting;
+class AutoShooting;
+class RegularEntityDeath;
 
 struct EnemyInfo {
 	unsigned short ai = 0;

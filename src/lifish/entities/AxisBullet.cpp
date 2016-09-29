@@ -1,7 +1,9 @@
 #include "AxisBullet.hpp"
+#include "Attack.hpp"
 #include "AxisMoving.hpp"
 #include "Animated.hpp"
 #include "Drawable.hpp"
+#include "Collider.hpp"
 #include "Killable.hpp"
 #include "game.hpp"
 

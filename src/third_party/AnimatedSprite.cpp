@@ -25,6 +25,7 @@
 
 #include "AnimatedSprite.hpp"
 
+#include "Animation.hpp"
 #include "utils.hpp"
 
 AnimatedSprite::AnimatedSprite(sf::Time frameTime, bool paused, bool looped, bool hideNonLoopedOnStop) :

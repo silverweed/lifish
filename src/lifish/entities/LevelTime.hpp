@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Component.hpp"
-#include "Clock.hpp"
+#include "Entity.hpp"
 
 namespace Game {
+
+class Clock;
 
 /** This class handles the level's time and the extra game's time */
 class LevelTime : public Game::Entity {

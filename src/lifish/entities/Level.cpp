@@ -3,6 +3,12 @@
 #include "GameCache.hpp"
 #include "LevelSet.hpp"
 #include "utils.hpp"
+#include "LoopingMusic.hpp"
+#include "Drawable.hpp"
+#include "ShadedText.hpp"
+#include "Music.hpp"
+#include "Texture.hpp"
+#include "LevelNumText.hpp"
 #include <iostream>
 #include <sstream>
 

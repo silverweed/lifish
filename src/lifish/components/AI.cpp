@@ -2,6 +2,8 @@
 #include "utils.hpp"
 #include "game.hpp"
 #include "LevelManager.hpp"
+#include "AxisSighted.hpp"
+#include "Shooting.hpp"
 #include "Sounded.hpp"
 #include "Enemy.hpp"
 #include "GameCache.hpp"

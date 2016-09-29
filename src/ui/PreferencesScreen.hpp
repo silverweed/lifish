@@ -5,6 +5,8 @@
 
 namespace Game {
 
+class ShadedText;
+
 namespace UI {
 
 class PreferencesScreen : public Game::UI::Screen {

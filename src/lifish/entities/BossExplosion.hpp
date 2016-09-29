@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Entity.hpp"
-#include "Animated.hpp"
 
 namespace Game {
+
+class Animated;
 
 /**
  * The explosions appearing when a Boss dies.

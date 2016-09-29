@@ -1,5 +1,6 @@
 #include "BossExplosion.hpp"
 #include "Drawable.hpp"
+#include "Animated.hpp"
 #include "Temporary.hpp"
 #include "utils.hpp"
 

@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Entity.hpp"
-#include "Clock.hpp"
-#include "AxisMoving.hpp"
 
 namespace Game {
+
+class Clock;
+class AxisMoving;
 
 /**
  * A temporary sprite dropping down from above.

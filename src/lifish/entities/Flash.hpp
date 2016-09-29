@@ -2,9 +2,10 @@
 
 #include <SFML/System.hpp>
 #include "Entity.hpp"
-#include "Animated.hpp"
 
 namespace Game {
+
+class Animated;
 
 /**
  * The flash made by a Teleport

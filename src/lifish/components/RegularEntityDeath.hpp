@@ -5,7 +5,6 @@
 
 namespace Game {
 
-class Clock;
 class Killable;
 
 /** A generic component that handles the typical death of a Killable entity.

@@ -1,6 +1,7 @@
 #include "ScreenHandler.hpp"
 #include "screen_callbacks.hpp"
 #include "UI.hpp"
+#include "Interactable.hpp"
 #include "game.hpp"
 #include <iostream>
 
@@ -85,4 +86,19 @@ void ScreenHandler::setCurrent(const std::string& name, bool overrideParent) {
 
 void ScreenHandler::setCurrentToParent() {
 	setCurrent(curScreen->getParent());
+}
+
+
+bool ScreenHandler::signalEvent(const sf::Event& evt) {
+	return curScreen != nullptr && curScreen->receiveEvent(evt);
+}
+
+void ScreenHandler::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	if (curScreen != nullptr)
+		target.draw(*curScreen, states);
+}
+
+void ScreenHandler::update() {
+	if (curScreen != nullptr)
+		curScreen->update();
 }

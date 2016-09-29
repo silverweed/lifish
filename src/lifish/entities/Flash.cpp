@@ -2,6 +2,7 @@
 #include "game.hpp"
 #include "Drawable.hpp"
 #include "Temporary.hpp"
+#include "Animated.hpp"
 
 using Game::Flash;
 using Game::TILE_SIZE;

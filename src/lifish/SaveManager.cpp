@@ -1,5 +1,7 @@
 #include "SaveManager.hpp"
 #include "LevelManager.hpp"
+#include "Player.hpp"
+#include "Level.hpp"
 #include "json.hpp"
 #include "Lifed.hpp"
 #include <iostream>

@@ -1,14 +1,17 @@
 #pragma once
 
-#include "Entity.hpp"
-#include "LevelManager.hpp"
 #include <vector>
+#include <list>
+#include <functional>
 
 #define DEF_LOGIC(name) \
 	void name(Game::Entity *e, Game::LevelManager& lm, \
 			std::list<Game::Entity*>& tbspawned, std::list<Game::Entity*>& tbkilled)
 
 namespace Game {
+
+class Entity;
+class LevelManager;
 
 /** Namespace containing game logic rules */
 namespace Logic {

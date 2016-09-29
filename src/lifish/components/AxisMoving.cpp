@@ -1,6 +1,7 @@
 #include "AxisMoving.hpp"
 #include "game.hpp"
 #include "utils.hpp"
+#include "Clock.hpp"
 #include "Shooting.hpp"
 #include "LevelManager.hpp"
 #include <exception>

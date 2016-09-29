@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Boss.hpp"
-#include "Clock.hpp"
-#include "ShootingPoint.hpp"
 #include "game.hpp"
 
 namespace Game {
+
+class Clock;
+class ShootingPoint;
 
 class AlienBoss : public Game::Boss {
 	static const sf::Vector2i SIZE;

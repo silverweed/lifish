@@ -1,6 +1,8 @@
 #include "DroppingText.hpp"
 #include "Temporary.hpp"
 #include "Sprite.hpp"
+#include "Clock.hpp"
+#include "AxisMoving.hpp"
 #include "Drawable.hpp"
 #include "ZIndexed.hpp"
 #include "game_values.hpp"

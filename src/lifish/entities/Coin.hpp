@@ -2,11 +2,12 @@
 
 #include <SFML/System.hpp>
 #include "Entity.hpp"
-#include "Clock.hpp"
-#include "Animated.hpp"
-#include "Grabbable.hpp"
 
 namespace Game {
+
+class Clock;
+class Grabbable;
+class Animated;
 
 /**
  * A coin can be taken by any player. Taking all coins triggers

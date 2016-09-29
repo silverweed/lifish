@@ -5,10 +5,7 @@
 #include <unordered_map>
 #include <memory>
 #include <vector>
-#include "ShadedText.hpp"
-#include "Component.hpp"
 #include "ScreenStyle.hpp"
-#include "Interactable.hpp"
 #include "WithOrigin.hpp"
 #include "Action.hpp"
 
@@ -17,6 +14,7 @@ namespace Game {
 namespace UI {
 
 class ScreenBuilder;
+class Interactable;
 
 class Screen : public sf::Drawable, public Game::WithOrigin {
 public:

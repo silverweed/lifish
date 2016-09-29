@@ -6,7 +6,6 @@
 #include <functional>
 #include <array>
 #include "Component.hpp"
-#include "utils.hpp"
 
 namespace Game {
 

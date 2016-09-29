@@ -1,14 +1,15 @@
 #pragma once
 
 #include <SFML/System.hpp>
-#include "Sprite.hpp"
 #include "BonusType.hpp"
-#include "Clock.hpp"
-#include "Player.hpp"
 #include "Entity.hpp"
-#include "Grabbable.hpp"
 
 namespace Game {
+
+class Clock;
+class Sprite;
+class Grabbable;
+class Player;
 
 /**
  * The bonuses dropped by walls

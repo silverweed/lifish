@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Entity.hpp"
-#include "Collider.hpp"
-#include "Killable.hpp"
 
 namespace Game {
+
+class Collider;
+class Killable;
 
 /** The base class for Bosses */
 class Boss : public Game::Entity {

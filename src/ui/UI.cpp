@@ -1,3 +1,4 @@
+#include "Interactable.hpp"
 #include "UI.hpp"
 
 using Game::UI::UI;

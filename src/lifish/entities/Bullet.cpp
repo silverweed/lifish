@@ -1,7 +1,10 @@
 #include <algorithm>
 #include "Bullet.hpp"
 #include "AxisMoving.hpp"
+#include "Attack.hpp"
+#include "Animated.hpp"
 #include "Sounded.hpp"
+#include "Collider.hpp"
 #include "Drawable.hpp"
 #include "ZIndexed.hpp"
 #include "game.hpp"

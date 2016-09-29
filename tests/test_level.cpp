@@ -4,6 +4,9 @@
 #include <iostream>
 #include <SFML/Window.hpp>
 #include "LevelManager.hpp"
+#include "Interactable.hpp"
+#include "Player.hpp"
+#include "Music.hpp"
 #include "SidePanel.hpp"
 #include "LevelSet.hpp"
 #include "DroppingText.hpp"
@@ -14,6 +17,8 @@
 #include "ControlsScreen.hpp"
 #include "PreferencesScreen.hpp"
 #include "DebugRenderer.hpp"
+#include "MusicManager.hpp"
+#include "GameCache.hpp"
 
 #ifdef MULTITHREADED
 #	ifdef SFML_SYSTEM_LINUX

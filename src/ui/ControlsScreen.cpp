@@ -1,5 +1,7 @@
 #include "ControlsScreen.hpp"
 #include "game.hpp"
+#include "controls.hpp"
+#include "Interactable.hpp"
 #include "Options.hpp"
 #include "utils.hpp"
 #include <memory>

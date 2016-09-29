@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Entity.hpp"
-#include "Animated.hpp"
-#include "Clock.hpp"
-#include "Collider.hpp"
 
 namespace Game {
+
+class Animated;
+class Clock;
+class Collider;
 
 /**
  * A teleport can be used both by players and enemies.

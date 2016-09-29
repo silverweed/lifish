@@ -1,18 +1,20 @@
 #pragma once
 
 #include "Entity.hpp"
-#include "Bomb.hpp"
 #include "game.hpp"
-#include "MovingAnimator.hpp"
-#include "AxisMoving.hpp"
-#include "Collider.hpp"
-#include "Animated.hpp"
-#include "RegularEntityDeath.hpp"
 #include "game_values.hpp"
 
 namespace Game {
 
 class Bonusable;
+class Killable;
+class Clock;
+class MovingAnimator;
+class Clock;
+class AxisMoving;
+class Collider;
+class Animated;
+class RegularEntityDeath;
 
 /** This structs contains all the data which is persistent through different levels. */
 struct PlayerInfo {

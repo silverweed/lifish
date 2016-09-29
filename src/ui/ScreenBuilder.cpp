@@ -1,5 +1,6 @@
 #include "ScreenBuilder.hpp"
 #include "ScreenStyle.hpp"
+#include "Screen.hpp"
 #include "GameCache.hpp"
 #include "utils.hpp"
 #include "Interactable.hpp"

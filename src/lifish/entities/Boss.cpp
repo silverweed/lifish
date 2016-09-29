@@ -1,6 +1,8 @@
 #include "Boss.hpp"
 #include "ZIndexed.hpp"
 #include "game.hpp"
+#include "Collider.hpp"
+#include "Killable.hpp"
 #include "GameCache.hpp"
 #include "Sounded.hpp"
 #include "Explosion.hpp"

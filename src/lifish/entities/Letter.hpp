@@ -2,11 +2,12 @@
 
 #include <SFML/System.hpp>
 #include "Entity.hpp"
-#include "Clock.hpp"
-#include "Grabbable.hpp"
-#include "Animated.hpp"
 
 namespace Game {
+
+class Clock;
+class Grabbable;
+class Animated;
 
 /** An EXTRA letter. */
 class Letter : public Game::Entity {

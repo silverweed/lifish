@@ -1,7 +1,9 @@
 #include "PreferencesScreen.hpp"
 #include "game.hpp"
 #include "MusicManager.hpp"
+#include "Interactable.hpp"
 #include "Options.hpp"
+#include "ShadedText.hpp"
 #include "GameCache.hpp"
 #include "utils.hpp"
 #include <memory>

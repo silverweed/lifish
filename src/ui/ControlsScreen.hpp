@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Screen.hpp"
-#include "controls.hpp"
 
 namespace Game {
+
+class ShadedText;
 
 namespace UI {
 

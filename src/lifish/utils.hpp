@@ -5,8 +5,6 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/System/Vector2.hpp>
 #include "game.hpp"
-#include "Direction.hpp"
-#include "Animated.hpp"
 
 #if defined(SFML_SYSTEM_WINDOWS) || defined(__MINGW32__)
 #	include <windows.h>
@@ -20,8 +18,6 @@
 #endif
 
 namespace Game {
-
-class LevelManager;
 
 template<class T, size_t ROWS, size_t COLS>
 using Matrix = std::array<std::array<T, COLS>, ROWS>;

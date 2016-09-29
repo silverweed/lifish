@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Level.hpp"
-#include "LevelManager.hpp"
-
 namespace Game {
+
+class Level;
+class LevelManager;
 
 class LevelLoader {
 public:

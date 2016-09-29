@@ -2,14 +2,14 @@
 
 #include <SFML/System.hpp>
 #include "Entity.hpp"
-#include "Clock.hpp"
-#include "Animated.hpp"
-#include "Killable.hpp"
 #include "game_values.hpp"
 
 namespace Game {
 
 class Player;
+class Clock;
+class Animated;
+class Killable;
 
 /**
  * The players' bomb. Upon explosion, a Game::Explosion is spawned
@@ -48,7 +48,7 @@ public:
 	void setRadius(unsigned short r) { radius = r; }
 
 	/** Returns true if this bomb's fuse is over and the bomb should blow off. */
-	bool isFuseOver() const { return fuseClock->getElapsedTime() >= fuseTime; }
+	bool isFuseOver() const;
 	void setFuseTime(const sf::Time& ft) { fuseTime = ft; }
 
 	const Game::Player& getSourcePlayer() const { return sourcePlayer; }

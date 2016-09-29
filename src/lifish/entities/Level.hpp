@@ -5,21 +5,16 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/System/NonCopyable.hpp>
-#include "LoopingMusic.hpp"
-#include "Drawable.hpp"
 #include "game.hpp"
+#include "Entity.hpp"
 #include "Track.hpp"
 #include "EntityType.hpp"
-#include "ShadedText.hpp"
-#include "Music.hpp"
-#include "Texture.hpp"
-#include "LevelNumText.hpp"
-#include "Stringable.hpp"
 #include "utils.hpp"
 
 namespace Game {
 
 class LevelSet;
+class LevelNumText;
 
 /** Holds the data used in Level initialization. */
 struct LevelInfo {

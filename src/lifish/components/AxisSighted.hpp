@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Sighted.hpp"
+#include "Direction.hpp"
 
 namespace Game {
 

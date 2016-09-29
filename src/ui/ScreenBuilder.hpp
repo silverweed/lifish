@@ -3,13 +3,15 @@
 #include <string>
 #include <vector>
 #include <utility>
-#include <SFML/System/NonCopyable.hpp>
-#include "Screen.hpp"
+#include <SFML/System.hpp>
+#include <SFML/Graphics.hpp>
 #include "json.hpp"
 
 namespace Game {
 
 namespace UI {
+
+class Screen;
 
 class ScreenBuilder final : private sf::NonCopyable {
 	constexpr static float H_PADDING = 20;

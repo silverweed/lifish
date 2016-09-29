@@ -1,11 +1,14 @@
 #pragma once
 
 #include "Entity.hpp"
-#include "Animated.hpp"
-#include "Killable.hpp"
-#include "Collider.hpp"
+
+class Animation;
 
 namespace Game {
+
+class Killable;
+class Collider;
+class Animated;
 
 /**
  * A breakable wall
