@@ -89,9 +89,9 @@ at the moment it's not really a good idea to do so, as:
   - [x] Enemies shoot
   - [x] Enemies die when hit by explosions
 - [ ] Bosses   
-  - [ ] Boss collisions
-  - [ ] Bosses shoot
-  - [ ] Bosses are hit by explosions
+  - [x] Boss collisions
+  - [x] Bosses shoot
+  - [x] Bosses are hit by explosions
   - [ ] Bosses die correctly
   - [ ] Final Boss
 - [x] Players   
@@ -102,7 +102,7 @@ at the moment it's not really a good idea to do so, as:
 - [x] Bombs
 - [x] Coins   
   - [x] Coins can be taken
-  - [ ] Taking all coins causes Extra Game
+  - [x] Taking all coins causes Extra Game
 - [x] Bullets
   - [x] Directional bullets use correct sprites
 - [ ] Hurry Up
