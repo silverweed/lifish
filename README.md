@@ -71,7 +71,7 @@ at the moment it's not really a good idea to do so, as:
 
 ### Current Status ###
 
-**MASSIVE REFACTOR IN PROGRESS** (see branch [refactor](https://github.com/silverweed/lifish/tree/refactor))
+**MASSIVE REFACTOR IN PROGRESS**, see tag `0.x` for a working build
 
 - [x] Levels BG / Borders display
 - [x] Levels music play
