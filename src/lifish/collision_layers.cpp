@@ -1,12 +1,23 @@
 #include "collision_layers.hpp"
 
+/** Defines layers `a` and `b` to collide with each other.
+ *  If two layers collide, the `onCollision` callback of a collider on layer `a`
+ *  will be called whenever its collider intersects that of one on layer `b`.
+ *  This does NOT imply the layers are solid for each other, but merely that they 
+ *  interact.
+ */
 #define COLLIDES(a, b) \
 	collide[a][b] = true; \
 	collide[b][a] = true;
 
+/** Defines layer `a` to be "solid" for `b` and vice-versa.
+ *  Implies COLLIDES(a, b).
+ */
 #define SOLID(a, b) \
 	solid[a][b] = true; \
-	solid[b][a] = true;
+	solid[b][a] = true; \
+	collide[a][b] = true; \
+	collide[b][a] = true;
 
 using L = Game::Layers::Layer;
 
@@ -55,6 +66,7 @@ void Game::Layers::init() {
 	SOLID(L::ENEMIES, L::WALLS)
 	SOLID(L::ENEMIES, L::TRANSP_WALLS)
 	SOLID(L::BOSSES, L::ENEMY_BULLETS)
+	SOLID(L::BOSSES, L::WALLS)
 	SOLID(L::ENEMY_BULLETS, L::WALLS)
 	SOLID(L::EXPLOSIONS, L::WALLS)
 	SOLID(L::EXPLOSIONS, L::TRANSP_WALLS)
