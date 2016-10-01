@@ -21,6 +21,7 @@ LevelManager::LevelManager()
 	, cd(entities)
 {
 	levelTime.init();
+	dropTextManager.subscribe(entities);
 }
 
 auto LevelManager::createNewPlayers(unsigned short n) -> std::vector<Game::Player*> {
@@ -123,8 +124,10 @@ void LevelManager::resume() {
 
 void LevelManager::reset() {
 	entities.clear();
+	// Re-add the dropping texts
+	dropTextManager.subscribe(entities);
 
-	hurryUp = false;
+	hurryUp = hurryUpWarningGiven = false;
 	extraGameTriggered = extraGame = false;
 }
 
@@ -162,6 +165,11 @@ void LevelManager::_spawnBomb(Game::Bomb *b) {
 	}
 }
 
+void LevelManager::_triggerHurryUpWarning() {
+	dropTextManager.trigger(Game::DroppingTextManager::Text::HURRY_UP);
+	hurryUpWarningGiven = true;
+}
+
 void LevelManager::_triggerHurryUp() {
 	entities.apply([] (Game::Entity *e) {
 		auto enemy = dynamic_cast<Game::Enemy*>(e);
@@ -181,6 +189,7 @@ void LevelManager::_triggerExtraGame() {
 		
 		enemy->setMorphed(true);
 	});
+	dropTextManager.trigger(Game::DroppingTextManager::Text::EXTRA_GAME);
 	levelTime.startExtraGame();
 	extraGameTriggered = extraGame = true;
 }
@@ -220,7 +229,9 @@ bool LevelManager::_shouldTriggerExtraGame() const {
 }
 
 void LevelManager::_checkSpecialConditions() {
-	if (!hurryUp && levelTime.checkHurryUp() == Game::LevelTime::HurryUpResponse::HURRY_UP_ON)
+	if (!hurryUpWarningGiven && levelTime.checkHurryUp() == Game::LevelTime::HurryUpResponse::HURRY_UP_NEAR)
+		_triggerHurryUpWarning();
+	else if (!hurryUp && levelTime.checkHurryUp() == Game::LevelTime::HurryUpResponse::HURRY_UP_ON)
 		_triggerHurryUp();
 
 	if (!extraGameTriggered && _shouldTriggerExtraGame()) 

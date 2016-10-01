@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "EntityGroup.hpp"
 #include "CollisionDetector.hpp"
+#include "DroppingTextManager.hpp"
 #include "LevelRenderer.hpp"
 #include "LevelTime.hpp"
 #include "game_values.hpp"
@@ -33,6 +34,7 @@ class LevelManager final : public sf::Drawable, public Game::WithOrigin, private
 	Game::LevelTime levelTime;
 	/** Whether hurry up has already been triggered or not */
 	bool hurryUp = false;
+	bool hurryUpWarningGiven = false;
 	/** Whether EXTRA game was already triggered or not */
 	bool extraGameTriggered = false;
 	/** Whether we're currently in EXTRA game or not */
@@ -41,14 +43,16 @@ class LevelManager final : public sf::Drawable, public Game::WithOrigin, private
 
 	Game::EntityGroup entities;
 	Game::CollisionDetector cd;
+	Game::DroppingTextManager dropTextManager;
 
 	/** "Owned" pointers to players. 
 	 *  The players' lifecycle is the following:
-	 *  1) players are created via `createNewPlayers` and added to `entities`;
+	 *  1) players are created via `createNewPlayers` and added to `entities`; the LevelManager and the 
+	 *     EntityGroup share the ownership of the players via shared_ptr;
 	 *  2) updates to players are managed by the EntityGroup;
-	 *  3) on level change, the EntityGroup releases the ownership of all players to us (the LevelManager);
-	 *  4) the new level is loaded: `entities` gets cleared;
-	 *  5) the players are handed back to the EntityGroup.
+	 *  3) on level change, `entities` gets cleared; the player entities survive, as LevelManager retains
+	 *     their pointers, so the RC doesn't drop to 0;
+	 *  5) the players are then readded to the EntityGroup.
 	 */
 	std::array<std::shared_ptr<Game::Player>, Game::MAX_PLAYERS> players;
 
@@ -60,6 +64,7 @@ class LevelManager final : public sf::Drawable, public Game::WithOrigin, private
 	void _checkResurrect();
 	void _checkSpecialConditions();
 	void _triggerHurryUp();
+	void _triggerHurryUpWarning();
 	void _triggerExtraGame();
 	void _endExtraGame();
 	bool _shouldTriggerExtraGame() const;

@@ -9,7 +9,6 @@
 #include "Music.hpp"
 #include "SidePanel.hpp"
 #include "LevelSet.hpp"
-#include "DroppingText.hpp"
 #include "UI.hpp"
 #include "game.hpp"
 #include "Options.hpp"
@@ -237,15 +236,6 @@ int main(int argc, char **argv) {
 					break;
 				case sf::Keyboard::G:
 					debug = !debug;
-					break;
-				case sf::Keyboard::T:
-					{
-						auto dt = new Game::DroppingText(
-								Game::getAsset("test", "gameover.png"),
-								sf::Vector2i(311, 59));
-						dt->play();
-						lm.getEntities().add(dt);
-					}
 					break;
 				case sf::Keyboard::P:
 					if (ui.toggleActive()) {
