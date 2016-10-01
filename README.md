@@ -105,14 +105,14 @@ at the moment it's not really a good idea to do so, as:
   - [x] Taking all coins causes Extra Game
 - [x] Bullets
   - [x] Directional bullets use correct sprites
-- [ ] Hurry Up
+- [x] Hurry Up
 - [ ] Level-wise Victory
   - [ ] FINAL VICTORY
 - [ ] Game Over
 - [x] Points
 - [x] Extra
   - [x] Enemies become harmless in EXTRA
-  - [ ] Enemies drop letters in EXTRA
+  - [x] Enemies drop letters in EXTRA
 - [x] Side panel
 - [ ] Sounds
 - [ ] Music
