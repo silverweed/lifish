@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include "Boss.hpp"
 #include "game.hpp"
 

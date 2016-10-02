@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include "Entity.hpp"
 #include "game.hpp"
 #include "game_values.hpp"
