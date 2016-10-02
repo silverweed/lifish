@@ -42,7 +42,7 @@ public:
 	 *  If attack is also RANGED (i.e. "dashing"), also call setDashing(true) for the owner's
 	 *  Moving component (throws if no Moving component is found.)
 	 *  Else, create an AxisBullet described by `attack` and return it. 
-	 *  The callee must take care of its destruction.
+	 *  The caller must take care of its destruction.
 	 *  If dir is NONE, the bullet is shot in the direction of its owner. 
 	 *  In this case, the owner must have an AxisMoving component, or an exception is thrown.
 	 *  NOTE: this method does NOT check whether this entity is recharging.
