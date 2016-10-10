@@ -2,7 +2,9 @@
 #include "AxisMoving.hpp"
 #include "Drawable.hpp"
 #include "Scored.hpp"
+#include "Letter.hpp"
 #include "Shooting.hpp"
+#include "Spawning.hpp"
 #include "AutoShooting.hpp"
 #include "RegularEntityDeath.hpp"
 #include "Killable.hpp"
@@ -56,6 +58,12 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 		death->kill(); 
 	}, [this] () {
 		return death->isKillInProgress(); 
+	}));
+	// Spawn letter on death
+	addComponent(new Game::Spawning(*this, [this] (const Game::Spawning& spw) {
+		return morphed && spw.nSpawned() == 0 && killable->isKilled() && !killable->isKillInProgress();
+	}, [this] () {
+		return new Game::Letter(position, Game::Letter::randomId());
 	}));
 	death = addComponent(new Game::RegularEntityDeath(*this, Game::Conf::Enemy::DEATH_TIME));
 	shooting = addComponent(new Game::Shooting(*this, info.attack));

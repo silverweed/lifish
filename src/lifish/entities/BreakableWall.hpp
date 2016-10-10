@@ -17,6 +17,7 @@ class BreakableWall : public Game::Entity {
 	Game::Killable *killable = nullptr;
 	Game::Animated *animated = nullptr;
 
+	Game::Entity* _spawnBonus();
 protected:
 	/** Constructor used by TransparentWall */
 	BreakableWall(const sf::Vector2f& pos, const std::string& texture_name, 
@@ -27,8 +28,6 @@ protected:
 	void _checkCollision(Game::Collider& cld);
 
 public:
-	constexpr static unsigned int SCORE = 10;
-
 	explicit BreakableWall(const sf::Vector2f& pos, const unsigned short id, unsigned short life = 1);
 };
 

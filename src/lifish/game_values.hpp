@@ -30,6 +30,12 @@ namespace Conf {
 		const sf::Time DEATH_TIME = sf::seconds(2);
 	}
 
+	namespace Wall {
+		namespace Breakable {
+			constexpr unsigned short VALUE = 10;
+		}
+	}
+
 	namespace Bomb {
 		const sf::Time DEFAULT_FUSE = sf::seconds(1);
 		const sf::Time QUICK_FUSE = DEFAULT_FUSE / 2.f;

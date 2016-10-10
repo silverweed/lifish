@@ -1,7 +1,9 @@
 #include "BreakableWall.hpp"
 #include "game.hpp"
 #include "GameCache.hpp"
+#include "Spawning.hpp"	
 #include "Animated.hpp"
+#include "Bonus.hpp"
 #include "Animation.hpp"
 #include "Killable.hpp"
 #include "Collider.hpp"
@@ -14,6 +16,7 @@
 #include "Drawable.hpp"
 #include "Fixed.hpp"
 #include "utils.hpp"
+#include "game_values.hpp"
 
 using Game::BreakableWall;
 using Game::TILE_SIZE;
@@ -38,7 +41,7 @@ BreakableWall::BreakableWall(const sf::Vector2f& pos,
 		const unsigned short id, unsigned short life)
 	: Game::Entity(pos)
 {
-	_setupComponents(life, SCORE);
+	_setupComponents(life, Game::Conf::Wall::Breakable::VALUE);
 	auto& animation = _setupAnimations(Game::getAsset("graphics", "breakable.png"));	
 	for (unsigned short i = 0; i < 4; ++i)
 		animation.addFrame(sf::IntRect(
@@ -66,6 +69,11 @@ void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
 		// is kill in progress
 		return animated->getSprite().isPlaying();
 	}));
+	// Spawn bonus on death
+	addComponent(new Game::Spawning(*this, [this] () {
+		// spawn function
+		return _spawnBonus();
+	}));
 }
 
 Animation& BreakableWall::_setupAnimations(const std::string& texture_name) {
@@ -90,4 +98,12 @@ void BreakableWall::_checkCollision(Game::Collider& cld) {
 		get<Game::Scored>()->setTarget(static_cast<const Game::Explosion&>(
 					cld.getOwner()).getSourcePlayer()->getInfo().id);
 	}
+}
+
+Game::Entity* BreakableWall::_spawnBonus() {
+	const auto bonus_type = Game::Conf::Bonus::distribution(Game::rng);
+	if (bonus_type < Game::Conf::Bonus::N_BONUS_TYPES)
+		return new Game::Bonus(position, static_cast<Game::BonusType>(bonus_type));
+
+	return nullptr;
 }

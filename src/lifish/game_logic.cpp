@@ -2,6 +2,7 @@
 #include "Bomb.hpp"
 #include "Explosion.hpp"
 #include "GameCache.hpp"
+#include "Spawning.hpp"
 #include "Killable.hpp"
 #include "LevelManager.hpp"
 #include "Grabbable.hpp"
@@ -61,31 +62,17 @@ void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager& lm,
 	}
 }
 
-void Game::Logic::bonusDropLogic(Game::Entity *e, Game::LevelManager&,
+void Game::Logic::spawningLogic(Game::Entity *e, Game::LevelManager&,
 		EntityList& tbspawned, EntityList&)
 {
-	auto wall = dynamic_cast<Game::BreakableWall*>(e);
-	if (wall == nullptr) return;
-
-	auto klb = wall->get<Game::Killable>();
-	if (klb->isKilled() && !klb->isKillInProgress()) {
-		const auto bonus_type = Game::Conf::Bonus::distribution(Game::rng);
-		if (bonus_type < Game::Conf::Bonus::N_BONUS_TYPES) {
-			tbspawned.push_back(new Game::Bonus(e->getPosition(),
-						static_cast<Game::BonusType>(bonus_type)));
-		}
+	auto spawning = e->get<Game::Spawning>();
+	if (spawning == nullptr) return;
+	
+	while (spawning->shouldSpawn()) {
+		auto spawned = spawning->spawn().release();
+		if (spawned != nullptr)
+			tbspawned.push_back(spawned);	
 	}
-}
-
-void Game::Logic::lettersDropLogic(Game::Entity *e, Game::LevelManager&,
-		EntityList& tbspawned, EntityList&)
-{
-	auto enemy = dynamic_cast<Game::Enemy*>(e);
-	if (enemy == nullptr || !enemy->isMorphed()) return;
-
-	auto klb = enemy->get<Game::Killable>();
-	if (klb->isKilled() && !klb->isKillInProgress())
-		tbspawned.push_back(new Game::Letter(e->getPosition(), Game::Letter::randomId()));
 }
 
 void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager&,
@@ -141,9 +128,8 @@ void Game::Logic::bonusGrabLogic(Game::Entity *e, Game::LevelManager &lm, Entity
 std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bombDeployLogic,
 	bombExplosionLogic,
-	bonusDropLogic,
-	lettersDropLogic,
-	scoredKillablesLogic,
 	shootLogic,
-	bonusGrabLogic
+	bonusGrabLogic,
+	scoredKillablesLogic,
+	spawningLogic
 };
