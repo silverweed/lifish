@@ -2,6 +2,7 @@
 #include "game_logic.hpp"
 #include "Enemy.hpp"
 #include "AxisMoving.hpp"
+#include "Foe.hpp"
 #include "SaveManager.hpp"
 #include "Player.hpp"
 #include "Bomb.hpp"
@@ -59,7 +60,7 @@ void LevelManager::update() {
 		entities.apply(logic, *this, to_be_spawned, to_be_killed);
 
 	for (auto e : to_be_spawned)
-		spawn(e);
+		_spawn(e);
 
 	for (auto e : to_be_killed)
 		entities.remove(*e);
@@ -68,7 +69,8 @@ void LevelManager::update() {
 	entities.updateAll();
 
 	// Check if should resurrect players
-	_checkResurrect();
+	if (!gameOver)
+		_checkResurrect();
 
 	// Hurry up, extra game
 	_checkSpecialConditions();
@@ -129,6 +131,7 @@ void LevelManager::reset() {
 
 	hurryUp = hurryUpWarningGiven = false;
 	extraGameTriggered = extraGame = false;
+	gameOver = false;
 }
 
 bool LevelManager::isBombAt(const sf::Vector2i& tile) const {
@@ -145,7 +148,11 @@ unsigned short LevelManager::bombsDeployedBy(unsigned short id) const {
 	});
 }
 
-void LevelManager::spawn(Game::Entity *e) {
+bool LevelManager::isLevelClear() const {
+	return entities.size<Game::Foe>() == 0;
+}
+
+void LevelManager::_spawn(Game::Entity *e) {
 	if (auto b = dynamic_cast<Game::Bomb*>(e))
 		_spawnBomb(b);
 	else
@@ -241,6 +248,8 @@ void LevelManager::_checkSpecialConditions() {
 }
 
 void LevelManager::_checkResurrect() {
+	unsigned short living_players = 0;
+
 	for (auto& player : players) {
 		auto klb = player->get<Game::Killable>();
 		if (klb->isKilled() && !klb->isKillInProgress()) {
@@ -250,7 +259,13 @@ void LevelManager::_checkResurrect() {
 						Game::Conf::Player::RESURRECT_SHIELD_TIME);
 				player->setRemainingLives(player->getInfo().remainingLives - 1);
 				entities.add(player);
+				++living_players;
 			}
+		} else {
+			++living_players;
 		}
 	}
+
+	if (living_players == 0)
+		gameOver = true;
 }

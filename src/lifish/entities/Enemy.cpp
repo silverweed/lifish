@@ -1,4 +1,5 @@
 #include "Enemy.hpp"
+#include "Foe.hpp"
 #include "AxisMoving.hpp"
 #include "Drawable.hpp"
 #include "Scored.hpp"
@@ -39,6 +40,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_attack.ogg"))
 	}));
 	addComponent(new Game::Lifed(*this, 1));
+	addComponent(new Game::Foe(*this));
 	// AI must be called BEFORE moving
 	ai = addComponent(new Game::AI(*this, info.ai));
 	moving = addComponent(new Game::AxisMoving(*this, BASE_SPEED * originalSpeed, Game::Direction::DOWN));

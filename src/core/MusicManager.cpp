@@ -21,6 +21,12 @@ MusicManager& MusicManager::stop() {
 	return *this;
 }
 
+MusicManager& MusicManager::pause() {
+	if (music != nullptr)
+		music->pause();
+	return *this;
+}
+
 MusicManager& MusicManager::setVolume(float volume) {
 	if (music != nullptr)
 		music->setVolume(volume);

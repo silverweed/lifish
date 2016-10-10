@@ -25,6 +25,7 @@ public:
 	/** Adds all texts to `group` */
 	void subscribe(Game::EntityGroup& group);
 	void trigger(Text text);
+	bool isPlaying(Text text) const;
 };
 
 }

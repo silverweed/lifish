@@ -14,6 +14,7 @@ namespace Game {
 
 class LevelLoader;
 class SaveManager;
+class WinLoseHandler;
 class Player;
 class Bomb;
 class Level;
@@ -22,11 +23,12 @@ class Level;
  *  In particular, its update() method updates all entities,
  *  the collisions and the game logic.
  */
-class LevelManager final : public sf::Drawable, public Game::WithOrigin, private sf::NonCopyable {
+class LevelManager final : private sf::NonCopyable, public sf::Drawable, public Game::WithOrigin {
 
 	friend class Game::LevelLoader;
 	friend class Game::LevelRenderer;
 	friend class Game::SaveManager;
+	friend class Game::WinLoseHandler;
 
 	/** The currently managed level */
 	Game::Level *level = nullptr;
@@ -40,6 +42,8 @@ class LevelManager final : public sf::Drawable, public Game::WithOrigin, private
 	/** Whether we're currently in EXTRA game or not */
 	bool extraGame = false;
 	bool paused = false;
+	/** This is set to `true` as soon as no players are found alive. */
+	bool gameOver = false;
 
 	Game::EntityGroup entities;
 	Game::CollisionDetector cd;
@@ -60,7 +64,12 @@ class LevelManager final : public sf::Drawable, public Game::WithOrigin, private
 	Matrix<std::weak_ptr<Game::Bomb>, Game::MAX_PLAYERS, Game::Conf::Player::MAX_MAX_BOMBS> bombs;
 
 
+	/** Adds the given entity to `entities` */
+	void _spawn(Game::Entity *e);
 	void _spawnBomb(Game::Bomb *b);
+	/** Checks if there are any player to resurrect. If no players are found alive,
+	 *  sets the `gameOver` flag to `true`.
+	 */
 	void _checkResurrect();
 	void _checkSpecialConditions();
 	void _triggerHurryUp();
@@ -86,12 +95,9 @@ public:
 	void setLevel(Game::Level& level);
 
 	const Game::LevelTime& getLevelTime() const { return levelTime; }
-
-	/** Updates all entities and collisions */
-	void update();
-
-	/** Adds the given entity to `entities` */
-	void spawn(Game::Entity *e);
+	
+	bool isGameOver() const { return gameOver; }
+	bool isLevelClear() const;
 
 	bool isBombAt(const sf::Vector2i& tile) const;
 	/** Returns the number of bombs currently deployed by id-th player */
@@ -103,13 +109,15 @@ public:
 	void resume();
 	bool isPaused() const { return paused; }
 
+	/** Updates all entities and collisions */
+	void update();
+
 	/** Clears `entities` and resets internal variables */
 	void reset();
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void setOrigin(const sf::Vector2f& o) override;
-
 };
 
 }

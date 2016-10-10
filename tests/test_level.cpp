@@ -4,6 +4,7 @@
 #include <iostream>
 #include <SFML/Window.hpp>
 #include "LevelManager.hpp"
+#include "WinLoseHandler.hpp"
 #include "Interactable.hpp"
 #include "Player.hpp"
 #include "Music.hpp"
@@ -145,6 +146,7 @@ int main(int argc, char **argv) {
 		p->get<Game::Controllable>()->setWindow(&window);
 
 	SidePanel sidePanel(lm);
+	WinLoseHandler wlHandler(lm);
 
 	lm.setLevel(*level.get());
 
@@ -155,7 +157,9 @@ int main(int argc, char **argv) {
 	// Setup the music
 	Game::options.musicVolume = 0; // FIXME
 	Game::options.soundsVolume = 0; // FIXME
-	Game::musicManager->set(level->get<Game::Music>()->getMusic()).setVolume(Game::options.musicVolume).play();
+	Game::musicManager->set(level->get<Game::Music>()->getMusic())
+		.setVolume(Game::options.musicVolume)
+		.play();
 
 	int cycle = 0;
 	bool was_ui_active = false;
@@ -171,101 +175,95 @@ int main(int argc, char **argv) {
 	while (window.isOpen() && !Game::terminated) {
 		sf::Event event;
 		
-		// Event loop
+		///// EVENT LOOP /////
+		
 		if (ui.isActive()) 
 			ui.handleEvents(window);
-		else while (window.pollEvent(event)) {
-			switch (event.type) {
-			case sf::Event::Closed:
-				window.close();
-				break;
-			case sf::Event::KeyPressed:
-				switch (event.key.code) {
-				case sf::Keyboard::Q:
-					Game::terminated = true;
+		else {
+			while (window.pollEvent(event)) {
+				switch (event.type) {
+				case sf::Event::Closed:
+					window.close();
 					break;
-				case sf::Keyboard::Y:
+				case sf::Event::KeyPressed:
+					switch (event.key.code) {
+					case sf::Keyboard::P:
+						if (ui.toggleActive()) {
+							lm.pause();
+							was_ui_active = true;
+							Game::musicManager->pause();
+						} else {
+							Game::musicManager->play();
+						}
+						break;
 #ifndef MULTITHREADED
-					window.setVerticalSyncEnabled(vsync = !vsync);
+					case sf::Keyboard::V:
+						window.setVerticalSyncEnabled(vsync = !vsync);
+						break;
 #endif
-					break;
-				case sf::Keyboard::M:
-					lm.getEntities().apply([] (Game::Entity *e) {
-						auto en = dynamic_cast<Game::Enemy*>(e);
-						if (en) en->setMorphed(!en->isMorphed());
-					});
-					break;
-				case sf::Keyboard::N:
-					lm.getEntities().apply([] (Game::Entity *e) {
-						auto en = dynamic_cast<Game::Enemy*>(e);
-						//auto en = dynamic_cast<Game::BreakableWall*>(e);
-						if (en) en->get<Game::Killable>()->kill();
-					});
-					break;
-				case sf::Keyboard::Add:
-					lvnum = level->getInfo().levelnum + 1;
-					if (lvnum > ls.getLevelsNum())
-						lvnum = 1;
-					level.reset(ls.getLevel(lvnum));
-					level->setOrigin(origin);
-					Game::musicManager->set(level->get<Game::Music>()->getMusic())
-						.setVolume(Game::options.musicVolume).play();
-					lm.setLevel(*level.get());
-					break;
-				case sf::Keyboard::Subtract:
-					lvnum = level->getInfo().levelnum - 1;
-					if (lvnum < 1) 
-						lvnum = ls.getLevelsNum();
-					level.reset(ls.getLevel(lvnum));
-					level->setOrigin(origin);
-					Game::musicManager->set(level->get<Game::Music>()->getMusic())
-						.setVolume(Game::options.musicVolume).play();
-					lm.setLevel(*level.get());
-					break;
-				case sf::Keyboard::L:
-					if (lm.isPaused())
-						lm.update();
-					else
-						lm.pause();
-					break;
-				case sf::Keyboard::K:
-					if (!lm.isPaused())
-						lm.pause();
-					else
-						lm.resume();
-					break;
-				case sf::Keyboard::G:
-					debug = !debug;
-					break;
-				case sf::Keyboard::P:
-					if (ui.toggleActive()) {
-						lm.pause();
-						was_ui_active = true;
+#ifndef RELEASE
+					case sf::Keyboard::Q:
+						Game::terminated = true;
+						break;
+					case sf::Keyboard::M:
+						lm.getEntities().apply([] (Game::Entity *e) {
+							auto en = dynamic_cast<Game::Enemy*>(e);
+							if (en) en->setMorphed(!en->isMorphed());
+						});
+						break;
+					case sf::Keyboard::N:
+						lm.getEntities().apply([] (Game::Entity *e) {
+							auto en = dynamic_cast<Game::Enemy*>(e);
+							//auto en = dynamic_cast<Game::BreakableWall*>(e);
+							if (en) en->get<Game::Killable>()->kill();
+						});
+						break;
+					case sf::Keyboard::Add:
+						lvnum = level->getInfo().levelnum + 1;
+						if (lvnum > ls.getLevelsNum())
+							lvnum = 1;
+						level.reset(ls.getLevel(lvnum));
+						level->setOrigin(origin);
+						Game::musicManager->set(level->get<Game::Music>()->getMusic())
+							.setVolume(Game::options.musicVolume).play();
+						lm.setLevel(*level.get());
+						break;
+					case sf::Keyboard::Subtract:
+						lvnum = level->getInfo().levelnum - 1;
+						if (lvnum < 1) 
+							lvnum = ls.getLevelsNum();
+						level.reset(ls.getLevel(lvnum));
+						level->setOrigin(origin);
+						Game::musicManager->set(level->get<Game::Music>()->getMusic())
+							.setVolume(Game::options.musicVolume).play();
+						lm.setLevel(*level.get());
+						break;
+					case sf::Keyboard::L:
+						if (lm.isPaused())
+							lm.update();
+						else
+							lm.pause();
+						break;
+					case sf::Keyboard::K:
+						if (!lm.isPaused())
+							lm.pause();
+						else
+							lm.resume();
+						break;
+					case sf::Keyboard::G:
+						debug = !debug;
+						break;
+#endif
+					default: 
+						break;
 					}
+				default: 
 					break;
-					//{
-						//auto action = Game::Action::DO_NOTHING;
-						//do {
-							//action = ScreenHandler::getInstance().handleScreenEvents(
-								//window, PAUSE_SCREEN,
-								//PAUSE_SCREEN | PREFERENCES_SCREEN | CONTROLS_SCREEN);
-							//if (action == Game::Action::SAVE_GAME) {
-								//const auto fname = Game::display_save_dialog();
-								//if (fname.length() > 0) {
-									////Game::SaveManager::saveGame(fname, *lm);
-								//}
-								//// TODO: display some confirm screen
-							//};
-						//} while (action == Game::Action::SAVE_GAME);
-						//break;
-					//}
-				default: break;
 				}
-			default: break;
 			}
-		}
+		} // end event loop
 
-		//std::cerr << "# Entities: " << lm.getEntities().size() << std::endl;
+		///// LOGIC & RENDERING /////
 
 #ifndef MULTITHREADED
 		if (ui.isActive()) {
@@ -276,6 +274,9 @@ int main(int argc, char **argv) {
 				lm.resume();
 				was_ui_active = false;
 			}
+
+			// TODO: handle win/loss
+			wlHandler.handleWinLose();
 
 			// Update level
 			if (!lm.isPaused())
@@ -309,7 +310,7 @@ int main(int argc, char **argv) {
 			cycle = 0;
 			Game::cache.gcSounds();
 		}
-	}
+	} // end game loop
 	
 #ifndef MULTITHREADED
 	if (window.isOpen())

@@ -3,6 +3,7 @@
 #include "EntityGroup.hpp"
 #include "core.hpp"
 #include <SFML/System.hpp>
+#include <exception>
 
 using Game::DroppingTextManager;
 
@@ -34,4 +35,17 @@ void DroppingTextManager::trigger(DroppingTextManager::Text text) {
 		hurryUpText->play();
 		break;
 	}
+}
+
+bool DroppingTextManager::isPlaying(DroppingTextManager::Text text) const {
+	switch (text) {
+		using T = DroppingTextManager::Text;
+	case T::GAME_OVER:
+		return gameOverText->get<Game::Moving>()->isMoving();
+	case T::EXTRA_GAME:
+		return extraGameText->get<Game::Moving>()->isMoving();
+	case T::HURRY_UP:
+		return hurryUpText->get<Game::Moving>()->isMoving();
+	}
+	throw std::invalid_argument("Unknown text given as argument!");
 }
