@@ -29,12 +29,13 @@ DroppingSprite::DroppingSprite(const std::string& texture_name, const sf::Vector
 
 void DroppingSprite::play() {
 	moving->setDirection(Game::Direction::DOWN);
+	playing = true;
 }
 
 void DroppingSprite::reset() {
 	moving->stop();
 	position = origPosition;
-	stoppedAtMiddle = false;
+	playing = stoppedAtMiddle = false;
 }
 
 void DroppingSprite::update() {

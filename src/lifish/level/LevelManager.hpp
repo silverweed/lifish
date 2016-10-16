@@ -49,9 +49,9 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable, public 
 	Game::CollisionDetector cd;
 	Game::DroppingTextManager dropTextManager;
 
-	/** "Owned" pointers to players. 
+	/** "Owned" pointers to players.
 	 *  The players' lifecycle is the following:
-	 *  1) players are created via `createNewPlayers` and added to `entities`; the LevelManager and the 
+	 *  1) players are created via `createNewPlayers` and added to `entities`; the LevelManager and the
 	 *     EntityGroup share the ownership of the players via shared_ptr;
 	 *  2) updates to players are managed by the EntityGroup;
 	 *  3) on level change, `entities` gets cleared; the player entities survive, as LevelManager retains
@@ -86,7 +86,7 @@ public:
 
 	bool isPlayer(const Game::Entity& e) const;
 	/** Returns the id-th player (id starting from 1) */
-	const Game::Player* getPlayer(unsigned short id) const;
+	const std::shared_ptr<Game::Player> getPlayer(unsigned short id) const;
 
 	const Game::EntityGroup& getEntities() const { return entities; }
 	Game::EntityGroup& getEntities() { return entities; }

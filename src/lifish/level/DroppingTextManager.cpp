@@ -41,11 +41,11 @@ bool DroppingTextManager::isPlaying(DroppingTextManager::Text text) const {
 	switch (text) {
 		using T = DroppingTextManager::Text;
 	case T::GAME_OVER:
-		return gameOverText->get<Game::Moving>()->isMoving();
+		return gameOverText->isPlaying();
 	case T::EXTRA_GAME:
-		return extraGameText->get<Game::Moving>()->isMoving();
+		return extraGameText->isPlaying();
 	case T::HURRY_UP:
-		return hurryUpText->get<Game::Moving>()->isMoving();
+		return hurryUpText->isPlaying();
 	}
 	throw std::invalid_argument("Unknown text given as argument!");
 }

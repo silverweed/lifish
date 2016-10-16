@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Chronometer.hpp"
+
 namespace Game {
 
 class LevelManager;
@@ -14,7 +16,11 @@ class WinLoseHandler final {
 		HANDLING_WIN,
 		HANDLING_LOSS
 	} state = State::DEFAULT;
+	
 	Game::LevelManager& lm;
+	sftools::Chronometer clock;
+	bool levelClearSoundPlayed = false,
+	     playerWinSoundPlayed = false;
 
 	void _handleWin();
 	void _handleLoss();

@@ -196,6 +196,12 @@ int main(int argc, char **argv) {
 							Game::musicManager->play();
 						}
 						break;
+					case sf::Keyboard::Escape:
+						for (auto player : players) {
+							player->setRemainingLives(0);
+							player->get<Killable>()->kill();
+						}
+						break;
 #ifndef MULTITHREADED
 					case sf::Keyboard::V:
 						window.setVerticalSyncEnabled(vsync = !vsync);
@@ -222,7 +228,7 @@ int main(int argc, char **argv) {
 						lvnum = level->getInfo().levelnum + 1;
 						if (lvnum > ls.getLevelsNum())
 							lvnum = 1;
-						level.reset(ls.getLevel(lvnum));
+						level = ls.getLevel(lvnum);
 						level->setOrigin(origin);
 						Game::musicManager->set(level->get<Game::Music>()->getMusic())
 							.setVolume(Game::options.musicVolume).play();
@@ -232,7 +238,7 @@ int main(int argc, char **argv) {
 						lvnum = level->getInfo().levelnum - 1;
 						if (lvnum < 1) 
 							lvnum = ls.getLevelsNum();
-						level.reset(ls.getLevel(lvnum));
+						level = ls.getLevel(lvnum);
 						level->setOrigin(origin);
 						Game::musicManager->set(level->get<Game::Music>()->getMusic())
 							.setVolume(Game::options.musicVolume).play();

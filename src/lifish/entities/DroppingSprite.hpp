@@ -22,6 +22,7 @@ class DroppingSprite : public Game::Entity {
 	Game::Clock *pauseClock = nullptr;
 	Game::AxisMoving *moving = nullptr;
 	bool stoppedAtMiddle = false;
+	bool playing = false;
 
 public:
 	explicit DroppingSprite(const std::string& texture_name, 
@@ -32,6 +33,8 @@ public:
 	/** Stops the DroppingSprite and resets its position */
 	void reset();
 	void update() override;
+
+	bool isPlaying() const { return playing; }
 };
 
 }

@@ -17,7 +17,7 @@
 
 using Game::LevelManager;
 
-LevelManager::LevelManager() 
+LevelManager::LevelManager()
 	: renderer(*this)
 	, cd(entities)
 {
@@ -82,8 +82,8 @@ bool LevelManager::isPlayer(const Game::Entity& e) const {
 	return false;
 }
 
-const Game::Player* LevelManager::getPlayer(unsigned short id) const {
-	return players[id-1].get();
+const std::shared_ptr<Game::Player> LevelManager::getPlayer(unsigned short id) const {
+	return players[id-1];
 }
 
 void LevelManager::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -149,7 +149,12 @@ unsigned short LevelManager::bombsDeployedBy(unsigned short id) const {
 }
 
 bool LevelManager::isLevelClear() const {
-	return entities.size<Game::Foe>() == 0;
+	bool clear = true;
+	entities.apply([&clear] (const Game::Entity *e) {
+		if (clear && e->get<Game::Foe>() != nullptr)
+			clear = false;
+	});
+	return clear;
 }
 
 void LevelManager::_spawn(Game::Entity *e) {
@@ -241,7 +246,7 @@ void LevelManager::_checkSpecialConditions() {
 	else if (!hurryUp && levelTime.checkHurryUp() == Game::LevelTime::HurryUpResponse::HURRY_UP_ON)
 		_triggerHurryUp();
 
-	if (!extraGameTriggered && _shouldTriggerExtraGame()) 
+	if (!extraGameTriggered && _shouldTriggerExtraGame())
 		_triggerExtraGame();
 	else if (extraGame && levelTime.getRemainingExtraGameTime() <= sf::Time::Zero)
 		_endExtraGame();
@@ -255,8 +260,8 @@ void LevelManager::_checkResurrect() {
 		if (klb->isKilled() && !klb->isKillInProgress()) {
 			if (player->getInfo().remainingLives > 0) {
 				player->resurrect();
-				player->get<Game::Bonusable>()->giveBonus(Game::BonusType::SHIELD, 
-						Game::Conf::Player::RESURRECT_SHIELD_TIME);
+				player->get<Game::Bonusable>()->giveBonus(Game::BonusType::SHIELD,
+				                                          Game::Conf::Player::RESURRECT_SHIELD_TIME);
 				player->setRemainingLives(player->getInfo().remainingLives - 1);
 				entities.add(player);
 				++living_players;

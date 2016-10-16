@@ -169,8 +169,8 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			text.setString("GAME\nOVER");
 			window.draw(text, states);
 		} else {
-			_drawHealthSprites(window, states, player);
-			_drawExtraLetters(window, states, player);
+			_drawHealthSprites(window, states, player.get());
+			_drawExtraLetters(window, states, player.get());
 		}
 
 		// Draw max bombs
