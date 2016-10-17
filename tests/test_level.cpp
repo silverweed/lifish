@@ -43,7 +43,6 @@ static void rendering_loop(sf::RenderWindow& window, const Game::LevelManager& l
 		}
 		Game::maybeShowFPS(window);
 		window.display();
-		SLEEP_MS(10);
 	}
 	if (window.isOpen())
 		window.close();
@@ -168,6 +167,8 @@ int main(int argc, char **argv) {
 	
 #ifdef MULTITHREADED
 	window.setActive(false);
+	const sf::Time frame_time_limit = sf::seconds(1 / 60.);
+	sf::Clock frame_clock;
 	std::thread rendering_thread(rendering_loop, std::ref(window),
 			std::cref(lm), std::cref(sidePanel), std::cref(ui));
 #endif
@@ -307,6 +308,7 @@ int main(int argc, char **argv) {
 			if (!lm.isPaused())
 				lm.update();
 		}
+		sf::sleep(frame_time_limit - frame_clock.restart());
 #endif
 
 		// Garbage-collect sounds

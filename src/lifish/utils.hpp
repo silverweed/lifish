@@ -6,17 +6,6 @@
 #include <SFML/System/Vector2.hpp>
 #include "game.hpp"
 
-#if defined(SFML_SYSTEM_WINDOWS) || defined(__MINGW32__)
-#	include <windows.h>
-#	define SLEEP_MS(ms) \
-		Sleep(ms)
-#else
-#	include <thread>
-#	include <chrono>
-#	define SLEEP_MS(ms) \
-		std::this_thread::sleep_for(std::chrono::milliseconds(ms))
-#endif
-
 namespace Game {
 
 template<class T, size_t ROWS, size_t COLS>

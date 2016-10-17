@@ -187,6 +187,6 @@ void Game::testMusic() {
 	sample.openFromFile(Game::getAsset("music", "music1.ogg"));
 	sample.play();
 	sample.setVolume(Game::options.musicVolume);
-	SLEEP_MS(200);
+	sf::sleep(sf::milliseconds(200));
 	sample.stop();
 }
