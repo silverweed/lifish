@@ -31,7 +31,13 @@ static void add_style_property(Game::UI::ScreenStyle& style, const std::string& 
 }
 
 static std::string convert_special_string(const std::string& s) {
-	if (s == "{{FULL_VERSION}}") return "lifish v." VERSION " rev." COMMIT;
+	if (s == "{{FULL_VERSION}}") {
+		return "lifish v." VERSION " rev." COMMIT
+#ifdef MULTITHREADED
+			" (multithread)"
+#endif
+			;
+	}
 	return s;
 }
 

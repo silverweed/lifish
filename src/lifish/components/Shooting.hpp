@@ -35,7 +35,7 @@ public:
 
 	const Attack& getAttack() const { return attack; }
 	
-	const sf::Vector2i& getAttackAlign() const { return attackAlign; }
+	sf::Vector2i getAttackAlign() const { return attackAlign; }
 	void setAttackAlign(const sf::Vector2i& aa) { attackAlign = aa; }
 
 	/** If attack is CONTACT and not RANGED, just reset the recharge clock and return nullptr.

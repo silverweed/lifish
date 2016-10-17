@@ -37,3 +37,22 @@ void UI::handleEvents(sf::Window& window) {
 		}
 	}
 }
+
+void UI::add(Game::UI::Screen *screen) {
+	screenHandler.add(screen);
+}
+
+void UI::setOrigin(const sf::Vector2f& pos) {
+	Game::WithOrigin::setOrigin(pos);
+	screenHandler.setOrigin(pos);
+}
+
+void UI::update() {
+	if (active)
+		screenHandler.update();
+}
+
+void UI::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	if (active)
+		target.draw(screenHandler, states);
+}

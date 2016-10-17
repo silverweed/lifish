@@ -26,7 +26,7 @@ class ControlsScreen : public Game::UI::Screen {
 	Game::UI::Action _toggleJoystick();
 
 public:
-	explicit ControlsScreen(const sf::RenderWindow& window);
+	explicit ControlsScreen(const sf::RenderWindow& window, const sf::Vector2u& size);
 
 	void update() override;
 	bool receiveEvent(const sf::Event& event) override;

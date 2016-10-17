@@ -14,7 +14,7 @@ void ScreenHandler::load(const sf::RenderWindow& window, std::initializer_list<s
 			std::cerr << "[ WARNING ] Screen " << name << " already loaded: skipping." << std::endl;	
 			continue;
 		}
-		auto screen = new Game::UI::Screen(name, window);
+		auto screen = new Game::UI::Screen(name, window, ui.getSize());
 		if (curScreen == nullptr) {
 			curScreen = screen;
 			curScreen->setOrigin(origin);

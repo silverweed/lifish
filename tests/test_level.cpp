@@ -49,6 +49,15 @@ static void rendering_loop(sf::RenderWindow& window, const Game::LevelManager& l
 }
 #endif
 
+static void load_icon(sf::Window& window) {
+	sf::Image iconImg;
+	if (iconImg.loadFromFile(Game::getAsset("graphics", "icon.png"))) {
+		auto pixels = iconImg.getPixelsPtr();
+		auto size = iconImg.getSize();
+		window.setIcon(size.x, size.y, pixels);
+	}
+}
+
 int main(int argc, char **argv) {
 #if defined(MULTITHREADED) && defined(SFML_SYSTEM_LINUX)
 	XInitThreads();
@@ -114,22 +123,29 @@ int main(int argc, char **argv) {
 	if (levelSetName.length() < 1)
 		levelSetName = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
 	
-	sf::RenderWindow window(sf::VideoMode(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT), "test level");
+	const sf::Vector2u SCREEN_SIZE(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
+
+	sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE.x, SCREEN_SIZE.y), "Lifish " VERSION " (test)");
 	bool vsync = true;
 	bool debug = false;
 	window.setVerticalSyncEnabled(vsync);
 	window.setJoystickThreshold(Game::JOYSTICK_INPUT_THRESHOLD);
 	Game::options.showFPS = true;
 
+	// Setup icon
+	load_icon(window);
+
 	// Setup UI
 	Game::UI::UI& ui = Game::UI::UI::getInstance();
+	ui.setSize(SCREEN_SIZE);
+
 	// load static screens
 	ui.load(window, { "home.json", "about.json", "pause.json" });
 	// load dynamic screens
-	ui.add(new Game::UI::ControlsScreen(window));
-	ui.add(new Game::UI::PreferencesScreen(window));
+	ui.add(new Game::UI::ControlsScreen(window, SCREEN_SIZE));
+	ui.add(new Game::UI::PreferencesScreen(window, SCREEN_SIZE));
 	// TODO
-	ui.getScreenHandler().setCurrent("pause");
+	//ui.getScreenHandler().setCurrent("pause");
 
 	// Load level set
 	int lvnum = start_level;
@@ -305,6 +321,10 @@ int main(int argc, char **argv) {
 				lm.resume();
 				was_ui_active = false;
 			}
+
+			// TODO: handle win/loss
+			wlHandler.handleWinLose();
+			
 			if (!lm.isPaused())
 				lm.update();
 		}

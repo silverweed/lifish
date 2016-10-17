@@ -15,7 +15,7 @@ public:
 	explicit FreeMoving(Game::Entity& owner, float speed, 
 			sf::Vector2f velocity = sf::Vector2f(0.f, 0.f));
 
-	const sf::Vector2f& getVelocity() const { return velocity; }
+	sf::Vector2f getVelocity() const { return velocity; }
 	void setVelocity(const sf::Vector2f& vel) { velocity = vel; }
 
 	void update() override;

@@ -12,8 +12,8 @@ using Game::UI::Interactable;
 using Action = Game::UI::Action;
 using namespace Game::Controls;
 
-ControlsScreen::ControlsScreen(const sf::RenderWindow& window) 
-	: Game::UI::Screen(window) 
+ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2u& size) 
+	: Game::UI::Screen(window, size)
 {
 	name = "controls";
 	parent = "preferences";

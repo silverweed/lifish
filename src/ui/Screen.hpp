@@ -52,11 +52,11 @@ protected:
 	std::pair<std::string, Game::UI::Interactable*> selected;
 
 
-	Screen(const sf::RenderWindow& window);
+	Screen(const sf::RenderWindow& window, const sf::Vector2u& size);
 	void _loadBGSprite(const std::string& bgSpritePath);
 
 public:
-	explicit Screen(const std::string& layoutFileName, const sf::RenderWindow& window);
+	explicit Screen(const std::string& layoutFileName, const sf::RenderWindow& window, const sf::Vector2u& size);
 
 	bool wasBuilt() const { return built; }
 	void setParent(const std::string& name) { parent = name; }

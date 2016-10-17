@@ -30,7 +30,7 @@ class PreferencesScreen : public Game::UI::Screen {
 
 	Game::UI::Action _changeVolume(VolumeType which, VolumeAction what);
 public:
-	explicit PreferencesScreen(const sf::RenderWindow& window);
+	explicit PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& size);
 };
 
 }

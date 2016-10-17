@@ -13,8 +13,8 @@ using Game::UI::PreferencesScreen;
 using Game::UI::Interactable;
 using Action = Game::UI::Action;
 
-PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window) 
-	: Game::UI::Screen(window) 
+PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& sz) 
+	: Game::UI::Screen(window, sz) 
 {
 	name = "preferences";
 	parent = "home";

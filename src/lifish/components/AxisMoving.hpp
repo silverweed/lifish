@@ -28,7 +28,7 @@ public:
 
 	Game::Direction getDirection() const { return direction; }
 	Game::Direction getPrevDirection() const { return prevDirection; }
-	const sf::Vector2i& getPrevAlign() const { return prevAlign; }
+	sf::Vector2i getPrevAlign() const { return prevAlign; }
 
 	void setDirection(Game::Direction dir);
 	void turn(short straightAngles, bool clockwise);

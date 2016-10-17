@@ -1,20 +1,19 @@
 #include "Screen.hpp"
 #include "ScreenBuilder.hpp"
 #include "Interactable.hpp"
+#include "game.hpp"
 #include "GameCache.hpp"
-#include <iostream>
-#include "utils.hpp"
 
 using Game::UI::Screen;
 
-Screen::Screen(const sf::RenderWindow& window)
+Screen::Screen(const sf::RenderWindow& window, const sf::Vector2u& size)
 	: window(window)
-	, size(window.getSize())
+	, size(size)
 {}
 
-Screen::Screen(const std::string& layoutFileName, const sf::RenderWindow& window)
+Screen::Screen(const std::string& layoutFileName, const sf::RenderWindow& window, const sf::Vector2u& size)
 	: window(window)
-	, size(window.getSize())
+	, size(size)
 {
 	Game::UI::ScreenBuilder builder;
 	builder.build(*this, layoutFileName);	

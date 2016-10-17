@@ -64,10 +64,10 @@ public:
 	/** Sets the collision layer of this Collider */
 	void setLayer(Game::Layers::Layer l) { layer = l; }
 
-	const sf::Vector2f& getOffset() const { return offset; }
+	sf::Vector2f getOffset() const { return offset; }
 	void setOffset(const sf::Vector2f& off) { offset = off; }
 
-	const sf::Vector2i& getSize() const { return size; }
+	sf::Vector2i getSize() const { return size; }
 	void setSize(const sf::Vector2i& sz) { size = sz; }
 
 	bool isPhantom() const { return phantom; }
