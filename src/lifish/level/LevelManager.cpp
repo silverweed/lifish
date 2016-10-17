@@ -91,13 +91,15 @@ void LevelManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
 }
 
 void LevelManager::setOrigin(const sf::Vector2f& pos) {
-	if (level == nullptr) return;
-	level->setOrigin(pos);
+	Game::WithOrigin::setOrigin(pos);
 	entities.setOrigin(pos);
+	if (level != nullptr)
+		level->setOrigin(pos);
 }
 
 void LevelManager::setLevel(Game::Level& lv) {
 	level = &lv;
+	lv.setOrigin(origin);
 	Game::LevelLoader::load(lv, *this);
 	// Don't trigger EXTRA game if there were no coins in the level
 	if (entities.size<Game::Coin>() == 0)

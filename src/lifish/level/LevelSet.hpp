@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <memory>
 #include <SFML/System/NonCopyable.hpp>
 #include "Level.hpp"
 #include "Track.hpp"
@@ -30,7 +29,7 @@ public:
 	/** Constructs the i-th level and returns it if init() is successful.
 	 *  Callee MUST take care of deleting the returned Level.
 	 */
-	std::unique_ptr<Game::Level> getLevel(unsigned short i) const;
+	Level* getLevel(unsigned short i) const;
 	unsigned short getLevelsNum() const { return levels.size(); }
 
 	const EnemyInfo& getEnemyInfo(const unsigned short id) const { return enemies[id-1]; }

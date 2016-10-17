@@ -3,6 +3,8 @@
 #include "LevelManager.hpp"
 #include "GameCache.hpp"
 #include "game.hpp"
+#include "Level.hpp"
+#include "LevelSet.hpp"
 #include "Player.hpp"
 #include "Sounded.hpp"
 #include <iostream>
@@ -35,6 +37,8 @@ void WinLoseHandler::_handleWin() {
 		//Game::musicManager->set(level->get<Game::Music>()->getMusic())
 			//.setVolume(Game::options.musicVolume)
 			//.play();
+		auto level = lm.getLevel()->getLevelSet().getLevel(lm.getLevel()->getInfo().levelnum + 1);
+		lm.setLevel(*level);
 		levelClearSoundPlayed = false;
 		playerWinSoundPlayed = false;
 		for (unsigned short id = 1; id <= Game::MAX_PLAYERS; ++id) {

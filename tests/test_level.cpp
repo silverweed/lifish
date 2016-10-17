@@ -148,7 +148,7 @@ int main(int argc, char **argv) {
 	SidePanel sidePanel(lm);
 	WinLoseHandler wlHandler(lm);
 
-	lm.setLevel(*level.get());
+	lm.setLevel(*level);
 
 	// Adjust the origin to make room for side panel
 	sf::Vector2f origin(-Game::SIDE_PANEL_WIDTH, 0);
@@ -228,8 +228,7 @@ int main(int argc, char **argv) {
 						lvnum = level->getInfo().levelnum + 1;
 						if (lvnum > ls.getLevelsNum())
 							lvnum = 1;
-						level = ls.getLevel(lvnum);
-						level->setOrigin(origin);
+						level.reset(ls.getLevel(lvnum));
 						Game::musicManager->set(level->get<Game::Music>()->getMusic())
 							.setVolume(Game::options.musicVolume).play();
 						lm.setLevel(*level.get());
@@ -238,8 +237,7 @@ int main(int argc, char **argv) {
 						lvnum = level->getInfo().levelnum - 1;
 						if (lvnum < 1) 
 							lvnum = ls.getLevelsNum();
-						level = ls.getLevel(lvnum);
-						level->setOrigin(origin);
+						level.reset(ls.getLevel(lvnum));
 						Game::musicManager->set(level->get<Game::Music>()->getMusic())
 							.setVolume(Game::options.musicVolume).play();
 						lm.setLevel(*level.get());

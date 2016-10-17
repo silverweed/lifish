@@ -34,6 +34,7 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable, public 
 	Game::Level *level = nullptr;
 	Game::LevelRenderer renderer;
 	Game::LevelTime levelTime;
+
 	/** Whether hurry up has already been triggered or not */
 	bool hurryUp = false;
 	bool hurryUpWarningGiven = false;
