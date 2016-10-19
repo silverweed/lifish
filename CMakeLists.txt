@@ -19,9 +19,9 @@ set(MAIN_FILE tests/test_level.cpp)
 file(GLOB LIFISH_HEADERS src/*.hpp)
 # core/ contains the "game-independent" source
 include_directories(src/core)
-# core/components contains a collection of generic components
+# core/components/ contains a collection of generic components
 include_directories(src/core/components)
-# core/entities contains a collection of generic entities
+# core/entities/ contains a collection of generic entities
 include_directories(src/core/entities)
 # core/debug/ contains debug utils
 include_directories(src/core/debug)
@@ -31,23 +31,23 @@ include_directories(src/ui)
 include_directories(src/third_party)
 # lifish/ contains Lifish-specific code
 include_directories(src/lifish)
-# lifish/components/ contains all the implemented Component classes
+# lifish/components/ contains all the Lifish-specific Component classes
 include_directories(src/lifish/components)
-# lifish/entities/ contains all the implemented Entity classes
+# lifish/entities/ contains all the Lifish-specific Entity classes
 include_directories(src/lifish/entities)
 # lifish/level/ contains classes for managing game levels
 include_directories(src/lifish/level)
-file(GLOB LIFISH_SRC ${MAIN_FILE} 
-	src/core/*cpp 
-	src/core/entities/*cpp 
-	src/core/components/*cpp 
-	src/core/debug/*cpp 
-	src/ui/*cpp 
+file(GLOB LIFISH_SRC ${MAIN_FILE}
+	src/core/*cpp
+	src/core/entities/*cpp
+	src/core/components/*cpp
+	src/core/debug/*cpp
+	src/ui/*cpp
 	src/third_party/*cpp
 	src/lifish/*cpp
 	src/lifish/entities/*cpp
-	src/lifish/components/*cpp 
-	src/lifish/level/*cpp 
+	src/lifish/components/*cpp
+	src/lifish/level/*cpp
 )
 
 # Platform-specific source
@@ -62,9 +62,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 # Add git commit information (thanks, hamcha)
 include(FindGit OPTIONAL)
 if(GIT_FOUND)
-	execute_process(WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND ${GIT_EXECUTABLE} describe --always --long --dirty
-        OUTPUT_VARIABLE CURRENTREV
-        OUTPUT_STRIP_TRAILING_WHITESPACE)
+	execute_process(WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND 
+	               ${GIT_EXECUTABLE} describe --always --long --dirty
+                       OUTPUT_VARIABLE CURRENTREV
+                       OUTPUT_STRIP_TRAILING_WHITESPACE)
 	string(REGEX REPLACE "(-0)?-[^-]+((-dirty)?)$" "\\2" CURRENTREV "${CURRENTREV}")
 else()
 	set(CURRENTREV "unknown")
