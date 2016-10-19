@@ -2,7 +2,9 @@
 #include "Foe.hpp"
 #include "AxisMoving.hpp"
 #include "Drawable.hpp"
+#include "Player.hpp"
 #include "Scored.hpp"
+#include "ai_functions.hpp"
 #include "Letter.hpp"
 #include "Shooting.hpp"
 #include "Spawning.hpp"
@@ -22,6 +24,7 @@
 #include "Collider.hpp"
 #include "ZIndexed.hpp"
 #include "utils.hpp"
+#include <sstream>
 
 using Game::Enemy;
 using Game::TILE_SIZE;
@@ -41,15 +44,19 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	}));
 	addComponent(new Game::Lifed(*this, 1));
 	addComponent(new Game::Foe(*this));
-	// AI must be called BEFORE moving
-	ai = addComponent(new Game::AI(*this, info.ai));
+	if (info.ai >= Game::ai_functions.size()) {
+		std::stringstream ss;
+		ss << "invalid AI number for Enemy: " << Game::to_string(info.ai) << "/" << Game::ai_functions.size();
+		throw std::invalid_argument(ss.str());
+	}
+	ai = addComponent(new Game::AI(*this, Game::ai_functions[info.ai]));
 	moving = addComponent(new Game::AxisMoving(*this, BASE_SPEED * originalSpeed, Game::Direction::DOWN));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
 		// on collision
 		_checkCollision(coll);
 	}, Game::Layers::ENEMIES));
 	animated = addComponent(new Game::Animated(*this, 
-		Game::getAsset(/*"graphics"*/ "test", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
+		Game::getAsset("graphics", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
 	yellClock = addComponent(new Game::Clock(*this));
 	dashClock = addComponent(new Game::Clock(*this));
 	alienSprite = addComponent(new Game::AlienSprite(*this));
@@ -162,13 +169,9 @@ void Enemy::_checkShoot() {
 	if (killable->isKilled() || shooting->isRecharging() || morphed)
 		return;
 	
-	const auto lm = sighted->getLevelManager();
-	if (lm == nullptr)
-		return;
-
 	const auto& entitiesSeen = sighted->entitiesSeen(moving->getDirection());
 	for (const auto& pair : entitiesSeen) {
-		if (lm->isPlayer(*pair.first)) {
+		if (dynamic_cast<const Game::Player*>(pair.first) != nullptr) {
 			autoShooting->shoot();
 			return;
 		}

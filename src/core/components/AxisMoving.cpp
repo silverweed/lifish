@@ -1,9 +1,8 @@
 #include "AxisMoving.hpp"
-#include "game.hpp"
+#include "core.hpp"
 #include "utils.hpp"
 #include "Clock.hpp"
 #include "Shooting.hpp"
-#include "LevelManager.hpp"
 #include <exception>
 
 using Game::AxisMoving;
@@ -92,51 +91,6 @@ void AxisMoving::stop() {
 	direction = prevDirection = Game::Direction::NONE;
 	if (autoRealign)
 		realign();
-}
-
-bool AxisMoving::canGo(const Game::Direction dir, const Game::LevelManager& lm) const {
-	auto pos = owner.getPosition();
-	int iposx = int(pos.x / TILE_SIZE),
-	    iposy = int(pos.y / TILE_SIZE);
-	
-	switch (dir) {
-	case Direction::UP:
-		--iposy;
-		break;
-	case Direction::LEFT:
-		--iposx;
-		break;
-	case Direction::DOWN:
-		++iposy;
-		break;
-	case Direction::RIGHT:
-		++iposx;
-		break;
-	default:
-		return true;
-	}
-
-	if (iposx <= 0 || iposx > LEVEL_WIDTH || iposy <= 0 || iposy > LEVEL_HEIGHT)
-		return false;
-
-	const auto collider = owner.get<Game::Collider>();
-	if (collider == nullptr)
-		return true;
-
-	const auto fixed = lm.getEntities().getFixedAt(iposx, iposy);
-	for (const auto& f : fixed) {
-		const auto fcollider = f.get().get<Game::Collider>();
-		if (fcollider != nullptr && collider->isSolidFor(*fcollider))
-			return false;
-	}
-
-	// TODO
-	//const auto bosses = lm->getBosses();
-	//const sf::FloatRect r(iposx, iposy, TILE_SIZE, TILE_SIZE);
-	//for (auto& boss : bosses)
-		//if (boss->intersects(r)) return false;
-
-	return true;
 }
 
 void AxisMoving::setDirection(Game::Direction dir) {

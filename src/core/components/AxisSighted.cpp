@@ -1,7 +1,7 @@
 #include "AxisSighted.hpp"
 #include "utils.hpp"
 #include "Collider.hpp"
-#include "LevelManager.hpp"
+#include "EntityGroup.hpp"
 
 using Game::AxisSighted;
 
@@ -30,7 +30,7 @@ AxisSighted::AxisSighted(Game::Entity& owner, float visionRadius)
 
 void AxisSighted::update() {
 	Game::Component::update();
-	if (lm == nullptr) return;
+	if (entities == nullptr) return;
 
 	for (unsigned short i = 0; i < (unsigned short)Game::Direction::NONE; ++i) {
 		_fillLine(static_cast<Game::Direction>(i));	
@@ -47,7 +47,7 @@ void AxisSighted::_fillLine(const Game::Direction dir) {
 
 	seen[dir].clear();
 
-	lm->getEntities().apply([=] (const Game::Entity *e) {
+	entities->apply([=] (const Game::Entity *e) {
 		if (e == &owner) return;
 		const auto etile = Game::tile(e->getPosition());
 		if (!same_line(etile, mtile)) return;

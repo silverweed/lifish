@@ -1,12 +1,9 @@
 #include "CollisionDetector.hpp"
-#include "game.hpp"
 #include "CompoundCollider.hpp"
 #include "Direction.hpp"
 #include "AxisMoving.hpp"
-#include "Explosion.hpp"
 #include "collision_layers.hpp"
 #include <algorithm>
-//#include <iostream>
 
 using Game::Direction;
 using Game::CollisionDetector;
@@ -14,6 +11,7 @@ using Game::TILE_SIZE;
 
 static bool collide(const Game::Collider& cld1, const Game::Collider& cld2, const Game::Direction dir);
 
+// Checks collision between a CompoundCollider and a Collider
 inline static bool check_compound(const Game::CompoundCollider& cc1, 
 		const Game::Collider& cld2, const Game::Direction dir) 
 {
@@ -29,7 +27,7 @@ static bool collide(const Game::Collider& cld1, const Game::Collider& cld2, cons
 	if (auto cc1 = dynamic_cast<const Game::CompoundCollider*>(&cld1))
 		return check_compound(*cc1, cld2, dir);
 	else if (auto cc2 = dynamic_cast<const Game::CompoundCollider*>(&cld2))
-		return check_compound(*cc2, cld1, dir);
+		return check_compound(*cc2, cld1, dir); // XXX: should be oppositeDirection?
 
 	sf::IntRect rect = cld1.getRect(),
 		    orect = cld2.getRect();
@@ -54,6 +52,8 @@ static bool collide(const Game::Collider& cld1, const Game::Collider& cld2, cons
 	return rect.intersects(orect);
 }
 
+// Checks if owner of `cld` is at the level limit. Algorithm used depends on whether
+// that Entity is AxisMoving or not.
 static bool is_at_boundaries(const Game::Collider& cld, const Game::AxisMoving *const am) {
 	const auto pos = cld.getOwner().getPosition();
 	const auto rect = cld.getRect();

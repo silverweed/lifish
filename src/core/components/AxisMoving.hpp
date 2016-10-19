@@ -49,8 +49,6 @@ public:
 	void realign();
 	void stop() override;
 	void update() override;
-
-	bool canGo(const Game::Direction dir, const Game::LevelManager& lm) const;
 };
 
 }

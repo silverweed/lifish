@@ -1,7 +1,6 @@
 #include "Collider.hpp"
 #include "CompoundCollider.hpp"
 #include <sstream>
-#include <iostream>
 
 using Game::Collider;
 

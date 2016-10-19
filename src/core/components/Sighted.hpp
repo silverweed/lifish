@@ -10,7 +10,7 @@
 
 namespace Game {
 
-class LevelManager;
+class EntityGroup;
 
 /** A Sighted entity has knowledge of entities around it.
  *  Use either the specializations AxisSighted or FreeSighted for sight along axes or in all directions.
@@ -20,7 +20,8 @@ protected:
 	/** Bitmask for opaque layers (entities with no Collider are always transparent) */
 	intmax_t opaqueMask = 0;
 
-	const Game::LevelManager *lm = nullptr;
+	/** The entities which can potentially be seen */
+	const Game::EntityGroup *entities = nullptr;
 
 	/** Vision radius in number of tiles. Negative means infinite. */
 	float visionRadius;
@@ -36,8 +37,7 @@ public:
 	/** Sets all layers in `layers` as (`opaque` ? opaque : transparent) */
 	void setOpaque(std::initializer_list<Game::Layers::Layer> layers, bool opaque = true);
 
-	void setLevelManager(const Game::LevelManager *_lm);
-	const Game::LevelManager* getLevelManager() const;
+	void setEntityGroup(const Game::EntityGroup *eg);
 
 	virtual void update() = 0;
 };

@@ -94,7 +94,7 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 				{
 					auto boss = new Game::AlienBoss(curPos);
 					for (auto s : boss->getAllRecursive<Game::Sighted>())
-						s->setLevelManager(&lm);
+						s->setEntityGroup(&lm.entities);
 					entities.add(boss);
 				}
 				break;
@@ -139,7 +139,7 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 				auto enemy = new Game::Enemy(curPos, enemy_id, ls.getEnemyInfo(enemy_id));
 				enemy->get<Game::AI>()->setLevelManager(&lm);
 				auto sighted = enemy->get<Game::Sighted>();
-				sighted->setLevelManager(&lm);
+				sighted->setEntityGroup(&lm.entities);
 				sighted->setOpaque({ Game::Layers::WALLS });
 				entities.add(enemy);
 			}

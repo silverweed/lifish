@@ -17,9 +17,14 @@ endif()
 # main
 set(MAIN_FILE tests/test_level.cpp)
 file(GLOB LIFISH_HEADERS src/*.hpp)
-include_directories(src)
 # core/ contains the "game-independent" source
 include_directories(src/core)
+# core/components contains a collection of generic components
+include_directories(src/core/components)
+# core/entities contains a collection of generic entities
+include_directories(src/core/entities)
+# core/debug/ contains debug utils
+include_directories(src/core/debug)
 # ui/ contains the ui parts
 include_directories(src/ui)
 # third_party/ contains all external code
@@ -32,18 +37,17 @@ include_directories(src/lifish/components)
 include_directories(src/lifish/entities)
 # lifish/level/ contains classes for managing game levels
 include_directories(src/lifish/level)
-# lifish/debug/ contains debug utils
-include_directories(src/lifish/debug)
 file(GLOB LIFISH_SRC ${MAIN_FILE} 
+	src/core/*cpp 
+	src/core/entities/*cpp 
+	src/core/components/*cpp 
+	src/core/debug/*cpp 
+	src/ui/*cpp 
+	src/third_party/*cpp
+	src/lifish/*cpp
 	src/lifish/entities/*cpp
 	src/lifish/components/*cpp 
 	src/lifish/level/*cpp 
-	src/lifish/debug/*cpp 
-	src/core/*cpp 
-	src/third_party/*cpp
-	src/lifish/*cpp
-	src/ui/*cpp 
-	src/*cpp
 )
 
 # Platform-specific source

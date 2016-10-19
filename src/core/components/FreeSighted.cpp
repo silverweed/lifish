@@ -10,12 +10,12 @@ FreeSighted::FreeSighted(Game::Entity& owner, float visionRadius)
 
 void FreeSighted::update() {
 	Game::Component::update();
-	if (lm == nullptr) return;
+	if (entities == nullptr) return;
 
 	seen.clear();
 
 	const double sqrVR = visionRadius * Game::TILE_SIZE * visionRadius * Game::TILE_SIZE;
-	lm->getEntities().apply([this, sqrVR] (const Game::Entity *e) {
+	entities->apply([this, sqrVR] (const Game::Entity *e) {
 		double dist = Game::sqrDistance(e->getPosition(), owner.getPosition());
 		if (sqrVR > 0 && dist > sqrVR) return;
 		seen.push_back(std::make_pair(e, dist));

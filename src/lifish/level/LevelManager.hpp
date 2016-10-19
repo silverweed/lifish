@@ -9,6 +9,7 @@
 #include "LevelRenderer.hpp"
 #include "LevelTime.hpp"
 #include "game_values.hpp"
+#include "Direction.hpp"
 
 namespace Game {
 
@@ -103,6 +104,9 @@ public:
 	bool isBombAt(const sf::Vector2i& tile) const;
 	/** Returns the number of bombs currently deployed by id-th player */
 	unsigned short bombsDeployedBy(unsigned short id) const;
+
+	/** Checks whether the owner of `am` can proceed along direction `dir` */
+	bool canGo(const Game::AxisMoving& am, const Game::Direction dir) const;
 
 	/** Pauses all Clock components of all entities */
 	void pause();

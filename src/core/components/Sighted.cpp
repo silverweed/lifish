@@ -1,5 +1,5 @@
 #include "Sighted.hpp"
-#include "LevelManager.hpp"
+#include "EntityGroup.hpp"
 
 using Game::Sighted;
 
@@ -22,10 +22,6 @@ bool Sighted::_isOpaque(Game::Layers::Layer layer) const {
 	return (opaqueMask >> static_cast<unsigned>(layer)) & 1;
 }
 
-void Sighted::setLevelManager(const Game::LevelManager *_lm) {
-	lm = _lm;
-}
-
-const Game::LevelManager* Sighted::getLevelManager() const {
-	return lm;
+void Sighted::setEntityGroup(const Game::EntityGroup *eg) {
+	entities = eg;
 }

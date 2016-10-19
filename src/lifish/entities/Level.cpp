@@ -7,9 +7,7 @@
 #include "Drawable.hpp"
 #include "ShadedText.hpp"
 #include "Music.hpp"
-#include "Texture.hpp"
 #include "LevelNumText.hpp"
-#include <iostream>
 #include <sstream>
 
 using Game::Level;

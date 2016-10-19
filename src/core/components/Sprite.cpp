@@ -1,7 +1,6 @@
 #include "Sprite.hpp"
 #include "GameCache.hpp"
-#include "Texture.hpp"
-#include "game.hpp"
+#include "core.hpp"
 
 using Game::Sprite;
 

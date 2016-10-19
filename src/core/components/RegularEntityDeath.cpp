@@ -7,7 +7,7 @@
 #include "AxisMoving.hpp"
 #include "Collider.hpp"
 #include "GameCache.hpp"
-#include "game.hpp"
+#include "core.hpp"
 #include <exception>
 
 using Game::RegularEntityDeath;

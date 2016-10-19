@@ -1,7 +1,7 @@
 #include "Animated.hpp"
 #include "GameCache.hpp"
 #include "Clock.hpp"
-#include "game.hpp"
+#include "core.hpp"
 #include "utils.hpp"
 
 using Game::Animated;
