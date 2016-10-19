@@ -2,7 +2,7 @@
 #include "screen_callbacks.hpp"
 #include "UI.hpp"
 #include "Interactable.hpp"
-#include "game.hpp"
+#include "core.hpp"
 #include <iostream>
 
 using Game::UI::ScreenHandler;

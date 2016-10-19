@@ -1,7 +1,7 @@
 #include "Screen.hpp"
 #include "ScreenBuilder.hpp"
 #include "Interactable.hpp"
-#include "game.hpp"
+#include "core.hpp"
 #include "GameCache.hpp"
 
 using Game::UI::Screen;
