@@ -29,26 +29,6 @@
 
 using namespace Game;
 
-#ifdef MULTITHREADED
-static void rendering_loop(sf::RenderWindow& window, const Game::LevelManager& lm, 
-		const Game::SidePanel& sidePanel, const Game::UI::UI& ui)
-{
-	while (window.isOpen() && !Game::terminated) {
-		window.clear();
-		if (ui.isActive()) {
-			window.draw(ui);	
-		} else {
-			window.draw(lm);
-			window.draw(sidePanel);
-		}
-		Game::maybeShowFPS(window);
-		window.display();
-	}
-	if (window.isOpen())
-		window.close();
-}
-#endif
-
 static void load_icon(sf::Window& window) {
 	sf::Image iconImg;
 	if (iconImg.loadFromFile(Game::getAsset("graphics", "icon.png"))) {
@@ -77,6 +57,37 @@ static sf::View keep_ratio(const sf::Event::SizeEvent& size, const sf::Vector2u&
 
 	return view;
 }
+
+#ifdef MULTITHREADED
+static void rendering_loop(sf::RenderWindow& window, const Game::LevelManager& lm, 
+		const Game::SidePanel& sidePanel, const Game::UI::UI& ui)
+{
+	while (window.isOpen() && !Game::terminated) {
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			switch (event.type) {
+				case sf::Event::Resized:
+					window.setView(keep_ratio(event.size, sf::Vector2u(
+							Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT)));
+					break;
+				default:
+					break;
+			}
+		}
+		window.clear();
+		if (ui.isActive()) {
+			window.draw(ui);	
+		} else {
+			window.draw(lm);
+			window.draw(sidePanel);
+		}
+		Game::maybeShowFPS(window);
+		window.display();
+	}
+	if (window.isOpen())
+		window.close();
+}
+#endif
 
 int main(int argc, char **argv) {
 #if defined(MULTITHREADED) && defined(SFML_SYSTEM_LINUX)
@@ -221,9 +232,11 @@ int main(int argc, char **argv) {
 				case sf::Event::Closed:
 					window.close();
 					break;
+#ifndef MULTITHREADED
 				case sf::Event::Resized:
 					window.setView(keep_ratio(event.size, SCREEN_SIZE));
 					break;
+#endif
 				case sf::Event::KeyPressed:
 					switch (event.key.code) {
 					case sf::Keyboard::P:
