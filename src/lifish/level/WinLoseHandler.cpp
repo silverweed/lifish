@@ -34,11 +34,12 @@ void WinLoseHandler::_handleWin() {
 	if (time >= sf::seconds(4)) {
 		std::cerr << "phase3\n";
 		//auto& level = advance_level(window, lm, panel);
-		//Game::musicManager->set(level->get<Game::Music>()->getMusic())
-			//.setVolume(Game::options.musicVolume)
-			//.play();
+		// FIXME `level` in main should be reset!!!
 		auto level = lm.getLevel()->getLevelSet().getLevel(lm.getLevel()->getInfo().levelnum + 1);
 		lm.setLevel(*level);
+		Game::musicManager->set(level->get<Game::Music>()->getMusic())
+			.setVolume(Game::options.musicVolume)
+			.play();
 		levelClearSoundPlayed = false;
 		playerWinSoundPlayed = false;
 		for (unsigned short id = 1; id <= Game::MAX_PLAYERS; ++id) {

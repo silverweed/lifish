@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <SFML/Audio/InputSoundFile.hpp>
 #include "Component.hpp"
 #include "Track.hpp"
@@ -13,7 +14,7 @@ class Music : public Game::Component {
 	sf::InputSoundFile musicInput;
 
 	/** The music for this level */
-	std::unique_ptr<LoopingMusic> music;
+	std::shared_ptr<LoopingMusic> music;
 
 	/** The music track data */
 	Game::Track track;
@@ -21,7 +22,7 @@ class Music : public Game::Component {
 public:
 	explicit Music(Game::Entity& owner, const Game::Track& track);
 	
-	LoopingMusic* getMusic() const { return music.get(); }
+	std::shared_ptr<LoopingMusic> getMusic() const { return music; }
 	const Game::Track& getTrack() const { return track; }
 };
 

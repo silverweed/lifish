@@ -1,14 +1,16 @@
 #pragma once
 
+#include <memory>
+
 class LoopingMusic;
 
 namespace Game {
 
 class MusicManager final {
-	LoopingMusic *music = nullptr;
+	std::shared_ptr<LoopingMusic> music;
 
 public:
-	MusicManager& set(LoopingMusic *m);
+	MusicManager& set(std::shared_ptr<LoopingMusic> m);
 	MusicManager& play();
 	MusicManager& stop();
 	MusicManager& pause();

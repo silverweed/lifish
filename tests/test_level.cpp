@@ -200,8 +200,8 @@ int main(int argc, char **argv) {
 	lm.setOrigin(origin);
 
 	// Setup the music
-	Game::options.musicVolume = 0; // FIXME
-	Game::options.soundsVolume = 0; // FIXME
+	//Game::options.musicVolume = 0; // FIXME
+	//Game::options.soundsVolume = 0; // FIXME
 	Game::musicManager->set(level->get<Game::Music>()->getMusic())
 		.setVolume(Game::options.musicVolume)
 		.play();

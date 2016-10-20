@@ -3,7 +3,8 @@
 
 using Game::MusicManager;
 
-MusicManager& MusicManager::set(LoopingMusic *m) {
+MusicManager& MusicManager::set(std::shared_ptr<LoopingMusic> m) {
+	stop();
 	music = m;
 	return *this;
 }
