@@ -6,7 +6,12 @@
 using Game::GameCache;
 
 GameCache::GameCache() {
-	sounds.reserve(MAX_PARALLEL_SOUNDS);
+	sounds.reserve(maxParallelSounds);
+}
+
+void GameCache::setMaxParallelSounds(std::size_t n) {
+	maxParallelSounds = n;
+	sounds.reserve(maxParallelSounds);
 }
 
 sf::Texture* GameCache::loadTexture(const std::string& texture_name) {
@@ -52,23 +57,30 @@ bool GameCache::loadSound(sf::Sound& sound, const std::string& sound_name) {
 }
 
 void GameCache::playSound(const std::string& sound_name) {
-	if (Game::options.soundsMute || sounds.size() == MAX_PARALLEL_SOUNDS) return;
-	sounds.push_back(sf::Sound());
-	auto& sound = sounds.back();
+	if (Game::options.soundsMute) return;
+
+	unsigned idx = 0;
+	do {
+		if (idx == sounds.size()) {
+			// Sounds queue has less than `maxParallelSounds` sounds
+			sounds.push_back(sf::Sound());
+			break;
+		}
+		if (sounds[idx].getStatus() != sf::Sound::Status::Playing)
+			break;
+		++idx;
+	} while (idx < maxParallelSounds);
+
+	// No empty slot left
+	if (idx == maxParallelSounds) return;
+
+	// Replace this dead sound with the new one
+	auto& sound = sounds[idx];
 	if (!loadSound(sound, sound_name))
 		return;
 
 	sound.setVolume(Game::options.soundsVolume);
 	sound.play();
-}
-
-void GameCache::gcSounds() {
-	for (auto it = sounds.begin(); it != sounds.end(); ) {
-		if (it->getStatus() != sf::Sound::Status::Playing)
-			it = sounds.erase(it);
-		else
-			++it;
-	}
 }
 
 sf::Font* GameCache::loadFont(const std::string& font_name) {

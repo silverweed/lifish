@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -26,10 +27,8 @@ public:
 	LevelSet(const std::string& jsonPath);
 	~LevelSet() {}
 
-	/** Constructs the i-th level and returns it if init() is successful.
-	 *  Callee MUST take care of deleting the returned Level.
-	 */
-	Level* getLevel(unsigned short i) const;
+	/** Constructs the i-th level and returns it if init() is successful. */
+	std::unique_ptr<Level> getLevel(unsigned short i) const;
 	unsigned short getLevelsNum() const { return levels.size(); }
 
 	const EnemyInfo& getEnemyInfo(const unsigned short id) const { return enemies[id-1]; }

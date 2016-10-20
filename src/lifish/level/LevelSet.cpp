@@ -160,15 +160,16 @@ LevelSet::LevelSet(const std::string& path) {
 	}
 }
 
-Level* LevelSet::getLevel(unsigned short num) const {
-	if (num == 0 || num > levels.size()) return nullptr;
-	Level *lv = new Level(*this);
-	lv->levelInfo = levels[num - 1];
-	if (!lv->init()) {
-		delete lv;
-		return nullptr;
+std::unique_ptr<Level> LevelSet::getLevel(unsigned short num) const {
+	std::unique_ptr<Level> level;
+	if (num > 0 && num <= levels.size()) {
+		level = std::unique_ptr<Level>(new Level(*this));
+		level->levelInfo = levels[num - 1];
+		if (!level->init()) {
+			level.reset();
+		}
 	}
-	return lv;
+	return level;
 }
 
 std::string LevelSet::toString() const {

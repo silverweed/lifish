@@ -206,7 +206,6 @@ int main(int argc, char **argv) {
 		.setVolume(Game::options.musicVolume)
 		.play();
 
-	int cycle = 0;
 	bool was_ui_active = false;
 
 	lm.resume();
@@ -280,19 +279,19 @@ int main(int argc, char **argv) {
 						lvnum = level->getInfo().levelnum + 1;
 						if (lvnum > ls.getLevelsNum())
 							lvnum = 1;
-						level.reset(ls.getLevel(lvnum));
+						level = ls.getLevel(lvnum);
 						Game::musicManager->set(level->get<Game::Music>()->getMusic())
 							.setVolume(Game::options.musicVolume).play();
-						lm.setLevel(*level.get());
+						lm.setLevel(*level);
 						break;
 					case sf::Keyboard::Subtract:
 						lvnum = level->getInfo().levelnum - 1;
 						if (lvnum < 1) 
 							lvnum = ls.getLevelsNum();
-						level.reset(ls.getLevel(lvnum));
+						level = ls.getLevel(lvnum);
 						Game::musicManager->set(level->get<Game::Music>()->getMusic())
 							.setVolume(Game::options.musicVolume).play();
-						lm.setLevel(*level.get());
+						lm.setLevel(*level);
 						break;
 					case sf::Keyboard::L:
 						if (lm.isPaused())
@@ -332,7 +331,7 @@ int main(int argc, char **argv) {
 			}
 
 			// TODO: handle win/loss
-			wlHandler.handleWinLose();
+			wlHandler.handleWinLose(level);
 
 			// Update level
 			if (!lm.isPaused())
@@ -358,19 +357,13 @@ int main(int argc, char **argv) {
 			}
 
 			// TODO: handle win/loss
-			wlHandler.handleWinLose();
+			wlHandler.handleWinLose(level);
 			
 			if (!lm.isPaused())
 				lm.update();
 		}
 		sf::sleep(frame_time_limit - frame_clock.restart());
 #endif
-
-		// Garbage-collect sounds
-		if (++cycle >= Game::GameCache::SOUNDS_GC_DELAY) {
-			cycle = 0;
-			Game::cache.gcSounds();
-		}
 	} // end game loop
 	
 #ifndef MULTITHREADED

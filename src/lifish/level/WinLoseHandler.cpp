@@ -2,6 +2,8 @@
 #include "MusicManager.hpp"
 #include "LevelManager.hpp"
 #include "GameCache.hpp"
+#include "Music.hpp"
+#include "Options.hpp"
 #include "game.hpp"
 #include "Level.hpp"
 #include "LevelSet.hpp"
@@ -15,27 +17,27 @@ WinLoseHandler::WinLoseHandler(Game::LevelManager& lm)
 	: lm(lm)
 {}
 
-void WinLoseHandler::handleWinLose() {
+void WinLoseHandler::handleWinLose(std::unique_ptr<Game::Level>& lv) {
 	switch (state) {
 	case State::HANDLING_WIN:
-		_handleWin();
+		_handleWin(lv);
 		break;
 	case State::HANDLING_LOSS:
 		_handleLoss();
 		break;
 	default:
-		_checkCondition();
+		_checkCondition(lv);
 		break;
 	}
 }
 
-void WinLoseHandler::_handleWin() {
+void WinLoseHandler::_handleWin(std::unique_ptr<Game::Level>& level) {
 	const auto time = clock.getElapsedTime();
 	if (time >= sf::seconds(4)) {
 		std::cerr << "phase3\n";
 		//auto& level = advance_level(window, lm, panel);
 		// FIXME `level` in main should be reset!!!
-		auto level = lm.getLevel()->getLevelSet().getLevel(lm.getLevel()->getInfo().levelnum + 1);
+		level = level->getLevelSet().getLevel(level->getInfo().levelnum + 1);
 		lm.setLevel(*level);
 		Game::musicManager->set(level->get<Game::Music>()->getMusic())
 			.setVolume(Game::options.musicVolume)
@@ -77,7 +79,7 @@ void WinLoseHandler::_handleLoss() {
 	Game::terminated = true;
 }
 
-void WinLoseHandler::_checkCondition() {
+void WinLoseHandler::_checkCondition(std::unique_ptr<Game::Level>& lv) {
 	if (lm.isGameOver()) {
 		state = State::HANDLING_LOSS;
 		lm.dropTextManager.trigger(Game::DroppingTextManager::Text::GAME_OVER);
@@ -85,7 +87,7 @@ void WinLoseHandler::_checkCondition() {
 	} else if (lm.isLevelClear()) {
 		state = State::HANDLING_WIN;
 		clock.restart();
-		_handleWin();
+		_handleWin(lv);
 	}
 }
 
