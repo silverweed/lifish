@@ -58,6 +58,26 @@ static void load_icon(sf::Window& window) {
 	}
 }
 
+static sf::View keep_ratio(const sf::Event::SizeEvent& size, const sf::Vector2u& designedsize) {
+	sf::FloatRect viewport(0.f, 0.f, 1.f, 1.f);
+
+	const float screenwidth = size.width / static_cast<float>(designedsize.x),
+	            screenheight = size.height / static_cast<float>(designedsize.y);
+
+	if (screenwidth > screenheight) {
+		viewport.width = screenheight / screenwidth;
+		viewport.left = (1.f - viewport.width) / 2.f;
+	} else if (screenwidth < screenheight) {
+		viewport.height = screenwidth / screenheight;
+		viewport.top = (1.f - viewport.height) / 2.f;
+	}
+
+	sf::View view(sf::FloatRect(0, 0, designedsize.x , designedsize.y));
+	view.setViewport(viewport);
+
+	return view;
+}
+
 int main(int argc, char **argv) {
 #if defined(MULTITHREADED) && defined(SFML_SYSTEM_LINUX)
 	XInitThreads();
@@ -124,7 +144,6 @@ int main(int argc, char **argv) {
 		levelSetName = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
 	
 	const sf::Vector2u SCREEN_SIZE(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
-
 	sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE.x, SCREEN_SIZE.y), "Lifish " VERSION " (test)");
 	bool vsync = true;
 	bool debug = false;
@@ -201,6 +220,9 @@ int main(int argc, char **argv) {
 				switch (event.type) {
 				case sf::Event::Closed:
 					window.close();
+					break;
+				case sf::Event::Resized:
+					window.setView(keep_ratio(event.size, SCREEN_SIZE));
 					break;
 				case sf::Event::KeyPressed:
 					switch (event.key.code) {
