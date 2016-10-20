@@ -63,64 +63,31 @@ public:
 	virtual std::string toString() const override;
 };
 
+#define COMP_NOT_UNIQUE \
+	static constexpr bool requiredUnique() { return false; }
 
-/// Implementation
+/**
+ * A generic component of a game entity. Inherit this to add behavior.
+ */
+class Component : public Game::Entity {
+protected:
+	Game::Entity& owner;
 
-template<class T>
-T* Entity::addComponent(T* comp) {
-	if (T::requiredUnique() && get<T>() != nullptr)
-		throw std::logic_error("Two components of the same type were added to this Entity!");
-	components.push_back(std::unique_ptr<Game::Component>(comp));
-	return comp;
-} 
+public:
+	/** If true, adding more than a component of this type to an Entity
+	 *  will raise a logic_error.
+	 */
+	static constexpr bool requiredUnique() { return true; }
 
-template<class T>
-T* Entity::get() const {
-	for (auto& comp : components) {
-		Component *ptr = comp.get();
-		T* derived = nullptr;
-		if (ptr && (derived = dynamic_cast<T*>(ptr)))
-			return derived;
-	}
-	return nullptr;
-}
+	explicit Component(Game::Entity& owner);
 
-template<class T>
-std::vector<T*> Entity::getAll() const {
-	std::vector<T*> all;
-	for (auto& comp : components) {
-		Component *ptr = comp.get();
-		T* derived = nullptr;
-		if (ptr && (derived = dynamic_cast<T*>(ptr)))
-			all.push_back(derived);
-	}
-	return all;
-}
+	/** Gets the owner of this component */
+	const Game::Entity& getOwner() const { return owner; }
 
-template<class T>
-std::vector<T*> Entity::getAllRecursive() const {
-	std::vector<T*> all;
-	for (auto& comp : components) {
-		Component *ptr = comp.get();
-		T* derived = nullptr;
-		if (ptr && (derived = dynamic_cast<T*>(ptr)))
-			all.push_back(derived);
-		// XXX: yuck! Is this cast safe? Is there a better way around this?
-		auto sub = reinterpret_cast<Game::Entity*>(ptr)->getAllRecursive<T>();
-		all.insert(all.end(), sub.begin(), sub.end());
-	}
-	return all;
-}
+	/** Gets the owner of this component (non-const) */
+	Game::Entity& getOwnerRW() const { return owner; }
+};
 
-template<class T>
-std::shared_ptr<T> Entity::getShared() const {
-	for (auto& comp : components) {
-		Component *ptr = comp.get();
-		T* derived = nullptr;
-		if (ptr && (derived = dynamic_cast<T*>(ptr)))
-			return std::static_pointer_cast<T>(comp);
-	}
-	return std::shared_ptr<T>();
-}
+#include "Entity.impl.hpp"
 
 }
