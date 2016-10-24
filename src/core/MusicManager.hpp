@@ -7,7 +7,7 @@ class LoopingMusic;
 namespace Game {
 
 class MusicManager final {
-	std::shared_ptr<LoopingMusic> music;
+	std::weak_ptr<LoopingMusic> music;
 
 public:
 	MusicManager& set(std::shared_ptr<LoopingMusic> m);

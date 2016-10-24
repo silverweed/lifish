@@ -6,7 +6,6 @@
 ////////////////////////////////////////////////////////////
 #include <SFML/Audio.hpp>
 #include <iomanip>
-#include <iostream>
 
 class LoopingMusic : public sf::SoundStream
 {
@@ -35,7 +34,6 @@ public:
 	////////////////////////////////////////////////////////////
 	~LoopingMusic()
 	{
-		std::cerr << "stopping\n";
 		// We must stop before destroying the file
 		stop();
 	}

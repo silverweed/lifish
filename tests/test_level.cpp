@@ -331,7 +331,16 @@ int main(int argc, char **argv) {
 			}
 
 			// TODO: handle win/loss
-			wlHandler.handleWinLose(level);
+			if (wlHandler.handleWinLose() == WinLoseHandler::State::ADVANCING_LEVEL) {
+				// TODO give bonus points/handle continues/etc
+				//auto& level = advance_level(window, lm, panel);
+				level = ls.getLevel(level->getInfo().levelnum + 1);
+				lm.setLevel(*level);
+				Game::musicManager->set(level->get<Game::Music>()->getMusic())
+					.setVolume(Game::options.musicVolume)
+					.play();
+				continue;
+			}
 
 			// Update level
 			if (!lm.isPaused())

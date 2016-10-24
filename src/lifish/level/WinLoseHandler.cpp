@@ -12,36 +12,35 @@
 #include <iostream>
 
 using Game::WinLoseHandler;
+using State = WinLoseHandler::State;
 
 WinLoseHandler::WinLoseHandler(Game::LevelManager& lm)
 	: lm(lm)
 {}
 
-void WinLoseHandler::handleWinLose(std::unique_ptr<Game::Level>& lv) {
+State WinLoseHandler::handleWinLose() {
 	switch (state) {
 	case State::HANDLING_WIN:
-		_handleWin(lv);
+		_handleWin();
 		break;
 	case State::HANDLING_LOSS:
 		_handleLoss();
 		break;
+	case State::ADVANCING_LEVEL:
+		state = State::DEFAULT;
+		break;
 	default:
-		_checkCondition(lv);
+		_checkCondition();
 		break;
 	}
+
+	return state;
 }
 
-void WinLoseHandler::_handleWin(std::unique_ptr<Game::Level>& level) {
+void WinLoseHandler::_handleWin() {
 	const auto time = clock.getElapsedTime();
 	if (time >= sf::seconds(4)) {
 		std::cerr << "phase3\n";
-		//auto& level = advance_level(window, lm, panel);
-		// FIXME `level` in main should be reset!!!
-		level = level->getLevelSet().getLevel(level->getInfo().levelnum + 1);
-		lm.setLevel(*level);
-		Game::musicManager->set(level->get<Game::Music>()->getMusic())
-			.setVolume(Game::options.musicVolume)
-			.play();
 		levelClearSoundPlayed = false;
 		playerWinSoundPlayed = false;
 		for (unsigned short id = 1; id <= Game::MAX_PLAYERS; ++id) {
@@ -49,7 +48,7 @@ void WinLoseHandler::_handleWin(std::unique_ptr<Game::Level>& level) {
 			if (player != nullptr)
 				player->setWinning(false);
 		}
-		state = State::DEFAULT;
+		state = State::ADVANCING_LEVEL;
 
 	} else if (time >= sf::seconds(1.8) && !playerWinSoundPlayed) {
 		std::cerr << "phase2\n";
@@ -68,7 +67,6 @@ void WinLoseHandler::_handleWin(std::unique_ptr<Game::Level>& level) {
 		Game::cache.playSound(Game::getAsset("test", Game::LEVEL_CLEAR_SOUND));
 		levelClearSoundPlayed = true;
 	}
-
 }
 
 void WinLoseHandler::_handleLoss() {
@@ -79,7 +77,7 @@ void WinLoseHandler::_handleLoss() {
 	Game::terminated = true;
 }
 
-void WinLoseHandler::_checkCondition(std::unique_ptr<Game::Level>& lv) {
+void WinLoseHandler::_checkCondition() {
 	if (lm.isGameOver()) {
 		state = State::HANDLING_LOSS;
 		lm.dropTextManager.trigger(Game::DroppingTextManager::Text::GAME_OVER);
@@ -87,7 +85,7 @@ void WinLoseHandler::_checkCondition(std::unique_ptr<Game::Level>& lv) {
 	} else if (lm.isLevelClear()) {
 		state = State::HANDLING_WIN;
 		clock.restart();
-		_handleWin(lv);
+		_handleWin();
 	}
 }
 

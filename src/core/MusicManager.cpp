@@ -1,6 +1,14 @@
 #include "MusicManager.hpp"
 #include "LoopingMusic.hpp"
 
+#define DEF_PROXY(action) \
+	MusicManager& MusicManager::  action  () { \
+		if (!music.expired() && music.lock() != nullptr) { \
+			music.lock()->  action  (); \
+		} \
+		return *this; \
+	}
+
 using Game::MusicManager;
 
 MusicManager& MusicManager::set(std::shared_ptr<LoopingMusic> m) {
@@ -9,27 +17,12 @@ MusicManager& MusicManager::set(std::shared_ptr<LoopingMusic> m) {
 	return *this;
 }
 
-MusicManager& MusicManager::play() {
-	if (music != nullptr) {
-		music->play();
-	}
-	return *this;
-}
-
-MusicManager& MusicManager::stop() {
-	if (music != nullptr)
-		music->stop();
-	return *this;
-}
-
-MusicManager& MusicManager::pause() {
-	if (music != nullptr)
-		music->pause();
-	return *this;
-}
+DEF_PROXY(play)
+DEF_PROXY(stop)
+DEF_PROXY(pause)
 
 MusicManager& MusicManager::setVolume(float volume) {
-	if (music != nullptr)
-		music->setVolume(volume);
+	if (!music.expired() && music.lock() != nullptr)
+		music.lock()->setVolume(volume);
 	return *this;
 }
