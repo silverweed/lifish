@@ -12,9 +12,6 @@ using Game::SidePanel;
 SidePanel::SidePanel(const Game::LevelManager& lm)
 	: lm(lm)
 {
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
-	}
-
 	// Load background
 	bgTexture = Game::cache.loadTexture(Game::getAsset("graphics", "panel.png"));
 	backgroundSprite.setTexture(*bgTexture);

@@ -25,17 +25,21 @@ LevelManager::LevelManager()
 	dropTextManager.subscribe(entities);
 }
 
-auto LevelManager::createNewPlayers(unsigned short n) -> std::vector<Game::Player*> {
-	std::vector<Game::Player*> pls;
+auto LevelManager::createNewPlayers(unsigned short n) -> std::vector<std::shared_ptr<Game::Player>> {
+	std::vector<std::shared_ptr<Game::Player>> pls;
 	for (int i = 0; i < n && i < Game::MAX_PLAYERS; ++i) {
 		// Pointers kept by LevelManager
 		players[i] = std::make_shared<Game::Player>(sf::Vector2f(0, 0), i + 1);
 		// Pointers owned by EntityGroup
 		entities.add(players[i]);
 		// Returned (unowned) pointers
-		pls.push_back(players[i].get());
+		pls.push_back(players[i]);
 	}
 	return pls;
+}
+
+void LevelManager::setPlayer(unsigned short id, std::shared_ptr<Game::Player> player) {
+	players[id - 1].swap(player);
 }
 
 void LevelManager::update() {

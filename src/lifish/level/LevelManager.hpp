@@ -84,11 +84,12 @@ public:
 	explicit LevelManager();
 
 	/** Generates n players and returns them. If n > MAX_PLAYERS, only generate MAX_PLAYERS players. */
-	auto createNewPlayers(unsigned short n = Game::MAX_PLAYERS) -> std::vector<Game::Player*>;
+	auto createNewPlayers(unsigned short n = Game::MAX_PLAYERS) -> std::vector<std::shared_ptr<Game::Player>>;
 
 	bool isPlayer(const Game::Entity& e) const;
 	/** Returns the id-th player (id starting from 1) */
 	const std::shared_ptr<Game::Player> getPlayer(unsigned short id) const;
+	void setPlayer(unsigned short id, std::shared_ptr<Game::Player> player);
 
 	const Game::EntityGroup& getEntities() const { return entities; }
 	Game::EntityGroup& getEntities() { return entities; }
