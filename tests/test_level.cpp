@@ -335,34 +335,18 @@ int main(int argc, char **argv) {
 				was_ui_active = false;
 			}
 
-			// The following is a big TODO: handle win/loss
-			if (wlHandler.handleWinLose() == WinLoseHandler::State::ADVANCING_LEVEL) {
-				// TODO give bonus points/handle continues/etc
+			// Handle win / loss cases
+			wlHandler.handleWinLose();
+			if (wlHandler.getState() == WinLoseHandler::State::ADVANCING_LEVEL) {
+				
+				// Give bonus points/handle continues/etc
 				wlHandler.advanceLevel(window, sidePanel);
-
-				// Resurrect any dead player which has a 'continue' left and
-				// remove shield and speedy effects
-				for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
-					auto player = lm.getPlayer(i + 1);
-					if ((player == nullptr || player->get<Game::Killable>()->isKilled()) 
-							&& Game::playerContinues[i] > 0) 
-					{
-						if (wlHandler.displayContinue(window, sidePanel, i + 1)) {
-							--Game::playerContinues[i];
-							players[i] = std::make_shared<Player>(sf::Vector2f(0, 0), i + 1);
-							players[i]->get<Game::Controllable>()->setWindow(window);
-							std::cerr << "add new player\n";
-							lm.setPlayer(i + 1, players[i]);
-						} else {
-							Game::playerContinues[i] = 0;
-						}
-					} else if (player != nullptr) {
-						auto bns = player->get<Game::Bonusable>();
-						bns->giveBonus(Game::BonusType::SPEEDY, sf::Time::Zero);
-						bns->giveBonus(Game::BonusType::SHIELD, sf::Time::Zero);
-					}
+				if (wlHandler.getState() == WinLoseHandler::State::GAME_WON) {
+					// TODO
 				}
-
+				
+				for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
+					players[i] = lm.getPlayer(i + 1);
 				level = ls.getLevel(level->getInfo().levelnum + 1);
 				lm.setLevel(*level);
 				Game::musicManager->set(level->get<Game::Music>()->getMusic())

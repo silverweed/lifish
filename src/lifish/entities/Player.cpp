@@ -126,6 +126,14 @@ void Player::update() {
 			moving->stop();
 		}
 	}
+
+	if (winning && animated->getAnimationName() == "idle")
+		animated->setAnimation("win");
+}
+
+void Player::setWinning(bool b) {
+	if ((winning = b))
+		animated->setAnimation("win");
 }
 
 void Player::_kill() {

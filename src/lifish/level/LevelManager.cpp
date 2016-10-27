@@ -42,6 +42,10 @@ void LevelManager::setPlayer(unsigned short id, std::shared_ptr<Game::Player> pl
 	players[id - 1].swap(player);
 }
 
+void LevelManager::removePlayer(unsigned short id) {
+	players[id - 1].reset();
+}
+
 void LevelManager::update() {
 	// Update level time
 	levelTime.update();
@@ -262,6 +266,8 @@ void LevelManager::_checkResurrect() {
 	unsigned short living_players = 0;
 
 	for (auto& player : players) {
+		if (player == nullptr) continue;
+
 		auto klb = player->get<Game::Killable>();
 		if (klb->isKilled() && !klb->isKillInProgress()) {
 			if (player->getInfo().remainingLives > 0) {

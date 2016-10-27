@@ -2,6 +2,7 @@
 #include "game.hpp"
 #include "LevelSet.hpp"
 #include "Player.hpp"
+#include "Animated.hpp"
 #include "Level.hpp"
 #include "LevelManager.hpp"
 #include "FixedWall.hpp"
@@ -62,13 +63,19 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 
 			case EntityType::PLAYER1: 
 				if (!is_game_over(0)) {
+					lm.players[0]->setWinning(false);
 					lm.players[0]->setPosition(curPos);
+					lm.players[0]->get<Game::Animated>()->setAnimation("idle");
+					lm.players[0]->get<Game::Moving>()->stop();
 					entities.add(lm.players[0]);
 				}
 				break;
 			case EntityType::PLAYER2: 
 				if (!is_game_over(1)) {
+					lm.players[1]->setWinning(false);
 					lm.players[1]->setPosition(curPos);
+					lm.players[1]->get<Game::Animated>()->setAnimation("idle");
+					lm.players[1]->get<Game::Moving>()->stop();
 					entities.add(lm.players[1]);
 				}
 				break;

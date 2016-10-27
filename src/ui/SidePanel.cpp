@@ -167,40 +167,39 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			window.draw(text, states);
 		} else {
 			_drawHealthSprites(window, states, player.get());
-			_drawExtraLetters(window, states, player.get());
+
+			// Draw max bombs
+			const auto powers = player->getInfo().powers;
+			pos.x = BONUS_ICON_POS_X;
+			pos.y = i == 0 ? BONUS_ICON_POS_Y_1 : BONUS_ICON_POS_Y_2;
+			text.setStyle(sf::Text::Regular);
+			text.setPosition(sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 2));
+			text.setCharacterSize(11);
+			text.setShadowSpacing(1, 1);
+			text.setString("x" + Game::to_string(powers.maxBombs));
+			window.draw(text, states);
+
+			// Draw bomb radius
+			text.setPosition(sf::Vector2f(pos.x + 2 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
+			text.setString("x" + Game::to_string(powers.bombRadius));
+			window.draw(text, states);
+
+			// Draw bonuses
+			for (const auto& bsprite : bonusesSprite[i])
+				_drawWithShadow(window, states, bsprite);
+
+			// Draw score
+			ss.str("");
+			ss << std::setfill('0') << std::setw(7) << Game::score[i];
+			pos.x = SCORE_POS_X;
+			pos.y = i == 0 ? SCORE_POS_Y_1 : SCORE_POS_Y_2;
+			Game::ShadedText scoreText(
+					Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO),
+					ss.str(), pos);
+			scoreText.setCharacterSize(16);
+			scoreText.setShadowSpacing(2, 2);
+			window.draw(scoreText, states);
 		}
-
-		// Draw max bombs
-		const auto powers = player->getInfo().powers;
-		pos.x = BONUS_ICON_POS_X;
-		pos.y = i == 0 ? BONUS_ICON_POS_Y_1 : BONUS_ICON_POS_Y_2;
-		text.setStyle(sf::Text::Regular);
-		text.setPosition(sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 2));
-		text.setCharacterSize(11);
-		text.setShadowSpacing(1, 1);
-		text.setString("x" + Game::to_string(powers.maxBombs));
-		window.draw(text, states);
-
-		// Draw bomb radius
-		text.setPosition(sf::Vector2f(pos.x + 2 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
-		text.setString("x" + Game::to_string(powers.bombRadius));
-		window.draw(text, states);
-
-		// Draw bonuses
-		for (const auto& bsprite : bonusesSprite[i])
-			_drawWithShadow(window, states, bsprite);
-
-		// Draw score
-		ss.str("");
-		ss << std::setfill('0') << std::setw(7) << Game::score[i];
-		pos.x = SCORE_POS_X;
-		pos.y = i == 0 ? SCORE_POS_Y_1 : SCORE_POS_Y_2;
-		Game::ShadedText scoreText(
-				Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO),
-				ss.str(), pos);
-		scoreText.setCharacterSize(16);
-		scoreText.setShadowSpacing(2, 2);
-		window.draw(scoreText, states);
 	}
 
 	_drawTime(window, states);

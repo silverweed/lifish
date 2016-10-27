@@ -13,6 +13,7 @@ class SidePanel;
 /**
  * This class handles the winning and losing conditions and switching
  * between levels.
+ * TODO: make this compatible with multithreading
  */
 class WinLoseHandler final {
 public:
@@ -35,6 +36,8 @@ private:
 	void _handleWin();
 	void _handleLoss();
 	void _checkCondition();
+	/** @return true if player chose to continue, else false */
+	bool _displayContinue(sf::RenderWindow& target, const Game::SidePanel& panel, short playerId);
 	void _displayGetReady(sf::RenderWindow& target, const Game::SidePanel& panel, short lvnum);
 public:
 	explicit WinLoseHandler(Game::LevelManager& lm);
@@ -42,10 +45,11 @@ public:
 	/** In case of win or loss, performs the due actions (replaces the normal event loop).
 	 *  @return the new state of WinLoseHandler.
 	 */
-	State handleWinLose();
+	void handleWinLose();
+
+	State getState() const { return state; }
 
 	void advanceLevel(sf::RenderWindow& target, const Game::SidePanel& panel);
-	bool displayContinue(sf::RenderWindow& target, const Game::SidePanel& panel, short playerId);
 };
 
 }

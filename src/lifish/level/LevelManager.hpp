@@ -90,6 +90,7 @@ public:
 	/** Returns the id-th player (id starting from 1) */
 	const std::shared_ptr<Game::Player> getPlayer(unsigned short id) const;
 	void setPlayer(unsigned short id, std::shared_ptr<Game::Player> player);
+	void removePlayer(unsigned short id);
 
 	const Game::EntityGroup& getEntities() const { return entities; }
 	Game::EntityGroup& getEntities() { return entities; }

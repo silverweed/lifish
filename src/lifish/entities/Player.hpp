@@ -66,7 +66,7 @@ class Player : public Game::Entity {
 	constexpr static unsigned short IDLE_N_FRAMES = 20;
 	const static sf::Time DEATH_TIME;
 
-	/** While true, the idle pose becomes ANIM_WIN */
+	/** If true, idle animation is winning animation */
 	bool winning = false;
 
 	Game::AxisMoving *moving = nullptr;
@@ -93,14 +93,13 @@ public:
 
 	void resurrect();
 
-	void setWinning(bool b) { winning = b; }
-
 	const Game::PlayerInfo& getInfo() const { return info; }
 	void setBombRadius(unsigned short r) { info.powers.bombRadius = r; }
 	void setMaxBombs(unsigned short m) { info.powers.maxBombs = m; }
 	void setBombFuseTime(sf::Time t) { info.powers.bombFuseTime = t; }
 	void setExtra(unsigned short n, bool e) { info.extra[n] = e; }
 	void setRemainingLives(short l) { info.remainingLives = l; }
+	void setWinning(bool b);
 
 	void update() override;
 };
