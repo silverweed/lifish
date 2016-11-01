@@ -160,7 +160,8 @@ int main(int argc, char **argv) {
 	sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE.x, SCREEN_SIZE.y), "Lifish " VERSION " (test)");
 	bool vsync = true;
 	bool debug = false;
-	window.setVerticalSyncEnabled(vsync);
+	window.setFramerateLimit(120);
+	//window.setVerticalSyncEnabled(vsync);
 	window.setJoystickThreshold(Game::JOYSTICK_INPUT_THRESHOLD);
 	Game::options.showFPS = true;
 
@@ -257,7 +258,8 @@ int main(int argc, char **argv) {
 						break;
 #ifndef MULTITHREADED
 					case sf::Keyboard::V:
-						window.setVerticalSyncEnabled(vsync = !vsync);
+						vsync = !vsync;
+						window.setFramerateLimit(vsync ? 120 : 0);
 						break;
 #endif
 #ifndef RELEASE

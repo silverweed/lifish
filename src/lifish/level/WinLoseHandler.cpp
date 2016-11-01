@@ -187,7 +187,7 @@ void WinLoseHandler::advanceLevel(sf::RenderWindow& window, const Game::SidePane
 
 void WinLoseHandler::_displayGetReady(sf::RenderWindow& window, const Game::SidePanel& panel, short lvnum) {
 	std::stringstream ss;
-	ss << "LEVEL " << lvnum;
+	ss << "LEVEL " << (lvnum + 1);
 	sf::Text text(ss.str(), interlevelFont, 13);
 	text.setPosition(Game::center(text.getGlobalBounds()));
 
