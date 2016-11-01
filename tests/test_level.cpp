@@ -11,6 +11,7 @@
 #include "SidePanel.hpp"
 #include "LevelSet.hpp"
 #include "Bonusable.hpp"
+#include "Boss.hpp"
 #include "UI.hpp"
 #include "game.hpp"
 #include "Options.hpp"
@@ -277,6 +278,12 @@ int main(int argc, char **argv) {
 						lm.getEntities().apply([] (Game::Entity *e) {
 							auto en = dynamic_cast<Game::Enemy*>(e);
 							//auto en = dynamic_cast<Game::BreakableWall*>(e);
+							if (en) en->get<Game::Killable>()->kill();
+						});
+						break;
+					case sf::Keyboard::B:
+						lm.getEntities().apply([] (Game::Entity *e) {
+							auto en = dynamic_cast<Game::Boss*>(e);
 							if (en) en->get<Game::Killable>()->kill();
 						});
 						break;

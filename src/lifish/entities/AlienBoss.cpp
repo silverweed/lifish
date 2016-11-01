@@ -34,8 +34,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 		_kill();
 	}, [this] () {
 		// kill in progress
-		// TODO
-		return false;
+		return _killInProgress();
 	}));
 	addComponent(new Game::Scored(*this, VALUE));
 	addComponent(new Game::Drawable(*this, *addComponent(new Game::Sprite(*this, 
@@ -58,6 +57,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 }
 
 void AlienBoss::_kill() {
+	Boss::_kill();
 	// TODO
 }
 

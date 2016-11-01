@@ -1,6 +1,9 @@
 #include "Boss.hpp"
 #include "ZIndexed.hpp"
 #include "game.hpp"
+#include "Clock.hpp"
+#include "BossExplosion.hpp"
+#include "Spawning.hpp"
 #include "Collider.hpp"
 #include "Killable.hpp"
 #include "GameCache.hpp"
@@ -12,17 +15,45 @@
 #include <cassert>
 
 using Game::Boss;
+using Game::TILE_SIZE;
 
 Boss::Boss(const sf::Vector2f& pos)
 	: Game::Entity(pos)
 {
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::BOSSES));
 	addComponent(new Game::Foe(*this));
+	explClock = addComponent(new Game::Clock(*this));
+	deathClock = addComponent(new Game::Clock(*this));
+	addComponent(new Game::Spawning(*this, [this] (const Game::Spawning&) {
+		return killable && killable->isKilled() 
+			&& explClock->getElapsedTime() >= sf::milliseconds(100);
+	}, [this] () {
+		explClock->restart();
+		// Calculate a random location inside the boss
+		const auto bpos = position;
+		std::uniform_real_distribution<float> distX(-0.5 * TILE_SIZE,
+		                                            TILE_SIZE * (collider->getSize().x/TILE_SIZE - 0.5)),
+		                                      distY(-0.5 * TILE_SIZE,
+		                                            TILE_SIZE * (collider->getSize().y/TILE_SIZE - 0.5));
+		const float x = distX(rng),
+		            y = distY(rng);
+		auto expl = new Game::BossExplosion(sf::Vector2f(bpos.x + x, bpos.y + y));
+		Game::cache.playSound(expl->get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
+		return expl;
+	}));
 }
 
 void Boss::_hurt() {
 	isHurt = true;
 	wasHurt = true;
+}
+
+void Boss::_kill() {
+	deathClock->restart();
+}
+
+bool Boss::_killInProgress() const {
+	return deathClock->getElapsedTime() < Game::Conf::Boss::DEATH_TIME;
 }
 
 void Boss::update() {

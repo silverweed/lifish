@@ -26,3 +26,8 @@ void Sprite::update() {
 	Game::Component::update();
 	sprite.setPosition(owner.getPosition());
 }
+
+void Sprite::setOrigin(const sf::Vector2f& o) {
+	Game::Component::setOrigin(o);
+	sprite.setOrigin(o);
+}

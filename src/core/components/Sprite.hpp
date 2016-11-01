@@ -25,10 +25,7 @@ public:
 
 	void update() override;
 
-	void setOrigin(const sf::Vector2f& o) override {
-		Game::Component::setOrigin(o);
-		sprite.setOrigin(o);
-	}
+	void setOrigin(const sf::Vector2f& o) override;
 };
 
 }

@@ -1,7 +1,10 @@
 #include "BossExplosion.hpp"
 #include "Drawable.hpp"
 #include "Animated.hpp"
+#include "ZIndexed.hpp"
+#include "Sounded.hpp"
 #include "Temporary.hpp"
+#include "game_values.hpp"
 #include "utils.hpp"
 
 using Game::BossExplosion;
@@ -12,6 +15,8 @@ BossExplosion::BossExplosion(const sf::Vector2f& pos)
 {
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "bossbullet.png")));
 	addComponent(new Game::Drawable(*this, *animated));
+	addComponent(new Game::Sounded(*this, { Game::getAsset("test", "bossbullet_hit.ogg") }));
+	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::BOSS_EXPLOSIONS));
 
 	animated->addAnimation("explosion", {
 		sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
