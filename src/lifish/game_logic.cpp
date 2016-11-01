@@ -82,7 +82,7 @@ void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager&,
 	if (scored == nullptr || scored->hasGivenPoints()) return;
 	
 	auto klb = e->get<Game::Killable>();
-	if (klb != nullptr && klb->isKilled() && !klb->isKillInProgress()) {
+	if (klb != nullptr && klb->isKilled()) {
 		// Give and spawn points
 		auto target = scored->getTarget();
 		if (target < 0) {
