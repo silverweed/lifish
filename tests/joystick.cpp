@@ -1,13 +1,20 @@
 #include <SFML/Window.hpp>
 #include <iostream>
 
-#define N 0
-#define RED "\033[1;31m"
-#define NORMAL "\033[0;0m"
+#ifndef __unix__
+	#define RED ""
+	#define NORMAL ""
+#else
+	#define RED "\033[1;31m"
+	#define NORMAL "\033[0;0m"
+#endif
 
 using J = sf::Joystick;
 
-int main() {
+int main(int argc, char **argv) {
+	int N = 0;
+	if (argc > 1)
+		N = atoi(argv[1]);
 	J::update();
 	auto id = J::getIdentification(N);
 	std::cout << "Joystick: \n"

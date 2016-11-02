@@ -190,3 +190,25 @@ void Game::testMusic() {
 	sf::sleep(sf::milliseconds(200));
 	sample.stop();
 }
+
+short Game::JoystickUtils::getPauseButton(unsigned int id) {
+	if (!sf::Joystick::isConnected(id)) return -1;
+	// Heuristic approach to "known" joysticks: we distinguish them by their
+	// button count and hope they're really that type of joystick.
+	// We could use vendor / product ID, but maybe this method is more resilient
+	// to slightly different models (or maybe not).
+	// Xbox 360 controller has 10 buttons
+	// PS3 controller has 12 buttons
+	switch (sf::Joystick::getButtonCount(id)) {
+	case 10: 
+		// XBox 360
+		return 7;
+	case 12:	
+		// PS3
+		return 9;
+	default:
+		break;
+	}
+
+	return -1;
+}

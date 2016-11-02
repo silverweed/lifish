@@ -106,4 +106,8 @@ namespace KeyUtils {
 	std::string keyToString(sf::Keyboard::Key key);
 }
 
+namespace JoystickUtils {
+	short getPauseButton(unsigned int joystickId);
+}
+
 } // end namespace Game

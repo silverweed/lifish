@@ -1,4 +1,5 @@
 #include "Interactable.hpp"
+#include "utils.hpp"
 #include "UI.hpp"
 
 using Game::UI::UI;
@@ -21,6 +22,14 @@ void UI::handleEvents(sf::Window& window) {
 		case sf::Event::MouseButtonReleased:
 			screenHandler.fireClick();
 			break;
+		case sf::Event::JoystickButtonPressed:
+			{
+				const auto btn = event.joystickButton;
+				const short pb = JoystickUtils::getPauseButton(btn.joystickId);
+				if (pb >= 0 && btn.button == static_cast<unsigned int>(pb))
+					active = !active;
+				break;
+			}
 		case sf::Event::KeyPressed:
 			switch (event.key.code) {
 			case sf::Keyboard::Escape:

@@ -60,6 +60,16 @@ static sf::View keep_ratio(const sf::Event::SizeEvent& size, const sf::Vector2u&
 	return view;
 }
 
+static void toggle_pause_game(UI::UI& ui, LevelManager& lm, bool& was_ui_active) {
+	if (ui.toggleActive()) {
+		lm.pause();
+		was_ui_active = true;
+		Game::musicManager->pause();
+	} else {
+		Game::musicManager->play();
+	}
+}
+
 #ifdef MULTITHREADED
 static void rendering_loop(sf::RenderWindow& window, const Game::LevelManager& lm, 
 		const Game::SidePanel& sidePanel, const Game::UI::UI& ui)
@@ -239,16 +249,18 @@ int main(int argc, char **argv) {
 					window.setView(keep_ratio(event.size, SCREEN_SIZE));
 					break;
 #endif
+				case sf::Event::JoystickButtonPressed:
+					{
+						const auto btn = event.joystickButton;
+						const short pb = JoystickUtils::getPauseButton(btn.joystickId);
+						if (pb >= 0 && btn.button == static_cast<unsigned int>(pb))
+							toggle_pause_game(ui, lm, was_ui_active);
+						break;
+					}
 				case sf::Event::KeyPressed:
 					switch (event.key.code) {
 					case sf::Keyboard::P:
-						if (ui.toggleActive()) {
-							lm.pause();
-							was_ui_active = true;
-							Game::musicManager->pause();
-						} else {
-							Game::musicManager->play();
-						}
+						toggle_pause_game(ui, lm, was_ui_active);
 						break;
 					case sf::Keyboard::Escape:
 						for (auto player : players) {
