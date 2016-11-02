@@ -62,7 +62,7 @@ void Player::_init() {
 	}));
 	bonusable = addComponent(new Game::Bonusable(*this));
 	movingAnimator = addComponent(new Game::MovingAnimator(*this));
-	addComponent(new Game::Controllable(*this, Game::Controls::players[info.id-1]));
+	addComponent(new Game::Controllable(*this, Game::Controls::players[info.id-1], Game::Controls::useJoystick[info.id-1]));
 	hurtClock = addComponent(new Game::Clock(*this));
 	death = addComponent(new Game::RegularEntityDeath(*this, Game::Conf::Player::DEATH_TIME));
 

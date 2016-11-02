@@ -5,9 +5,11 @@
 using Game::Controllable;
 
 Controllable::Controllable(Game::Entity& owner,
-		const std::array<sf::Keyboard::Key, Game::Controls::CONTROLS_NUM>& controls)
+		const std::array<sf::Keyboard::Key, Game::Controls::CONTROLS_NUM>& controls,
+		short& joystickUsed)
 	: Game::Component(owner)
 	, controls(controls)
+	, joystickUsed(joystickUsed)
 {}
 
 Game::Entity* Controllable::init() {

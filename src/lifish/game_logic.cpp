@@ -13,6 +13,7 @@
 #include "Lifed.hpp"
 #include "Bonusable.hpp"
 #include "Enemy.hpp"
+#include "Options.hpp"
 #include "Scored.hpp"
 #include "AI.hpp"
 #include "Points.hpp"
@@ -50,8 +51,12 @@ void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager& lm,
 	const auto pinfo = player->getInfo();
 	if (player->get<Game::Controllable>()->hasFocus() 
 		&& player->isAligned() 
-		&& sf::Keyboard::isKeyPressed(
-			Game::Controls::players[player->getInfo().id-1][Game::Controls::CTRL_BOMB])
+		&& ((Game::Controls::useJoystick[pinfo.id-1] >= 0 
+			&& sf::Joystick::isButtonPressed(
+				Game::Controls::useJoystick[pinfo.id-1], 
+				Game::Controls::joystickBombKey[pinfo.id-1]))
+			|| sf::Keyboard::isKeyPressed(
+				Game::Controls::players[pinfo.id-1][Game::Controls::CTRL_BOMB]))
 		&& lm.bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs
 		&& !lm.isBombAt(Game::tile(player->getPosition())))
 	{

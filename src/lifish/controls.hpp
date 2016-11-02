@@ -10,7 +10,7 @@ namespace Game {
 
 namespace Controls {
 
-enum Control : unsigned short {
+enum Control {
 	CTRL_UP    = 0,
 	CTRL_DOWN  = 1,
 	CTRL_LEFT  = 2,

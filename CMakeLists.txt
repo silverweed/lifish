@@ -52,6 +52,7 @@ file(GLOB LIFISH_SRC ${MAIN_FILE}
 
 # Platform-specific source
 if(MSYS)
+	include_directories(src)
 	file(GLOB WIN_LIFISH_SRC src/win/*.cpp)	
 	add_definitions(-D_WIN32_WINNT=_WIN32_WINNT_VISTA)
 	set(LIFISH_SRC ${LIFISH_SRC} ${WIN_LIFISH_SRC})
