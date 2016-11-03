@@ -16,7 +16,6 @@ class AlienBoss : public Game::Boss {
 	Game::Clock *shootClock = nullptr;
 	std::array<Game::ShootingPoint*, 2> eyes;
 
-	void _kill();
 	void _shoot();
 public:
 	explicit AlienBoss(const sf::Vector2f& pos);

@@ -56,11 +56,6 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	eyes[1]->setOffset(sf::Vector2f(50, 18));
 }
 
-void AlienBoss::_kill() {
-	Boss::_kill();
-	// TODO
-}
-
 void AlienBoss::update() {
 	Game::Boss::update();
 	if (killable->isKilled() || eyes[0]->get<Game::Shooting>()->isRecharging()) return;
