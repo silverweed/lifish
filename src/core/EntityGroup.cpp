@@ -19,30 +19,39 @@ void EntityGroup::setOrigin(const sf::Vector2f& origin) {
 		e->setOrigin(origin);
 }
 
+void EntityGroup::validate() {
+	_pruneAll();
+	alreadyPrunedThisUpdate = true;
+}
+
 void EntityGroup::updateAll() {
-	_pruneFixed();
 	_checkKilled();
-	if (dying.size() > 0)
-		_removeDying();
+
+	if (!alreadyPrunedThisUpdate) {
+		_pruneAll();
+		alreadyPrunedThisUpdate = true;
+	}
 
 	for (auto& e : entities)
 		e->update();
+
+	alreadyPrunedThisUpdate = false;
 }
 
 void EntityGroup::remove(const Game::Entity& entity) {
-	entities.remove_if([entity] (const std::shared_ptr<Game::Entity>& e) { return e.get() == &entity; });
+	entities.remove_if([entity] (std::shared_ptr<Game::Entity> e) { return e.get() == &entity; });
 }
 
 void EntityGroup::refresh(const Game::Entity& entity) {
 	// FIXME
-	/*auto eit = std::find_if(entities.begin(), entities.end(), [&entity] (const std::shared_ptr<Game::Entity>& e) {
+	/*auto eit = std::find_if(entities.begin(), entities.end(), [&entity] (std::shared_ptr<Game::Entity> e) {
 		return e.get() == &entity;
 	});
 	if (eit == entities.end()) 
 		throw std::invalid_argument("entity passed to EntityGroup::refresh() is not in this group!");
 	*/
 
-	std::remove_if(killables.begin(), killables.end(), [&entity] (const std::weak_ptr<Game::Killable>& k) {
+	std::remove_if(killables.begin(), killables.end(), [&entity] (std::weak_ptr<Game::Killable> k) {
 		return k.expired() || &k.lock().get()->getOwner() == &entity;
 	});
 	auto klb = entity.getShared<Game::Killable>();
@@ -51,7 +60,7 @@ void EntityGroup::refresh(const Game::Entity& entity) {
 	} 
 
 	std::remove_if(collidingEntities.begin(), collidingEntities.end(),
-		[&entity] (const std::weak_ptr<Game::Collider>& c) 
+		[&entity] (std::weak_ptr<Game::Collider> c) 
 	{
 		return c.expired() || &c.lock().get()->getOwner() == &entity;
 	});
@@ -64,7 +73,7 @@ void EntityGroup::refresh(const Game::Entity& entity) {
 	/*
 	const auto tile = Game::tile(entity.getPosition());
 	auto& fxd = fixedEntities[(tile.y - 1) * Game::LEVEL_WIDTH + tile.x - 1];
-	std::remove_if(fxd.begin(), fxd.end(), [&entity] (const std::weak_ptr<Game::Entity>& e) {
+	std::remove_if(fxd.begin(), fxd.end(), [&entity] (std::weak_ptr<Game::Entity> e) {
 		return e.expired() || e.lock().get() == &entity;
 	});
 	if (entity.get<Game::Fixed>() != nullptr) {
@@ -72,6 +81,7 @@ void EntityGroup::refresh(const Game::Entity& entity) {
 	}
 	*/
 }
+
 
 void EntityGroup::clear() {
 	entities.clear();
@@ -101,6 +111,12 @@ auto EntityGroup::_fixedAt(const sf::Vector2i& tile) const -> const std::vector<
 	return fixedEntities[(tile.y - 1) * Game::LEVEL_WIDTH + tile.x - 1];
 }
 
+void EntityGroup::_pruneAll() {
+	_pruneFixed();
+	_pruneDying();
+	_pruneColliding();
+}
+
 void EntityGroup::_pruneFixed() {
 	for (auto& f : fixedEntities) {
 		for (auto it = f.begin(); it != f.end(); ) {
@@ -112,7 +128,40 @@ void EntityGroup::_pruneFixed() {
 	}
 }
 
-Game::Entity* EntityGroup::_putInAux(const std::shared_ptr<Game::Entity>& entity) {
+void EntityGroup::_pruneColliding() {
+	for (auto it = collidingEntities.begin(); it != collidingEntities.end(); ) {
+		if (it->expired())
+			it = collidingEntities.erase(it);
+		else
+			++it;
+	}
+}
+
+void EntityGroup::_pruneDying() {
+	for (auto it = dying.begin(); it != dying.end(); ) {
+		if (it->expired()) {
+			it = dying.erase(it);
+			continue;
+		}
+		auto tmp = it->lock();
+		if (!tmp->isKillInProgress()) {
+			// kill function has ended, we can safely destroy this.
+			auto eit = std::find_if(entities.begin(), entities.end(), 
+					[tmp] (std::shared_ptr<Game::Entity>& ptr) 
+			{
+				return ptr.get() == &tmp->getOwner();
+			});
+			if (eit != entities.end())
+				entities.erase(eit);
+			
+			it = dying.erase(it);
+		} else {
+			++it;
+		}
+	}
+}
+
+Game::Entity* EntityGroup::_putInAux(std::shared_ptr<Game::Entity> entity) {
 	entity->setOrigin(origin);
 
 	// Put in aux collections, if not already managed
@@ -136,7 +185,7 @@ Game::Entity* EntityGroup::_putInAux(const std::shared_ptr<Game::Entity>& entity
 	return entity.get();
 }
 
-void EntityGroup::_addFixedAt(unsigned short x, unsigned short y, const std::shared_ptr<Game::Entity>& e) {
+void EntityGroup::_addFixedAt(unsigned short x, unsigned short y, std::shared_ptr<Game::Entity> e) {
 	if (x < 1 || x > Game::LEVEL_WIDTH || y < 1 || y > Game::LEVEL_HEIGHT)
 		return;
 	fixedEntities[(y - 1) * Game::LEVEL_WIDTH + x - 1].push_back(e);
@@ -146,7 +195,7 @@ void EntityGroup::_rmFixedAt(unsigned short x, unsigned short y, const Game::Ent
 	if (x < 1 || x > Game::LEVEL_WIDTH || y < 1 || y > Game::LEVEL_HEIGHT)
 		return;
 	auto& fixed = fixedEntities[(y - 1) * Game::LEVEL_WIDTH + x - 1];
-	std::remove_if(fixed.begin(), fixed.end(), [entity] (const std::weak_ptr<Game::Entity>& e) {
+	std::remove_if(fixed.begin(), fixed.end(), [entity] (std::weak_ptr<Game::Entity> e) {
 		return !e.expired() && e.lock().get() == &entity;
 	});
 }
@@ -171,7 +220,7 @@ void EntityGroup::_checkKilled() {
 			}
 
 			auto eit = std::find_if(entities.begin(), entities.end(), 
-					[klb] (const std::shared_ptr<Game::Entity>& ptr) 
+					[klb] (std::shared_ptr<Game::Entity> ptr) 
 			{
 				return ptr.get() == &klb->getOwner();
 			});
@@ -185,48 +234,24 @@ void EntityGroup::_checkKilled() {
 	}
 }
 
-void EntityGroup::_removeDying() {
-	for (auto it = dying.begin(); it != dying.end(); ) {
-		if (it->expired()) {
-			it = dying.erase(it);
-			continue;
-		}
-		auto tmp = it->lock();
-		if (!tmp->isKillInProgress()) {
-			// kill function has ended, we can safely destroy this.
-			auto eit = std::find_if(entities.begin(), entities.end(), 
-					[tmp] (std::shared_ptr<Game::Entity>& ptr) 
-			{
-				return ptr.get() == &tmp->getOwner();
-			});
-			if (eit != entities.end())
-				entities.erase(eit);
-			
-			it = dying.erase(it);
-		} else {
-			++it;
-		}
-	}
-}
-
-bool EntityGroup::_isManagedKillable(const std::shared_ptr<Game::Entity>& entity) const {
+bool EntityGroup::_isManagedKillable(std::shared_ptr<Game::Entity> entity) const {
 	return std::find_if(killables.begin(), killables.end(), 
-		[&entity] (const std::weak_ptr<Game::Killable>& p) {
+		[&entity] (std::weak_ptr<Game::Killable> p) {
 			return !p.expired() && &p.lock().get()->getOwner() == entity.get();
 		}) != killables.end();
 }
 
-bool EntityGroup::_isManagedCollider(const std::shared_ptr<Game::Entity>& entity) const {
+bool EntityGroup::_isManagedCollider(std::shared_ptr<Game::Entity> entity) const {
 	return std::find_if(collidingEntities.begin(), collidingEntities.end(), 
-		[&entity] (const std::weak_ptr<Game::Collider>& p) {
+		[&entity] (std::weak_ptr<Game::Collider> p) {
 			return !p.expired() && &p.lock().get()->getOwner() == entity.get();
 		}) != collidingEntities.end();
 }
 
-bool EntityGroup::_isManagedFixed(const std::shared_ptr<Game::Entity>& entity) const {
+bool EntityGroup::_isManagedFixed(std::shared_ptr<Game::Entity> entity) const {
 	const auto& fx = _fixedAt(Game::tile(entity.get()->getPosition()));
 	return std::find_if(fx.begin(), fx.end(),
-		[&entity] (const std::weak_ptr<Game::Entity>& p) {
+		[&entity] (std::weak_ptr<Game::Entity> p) {
 			return !p.expired() && p.lock().get() == entity.get();
 		}) != fx.end();
 }

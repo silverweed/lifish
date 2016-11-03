@@ -1,6 +1,7 @@
 #include "Collider.hpp"
 #include "CompoundCollider.hpp"
 #include <sstream>
+#include <algorithm>
 
 using Game::Collider;
 
@@ -65,8 +66,12 @@ std::vector<std::weak_ptr<Collider>> Collider::getColliding() const {
 	return colliding; 
 }
 
-void Collider::addColliding(const std::weak_ptr<Game::Collider>& coll) {
-	colliding.push_back(coll); 
+void Collider::addColliding(std::weak_ptr<Game::Collider> coll) {
+	if (std::find_if(colliding.begin(), colliding.end(), [&coll] (std::weak_ptr<Game::Collider> oth) {
+		return !oth.expired() && oth.lock().get() == coll.lock().get();
+	}) == colliding.end()) {
+		colliding.push_back(coll);
+	}
 }
 
 bool Collider::contains(const Game::Collider& other) const {
@@ -90,4 +95,8 @@ std::string Collider::toString() const {
 
 void Collider::reset() {
 	colliding.clear();
+}
+
+sf::Vector2f Collider::getPosition() const {
+	return owner.getPosition() + offset;
 }

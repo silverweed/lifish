@@ -1,17 +1,20 @@
 #pragma once
 
-#include "EntityGroup.hpp"
-
 namespace Game {
 
-class CollisionDetector final {
+class EntityGroup;
+
+/**
+ * Abstract class for a collision detector.
+ */
+class CollisionDetector {
+protected:
 	Game::EntityGroup& group;
 
 public:
-	explicit CollisionDetector(Game::EntityGroup& group) 
-		: group(group) {}
+	explicit CollisionDetector(Game::EntityGroup& group);
 
-	void update();
+	virtual void update() = 0;
 };
 
 }

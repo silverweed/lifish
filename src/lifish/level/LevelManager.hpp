@@ -4,7 +4,8 @@
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Graphics.hpp>
 #include "EntityGroup.hpp"
-#include "CollisionDetector.hpp"
+#include "SimpleCollisionDetector.hpp"
+#include "SHCollisionDetector.hpp"
 #include "DroppingTextManager.hpp"
 #include "LevelRenderer.hpp"
 #include "LevelTime.hpp"
@@ -48,7 +49,8 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable, public 
 	bool gameOver = false;
 
 	Game::EntityGroup entities;
-	Game::CollisionDetector cd;
+	Game::SHCollisionDetector cd;
+	Game::SimpleCollisionDetector scd;
 	Game::DroppingTextManager dropTextManager;
 
 	/** "Owned" pointers to players.
@@ -81,6 +83,7 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable, public 
 	bool _shouldTriggerExtraGame() const;
 
 public:
+	bool useScd = false;
 	explicit LevelManager();
 
 	/** Generates n players and returns them. If n > MAX_PLAYERS, only generate MAX_PLAYERS players. */

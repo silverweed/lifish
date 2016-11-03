@@ -14,12 +14,14 @@
 #include "Bonusable.hpp"
 #include <memory>
 #include <iostream>
+#include <ctime>
 
 using Game::LevelManager;
 
 LevelManager::LevelManager()
 	: renderer(*this)
-	, cd(entities)
+	, cd(entities, sf::Vector2f(Game::LEVEL_WIDTH * Game::TILE_SIZE, Game::LEVEL_HEIGHT * Game::TILE_SIZE), 6)
+	, scd(entities)
 {
 	levelTime.init();
 	dropTextManager.subscribe(entities);
@@ -60,8 +62,16 @@ void LevelManager::update() {
 		moving->setPrevAlign(Game::tile(e->getPosition()));
 	});
 
+	// Force pruning of all expired pointers
+	entities.validate();
+
+	clock_t start = clock();
 	// Update collisions
-	cd.update();
+	if (useScd)
+		scd.update();
+	else
+		cd.update();
+	std::cerr << "\rElapsed: " << double(clock() - start)/CLOCKS_PER_SEC;
 
 	// Apply game logic rules
 	for (auto logic : Game::Logic::functions)
@@ -153,7 +163,7 @@ bool LevelManager::isBombAt(const sf::Vector2i& tile) const {
 }
 
 unsigned short LevelManager::bombsDeployedBy(unsigned short id) const {
-	return std::count_if(bombs[id-1].begin(), bombs[id-1].end(), [] (const std::weak_ptr<Game::Bomb>& b) {
+	return std::count_if(bombs[id-1].begin(), bombs[id-1].end(), [] (std::weak_ptr<Game::Bomb> b) {
 		return !b.expired();
 	});
 }

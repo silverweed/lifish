@@ -12,8 +12,6 @@ class CollisionDetector;
 
 class Collider : public Game::Component {
 protected:
-	friend class Game::CollisionDetector;
-
 	using CollisionFunc = std::function<void(Game::Collider&)>;
 
 	/** All the Colliders which are colliding with this one */
@@ -54,10 +52,10 @@ public:
 
 	/** @return the list of Colliders colliding with this one */
 	std::vector<std::weak_ptr<Game::Collider>> getColliding() const;
-	void reset();
-
 	/** Manually sets `coll` to be colliding with this collider */
-	void addColliding(const std::weak_ptr<Game::Collider>& coll);
+	void addColliding(std::weak_ptr<Game::Collider> coll);
+	/** Resets the list of colliding entities */
+	void reset();
 
 	/** @return the collision layer of this Collider */
 	Game::Layers::Layer getLayer() const { return layer; }
@@ -82,6 +80,7 @@ public:
 	 *  externally by CollisionDetector.
 	 */
 	bool isAtLimit() const { return atLimit; }
+	void setAtLimit(bool b) { atLimit = b; }
 
 	/** @return whether this Collider intersects `other` */
 	virtual bool contains(const Game::Collider& other) const;
@@ -97,6 +96,9 @@ public:
 	virtual void update() override;
 
 	std::string toString() const override;
+
+	/** @return The actual position of this collider, including the offset */
+	sf::Vector2f getPosition() const override;
 };
 
 }

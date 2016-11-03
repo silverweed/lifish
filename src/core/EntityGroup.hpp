@@ -34,7 +34,7 @@ namespace {
  */
 class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 
-	friend class Game::CollisionDetector;
+	bool alreadyPrunedThisUpdate = false;
 
 	/** All the entities (owning references) */
 	std::list<std::shared_ptr<Game::Entity>> entities;
@@ -64,27 +64,28 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	 */
 	void _checkKilled();
 
-	/** Removes any expired Killable in `dying`. */
-	void _removeDying();
-
 	auto _fixedAt(const sf::Vector2i& tile) -> std::vector<std::weak_ptr<Game::Entity>>&;
 	auto _fixedAt(const sf::Vector2i& tile) const -> const std::vector<std::weak_ptr<Game::Entity>>&;
 	/** Adds a fixed entity at tile x, y. Fails silently if x or y are out of bounds. */
-	void _addFixedAt(unsigned short x, unsigned short y, const std::shared_ptr<Game::Entity>& e);
+	void _addFixedAt(unsigned short x, unsigned short y, std::shared_ptr<Game::Entity> e);
 	/** Removes fixed entity `e` from tile x, y. Fails silently if x or y are out of bounds or if `e` is not
 	 *  at that tile.
 	 */
 	void _rmFixedAt(unsigned short x, unsigned short y, const Game::Entity& e);
-	void _pruneFixed();
 
-	Game::Entity* _putInAux(const std::shared_ptr<Game::Entity>& entity);
+	void _pruneAll();
+	void _pruneDying();
+	void _pruneFixed();
+	void _pruneColliding();
+
+	Game::Entity* _putInAux(std::shared_ptr<Game::Entity> entity);
 
 	/** @return whether `entity` is in this group's fixedEntities */
-	bool _isManagedFixed(const std::shared_ptr<Game::Entity>& entity) const;
+	bool _isManagedFixed(std::shared_ptr<Game::Entity> entity) const;
 	/** @return whether a Killable in this group's `killables` refers to `entity` */
-	bool _isManagedKillable(const std::shared_ptr<Game::Entity>& entity) const;
+	bool _isManagedKillable(std::shared_ptr<Game::Entity> entity) const;
 	/** @return whether a Collider in this group's `killables` refers to `entity` */
-	bool _isManagedCollider(const std::shared_ptr<Game::Entity>& entity) const;
+	bool _isManagedCollider(std::shared_ptr<Game::Entity> entity) const;
 
 public:
 	/**
@@ -123,12 +124,20 @@ public:
 	size_t size() const;
 	size_t size() const { return entities.size(); }
 
+	/** Explicitly request that all expired weak_ptr's are pruned. This is done
+	 *  automatically in updateAll() if this method hasn't been called since latest update.
+	 */
+	void validate();
 	void updateAll();
 
 	/** Returns the fixed entity at tile (x, y), where x and y range from 1 to width/height.
 	 *  Returns an empty vector if x or y are out of bounds.
 	 */ 
 	std::vector<std::reference_wrapper<Game::Entity>> getFixedAt(unsigned short x, unsigned short y) const;
+
+	auto getColliding() -> std::vector<std::weak_ptr<Game::Collider>>& {
+		return collidingEntities;
+	}
 };
 
 ///// Implementation /////
