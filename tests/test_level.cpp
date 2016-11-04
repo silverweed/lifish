@@ -185,7 +185,11 @@ int main(int argc, char **argv) {
 	const sf::Vector2u SCREEN_SIZE(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
 	sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE.x, SCREEN_SIZE.y), "Lifish " VERSION " (test)");
 	bool vsync = true;
-	bool debug = false;
+	unsigned int debug = 0;
+	enum {
+		DBG_DRAW_COLLIDERS = 1,
+		DBG_DRAW_SH_CELLS = 1 << 1
+	};
 	window.setFramerateLimit(120);
 	//window.setVerticalSyncEnabled(vsync);
 	window.setJoystickThreshold(Game::JOYSTICK_INPUT_THRESHOLD);
@@ -349,7 +353,10 @@ int main(int argc, char **argv) {
 							lm.resume();
 						break;
 					case sf::Keyboard::G:
-						debug = !debug;
+						debug ^= 1 << DBG_DRAW_COLLIDERS;
+						break;
+					case sf::Keyboard::H:
+						debug ^= 1 << DBG_DRAW_SH_CELLS;
 						break;
 #endif
 					default: 
@@ -407,8 +414,12 @@ int main(int argc, char **argv) {
 			window.clear();
 			window.draw(lm);
 			window.draw(sidePanel);
-			if (debug)
+			if (debug & DBG_DRAW_COLLIDERS)
 				Debug::DebugRenderer::drawColliders(window, lm.getEntities());
+			if (debug & DBG_DRAW_SH_CELLS)
+				Debug::DebugRenderer::drawSHCells(window,
+						static_cast<const Game::SHCollisionDetector&>(
+							lm.getCollisionDetector());
 		}
 		Game::maybeShowFPS(window);
 		window.display();

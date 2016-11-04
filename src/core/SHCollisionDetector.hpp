@@ -30,6 +30,8 @@ class SHContainer {
 public:
 	explicit SHContainer(const sf::Vector2f& levelSize, unsigned subdivisions);
 
+	unsigned getSubdivisions() const { return subdivisions; }
+
 	void clear();
 	void insert(std::weak_ptr<Game::Collider> obj);
 	/** @return A set of all colliders in an adjacent cell to `obj`. */
@@ -46,6 +48,8 @@ public:
 	explicit SHCollisionDetector(Game::EntityGroup& group, const sf::Vector2f& levelSize, unsigned subdivisions);
 
 	void update() override;
+
+	unsigned getSubdivisions() const { return container.getSubdivisions(); }
 };
 
 }
