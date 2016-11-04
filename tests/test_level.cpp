@@ -239,12 +239,6 @@ int main(int argc, char **argv) {
 
 	lm.resume();
 
-	Game::ShadedText st(Game::getAsset("fonts", "pf_tempesta_seven_bold.ttf"), "Using SH", sf::Vector2f(32, 32));
-	//sf::Text st("Using SH", *Game::cache.loadFont(Game::getAsset("fonts", "pf_tempesta_seven_bold.ttf")));
-	st.setPosition(sf::Vector2f(0, 0));
-	st.setOrigin(sf::Vector2f(-MAIN_WINDOW_SHIFT, 0.f));
-	st.setCharacterSize(16);
-
 #ifdef MULTITHREADED
 	window.setActive(false);
 	const sf::Time frame_time_limit = sf::seconds(1 / 60.);
@@ -417,7 +411,6 @@ int main(int argc, char **argv) {
 				Debug::DebugRenderer::drawColliders(window, lm.getEntities());
 		}
 		Game::maybeShowFPS(window);
-		window.draw(st);
 		window.display();
 #else
 		if (ui.isActive()) {
