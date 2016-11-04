@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
 #include <SFML/Window.hpp>
 #include "LevelManager.hpp"
 #include "WinLoseHandler.hpp"
@@ -69,6 +70,20 @@ static void toggle_pause_game(UI::UI& ui, LevelManager& lm, bool& was_ui_active)
 	} else {
 		Game::musicManager->play();
 	}
+}
+
+static void print_cd_stats(LevelManager& lm) {
+	const auto& dbgStats = lm.getCollisionDetector().getStats();
+#ifndef RELEASE
+	std::cerr << std::setfill(' ') << std::scientific << std::setprecision(4)
+		<< "#checked: " << std::setw(5) << dbgStats.counter.safeGet("checked")
+		<< " | tot: " << std::setw(8) << dbgStats.timer.safeGet("tot")
+		<< " | tot_narrow: " << std::setw(8) << dbgStats.timer.safeGet("tot_narrow")
+		<< " | setup: " << std::setw(8) << dbgStats.timer.safeGet("setup") 
+		<< " | average: " << std::setw(8) 
+			<< dbgStats.timer.safeGet("tot_narrow")/dbgStats.counter.safeGet("checked")
+		<< std::resetiosflags(std::ios::showbase) << std::endl;
+#endif
 }
 
 #ifdef MULTITHREADED
@@ -238,6 +253,7 @@ int main(int argc, char **argv) {
 			std::cref(lm), std::cref(sidePanel), std::cref(ui));
 #endif
 
+	unsigned short cycle = 0;
 	while (window.isOpen() && !Game::terminated) {
 		sf::Event event;
 		
@@ -284,11 +300,6 @@ int main(int argc, char **argv) {
 #ifndef RELEASE
 					case sf::Keyboard::Q:
 						Game::terminated = true;
-						break;
-					case sf::Keyboard::Num0:
-						lm.useScd = !lm.useScd;
-						st.setString(lm.useScd ? "Using Simple" : "Using SH");
-						std::cerr << std::endl;
 						break;
 					case sf::Keyboard::J:
 						players[0]->setRemainingLives(0);
@@ -391,6 +402,11 @@ int main(int argc, char **argv) {
 			// Update level
 			if (!lm.isPaused())
 				lm.update();
+
+#ifndef RELEASE
+			if (cycle++ % 50 == 0)
+				print_cd_stats(lm);
+#endif
 
 			sidePanel.update();
 			// Draw everything

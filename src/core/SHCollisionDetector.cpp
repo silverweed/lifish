@@ -67,7 +67,7 @@ auto SHContainer::getNearby(const Game::Collider& obj) const -> std::list<std::w
 	for (auto id : ids) {
 		//std::cerr << id << ": " << buckets[id].size() << std::endl;
 		for (auto& cld : buckets[id]) {
-			// We don't bother to remove invalid objects here, as this list gets regenerated
+			// Don't bother to remove invalid objects here, as this list gets regenerated
 			// at every frame.
 			if (cld.expired()) continue;
 
@@ -87,6 +87,10 @@ SHCollisionDetector::SHCollisionDetector(Game::EntityGroup& group,
 {}
 
 void SHCollisionDetector::update() {
+#ifndef RELEASE
+	// Container setup time
+	dbgStats.timer.start("setup");
+#endif
 	container.clear();
 
 	/* For each moving entity, check (towards its direction):
@@ -102,7 +106,17 @@ void SHCollisionDetector::update() {
 		collider->setAtLimit(false);
 		container.insert(cld);
 	}
-	
+
+#ifndef RELEASE
+	dbgStats.timer.end("setup");
+	// Total time taken
+	dbgStats.timer.start("tot");
+	// Time taken by all narrow checks
+	dbgStats.timer.set("tot_narrow", 0);
+	// Number of narrow-checked entities
+	dbgStats.counter.reset("checked");
+#endif
+
 	// Collision detection loop
 	for (auto it = colliding.begin(); it != colliding.end(); ++it) {
 		auto collider = it->lock();
@@ -120,7 +134,11 @@ void SHCollisionDetector::update() {
 		
 		for (auto& oth : container.getNearby(*collider.get())) {
 			if (oth.expired()) continue;
-			
+
+#ifndef RELEASE
+			dbgStats.counter.inc("checked");
+			dbgStats.timer.start("single");
+#endif	
 			auto othcollider = oth.lock().get();
 		
 			if (axismoving) {
@@ -146,6 +164,15 @@ void SHCollisionDetector::update() {
 				collider->addColliding(oth);
 				othcollider->addColliding(*it);
 			}
+
+#ifndef RELEASE
+			dbgStats.timer.set("tot_narrow", dbgStats.timer.get("tot_narrow") 
+					+ dbgStats.timer.end("single"));
+#endif
 		}
 	}
+
+#ifndef RELEASE
+	dbgStats.timer.end("tot");
+#endif
 }

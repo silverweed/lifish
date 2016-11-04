@@ -14,14 +14,12 @@
 #include "Bonusable.hpp"
 #include <memory>
 #include <iostream>
-#include <ctime>
 
 using Game::LevelManager;
 
 LevelManager::LevelManager()
 	: renderer(*this)
 	, cd(entities, sf::Vector2f(Game::LEVEL_WIDTH * Game::TILE_SIZE, Game::LEVEL_HEIGHT * Game::TILE_SIZE), 6)
-	, scd(entities)
 {
 	levelTime.init();
 	dropTextManager.subscribe(entities);
@@ -65,13 +63,8 @@ void LevelManager::update() {
 	// Force pruning of all expired pointers
 	entities.validate();
 
-	clock_t start = clock();
-	// Update collisions
-	if (useScd)
-		scd.update();
-	else
-		cd.update();
-	std::cerr << "\rElapsed: " << double(clock() - start)/CLOCKS_PER_SEC;
+	// Calculate collisions
+	cd.update();
 
 	// Apply game logic rules
 	for (auto logic : Game::Logic::functions)

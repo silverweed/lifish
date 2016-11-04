@@ -5,7 +5,7 @@
 #define COLLIDER_PHANTOM_COLOR sf::Color(194, 194, 194, 110)
 #define COLLIDER_COMPOUND_COLOR sf::Color(194, 194, 194, 92)
 
-using Debug::DebugRenderer;
+using Game::Debug::DebugRenderer;
 
 void DebugRenderer::drawColliders(sf::RenderTarget& target, const Game::EntityGroup& group) {
 	group.apply([&target] (const Game::Entity *e) {

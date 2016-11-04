@@ -50,7 +50,6 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable, public 
 
 	Game::EntityGroup entities;
 	Game::SHCollisionDetector cd;
-	Game::SimpleCollisionDetector scd;
 	Game::DroppingTextManager dropTextManager;
 
 	/** "Owned" pointers to players.
@@ -83,7 +82,6 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable, public 
 	bool _shouldTriggerExtraGame() const;
 
 public:
-	bool useScd = false;
 	explicit LevelManager();
 
 	/** Generates n players and returns them. If n > MAX_PLAYERS, only generate MAX_PLAYERS players. */
@@ -102,7 +100,8 @@ public:
 	void setLevel(Game::Level& level);
 
 	const Game::LevelTime& getLevelTime() const { return levelTime; }
-	
+	const Game::CollisionDetector& getCollisionDetector() const { return cd; }
+
 	bool isGameOver() const { return gameOver; }
 	bool isLevelClear() const;
 

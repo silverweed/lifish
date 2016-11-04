@@ -7,6 +7,9 @@
 #include "collision_utils.hpp"
 #include <algorithm>
 
+#include <iostream>
+#include <ctime>
+
 using namespace Game::CollisionUtils;
 using Game::Direction;
 using Game::SimpleCollisionDetector;
@@ -31,7 +34,16 @@ void SimpleCollisionDetector::update() {
 		collider->reset();
 		collider->setAtLimit(false);
 	}
-	
+
+#ifndef RELEASE
+	// Total time taken
+	dbgStats.timer.start("tot");
+	// Time taken by all narrow checks
+	dbgStats.timer.set("tot_narrow", 0);
+	// Number of narrow-checked entities
+	dbgStats.counter.reset("checked");
+#endif
+
 	// Collision detection loop
 	for (auto it = colliding.begin(); it != colliding.end(); ++it) {
 		auto collider = it->lock();
@@ -50,6 +62,11 @@ void SimpleCollisionDetector::update() {
 		// Very simple (aka quadratic) check with all others
 		for (auto jt = colliding.begin(); jt != colliding.end(); ++jt) {
 			if (it == jt)  continue;
+
+#ifndef RELEASE
+			dbgStats.counter.inc("checked");
+			dbgStats.timer.start("single");
+#endif	
 
 			auto othcollider = jt->lock();
 			if (axismoving) {
@@ -75,6 +92,15 @@ void SimpleCollisionDetector::update() {
 				collider->addColliding(*jt);
 				othcollider->addColliding(*it);
 			}
+
+#ifndef RELEASE
+			dbgStats.timer.set("tot_narrow", dbgStats.timer.get("tot_narrow") 
+					+ dbgStats.timer.end("single"));
+#endif
 		}
 	}
+
+#ifndef RELEASE
+	dbgStats.timer.end("tot");
+#endif
 }
