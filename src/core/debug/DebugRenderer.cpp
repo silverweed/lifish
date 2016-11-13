@@ -45,14 +45,15 @@ void DebugRenderer::drawSHCells(sf::RenderTarget& target, const Game::SHCollisio
 	const unsigned s = cd.getSubdivisions();
 	const float w = Game::LEVEL_WIDTH * Game::TILE_SIZE / s,
 	            h = Game::LEVEL_HEIGHT * Game::TILE_SIZE / s;
-	sf::RectangleShape rect(w, h);
+	sf::RectangleShape rect(sf::Vector2f(w, h));
 	rect.setOutlineThickness(2);
 	rect.setFillColor(sf::Color(72, 209, 204, 60));
 	rect.setOutlineColor(sf::Color(0, 139, 139, 255));
 
 	for (unsigned short i = 0; i < s; ++i)
 		for (unsigned short j = 0; j < s; ++j) {
-			rect.setPosition(sf::Vector2f(i * w, j * h));
+			rect.setPosition(sf::Vector2f(i * w + Game::SIDE_PANEL_WIDTH + Game::TILE_SIZE,
+						j * h + Game::TILE_SIZE));
 			target.draw(rect);
 		}
 }

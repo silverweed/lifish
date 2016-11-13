@@ -419,7 +419,7 @@ int main(int argc, char **argv) {
 			if (debug & DBG_DRAW_SH_CELLS)
 				Debug::DebugRenderer::drawSHCells(window,
 						static_cast<const Game::SHCollisionDetector&>(
-							lm.getCollisionDetector());
+							lm.getCollisionDetector()));
 		}
 		Game::maybeShowFPS(window);
 		window.display();
