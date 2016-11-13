@@ -186,7 +186,7 @@ int main(int argc, char **argv) {
 	sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE.x, SCREEN_SIZE.y), "Lifish " VERSION " (test)");
 	bool vsync = true;
 	unsigned int debug = 0;
-	enum {
+	enum : unsigned int {
 		DBG_DRAW_COLLIDERS = 1,
 		DBG_DRAW_SH_CELLS = 1 << 1
 	};
@@ -414,9 +414,9 @@ int main(int argc, char **argv) {
 			window.clear();
 			window.draw(lm);
 			window.draw(sidePanel);
-			if (debug & DBG_DRAW_COLLIDERS)
+			if ((debug >> DBG_DRAW_COLLIDERS) & 1)
 				Debug::DebugRenderer::drawColliders(window, lm.getEntities());
-			if (debug & DBG_DRAW_SH_CELLS)
+			if ((debug >> DBG_DRAW_SH_CELLS) & 1)
 				Debug::DebugRenderer::drawSHCells(window,
 						static_cast<const Game::SHCollisionDetector&>(
 							lm.getCollisionDetector()));
