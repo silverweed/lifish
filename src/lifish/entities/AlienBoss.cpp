@@ -29,13 +29,6 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 		// on collision
 		_checkCollision(coll);
 	}, Game::Layers::BOSSES, SIZE));
-	killable = addComponent(new Game::Killable(*this, [this] () {
-		// on kill
-		_kill();
-	}, [this] () {
-		// kill in progress
-		return _killInProgress();
-	}));
 	addComponent(new Game::Scored(*this, VALUE));
 	addComponent(new Game::Drawable(*this, *addComponent(new Game::Sprite(*this, 
 				Game::getAsset("test", "alien_boss.png"), sf::IntRect(0, 0, SIZE.x, SIZE.y)))));

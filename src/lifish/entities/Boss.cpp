@@ -24,6 +24,13 @@ Boss::Boss(const sf::Vector2f& pos)
 	addComponent(new Game::Foe(*this));
 	explClock = addComponent(new Game::Clock(*this));
 	deathClock = addComponent(new Game::Clock(*this));
+	killable = addComponent(new Game::Killable(*this, [this] () {
+		// on kill
+		_kill();
+	}, [this] () {
+		// kill in progress
+		return _killInProgress();
+	}));
 	addComponent(new Game::Spawning(*this, [this] (const Game::Spawning&) {
 		return killable && killable->isKilled() 
 			&& explClock->getElapsedTime() >= sf::milliseconds(100);
@@ -50,6 +57,7 @@ void Boss::_hurt() {
 
 void Boss::_kill() {
 	deathClock->restart();
+	collider->setLayer(Game::Layers::DEFAULT);
 }
 
 bool Boss::_killInProgress() const {
@@ -96,8 +104,10 @@ void Boss::_checkCollision(Game::Collider& coll) {
 	const unsigned int damage = (wx - x) / Game::TILE_SIZE * (wy - y) / Game::TILE_SIZE * expl.getDamage();
 	
 	//std::cerr << "dealt " << damage << " damage\n";
-	get<Game::Lifed>()->decLife(damage);
-	_hurt();
+	if (get<Game::Lifed>()->decLife(damage) > 0)
+		_hurt();
+	else
+		killable->kill();
 	expl.dealDamageTo(this);
 	Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::HURT));
 }
