@@ -50,41 +50,22 @@ class Level final
 {
 	friend class Game::LevelSet;
 
-	/** Types of bg texture tiles */
-	enum : unsigned short {
-		TILE_REGULAR     = 0,
-		TILE_UPPER_LEFT  = 1,
-		TILE_UPPER_RIGHT = 2,
-		TILE_LOWER_LEFT  = 3,
-		TILE_LOWER_RIGHT = 4,
-		TILE_UPPER       = 5,
-		TILE_LOWER       = 6,
-		TILE_LEFT        = 7,
-		TILE_RIGHT       = 8,
-	};
-
 	/** This ought to be set before calling level.init(); */
 	Game::LevelInfo levelInfo;
-
-	////////////////////////// COMPONENTS ////////////////////////////
-
-	/** The background texture */
-	sf::Texture *bgTexture = nullptr;
-
-	/** The borders' texture */
-	sf::Texture *borderTexture = nullptr;
 	
 	/** The text containing the level number */
 	Game::LevelNumText *levelnumtext = nullptr;
 	
-	///////////////////////////////////////////////////////////////////
-
 	/** This level's static (initial) tilemap */
 	Game::Matrix<Game::EntityType, LEVEL_HEIGHT, LEVEL_WIDTH> tiles;
 
-	/** The sprites for the background tiles (8 border + background) */
-	std::array<sf::Sprite, 9> bgTiles;
-	std::array<sf::Texture, 9> bgTextures;
+	/** The background texture */
+	sf::Texture *bgTexture = nullptr;
+	sf::Sprite bgSprite;
+
+	/** The borders' texture */
+	sf::Texture *borderTexture = nullptr;
+	sf::Sprite borderSprite;
 
 	/** The LevelSet this level belongs to */
 	const Game::LevelSet& levelSet;

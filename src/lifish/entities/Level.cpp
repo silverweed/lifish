@@ -47,91 +47,36 @@ void Level::_loadTextures() {
 	bgTexture->setSmooth(true);
 	bgTexture->setRepeated(true);
 	// Load borderTexture
-	borderTexture = Game::cache.loadTexture(Game::getAsset("graphics", "border.png"));
+	ss.str("");
+	ss << "border" << levelInfo.tileIDs.border << ".png";
+	borderTexture = Game::cache.loadTexture(Game::getAsset("graphics", ss.str()));
 	borderTexture->setSmooth(true);
 	_loadTiles();
 }
 
 void Level::_loadTiles() {
 	// Background
-	bgTiles[TILE_REGULAR].setTexture(*bgTexture);
-	bgTiles[TILE_REGULAR].setTextureRect(sf::IntRect(0, 0, TILE_SIZE * LEVEL_WIDTH, TILE_SIZE * LEVEL_HEIGHT));
+	bgSprite.setTexture(*bgTexture);
+	bgSprite.setTextureRect(sf::IntRect(0, 0, TILE_SIZE * LEVEL_WIDTH, TILE_SIZE * LEVEL_HEIGHT));
+	bgSprite.setPosition(TILE_SIZE, TILE_SIZE);
 
-	const unsigned short b = (levelInfo.tileIDs.border-1) * TILE_SIZE;
-
-	// Create images with texture subdivisions for border
-	sf::Image image(borderTexture->copyToImage());
-	
-	bgTextures[TILE_UPPER].loadFromImage(image, sf::IntRect(0, b, TILE_SIZE, TILE_SIZE));
-	bgTextures[TILE_UPPER].setRepeated(true);
-	bgTiles[TILE_UPPER].setTexture(bgTextures[TILE_UPPER]);
-	bgTiles[TILE_UPPER].setTextureRect(sf::IntRect(0, 0, TILE_SIZE * LEVEL_WIDTH, TILE_SIZE));
-
-	// TILE_UPPER y-mirrored
-	bgTextures[TILE_LOWER].loadFromImage(image, sf::IntRect(0, b, TILE_SIZE, TILE_SIZE));
-	bgTextures[TILE_LOWER].setRepeated(true);
-	bgTiles[TILE_LOWER].setTexture(bgTextures[TILE_LOWER]);
-	bgTiles[TILE_LOWER].setTextureRect(sf::IntRect(0, TILE_SIZE, TILE_SIZE * LEVEL_WIDTH, -TILE_SIZE));
-
-	bgTextures[TILE_LEFT].loadFromImage(image, sf::IntRect(TILE_SIZE, b, TILE_SIZE, TILE_SIZE));
-	bgTextures[TILE_LEFT].setRepeated(true);
-	bgTiles[TILE_LEFT].setTexture(bgTextures[TILE_LEFT]);
-	bgTiles[TILE_LEFT].setTextureRect(sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE * LEVEL_HEIGHT));
-
-	// TILE_LEFT x-mirrored
-	bgTextures[TILE_RIGHT].loadFromImage(image, sf::IntRect(TILE_SIZE, b, TILE_SIZE, TILE_SIZE));
-	bgTextures[TILE_RIGHT].setRepeated(true);
-	bgTiles[TILE_RIGHT].setTexture(bgTextures[TILE_RIGHT]);
-	bgTiles[TILE_RIGHT].setTextureRect(sf::IntRect(TILE_SIZE, 0, -TILE_SIZE, TILE_SIZE * LEVEL_HEIGHT));
-
-	bgTiles[TILE_UPPER_LEFT].setTexture(*borderTexture);
-	bgTiles[TILE_UPPER_LEFT].setTextureRect(sf::IntRect(2 * TILE_SIZE, b, TILE_SIZE, TILE_SIZE));
-
-	// TILE_UPPER_LEFT x-mirrored
-	bgTiles[TILE_UPPER_RIGHT].setTexture(*borderTexture);
-	bgTiles[TILE_UPPER_RIGHT].setTextureRect(sf::IntRect(2 * TILE_SIZE + TILE_SIZE, b, -TILE_SIZE, TILE_SIZE));
-
-	// TILE_UPPER_LEFT x-mirrored and y-mirrored
-	bgTiles[TILE_LOWER_RIGHT].setTexture(*borderTexture);
-	bgTiles[TILE_LOWER_RIGHT].setTextureRect(sf::IntRect(
-				2 * TILE_SIZE + TILE_SIZE, 
-				b + TILE_SIZE, -TILE_SIZE, -TILE_SIZE));
-
-	// TILE_UPPER_LEFT y-mirrored
-	bgTiles[TILE_LOWER_LEFT].setTexture(*borderTexture);
-	bgTiles[TILE_LOWER_LEFT].setTextureRect(sf::IntRect(2 * TILE_SIZE, b + TILE_SIZE, TILE_SIZE, -TILE_SIZE));
-
-	// Set angles' position once and for all
-	bgTiles[TILE_REGULAR].setPosition(TILE_SIZE, TILE_SIZE);
-	bgTiles[TILE_UPPER].setPosition(TILE_SIZE, 0);
-	bgTiles[TILE_LOWER].setPosition(TILE_SIZE, TILE_SIZE * (LEVEL_HEIGHT+1));
-	bgTiles[TILE_LEFT].setPosition(0, TILE_SIZE);
-	bgTiles[TILE_RIGHT].setPosition(TILE_SIZE * (LEVEL_WIDTH+1), TILE_SIZE);
-	bgTiles[TILE_UPPER_LEFT].setPosition(0, 0);
-	bgTiles[TILE_UPPER_RIGHT].setPosition(TILE_SIZE * (LEVEL_WIDTH+1), 0);
-	bgTiles[TILE_LOWER_RIGHT].setPosition(TILE_SIZE * (LEVEL_WIDTH+1), TILE_SIZE * (LEVEL_HEIGHT+1));
-	bgTiles[TILE_LOWER_LEFT].setPosition(0, TILE_SIZE * (LEVEL_HEIGHT+1));
+	// Border
+	borderSprite.setTexture(*borderTexture);
+	borderSprite.setTextureRect(sf::IntRect(0, 0, TILE_SIZE * (LEVEL_WIDTH + 2), TILE_SIZE * (LEVEL_HEIGHT + 2)));
 }
 
 void Level::setOrigin(const sf::Vector2f& offset) {
-	for (unsigned short i = 0; i < bgTiles.size(); ++i)
-		bgTiles[i].setOrigin(offset);
+	Game::Entity::setOrigin(offset);
+	bgSprite.setOrigin(offset);
+	borderSprite.setOrigin(offset);
 	levelnumtext->setOrigin(offset);
 }
 
 void Level::draw(sf::RenderTarget& window, sf::RenderStates states) const {
+	// Draw the border
+	window.draw(borderSprite, states);
 	// Draw the level background
-	window.draw(bgTiles[TILE_REGULAR], states);
-
-	// Draw the borders
-	window.draw(bgTiles[TILE_UPPER_LEFT], states);
-	window.draw(bgTiles[TILE_UPPER], states);
-	window.draw(bgTiles[TILE_LEFT], states);
-	window.draw(bgTiles[TILE_UPPER_RIGHT], states);
-	window.draw(bgTiles[TILE_RIGHT], states);
-	window.draw(bgTiles[TILE_LOWER_RIGHT], states);
-	window.draw(bgTiles[TILE_LOWER], states);
-	window.draw(bgTiles[TILE_LOWER_LEFT], states);
+	window.draw(bgSprite, states);
 
 	// Draw the level number
 	if (levelnumtext != nullptr)
