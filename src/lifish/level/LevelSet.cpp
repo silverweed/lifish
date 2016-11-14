@@ -16,6 +16,10 @@ static constexpr const char* AVAIL_METADATA[] = {
 };
 
 LevelSet::LevelSet(const std::string& path) {
+	loadFromFile(path);
+}
+
+void LevelSet::loadFromFile(const std::string& path) {
 	json levelJSON = json::parse(std::ifstream(path.c_str()));
 	// load metadata
 	metadata["name"] = levelJSON["name"].get<std::string>();

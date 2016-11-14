@@ -24,8 +24,12 @@ class LevelSet final : public Game::Stringable, private sf::NonCopyable {
 	std::unordered_map<std::string, std::string> metadata;
 
 public:
+	LevelSet() {}
 	LevelSet(const std::string& jsonPath);
 	~LevelSet() {}
+
+	// FIXME: make this return a bool
+	void loadFromFile(const std::string& jsonPath);
 
 	/** Constructs the i-th level and returns it if init() is successful. */
 	std::unique_ptr<Level> getLevel(unsigned short i) const;

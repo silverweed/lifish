@@ -42,7 +42,7 @@ private:
 public:
 	explicit WinLoseHandler(Game::LevelManager& lm);
 
-	/** In case of win or loss, performs the due actions (replaces the normal event loop).
+	/** In case of win or loss, performs the due actions
 	 *  @return the new state of WinLoseHandler.
 	 */
 	void handleWinLose();

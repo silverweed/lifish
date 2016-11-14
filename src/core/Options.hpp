@@ -10,7 +10,15 @@ struct Options {
 	float soundsVolume;
 	bool soundsMute;
 
-	bool showFPS = false;
+	bool showFPS;
+
+	bool vsync;
+	unsigned short framerateLimit;
+
+	/** This is the designed size of the application. Used, for example, to correctly
+	 *  resize the content when window is resized. Must be set manually.
+	 */
+	sf::Vector2u windowSize;
 };
 
 }

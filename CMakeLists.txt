@@ -23,6 +23,8 @@ include_directories(src/core)
 include_directories(src/core/components)
 # core/entities/ contains a collection of generic entities
 include_directories(src/core/entities)
+# core/collisions contains the classes handling collisions
+include_directories(src/core/collisions)
 # core/debug/ contains debug utils
 include_directories(src/core/debug)
 # ui/ contains the ui parts
@@ -37,10 +39,13 @@ include_directories(src/lifish/components)
 include_directories(src/lifish/entities)
 # lifish/level/ contains classes for managing game levels
 include_directories(src/lifish/level)
+# lifish/debug/ contains all the Lifish-specific debugging utilities
+include_directories(src/lifish/debug)
 file(GLOB LIFISH_SRC ${MAIN_FILE}
 	src/core/*cpp
 	src/core/entities/*cpp
 	src/core/components/*cpp
+	src/core/collisions/*cpp
 	src/core/debug/*cpp
 	src/ui/*cpp
 	src/third_party/*cpp
@@ -48,6 +53,7 @@ file(GLOB LIFISH_SRC ${MAIN_FILE}
 	src/lifish/entities/*cpp
 	src/lifish/components/*cpp
 	src/lifish/level/*cpp
+	src/lifish/debug/*cpp
 )
 
 # Platform-specific source

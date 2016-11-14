@@ -172,7 +172,7 @@ void Game::maybeShowFPS(sf::RenderWindow& window) {
 		if (fps_update_clock.getElapsedTime().asSeconds() >= 1) {
 			int fps = (int)(n_updates / cur_time);
 			std::stringstream ss;
-			ss << fps << " fps"; 
+			ss << fps << " fps (vsync " << (Game::options.vsync ? : "ON" : "OFF") << ")";
 			fps_text.setString(ss.str());
 			fps_update_clock.restart();
 			n_updates = 0;

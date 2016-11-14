@@ -33,6 +33,54 @@
 
 using namespace Game;
 
+static void parse_args(int argc, char **argv, 
+	/* out */ unsigned short& start_level, /* out */ std::string& levelset_name)
+{
+	bool args_ended = false;
+	int i = 1;
+	while (i < argc) {
+		if (!args_ended && argv[i][0] == '-') {
+			switch (argv[i][1]) {
+			case '-':
+				args_ended = true;
+				break;
+			case 'l':
+				if (i < argc - 1)
+					start_level = std::atoi(argv[++i]);
+				else
+					std::cerr << "[ WARNING ] Expected numeral after -l flag" << std::endl;
+				break;
+			case 'v':
+				std::cout << "lifish v." VERSION " rev." COMMIT;
+#ifndef ARCH
+				std::cout << " (unknown arch)" << std::endl;
+#else
+				std::cout << " (" ARCH " bit)" << std::endl;
+#endif
+#ifdef HAVE_NFD
+				std::cout << "    | NFD support: yes" << std::endl;
+#elif !defined(SFML_SYSTEM_WINDOWS)
+				std::cout << "    | NFD support: no" << std::endl;
+#endif
+#ifdef MULTITHREADED 
+				std::cout << "    | Multithreaded: yes" << std::endl;
+#else
+				std::cout << "    | Multithreaded: no" << std::endl;
+#endif
+				return 0;
+			default:
+				std::cout << "Usage: " << argv[0] << " [-l <levelnum>] [-v] [levelset.json]\n"
+					  << "\t-l: start at level <levelnum>\n"
+					  << "\t-v: print version and exit" << std::endl;
+				return 1;
+			}
+		} else {
+			levelset_name = std::string(argv[i]);
+		}
+		++i;
+	}
+}
+
 static void load_icon(sf::Window& window) {
 	sf::Image iconImg;
 	if (iconImg.loadFromFile(Game::getAsset("graphics", "icon.png"))) {
@@ -40,26 +88,6 @@ static void load_icon(sf::Window& window) {
 		auto size = iconImg.getSize();
 		window.setIcon(size.x, size.y, pixels);
 	}
-}
-
-static sf::View keep_ratio(const sf::Event::SizeEvent& size, const sf::Vector2u& designedsize) {
-	sf::FloatRect viewport(0.f, 0.f, 1.f, 1.f);
-
-	const float screenwidth = size.width / static_cast<float>(designedsize.x),
-	            screenheight = size.height / static_cast<float>(designedsize.y);
-
-	if (screenwidth > screenheight) {
-		viewport.width = screenheight / screenwidth;
-		viewport.left = (1.f - viewport.width) / 2.f;
-	} else if (screenwidth < screenheight) {
-		viewport.height = screenwidth / screenheight;
-		viewport.top = (1.f - viewport.height) / 2.f;
-	}
-
-	sf::View view(sf::FloatRect(0, 0, designedsize.x , designedsize.y));
-	view.setViewport(viewport);
-
-	return view;
 }
 
 static void toggle_pause_game(UI::UI& ui, LevelManager& lm, bool& was_ui_active) {
@@ -122,115 +150,57 @@ int main(int argc, char **argv) {
 	XInitThreads();
 #endif
 	// Argument parsing
-	std::string levelSetName = "";
 	unsigned short start_level = 1;
-	{
-		bool args_ended = false;
-		int i = 1;
-		while (i < argc) {
-			if (!args_ended && argv[i][0] == '-') {
-				switch (argv[i][1]) {
-				case '-':
-					args_ended = true;
-					break;
-				case 'l':
-					if (i < argc - 1)
-						start_level = std::atoi(argv[++i]);
-					else
-						std::cerr << "[ WARNING ] Expected numeral after -l flag" << std::endl;
-					break;
-				case 'v':
-					std::cout << "lifish v." VERSION " rev." COMMIT;
-#ifndef ARCH
-					std::cout << " (unknown arch)" << std::endl;
-#else
-					std::cout << " (" ARCH " bit)" << std::endl;
-#endif
-#ifdef HAVE_NFD
-					std::cout << "    | NFD support: yes" << std::endl;
-#elif !defined(SFML_SYSTEM_WINDOWS)
-					std::cout << "    | NFD support: no" << std::endl;
-#endif
-#ifdef MULTITHREADED 
-					std::cout << "    | Multithreaded: yes" << std::endl;
-#else
-					std::cout << "    | Multithreaded: no" << std::endl;
-#endif
-					return 0;
-				default:
-					std::cout << "Usage: " << argv[0] << " [-l <levelnum>] [-v] [levelset.json]\n"
-						  << "\t-l: start at level <levelnum>\n"
-						  << "\t-v: print version and exit" << std::endl;
-					return 1;
-				}
-			} else {
-				levelSetName = std::string(argv[i]);
-			}
-			++i;
-		}
-	}
+	std::string levelset_name = "";
+	parse_args(argc, argv, start_level, levelset_name);
 	
 	// Create the MusicManager (in a local scope)
 	Game::MusicManager mm;
 	Game::musicManager = &mm;
 
+	// Initialize game variables
 	if (!Game::init()) {
 		std::cerr << "[ FATAL ] Failed to initialize the game!" << std::endl;
 		return 1;
 	}
 
-	if (levelSetName.length() < 1)
-		levelSetName = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
+	if (levelset_name.length() < 1)
+		levelset_name = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
 	
-	const sf::Vector2u SCREEN_SIZE(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
-	sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE.x, SCREEN_SIZE.y), "Lifish " VERSION " (test)");
-	bool vsync = true;
-	unsigned int debug = 0;
-	enum : unsigned int {
-		DBG_DRAW_COLLIDERS = 1,
-		DBG_DRAW_SH_CELLS = 1 << 1
-	};
-	window.setFramerateLimit(120);
-	//window.setVerticalSyncEnabled(vsync);
+	// Create the game window
+	Game::windowSize = sf::Vector2u(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
+	sf::RenderWindow window(
+			sf::VideoMode(Game::windowSize.x, Game::windowSize.y),
+			"Lifish " VERSION " (test)");
+	Game::options.vsync = true;
+	Game::options.framerateLimit = 120;
+	window.setFramerateLimit(Game::options.framerateLimit);
 	window.setJoystickThreshold(Game::JOYSTICK_INPUT_THRESHOLD);
+#ifndef RELEASE
 	Game::options.showFPS = true;
+#endif
 
 	// Setup icon
 	load_icon(window);
 
 	// Setup UI
 	Game::UI::UI& ui = Game::UI::UI::getInstance();
-	ui.setSize(SCREEN_SIZE);
+	ui.setSize(Game::windowSize);
 
 	// load static screens
 	ui.load(window, { "home.json", "about.json", "pause.json" });
 	// load dynamic screens
-	ui.add(new Game::UI::ControlsScreen(window, SCREEN_SIZE));
-	ui.add(new Game::UI::PreferencesScreen(window, SCREEN_SIZE));
+	ui.add(new Game::UI::ControlsScreen(window, Game::windowSize));
+	ui.add(new Game::UI::PreferencesScreen(window, Game::windowSize));
 	// TODO
 	//ui.getScreenHandler().setCurrent("pause");
 
-	// Load level set
-	int lvnum = start_level;
-	Game::LevelSet ls(levelSetName);
-	if (lvnum > ls.getLevelsNum())
-		lvnum %= ls.getLevelsNum();
-	std::unique_ptr<Game::Level> level(ls.getLevel(lvnum));
-
-	Game::LevelManager lm;
-	// Create the players
-	auto players = lm.createNewPlayers();
-	for (auto p : players)
-		p->get<Game::Controllable>()->setWindow(window);
-
-	SidePanel sidePanel(lm);
-	WinLoseHandler wlHandler(lm);
-
-	lm.setLevel(*level);
+	// Initialize game
+	GameContext game(window, levelset_name, start_level);
 
 	// Adjust the origin to make room for side panel
 	sf::Vector2f origin(-Game::SIDE_PANEL_WIDTH, 0);
-	lm.setOrigin(origin);
+	game.setOrigin(origin);
 
 	// Setup the music
 	//Game::options.musicVolume = 0; // FIXME
@@ -244,6 +214,7 @@ int main(int argc, char **argv) {
 	lm.resume();
 
 #ifdef MULTITHREADED
+	// Start the rendering thread
 	window.setActive(false);
 	const sf::Time frame_time_limit = sf::seconds(1 / 60.);
 	sf::Clock frame_clock;
@@ -259,114 +230,8 @@ int main(int argc, char **argv) {
 		
 		if (ui.isActive()) 
 			ui.handleEvents(window);
-		else {
-			while (window.pollEvent(event)) {
-				switch (event.type) {
-				case sf::Event::Closed:
-					window.close();
-					break;
-#ifndef MULTITHREADED
-				case sf::Event::Resized:
-					window.setView(keep_ratio(event.size, SCREEN_SIZE));
-					break;
-#endif
-				case sf::Event::JoystickButtonPressed:
-					{
-						const auto btn = event.joystickButton;
-						const short pb = JoystickUtils::getPauseButton(btn.joystickId);
-						if (pb >= 0 && btn.button == static_cast<unsigned int>(pb))
-							toggle_pause_game(ui, lm, was_ui_active);
-						break;
-					}
-				case sf::Event::KeyPressed:
-					switch (event.key.code) {
-					case sf::Keyboard::P:
-						toggle_pause_game(ui, lm, was_ui_active);
-						break;
-					case sf::Keyboard::Escape:
-						for (auto player : players) {
-							player->setRemainingLives(0);
-							player->get<Killable>()->kill();
-						}
-						break;
-#ifndef MULTITHREADED
-					case sf::Keyboard::V:
-						vsync = !vsync;
-						window.setFramerateLimit(vsync ? 120 : 0);
-						break;
-#endif
-#ifndef RELEASE
-					case sf::Keyboard::Q:
-						Game::terminated = true;
-						break;
-					case sf::Keyboard::J:
-						players[0]->setRemainingLives(0);
-						players[0]->get<Game::Killable>()->kill();
-						break;
-					case sf::Keyboard::M:
-						lm.getEntities().apply([] (Game::Entity *e) {
-							auto en = dynamic_cast<Game::Enemy*>(e);
-							if (en) en->setMorphed(!en->isMorphed());
-						});
-						break;
-					case sf::Keyboard::N:
-						lm.getEntities().apply([] (Game::Entity *e) {
-							auto en = dynamic_cast<Game::Enemy*>(e);
-							//auto en = dynamic_cast<Game::BreakableWall*>(e);
-							if (en) en->get<Game::Killable>()->kill();
-						});
-						break;
-					case sf::Keyboard::B:
-						lm.getEntities().apply([] (Game::Entity *e) {
-							auto en = dynamic_cast<Game::Boss*>(e);
-							if (en) en->get<Game::Killable>()->kill();
-						});
-						break;
-					case sf::Keyboard::Add:
-						lvnum = level->getInfo().levelnum + 1;
-						if (lvnum > ls.getLevelsNum())
-							lvnum = 1;
-						level = ls.getLevel(lvnum);
-						Game::musicManager->set(level->get<Game::Music>()->getMusic())
-							.setVolume(Game::options.musicVolume).play();
-						lm.setLevel(*level);
-						break;
-					case sf::Keyboard::Subtract:
-						lvnum = level->getInfo().levelnum - 1;
-						if (lvnum < 1) 
-							lvnum = ls.getLevelsNum();
-						level = ls.getLevel(lvnum);
-						Game::musicManager->set(level->get<Game::Music>()->getMusic())
-							.setVolume(Game::options.musicVolume).play();
-						lm.setLevel(*level);
-						break;
-					case sf::Keyboard::L:
-						if (lm.isPaused())
-							lm.update();
-						else
-							lm.pause();
-						break;
-					case sf::Keyboard::K:
-						if (!lm.isPaused())
-							lm.pause();
-						else
-							lm.resume();
-						break;
-					case sf::Keyboard::G:
-						debug ^= 1 << DBG_DRAW_COLLIDERS;
-						break;
-					case sf::Keyboard::H:
-						debug ^= 1 << DBG_DRAW_SH_CELLS;
-						break;
-#endif
-					default: 
-						break;
-					}
-				default: 
-					break;
-				}
-			}
-		} // end event loop
+		else
+			game.handleEvents(window);
 
 		///// LOGIC & RENDERING /////
 
@@ -383,7 +248,6 @@ int main(int argc, char **argv) {
 			// Handle win / loss cases
 			wlHandler.handleWinLose();
 			if (wlHandler.getState() == WinLoseHandler::State::ADVANCING_LEVEL) {
-				
 				// Give bonus points/handle continues/etc
 				wlHandler.advanceLevel(window, sidePanel);
 				if (wlHandler.getState() == WinLoseHandler::State::GAME_WON) {
@@ -405,7 +269,7 @@ int main(int argc, char **argv) {
 				lm.update();
 
 #ifndef RELEASE
-			if (cycle++ % 50 == 0)
+			if (cycle++ % 50 == 0 && (debug >> DBG_PRINT_CD_STATS) == 1)
 				print_cd_stats(lm);
 #endif
 

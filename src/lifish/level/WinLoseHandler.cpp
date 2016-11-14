@@ -47,13 +47,11 @@ void WinLoseHandler::handleWinLose() {
 void WinLoseHandler::_handleWin() {
 	const auto time = clock.getElapsedTime();
 	if (time >= sf::seconds(4)) {
-		std::cerr << "phase3\n";
 		levelClearSoundPlayed = false;
 		playerWinSoundPlayed = false;
 		state = State::ADVANCING_LEVEL;
 
 	} else if (time >= sf::seconds(1.8) && !playerWinSoundPlayed) {
-		std::cerr << "phase2\n";
 		for (unsigned short id = 1; id <= Game::MAX_PLAYERS; ++id) {
 			auto player = lm.getPlayer(id);
 			if (player != nullptr && !player->get<Game::Killable>()->isKillInProgress()) {
@@ -64,7 +62,6 @@ void WinLoseHandler::_handleWin() {
 		playerWinSoundPlayed = true;
 
 	} else if (time >= sf::seconds(1) && !levelClearSoundPlayed) {
-		std::cerr << "phase1\n";
 		Game::musicManager->stop();
 		Game::cache.playSound(Game::getAsset("test", Game::LEVEL_CLEAR_SOUND));
 		levelClearSoundPlayed = true;
@@ -72,6 +69,7 @@ void WinLoseHandler::_handleWin() {
 }
 
 void WinLoseHandler::_handleLoss() {
+	// Wait for the GAMEOVER text to stop playing
 	if (lm.dropTextManager.isPlaying(Game::DroppingTextManager::Text::GAME_OVER))
 		return;
 
