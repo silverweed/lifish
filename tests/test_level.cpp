@@ -23,6 +23,7 @@
 #include "MusicManager.hpp"
 #include "GameCache.hpp"
 #include "SHCollisionDetector.hpp"
+#include "GameContext.hpp"
 
 #ifdef MULTITHREADED
 #	ifdef SFML_SYSTEM_LINUX
@@ -67,12 +68,12 @@ static void parse_args(int argc, char **argv,
 #else
 				std::cout << "    | Multithreaded: no" << std::endl;
 #endif
-				return 0;
+				exit(0);
 			default:
 				std::cout << "Usage: " << argv[0] << " [-l <levelnum>] [-v] [levelset.json]\n"
 					  << "\t-l: start at level <levelnum>\n"
 					  << "\t-v: print version and exit" << std::endl;
-				return 1;
+				exit(1);
 			}
 		} else {
 			levelset_name = std::string(argv[i]);
@@ -88,30 +89,6 @@ static void load_icon(sf::Window& window) {
 		auto size = iconImg.getSize();
 		window.setIcon(size.x, size.y, pixels);
 	}
-}
-
-static void toggle_pause_game(UI::UI& ui, LevelManager& lm, bool& was_ui_active) {
-	if (ui.toggleActive()) {
-		lm.pause();
-		was_ui_active = true;
-		Game::musicManager->pause();
-	} else {
-		Game::musicManager->play();
-	}
-}
-
-static void print_cd_stats(LevelManager& lm) {
-	const auto& dbgStats = lm.getCollisionDetector().getStats();
-#ifndef RELEASE
-	std::cerr << std::setfill(' ') << std::scientific << std::setprecision(4)
-		<< "#checked: " << std::setw(5) << dbgStats.counter.safeGet("checked")
-		<< " | tot: " << std::setw(8) << dbgStats.timer.safeGet("tot")
-		<< " | tot_narrow: " << std::setw(8) << dbgStats.timer.safeGet("tot_narrow")
-		<< " | setup: " << std::setw(8) << dbgStats.timer.safeGet("setup") 
-		<< " | average: " << std::setw(8) 
-			<< dbgStats.timer.safeGet("tot_narrow")/dbgStats.counter.safeGet("checked")
-		<< std::resetiosflags(std::ios::showbase) << std::endl;
-#endif
 }
 
 #ifdef MULTITHREADED
@@ -168,9 +145,9 @@ int main(int argc, char **argv) {
 		levelset_name = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
 	
 	// Create the game window
-	Game::windowSize = sf::Vector2u(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
+	Game::options.windowSize = sf::Vector2u(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
 	sf::RenderWindow window(
-			sf::VideoMode(Game::windowSize.x, Game::windowSize.y),
+			sf::VideoMode(Game::options.windowSize.x, Game::options.windowSize.y),
 			"Lifish " VERSION " (test)");
 	Game::options.vsync = true;
 	Game::options.framerateLimit = 120;
@@ -185,13 +162,13 @@ int main(int argc, char **argv) {
 
 	// Setup UI
 	Game::UI::UI& ui = Game::UI::UI::getInstance();
-	ui.setSize(Game::windowSize);
+	ui.setSize(Game::options.windowSize);
 
 	// load static screens
 	ui.load(window, { "home.json", "about.json", "pause.json" });
 	// load dynamic screens
-	ui.add(new Game::UI::ControlsScreen(window, Game::windowSize));
-	ui.add(new Game::UI::PreferencesScreen(window, Game::windowSize));
+	ui.add(new Game::UI::ControlsScreen(window, Game::options.windowSize));
+	ui.add(new Game::UI::PreferencesScreen(window, Game::options.windowSize));
 	// TODO
 	//ui.getScreenHandler().setCurrent("pause");
 
@@ -211,8 +188,6 @@ int main(int argc, char **argv) {
 
 	bool was_ui_active = false;
 
-	lm.resume();
-
 #ifdef MULTITHREADED
 	// Start the rendering thread
 	window.setActive(false);
@@ -224,8 +199,7 @@ int main(int argc, char **argv) {
 
 	unsigned short cycle = 0;
 	while (window.isOpen() && !Game::terminated) {
-		sf::Event event;
-		
+
 		///// EVENT LOOP /////
 		
 		if (ui.isActive()) 
@@ -233,13 +207,13 @@ int main(int argc, char **argv) {
 		else
 			game.handleEvents(window);
 
-		///// LOGIC & RENDERING /////
+		///// LOGIC LOOP /////
 
-#ifndef MULTITHREADED
-		if (ui.isActive()) {
+		if (ui.isActive())
 			ui.update();
-			window.draw(ui);
-		} else {
+		else 
+			game.update();
+
 			if (was_ui_active) {
 				lm.resume();
 				was_ui_active = false;
@@ -261,23 +235,29 @@ int main(int argc, char **argv) {
 				Game::musicManager->set(level->get<Game::Music>()->getMusic())
 					.setVolume(Game::options.musicVolume)
 					.play();
-				continue;
+				continue;lm
 			}
 
 			// Update level
 			if (!lm.isPaused())
 				lm.update();
 
-#ifndef RELEASE
+#	ifndef RELEASE
 			if (cycle++ % 50 == 0 && (debug >> DBG_PRINT_CD_STATS) == 1)
 				print_cd_stats(lm);
-#endif
+#	endif
 
 			sidePanel.update();
-			// Draw everything
-			window.clear();
-			window.draw(lm);
-			window.draw(sidePanel);
+		}
+
+		///// RENDERING LOOP //////
+
+#ifndef MULTITHREADED
+		window.clear();
+		if (ui.isActive())
+			window.draw(ui);
+		else {
+			window.draw(game);
 			if ((debug >> DBG_DRAW_COLLIDERS) & 1)
 				Debug::DebugRenderer::drawColliders(window, lm.getEntities());
 			if ((debug >> DBG_DRAW_SH_CELLS) & 1)
@@ -285,27 +265,15 @@ int main(int argc, char **argv) {
 						static_cast<const Game::SHCollisionDetector&>(
 							lm.getCollisionDetector()));
 		}
+		window.draw(sidePanel);
 		Game::maybeShowFPS(window);
 		window.display();
 #else
-		if (ui.isActive()) {
-			ui.update();
-		} else {
-			if (was_ui_active) {
-				lm.resume();
-				was_ui_active = false;
-			}
-
-			// TODO: handle win/loss
-			wlHandler.handleWinLose(level);
-			
-			if (!lm.isPaused())
-				lm.update();
-		}
+		// Just wait for the vsync
 		sf::sleep(frame_time_limit - frame_clock.restart());
 #endif
 	} // end game loop
-	
+
 #ifndef MULTITHREADED
 	if (window.isOpen())
 		window.close();

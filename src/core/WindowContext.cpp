@@ -1,4 +1,5 @@
 #include "WindowContext.hpp"
+#include <SFML/Window.hpp>
 
 using Game::WindowContext;
 
@@ -8,8 +9,8 @@ void WindowContext::handleEvents(sf::Window& window) {
 		if (handleEvent(event)) 
 			return;
 
-		for (auto& handler : handlers)
-			if (handler.handleEvent(event))
+		for (auto handler : handlers)
+			if (handler->handleEvent(event))
 				return;
 	}
 }

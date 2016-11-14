@@ -25,8 +25,6 @@ public:
 
 #ifndef RELEASE
 	const Game::Debug::Stats& getStats() const { return dbgStats; }
-#else
-#	error("CollisionDetector::getStats() is not available in RELEASE mode!")
 #endif
 };
 

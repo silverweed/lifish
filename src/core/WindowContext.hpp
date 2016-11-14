@@ -1,6 +1,7 @@
 #pragma once
 
 #include <queue>
+#include <memory>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Window/Window.hpp>
 #include "EventHandler.hpp"
@@ -26,7 +27,7 @@ protected:
 	 *  which will try sequentially to catch it.
 	 *  Useful to share and reuse functionality of event handlers.
 	 */
-	std::queue<Game::EventHandler> handlers;
+	std::queue<std::unique_ptr<Game::EventHandler>> handlers;
 
 public:
 	virtual void update() = 0;

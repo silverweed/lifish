@@ -24,6 +24,9 @@ public:
 private:
 	unsigned int debug = 0;
 
+	/** Whether this Context was already active (false if it has just been activated) */
+	bool wasActive = true;
+
 	Game::LevelSet ls;
 	Game::LevelManager lm;
 	Game::WinLoseHandler wlHandler;
@@ -32,11 +35,18 @@ private:
 	std::vector<std::shared_ptr<Game::Player>> players;
 	int lvnum;
 
+#ifndef RELEASE
+	void _printCDStats() const;
+#endif
+
 public:
 	GameContext(sf::Window& window, const std::string& levelsetName, unsigned short startLv);
 
 	void update() override;
 	bool handleEvent(sf::Window& window, sf::Event evt) override;
+	void setOrigin(const sf::Vector2f& o) override;
+	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
+	void setActive(bool b) override;
 
 	void toggleDebug(unsigned int dbg);
 };

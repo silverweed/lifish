@@ -8,6 +8,7 @@
 #include "ScreenStyle.hpp"
 #include "WithOrigin.hpp"
 #include "Action.hpp"
+#include "WindowContext.hpp"
 
 namespace Game {
 
@@ -16,7 +17,7 @@ namespace UI {
 class ScreenBuilder;
 class Interactable;
 
-class Screen : public sf::Drawable, public Game::WithOrigin {
+class Screen : public Game::WindowContext {
 public:
 	using Callback = std::function<Game::UI::Action()>;
 
@@ -66,17 +67,16 @@ public:
 	/** @return The name of the selected element, if any (else "") */
 	std::string getSelected() const;
 
-	virtual void update();
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
-	void setOrigin(const sf::Vector2f& pos) override;
-
 	bool hasCallback(const std::string& name) const;
 	Game::UI::Action fireCallback(const std::string& name);
+
 	/** This may be used by child classes to do specific logic;
-	 *  @return true if signal should be ignored by UI's event loop.
+	 *  @return true if signal was caught and should be ignored by UI's event loop.
 	 */
-	virtual bool receiveEvent(const sf::Event&) { return false; }
+	virtual bool handleEvent(sf::Window& window, sf::Event event) override { return false; }
+	virtual void update() override;
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+	void setOrigin(const sf::Vector2f& pos) override;
 };
 
 }

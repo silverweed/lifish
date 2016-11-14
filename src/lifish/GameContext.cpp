@@ -1,4 +1,7 @@
 #include "GameContext.hpp"
+#ifndef RELEASE
+#	include <iostream>
+#endif
 
 using Game::GameContext;
 
@@ -8,9 +11,9 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, un
 	, wlHandler(lm)
 	, sidePanel(lm)
 {
-	handlers.push(Game::BaseEventHandler());
+	handlers.push(std::unique_ptr<Game::EventHandler>(new Game::BaseEventHandler));
 #ifndef RELEASE
-	handlers.push(Game::Debug::DebugEventHandler(*this));
+	handlers.push(std::unique_ptr<Game::EventHandler>(new Game::Debug::DebugEventHandler(*this)));
 #endif
 
 	int lvnum = startLv;
@@ -25,10 +28,46 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, un
 		p->get<Game::Controllable>()->setWindow(window);
 
 	lm.setLevel(*level);
+	// Ensure lm is not paused
+	lm.resume();
+}
+
+void GameContext::setActive(bool b) {
+	Game::Activable::setActive(b);
+	if (active)
+		lm.resume();
 }
 
 void GameContext::update() {
+	// Handle win / loss cases
+	wlHandler.handleWinLose();
+	if (wlHandler.getState() == WinLoseHandler::State::ADVANCING_LEVEL) {
+		// Give bonus points/handle continues/etc
+		wlHandler.advanceLevel(window, sidePanel);
+		if (wlHandler.getState() == WinLoseHandler::State::GAME_WON) {
+			// TODO
+		}
+		
+		for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
+			players[i] = lm.getPlayer(i + 1);
+		level = ls.getLevel(level->getInfo().levelnum + 1);
+		lm.setLevel(*level);
+		Game::musicManager->set(level->get<Game::Music>()->getMusic())
+			.setVolume(Game::options.musicVolume)
+			.play();
+		continue;
+	}
 
+	// Update level
+	if (!lm.isPaused())
+		lm.update();
+
+#	ifndef RELEASE
+	if (cycle++ % 50 == 0 && (debug >> DBG_PRINT_CD_STATS) == 1)
+		_printCDStats(lm);
+#	endif
+
+	sidePanel.update();
 }
 
 bool GameContext::handleEvent(sf::Window& window, sf::Event event) {
@@ -64,3 +103,39 @@ bool GameContext::handleEvent(sf::Window& window, sf::Event event) {
 void GameContext::toggleDebug(unsigned int flag) {
 	debug ^= 1 << flag;
 }
+
+void GameContext::setOrigin(const sf::Vector2f& o) {
+	Game::WindowContext::setOrigin(o);
+	lm.setOrigin(o);
+
+}
+
+void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const {
+	window.draw(lm, states);
+	window.draw(sidePanel, states);
+}
+
+#ifndef RELEASE
+void GameContext::_printCDStats() const {
+	const auto& dbgStats = lm.getCollisionDetector().getStats();
+	std::cerr << std::setfill(' ') << std::scientific << std::setprecision(4)
+		<< "#checked: " << std::setw(5) << dbgStats.counter.safeGet("checked")
+		<< " | tot: " << std::setw(8) << dbgStats.timer.safeGet("tot")
+		<< " | tot_narrow: " << std::setw(8) << dbgStats.timer.safeGet("tot_narrow")
+		<< " | setup: " << std::setw(8) << dbgStats.timer.safeGet("setup") 
+		<< " | average: " << std::setw(8) 
+			<< dbgStats.timer.safeGet("tot_narrow")/dbgStats.counter.safeGet("checked")
+		<< std::resetiosflags(std::ios::showbase) << std::endl;
+}
+#endif
+
+void GameContex::_togglePauseGame(UI::UI& ui, LevelManager& lm, bool& was_ui_active) {
+	if (ui.toggleActive()) {
+		lm.pause();
+		was_ui_active = true;
+		Game::musicManager->pause();
+	} else {
+		Game::musicManager->play();
+	}
+}
+

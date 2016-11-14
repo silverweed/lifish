@@ -13,7 +13,7 @@ namespace UI {
 
 class UI;
 
-class ScreenHandler : public sf::Drawable, public Game::WithOrigin {
+class ScreenHandler : public Game::WindowContext {
 	std::unordered_map<std::string, std::unique_ptr<Game::UI::Screen>> screens;
 	Game::UI::Screen *curScreen = nullptr;
 	Game::UI::UI& ui;
