@@ -176,7 +176,7 @@ void ControlsScreen::update() {
 		changingCtrlText->setFGColor(sf::Color::Red);
 }
 
-bool ControlsScreen::receiveEvent(const sf::Event& event) {
+bool ControlsScreen::handleEvent(sf::Window&, sf::Event event) {
 	if (changingCtrlText == nullptr) return false;
 
 	auto get_control = [this] (Game::ShadedText *text) {

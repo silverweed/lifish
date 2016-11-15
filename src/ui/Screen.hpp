@@ -73,7 +73,7 @@ public:
 	/** This may be used by child classes to do specific logic;
 	 *  @return true if signal was caught and should be ignored by UI's event loop.
 	 */
-	virtual bool handleEvent(sf::Window& window, sf::Event event) override { return false; }
+	virtual bool handleEvent(sf::Window&, sf::Event) override { return false; }
 	virtual void update() override;
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void setOrigin(const sf::Vector2f& pos) override;

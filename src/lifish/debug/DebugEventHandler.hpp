@@ -4,6 +4,8 @@
 
 namespace Game {
 
+class GameContext;
+
 namespace Debug {
 
 class DebugEventHandler : public Game::EventHandler {

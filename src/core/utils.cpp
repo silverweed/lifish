@@ -152,14 +152,13 @@ void Game::maybeShowFPS(sf::RenderWindow& window) {
 	static double cur_time;
 	static int n_updates = 0;
 	static sf::Clock fps_clock, fps_update_clock;
-	static Game::ShadedText fps_text(Game::getAsset("fonts", Game::Fonts::DEBUG_INFO),
-			"-", sf::Vector2f(Game::SIDE_PANEL_WIDTH + (Game::LEVEL_WIDTH - 4) * Game::TILE_SIZE, 
+	static Game::ShadedText fps_text(Game::getAsset("fonts", Game::Fonts::DEBUG_INFO), "-", sf::Vector2f(
+				Game::SIDE_PANEL_WIDTH + (Game::LEVEL_WIDTH - 5.5) * Game::TILE_SIZE, 
 				Game::WINDOW_HEIGHT - Game::TILE_SIZE));
 	static bool textSetUp = false;
 
 	// Setup text once
 	if (!textSetUp) {
-		fps_text.setOrigin(sf::Vector2f(-MAIN_WINDOW_SHIFT, 0.f));
 		fps_text.setStyle(sf::Text::Style::Bold);
 		fps_text.setCharacterSize(20);
 		textSetUp = true;
@@ -172,7 +171,7 @@ void Game::maybeShowFPS(sf::RenderWindow& window) {
 		if (fps_update_clock.getElapsedTime().asSeconds() >= 1) {
 			int fps = (int)(n_updates / cur_time);
 			std::stringstream ss;
-			ss << fps << " fps (vsync " << (Game::options.vsync ? : "ON" : "OFF") << ")";
+			ss << fps << " fps (vsync " << (Game::options.vsync ? "ON" : "OFF") << ")";
 			fps_text.setString(ss.str());
 			fps_update_clock.restart();
 			n_updates = 0;

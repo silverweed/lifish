@@ -29,7 +29,7 @@ public:
 	explicit ControlsScreen(const sf::RenderWindow& window, const sf::Vector2u& size);
 
 	void update() override;
-	bool receiveEvent(const sf::Event& event) override;
+	bool handleEvent(sf::Window& window, sf::Event event) override;
 };
 
 }

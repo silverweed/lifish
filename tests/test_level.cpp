@@ -179,15 +179,6 @@ int main(int argc, char **argv) {
 	sf::Vector2f origin(-Game::SIDE_PANEL_WIDTH, 0);
 	game.setOrigin(origin);
 
-	// Setup the music
-	//Game::options.musicVolume = 0; // FIXME
-	//Game::options.soundsVolume = 0; // FIXME
-	Game::musicManager->set(level->get<Game::Music>()->getMusic())
-		.setVolume(Game::options.musicVolume)
-		.play();
-
-	bool was_ui_active = false;
-
 #ifdef MULTITHREADED
 	// Start the rendering thread
 	window.setActive(false);
@@ -197,7 +188,6 @@ int main(int argc, char **argv) {
 			std::cref(lm), std::cref(sidePanel), std::cref(ui));
 #endif
 
-	unsigned short cycle = 0;
 	while (window.isOpen() && !Game::terminated) {
 
 		///// EVENT LOOP /////
@@ -214,58 +204,15 @@ int main(int argc, char **argv) {
 		else 
 			game.update();
 
-			if (was_ui_active) {
-				lm.resume();
-				was_ui_active = false;
-			}
-
-			// Handle win / loss cases
-			wlHandler.handleWinLose();
-			if (wlHandler.getState() == WinLoseHandler::State::ADVANCING_LEVEL) {
-				// Give bonus points/handle continues/etc
-				wlHandler.advanceLevel(window, sidePanel);
-				if (wlHandler.getState() == WinLoseHandler::State::GAME_WON) {
-					// TODO
-				}
-				
-				for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
-					players[i] = lm.getPlayer(i + 1);
-				level = ls.getLevel(level->getInfo().levelnum + 1);
-				lm.setLevel(*level);
-				Game::musicManager->set(level->get<Game::Music>()->getMusic())
-					.setVolume(Game::options.musicVolume)
-					.play();
-				continue;lm
-			}
-
-			// Update level
-			if (!lm.isPaused())
-				lm.update();
-
-#	ifndef RELEASE
-			if (cycle++ % 50 == 0 && (debug >> DBG_PRINT_CD_STATS) == 1)
-				print_cd_stats(lm);
-#	endif
-
-			sidePanel.update();
-		}
-
 		///// RENDERING LOOP //////
 
 #ifndef MULTITHREADED
 		window.clear();
 		if (ui.isActive())
 			window.draw(ui);
-		else {
+		else 
 			window.draw(game);
-			if ((debug >> DBG_DRAW_COLLIDERS) & 1)
-				Debug::DebugRenderer::drawColliders(window, lm.getEntities());
-			if ((debug >> DBG_DRAW_SH_CELLS) & 1)
-				Debug::DebugRenderer::drawSHCells(window,
-						static_cast<const Game::SHCollisionDetector&>(
-							lm.getCollisionDetector()));
-		}
-		window.draw(sidePanel);
+		
 		Game::maybeShowFPS(window);
 		window.display();
 #else

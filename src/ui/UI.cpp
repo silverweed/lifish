@@ -10,7 +10,7 @@
 using Game::UI::UI;
 
 UI::UI() : Game::WindowContext() {
-	handlers.push(std::unique_ptr<Game::EventHandler>(new Game::BaseEventHandler));
+	handlers.push_back(std::unique_ptr<Game::EventHandler>(new Game::BaseEventHandler));
 }
 
 void UI::load(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames) {

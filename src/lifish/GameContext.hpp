@@ -14,6 +14,12 @@ namespace Game {
 class Level;
 class Player;
 
+namespace Debug {
+
+class DebugEventHandler;
+
+}
+
 class GameContext : public Game::WindowContext {
 public:
 	enum : unsigned int {
@@ -22,7 +28,10 @@ public:
 		DBG_PRINT_CD_STATS = 1 << 2
 	};
 private:
+       friend class Game::Debug::DebugEventHandler;
+
 	unsigned int debug = 0;
+	unsigned int cycle = 0;
 
 	/** Whether this Context was already active (false if it has just been activated) */
 	bool wasActive = true;

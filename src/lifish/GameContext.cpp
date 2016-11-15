@@ -1,6 +1,16 @@
 #include "GameContext.hpp"
+#include "Killable.hpp"
+#include "Music.hpp"
+#include "BaseEventHandler.hpp"
+#include "DebugEventHandler.hpp"
+#include "core.hpp"
+#include "MusicManager.hpp"
+#include "Player.hpp"
+#include "Controllable.hpp"
 #ifndef RELEASE
 #	include <iostream>
+#	include <iomanip>
+#	include "DebugRenderer.hpp"
 #endif
 
 using Game::GameContext;
@@ -11,13 +21,13 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, un
 	, wlHandler(lm)
 	, sidePanel(lm)
 {
-	handlers.push(std::unique_ptr<Game::EventHandler>(new Game::BaseEventHandler));
+	handlers.push_back(std::unique_ptr<Game::EventHandler>(new Game::BaseEventHandler));
 #ifndef RELEASE
-	handlers.push(std::unique_ptr<Game::EventHandler>(new Game::Debug::DebugEventHandler(*this)));
+	handlers.push_back(std::unique_ptr<Game::EventHandler>(new Game::Debug::DebugEventHandler(*this)));
 #endif
 
 	int lvnum = startLv;
-	ls.loadFromFile(levelset_name);
+	ls.loadFromFile(levelsetName);
 	if (lvnum > ls.getLevelsNum())
 		lvnum %= ls.getLevelsNum();
 	level = std::unique_ptr<Game::Level>(ls.getLevel(lvnum));
@@ -28,6 +38,12 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, un
 		p->get<Game::Controllable>()->setWindow(window);
 
 	lm.setLevel(*level);
+
+	// Setup the music
+	//Game::options.musicVolume = 0; // FIXME
+	//Game::options.soundsVolume = 0; // FIXME
+	Game::musicManager->set(level->get<Game::Music>()->getMusic()); // TODO
+
 	// Ensure lm is not paused
 	lm.resume();
 }
@@ -40,7 +56,7 @@ void GameContext::setActive(bool b) {
 
 void GameContext::update() {
 	// Handle win / loss cases
-	wlHandler.handleWinLose();
+	/*wlHandler.handleWinLose();
 	if (wlHandler.getState() == WinLoseHandler::State::ADVANCING_LEVEL) {
 		// Give bonus points/handle continues/etc
 		wlHandler.advanceLevel(window, sidePanel);
@@ -57,14 +73,14 @@ void GameContext::update() {
 			.play();
 		continue;
 	}
-
+*/
 	// Update level
 	if (!lm.isPaused())
 		lm.update();
 
 #	ifndef RELEASE
 	if (cycle++ % 50 == 0 && (debug >> DBG_PRINT_CD_STATS) == 1)
-		_printCDStats(lm);
+		_printCDStats();
 #	endif
 
 	sidePanel.update();
@@ -72,6 +88,7 @@ void GameContext::update() {
 
 bool GameContext::handleEvent(sf::Window& window, sf::Event event) {
 	switch (event.type) {
+		/* TODO
 	case sf::Event::JoystickButtonPressed:
 		{
 			const auto btn = event.joystickButton;
@@ -80,15 +97,18 @@ bool GameContext::handleEvent(sf::Window& window, sf::Event event) {
 				toggle_pause_game(ui, lm, was_ui_active);
 			return true;
 		}
+		*/
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
+			/*
 		case sf::Keyboard::P:
 			toggle_pause_game(ui, lm, was_ui_active);
 			return true;
+		*/
 		case sf::Keyboard::Escape:
 			for (auto player : players) {
 				player->setRemainingLives(0);
-				player->get<Killable>()->kill();
+				player->get<Game::Killable>()->kill();
 			}
 			return true;
 		default: 
@@ -113,6 +133,12 @@ void GameContext::setOrigin(const sf::Vector2f& o) {
 void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	window.draw(lm, states);
 	window.draw(sidePanel, states);
+	if ((debug >> DBG_DRAW_COLLIDERS) & 1)
+		Debug::DebugRenderer::drawColliders(window, lm.getEntities());
+	if ((debug >> DBG_DRAW_SH_CELLS) & 1)
+		Debug::DebugRenderer::drawSHCells(window,
+				static_cast<const Game::SHCollisionDetector&>(
+					lm.getCollisionDetector()));
 }
 
 #ifndef RELEASE
@@ -129,13 +155,11 @@ void GameContext::_printCDStats() const {
 }
 #endif
 
-void GameContex::_togglePauseGame(UI::UI& ui, LevelManager& lm, bool& was_ui_active) {
-	if (ui.toggleActive()) {
-		lm.pause();
-		was_ui_active = true;
-		Game::musicManager->pause();
-	} else {
-		Game::musicManager->play();
-	}
-}
-
+//void GameContext::_togglePauseGame(UI::UI& ui, Game::LevelManager& lm) {
+	//if (ui.toggleActive()) {
+		//lm.pause();
+		//Game::musicManager->pause();
+	//} else {
+		//Game::musicManager->play();
+	//}
+//}

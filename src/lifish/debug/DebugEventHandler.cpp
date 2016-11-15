@@ -2,14 +2,19 @@
 #include "Enemy.hpp"
 #include "Killable.hpp"
 #include "game.hpp"
+#include "Player.hpp"
+#include "Options.hpp"
+#include "Music.hpp"
+#include "Boss.hpp"
+#include "Enemy.hpp"
+#include "MusicManager.hpp"
+#include "GameContext.hpp"
 
 using Game::Debug::DebugEventHandler;
 
 DebugEventHandler::DebugEventHandler(Game::GameContext& game)
 	: game(game)
 {}
-
-void DebugEventHandler::update() {}
 
 bool DebugEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 	switch (event.type) {
@@ -19,28 +24,29 @@ bool DebugEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 			Game::terminated = true;
 			return true;
 		case sf::Keyboard::J:
-			players[0]->setRemainingLives(0);
-			players[0]->get<Game::Killable>()->kill();
+			game.players[0]->setRemainingLives(0);
+			game.players[0]->get<Game::Killable>()->kill();
 			return true;
 		case sf::Keyboard::M:
-			lm.getEntities().apply([] (Game::Entity *e) {
+			game.lm.getEntities().apply([] (Game::Entity *e) {
 				auto en = dynamic_cast<Game::Enemy*>(e);
 				if (en) en->setMorphed(!en->isMorphed());
 			});
 			return true;
 		case sf::Keyboard::N:
-			lm.getEntities().apply([] (Game::Entity *e) {
+			game.lm.getEntities().apply([] (Game::Entity *e) {
 				auto en = dynamic_cast<Game::Enemy*>(e);
 				//auto en = dynamic_cast<Game::BreakableWall*>(e);
 				if (en) en->get<Game::Killable>()->kill();
 			});
 			return true;
 		case sf::Keyboard::B:
-			lm.getEntities().apply([] (Game::Entity *e) {
+			game.lm.getEntities().apply([] (Game::Entity *e) {
 				auto en = dynamic_cast<Game::Boss*>(e);
 				if (en) en->get<Game::Killable>()->kill();
 			});
 			return true;
+			/* TODO
 		case sf::Keyboard::Add:
 			lvnum = level->getInfo().levelnum + 1;
 			if (lvnum > ls.getLevelsNum())
@@ -59,17 +65,18 @@ bool DebugEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 				.setVolume(Game::options.musicVolume).play();
 			lm.setLevel(*level);
 			return true;
+			*/
 		case sf::Keyboard::L:
-			if (lm.isPaused())
-				lm.update();
+			if (game.lm.isPaused())
+				game.lm.update();
 			else
-				lm.pause();
+				game.lm.pause();
 			return true;
 		case sf::Keyboard::K:
-			if (!lm.isPaused())
-				lm.pause();
+			if (!game.lm.isPaused())
+				game.lm.pause();
 			else
-				lm.resume();
+				game.lm.resume();
 			return true;
 		case sf::Keyboard::G:
 			game.toggleDebug(Game::GameContext::DBG_DRAW_COLLIDERS);
