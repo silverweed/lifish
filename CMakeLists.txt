@@ -15,7 +15,7 @@ else()
 endif()
 
 # main
-set(MAIN_FILE tests/test_level.cpp)
+set(MAIN_FILE src/lifish/main.cpp)
 file(GLOB LIFISH_HEADERS src/*.hpp)
 # core/ contains the "game-independent" source
 include_directories(src/core)
