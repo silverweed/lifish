@@ -79,7 +79,7 @@ static Game::Direction seeing_player(const Game::LevelManager& lm, const Game::A
  *  sets `moving.prevAlign` to the tile it'd have reached if it hadn't collided,
  *  and returns oppositeDirection(moving.direction).
  */
-static Game::Direction adjust_prev_align(Game::Entity& entity, Game::AxisMoving& moving) {
+static Game::Direction adjust_prev_align(const Game::Entity& entity, Game::AxisMoving& moving) {
 	switch (moving.getDirection()) {
 	case D::LEFT: 
 	case D::UP:
@@ -149,7 +149,7 @@ AIBoundFunction Game::ai_random_forward(Game::Entity& entity) {
 		const D cur = moving->getDirection();
 		const bool colliding = collider->collidesWithSolid();
 
-		const D opp = oppositeDirection(cur);
+		const D opp = Game::oppositeDirection(cur);
 		// colliding with a moving entity
 		if (colliding && lm.canGo(*moving, cur)) {
 			NEW_DIRECTION(opp)
@@ -176,7 +176,7 @@ AIBoundFunction Game::ai_random_forward_haunt(Game::Entity& entity) {
 			const D cur = moving->getDirection();
 			const bool colliding = collider->collidesWithSolid();
 			if (colliding && lm.canGo(*moving, cur)) 
-				NEW_DIRECTION(oppositeDirection(cur))
+				NEW_DIRECTION(Game::oppositeDirection(cur))
 
 			if (shooting->getAttackAlign() == cur_align)
 				SAME_DIRECTION
@@ -221,7 +221,7 @@ AIBoundFunction Game::ai_follow(Game::Entity& entity) {
 		const D cur = moving->getDirection();
 		const bool colliding = collider->collidesWithSolid();
 
-		const D opp = oppositeDirection(cur);
+		const D opp = Game::oppositeDirection(cur);
 		if (colliding && lm.canGo(*moving, cur))
 			NEW_DIRECTION(opp)
 
@@ -251,7 +251,7 @@ AIBoundFunction Game::ai_follow_dash(Game::Entity& entity) {
 		HANDLE_NOT_MOVING;
 		HANDLE_UNALIGNED;
 		const D cur = moving->getDirection();
-		const D opp = oppositeDirection(cur);
+		const D opp = Game::oppositeDirection(cur);
 		const bool colliding = collider->collidesWithSolid();
 
 		// XXX: is this necessary?

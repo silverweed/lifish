@@ -1,3 +1,24 @@
+/*!
+ * Lifish
+ * @copyright The code is licensed under the [GNU General Public 
+ * 	   License](https://github.com/silverweed/lifish/blob/master/LICENSE.txt):
+ * 
+ * 	This program is free software: you can redistribute it and/or modify
+ * 	it under the terms of the GNU General Public License as published by
+ * 	the Free Software Foundation, either version 3 of the License, or
+ * 	(at your option) any later version.
+ * 
+ * 	This program is distributed in the hope that it will be useful,
+ * 	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * 	GNU General Public License for more details.
+ * 
+ * 	You should have received a copy of the GNU General Public License
+ * 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @author [Giacomo Parolini](https://github.com/silverweed)
+ * @see https://github.com/silverweed/lifish to download the source code
+*/
 #include <memory>
 #include <cstdlib>
 #include <algorithm>
@@ -19,10 +40,8 @@
 #include "Controllable.hpp"
 #include "ControlsScreen.hpp"
 #include "PreferencesScreen.hpp"
-#include "DebugRenderer.hpp"
 #include "MusicManager.hpp"
 #include "GameCache.hpp"
-#include "SHCollisionDetector.hpp"
 #include "GameContext.hpp"
 
 #ifdef MULTITHREADED
@@ -170,7 +189,7 @@ int main(int argc, char **argv) {
 	ui.add(new Game::UI::ControlsScreen(window, Game::options.windowSize));
 	ui.add(new Game::UI::PreferencesScreen(window, Game::options.windowSize));
 	// TODO
-	//ui.getScreenHandler().setCurrent("pause");
+	//ui.setCurrent("pause");
 
 	// Initialize game
 	GameContext game(window, levelset_name, start_level);
