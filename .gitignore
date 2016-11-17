@@ -25,3 +25,6 @@ test.json
 *.exe
 tags
 clean.out
+.gdbhist
+*.old
+gmon.out*

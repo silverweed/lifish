@@ -25,8 +25,6 @@ include_directories(src/core/components)
 include_directories(src/core/entities)
 # core/collisions contains the classes handling collisions
 include_directories(src/core/collisions)
-# core/debug/ contains debug utils
-include_directories(src/core/debug)
 # ui/ contains the ui parts
 include_directories(src/ui)
 # third_party/ contains all external code
@@ -39,22 +37,30 @@ include_directories(src/lifish/components)
 include_directories(src/lifish/entities)
 # lifish/level/ contains classes for managing game levels
 include_directories(src/lifish/level)
-# lifish/debug/ contains all the Lifish-specific debugging utilities
-include_directories(src/lifish/debug)
 file(GLOB LIFISH_SRC ${MAIN_FILE}
 	src/core/*cpp
 	src/core/entities/*cpp
 	src/core/components/*cpp
 	src/core/collisions/*cpp
-	src/core/debug/*cpp
 	src/ui/*cpp
 	src/third_party/*cpp
 	src/lifish/*cpp
 	src/lifish/entities/*cpp
 	src/lifish/components/*cpp
 	src/lifish/level/*cpp
-	src/lifish/debug/*cpp
 )
+if(${RELEASE})
+else()
+	# core/debug/ contains debug utils
+	include_directories(src/core/debug)
+	# lifish/debug/ contains all the Lifish-specific debugging utilities
+	include_directories(src/lifish/debug)
+	file(GLOB LIFISH_DEBUG_SRC
+		src/core/debug/*cpp
+		src/lifish/debug/*cpp
+	)
+	set(LIFISH_SRC ${LIFISH_SRC} ${LIFISH_DEBUG_SRC})
+endif()
 
 # Platform-specific source
 if(MSYS)
@@ -164,6 +170,7 @@ if(${RELEASE})
 	message(STATUS "Compiling in RELEASE mode")
 	# Disable assertions
 	add_definitions(-DNDEBUG=1)
+	add_definitions(-DRELEASE=1)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORTIFY_SOURCE=2 -O2 -Wall -pedantic -Wextra")
 
 	# Hardening

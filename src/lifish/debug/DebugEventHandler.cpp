@@ -46,26 +46,24 @@ bool DebugEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 				if (en) en->get<Game::Killable>()->kill();
 			});
 			return true;
-			/* TODO
 		case sf::Keyboard::Add:
-			lvnum = level->getInfo().levelnum + 1;
-			if (lvnum > ls.getLevelsNum())
-				lvnum = 1;
-			level = ls.getLevel(lvnum);
-			Game::musicManager->set(level->get<Game::Music>()->getMusic())
+			game.lvnum = game.level->getInfo().levelnum + 1;
+			if (game.lvnum > game.ls.getLevelsNum())
+				game.lvnum = 1;
+			game.level = game.ls.getLevel(game.lvnum);
+			Game::musicManager->set(game.level->get<Game::Music>()->getMusic())
 				.setVolume(Game::options.musicVolume).play();
-			lm.setLevel(*level);
+			game.lm.setLevel(*game.level);
 			return true;
 		case sf::Keyboard::Subtract:
-			lvnum = level->getInfo().levelnum - 1;
-			if (lvnum < 1) 
-				lvnum = ls.getLevelsNum();
-			level = ls.getLevel(lvnum);
-			Game::musicManager->set(level->get<Game::Music>()->getMusic())
+			game.lvnum = game.level->getInfo().levelnum - 1;
+			if (game.lvnum < 1) 
+				game.lvnum = game.ls.getLevelsNum();
+			game.level = game.ls.getLevel(game.lvnum);
+			Game::musicManager->set(game.level->get<Game::Music>()->getMusic())
 				.setVolume(Game::options.musicVolume).play();
-			lm.setLevel(*level);
+			game.lm.setLevel(*game.level);
 			return true;
-			*/
 		case sf::Keyboard::L:
 			if (game.lm.isPaused())
 				game.lm.update();

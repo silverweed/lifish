@@ -53,6 +53,28 @@
 
 using namespace Game;
 
+static void print_version() {
+	std::cout << "lifish v." VERSION " rev." COMMIT;
+#ifdef RELEASE
+	std::cout << " RELEASE";
+#endif
+#ifndef ARCH
+	std::cout << " (unknown arch)" << std::endl;
+#else
+	std::cout << " (" ARCH " bit)" << std::endl;
+#endif
+#ifdef HAVE_NFD
+	std::cout << "    | NFD support: yes" << std::endl;
+#elif !defined(SFML_SYSTEM_WINDOWS)
+	std::cout << "    | NFD support: no" << std::endl;
+#endif
+#ifdef MULTITHREADED 
+	std::cout << "    | Multithreaded: yes" << std::endl;
+#else
+	std::cout << "    | Multithreaded: no" << std::endl;
+#endif
+}
+
 static void parse_args(int argc, char **argv, 
 	/* out */ unsigned short& start_level, /* out */ std::string& levelset_name)
 {
@@ -71,22 +93,7 @@ static void parse_args(int argc, char **argv,
 					std::cerr << "[ WARNING ] Expected numeral after -l flag" << std::endl;
 				break;
 			case 'v':
-				std::cout << "lifish v." VERSION " rev." COMMIT;
-#ifndef ARCH
-				std::cout << " (unknown arch)" << std::endl;
-#else
-				std::cout << " (" ARCH " bit)" << std::endl;
-#endif
-#ifdef HAVE_NFD
-				std::cout << "    | NFD support: yes" << std::endl;
-#elif !defined(SFML_SYSTEM_WINDOWS)
-				std::cout << "    | NFD support: no" << std::endl;
-#endif
-#ifdef MULTITHREADED 
-				std::cout << "    | Multithreaded: yes" << std::endl;
-#else
-				std::cout << "    | Multithreaded: no" << std::endl;
-#endif
+				print_version();
 				exit(0);
 			default:
 				std::cout << "Usage: " << argv[0] << " [-l <levelnum>] [-v] [levelset.json]\n"

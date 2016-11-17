@@ -2,7 +2,6 @@
 #include "Killable.hpp"
 #include "Music.hpp"
 #include "BaseEventHandler.hpp"
-#include "DebugEventHandler.hpp"
 #include "core.hpp"
 #include "MusicManager.hpp"
 #include "Player.hpp"
@@ -11,6 +10,7 @@
 #	include <iostream>
 #	include <iomanip>
 #	include "DebugRenderer.hpp"
+#	include "DebugEventHandler.hpp"
 #endif
 
 using Game::GameContext;
@@ -120,10 +120,6 @@ bool GameContext::handleEvent(sf::Window& window, sf::Event event) {
 	return false;
 }
 
-void GameContext::toggleDebug(unsigned int flag) {
-	debug ^= 1 << flag;
-}
-
 void GameContext::setOrigin(const sf::Vector2f& o) {
 	Game::WindowContext::setOrigin(o);
 	lm.setOrigin(o);
@@ -133,15 +129,21 @@ void GameContext::setOrigin(const sf::Vector2f& o) {
 void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	window.draw(lm, states);
 	window.draw(sidePanel, states);
+#ifndef RELEASE
 	if ((debug >> DBG_DRAW_COLLIDERS) & 1)
 		Debug::DebugRenderer::drawColliders(window, lm.getEntities());
 	if ((debug >> DBG_DRAW_SH_CELLS) & 1)
 		Debug::DebugRenderer::drawSHCells(window,
 				static_cast<const Game::SHCollisionDetector&>(
 					lm.getCollisionDetector()));
+#endif
 }
 
 #ifndef RELEASE
+void GameContext::toggleDebug(unsigned int flag) {
+	debug ^= 1 << flag;
+}
+
 void GameContext::_printCDStats() const {
 	const auto& dbgStats = lm.getCollisionDetector().getStats();
 	std::cerr << std::setfill(' ') << std::scientific << std::setprecision(4)

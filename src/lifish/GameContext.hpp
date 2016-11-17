@@ -14,11 +14,13 @@ namespace Game {
 class Level;
 class Player;
 
+#ifndef RELEASE
 namespace Debug {
 
 class DebugEventHandler;
 
 }
+#endif
 
 class GameContext : public Game::WindowContext {
 public:
@@ -28,7 +30,9 @@ public:
 		DBG_PRINT_CD_STATS = 1 << 2
 	};
 private:
+#ifndef RELEASE
        friend class Game::Debug::DebugEventHandler;
+#endif
 
 	unsigned int debug = 0;
 	unsigned int cycle = 0;
