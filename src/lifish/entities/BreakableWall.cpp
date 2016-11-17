@@ -95,8 +95,10 @@ void BreakableWall::_checkCollision(Game::Collider& cld) {
 	const auto mtile = Game::tile(position);
 	if (Game::manhattanDistance(etile, mtile) == 1) {
 		killable->kill();
-		get<Game::Scored>()->setTarget(static_cast<const Game::Explosion&>(
-					cld.getOwner()).getSourcePlayer()->getInfo().id);
+		const auto source = dynamic_cast<const Game::Player*>(static_cast<const Game::Explosion&>(
+					cld.getOwner()).getSourceEntity());
+		if (source != nullptr)
+			get<Game::Scored>()->setTarget(source->getInfo().id);
 	}
 }
 

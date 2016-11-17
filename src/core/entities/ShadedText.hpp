@@ -21,12 +21,7 @@ public:
 		sf::Color fgcol = sf::Color::White,
 		sf::Color bgcol = sf::Color::Black);
 
-	sf::FloatRect getGlobalBounds() const { 
-		sf::FloatRect bounds(fgtext.getGlobalBounds());
-		bounds.width += shadowSpacing.x;
-		bounds.height += shadowSpacing.y;
-		return bounds;
-	}
+	sf::FloatRect getGlobalBounds() const; 
 
 	void setStyle(sf::Text::Style style);
 	void setString(const std::string& str);

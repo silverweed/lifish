@@ -68,3 +68,10 @@ void ShadedText::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	window.draw(bgtext, states);
 	window.draw(fgtext, states);
 }
+
+sf::FloatRect ShadedText::getGlobalBounds() const {
+	sf::FloatRect bounds(fgtext.getGlobalBounds());
+	bounds.width += shadowSpacing.x;
+	bounds.height += shadowSpacing.y;
+	return bounds;
+}

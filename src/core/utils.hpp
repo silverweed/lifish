@@ -69,12 +69,20 @@ constexpr short manhattanDistance(const sf::Vector2i& tileA, const sf::Vector2i&
 	return Game::abs(tileA.x - tileB.x) + Game::abs(tileA.y - tileB.y);
 }
 
-constexpr float centerX(const sf::FloatRect& bounds, const sf::FloatRect& rect) {
-	return rect.left + (rect.width - bounds.width) / 2.;
+/** @return A float indicating the X coordinate where `innerBounds` is to be positioned in 
+ *  order to be horizontally centered relatively to `outerBounds`.
+ */
+template<typename T, typename R>
+constexpr float centerX(const sf::Rect<T>& innerBounds, const sf::Rect<R>& outerBounds) {
+	return outerBounds.left + (outerBounds.width - innerBounds.width) / 2.;
 }
 
-constexpr float centerY(const sf::FloatRect& bounds, const sf::FloatRect& rect) {
-	return rect.top + (rect.height - bounds.height) / 2.;
+/** @return A float indicating the Y coordinate where `innerBounds` is to be positioned in 
+ *  order to be vertically centered relatively to `outerBounds`.
+ */
+template<typename T, typename R>
+constexpr float centerY(const sf::Rect<T>& innerBounds, const sf::Rect<R>& outerBounds) {
+	return outerBounds.top + (outerBounds.height - innerBounds.height) / 2.;
 }
 
 /** Given the bounding box of something, returns the coordinates
@@ -82,12 +90,8 @@ constexpr float centerY(const sf::FloatRect& bounds, const sf::FloatRect& rect) 
  *  bounds = object to center
  *  rect = container to center the object within (default: main game window)
  */
-inline sf::Vector2f center(const sf::FloatRect& bounds, const sf::FloatRect& rect = 
-		sf::FloatRect(Game::MAIN_WINDOW_SHIFT, 0, 
-			Game::LEVEL_WIDTH * Game::TILE_SIZE,
-			Game::LEVEL_HEIGHT * Game::TILE_SIZE))
-{
-	return sf::Vector2f(centerX(bounds, rect), centerY(bounds, rect));
+inline sf::Vector2f center(const sf::FloatRect& innerBounds, const sf::FloatRect& outerBounds) {
+	return sf::Vector2f(Game::centerX(innerBounds, outerBounds), Game::centerY(innerBounds, outerBounds));
 }
 
 inline bool startsWith(const std::string& haystack, const std::string& needle) {

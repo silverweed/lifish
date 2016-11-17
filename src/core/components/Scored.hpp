@@ -25,6 +25,7 @@ public:
 
 	/** @return whether this entity already gave points to the player or not */
 	bool hasGivenPoints() const { return givenPoints; }
+	/** Tell this component that it already gave points to someone, so it doesn't do that twice. */
 	int givePoints() {
 		givenPoints = true;
 		return pointsGiven;

@@ -4,6 +4,7 @@
 #include "GameCache.hpp"
 #include "Spawning.hpp"
 #include "Killable.hpp"
+#include "Boss.hpp"
 #include "LevelManager.hpp"
 #include "Grabbable.hpp"
 #include "AutoShooting.hpp"
@@ -88,6 +89,10 @@ void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager&,
 	
 	auto klb = e->get<Game::Killable>();
 	if (klb != nullptr && klb->isKilled()) {
+		// Special behaviour for bosses
+		const bool is_boss = dynamic_cast<const Game::Boss*>(&klb->getOwner()) != nullptr;
+		if (is_boss && klb->isKillInProgress()) return;
+
 		// Give and spawn points
 		auto target = scored->getTarget();
 		if (target < 0) {
@@ -97,8 +102,18 @@ void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager&,
 			scored->givePoints();
 		} else {
 			Game::score[target - 1] += scored->givePoints();
-			tbspawned.push_back(new Game::Points(e->getPosition(), scored->getPointsGiven()));
 		}
+		auto points = is_boss
+			? new Game::Points(e->getPosition(), scored->getPointsGiven(), sf::Color::Magenta, 30)
+			: new Game::Points(e->getPosition(), scored->getPointsGiven());
+		sf::Vector2f bounds_size(Game::TILE_SIZE, Game::TILE_SIZE);
+		const auto cld = e->get<Game::Collider>();
+		if (cld != nullptr)
+			bounds_size = sf::Vector2f(cld->getSize());
+		points->setPosition(sf::Vector2f(
+				Game::centerX(points->getGlobalBounds(), sf::FloatRect(e->getPosition(), bounds_size)),
+				points->getPosition().y));
+		tbspawned.push_back(points);
 	}
 }
 

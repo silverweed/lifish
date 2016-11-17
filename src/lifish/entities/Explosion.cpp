@@ -22,11 +22,11 @@ using Game::TILE_SIZE;
 using Game::Direction;
 
 Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, 
-		const Game::Player *const source, unsigned short damage)
+		const Game::Entity *const source, unsigned short damage)
 	: Game::Entity(pos)
 	, radius(_radius)
 	, damage(damage)
-	, sourcePlayer(source)
+	, sourceEntity(source)
 {
 	addComponent(new Game::Sounded(*this, { Game::getAsset("sounds", "explosion.ogg") }));
 	explosionC = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "explosionC.png")));

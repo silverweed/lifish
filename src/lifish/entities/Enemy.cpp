@@ -185,8 +185,12 @@ void Enemy::setMorphed(bool b) {
 void Enemy::_checkCollision(Game::Collider& coll) {
 	if (coll.getLayer() != Game::Layers::EXPLOSIONS) return;
 	auto lifed = get<Game::Lifed>();
-	if (lifed->decLife(static_cast<const Game::Explosion&>(coll.getOwner()).getDamage()) <= 0) {
+	const auto& expl = static_cast<const Game::Explosion&>(coll.getOwner());
+	if (lifed->decLife(expl.getDamage()) <= 0) {
 		killable->kill();	
+		const auto source = dynamic_cast<const Game::Player*>(expl.getSourceEntity());
+		if (source != nullptr)
+			get<Game::Scored>()->setTarget(source->getInfo().id);
 	}
 }
 

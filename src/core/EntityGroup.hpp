@@ -42,9 +42,7 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	/** The colliders of entities which have one */
 	std::vector<std::weak_ptr<Game::Collider>> collidingEntities;
 
-	/** The static entities, which are always grid-aligned and cannot move,
-	 *  except Temporary entities.
-	 */
+	/** The static entities, which are always grid-aligned and cannot move */
 	std::array<std::vector<std::weak_ptr<Game::Entity>>, Game::LEVEL_WIDTH * Game::LEVEL_HEIGHT> fixedEntities;
 
 	/** The list of the killable entities, which ought to be removed when 
@@ -58,13 +56,19 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	std::list<std::weak_ptr<Game::Killable>> dying;
 
 
-	/** Removes any killed entity from all internal collections and destroys them.
+	/** Removes any killed entity from all internal collections (including the main one) and destroys them.
 	 *  If its `isKillInProgress()` is true, puts it in `dying`
 	 *  instead of immediately destroing it (it is not removed from `entities` until it's finalized)
 	 */
 	void _checkKilled();
+	/** Removes any entity in `dying` which has `isKillInProgress() == false` and destroys them (this also
+	 *  removes them from the main collections).
+	 */
+	void _checkDead();
 
+	/** @return The list of fixed entities in `tile` (empty vector if none) */
 	auto _fixedAt(const sf::Vector2i& tile) -> std::vector<std::weak_ptr<Game::Entity>>&;
+	/** const version of `_fixedAt` */
 	auto _fixedAt(const sf::Vector2i& tile) const -> const std::vector<std::weak_ptr<Game::Entity>>&;
 	/** Adds a fixed entity at tile x, y. Fails silently if x or y are out of bounds. */
 	void _addFixedAt(unsigned short x, unsigned short y, std::shared_ptr<Game::Entity> e);
@@ -73,8 +77,11 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	 */
 	void _rmFixedAt(unsigned short x, unsigned short y, const Game::Entity& e);
 
+	/** Iterate over aux collections and remove all expired weak pointers. 
+	 *  Note that, differently from the `_check*` methods, the `_prune*` ones do NOT
+	 *  affect the main `entities` collection.
+	 */
 	void _pruneAll();
-	void _pruneDying();
 	void _pruneFixed();
 	void _pruneColliding();
 
@@ -126,6 +133,10 @@ public:
 
 	/** Explicitly request that all expired weak_ptr's are pruned. This is done
 	 *  automatically in updateAll() if this method hasn't been called since latest update.
+	 *  Note that calling this method does NOT remove any killed or dead entity from the main
+	 *  collection: that is only done in `updateAll`, so one can still refer to an "almost-dead"
+	 *  entity (i.e. one that `isKilled()` and has `isKillInProgress() == false`) to do 
+	 *  something in its last update cycle between a call to `validate()` and `updateAll()`.
 	 */
 	void validate();
 	void updateAll();

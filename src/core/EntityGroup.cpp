@@ -25,12 +25,11 @@ void EntityGroup::validate() {
 }
 
 void EntityGroup::updateAll() {
+	_checkDead();
 	_checkKilled();
 
-	if (!alreadyPrunedThisUpdate) {
+	if (!alreadyPrunedThisUpdate)
 		_pruneAll();
-		alreadyPrunedThisUpdate = true;
-	}
 
 	for (auto& e : entities)
 		e->update();
@@ -113,7 +112,6 @@ auto EntityGroup::_fixedAt(const sf::Vector2i& tile) const -> const std::vector<
 
 void EntityGroup::_pruneAll() {
 	_pruneFixed();
-	_pruneDying();
 	_pruneColliding();
 }
 
@@ -134,30 +132,6 @@ void EntityGroup::_pruneColliding() {
 			it = collidingEntities.erase(it);
 		else
 			++it;
-	}
-}
-
-void EntityGroup::_pruneDying() {
-	for (auto it = dying.begin(); it != dying.end(); ) {
-		if (it->expired()) {
-			it = dying.erase(it);
-			continue;
-		}
-		auto tmp = it->lock();
-		if (!tmp->isKillInProgress()) {
-			// kill function has ended, we can safely destroy this.
-			auto eit = std::find_if(entities.begin(), entities.end(), 
-					[tmp] (std::shared_ptr<Game::Entity>& ptr) 
-			{
-				return ptr.get() == &tmp->getOwner();
-			});
-			if (eit != entities.end())
-				entities.erase(eit);
-			
-			it = dying.erase(it);
-		} else {
-			++it;
-		}
 	}
 }
 
@@ -228,6 +202,30 @@ void EntityGroup::_checkKilled() {
 				entities.erase(eit);
 
 			it = killables.erase(it);
+		} else {
+			++it;
+		}
+	}
+}
+
+void EntityGroup::_checkDead() {
+	for (auto it = dying.begin(); it != dying.end(); ) {
+		if (it->expired()) {
+			it = dying.erase(it);
+			continue;
+		}
+		auto tmp = it->lock();
+		if (!tmp->isKillInProgress()) {
+			// kill function has ended, we can safely destroy this.
+			auto eit = std::find_if(entities.begin(), entities.end(), 
+					[tmp] (std::shared_ptr<Game::Entity>& ptr) 
+			{
+				return ptr.get() == &tmp->getOwner();
+			});
+			if (eit != entities.end())
+				entities.erase(eit);
+			
+			it = dying.erase(it);
 		} else {
 			++it;
 		}

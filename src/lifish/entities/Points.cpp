@@ -34,3 +34,12 @@ void Points::update() {
 	Game::Entity::update();
 	text.setPosition(position);
 }
+
+void Points::setOrigin(const sf::Vector2f& pos) {
+	Game::Entity::setOrigin(pos);
+	text.setOrigin(pos);
+}
+
+sf::FloatRect Points::getGlobalBounds() const {
+	return text.getGlobalBounds();
+}

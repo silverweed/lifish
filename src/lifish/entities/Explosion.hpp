@@ -41,8 +41,10 @@ class Explosion : public Game::Entity, public sf::Drawable {
 	 */
 	std::array<unsigned short, 4> propagation;
 
-	/** The player who dropped the bomb this explosion originated from */
-	const Game::Player *const sourcePlayer;
+	/** The Entity that generated this explosion, if any. Usually, this means the Player who
+	 *  dropped the bomb that cause this explosion.
+	 */
+	const Game::Entity *const sourceEntity;
 
 	/** The set of the entities already damaged by this Explosion.
 	 *  Note: we keep const pointers instead of references because
@@ -60,7 +62,7 @@ public:
 	 *  are given at all.
 	 */
 	explicit Explosion(const sf::Vector2f& pos, unsigned short radius, 
-			const Game::Player *const sourcePlayer = nullptr,
+			const Game::Entity *const sourceEntity = nullptr,
 			unsigned short damage = 1);
 
 	/** Calculate the tiles this explosion propagates to and fill `propagation`
@@ -72,7 +74,7 @@ public:
 
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 
-	const Game::Player* getSourcePlayer() const { return sourcePlayer; }
+	const Game::Entity* getSourceEntity() const { return sourceEntity; }
 
 	unsigned short getDamage() const { return damage; }
 

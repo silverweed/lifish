@@ -25,10 +25,9 @@ public:
 		unsigned short charSize = CHARACTER_SIZE);
 
 	void update() override;
-	void setOrigin(const sf::Vector2f& pos) override {
-		Game::Entity::setOrigin(pos);
-		text.setOrigin(pos);
-	}
+	void setOrigin(const sf::Vector2f& pos) override;
+
+	sf::FloatRect getGlobalBounds() const;
 };
 
 }

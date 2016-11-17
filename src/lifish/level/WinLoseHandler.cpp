@@ -18,6 +18,9 @@
 using Game::WinLoseHandler;
 using State = WinLoseHandler::State;
 
+static const sf::FloatRect WIN_BOUNDS(Game::MAIN_WINDOW_SHIFT, 0, 
+			Game::LEVEL_WIDTH * Game::TILE_SIZE, Game::LEVEL_HEIGHT * Game::TILE_SIZE);
+
 WinLoseHandler::WinLoseHandler(Game::LevelManager& lm)
 	: lm(lm)
 {
@@ -96,14 +99,14 @@ void WinLoseHandler::advanceLevel(sf::RenderWindow& window, const Game::SidePane
 	sf::Text time_bonus_text("TIME BONUS!", interlevelFont, 13);
 	if (time_bonus > sf::Time::Zero) {
 		auto bounds = time_bonus_text.getGlobalBounds();
-		time_bonus_text.setPosition(Game::center(bounds));
+		time_bonus_text.setPosition(Game::center(bounds, WIN_BOUNDS));
 
 		window.clear();
 		window.draw(time_bonus_text);
 		
 		sf::Text points_text("0", interlevelFont, 13);
 		bounds = points_text.getGlobalBounds();
-		points_text.setPosition(Game::center(bounds) + sf::Vector2f(0.f, 2 * bounds.height));
+		points_text.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
 
 		window.draw(points_text);
 		window.draw(panel);
@@ -135,7 +138,8 @@ void WinLoseHandler::advanceLevel(sf::RenderWindow& window, const Game::SidePane
 				givePoints(100);
 			}
 			points_text.setString(Game::to_string(points));
-			points_text.setPosition(Game::center(points_text.getGlobalBounds()) + sf::Vector2f(0.f, 2 * bounds.height));
+			points_text.setPosition(Game::center(points_text.getGlobalBounds(), WIN_BOUNDS)
+					+ sf::Vector2f(0.f, 2 * bounds.height));
 			Game::cache.playSound(time_bonus_sound);
 
 			window.clear();
@@ -187,14 +191,14 @@ void WinLoseHandler::_displayGetReady(sf::RenderWindow& window, const Game::Side
 	std::stringstream ss;
 	ss << "LEVEL " << (lvnum + 1);
 	sf::Text text(ss.str(), interlevelFont, 13);
-	text.setPosition(Game::center(text.getGlobalBounds()));
+	text.setPosition(Game::center(text.getGlobalBounds(), WIN_BOUNDS));
 
 	window.clear();
 	window.draw(text);
 
 	text.setString("GET READY!");
 	const auto bounds = text.getGlobalBounds();
-	text.setPosition(Game::center(bounds) + sf::Vector2f(0.f, 2 * bounds.height));
+	text.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
 
 	window.draw(text);
 	window.draw(panel);
@@ -209,14 +213,14 @@ bool WinLoseHandler::_displayContinue(sf::RenderWindow& window, const Game::Side
 	std::stringstream ss;
 	ss << "PLAYER " << playernum << " CONTINUE?";
 	sf::Text text(ss.str(), interlevelFont, 13);
-	text.setPosition(Game::center(text.getGlobalBounds()));
+	text.setPosition(Game::center(text.getGlobalBounds(), WIN_BOUNDS));
 	texts.push_back(text);
 
 	ss.str("");
 	ss << "(" << Game::playerContinues[playernum-1] << " remaining)";
 	text.setString(ss.str());
 	auto bounds = text.getGlobalBounds();
-	text.setPosition(Game::center(bounds) + sf::Vector2f(0.f, 2 * bounds.height));
+	text.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
 	texts.push_back(text);
 
 	// Dummy text to get the correct bounds
@@ -225,7 +229,7 @@ bool WinLoseHandler::_displayContinue(sf::RenderWindow& window, const Game::Side
 	bounds = text.getGlobalBounds();
 	
 	sf::Text yes_text("YES", interlevelFont, 15);
-	yes_text.setPosition(Game::center(bounds) + sf::Vector2f(0.f, 4 * bounds.height));
+	yes_text.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 4 * bounds.height));
 	yes_text.setFillColor(sf::Color::Red);
 
 	bounds = yes_text.getGlobalBounds();
@@ -239,7 +243,7 @@ bool WinLoseHandler::_displayContinue(sf::RenderWindow& window, const Game::Side
 
 	text.setString("Arrows / Enter to select");
 	text.setCharacterSize(10);
-	text.setPosition(Game::center(text.getGlobalBounds()) + sf::Vector2f(0.f, 6 * bounds.height));
+	text.setPosition(Game::center(text.getGlobalBounds(), WIN_BOUNDS) + sf::Vector2f(0.f, 6 * bounds.height));
 	texts.push_back(text);
 
 	auto drawTexts = [&texts, &window] {
