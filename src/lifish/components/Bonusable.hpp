@@ -4,7 +4,7 @@
 #include <SFML/System/Time.hpp>
 #include "Clock.hpp"
 #include "Entity.hpp"
-#include "BonusType.hpp"
+#include "bonus_type.hpp"
 
 namespace Game {
 

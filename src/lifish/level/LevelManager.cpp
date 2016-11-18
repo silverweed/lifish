@@ -12,6 +12,8 @@
 #include "LevelLoader.hpp"
 #include "Coin.hpp"
 #include "Bonusable.hpp"
+#include "Controllable.hpp"
+#include "LevelSet.hpp"
 #include <memory>
 #include <iostream>
 
@@ -335,3 +337,35 @@ bool LevelManager::canGo(const Game::AxisMoving& am, const Game::Direction dir) 
 	return true;
 }
 
+void LevelManager::advanceLevel() {
+	short lvnum = level->getInfo().levelnum;
+	const auto& ls = level->getLevelSet();
+
+	if (lvnum == ls.getLevelsNum()) {
+		gameWon = true;
+		return;
+	}
+
+	// Resurrect any dead player which has a 'continue' left and
+	// remove shield and speedy effects
+	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+		auto player = players[i];
+		if ((player == nullptr || player->get<Game::Killable>()->isKilled())
+				&& Game::playerContinues[i] > 0) 
+		{
+			//if (_displayContinue(window, panel, i + 1)) {
+				--Game::playerContinues[i];
+				auto player = std::make_shared<Player>(sf::Vector2f(0, 0), i + 1);
+				//player->get<Game::Controllable>()->setWindow(window); // TODO
+				setPlayer(i + 1, player);
+			//} else {
+				//Game::playerContinues[i] = 0;
+				//lm.removePlayer(i + 1);
+			//}
+		} else if (player != nullptr) {
+			auto bns = player->get<Game::Bonusable>();
+			bns->giveBonus(Game::BonusType::SPEEDY, sf::Time::Zero);
+			bns->giveBonus(Game::BonusType::SHIELD, sf::Time::Zero);
+		}
+	}
+}

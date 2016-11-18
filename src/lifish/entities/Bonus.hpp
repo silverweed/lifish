@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/System.hpp>
-#include "BonusType.hpp"
+#include "bonus_type.hpp"
 #include "Entity.hpp"
 
 namespace Game {

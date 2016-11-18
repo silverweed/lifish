@@ -47,6 +47,8 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable, public 
 	bool paused = false;
 	/** This is set to `true` as soon as no players are found alive. */
 	bool gameOver = false;
+	/** This is set to `true` when the last level is completed */
+	bool gameWon = false;
 
 	Game::EntityGroup entities;
 	Game::SHCollisionDetector cd;
@@ -104,6 +106,7 @@ public:
 
 	bool isGameOver() const { return gameOver; }
 	bool isLevelClear() const;
+	bool isGameWon() const { return gameWon; }
 
 	bool isBombAt(const sf::Vector2i& tile) const;
 	/** Returns the number of bombs currently deployed by id-th player */
@@ -127,6 +130,8 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void setOrigin(const sf::Vector2f& o) override;
+
+	void advanceLevel();
 };
 
 }

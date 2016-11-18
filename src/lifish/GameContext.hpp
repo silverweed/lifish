@@ -42,8 +42,8 @@ private:
 
 	Game::LevelSet ls;
 	Game::LevelManager lm;
-	Game::WinLoseHandler wlHandler;
 	Game::SidePanel sidePanel;
+	Game::WinLoseHandler wlHandler;
 	std::unique_ptr<Game::Level> level;
 	std::vector<std::shared_ptr<Game::Player>> players;
 	int lvnum;
@@ -54,6 +54,13 @@ private:
 
 public:
 	GameContext(sf::Window& window, const std::string& levelsetName, unsigned short startLv);
+
+	Game::WinLoseHandler& getWLHandler() { return wlHandler; }
+	const Game::WinLoseHandler& getWLHandler() const { return wlHandler; }
+	Game::LevelManager& getLM() { return lm; }
+	const Game::LevelManager& getLM() const { return lm; }
+	Game::SidePanel& getSidePanel() { return sidePanel; }
+	const Game::SidePanel& getSidePanel() const { return sidePanel; }
 
 	void update() override;
 	bool handleEvent(sf::Window& window, sf::Event evt) override;

@@ -28,8 +28,18 @@ protected:
 	 *  Useful to share and reuse functionality of event handlers.
 	 */
 	std::deque<std::unique_ptr<Game::EventHandler>> handlers;
+	int newContext = -1;
 
 public:
+	/** When this method returns a non-negative number, the current WindowContext
+	 *  should be switched with that indexed by the returned number.
+	 *  The number=>context association is game-dependent, and should be defined
+	 *  per-case with an enum or something alike.
+	 */
+	int getNewContext() const { return newContext; }
+	/** This must be called after switching context to reset the `newContext` variable. */
+	void resetNewContext() { newContext = -1; }
+
 	virtual void update() = 0;
 	void handleEvents(sf::Window& window);
 };

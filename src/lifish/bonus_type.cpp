@@ -1,4 +1,4 @@
-#include "BonusType.hpp"
+#include "bonus_type.hpp"
 #include "LevelManager.hpp"
 #include "Player.hpp"
 #include "Lifed.hpp"

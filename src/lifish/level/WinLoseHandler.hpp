@@ -3,12 +3,14 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 #include "Chronometer.hpp"
+#include "InterlevelContext.hpp"
 
 namespace Game {
 
 class LevelManager;
 class Level;
 class SidePanel;
+class WindowContext;
 
 /**
  * This class handles the winning and losing conditions and switching
@@ -24,32 +26,28 @@ public:
 		ADVANCING_LEVEL,
 		GAME_WON
 	};
+
 private:
 	State state = State::DEFAULT;
 	
+	Game::InterlevelContext interlevelCtx;
 	Game::LevelManager& lm;
 	sftools::Chronometer clock;
 	bool levelClearSoundPlayed = false,
 	     playerWinSoundPlayed = false;
-	sf::Font interlevelFont;
 
 	void _handleWin();
 	void _handleLoss();
 	void _checkCondition();
-	/** @return true if player chose to continue, else false */
-	bool _displayContinue(sf::RenderWindow& target, const Game::SidePanel& panel, short playerId);
-	void _displayGetReady(sf::RenderWindow& target, const Game::SidePanel& panel, short lvnum);
 public:
-	explicit WinLoseHandler(Game::LevelManager& lm);
+	explicit WinLoseHandler(Game::LevelManager& lm, const Game::SidePanel& sidePanel);
 
-	/** In case of win or loss, performs the due actions
-	 *  @return the new state of WinLoseHandler.
-	 */
+	Game::WindowContext& getInterlevelContext() { return interlevelCtx; }
+
+	/** In case of win or loss, performs the due actions */
 	void handleWinLose();
-
 	State getState() const { return state; }
-
-	void advanceLevel(sf::RenderWindow& target, const Game::SidePanel& panel);
+	//void advanceLevel(sf::RenderWindow& target, const Game::SidePanel& panel);
 };
 
 }

@@ -1,4 +1,4 @@
-#include "EntityType.hpp"
+#include "entity_type.hpp"
 
 using Game::EntityType;
 

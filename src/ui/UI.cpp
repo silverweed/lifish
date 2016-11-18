@@ -1,6 +1,7 @@
 #include "Interactable.hpp"
 #include "utils.hpp"
 #include "UI.hpp"
+#include "contexts.hpp"
 #include "Screen.hpp"
 #include "BaseEventHandler.hpp"
 #include "screen_callbacks.hpp"
@@ -101,9 +102,6 @@ void UI::fireClick() {
 		Game::exitCode = 0;
 		Game::terminated = true;
 		break;
-	case Action::START_GAME:
-		// TODO
-		break;
 	case Action::SAVE_GAME:
 		// TODO
 		break;
@@ -116,8 +114,9 @@ void UI::fireClick() {
 	case Action::SWITCH_TO_PARENT:
 		setCurrentToParent();
 		break;
+	case Action::START_GAME:
 	case Action::DEACTIVATE_UI:
-		active = false;
+		newContext = Game::CTX_GAME;
 		break;
 	default:
 		break;
@@ -139,4 +138,9 @@ void UI::setCurrent(const std::string& name, bool overrideParent) {
 
 void UI::setCurrentToParent() {
 	setCurrent(curScreen->getParent());
+}
+
+std::string UI::getCurrent() const {
+	if (curScreen == nullptr) return "";
+	return curScreen->getName();
 }

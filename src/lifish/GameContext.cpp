@@ -3,6 +3,7 @@
 #include "Music.hpp"
 #include "BaseEventHandler.hpp"
 #include "core.hpp"
+#include "contexts.hpp"
 #include "MusicManager.hpp"
 #include "Player.hpp"
 #include "Controllable.hpp"
@@ -18,8 +19,8 @@ using Game::GameContext;
 GameContext::GameContext(sf::Window& window, const std::string& levelsetName, unsigned short startLv)
 	: Game::WindowContext()
 	, lm()
-	, wlHandler(lm)
 	, sidePanel(lm)
+	, wlHandler(lm, sidePanel)
 {
 	handlers.push_back(std::unique_ptr<Game::EventHandler>(new Game::BaseEventHandler));
 #ifndef RELEASE
@@ -40,9 +41,7 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, un
 	lm.setLevel(*level);
 
 	// Setup the music
-	//Game::options.musicVolume = 0; // FIXME
-	//Game::options.soundsVolume = 0; // FIXME
-	Game::musicManager->set(level->get<Game::Music>()->getMusic()); // TODO
+	Game::musicManager->set(level->get<Game::Music>()->getMusic()); 
 
 	// Ensure lm is not paused
 	lm.resume();
@@ -56,8 +55,12 @@ void GameContext::setActive(bool b) {
 
 void GameContext::update() {
 	// Handle win / loss cases
-	/*wlHandler.handleWinLose();
+	wlHandler.handleWinLose();
 	if (wlHandler.getState() == WinLoseHandler::State::ADVANCING_LEVEL) {
+		newContext = Game::CTX_WINLOSE;
+		return;
+	}
+/*
 		// Give bonus points/handle continues/etc
 		wlHandler.advanceLevel(window, sidePanel);
 		if (wlHandler.getState() == WinLoseHandler::State::GAME_WON) {
@@ -86,25 +89,25 @@ void GameContext::update() {
 	sidePanel.update();
 }
 
-bool GameContext::handleEvent(sf::Window& window, sf::Event event) {
+bool GameContext::handleEvent(sf::Window&, sf::Event event) {
+	auto pause_game = [this] () {
+		lm.pause();
+		newContext = Game::CTX_UI;
+	};
 	switch (event.type) {
-		/* TODO
 	case sf::Event::JoystickButtonPressed:
 		{
 			const auto btn = event.joystickButton;
 			const short pb = JoystickUtils::getPauseButton(btn.joystickId);
 			if (pb >= 0 && btn.button == static_cast<unsigned int>(pb))
-				toggle_pause_game(ui, lm, was_ui_active);
+				pause_game();
 			return true;
 		}
-		*/
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
-			/*
 		case sf::Keyboard::P:
-			toggle_pause_game(ui, lm, was_ui_active);
+			pause_game();
 			return true;
-		*/
 		case sf::Keyboard::Escape:
 			for (auto player : players) {
 				player->setRemainingLives(0);

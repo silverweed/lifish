@@ -43,6 +43,7 @@
 #include "MusicManager.hpp"
 #include "GameCache.hpp"
 #include "GameContext.hpp"
+#include "contexts.hpp"
 
 #ifdef MULTITHREADED
 #	ifdef SFML_SYSTEM_LINUX
@@ -167,6 +168,9 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	Game::options.musicVolume = 0; // FIXME
+	Game::options.soundsVolume = 0; // FIXME
+
 	if (levelset_name.length() < 1)
 		levelset_name = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
 	
@@ -174,7 +178,7 @@ int main(int argc, char **argv) {
 	Game::options.windowSize = sf::Vector2u(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
 	sf::RenderWindow window(
 			sf::VideoMode(Game::options.windowSize.x, Game::options.windowSize.y),
-			"Lifish " VERSION " (test)");
+			"Lifish " VERSION);
 	Game::options.vsync = true;
 	Game::options.framerateLimit = 120;
 	window.setFramerateLimit(Game::options.framerateLimit);
@@ -195,15 +199,18 @@ int main(int argc, char **argv) {
 	// load dynamic screens
 	ui.add(new Game::UI::ControlsScreen(window, Game::options.windowSize));
 	ui.add(new Game::UI::PreferencesScreen(window, Game::options.windowSize));
-	// TODO
-	//ui.setCurrent("pause");
 
-	// Initialize game
-	GameContext game(window, levelset_name, start_level);
+	// Create pointer to game context
+	std::unique_ptr<GameContext> game;
+
+	std::array<Game::WindowContext*, 3> contexts;
+	contexts[Game::CTX_UI] = &ui;
+	contexts[Game::CTX_GAME] = game.get();
+	// Note: this is always assumed non-null throughout the program
+	Game::WindowContext *cur_context = contexts[1];
 
 	// Adjust the origin to make room for side panel
 	sf::Vector2f origin(-Game::SIDE_PANEL_WIDTH, 0);
-	game.setOrigin(origin);
 
 #ifdef MULTITHREADED
 	// Start the rendering thread
@@ -218,26 +225,45 @@ int main(int argc, char **argv) {
 
 		///// EVENT LOOP /////
 		
-		if (ui.isActive()) 
-			ui.handleEvents(window);
-		else
-			game.handleEvents(window);
+		cur_context->handleEvents(window);
+
+		// Check context switch
+		{
+			const int nc = cur_context->getNewContext();
+			if (nc >= 0) {
+				cur_context->setActive(false);
+				cur_context->resetNewContext();
+				switch (nc) {
+				case Game::CTX_UI:
+					if (cur_context == game.get() && game->getLM().isGameOver())
+						ui.setCurrent("home");
+					else
+						ui.setCurrent("pause");
+					break;
+				case Game::CTX_GAME:
+					if (cur_context == &ui && ui.getCurrent() == "home") {
+						// Game started: create a new GameContext
+						game.reset(new Game::GameContext(window, levelset_name, start_level));
+						game->setOrigin(origin);
+						contexts[Game::CTX_GAME] = game.get();
+						contexts[Game::CTX_WINLOSE] = &game->getWLHandler().getInterlevelContext();
+					}
+					break;
+				}
+				cur_context = contexts[nc];
+				cur_context->setActive(true);
+			}
+		}
 
 		///// LOGIC LOOP /////
 
-		if (ui.isActive())
-			ui.update();
-		else 
-			game.update();
+		cur_context->update();
 
 		///// RENDERING LOOP //////
 
 #ifndef MULTITHREADED
 		window.clear();
-		if (ui.isActive())
-			window.draw(ui);
-		else 
-			window.draw(game);
+		window.draw(*cur_context);
 		
 		Game::maybeShowFPS(window);
 		window.display();

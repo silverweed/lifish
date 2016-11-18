@@ -8,7 +8,7 @@
 #include "game.hpp"
 #include "Entity.hpp"
 #include "Track.hpp"
-#include "EntityType.hpp"
+#include "entity_type.hpp"
 #include "utils.hpp"
 
 namespace Game {

@@ -37,6 +37,7 @@ public:
 	void setSize(const sf::Vector2u& sz) { size = sz; }
 	sf::Vector2u getSize() const { return size; }
 
+	std::string getCurrent() const;
 	void setCurrent(const std::string& name, bool overrideParent = false);
 	void setCurrentToParent();
 	void fireClick();
