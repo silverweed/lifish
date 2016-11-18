@@ -2,9 +2,12 @@
 #include "Killable.hpp"
 #include "Music.hpp"
 #include "BaseEventHandler.hpp"
+#include "Options.hpp"
 #include "core.hpp"
 #include "contexts.hpp"
 #include "MusicManager.hpp"
+#include "Bonusable.hpp"
+#include "bonus_type.hpp"
 #include "Player.hpp"
 #include "Controllable.hpp"
 #ifndef RELEASE
@@ -56,9 +59,11 @@ void GameContext::setActive(bool b) {
 void GameContext::update() {
 	// Handle win / loss cases
 	wlHandler.handleWinLose();
-	if (wlHandler.getState() == WinLoseHandler::State::ADVANCING_LEVEL) {
+	if (wlHandler.getState() == Game::WinLoseHandler::State::ADVANCING_LEVEL) {
 		newContext = Game::CTX_WINLOSE;
 		return;
+	} else if (wlHandler.getState() == Game::WinLoseHandler::State::ADVANCED_LEVEL) {
+		_advanceLevel();	
 	}
 /*
 		// Give bonus points/handle continues/etc
@@ -160,11 +165,41 @@ void GameContext::_printCDStats() const {
 }
 #endif
 
-//void GameContext::_togglePauseGame(UI::UI& ui, Game::LevelManager& lm) {
-	//if (ui.toggleActive()) {
-		//lm.pause();
-		//Game::musicManager->pause();
-	//} else {
-		//Game::musicManager->play();
-	//}
-//}
+void GameContext::_advanceLevel() {
+	short lvnum = level->getInfo().levelnum;
+	const auto& ls = level->getLevelSet();
+
+	if (lvnum == ls.getLevelsNum()) {
+		// TODO game won
+		return;
+	}
+
+	// Resurrect any dead player which has a 'continue' left and
+	// remove shield and speedy effects
+	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+		auto player = lm.getPlayer(i + 1);
+		if ((player == nullptr || player->get<Game::Killable>()->isKilled())
+				&& Game::playerContinues[i] > 0) 
+		{
+			//if (_displayContinue(window, panel, i + 1)) {
+				--Game::playerContinues[i];
+				auto player = std::make_shared<Player>(sf::Vector2f(0, 0), i + 1);
+				//player->get<Game::Controllable>()->setWindow(window); // TODO
+				lm.setPlayer(i + 1, player);
+			//} else {
+				//Game::playerContinues[i] = 0;
+				//lm.removePlayer(i + 1);
+			//}
+		} else if (player != nullptr) {
+			auto bns = player->get<Game::Bonusable>();
+			bns->giveBonus(Game::BonusType::SPEEDY, sf::Time::Zero);
+			bns->giveBonus(Game::BonusType::SHIELD, sf::Time::Zero);
+		}
+	}
+
+	level = ls.getLevel(lvnum + 1);
+	lm.setLevel(*level);
+	Game::musicManager->set(level->get<Game::Music>()->getMusic())
+		.setVolume(Game::options.musicVolume)
+		.play();
+}

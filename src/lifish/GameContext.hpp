@@ -51,6 +51,7 @@ private:
 #ifndef RELEASE
 	void _printCDStats() const;
 #endif
+	void _advanceLevel();
 
 public:
 	GameContext(sf::Window& window, const std::string& levelsetName, unsigned short startLv);

@@ -77,8 +77,8 @@ void InterlevelContext::_tickDistributePoints() {
 			bonusTime = sf::seconds(int(lm.getLevelTime().getRemainingTime().asSeconds()));
 		} else {
 			// Pass to next phase
+			newContext = Game::CTX_GAME;
 			// TODO: prompt continue
-			lm.advanceLevel();
 			_setGettingReady();
 			return;
 		}

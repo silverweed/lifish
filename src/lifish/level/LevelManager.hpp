@@ -130,8 +130,6 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void setOrigin(const sf::Vector2f& o) override;
-
-	void advanceLevel();
 };
 
 }

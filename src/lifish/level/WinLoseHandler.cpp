@@ -36,9 +36,11 @@ void WinLoseHandler::handleWinLose() {
 		_handleLoss();
 		break;
 	case State::ADVANCING_LEVEL:
+		state = State::ADVANCED_LEVEL;
+		break;
+	case State::ADVANCED_LEVEL:
 		state = State::DEFAULT;
 		break;
-
 	default:
 		_checkCondition();
 		break;
@@ -50,6 +52,7 @@ void WinLoseHandler::_handleWin() {
 	if (time >= sf::seconds(4)) {
 		levelClearSoundPlayed = false;
 		playerWinSoundPlayed = false;
+		lm.pause();
 		interlevelCtx.setAdvancingLevel();
 		state = State::ADVANCING_LEVEL;
 
