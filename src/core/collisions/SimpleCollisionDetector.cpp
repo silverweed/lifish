@@ -79,7 +79,9 @@ void SimpleCollisionDetector::update() {
 				{
 					//std::cerr << &collider->getOwner() << " colliding with " << &othcollider->getOwner()<<std::endl;
 					collider->addColliding(*jt);
-					if (othcollider->getOwner().get<Game::Moving>() == nullptr) {
+					if (collider->requestsForceAck() || othcollider->requestsForceAck()
+							|| othcollider->getOwner().get<Game::Moving>() == nullptr) 
+					{
 						// Let the entity know we collided with it.
 						// We only do that for non-moving entities to avoid problems with
 						// multiple collisions between two moving entities.

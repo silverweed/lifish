@@ -185,14 +185,23 @@ int main(int argc, char **argv) {
 	// Create pointer to game context
 	std::unique_ptr<GameContext> game;
 
+	// Adjust the origin to make room for side panel
+	sf::Vector2f origin(-Game::SIDE_PANEL_WIDTH, 0);
+
 	std::array<Game::WindowContext*, 3> contexts;
 	contexts[Game::CTX_UI] = &ui;
 	contexts[Game::CTX_GAME] = game.get();
 	// Note: this is always assumed non-null throughout the program
+#ifdef RELEASE
 	Game::WindowContext *cur_context = contexts[Game::CTX_UI];
-
-	// Adjust the origin to make room for side panel
-	sf::Vector2f origin(-Game::SIDE_PANEL_WIDTH, 0);
+#else
+	game.reset(new Game::GameContext(window, levelset_name, start_level));
+	game->setOrigin(origin);
+	contexts[Game::CTX_GAME] = game.get();
+	contexts[Game::CTX_INTERLEVEL] = &game->getWLHandler()
+					.getInterlevelContext();
+	Game::WindowContext *cur_context = contexts[Game::CTX_GAME];
+#endif
 
 #ifdef MULTITHREADED
 	Game::curContext = cur_context;

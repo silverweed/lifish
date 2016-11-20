@@ -4,7 +4,6 @@
 #include "AxisMoving.hpp"
 #include "Direction.hpp"
 
-#include "Bullet.hpp"
 #include <iostream>
 
 using namespace Game::CollisionUtils;

@@ -166,11 +166,13 @@ void LevelManager::reset() {
 
 bool LevelManager::canDeployBombAt(const sf::Vector2i& tile) const {
 	if (_isBombAt(tile)) return false;
-	for (const auto& e : entities.getFixedAt(tile.x, tile.y)) {
-		if (dynamic_cast<const Game::Explosion*>(&e.get()) != nullptr)
-			return false;
-	}
-	return true;
+	bool there_are_expl = false;
+	entities.apply([tile, &there_are_expl] (const Game::Entity *e) {
+		if (there_are_expl) return;
+		if (Game::tile(e->getPosition()) == tile && dynamic_cast<const Game::Explosion*>(e) != nullptr)
+			there_are_expl = true;
+	});
+	return !there_are_expl;
 }
 
 bool LevelManager::_isBombAt(const sf::Vector2i& tile) const {
