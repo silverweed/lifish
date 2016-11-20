@@ -50,7 +50,7 @@ public:
 	Game::AxisBullet* shoot(Game::Direction dir = Game::Direction::NONE);
 
 	/** Creates a FreeBullet moving with angle `angle` (rad) from its owner.
-	 *  Callee must take care of its destruction. 
+	 *  Caller must take care of its destruction. 
 	 *  Throws if attack is CONTACT.
 	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
