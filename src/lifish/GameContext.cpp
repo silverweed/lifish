@@ -68,37 +68,24 @@ void GameContext::update() {
 		return;
 	case Game::WinLoseHandler::State::ADVANCED_LEVEL:
 		_advanceLevel();	
-		// fallthrough
+		break;
+	case Game::WinLoseHandler::State::EXIT_GAME:
+		newContext = Game::CTX_UI;
+		break;
 	default: 
 		break;
 	}
-/*
-		// Give bonus points/handle continues/etc
-		wlHandler.advanceLevel(window, sidePanel);
-		if (wlHandler.getState() == WinLoseHandler::State::GAME_WON) {
-			// TODO
-		}
-		
-		for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i)
-			players[i] = lm.getPlayer(i + 1);
-		level = ls.getLevel(level->getInfo().levelnum + 1);
-		lm.setLevel(*level);
-		Game::musicManager->set(level->get<Game::Music>()->getMusic())
-			.setVolume(Game::options.musicVolume)
-			.play();
-		continue;
-	}
-*/
-	// Update level
-	if (!lm.isPaused())
-		lm.update();
 
-#	ifndef RELEASE
+	// Update level
+	if (!lm.isPaused()) {
+		lm.update();
+		sidePanel.update();
+	}
+
+#ifndef RELEASE
 	if (cycle++ % 50 == 0 && (debug >> DBG_PRINT_CD_STATS) == 1)
 		_printCDStats();
-#	endif
-
-	sidePanel.update();
+#endif
 }
 
 bool GameContext::handleEvent(sf::Window&, sf::Event event) {

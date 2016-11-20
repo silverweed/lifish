@@ -78,8 +78,7 @@ void WinLoseHandler::_handleLoss() {
 	if (lm.dropTextManager.isPlaying(Game::DroppingTextManager::Text::GAME_OVER))
 		return;
 
-	// TODO: back to home screen
-	Game::terminated = true;
+	state = State::EXIT_GAME;
 }
 
 void WinLoseHandler::_checkCondition() {

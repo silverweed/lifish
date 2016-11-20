@@ -228,7 +228,8 @@ int main(int argc, char **argv) {
 						game.reset(new Game::GameContext(window, levelset_name, start_level));
 						game->setOrigin(origin);
 						contexts[Game::CTX_GAME] = game.get();
-						contexts[Game::CTX_WINLOSE] = &game->getWLHandler().getInterlevelContext();
+						contexts[Game::CTX_WINLOSE] = &game->getWLHandler()
+										.getInterlevelContext();
 					}
 					break;
 				}

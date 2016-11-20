@@ -25,7 +25,8 @@ public:
 		HANDLING_LOSS,
 		ADVANCING_LEVEL,
 		ADVANCED_LEVEL,
-		GAME_WON
+		GAME_WON,
+		EXIT_GAME
 	};
 
 private:
