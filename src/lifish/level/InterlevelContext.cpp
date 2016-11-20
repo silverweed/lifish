@@ -69,10 +69,10 @@ void InterlevelContext::setAdvancingLevel() {
 	subtitleText.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
 }
 
-void InterlevelContext::_setGettingReady() {
+void InterlevelContext::setGettingReady(unsigned short lvnum) {
 	state = State::GETTING_READY;
 	clock.restart();
-	centralText.setString("LEVEL " + Game::to_string(lm.getLevel()->getInfo().levelnum + 1));
+	centralText.setString("LEVEL " + Game::to_string(lvnum));
 	auto bounds = centralText.getGlobalBounds();
 	centralText.setPosition(Game::center(bounds, WIN_BOUNDS));
 	subtitleText.setString("GET READY!");
@@ -93,7 +93,7 @@ void InterlevelContext::_setPromptContinue() {
 	while  (!mustPromptPlayer[idx] && idx < mustPromptPlayer.size()) ++idx;
 	if (idx == mustPromptPlayer.size()) {
 		// all players alive or without continues: skip this phase
-		_setGettingReady();
+		setGettingReady(lm.getLevel()->getInfo().levelnum + 1);
 		return;
 	}
 	state = State::PROMPT_CONTINUE;
@@ -207,7 +207,7 @@ void InterlevelContext::_ackPromptResponse() {
 		yesText.setFillColor(sf::Color(0, 0, 0, 0));
 		noText.setFillColor(sf::Color(0, 0, 0, 0));
 		subsubtitleText.setString("");
-		_setGettingReady();
+		setGettingReady(lm.getLevel()->getInfo().levelnum + 1);
 	}
 }
 

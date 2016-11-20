@@ -48,7 +48,6 @@ class InterlevelContext : public Game::WindowContext {
 	void _givePoints(int amount);
 	void _tickDistributePoints();
 	void _tickWaitDistributePoints();
-	void _setGettingReady();
 	void _tickGettingReady();
 	void _setPromptContinue();
 	void _tickPromptContinue();
@@ -59,6 +58,7 @@ class InterlevelContext : public Game::WindowContext {
 public:
 	explicit InterlevelContext(Game::LevelManager& lm, const Game::SidePanel& sidePanel);
 
+	void setGettingReady(unsigned short lvnum);
 	void setAdvancingLevel();
 
 	void update() override;

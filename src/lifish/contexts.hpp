@@ -3,9 +3,9 @@
 namespace Game {
 
 enum Context {
-	CTX_GAME    = 0,
-	CTX_UI      = 1,
-	CTX_WINLOSE = 2
+	CTX_GAME       = 0,
+	CTX_UI         = 1,
+	CTX_INTERLEVEL = 2
 };
 
 }

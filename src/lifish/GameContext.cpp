@@ -65,7 +65,7 @@ void GameContext::update() {
 	wlHandler.handleWinLose();
 	switch (wlHandler.getState()) {
 	case Game::WinLoseHandler::State::ADVANCING_LEVEL:
-		newContext = Game::CTX_WINLOSE;
+		newContext = Game::CTX_INTERLEVEL;
 		return;
 	case Game::WinLoseHandler::State::ADVANCED_LEVEL:
 		_advanceLevel();	

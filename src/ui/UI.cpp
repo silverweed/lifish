@@ -115,6 +115,8 @@ void UI::fireClick() {
 		setCurrentToParent();
 		break;
 	case Action::START_GAME:
+		newContext = Game::CTX_INTERLEVEL;
+		break;
 	case Action::DEACTIVATE_UI:
 		newContext = Game::CTX_GAME;
 		break;

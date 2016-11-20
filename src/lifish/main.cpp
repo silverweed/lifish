@@ -222,14 +222,17 @@ int main(int argc, char **argv) {
 					else
 						ui.setCurrent("pause");
 					break;
-				case Game::CTX_GAME:
+				case Game::CTX_INTERLEVEL:
 					if (cur_context == &ui && ui.getCurrent() == "home") {
 						// Game started: create a new GameContext
 						game.reset(new Game::GameContext(window, levelset_name, start_level));
 						game->setOrigin(origin);
 						contexts[Game::CTX_GAME] = game.get();
-						contexts[Game::CTX_WINLOSE] = &game->getWLHandler()
+						contexts[Game::CTX_INTERLEVEL] = &game->getWLHandler()
 										.getInterlevelContext();
+						game->getLM().pause();
+						static_cast<Game::InterlevelContext*>(contexts[Game::CTX_INTERLEVEL])
+											->setGettingReady(start_level);
 					}
 					break;
 				}
