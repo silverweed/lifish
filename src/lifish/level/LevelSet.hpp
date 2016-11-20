@@ -31,7 +31,7 @@ public:
 	// FIXME: make this return a bool
 	void loadFromFile(const std::string& jsonPath);
 
-	/** Constructs the i-th level and returns it if init() is successful. */
+	/** Constructs the i-th level (starting from 1) and returns it if init() is successful. */
 	std::unique_ptr<Level> getLevel(unsigned short i) const;
 	unsigned short getLevelsNum() const { return levels.size(); }
 

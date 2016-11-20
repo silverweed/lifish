@@ -21,6 +21,7 @@ using Game::GameContext;
 
 GameContext::GameContext(sf::Window& window, const std::string& levelsetName, unsigned short startLv)
 	: Game::WindowContext()
+	, window(window)
 	, lm()
 	, sidePanel(lm)
 	, wlHandler(lm, sidePanel)
@@ -168,7 +169,7 @@ void GameContext::_advanceLevel() {
 
 	if (lvnum == ls.getLevelsNum()) {
 		// TODO game won
-		return;
+		//return;
 	}
 
 	// Resurrect any dead player which has a 'continue' left and
@@ -179,7 +180,7 @@ void GameContext::_advanceLevel() {
 			if (Game::playerContinues[i] > 0) {
 				--Game::playerContinues[i];
 				auto player = std::make_shared<Player>(sf::Vector2f(0, 0), i + 1);
-				//player->get<Game::Controllable>()->setWindow(window); // TODO
+				player->get<Game::Controllable>()->setWindow(window); 
 				lm.setPlayer(i + 1, player);
 			} else {
 				lm.removePlayer(i + 1);

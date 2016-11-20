@@ -118,7 +118,10 @@ void LevelManager::setOrigin(const sf::Vector2f& pos) {
 void LevelManager::setNextLevel() {
 	if (level == nullptr)
 		throw std::logic_error("Called LevelManager::setNextLevel() with null level!");
-	setLevel(level->getLevelSet(), level->getInfo().levelnum + 1);
+	short lvnum = level->getInfo().levelnum + 1;
+	if (lvnum >= level->getLevelSet().getLevelsNum())
+		lvnum = 1;
+	setLevel(level->getLevelSet(), lvnum);
 }
 
 void LevelManager::setLevel(const Game::LevelSet& ls, unsigned short lvnum) {

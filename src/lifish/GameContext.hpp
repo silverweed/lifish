@@ -40,6 +40,7 @@ private:
 	/** Whether this Context was already active (false if it has just been activated) */
 	bool wasActive = true;
 
+	const sf::Window& window;
 	Game::LevelSet ls;
 	Game::LevelManager lm;
 	Game::SidePanel sidePanel;
@@ -52,7 +53,7 @@ private:
 	void _advanceLevel();
 
 public:
-	GameContext(sf::Window& window, const std::string& levelsetName, unsigned short startLv);
+	explicit GameContext(sf::Window& window, const std::string& levelsetName, unsigned short startLv);
 
 	Game::WinLoseHandler& getWLHandler() { return wlHandler; }
 	const Game::WinLoseHandler& getWLHandler() const { return wlHandler; }
