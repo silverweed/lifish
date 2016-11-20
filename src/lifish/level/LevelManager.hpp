@@ -15,6 +15,7 @@
 namespace Game {
 
 class LevelLoader;
+class LevelSet;
 class SaveManager;
 class WinLoseHandler;
 class Player;
@@ -33,7 +34,7 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable, public 
 	friend class Game::WinLoseHandler;
 
 	/** The currently managed level */
-	Game::Level *level = nullptr;
+	std::unique_ptr<Game::Level> level;
 	Game::LevelRenderer renderer;
 	Game::LevelTime levelTime;
 
@@ -98,8 +99,11 @@ public:
 	const Game::EntityGroup& getEntities() const { return entities; }
 	Game::EntityGroup& getEntities() { return entities; }
 
-	const Game::Level* getLevel() const { return level; }
-	void setLevel(Game::Level& level);
+	const Game::Level* getLevel() const { return level != nullptr ? level.get() : nullptr; }
+	/** Loads `lvnum`-th level from `ls` into this LevelManager. Destroys previous level if any */
+	void setLevel(const Game::LevelSet& ls, unsigned short lvnum);
+	/** Loads next level from `level->getLevelSet()`. Throws if `level` is currently null */
+	void setNextLevel();
 
 	const Game::LevelTime& getLevelTime() const { return levelTime; }
 	const Game::CollisionDetector& getCollisionDetector() const { return cd; }

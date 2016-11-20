@@ -34,14 +34,17 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, un
 	ls.loadFromFile(levelsetName);
 	if (lvnum > ls.getLevelsNum())
 		lvnum %= ls.getLevelsNum();
-	level = std::unique_ptr<Game::Level>(ls.getLevel(lvnum));
 
 	// Create the players
 	players = lm.createNewPlayers();
 	for (auto p : players)
 		p->get<Game::Controllable>()->setWindow(window);
 
-	lm.setLevel(*level);
+	lm.setLevel(ls, lvnum);
+
+	const auto level = lm.getLevel();
+	if (level == nullptr)
+		throw std::invalid_argument("Level " + Game::to_string(lvnum) + " not found in levelset!");
 
 	// Setup the music
 	Game::musicManager->set(level->get<Game::Music>()->getMusic()); 
@@ -59,11 +62,15 @@ void GameContext::setActive(bool b) {
 void GameContext::update() {
 	// Handle win / loss cases
 	wlHandler.handleWinLose();
-	if (wlHandler.getState() == Game::WinLoseHandler::State::ADVANCING_LEVEL) {
+	switch (wlHandler.getState()) {
+	case Game::WinLoseHandler::State::ADVANCING_LEVEL:
 		newContext = Game::CTX_WINLOSE;
 		return;
-	} else if (wlHandler.getState() == Game::WinLoseHandler::State::ADVANCED_LEVEL) {
+	case Game::WinLoseHandler::State::ADVANCED_LEVEL:
 		_advanceLevel();	
+		// fallthrough
+	default: 
+		break;
 	}
 /*
 		// Give bonus points/handle continues/etc
@@ -166,6 +173,9 @@ void GameContext::_printCDStats() const {
 #endif
 
 void GameContext::_advanceLevel() {
+	const auto level = lm.getLevel();
+	if (level == nullptr)
+		throw std::logic_error("Called _advanceLevel on null level!");
 	short lvnum = level->getInfo().levelnum;
 	const auto& ls = level->getLevelSet();
 
@@ -175,31 +185,32 @@ void GameContext::_advanceLevel() {
 	}
 
 	// Resurrect any dead player which has a 'continue' left and
-	// remove shield and speedy effects
+	// remove temporary effects
 	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
 		auto player = lm.getPlayer(i + 1);
-		if ((player == nullptr || player->get<Game::Killable>()->isKilled())
-				&& Game::playerContinues[i] > 0) 
-		{
-			//if (_displayContinue(window, panel, i + 1)) {
+		if ((player == nullptr || player->get<Game::Killable>()->isKilled())) {
+			if (Game::playerContinues[i] > 0) {
 				--Game::playerContinues[i];
 				auto player = std::make_shared<Player>(sf::Vector2f(0, 0), i + 1);
 				//player->get<Game::Controllable>()->setWindow(window); // TODO
 				lm.setPlayer(i + 1, player);
-			//} else {
-				//Game::playerContinues[i] = 0;
-				//lm.removePlayer(i + 1);
-			//}
+			} else {
+				lm.removePlayer(i + 1);
+			}
 		} else if (player != nullptr) {
 			auto bns = player->get<Game::Bonusable>();
-			bns->giveBonus(Game::BonusType::SPEEDY, sf::Time::Zero);
-			bns->giveBonus(Game::BonusType::SHIELD, sf::Time::Zero);
+			bns->expireTemporaryBonuses();
 		}
 	}
 
-	level = ls.getLevel(lvnum + 1);
-	lm.setLevel(*level);
-	Game::musicManager->set(level->get<Game::Music>()->getMusic())
-		.setVolume(Game::options.musicVolume)
-		.play();
+	lm.setNextLevel();
+	{
+		const auto level = lm.getLevel();
+		if (level == nullptr)
+			throw std::logic_error("No levels found after " + Game::to_string(lvnum) 
+					+ " but end game not triggered!");
+		Game::musicManager->set(level->get<Game::Music>()->getMusic())
+			.setVolume(Game::options.musicVolume)
+			.play();
+	}
 }

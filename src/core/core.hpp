@@ -19,6 +19,9 @@ namespace Game {
 struct Options;
 class MusicManager;
 class GameCache;
+#ifdef MULTITHREADED
+class WindowContext;
+#endif
 
 /****************************************************************************/
 /*                         GLOBAL DEFINITIONS                               */
@@ -59,6 +62,13 @@ extern Game::Options options;
  *  itself has automatic lifetime and is guaranteed to die before the main's exit.
  */
 extern Game::MusicManager *musicManager;
+
+#ifdef MULTITHREADED
+/** Pointer to the current WindowContext (unowned), used by the rendering thread
+ *  to draw the correct context with no hassle.
+ */
+extern Game::WindowContext *curContext;
+#endif
 
 /** If true, the game exits after the current loop */
 extern bool terminated;

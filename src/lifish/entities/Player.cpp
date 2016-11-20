@@ -2,6 +2,7 @@
 #include "Lifed.hpp"
 #include "Sounded.hpp"
 #include "MovingAnimator.hpp"
+#include "Clock.hpp"
 #include "AxisMoving.hpp"
 #include "Collider.hpp"
 #include "Animated.hpp"

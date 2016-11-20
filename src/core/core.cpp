@@ -21,6 +21,9 @@ Game::Options Game::options;
 bool Game::terminated = false;
 int Game::exitCode = 0;
 Game::MusicManager *Game::musicManager = nullptr;
+#ifdef MULTITHREADED
+Game::WindowContext *Game::curContext = nullptr;
+#endif
 
 static void _initOptions() {
 	using Game::options;

@@ -119,28 +119,10 @@ static void load_icon(sf::Window& window) {
 }
 
 #ifdef MULTITHREADED
-static void rendering_loop(sf::RenderWindow& window, const Game::LevelManager& lm, 
-		const Game::SidePanel& sidePanel, const Game::UI::UI& ui)
-{
+static void rendering_loop(sf::RenderWindow& window) {
 	while (window.isOpen() && !Game::terminated) {
-		sf::Event event;
-		while (window.pollEvent(event)) {
-			switch (event.type) {
-				case sf::Event::Resized:
-					window.setView(keep_ratio(event.size, sf::Vector2u(
-							Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT)));
-					break;
-				default:
-					break;
-			}
-		}
 		window.clear();
-		if (ui.isActive()) {
-			window.draw(ui);	
-		} else {
-			window.draw(lm);
-			window.draw(sidePanel);
-		}
+		window.draw(*Game::curContext);
 		Game::maybeShowFPS(window);
 		window.display();
 	}
@@ -207,18 +189,18 @@ int main(int argc, char **argv) {
 	contexts[Game::CTX_UI] = &ui;
 	contexts[Game::CTX_GAME] = game.get();
 	// Note: this is always assumed non-null throughout the program
-	Game::WindowContext *cur_context = contexts[1];
+	Game::WindowContext *cur_context = contexts[Game::CTX_UI];
 
 	// Adjust the origin to make room for side panel
 	sf::Vector2f origin(-Game::SIDE_PANEL_WIDTH, 0);
 
 #ifdef MULTITHREADED
+	Game::curContext = cur_context;
 	// Start the rendering thread
 	window.setActive(false);
 	const sf::Time frame_time_limit = sf::seconds(1 / 60.);
 	sf::Clock frame_clock;
-	std::thread rendering_thread(rendering_loop, std::ref(window),
-			std::cref(lm), std::cref(sidePanel), std::cref(ui));
+	std::thread rendering_thread(rendering_loop, std::ref(window));
 #endif
 
 	while (window.isOpen() && !Game::terminated) {
@@ -252,6 +234,9 @@ int main(int argc, char **argv) {
 				}
 				cur_context = contexts[nc];
 				cur_context->setActive(true);
+#ifdef MULTITHREADED
+				Game::curContext = cur_context;
+#endif
 			}
 		}
 

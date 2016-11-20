@@ -31,8 +31,8 @@ public:
 private:
 	State state = State::DEFAULT;
 	
-	Game::InterlevelContext interlevelCtx;
 	Game::LevelManager& lm;
+	Game::InterlevelContext interlevelCtx;
 	sftools::Chronometer clock;
 	bool levelClearSoundPlayed = false,
 	     playerWinSoundPlayed = false;

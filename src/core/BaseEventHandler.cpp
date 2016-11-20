@@ -10,21 +10,17 @@ bool BaseEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 	case sf::Event::Closed:
 		window.close();
 		return true;
-#ifndef MULTITHREADED
 	case sf::Event::Resized:
 		static_cast<sf::RenderWindow&>(window).setView(_keepRatio(event.size, Game::options.windowSize));
 		return true;
-#endif
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
-#ifndef MULTITHREADED
 		case sf::Keyboard::V:
 			Game::options.vsync = !Game::options.vsync;
 			window.setFramerateLimit(Game::options.vsync ? Game::options.framerateLimit : 0);
 			return true;
 		default:
 			break;
-#endif
 		}
 	default: 
 		break;

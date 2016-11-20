@@ -1,7 +1,10 @@
 #include "InterlevelContext.hpp"
 #include "contexts.hpp"
 #include "Level.hpp"
+#include "BaseEventHandler.hpp"
 #include "LevelManager.hpp"
+#include "Killable.hpp"
+#include "Player.hpp"
 #include "GameCache.hpp"
 #include "SidePanel.hpp"
 #include <iostream>
@@ -16,6 +19,8 @@ InterlevelContext::InterlevelContext(Game::LevelManager& lm, const Game::SidePan
 	: lm(lm)
 	, sidePanel(sidePanel)
 {
+	handlers.push_back(std::unique_ptr<Game::EventHandler>(new Game::BaseEventHandler));
+
 	const std::string fontname = Game::getAsset("fonts", Game::Fonts::INTERLEVEL);
 	if (!interlevelFont.loadFromFile(fontname)) {
 		std::cerr << "[WinLoseHandler.cpp] Error: couldn't load font " << fontname << std::endl;
@@ -25,9 +30,33 @@ InterlevelContext::InterlevelContext(Game::LevelManager& lm, const Game::SidePan
 	centralText.setCharacterSize(13);
 	subtitleText.setFont(interlevelFont);
 	subtitleText.setCharacterSize(13);
+	subsubtitleText.setFont(interlevelFont);
+	subsubtitleText.setCharacterSize(13);
+	yesText.setFont(interlevelFont);
+	yesText.setCharacterSize(13);
+	noText.setFont(interlevelFont);
+	noText.setCharacterSize(13);
+
+	// Position yes / no texts
+	sf::Text dummyText("YES / NO_", interlevelFont, 13);
+	auto bounds = dummyText.getGlobalBounds();
+	dummyText.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0, 2 * bounds.height));
+	yesText.setString("YES");
+	yesText.setPosition(dummyText.getPosition());
+	dummyText.setString("YES /_");
+	bounds = dummyText.getGlobalBounds();
+	noText.setString("NO");
+	noText.setPosition(dummyText.getPosition() + sf::Vector2f(bounds.width, 0));
+	yesText.setFillColor(sf::Color(255, 0, 0, 0));
+	noText.setFillColor(sf::Color(255, 255, 255, 0));
 }
 
 void InterlevelContext::setAdvancingLevel() {
+	if (lm.getLevelTime().getRemainingTime() <= sf::Time::Zero) {
+		// No time remaining: skip this phase
+		_setPromptContinue();
+		return;
+	}
 	state = State::DISTRIBUTING_POINTS;
 	lastTickTime = clock.restart();
 	bonusPoints = 0;
@@ -43,12 +72,55 @@ void InterlevelContext::setAdvancingLevel() {
 void InterlevelContext::_setGettingReady() {
 	state = State::GETTING_READY;
 	clock.restart();
-	centralText.setString("LEVEL " + Game::to_string(lm.getLevel()->getInfo().levelnum));
+	centralText.setString("LEVEL " + Game::to_string(lm.getLevel()->getInfo().levelnum + 1));
 	auto bounds = centralText.getGlobalBounds();
 	centralText.setPosition(Game::center(bounds, WIN_BOUNDS));
 	subtitleText.setString("GET READY!");
 	bounds = subtitleText.getGlobalBounds();
 	subtitleText.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
+}
+
+void InterlevelContext::_setPromptContinue() {
+	// Check if there are dead players with continues left
+	mustPromptPlayer.fill(false);
+	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+		const auto player = lm.getPlayer(i + 1);
+		if ((player == nullptr || player->get<Game::Killable>()->isKilled()) && Game::playerContinues[i] > 0) {
+			mustPromptPlayer[i] = true;	
+		}
+	}
+	unsigned short idx = 0;
+	while  (!mustPromptPlayer[idx] && idx < mustPromptPlayer.size()) ++idx;
+	if (idx == mustPromptPlayer.size()) {
+		// all players alive or without continues: skip this phase
+		_setGettingReady();
+		return;
+	}
+	state = State::PROMPT_CONTINUE;
+	clock.restart();
+	_preparePromptContinue(idx);
+}
+
+void InterlevelContext::_preparePromptContinue(unsigned short idx) {
+	curPromptedPlayer = idx;
+	centralText.setString("P" + Game::to_string(idx+1) + " CONTINUE? (" 
+			+ Game::to_string(Game::playerContinues[idx]) + " left)");
+	auto bounds = centralText.getGlobalBounds();
+	centralText.setPosition(Game::center(bounds, WIN_BOUNDS));
+	subtitleText.setString("/");
+	bounds = subtitleText.getGlobalBounds();
+	subtitleText.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
+	subsubtitleText.setString("Arrows / Enter to select");
+	subsubtitleText.setCharacterSize(13);
+	bounds = subsubtitleText.getGlobalBounds();
+	subsubtitleText.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 4 * bounds.height));
+	subsubtitleText.setCharacterSize(10);
+	bounds = subsubtitleText.getGlobalBounds();
+	subsubtitleText.setPosition(Game::centerX(bounds, WIN_BOUNDS), bounds.top);
+	yesText.setFillColor(sf::Color::Red);
+	yesText.setCharacterSize(15);
+	noText.setFillColor(sf::Color::White);
+	noText.setCharacterSize(13);
 }
 
 void InterlevelContext::update() {
@@ -58,6 +130,11 @@ void InterlevelContext::update() {
 		break;
 	case State::GETTING_READY:
 		_tickGettingReady();
+		break;
+	case State::WAIT_DISTRIBUTING_POINTS:
+		_tickWaitDistributePoints();
+		// fallthrough
+	default:
 		break;
 	}
 }
@@ -73,13 +150,12 @@ void InterlevelContext::_tickDistributePoints() {
 	
 	if (bonusTime == sf::Time::Zero) {
 		if (bonusPoints == 0) {
-			// First assignment of bonusTime
+			// First assignment of bonusTime: truncate decimals of remaining time
 			bonusTime = sf::seconds(int(lm.getLevelTime().getRemainingTime().asSeconds()));
 		} else {
 			// Pass to next phase
-			newContext = Game::CTX_GAME;
-			// TODO: prompt continue
-			_setGettingReady();
+			clock.restart();
+			state = State::WAIT_DISTRIBUTING_POINTS;
 			return;
 		}
 	}
@@ -109,13 +185,72 @@ void InterlevelContext::_tickGettingReady() {
 		newContext = Game::CTX_GAME;
 }
 
-bool InterlevelContext::handleEvent(sf::Window& window, sf::Event evt) {
+void InterlevelContext::_tickWaitDistributePoints() {
+	if (clock.getElapsedTime() > sf::seconds(2))
+		_setPromptContinue();
+}
+
+void InterlevelContext::_ackPromptResponse() {
+	// If player wants to continue, don't do anything here: it'll be the GameContext
+	// to check if the player has spare continues, and will resurrect it if so.
+	// Otherwise, zero its continues so it won't be resurrected.
+	if (!yesSelected)
+		Game::playerContinues[curPromptedPlayer] = 0;
+	do {
+		++curPromptedPlayer;
+	} while (!mustPromptPlayer[curPromptedPlayer] && curPromptedPlayer < mustPromptPlayer.size());
+
+	if (curPromptedPlayer < mustPromptPlayer.size())
+		_preparePromptContinue(curPromptedPlayer);
+	else  {
+		// all due players were prompted
+		yesText.setFillColor(sf::Color(0, 0, 0, 0));
+		noText.setFillColor(sf::Color(0, 0, 0, 0));
+		subsubtitleText.setString("");
+		_setGettingReady();
+	}
+}
+
+bool InterlevelContext::handleEvent(sf::Window&, sf::Event event) {
+	if (state != State::PROMPT_CONTINUE) return false;
+	switch (event.type) {
+	case sf::Event::JoystickButtonPressed:
+		// TODO
+		break;
+	case sf::Event::KeyPressed:
+		switch (event.key.code) {
+		case sf::Keyboard::Left:
+			yesSelected = true;
+			yesText.setFillColor(sf::Color::Red);
+			yesText.setCharacterSize(15);
+			noText.setFillColor(sf::Color::White);
+			noText.setCharacterSize(13);
+			return true;
+		case sf::Keyboard::Right:
+			yesSelected = false;
+			noText.setFillColor(sf::Color::Red);
+			noText.setCharacterSize(15);
+			yesText.setFillColor(sf::Color::White);
+			yesText.setCharacterSize(13);
+			return true;
+		case sf::Keyboard::Return:
+			_ackPromptResponse();
+			return true;
+		default:
+			break;
+		}
+	default:
+		break;
+	}
 	return false;
 }
 	
 void InterlevelContext::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	window.draw(centralText, states);
 	window.draw(subtitleText, states);
+	window.draw(yesText, states);
+	window.draw(noText, states);
+	window.draw(subsubtitleText, states);
 	window.draw(sidePanel, states);
 }
 
@@ -126,217 +261,3 @@ void InterlevelContext::_givePoints(int amount) {
 			Game::score[i] += amount;
 	}
 }
-
-/*
-void WinLoseHandler::advanceLevel(sf::RenderWindow& window, const Game::SidePanel& panel) {
-	// Display the time bonus on screen
-	auto time_bonus = lm.getLevelTime().getRemainingTime();
-	
-	sf::Text time_bonus_text("TIME BONUS!", interlevelFont, 13);
-	if (time_bonus > sf::Time::Zero) {
-		auto bounds = time_bonus_text.getGlobalBounds();
-		time_bonus_text.setPosition(Game::center(bounds, WIN_BOUNDS));
-
-		window.clear();
-		window.draw(time_bonus_text);
-		
-		sf::Text points_text("0", interlevelFont, 13);
-		bounds = points_text.getGlobalBounds();
-		points_text.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
-
-		window.draw(points_text);
-		window.draw(panel);
-		window.display();
-
-		sf::sleep(sf::seconds(2));
-
-		// Assign time bonus points
-		unsigned int points = 0;
-		auto givePoints = [this] (int amount) {
-			for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
-				auto player = lm.getPlayer(i + 1);
-				if (player != nullptr)
-					Game::score[i] += amount;
-			}
-		};
-		auto& levelTime = const_cast<Game::LevelTime&>(lm.getLevelTime());
-		const auto time_bonus_sound = Game::getAsset("sounds", Game::TIME_BONUS_SOUND);
-		while (time_bonus > sf::Time::Zero) {
-			if (time_bonus > sf::seconds(60)) {
-				time_bonus -= sf::seconds(60);
-				levelTime.setTime(time_bonus);
-				points += 1000;
-				givePoints(1000);
-			} else {
-				time_bonus -= sf::seconds(1);
-				levelTime.setTime(time_bonus);
-				points += 100;
-				givePoints(100);
-			}
-			points_text.setString(Game::to_string(points));
-			points_text.setPosition(Game::center(points_text.getGlobalBounds(), WIN_BOUNDS)
-					+ sf::Vector2f(0.f, 2 * bounds.height));
-			Game::cache.playSound(time_bonus_sound);
-
-			window.clear();
-			window.draw(time_bonus_text);
-			window.draw(points_text);
-			window.draw(panel);
-			window.display();
-			sf::sleep(sf::milliseconds(60));
-		}
-
-		sf::sleep(sf::seconds(2));
-	}
-
-	const auto level = lm.getLevel();
-	const auto& levelSet = level->getLevelSet();
-	short lvnum = level->getInfo().levelnum;
-
-	if (lvnum == levelSet.getLevelsNum()) {
-		state = State::GAME_WON;
-	}
-
-	// Resurrect any dead player which has a 'continue' left and
-	// remove shield and speedy effects
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
-		auto player = lm.getPlayer(i + 1);
-		if ((player == nullptr || player->get<Game::Killable>()->isKilled())
-				&& Game::playerContinues[i] > 0) 
-		{
-			if (_displayContinue(window, panel, i + 1)) {
-				--Game::playerContinues[i];
-				auto player = std::make_shared<Player>(sf::Vector2f(0, 0), i + 1);
-				player->get<Game::Controllable>()->setWindow(window);
-				lm.setPlayer(i + 1, player);
-			} else {
-				Game::playerContinues[i] = 0;
-				lm.removePlayer(i + 1);
-			}
-		} else if (player != nullptr) {
-			auto bns = player->get<Game::Bonusable>();
-			bns->giveBonus(Game::BonusType::SPEEDY, sf::Time::Zero);
-			bns->giveBonus(Game::BonusType::SHIELD, sf::Time::Zero);
-		}
-	}
-
-	_displayGetReady(window, panel, lvnum);
-}
-
-void WinLoseHandler::_displayGetReady(sf::RenderWindow& window, const Game::SidePanel& panel, short lvnum) {
-	std::stringstream ss;
-	ss << "LEVEL " << (lvnum + 1);
-	sf::Text text(ss.str(), interlevelFont, 13);
-	text.setPosition(Game::center(text.getGlobalBounds(), WIN_BOUNDS));
-
-	window.clear();
-	window.draw(text);
-
-	text.setString("GET READY!");
-	const auto bounds = text.getGlobalBounds();
-	text.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
-
-	window.draw(text);
-	window.draw(panel);
-	window.display();
-
-	sf::sleep(sf::seconds(3));
-}
-
-bool WinLoseHandler::_displayContinue(sf::RenderWindow& window, const Game::SidePanel& panel, short playernum) {
-	std::vector<sf::Text> texts;
-
-	std::stringstream ss;
-	ss << "PLAYER " << playernum << " CONTINUE?";
-	sf::Text text(ss.str(), interlevelFont, 13);
-	text.setPosition(Game::center(text.getGlobalBounds(), WIN_BOUNDS));
-	texts.push_back(text);
-
-	ss.str("");
-	ss << "(" << Game::playerContinues[playernum-1] << " remaining)";
-	text.setString(ss.str());
-	auto bounds = text.getGlobalBounds();
-	text.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
-	texts.push_back(text);
-
-	// Dummy text to get the correct bounds
-	text.setString("YES / NO");
-	text.setCharacterSize(15);
-	bounds = text.getGlobalBounds();
-	
-	sf::Text yes_text("YES", interlevelFont, 15);
-	yes_text.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 4 * bounds.height));
-	yes_text.setFillColor(sf::Color::Red);
-
-	bounds = yes_text.getGlobalBounds();
-	text.setString(" / ");
-	text.setPosition(sf::Vector2f(bounds.left + bounds.width, bounds.top));
-	texts.push_back(text);
-
-	bounds = text.getGlobalBounds();
-	sf::Text no_text("NO", interlevelFont, 15);
-	no_text.setPosition(sf::Vector2f(bounds.left + bounds.width, bounds.top));
-
-	text.setString("Arrows / Enter to select");
-	text.setCharacterSize(10);
-	text.setPosition(Game::center(text.getGlobalBounds(), WIN_BOUNDS) + sf::Vector2f(0.f, 6 * bounds.height));
-	texts.push_back(text);
-
-	auto drawTexts = [&texts, &window] {
-		for (const auto& text : texts)
-			window.draw(text);
-	};
-
-	drawTexts();
-	window.draw(panel);
-	window.display();
-
-	bool yes_selected = true;
-
-	while (window.isOpen()) {
-		sf::Event event;
-		while (window.pollEvent(event)) {
-			switch (event.type) {
-			case sf::Event::Closed:
-				window.close();
-				return false;
-			case sf::Event::KeyPressed:
-				switch (event.key.code) {
-				case sf::Keyboard::Left:
-					yes_selected = true;
-					break;
-				case sf::Keyboard::Right:
-					yes_selected = false;
-					break;
-				case sf::Keyboard::Return:
-					return yes_selected;
-				case sf::Keyboard::Key::F:
-					Game::options.showFPS = !Game::options.showFPS;
-					break;
-				default:
-					break;
-				}
-			default:
-				break;
-			}
-		}
-
-		if (yes_selected) {
-			yes_text.setFillColor(sf::Color::Red);
-			no_text.setFillColor(sf::Color::White);
-		} else {
-			yes_text.setFillColor(sf::Color::White);
-			no_text.setFillColor(sf::Color::Red);
-		}
-
-		window.clear();
-		window.draw(panel);
-		drawTexts();
-		window.draw(yes_text);
-		window.draw(no_text);
-		Game::maybeShowFPS(window);
-		window.display();	
-	}
-
-	return false;
-}*/

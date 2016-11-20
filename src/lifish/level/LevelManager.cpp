@@ -1,7 +1,9 @@
 #include "LevelManager.hpp"
 #include "game_logic.hpp"
 #include "Enemy.hpp"
+#include "Clock.hpp"
 #include "AxisMoving.hpp"
+#include "LevelSet.hpp"
 #include "Foe.hpp"
 #include "Music.hpp"
 #include "MusicManager.hpp"
@@ -113,10 +115,16 @@ void LevelManager::setOrigin(const sf::Vector2f& pos) {
 		level->setOrigin(pos);
 }
 
-void LevelManager::setLevel(Game::Level& lv) {
-	level = &lv;
-	lv.setOrigin(origin);
-	Game::LevelLoader::load(lv, *this);
+void LevelManager::setNextLevel() {
+	if (level == nullptr)
+		throw std::logic_error("Called LevelManager::setNextLevel() with null level!");
+	setLevel(level->getLevelSet(), level->getInfo().levelnum + 1);
+}
+
+void LevelManager::setLevel(const Game::LevelSet& ls, unsigned short lvnum) {
+	level = ls.getLevel(lvnum);
+	level->setOrigin(origin);
+	Game::LevelLoader::load(*level, *this);
 	// Don't trigger EXTRA game if there were no coins in the level
 	if (entities.size<Game::Coin>() == 0)
 		extraGameTriggered = true;

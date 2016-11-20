@@ -44,9 +44,7 @@ private:
 	Game::LevelManager lm;
 	Game::SidePanel sidePanel;
 	Game::WinLoseHandler wlHandler;
-	std::unique_ptr<Game::Level> level;
 	std::vector<std::shared_ptr<Game::Player>> players;
-	int lvnum;
 
 #ifndef RELEASE
 	void _printCDStats() const;

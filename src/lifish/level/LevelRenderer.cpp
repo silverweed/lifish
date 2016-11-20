@@ -14,8 +14,8 @@ LevelRenderer::LevelRenderer(Game::LevelManager& owner)
 {}
 
 void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	const auto level = owner.level;
-	if (level == nullptr) return;
+	const auto level = owner.getLevel();
+	if (level == nullptr || !level->isInitialized()) return;
 
 	target.draw(*level, states);
 

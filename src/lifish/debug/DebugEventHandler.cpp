@@ -16,7 +16,7 @@ DebugEventHandler::DebugEventHandler(Game::GameContext& game)
 	: game(game)
 {}
 
-bool DebugEventHandler::handleEvent(sf::Window& window, sf::Event event) {
+bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 	switch (event.type) {
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
@@ -47,23 +47,24 @@ bool DebugEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 			});
 			return true;
 		case sf::Keyboard::Add:
-			game.lvnum = game.level->getInfo().levelnum + 1;
-			if (game.lvnum > game.ls.getLevelsNum())
-				game.lvnum = 1;
-			game.level = game.ls.getLevel(game.lvnum);
-			Game::musicManager->set(game.level->get<Game::Music>()->getMusic())
-				.setVolume(Game::options.musicVolume).play();
-			game.lm.setLevel(*game.level);
+			game._advanceLevel();
+			//game.lvnum = game.level->getInfo().levelnum + 1;
+			//if (game.lvnum > game.ls.getLevelsNum())
+				//game.lvnum = 1;
+			//game.level = game.ls.getLevel(game.lvnum);
+			//Game::musicManager->set(game.level->get<Game::Music>()->getMusic())
+				//.setVolume(Game::options.musicVolume).play();
+			//game.lm.setLevel(*game.level);
 			return true;
-		case sf::Keyboard::Subtract:
-			game.lvnum = game.level->getInfo().levelnum - 1;
-			if (game.lvnum < 1) 
-				game.lvnum = game.ls.getLevelsNum();
-			game.level = game.ls.getLevel(game.lvnum);
-			Game::musicManager->set(game.level->get<Game::Music>()->getMusic())
-				.setVolume(Game::options.musicVolume).play();
-			game.lm.setLevel(*game.level);
-			return true;
+		//case sf::Keyboard::Subtract:
+			//game.lvnum = game.level->getInfo().levelnum - 1;
+			//if (game.lvnum < 1) 
+				//game.lvnum = game.ls.getLevelsNum();
+			//game.level = game.ls.getLevel(game.lvnum);
+			//Game::musicManager->set(game.level->get<Game::Music>()->getMusic())
+				//.setVolume(Game::options.musicVolume).play();
+			//game.lm.setLevel(*game.level);
+			//return true;
 		case sf::Keyboard::L:
 			if (game.lm.isPaused())
 				game.lm.update();
