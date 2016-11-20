@@ -14,6 +14,8 @@ class Collider : public Game::Component {
 protected:
 	using CollisionFunc = std::function<void(Game::Collider&)>;
 
+	const bool phantom;
+
 	/** All the Colliders which are colliding with this one */
 	std::vector<std::weak_ptr<Game::Collider>> colliding;
 	/** Whether this entity is at a level's boundary */
@@ -22,12 +24,7 @@ protected:
 	/** Offset relative to the owner's position */
 	sf::Vector2f offset; 
 	sf::Vector2i size;
-	/** If a Collider is phantom, it won't be automatically managed by EntityGroup
-	 *  (and therefore CollisionDetector). A phantom collider may be useful if you
-	 *  want to handle the collision logic yourself and you're only interested
-	 *  in giving a collision layer to the collider.
-	 */
-	const bool phantom;
+	bool forceAck = false;
 	/** Collision layer */
 	Game::Layers::Layer layer;
 	/** Optional callback to be called at every update */
@@ -68,7 +65,24 @@ public:
 	sf::Vector2i getSize() const { return size; }
 	void setSize(const sf::Vector2i& sz) { size = sz; }
 
+	/** If a Collider is phantom, it won't be automatically managed by EntityGroup
+	 *  (and therefore CollisionDetector). A phantom collider may be useful if you
+	 *  want to handle the collision logic yourself and you're only interested
+	 *  in giving a collision layer to the collider.
+	 */
 	bool isPhantom() const { return phantom; }
+	
+	/** If a Collider requests "force ack", the CollisionDetector will be forced to
+	 *  signal the collision to _both_ this collider and the one this is colliding with.
+	 *  Useful to ensure this collision isn't missed by any of the parties involved,
+	 *  e.g. for the Bullets, but may result in buggy collisions if misused.
+	 *  Note that, in normal situations, the collisions are only signaled to the
+	 *  _active_ colliding entity, while the _passive_ one only gets signaled if non-Moving.
+	 *  It is only meaningful to override this behaviour in special cases, namely Bullets
+	 *  and entities which self-destruct and apply effects when colliding.
+	 */
+	bool requestsForceAck() const { return forceAck; }
+	void setForceAck(bool b) { forceAck = b; }
 
 	/** @return whether this collider's layer collides with other's layer */
 	bool collidesWith(const Game::Collider& other) const;

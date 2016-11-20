@@ -83,6 +83,7 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable, public 
 	void _triggerExtraGame();
 	void _endExtraGame();
 	bool _shouldTriggerExtraGame() const;
+	bool _isBombAt(const sf::Vector2i& tile) const;
 
 public:
 	explicit LevelManager();
@@ -112,12 +113,12 @@ public:
 	bool isLevelClear() const;
 	bool isGameWon() const { return gameWon; }
 
-	bool isBombAt(const sf::Vector2i& tile) const;
-	/** Returns the number of bombs currently deployed by id-th player */
-	unsigned short bombsDeployedBy(unsigned short id) const;
-
 	/** Checks whether the owner of `am` can proceed along direction `dir` */
 	bool canGo(const Game::AxisMoving& am, const Game::Direction dir) const;
+	/** A bomb can be deployed in a tile only if no other bomb or explosion is currently in that tile */
+	bool canDeployBombAt(const sf::Vector2i& tile) const;
+	/** Returns the number of bombs currently deployed by id-th player */
+	unsigned short bombsDeployedBy(unsigned short id) const;
 
 	/** Pauses all Clock components of all entities */
 	void pause();

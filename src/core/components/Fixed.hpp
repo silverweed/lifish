@@ -5,9 +5,9 @@
 namespace Game {
 
 /**
- * A Fixed Entity is an entity which cannot ever move and is supposed to be
- * the sole occupier of its tile. This allows the EntityGroup to perform
- * some optimizations on this Entity.
+ * A Fixed Entity is an entity which cannot ever move.
+ * This enables some optimizations on this Component's owner, particularly for its lookup in
+ * an EntityGroup (i.e. a tile can be checked for its presence in a random access fashion).
  */
 class Fixed : public Game::Component {
 public:

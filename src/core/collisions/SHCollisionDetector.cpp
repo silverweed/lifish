@@ -4,6 +4,7 @@
 #include "AxisMoving.hpp"
 #include "Direction.hpp"
 
+#include "Bullet.hpp"
 #include <iostream>
 
 using namespace Game::CollisionUtils;
@@ -134,7 +135,6 @@ void SHCollisionDetector::update() {
 		
 		for (auto& oth : container.getNearby(*collider.get())) {
 			if (oth.expired()) continue;
-
 #ifndef RELEASE
 			dbgStats.counter.inc("checked");
 			dbgStats.timer.start("single");
@@ -151,12 +151,13 @@ void SHCollisionDetector::update() {
 				{
 					//std::cerr << &collider->getOwner() << " colliding with " << &othcollider->getOwner()<<std::endl;
 					collider->addColliding(oth);
-					if (othcollider->getOwner().get<Game::Moving>() == nullptr) {
+					if (collider->requestsForceAck() || othcollider->requestsForceAck()
+							|| othcollider->getOwner().get<Game::Moving>() == nullptr) 
+					{
 						// Let the entity know we collided with it.
 						// We only do that for non-moving entities to avoid problems with
 						// multiple collisions between two moving entities.
 						othcollider->addColliding(*it);
-						//std::cerr << "[moving] colliding\n";
 					}
 				}
 			} else if (collider->contains(*othcollider) && collider->collidesWith(*othcollider)) {

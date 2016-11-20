@@ -52,6 +52,7 @@ public:
 	void dealDamage() { dealtDamage = true; }
 	unsigned short getDamage() const { return damage; }
 
+	Game::Entity* init() override;
 	void update() override;
 };
 

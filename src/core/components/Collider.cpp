@@ -8,9 +8,9 @@ using Game::Collider;
 Collider::Collider(Game::Entity& owner, Game::Layers::Layer layer, const sf::Vector2i& size,
 		const sf::Vector2f& offset, bool phantom)
 	: Game::Component(owner)
+	, phantom(phantom)
 	, offset(offset)
 	, size(size)
-	, phantom(phantom)
 	, layer(layer)
 {}
 
@@ -18,18 +18,18 @@ Collider::Collider(Game::Entity& owner, CollisionFunc onCollision,
 		Game::Layers::Layer layer, const sf::Vector2i& size, 
 		const sf::Vector2f& offset, bool phantom)
 	: Game::Component(owner)
+	, phantom(phantom)
 	, offset(offset)
 	, size(size)
-	, phantom(phantom)
 	, layer(layer)
 	, onCollision(onCollision)
 {}
 
 Collider::Collider(const Game::Collider& other)
 	: Game::Component(other.owner)
+	, phantom(other.phantom)
 	, offset(other.offset)
 	, size(other.size)
-	, phantom(other.phantom)
 {}
 
 void Collider::update() {
@@ -67,6 +67,7 @@ std::vector<std::weak_ptr<Collider>> Collider::getColliding() const {
 }
 
 void Collider::addColliding(std::weak_ptr<Game::Collider> coll) {
+	// avoid duplicates
 	if (std::find_if(colliding.begin(), colliding.end(), [&coll] (std::weak_ptr<Game::Collider> oth) {
 		return !oth.expired() && oth.lock().get() == coll.lock().get();
 	}) == colliding.end()) {

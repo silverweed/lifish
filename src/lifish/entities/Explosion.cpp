@@ -14,6 +14,7 @@
 #include "ZIndexed.hpp"
 #include "Sounded.hpp"
 #include "CompoundCollider.hpp"
+#include "Fixed.hpp"
 #include <list>
 #include <algorithm>
 
@@ -28,6 +29,7 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 	, damage(damage)
 	, sourceEntity(source)
 {
+	addComponent(new Game::Fixed(*this));
 	addComponent(new Game::Sounded(*this, { Game::getAsset("sounds", "explosion.ogg") }));
 	explosionC = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "explosionC.png")));
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::EXPLOSIONS));

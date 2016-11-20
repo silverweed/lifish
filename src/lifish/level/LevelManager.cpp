@@ -3,6 +3,7 @@
 #include "Enemy.hpp"
 #include "Clock.hpp"
 #include "AxisMoving.hpp"
+#include "Explosion.hpp"
 #include "LevelSet.hpp"
 #include "Foe.hpp"
 #include "Music.hpp"
@@ -163,7 +164,16 @@ void LevelManager::reset() {
 	gameOver = false;
 }
 
-bool LevelManager::isBombAt(const sf::Vector2i& tile) const {
+bool LevelManager::canDeployBombAt(const sf::Vector2i& tile) const {
+	if (_isBombAt(tile)) return false;
+	for (const auto& e : entities.getFixedAt(tile.x, tile.y)) {
+		if (dynamic_cast<const Game::Explosion*>(&e.get()) != nullptr)
+			return false;
+	}
+	return true;
+}
+
+bool LevelManager::_isBombAt(const sf::Vector2i& tile) const {
 	for (unsigned short i = 0; i < bombs.size(); ++i)
 		for (auto bomb : bombs[i])
 			if (!bomb.expired() && Game::tile(bomb.lock()->getPosition()) == tile)
