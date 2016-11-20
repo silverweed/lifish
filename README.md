@@ -13,14 +13,11 @@ and different enemies and stages. In particular, these are the differences with 
 original BOOM:
 
 * all the game sprites are (going to be) totally remade from scratch;
-* the game will be 100% free without any paid content;
+* the game code will be open source (the assets won't necessarily be);
 * several game features can be modded directly from the configuration files,
   which are plain JSON; in particular the enemies' AI and stats, the levels'
   tilesets, textures, configuration and music can be modded this way;
-* a new type of wall has been added (TransparentWall) which is transparent to
-  enemies' bullets but opaque to other entities;
-* new powerups are planned;
-* online multiplayer *may* be added in future.
+* new powerups, entities and bosses are planned;
 
 Coded with [vim](http://www.vim.org/).
 
