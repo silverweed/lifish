@@ -13,10 +13,14 @@
 #include "Moving.hpp"
 #include "Collider.hpp"
 #include "Fixed.hpp"
+#ifdef MULTITHREADED
+#	include <mutex>
+#endif
 
 namespace Game {
 
 class CollisionDetector;
+class LevelRenderer;
 
 namespace {
 	template<class T>
@@ -35,6 +39,22 @@ namespace {
 class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 
 	bool alreadyPrunedThisUpdate = false;
+
+#ifdef MULTITHREADED
+	friend class Game::LevelRenderer;
+
+	mutable std::mutex mutex;
+#endif
+	inline void _mtxLock() const {
+#ifdef MULTITHREADED
+		mutex.lock();
+#endif
+	}
+	inline void _mtxUnlock() const {
+#ifdef MULTITHREADED
+		mutex.unlock();
+#endif
+	}
 
 	/** All the entities (owning references) */
 	std::list<std::shared_ptr<Game::Entity>> entities;

@@ -16,6 +16,12 @@ DroppingTextManager::DroppingTextManager()
 				Game::getAsset("test", "hurryup.png"), sf::Vector2i(161, 30), 300.f))
 {}
 
+void DroppingTextManager::reset() {
+	gameOverText->reset();
+	extraGameText->reset();
+	hurryUpText->reset();
+}
+
 void DroppingTextManager::subscribe(Game::EntityGroup& group) {
 	group.add(gameOverText);
 	group.add(extraGameText);

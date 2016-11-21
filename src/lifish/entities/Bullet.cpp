@@ -63,6 +63,7 @@ Bullet::Bullet(const sf::Vector2f& pos, const Game::Entity *const source, const 
 }
 
 Game::Entity* Bullet::init() {
+	Game::Entity::init();
 	if (collider != nullptr)
 		collider->setForceAck(true);
 	return this;

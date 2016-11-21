@@ -38,7 +38,9 @@ void EntityGroup::updateAll() {
 }
 
 void EntityGroup::remove(const Game::Entity& entity) {
+	_mtxLock();
 	entities.remove_if([entity] (std::shared_ptr<Game::Entity> e) { return e.get() == &entity; });
+	_mtxUnlock();
 }
 
 void EntityGroup::refresh(const Game::Entity& entity) {
@@ -83,7 +85,9 @@ void EntityGroup::refresh(const Game::Entity& entity) {
 
 
 void EntityGroup::clear() {
+	_mtxLock();
 	entities.clear();
+	_mtxUnlock();
 	collidingEntities.clear();
 }
 
@@ -198,8 +202,11 @@ void EntityGroup::_checkKilled() {
 			{
 				return ptr.get() == &klb->getOwner();
 			});
-			if (eit != entities.end())
+			if (eit != entities.end()) {
+				_mtxLock();
 				entities.erase(eit);
+				_mtxUnlock();
+			}
 
 			it = killables.erase(it);
 		} else {
@@ -222,8 +229,11 @@ void EntityGroup::_checkDead() {
 			{
 				return ptr.get() == &tmp->getOwner();
 			});
-			if (eit != entities.end())
+			if (eit != entities.end()) {
+				_mtxLock();
 				entities.erase(eit);
+				_mtxUnlock();
+			}
 			
 			it = dying.erase(it);
 		} else {

@@ -126,9 +126,11 @@ void LevelManager::setNextLevel() {
 }
 
 void LevelManager::setLevel(const Game::LevelSet& ls, unsigned short lvnum) {
+	_mtxLock();
 	level = ls.getLevel(lvnum);
 	level->setOrigin(origin);
 	Game::LevelLoader::load(*level, *this);
+	_mtxUnlock();
 	// Don't trigger EXTRA game if there were no coins in the level
 	if (entities.size<Game::Coin>() == 0)
 		extraGameTriggered = true;
@@ -156,6 +158,8 @@ void LevelManager::resume() {
 
 void LevelManager::reset() {
 	entities.clear();
+
+	dropTextManager.reset();
 	// Re-add the dropping texts
 	dropTextManager.subscribe(entities);
 

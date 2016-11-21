@@ -11,6 +11,9 @@
 #include "LevelTime.hpp"
 #include "game_values.hpp"
 #include "Direction.hpp"
+#ifdef MULTITHREADED
+#	include <mutex>
+#endif
 
 namespace Game {
 
@@ -32,6 +35,21 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable, public 
 	friend class Game::LevelRenderer;
 	friend class Game::SaveManager;
 	friend class Game::WinLoseHandler;
+
+#ifdef MULTITHREADED
+	std::mutex lvMutex;
+#endif
+	inline void _mtxLock() {
+#ifdef MULTITHREADED
+		lvMutex.lock();
+#endif
+	}
+
+	inline void _mtxUnlock() {
+#ifdef MULTITHREADED
+		lvMutex.unlock();
+#endif
+	}
 
 	/** The currently managed level */
 	std::unique_ptr<Game::Level> level;

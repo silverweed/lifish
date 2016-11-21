@@ -18,6 +18,12 @@ Sprite::Sprite(Game::Entity& owner, const std::string& texture_name,
 	sprite.setTextureRect(division);
 }
 
+Game::Entity* Sprite::init() {
+	Game::Component::init();
+	sprite.setPosition(owner.getPosition());
+	return this;
+}
+
 void Sprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(sprite, states);
 }

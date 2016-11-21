@@ -23,6 +23,7 @@ public:
 	sf::Texture* getTexture() const { return texture; }
 	sf::Sprite& getSprite() { return sprite; }
 
+	Game::Entity* init() override;
 	void update() override;
 
 	void setOrigin(const sf::Vector2f& o) override;

@@ -22,6 +22,8 @@ public:
 
 	DroppingTextManager();
 
+	/** Resets all dropping texts */
+	void reset();
 	/** Adds all texts to `group` */
 	void subscribe(Game::EntityGroup& group);
 	void trigger(Text text);
