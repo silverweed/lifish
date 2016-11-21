@@ -60,10 +60,11 @@ static void print_version() {
 	std::cout << " RELEASE";
 #endif
 #ifndef ARCH
-	std::cout << " (unknown arch)" << std::endl;
+	std::cout << " (unknown arch)";
 #else
-	std::cout << " (" ARCH " bit)" << std::endl;
+	std::cout << " (" ARCH " bit)";
 #endif
+	std::cout << " by Giacomo Parolini" << std::endl;
 #ifdef HAVE_NFD
 	std::cout << "    | NFD support: yes" << std::endl;
 #elif !defined(SFML_SYSTEM_WINDOWS)
