@@ -134,6 +134,7 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 			// offset
 			sf::Vector2f(1, -TILE_SIZE * propagation[Direction::UP]))
 	}));
+	explCollider->setForceAck(true);
 
 	for (unsigned short i = 0; i < 4; ++i)
 		if (blocked[i]) --propagation[i];

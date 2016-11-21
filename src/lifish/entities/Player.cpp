@@ -1,6 +1,7 @@
 #include "Player.hpp"
 #include "Lifed.hpp"
 #include "Sounded.hpp"
+#include "Shooting.hpp"
 #include "MovingAnimator.hpp"
 #include "Clock.hpp"
 #include "AxisMoving.hpp"
@@ -161,7 +162,14 @@ void Player::_checkCollision(Game::Collider& cld) {
 	case L::ENEMIES:
 		if (cld.getOwner().get<Game::Killable>()->isKilled())
 			return;
-		// fallthrough
+		{
+			const auto shooting = cld.getOwner().get<Game::Shooting>();
+			if (shooting->getAttack().type & Game::AttackType::CONTACT)
+				damage = shooting->getAttack().damage;
+			else
+				damage = 1;
+			break;
+		}
 	case L::EXPLOSIONS:
 		damage = static_cast<const Game::Explosion&>(cld.getOwner()).getDamage();
 		break;
