@@ -24,7 +24,7 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 	// Draw according to z-index
 	std::map<int, std::vector<const Game::Drawable*>> toDraw;
 
-	owner.entities._mtxLock();
+	owner.entities.mtxLock();
 	owner.entities.apply([&target, &toDraw] (const Game::Entity *e) {
 		const auto d = e->get<Game::Drawable>();
 		if (d != nullptr) {
@@ -40,5 +40,5 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 		for (const auto d : pair.second)
 			target.draw(*d, states);
 
-	owner.entities._mtxUnlock();
+	owner.entities.mtxUnlock();
 }

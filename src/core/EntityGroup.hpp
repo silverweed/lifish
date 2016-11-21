@@ -41,20 +41,8 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	bool alreadyPrunedThisUpdate = false;
 
 #ifdef MULTITHREADED
-	friend class Game::LevelRenderer;
-
 	mutable std::mutex mutex;
 #endif
-	inline void _mtxLock() const {
-#ifdef MULTITHREADED
-		mutex.lock();
-#endif
-	}
-	inline void _mtxUnlock() const {
-#ifdef MULTITHREADED
-		mutex.unlock();
-#endif
-	}
 
 	/** All the entities (owning references) */
 	std::list<std::shared_ptr<Game::Entity>> entities;
@@ -168,6 +156,17 @@ public:
 
 	auto getColliding() -> std::vector<std::weak_ptr<Game::Collider>>& {
 		return collidingEntities;
+	}
+
+	inline void mtxLock() const {
+#ifdef MULTITHREADED
+		mutex.lock();
+#endif
+	}
+	inline void mtxUnlock() const {
+#ifdef MULTITHREADED
+		mutex.unlock();
+#endif
 	}
 };
 
