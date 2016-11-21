@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include "WindowContext.hpp"
