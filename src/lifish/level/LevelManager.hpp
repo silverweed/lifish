@@ -37,15 +37,15 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable, public 
 	friend class Game::WinLoseHandler;
 
 #ifdef MULTITHREADED
-	std::mutex lvMutex;
+	mutable std::mutex lvMutex;
 #endif
-	inline void _mtxLock() {
+	inline void _mtxLock() const {
 #ifdef MULTITHREADED
 		lvMutex.lock();
 #endif
 	}
 
-	inline void _mtxUnlock() {
+	inline void _mtxUnlock() const {
 #ifdef MULTITHREADED
 		lvMutex.unlock();
 #endif
