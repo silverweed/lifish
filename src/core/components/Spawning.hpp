@@ -39,7 +39,7 @@ public:
 
 	bool shouldSpawn() const { return spawnCondition(*this); }
 
-	/** Returns the spawned entities and resets the internal spawned list */
+	/** Returns the spawned entity */
 	std::unique_ptr<Game::Entity> spawn();
 
 	unsigned short nSpawned() const { return _nSpawned; }

@@ -18,6 +18,9 @@ class Teleport : public Game::Entity {
 	Teleport *_next = nullptr;
 
 	bool disabled = false;
+	/** Used by Spawning to spawn flashes */
+	bool mustSpawnFlash = false;
+
 	/** Time to wait before reactivating */
 	Game::Clock *disableClock = nullptr;
 	Game::Collider *collider = nullptr;

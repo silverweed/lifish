@@ -4,10 +4,12 @@
 #include "Collider.hpp"
 #include "game.hpp"
 #include "GameCache.hpp"
+#include "Flash.hpp"
 #include "Drawable.hpp"
 #include "Collider.hpp"
 #include "AxisMoving.hpp"
 #include "Fixed.hpp"
+#include "Spawning.hpp"
 #include "game_values.hpp"
 
 using Game::Teleport;
@@ -21,6 +23,12 @@ Teleport::Teleport(const sf::Vector2f& pos)
 	disableClock = addComponent(new Game::Clock(*this));
 	addComponent(new Game::Drawable(*this, *animated));
 	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& c) { warp(c); }, Game::Layers::TELEPORTS));
+	addComponent(new Game::Spawning(*this, [this] (const Game::Spawning&) {
+		return mustSpawnFlash;
+	}, [this] () {
+		mustSpawnFlash = false;
+		return new Game::Flash(position);
+	}));
 
 	auto& anim = animated->addAnimation("teleport");
 	for (unsigned short i = 0; i < N_ANIM_FRAMES; ++i)
@@ -54,15 +62,7 @@ void Teleport::warp(Game::Collider& cld) {
 	
 	const auto& entity = cld.getOwner();
 	auto am = entity.get<Game::AxisMoving>();
-	//std::cerr << "pos = " << cld->getOwner()->getPosition()<<" (aligned: " << entity->isAligned()<<");
-	//cur_tile = " << Game::tile(cld->getOwner()->getPosition()) << ", prev = " << am->getPrevAlign()
-	//<< " [this tile = " << Game::tile(position) << "]"<<std::endl;
-	if (am != nullptr && 
-			// entity must have moved here since latest warp FIXME
-			(//am->getPrevAlign() == Game::tile(position) ||
-			// entity must be in the same tile as this teleport, not only be touching it
-			!(entity.isAligned() && Game::tile(entity.getPosition()) == Game::tile(position))))
-	{
+	if (am != nullptr && !(entity.isAligned() && Game::tile(entity.getPosition()) == Game::tile(position))) {
 		return;
 	}
 
@@ -75,44 +75,13 @@ void Teleport::warp(Game::Collider& cld) {
 
 	if (nxt == nullptr || nxt == this) return;
 
-	// TODO spawn flashes
 	cld.getOwnerRW().setPosition(nxt->getPosition());
 	if (am != nullptr) {
-		//std::cerr<<"nxt->pos = " << nxt->getPosition()<<" (tile = " <<Game::tile(nxt->getPosition())<<"\n";
 		am->setPrevAlign(Game::tile(nxt->getPosition()));
 	}
 
+	mustSpawnFlash = true;
+	nxt->mustSpawnFlash = true;
 	disable();
 	nxt->disable();
-
-/*
-	Teleport *next = next();
-	if (next == nullptr) return;
-	if (next->isDisabled() || isEntityTouching(next->getPosition())) {
-		Teleport *self = next;
-		bool viable = false;
-		do {
-			next = next->next();
-			if (next == this || next->isDisabled() || isEntityTouching(next->getPosition()))
-				next = next->next();
-			else {
-				viable = true;
-				break;
-			}
-		} while (next != self);
-		// Check if we've found an enabled destination
-		if (!viable) continue;
-	}
-
-	_pushTemporary(new Game::Flash(teleport->getPosition()));
-	_pushTemporary(new Game::Flash(next->getPosition()));
-
-	// Teleport the entity
-	entity->setPosition(next->getPosition());
-	entity->prevAlign = Game::tile(next->getPosition());
-
-	// Disable both source and destination for a while
-	teleport->disable();
-	next->disable();
-*/
 }
