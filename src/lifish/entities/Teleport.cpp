@@ -20,7 +20,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "teleport.png")));
 	disableClock = addComponent(new Game::Clock(*this));
 	addComponent(new Game::Drawable(*this, *animated));
-	addComponent(new Game::Collider(*this, [this] (Game::Collider& c) { warp(c); }, Game::Layers::TELEPORTS));
+	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& c) { warp(c); }, Game::Layers::TELEPORTS));
 
 	auto& anim = animated->addAnimation("teleport");
 	for (unsigned short i = 0; i < N_ANIM_FRAMES; ++i)
@@ -35,7 +35,9 @@ Teleport::Teleport(const sf::Vector2f& pos)
 
 void Teleport::update() {
 	Game::Entity::update();
-	if (disabled && disableClock->getElapsedTime() >= Game::Conf::Teleport::COOLDOWN_TIME) {
+	if (disabled && disableClock->getElapsedTime() >= Game::Conf::Teleport::COOLDOWN_TIME
+			&& collider->getColliding().size() == 0)
+	{
 		disabled = false;
 		animated->getSprite().play();
 	}

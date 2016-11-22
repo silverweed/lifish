@@ -128,10 +128,15 @@ AIBoundFunction Game::ai_random(Game::Entity& entity) {
 			if (lm.canGo(*moving, D::LEFT)) dirs[n++] = D::LEFT;
 			if (lm.canGo(*moving, D::RIGHT)) dirs[n++] = D::RIGHT;
 		}
-		if (n < 1) NEW_DIRECTION(D::NONE)
-		
-		std::uniform_int_distribution<int> d(0, n - 1);
-		NEW_DIRECTION(dirs[d(Game::rng)])
+		if (n < 1) {
+			// If no direction is viable, choose a random one (and basically
+			// just keep on bumping around until a direction is viable)
+			std::uniform_int_distribution<int> d(0, 3);
+			NEW_DIRECTION(directions[d(Game::rng)])
+		} else {
+			std::uniform_int_distribution<int> d(0, n - 1);
+			NEW_DIRECTION(dirs[d(Game::rng)])
+		}
 	};
 }
 

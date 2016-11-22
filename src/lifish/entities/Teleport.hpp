@@ -20,6 +20,7 @@ class Teleport : public Game::Entity {
 	bool disabled = false;
 	/** Time to wait before reactivating */
 	Game::Clock *disableClock = nullptr;
+	Game::Collider *collider = nullptr;
 	Game::Animated *animated = nullptr;
 
 
