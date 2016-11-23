@@ -73,7 +73,7 @@
 			"attack": {
 				"type": ["contact"],
 				"damage": 2,
-				"fireRate": 1
+				"fireRate": 5
 			}
 		},
 		{

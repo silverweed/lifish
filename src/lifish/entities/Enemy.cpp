@@ -166,7 +166,8 @@ void Enemy::update() {
 }
 
 void Enemy::_checkShoot() {
-	if (killable->isKilled() || shooting->isRecharging() || morphed)
+	if (killable->isKilled() || shooting->isRecharging() || morphed 
+			|| (shooting->getAttack().type & Game::AttackType::CONTACT))
 		return;
 	
 	const auto& entitiesSeen = sighted->entitiesSeen(moving->getDirection());
@@ -183,6 +184,11 @@ void Enemy::setMorphed(bool b) {
 }
 
 void Enemy::_checkCollision(Game::Collider& coll) {
+	if (coll.getLayer() == Game::Layers::PLAYERS && (shooting->getAttack().type & Game::AttackType::CONTACT)) {
+		if (!shooting->isRecharging())
+			shooting->shoot();
+		return;
+	}
 	if (coll.getLayer() != Game::Layers::EXPLOSIONS) return;
 	auto lifed = get<Game::Lifed>();
 	const auto& expl = static_cast<const Game::Explosion&>(coll.getOwner());

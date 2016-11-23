@@ -12,6 +12,8 @@
 #include <random>
 #include <exception>
 
+#include <iostream>
+
 using Game::AIBoundFunction;
 using D = Game::Direction;
 
@@ -180,11 +182,11 @@ AIBoundFunction Game::ai_random_forward_haunt(Game::Entity& entity) {
 			const auto cur_align = Game::tile(entity.getPosition());
 			const D cur = moving->getDirection();
 			const bool colliding = collider->collidesWithSolid();
-			if (colliding && lm.canGo(*moving, cur)) 
+			if (colliding && lm.canGo(*moving, cur)) // colliding with another enemy or similar
 				NEW_DIRECTION(Game::oppositeDirection(cur))
 
 			if (shooting->getAttackAlign() == cur_align)
-				SAME_DIRECTION
+				NEW_DIRECTION(select_random_viable(*moving, lm, Game::oppositeDirection(cur)))
 
 			if (shooting->getAttackAlign().x < cur_align.x)
 				NEW_DIRECTION(D::LEFT)
