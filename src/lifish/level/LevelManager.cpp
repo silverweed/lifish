@@ -20,13 +20,16 @@
 #include "Bonusable.hpp"
 #include "Controllable.hpp"
 #include "LevelSet.hpp"
+#include "core.hpp"
 #include <memory>
 
 using Game::LevelManager;
 
 LevelManager::LevelManager()
 	: renderer(*this)
-	, cd(entities, sf::Vector2f(Game::LEVEL_WIDTH * Game::TILE_SIZE, Game::LEVEL_HEIGHT * Game::TILE_SIZE), 7)
+	, cd(entities,
+		sf::Vector2f(Game::LEVEL_WIDTH * Game::TILE_SIZE, Game::LEVEL_HEIGHT * Game::TILE_SIZE), 
+		Game::SHCD_SUBDIVISIONS)
 {
 	levelTime.init();
 	dropTextManager.subscribe(entities);

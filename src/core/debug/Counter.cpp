@@ -8,13 +8,17 @@ int Counter::inc(std::string name) {
 }
 
 void Counter::reset(std::string name) {
-	counts[name] = 0;
+	set(name, 0);
+}
+
+void Counter::set(std::string name, int val) {
+	counts[name] = val;
 }
 
 int Counter::get(std::string name) const {
 	auto it = counts.find(name);
 	if (it == counts.end())
-		throw std::invalid_argument(name + ": get() called without inc()!");
+		throw std::invalid_argument(name + ": get() called before creating key!");
 	return it->second;
 }
 

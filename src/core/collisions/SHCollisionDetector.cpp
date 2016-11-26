@@ -84,7 +84,11 @@ SHCollisionDetector::SHCollisionDetector(Game::EntityGroup& group,
 		const sf::Vector2f& levelSize, unsigned subdivisions)
 	: Game::CollisionDetector(group)
 	, container(levelSize, subdivisions) 
-{}
+{
+#ifndef RELEASE
+	dbgStats.counter.set("subdivisions", subdivisions);
+#endif
+}
 
 void SHCollisionDetector::update() {
 #ifndef RELEASE

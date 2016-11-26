@@ -19,6 +19,8 @@ public:
 	int inc(std::string name);
 	/** Resets the counter `name`. */
 	void reset(std::string name);
+	/** Sets the counter `name` to `val`, creating it if non-existing. */
+	void set(std::string name, int val);
 	/** Returns the count of the counter `name`, throwing if non-existing. */
 	int get(std::string name) const; 
 	/** Like `get()`, but returns -1 instead of throwing. */
