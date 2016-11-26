@@ -1,5 +1,6 @@
 #include "FreeMoving.hpp"
 #include "Clock.hpp"
+#include "utils.hpp"
 
 using Game::FreeMoving;
 
@@ -25,9 +26,12 @@ void FreeMoving::update() {
 	shift += velocity * effSpeed;
 
 	// TODO
-	//if (!colliding) {
+	if (!_collidesWithSolid()) {
 		owner.setPosition(owner.getPosition() + shift * frameTime.asSeconds());
 		distTravelled += speed * frameTime.asSeconds();
-	//}
+	}
 }
 
+void FreeMoving::setVelocity(const sf::Vector2f& vel) {
+	velocity = Game::normalized(vel);
+}

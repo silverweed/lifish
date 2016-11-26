@@ -16,7 +16,7 @@ public:
 			sf::Vector2f velocity = sf::Vector2f(0.f, 0.f));
 
 	sf::Vector2f getVelocity() const { return velocity; }
-	void setVelocity(const sf::Vector2f& vel) { velocity = vel; }
+	void setVelocity(const sf::Vector2f& vel);
 
 	void update() override;
 };

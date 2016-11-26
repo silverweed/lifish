@@ -29,7 +29,8 @@ LevelManager::LevelManager()
 	: renderer(*this)
 	, cd(entities,
 		sf::Vector2f(Game::LEVEL_WIDTH * Game::TILE_SIZE, Game::LEVEL_HEIGHT * Game::TILE_SIZE), 
-		Game::SHCD_SUBDIVISIONS)
+		//Game::SHCD_SUBDIVISIONS)
+		15)
 {
 	levelTime.init();
 	dropTextManager.subscribe(entities);

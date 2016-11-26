@@ -23,9 +23,8 @@ int Counter::get(std::string name) const {
 }
 
 int Counter::safeGet(std::string name) const {
-	try {
-		return get(name);
-	} catch (std::exception) {
+	auto it = counts.find(name);
+	if (it == counts.end())
 		return -1;
-	}
+	return it->second;
 }
