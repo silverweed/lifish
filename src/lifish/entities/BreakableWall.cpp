@@ -61,7 +61,7 @@ void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& cld) { 
 		// on collision
 		_checkCollision(cld); 
-	}, Game::Layers::WALLS));
+	}, Game::Layers::BREAKABLES));
 	killable = addComponent(new Game::Killable(*this, [this] () {
 		// on kill
 		animated->getSprite().play();

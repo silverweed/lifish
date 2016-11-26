@@ -50,8 +50,10 @@ public:
 	float getOriginalSpeed() const { return originalSpeed; }
 	/** Sets the base speed of this entity. This differs from `setDashing`, as it is just a
 	 *  temporary effect (used for example in DASHING shooting attacks).
+	 *  If `relativeToOriginal` is true, then `speed` is interpreted as a multiplier to the
+	 *  original speed (i.e. passing `speed = 0.5` will halve the speed.)
 	 */
-	void setSpeed(float _speed) { speed = _speed; }
+	void setSpeed(float speed, bool relativeToOriginal = false); 
 
 	float getDistTravelled() const { return distTravelled; }
 	void setDistTravelled(float d) { distTravelled = d; }

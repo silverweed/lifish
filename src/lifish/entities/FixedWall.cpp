@@ -18,5 +18,5 @@ FixedWall::FixedWall(const sf::Vector2f& pos, const unsigned short id)
 	addComponent(new Game::Drawable(*this,
 			*addComponent(new Game::Sprite(*this, Game::getAsset("graphics", "fixed.png"),
 				sf::IntRect((id-1) * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE)))));
-	addComponent(new Game::Collider(*this, Game::Layers::WALLS));
+	addComponent(new Game::Collider(*this, Game::Layers::UNBREAKABLES));
 }

@@ -48,14 +48,18 @@ public:
  * when they see them and is vulnerable to Bombs.
  */
 class Enemy : public Game::Entity {
-
+protected:
 	friend class EnemyDrawableProxy;
 
 	constexpr static unsigned short WALK_N_FRAMES = 4;
 	constexpr static int YELL_DELAY = 1000;
 	
+	const unsigned short id;
+	const Game::EnemyInfo info;
+
 	Game::Shooting *shooting = nullptr;
 	Game::AutoShooting *autoShooting = nullptr;
+	Game::Collider *collider = nullptr;
 	Game::Animated *animated = nullptr;
 	Game::AxisMoving *moving = nullptr;
 	Game::Killable *killable = nullptr;
@@ -63,8 +67,8 @@ class Enemy : public Game::Entity {
 	Game::AxisSighted *sighted = nullptr;
 	Game::AI *ai = nullptr;
 	Game::RegularEntityDeath *death = nullptr;
-	std::array<sf::Sprite, 4> shootFrame;
 
+	std::array<sf::Sprite, 4> shootFrame;
 	std::unique_ptr<Game::EnemyDrawableProxy> drawProxy;
 
 	Game::Clock *yellClock = nullptr,
@@ -78,7 +82,7 @@ class Enemy : public Game::Entity {
 	const float originalSpeed;
 
 
-	void _checkCollision(Game::Collider& coll);
+	virtual void _checkCollision(Game::Collider& coll);
 	void _checkShoot();
 
 public:
@@ -86,6 +90,7 @@ public:
 
 	unsigned short distanceWithNearestPlayer = 2 * Game::LEVEL_WIDTH * Game::TILE_SIZE;
 
+	// TODO: eliminate need for `id`
 	explicit Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info);
 
 	void setMorphed(bool b);

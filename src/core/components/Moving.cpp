@@ -62,3 +62,7 @@ bool Moving::_handleBlock() {
 float Moving::_effectiveSpeed() const {
 	return speed + dashAmount * originalSpeed;
 }
+
+void Moving::setSpeed(float _speed, bool relativeToOriginal) {
+	speed = _speed * (relativeToOriginal ? originalSpeed : 1);
+}

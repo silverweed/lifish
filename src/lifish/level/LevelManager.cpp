@@ -21,13 +21,12 @@
 #include "Controllable.hpp"
 #include "LevelSet.hpp"
 #include <memory>
-#include <iostream>
 
 using Game::LevelManager;
 
 LevelManager::LevelManager()
 	: renderer(*this)
-	, cd(entities, sf::Vector2f(Game::LEVEL_WIDTH * Game::TILE_SIZE, Game::LEVEL_HEIGHT * Game::TILE_SIZE), 6)
+	, cd(entities, sf::Vector2f(Game::LEVEL_WIDTH * Game::TILE_SIZE, Game::LEVEL_HEIGHT * Game::TILE_SIZE), 7)
 {
 	levelTime.init();
 	dropTextManager.subscribe(entities);

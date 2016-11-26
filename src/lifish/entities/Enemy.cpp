@@ -32,6 +32,8 @@ using Game::Direction;
 
 Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	: Game::Entity(pos)
+	, id(id)
+	, info(info)
 	, originalSpeed(info.speed)
 {
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::ENEMIES));
@@ -51,7 +53,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	}
 	ai = addComponent(new Game::AI(*this, Game::ai_functions[info.ai]));
 	moving = addComponent(new Game::AxisMoving(*this, BASE_SPEED * originalSpeed, Game::Direction::DOWN));
-	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
+	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
 		// on collision
 		_checkCollision(coll);
 	}, Game::Layers::ENEMIES));

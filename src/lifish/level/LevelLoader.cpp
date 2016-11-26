@@ -15,6 +15,7 @@
 #include "Coin.hpp"
 #include "Enemy.hpp"
 #include "Lifed.hpp"
+#include "Wisp.hpp"
 #include <iostream>
 
 using Game::TILE_SIZE;
@@ -143,11 +144,20 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 				break;
 			}
 			if (enemy_id > 0) {
-				auto enemy = new Game::Enemy(curPos, enemy_id, ls.getEnemyInfo(enemy_id));
+				Game::Enemy *enemy = nullptr;
+				// Some enemies have their own classes, others are just 'Enemy'
+				switch (enemy_id) {
+				case 2:
+					enemy = new Game::Wisp(curPos, ls.getEnemyInfo(enemy_id));
+					break;
+				default:
+					enemy = new Game::Enemy(curPos, enemy_id, ls.getEnemyInfo(enemy_id));
+					break;
+				}
 				enemy->get<Game::AI>()->setLevelManager(&lm);
 				auto sighted = enemy->get<Game::Sighted>();
 				sighted->setEntityGroup(&lm.entities);
-				sighted->setOpaque({ Game::Layers::WALLS });
+				sighted->setOpaque({ Game::Layers::BREAKABLES, Game::Layers::UNBREAKABLES });
 				entities.add(enemy);
 			}
 		}
