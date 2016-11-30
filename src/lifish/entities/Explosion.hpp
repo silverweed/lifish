@@ -26,8 +26,9 @@ class Explosion : public Game::Entity, public sf::Drawable {
 	               *explosionH = nullptr, // horizontal explosion
 		       *explosionV = nullptr; // vertical explosion
 
-	/** Compound collider used to check explosion's hits */
-	Game::Collider *explCollider = nullptr;
+	/** Colliders used to check explosion's hits */
+	Game::Collider *explColliderH = nullptr,
+	               *explColliderV = nullptr;
 
 	/** The radius of this explosion */
 	unsigned short radius;

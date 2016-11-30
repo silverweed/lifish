@@ -38,6 +38,9 @@ public:
 	/** @return The bounding rectangle of all colliders */
 	sf::IntRect getRect() const override;
 
+	/** @return The size of the bounding rectangle of all colliders */
+	sf::Vector2i getSize() const override;
+
 	const std::vector<Game::Collider>& getColliders() const { return colliders; }
 };
 

@@ -32,6 +32,8 @@ protected:
 
 	virtual bool _contains(const Game::Collider& other) const;
 public:
+	COMP_NOT_UNIQUE
+
 	explicit Collider(Game::Entity& owner, 
 			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
 			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE),
@@ -62,7 +64,7 @@ public:
 	sf::Vector2f getOffset() const { return offset; }
 	void setOffset(const sf::Vector2f& off) { offset = off; }
 
-	sf::Vector2i getSize() const { return size; }
+	virtual sf::Vector2i getSize() const { return size; }
 	void setSize(const sf::Vector2i& sz) { size = sz; }
 
 	/** If a Collider is phantom, it won't be automatically managed by EntityGroup

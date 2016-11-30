@@ -72,3 +72,7 @@ std::vector<Game::Collider> CompoundCollider::getSubCollidingWith(const Game::Co
 sf::IntRect CompoundCollider::getRect() const {
 	return boundingRect;
 }
+
+sf::Vector2i CompoundCollider::getSize() const {
+	return sf::Vector2i(boundingRect.width, boundingRect.height);
+}

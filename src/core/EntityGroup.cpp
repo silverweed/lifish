@@ -148,9 +148,10 @@ Game::Entity* EntityGroup::_putInAux(std::shared_ptr<Game::Entity> entity) {
 		killables.push_back(klb);
 	} 
 
-	auto cld = entity->getShared<Game::Collider>();
-	if (cld != nullptr && !cld->isPhantom() && !_isManagedCollider(entity)) {
-		collidingEntities.push_back(cld);
+	for (auto cld : entity->getAllRecursiveShared<Game::Collider>()) {
+		if (cld != nullptr && !cld->isPhantom() && !_isManagedCollider(entity)) {
+			collidingEntities.push_back(cld);
+		}
 	}
 
 	// Put an entity marked as `Fixed` in fixedEntities

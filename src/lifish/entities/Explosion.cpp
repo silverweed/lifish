@@ -116,25 +116,22 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 	 * the propagation by 1 tile so that the explosion sprites aren't drawn in the solid entity's tile,
 	 * which would be ugly.
 	 */
-	explCollider = addComponent(new Game::CompoundCollider(*this, Game::Layers::EXPLOSIONS, {
-		Game::Collider(*this, Game::Layers::EXPLOSIONS,
+	explColliderH = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
 			sf::Vector2i(
 				TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT] + 1)
 					- (blocked[Direction::RIGHT] ? TILE_SIZE - 1 : 0),
 				TILE_SIZE - 2),
 			// offset
-			sf::Vector2f(-TILE_SIZE * propagation[Direction::LEFT], 1)),
-		Game::Collider(*this, Game::Layers::EXPLOSIONS,
+			sf::Vector2f(-TILE_SIZE * propagation[Direction::LEFT], 1)));
+	explColliderV = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
 			sf::Vector2i(
 				TILE_SIZE - 2,
 				TILE_SIZE * (propagation[Direction::UP] + propagation[Direction::DOWN] + 1)
 					- (blocked[Direction::DOWN] ? TILE_SIZE - 1 : 0)),
 			// offset
-			sf::Vector2f(1, -TILE_SIZE * propagation[Direction::UP]))
-	}));
-	explCollider->setForceAck(true);
+			sf::Vector2f(1, -TILE_SIZE * propagation[Direction::UP])));
 
 	for (unsigned short i = 0; i < 4; ++i)
 		if (blocked[i]) --propagation[i];
