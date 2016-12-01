@@ -20,6 +20,7 @@ protected:
 
 public:
 	explicit CollisionDetector(Game::EntityGroup& group);
+	virtual ~CollisionDetector() {}
 
 	virtual void update() = 0;
 

@@ -7,6 +7,8 @@ protected:
 	bool active;
 
 public:
+	virtual ~Activable() {}
+
 	virtual void setActive(bool b) { active = b; }	
 	bool isActive() const { return active; }
 	/** @return The active state after the change */

@@ -8,8 +8,6 @@
 
 namespace Game {
 
-class CollisionDetector;
-
 class Collider : public Game::Component {
 protected:
 	using CollisionFunc = std::function<void(Game::Collider&)>;

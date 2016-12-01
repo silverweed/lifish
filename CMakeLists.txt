@@ -16,7 +16,6 @@ endif()
 
 # main
 set(MAIN_FILE src/main.cpp)
-file(GLOB LIFISH_HEADERS src/*.hpp)
 # core/ contains the "game-independent" source
 include_directories(src/core)
 # core/components/ contains a collection of generic components
@@ -69,7 +68,7 @@ if(MSYS)
 	add_definitions(-D_WIN32_WINNT=_WIN32_WINNT_VISTA)
 	set(LIFISH_SRC ${LIFISH_SRC} ${WIN_LIFISH_SRC})
 endif()
-add_executable(${PROJECT_NAME} ${LIFISH_SRC} ${LIFISH_HEADERS})
+add_executable(${PROJECT_NAME} ${LIFISH_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
 # Add git commit information (thanks, hamcha)

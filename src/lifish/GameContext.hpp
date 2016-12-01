@@ -11,7 +11,6 @@
 
 namespace Game {
 
-class Level;
 class Player;
 
 #ifndef RELEASE

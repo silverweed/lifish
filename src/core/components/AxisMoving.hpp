@@ -5,8 +5,6 @@
 
 namespace Game {
 
-class LevelManager;
-
 /**
  * An object moving only parallel to axes 
  */
