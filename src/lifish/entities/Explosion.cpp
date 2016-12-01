@@ -117,22 +117,28 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 	 * the propagation by 1 tile so that the explosion sprites aren't drawn in the solid entity's tile,
 	 * which would be ugly.
 	 */
+	// Note: no cast required, as `true` is promoted to integral value "1" by C++ standard (§4.7 conv.integral)
+	short reduction = blocked[Direction::RIGHT] + blocked[Direction::LEFT];
 	explColliderH = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
 			sf::Vector2i(
-				TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT] + 1)
-					- (blocked[Direction::RIGHT] ? TILE_SIZE - 1 : 0),
+				TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT] 
+					+ 1 - reduction) + reduction,
 				TILE_SIZE - 2),
 			// offset
-			sf::Vector2f(-TILE_SIZE * propagation[Direction::LEFT], 1)));
+			sf::Vector2f(-TILE_SIZE * propagation[Direction::LEFT]
+				+ (TILE_SIZE - 1) * blocked[Direction::LEFT], 1)));
+
+	reduction = blocked[Direction::UP]  + blocked[Direction::DOWN];
 	explColliderV = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
 			sf::Vector2i(
 				TILE_SIZE - 2,
-				TILE_SIZE * (propagation[Direction::UP] + propagation[Direction::DOWN] + 1)
-					- (blocked[Direction::DOWN] ? TILE_SIZE - 1 : 0)),
+				TILE_SIZE * (propagation[Direction::UP] + propagation[Direction::DOWN] 
+					+ 1 - reduction) + reduction),
 			// offset
-			sf::Vector2f(1, -TILE_SIZE * propagation[Direction::UP])));
+			sf::Vector2f(1, -TILE_SIZE * propagation[Direction::UP] 
+				+ (TILE_SIZE - 1) * blocked[Direction::UP])));
 
 	for (unsigned short i = 0; i < 4; ++i)
 		if (blocked[i]) --propagation[i];
