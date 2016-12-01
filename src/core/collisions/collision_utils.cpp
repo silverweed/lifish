@@ -1,25 +1,10 @@
 #include "collision_utils.hpp"
-#include "CompoundCollider.hpp"
 #include "AxisMoving.hpp"
-
-// Checks collision between a CompoundCollider and a Collider
-bool Game::CollisionUtils::check_compound(const Game::CompoundCollider& cc1, 
-		const Game::Collider& cld2, const Game::Direction dir) 
-{
-	for (const auto& c : cc1.getColliders())
-		if (collide(cld2, c, dir))
-			return true;
-	return false;
-}
+#include "game.hpp"
+#include "Collider.hpp"
 
 // Checks if `cld1` and `cld2` collide, given that the owner of `cld1` has direction `dir`.
 bool Game::CollisionUtils::collide(const Game::Collider& cld1, const Game::Collider& cld2, const Game::Direction dir) {
-	// Special treatment is required for CompoundColliders: in this case, check singularly each sub-collider.
-	if (auto cc1 = dynamic_cast<const Game::CompoundCollider*>(&cld1))
-		return check_compound(*cc1, cld2, dir);
-	else if (auto cc2 = dynamic_cast<const Game::CompoundCollider*>(&cld2))
-		return check_compound(*cc2, cld1, dir); // XXX: should be oppositeDirection?
-
 	sf::IntRect rect = cld1.getRect(),
 		    orect = cld2.getRect();
 

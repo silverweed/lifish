@@ -63,7 +63,10 @@ void AxisSighted::_fillLine(const Game::Direction dir) {
 		return a.second < b.second;
 	});
 	if (opaqueMask != 0) {
-		// Discard entities farther than an opaque one
+		// Discard entities farther than an opaque one.
+		// NOTE THAT at the moment only the first collider of the entity is used
+		// to determine opaqueness; this assumes that we only see entities whose
+		// first collider determines their bounding box.
 		for (auto it = seen[dir].begin(); it != seen[dir].end(); ++it) {
 			const auto cld = it->first->get<Game::Collider>();
 			if (cld != nullptr) {

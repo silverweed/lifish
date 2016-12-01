@@ -44,10 +44,6 @@ bool CompoundCollider::isColliding() const {
 }
 
 bool CompoundCollider::contains(const Game::Collider& other) const {
-	return _contains(other);
-}
-
-bool CompoundCollider::_contains(const Game::Collider& other) const {
 	for (const auto& c : colliders)
 		if (c.contains(other))
 			return true;

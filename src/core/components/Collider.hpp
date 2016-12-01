@@ -30,7 +30,6 @@ protected:
 	/** Optional callback to be called at every update */
 	CollisionFunc onCollision;
 
-	virtual bool _contains(const Game::Collider& other) const;
 public:
 	COMP_NOT_UNIQUE
 

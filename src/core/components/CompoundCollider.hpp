@@ -7,6 +7,7 @@ namespace Game {
 
 /** A CompoundCollider is a collection of Colliders.
  *  The `contains`, `isColliding` and `getRect` methods are overridden to be the union of all the internal colliders.
+ *  @deprecated This class is not supported anymore in any way. Use multiple Colliders instead.
  */
 class CompoundCollider : public Game::Collider {
 	std::vector<Game::Collider> colliders;
@@ -15,8 +16,6 @@ class CompoundCollider : public Game::Collider {
 
 
 	void _calcBoundingRect();
-	bool _contains(const Game::Collider& other) const override;
-
 public:
 	explicit CompoundCollider(Game::Entity& owner, Game::Layers::Layer layer, 
 			std::initializer_list<Game::Collider> clds);

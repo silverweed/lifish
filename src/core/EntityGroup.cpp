@@ -65,9 +65,10 @@ void EntityGroup::refresh(const Game::Entity& entity) {
 	{
 		return c.expired() || &c.lock().get()->getOwner() == &entity;
 	});
-	auto cld = entity.getShared<Game::Collider>();
-	if (cld != nullptr && !cld->isPhantom()) {
-		collidingEntities.push_back(cld);
+	for (auto cld : entity.getAllRecursiveShared<Game::Collider>()) {
+		if (cld != nullptr && !cld->isPhantom()) {
+			collidingEntities.push_back(cld);
+		}
 	}
 
 	// FIXME

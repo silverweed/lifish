@@ -1,5 +1,4 @@
 #include "Collider.hpp"
-#include "CompoundCollider.hpp"
 #include <sstream>
 #include <algorithm>
 
@@ -76,10 +75,6 @@ void Collider::addColliding(std::weak_ptr<Game::Collider> coll) {
 }
 
 bool Collider::contains(const Game::Collider& other) const {
-	return other._contains(*this);
-}
-
-bool Collider::_contains(const Game::Collider& other) const {
 	return getRect().intersects(other.getRect());
 }
 

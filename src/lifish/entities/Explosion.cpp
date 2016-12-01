@@ -13,7 +13,6 @@
 #include "Temporary.hpp"
 #include "ZIndexed.hpp"
 #include "Sounded.hpp"
-#include "CompoundCollider.hpp"
 #include <list>
 #include <algorithm>
 
@@ -99,7 +98,9 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 			auto fxdlist = entities.getFixedAt(new_tile.x, new_tile.y);
 			for (const auto& fxd : fxdlist) {
 				const auto fxdcld = fxd.get().get<Game::Collider>();
-				if (fxdcld != nullptr && Game::Layers::solid[fxdcld->getLayer()][Game::Layers::EXPLOSIONS]) { 
+				if (fxdcld != nullptr && Game::Layers::solid[fxdcld->getLayer()][
+						Game::Layers::EXPLOSIONS]) 
+				{ 
 					propagating[dir] = false;
 					blocked[dir] = true;
 					break;
