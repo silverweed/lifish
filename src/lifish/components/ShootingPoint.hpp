@@ -16,7 +16,7 @@ class ShootingPoint : public Game::Component {
 	sf::Vector2f offset;
 	Game::FreeSighted *sighted = nullptr;
 	Game::Shooting *shooting = nullptr;
-	Game::AutoShooting *autoShooting = nullptr; 
+	Game::AutoShooting *autoShooting = nullptr;
 
 public:
 	COMP_NOT_UNIQUE

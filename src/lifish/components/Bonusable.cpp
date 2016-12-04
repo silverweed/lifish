@@ -18,7 +18,8 @@ void Bonusable::giveBonus(Game::BonusType type, const sf::Time& time) {
 
 bool Bonusable::hasBonus(Game::BonusType type) const {
 	const auto i = static_cast<unsigned short>(type);
-	return bonusTime[i] != sf::Time::Zero && bonusClock[i]->getElapsedTime() <= bonusTime[i];
+	return bonusTime[i] < sf::Time::Zero || 
+		(bonusTime[i] > sf::Time::Zero && bonusClock[i]->getElapsedTime() <= bonusTime[i]);
 }
 
 sf::Time Bonusable::getTime(Game::BonusType type) const {

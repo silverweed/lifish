@@ -7,6 +7,7 @@
 #include "Music.hpp"
 #include "Boss.hpp"
 #include "Enemy.hpp"
+#include "Bonusable.hpp"
 #include "MusicManager.hpp"
 #include "GameContext.hpp"
 
@@ -26,6 +27,9 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 		case sf::Keyboard::J:
 			game.players[0]->setRemainingLives(0);
 			game.players[0]->get<Game::Killable>()->kill();
+			return true;
+		case sf::Keyboard::Period:
+			game.players[0]->get<Game::Bonusable>()->giveBonus(Game::BonusType::SHIELD, sf::seconds(-1));
 			return true;
 		case sf::Keyboard::M:
 			game.lm.getEntities().apply([] (Game::Entity *e) {

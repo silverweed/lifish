@@ -5,7 +5,6 @@
 #include "Direction.hpp"
 
 #include "Explosion.hpp"
-
 #include <iostream>
 
 using namespace Game::CollisionUtils;
@@ -166,7 +165,6 @@ void SHCollisionDetector::update() {
 					}
 				}
 			} else if (collider->contains(*othcollider) && collider->collidesWith(*othcollider)) {
-				//std::cerr << &collider->getOwner() << " [" << collider->getLayer() << "] colliding with " << &othcollider->getOwner()<<std::endl;
 				collider->addColliding(oth);
 				othcollider->addColliding(*it);
 			}

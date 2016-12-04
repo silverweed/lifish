@@ -102,10 +102,11 @@ void Boss::_checkCollision(Game::Collider& coll) {
 	//std::cerr << "crect.top + crect.width = " << crect.top/Game::TILE_SIZE << " + " << crect.width /Game::TILE_SIZE<< " = "
 		//<< (crect.top + crect.width) / Game::TILE_SIZE << std::endl;
 	//std::cerr << "x = " << x / Game::TILE_SIZE<< ", wx = " << wx /Game::TILE_SIZE<< std::endl;
-	//std::cerr << "y = " << y / Game::TILE_SIZE<< ", wy = " << wy /Game::TILE_SIZE<< std::endl;
-	const unsigned int damage = (wx - x) / Game::TILE_SIZE * (wy - y) / Game::TILE_SIZE * expl.getDamage();
+	//std::cerr << "y = " << y / Game::TILE_SIZE<< ", wy = " << wy/Game::TILE_SIZE << std::endl;
+	const unsigned damage = std::round(float(wx - x) / Game::TILE_SIZE) 
+					* std::round(float(wy - y) / Game::TILE_SIZE) * expl.getDamage();
 	
-	std::cerr << "dealt " << damage << " damage\n";
+	//std::cerr << "dealt " << damage << " damage\n";
 	if (get<Game::Lifed>()->decLife(damage) > 0)
 		_hurt();
 	else
