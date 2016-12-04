@@ -16,35 +16,27 @@ void DebugRenderer::drawColliders(sf::RenderTarget& target, const Game::EntityGr
 
 		auto draw_coll_rect = [] (sf::RenderTarget& target, const Game::Collider& c, sf::Color color) {
 			const auto cr = c.getRect();
-			sf::RectangleShape rect(sf::Vector2f(cr.width, cr.height));
+			sf::RectangleShape rect(sf::Vector2f(cr.width - 1, cr.height - 1));
 			rect.setPosition(cr.left, cr.top);
 			rect.setOrigin(c.getOwner().getOrigin());
 			rect.setFillColor(color);
+			rect.setOutlineColor(sf::Color(color.r + 40, color.g + 40, color.b + 40, 240));
+			rect.setOutlineThickness(1);
 			target.draw(rect);
 		};
 
 		for (const auto c : cls) {
-			auto cc = dynamic_cast<Game::CompoundCollider*>(c);
-			if (cc == nullptr) {
-				draw_coll_rect(target, *c, c->isPhantom() 
-						? COLLIDER_PHANTOM_COLOR
-						: COLLIDER_REGULAR_COLOR);
-			} else {
-				draw_coll_rect(target, *cc, COLLIDER_COMPOUND_COLOR);
-				draw_coll_rect(target, static_cast<Game::Collider>(*c), COLLIDER_PHANTOM_COLOR);
-				for (const auto& cld : cc->getColliders())
-					draw_coll_rect(target, cld, cld.isPhantom() 
-							? COLLIDER_PHANTOM_COLOR
-							: COLLIDER_REGULAR_COLOR);
-			}
+			draw_coll_rect(target, *c, c->isPhantom()
+					? COLLIDER_PHANTOM_COLOR
+					: COLLIDER_REGULAR_COLOR);
 		}
 	});
 }
 
 void DebugRenderer::drawSHCells(sf::RenderTarget& target, const Game::SHCollisionDetector& cd) {
 	const unsigned s = cd.getSubdivisions();
-	const float w = Game::LEVEL_WIDTH * Game::TILE_SIZE / s,
-	            h = Game::LEVEL_HEIGHT * Game::TILE_SIZE / s;
+	const float w = float(Game::LEVEL_WIDTH * Game::TILE_SIZE) / s,
+	            h = float(Game::LEVEL_HEIGHT * Game::TILE_SIZE) / s;
 	sf::RectangleShape rect(sf::Vector2f(w, h));
 	rect.setOutlineThickness(2);
 	rect.setFillColor(sf::Color(72, 209, 204, 60));

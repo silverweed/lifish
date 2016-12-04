@@ -9,6 +9,15 @@
 
 namespace Game {
 
+/** Allow the preferred number of the SpatialHashingCollisionDetector subdivisions
+ *  to be tuned when compiling. For Lifish's purposes, 7 is a good choice.
+ */
+#ifndef DEFAULT_SHCD_SUBDIVISIONS
+#	define DEFAULT_SHCD_SUBDIVISIONS 7
+#endif
+constexpr unsigned SHCD_SUBDIVISIONS = DEFAULT_SHCD_SUBDIVISIONS;
+#undef DEFAULT_SHCD_SUBDIVISIONS
+
 class Collider;
 
 /**
@@ -24,8 +33,6 @@ class SHContainer {
 
 	/** @return An unordered_set of bucket indexes for the buckets containing `obj`. */
 	std::unordered_set<unsigned> _getIdFor(const Game::Collider& obj) const;
-	/** @return The index of the bucket containing position `x`, `y`. */
-	unsigned _getBucket(float x, float y) const;
 
 public:
 	explicit SHContainer(const sf::Vector2f& levelSize, unsigned subdivisions);

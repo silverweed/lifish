@@ -41,15 +41,6 @@ constexpr unsigned short PWD_BUFSIZE = 512;
 /** Threshold value to consider an input from joystick getAxisPosition(). */
 constexpr short JOYSTICK_INPUT_THRESHOLD = 50;
 
-/** Allow the preferred number of the SpatialHashingCollisionDetector subdivisions
- *  to be tuned when compiling. For Lifish's purposes, 7 is a good choice.
- */
-#ifndef DEFAULT_SHCD_SUBDIVISIONS
-#	define DEFAULT_SHCD_SUBDIVISIONS 7
-#endif
-constexpr unsigned SHCD_SUBDIVISIONS = DEFAULT_SHCD_SUBDIVISIONS;
-#undef DEFAULT_SHCD_SUBDIVISIONS
-
 /****************************************************************************/
 /*                         GLOBAL VARIABLES                                 */
 /****************************************************************************/

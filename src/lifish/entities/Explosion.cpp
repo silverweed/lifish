@@ -125,7 +125,7 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 	explColliderH = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
 			sf::Vector2i(
-				TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT] 
+				TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT]
 					+ 1 - reduction) + reduction,
 				TILE_SIZE - 2),
 			// offset
@@ -137,10 +137,10 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 			// size
 			sf::Vector2i(
 				TILE_SIZE - 2,
-				TILE_SIZE * (propagation[Direction::UP] + propagation[Direction::DOWN] 
+				TILE_SIZE * (propagation[Direction::UP] + propagation[Direction::DOWN]
 					+ 1 - reduction) + reduction),
 			// offset
-			sf::Vector2f(1, -TILE_SIZE * propagation[Direction::UP] 
+			sf::Vector2f(1, -TILE_SIZE * propagation[Direction::UP]
 				+ (TILE_SIZE - 1) * blocked[Direction::UP])));
 
 	std::cerr << "owner: " << sourceEntity->getPosition() << std::endl;

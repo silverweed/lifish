@@ -40,10 +40,17 @@ std::unordered_set<unsigned> SHContainer::_getIdFor(const Game::Collider& obj) c
 	const auto pos = obj.getPosition();
 	const auto size = obj.getSize();
 	
-	ids.insert(_getBucket(pos.x, pos.y));
-	ids.insert(_getBucket(pos.x + size.x, pos.y));
-	ids.insert(_getBucket(pos.x, pos.y + size.y));
-	ids.insert(_getBucket(pos.x + size.x, pos.y + size.y));
+	const sf::Vector2i upleft(
+				(pos.x - Game::TILE_SIZE) / cellSize.x,
+				(pos.y - Game::TILE_SIZE) / cellSize.y),
+	                   downright(
+				(pos.x - Game::TILE_SIZE + size.x) / cellSize.x,
+				(pos.y - Game::TILE_SIZE + size.y) / cellSize.y);
+
+	// Insert the object in all the buckets within its vertices
+	for (int i = upleft.x; i <= downright.x; ++i)
+		for (int j = upleft.y; j <= downright.y; ++j)
+			ids.insert(j * subdivisions + i);
 
 	if (dynamic_cast<const Game::Explosion*>(&obj.getOwner()))
 	std::cerr << "rightmost: " << _getBucket(pos.x + size.x, pos.y) << 
@@ -57,13 +64,6 @@ std::unordered_set<unsigned> SHContainer::_getIdFor(const Game::Collider& obj) c
 	}
 
 	return ids;
-}
-
-unsigned SHContainer::_getBucket(float x, float y) const {
-	const int bx = int((x - Game::TILE_SIZE) / cellSize.x),
-	          by = int((y - Game::TILE_SIZE) / cellSize.y);
-
-	return subdivisions * by + bx;
 }
 
 auto SHContainer::getNearby(const Game::Collider& obj) const -> std::list<std::weak_ptr<Game::Collider>> {
