@@ -1,5 +1,4 @@
 #include "DebugRenderer.hpp"
-#include "CompoundCollider.hpp"
 #include "SHCollisionDetector.hpp"
 #include "EntityGroup.hpp"
 #include <SFML/Graphics.hpp>

@@ -1,14 +1,10 @@
 #include "SimpleCollisionDetector.hpp"
-#include "CompoundCollider.hpp"
 #include "Direction.hpp"
 #include "AxisMoving.hpp"
 #include "EntityGroup.hpp"
 #include "collision_layers.hpp"
 #include "collision_utils.hpp"
 #include <algorithm>
-
-#include <iostream>
-#include <ctime>
 
 using namespace Game::CollisionUtils;
 using Game::Direction;
