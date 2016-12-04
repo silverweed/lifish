@@ -12,8 +12,6 @@ class Animated;
  * A Component which animates an Animated entity based on its direction.
  */
 class MovingAnimator : public Game::Component {
-	
-	bool active = true;
 
 	Game::AxisMoving *moving = nullptr;
 	Game::Animated *animated = nullptr;
@@ -25,8 +23,6 @@ public:
 
 	Game::Entity* init() override;
 	void update() override;
-
-	void setActive(bool a) { active = a; }
 };
 
 }

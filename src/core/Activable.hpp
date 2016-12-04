@@ -7,7 +7,7 @@ protected:
 	bool active;
 
 public:
-	virtual ~Activable() {}
+	explicit Activable(bool active = true) : active(active) {}
 
 	virtual void setActive(bool b) { active = b; }	
 	bool isActive() const { return active; }

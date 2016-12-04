@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <SFML/System.hpp>
+#include "Activable.hpp"
 #include "WithOrigin.hpp"
 #include "Stringable.hpp"
 
@@ -72,7 +73,7 @@ public:
 /**
  * A generic component of a game entity. Inherit this to add behavior.
  */
-class Component : public Game::Entity {
+class Component : public Game::Entity, public Game::Activable {
 protected:
 	Game::Entity& owner;
 

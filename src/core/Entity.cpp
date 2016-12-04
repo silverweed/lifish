@@ -42,7 +42,8 @@ Game::Entity* Entity::init() {
 
 void Entity::update() {
 	for (auto& c : components)
-		c->update();
+		if (c->isActive())
+			c->update();
 }
 
 std::string Entity::_toString(unsigned short indent) const {

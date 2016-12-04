@@ -17,7 +17,6 @@ class Controllable : public Game::Component {
 	/** Reference to an external variable telling us if we're using a joystick */
 	short& joystickUsed;	
 	Game::AxisMoving *moving = nullptr;
-	bool active = true;
 
 public:
 	explicit Controllable(Game::Entity& owner, 
@@ -30,7 +29,6 @@ public:
 	void setWindow(const sf::Window& w) { window = &w; }
 
 	bool hasFocus() const { return window != nullptr && window->hasFocus(); }
-	void setActive(bool a) { active = a; }
 };
 
 }
