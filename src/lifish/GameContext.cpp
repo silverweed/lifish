@@ -153,6 +153,7 @@ void GameContext::toggleDebug(unsigned int flag) {
 
 void GameContext::_printCDStats() const {
 	const auto& dbgStats = lm.getCollisionDetector().getStats();
+	std::ios::fmtflags flags(std::cerr.flags());
 	std::cerr << std::setfill(' ') << std::scientific << std::setprecision(4)
 		<< "#checked: " << std::setw(5) << dbgStats.counter.safeGet("checked")
 		<< " | tot: " << std::setw(8) << dbgStats.timer.safeGet("tot")
@@ -160,12 +161,14 @@ void GameContext::_printCDStats() const {
 		<< " | setup: " << std::setw(8) << dbgStats.timer.safeGet("setup") 
 		<< " | average: " << std::setw(8) 
 			<< dbgStats.timer.safeGet("tot_narrow")/dbgStats.counter.safeGet("checked")
-		<< std::resetiosflags(std::ios::showbase) << std::endl;
+		<< std::endl;
+	std::cerr.flags(flags);
 }
 
 void GameContext::_printGameStats() const {
 	const auto& dbgStats = lm.getStats();
 	const auto timers = { "tot", "reset_align", "validate", "cd", "logic", "ent_update", "checks" };
+	std::ios::fmtflags flags(std::cerr.flags());
 	std::cerr << "-------------";
 	std::cerr << std::setfill(' ') << std::scientific << std::setprecision(3);
 	for (const auto& t : timers) {
@@ -177,7 +180,8 @@ void GameContext::_printGameStats() const {
 		t << "logic_" << i;
 		std::cerr << "\r\n | " << i << ": " << std::setw(7) << dbgStats.timer.safeGet(t.str());
 	}
-	std::cerr << std::resetiosflags(std::ios::showbase) << std::endl;
+	std::cerr << std::endl;
+	std::cerr.flags(flags);
 }
 #endif
 
