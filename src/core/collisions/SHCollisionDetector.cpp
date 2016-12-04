@@ -4,6 +4,8 @@
 #include "AxisMoving.hpp"
 #include "Direction.hpp"
 
+#include "Explosion.hpp"
+
 #include <iostream>
 
 using namespace Game::CollisionUtils;
@@ -42,6 +44,10 @@ std::unordered_set<unsigned> SHContainer::_getIdFor(const Game::Collider& obj) c
 	ids.insert(_getBucket(pos.x + size.x, pos.y));
 	ids.insert(_getBucket(pos.x, pos.y + size.y));
 	ids.insert(_getBucket(pos.x + size.x, pos.y + size.y));
+
+	if (dynamic_cast<const Game::Explosion*>(&obj.getOwner()))
+	std::cerr << "rightmost: " << _getBucket(pos.x + size.x, pos.y) << 
+		"\nrightmost_bot: " << _getBucket(pos.x + size.x, pos.y + size.y) << std::endl;
 
 	for (auto it = ids.begin(); it != ids.end(); ) {
 		if (*it >= buckets.size())

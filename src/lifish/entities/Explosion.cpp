@@ -16,6 +16,8 @@
 #include <list>
 #include <algorithm>
 
+#include <iostream>
+
 using Game::Explosion;
 using Game::TILE_SIZE;
 using Game::Direction;
@@ -119,6 +121,7 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 	 */
 	// Note: no cast required, as `true` is promoted to integral value "1" by C++ standard (§4.7 conv.integral)
 	short reduction = blocked[Direction::RIGHT] + blocked[Direction::LEFT];
+	// FIXME: make sure the colliders' vertices are within the SHCD buckets (i.e. within the level)
 	explColliderH = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
 			sf::Vector2i(
@@ -140,6 +143,9 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 			sf::Vector2f(1, -TILE_SIZE * propagation[Direction::UP] 
 				+ (TILE_SIZE - 1) * blocked[Direction::UP])));
 
+	std::cerr << "owner: " << sourceEntity->getPosition() << std::endl;
+	std::cerr << "h: " << explColliderH->getRect() << " | v: " << explColliderV->getRect() <<std::endl;
+	std::cerr << explColliderH->getRect().intersects(sourceEntity->get<Game::Collider>()->getRect()) << std::endl;
 	for (unsigned short i = 0; i < 4; ++i)
 		if (blocked[i]) --propagation[i];
 	_setPropagatedAnims();

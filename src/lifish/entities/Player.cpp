@@ -19,6 +19,8 @@
 #include "utils.hpp"
 #include <sstream>
 
+#include <iostream>
+
 using Game::Player;
 using Game::TILE_SIZE;
 
@@ -146,6 +148,7 @@ void Player::_kill() {
 }
 
 void Player::_checkCollision(Game::Collider& cld) {
+	std::cerr << "colliding\n";
 	/* A Player collides with:
 	 * - Enemies' bodies
 	 * - Bosses' bodies
