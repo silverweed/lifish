@@ -84,8 +84,11 @@ void GameContext::update() {
 	}
 
 #ifndef RELEASE
-	if (cycle++ % 50 == 0 && (debug >> DBG_PRINT_CD_STATS) == 1)
+	if (cycle % 50 == 0 && (debug >> DBG_PRINT_CD_STATS) & 1)
 		_printCDStats();
+	if (cycle % 50 == 0 && (debug >> DBG_PRINT_GAME_STATS) & 1)
+		_printGameStats();
+	++cycle;
 #endif
 }
 
@@ -157,6 +160,24 @@ void GameContext::_printCDStats() const {
 		<< " | average: " << std::setw(8) 
 			<< dbgStats.timer.safeGet("tot_narrow")/dbgStats.counter.safeGet("checked")
 		<< std::resetiosflags(std::ios::showbase) << std::endl;
+}
+
+void GameContext::_printGameStats() const {
+	const auto& dbgStats = lm.getStats();
+	const auto timers = {
+		"tot", "reset_align", "validate", "cd", "logic",
+		"logic_0",
+		"logic_1",
+		"logic_2",
+		"logic_3",
+		"logic_4",
+		"logic_5",  
+		"ent_update", "checks" };
+	std::cerr << std::setfill(' ') << std::scientific << std::setprecision(3);
+	for (const auto& t : timers) {
+		std::cerr << " | " << t << ": " << std::setw(7) << dbgStats.timer.safeGet(t);
+	}
+	std::cerr << std::resetiosflags(std::ios::showbase) << std::endl;
 }
 #endif
 

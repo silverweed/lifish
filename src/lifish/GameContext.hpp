@@ -24,9 +24,10 @@ class DebugEventHandler;
 class GameContext : public Game::WindowContext {
 public:
 	enum : unsigned int {
-		DBG_DRAW_COLLIDERS = 1,
-		DBG_DRAW_SH_CELLS  = 1 << 1,
-		DBG_PRINT_CD_STATS = 1 << 2
+		DBG_DRAW_COLLIDERS   = 1,
+		DBG_DRAW_SH_CELLS    = 1 << 1,
+		DBG_PRINT_CD_STATS   = 1 << 2,
+		DBG_PRINT_GAME_STATS = 1 << 3
 	};
 private:
 #ifndef RELEASE
@@ -48,6 +49,7 @@ private:
 
 #ifndef RELEASE
 	void _printCDStats() const;
+	void _printGameStats() const;
 #endif
 	void _advanceLevel();
 

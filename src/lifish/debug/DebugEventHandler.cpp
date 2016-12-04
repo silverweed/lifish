@@ -80,6 +80,9 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 		case sf::Keyboard::F:
 			game.toggleDebug(Game::GameContext::DBG_PRINT_CD_STATS);
 			return true;
+		case sf::Keyboard::I:
+			game.toggleDebug(Game::GameContext::DBG_PRINT_GAME_STATS);
+			return true;
 		default: 
 			break;
 		}

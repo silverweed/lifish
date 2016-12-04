@@ -135,7 +135,7 @@ void SHCollisionDetector::update() {
 			collider->setAtLimit(true);	
 			continue;
 		}
-		
+	
 		for (auto& oth : container.getNearby(*collider.get())) {
 			if (oth.expired()) continue;
 #ifndef RELEASE
@@ -164,7 +164,7 @@ void SHCollisionDetector::update() {
 					}
 				}
 			} else if (collider->contains(*othcollider) && collider->collidesWith(*othcollider)) {
-				//std::cerr << &collider->getOwner() << " colliding with " << &othcollider->getOwner()<<std::endl;
+				//std::cerr << &collider->getOwner() << " [" << collider->getLayer() << "] colliding with " << &othcollider->getOwner()<<std::endl;
 				collider->addColliding(oth);
 				othcollider->addColliding(*it);
 			}

@@ -23,6 +23,16 @@
 #include "core.hpp"
 #include <memory>
 
+#ifndef RELEASE
+#	define DBGSTART(name) \
+		dbgStats.timer.start(name)
+#	define DBGEND(name) \
+		dbgStats.timer.end(name)
+#else
+#	define DBGSTART(name)
+#	define DBGEND(name)
+#endif
+
 using Game::LevelManager;
 
 LevelManager::LevelManager()
@@ -62,6 +72,9 @@ void LevelManager::update() {
 
 	std::list<Game::Entity*> to_be_spawned, to_be_killed;
 
+	DBGSTART("tot");
+	DBGSTART("reset_align");
+
 	// Set prevAligns for aligned entities
 	entities.apply([] (Game::Entity *e) {
 		if (!e->isAligned()) return;
@@ -70,15 +83,33 @@ void LevelManager::update() {
 		moving->setPrevAlign(Game::tile(e->getPosition()));
 	});
 
+	DBGEND("reset_align");
+	DBGSTART("validate");
+
 	// Force pruning of all expired pointers
 	entities.validate();
+
+	DBGEND("validate");
+	DBGSTART("cd");
 
 	// Calculate collisions
 	cd.update();
 
+	DBGEND("cd");
+	DBGSTART("logic");
+
 	// Apply game logic rules
-	for (auto logic : Game::Logic::functions)
+	int i = 0;
+	for (auto logic : Game::Logic::functions) {
+		std::stringstream n;
+		n << "logic_" << i;
+		DBGSTART(n.str());
 		entities.apply(logic, *this, to_be_spawned, to_be_killed);
+		DBGEND(n.str());
+		++i;
+	}
+
+	DBGEND("logic");
 
 	for (auto e : to_be_spawned)
 		_spawn(e);
@@ -86,8 +117,13 @@ void LevelManager::update() {
 	for (auto e : to_be_killed)
 		entities.remove(*e);
 
+	DBGSTART("ent_update");
+
 	// Update entities and their components
 	entities.updateAll();
+
+	DBGEND("ent_update");
+	DBGSTART("checks");
 
 	// Check if should resurrect players
 	if (!gameOver)
@@ -95,6 +131,9 @@ void LevelManager::update() {
 
 	// Hurry up, extra game
 	_checkSpecialConditions();
+
+	DBGEND("checks");
+	DBGEND("tot");
 }
 
 bool LevelManager::isPlayer(const Game::Entity& e) const {

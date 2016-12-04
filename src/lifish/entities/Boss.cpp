@@ -14,6 +14,8 @@
 #include "Foe.hpp"
 #include <cassert>
 
+#include <iostream>
+
 using Game::Boss;
 using Game::TILE_SIZE;
 
@@ -103,7 +105,7 @@ void Boss::_checkCollision(Game::Collider& coll) {
 	//std::cerr << "y = " << y / Game::TILE_SIZE<< ", wy = " << wy /Game::TILE_SIZE<< std::endl;
 	const unsigned int damage = (wx - x) / Game::TILE_SIZE * (wy - y) / Game::TILE_SIZE * expl.getDamage();
 	
-	//std::cerr << "dealt " << damage << " damage\n";
+	std::cerr << "dealt " << damage << " damage\n";
 	if (get<Game::Lifed>()->decLife(damage) > 0)
 		_hurt();
 	else

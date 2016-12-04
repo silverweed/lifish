@@ -14,6 +14,9 @@
 #ifdef MULTITHREADED
 #	include <mutex>
 #endif
+#ifndef RELEASE
+#	include "Stats.hpp"
+#endif
 
 namespace Game {
 
@@ -50,6 +53,10 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable, public 
 		lvMutex.unlock();
 #endif
 	}
+
+#ifndef RELEASE
+	Game::Debug::Stats dbgStats;
+#endif
 
 	/** The currently managed level */
 	std::unique_ptr<Game::Level> level;
@@ -153,6 +160,10 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void setOrigin(const sf::Vector2f& o) override;
+
+#ifndef RELEASE
+	const Game::Debug::Stats& getStats() const { return dbgStats; }
+#endif
 };
 
 }
