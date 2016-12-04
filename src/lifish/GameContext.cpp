@@ -15,6 +15,7 @@
 #	include <iomanip>
 #	include "DebugRenderer.hpp"
 #	include "DebugEventHandler.hpp"
+#	include "game_logic.hpp"
 #endif
 
 using Game::GameContext;
@@ -164,18 +165,17 @@ void GameContext::_printCDStats() const {
 
 void GameContext::_printGameStats() const {
 	const auto& dbgStats = lm.getStats();
-	const auto timers = {
-		"tot", "reset_align", "validate", "cd", "logic",
-		"logic_0",
-		"logic_1",
-		"logic_2",
-		"logic_3",
-		"logic_4",
-		"logic_5",  
-		"ent_update", "checks" };
+	const auto timers = { "tot", "reset_align", "validate", "cd", "logic", "ent_update", "checks" };
+	std::cerr << "-------------";
 	std::cerr << std::setfill(' ') << std::scientific << std::setprecision(3);
 	for (const auto& t : timers) {
-		std::cerr << " | " << t << ": " << std::setw(7) << dbgStats.timer.safeGet(t);
+		std::cerr << "\r\n | " << std::left << std::setw(12) << t << ": " << std::setw(7) << dbgStats.timer.safeGet(t);
+	}
+	std::cerr << "\r\n -- logic: --";
+	for (unsigned short i = 0; i < Game::Logic::functions.size(); ++i) {
+		std::stringstream t;
+		t << "logic_" << i;
+		std::cerr << "\r\n | " << i << ": " << std::setw(7) << dbgStats.timer.safeGet(t.str());
 	}
 	std::cerr << std::resetiosflags(std::ios::showbase) << std::endl;
 }

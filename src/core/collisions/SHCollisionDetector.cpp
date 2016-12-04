@@ -52,10 +52,6 @@ std::unordered_set<unsigned> SHContainer::_getIdFor(const Game::Collider& obj) c
 		for (int j = upleft.y; j <= downright.y; ++j)
 			ids.insert(j * subdivisions + i);
 
-	if (dynamic_cast<const Game::Explosion*>(&obj.getOwner()))
-	std::cerr << "rightmost: " << _getBucket(pos.x + size.x, pos.y) << 
-		"\nrightmost_bot: " << _getBucket(pos.x + size.x, pos.y + size.y) << std::endl;
-
 	for (auto it = ids.begin(); it != ids.end(); ) {
 		if (*it >= buckets.size())
 			it = ids.erase(it);
