@@ -23,7 +23,7 @@ class DebugEventHandler;
 
 class GameContext : public Game::WindowContext {
 public:
-	enum : unsigned int {
+	enum : unsigned {
 		DBG_DRAW_COLLIDERS   = 1,
 		DBG_DRAW_SH_CELLS    = 1 << 1,
 		DBG_PRINT_CD_STATS   = 1 << 2,
@@ -34,8 +34,8 @@ private:
        friend class Game::Debug::DebugEventHandler;
 #endif
 
-	unsigned int debug = 0;
-	unsigned int cycle = 0;
+	unsigned debug = 0;
+	unsigned cycle = 0;
 
 	/** Whether this Context was already active (false if it has just been activated) */
 	bool wasActive = true;
@@ -69,7 +69,7 @@ public:
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 	void setActive(bool b) override;
 
-	void toggleDebug(unsigned int dbg);
+	void toggleDebug(unsigned dbg);
 };
 
 }

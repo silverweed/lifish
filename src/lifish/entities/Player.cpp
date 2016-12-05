@@ -42,8 +42,12 @@ Player::Player(const sf::Vector2f& pos, const unsigned short id)
 
 void Player::_init() {
 	// Setup components
-	addComponent(new Game::Lifed(*this, Game::Conf::Player::MAX_LIFE));
+	addComponent(new Game::Lifed(*this, Game::Conf::Player::MAX_LIFE, [this] (int) {
+		// on hurt			
+		_hurt();
+	}));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& cld) {
+		// on collision
 		if (!killable->isKilled())
 			_checkCollision(cld);
 	}, Game::Layers::PLAYERS));
@@ -57,7 +61,8 @@ void Player::_init() {
 		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_hurt.ogg")),
 		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_win.ogg")),
 	}));
-	killable = addComponent(new Game::Killable(*this, [this] () { 
+	killable = addComponent(new Game::Killable(*this, [this] () {
+		// on kill
 		_kill(); 
 	}, [this] () {
 		return death->isKillInProgress();
@@ -191,7 +196,6 @@ void Player::_checkCollision(Game::Collider& cld) {
 
 	auto lifed = get<Game::Lifed>();
 	Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::HURT));
-	_hurt();
 	if (lifed->decLife(damage) <= 0) {
 		killable->kill();
 		return;
@@ -206,9 +210,7 @@ void Player::_checkCollision(Game::Collider& cld) {
 			bonusable->giveBonus(Game::BonusType::SHIELD, Game::Conf::Player::DAMAGE_SHIELD_TIME);
 		else
 			bonusable->giveBonus(Game::BonusType::SHIELD, Game::Conf::Player::DAMAGE_SHIELD_TIME / 40.f);
-	} else {
-		bonusable->giveBonus(Game::BonusType::SHIELD, Game::Conf::Player::DAMAGE_SHIELD_TIME);
-	}
+	} 
 }
 
 void Player::resurrect() {
@@ -223,6 +225,7 @@ void Player::_hurt() {
 	animated->setAnimation("hurt");
 	moving->block(Game::Conf::Player::HURT_ANIM_DURATION);
 	hurtClock->restart();
+	bonusable->giveBonus(Game::BonusType::SHIELD, Game::Conf::Player::DAMAGE_SHIELD_TIME);
 }
 
 //// PlayerDrawProxy ////

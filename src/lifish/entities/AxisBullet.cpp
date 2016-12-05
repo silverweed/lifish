@@ -48,7 +48,7 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, const Game::Entity *const source
 
 	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& e) {
 		// on collision
-		if (&e.getOwner() == this->source) 
+		if (&e.getOwner() == this->source || !e.isSolidFor(*collider)) 
 			return;
 		auto klb = get<Game::Killable>();
 		if (!klb->isKilled()) {

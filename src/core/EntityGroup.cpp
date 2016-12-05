@@ -121,10 +121,10 @@ void EntityGroup::_pruneAll() {
 }
 
 void EntityGroup::_pruneFixed() {
-	for (auto& f : fixedEntities) {
-		for (auto it = f.begin(); it != f.end(); ) {
+	for (unsigned i = 0; i < fixedEntities.size(); ++i) {
+		for (auto it = fixedEntities[i].begin(); it != fixedEntities[i].end(); ) {
 			if (it->expired())
-				it = f.erase(it);
+				it = fixedEntities[i].erase(it);
 			else
 				++it;
 		}

@@ -44,7 +44,11 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 		// since in that case the sound never gets played, so the cache doesn't even load it.
 		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_attack.ogg"))
 	}));
-	addComponent(new Game::Lifed(*this, 1));
+	addComponent(new Game::Lifed(*this, 1, [this] (int newLife) {
+		// on hurt
+		if (newLife <= 0)
+			killable->kill();	
+	}));
 	addComponent(new Game::Foe(*this));
 	if (info.ai >= Game::ai_functions.size()) {
 		std::stringstream ss;
@@ -195,7 +199,6 @@ void Enemy::_checkCollision(Game::Collider& coll) {
 	auto lifed = get<Game::Lifed>();
 	const auto& expl = static_cast<const Game::Explosion&>(coll.getOwner());
 	if (lifed->decLife(expl.getDamage()) <= 0) {
-		killable->kill();	
 		const auto source = dynamic_cast<const Game::Player*>(expl.getSourceEntity());
 		if (source != nullptr)
 			get<Game::Scored>()->setTarget(source->getInfo().id);

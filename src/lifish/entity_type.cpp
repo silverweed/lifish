@@ -24,6 +24,7 @@ EntityType Game::entityFromLetter(const char c) {
 	case '*': return EntityType::BOSS;
 	/* Non BOOM-compatible entities */
 	case '4': return EntityType::TRANSPARENT_WALL;
+	case '5': return EntityType::ACID_POND;
 	}
 	return EntityType::UNKNOWN;
 }
@@ -49,6 +50,7 @@ std::ostream& Game::operator<<(std::ostream& stream, const EntityType& et) {
 	case EntityType::ENEMY10:          stream << 'J'; break;
 	case EntityType::BOSS:             stream << '*'; break;
 	case EntityType::TRANSPARENT_WALL: stream << '4'; break;
+	case EntityType::ACID_POND:        stream << '5'; break;
 	case EntityType::UNKNOWN:          stream << "?"; break;
 	}
 	return stream;

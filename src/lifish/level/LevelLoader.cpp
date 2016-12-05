@@ -16,6 +16,7 @@
 #include "Enemy.hpp"
 #include "Lifed.hpp"
 #include "Wisp.hpp"
+#include "Pond.hpp"
 #include <iostream>
 
 using Game::TILE_SIZE;
@@ -56,6 +57,14 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 
 			case EntityType::TRANSPARENT_WALL:
 				entities.add(new Game::TransparentWall(curPos));
+				break;
+
+			case EntityType::ACID_POND:
+				// Acid pond damages only players
+				entities.add(new Game::Pond(curPos, "acid_pond.png",
+							sf::Vector2f(TILE_SIZE, TILE_SIZE),
+							1, // damage
+							{ Game::Layers::PLAYERS }));
 				break;
 
 			case EntityType::COIN:
