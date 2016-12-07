@@ -37,7 +37,7 @@ Coin::Coin(const sf::Vector2f& pos)
 		get<Game::Killable>()->kill();			
 		get<Game::Scored>()->setTarget(static_cast<const Game::Player&>(coll.getOwner()).getInfo().id);
 		Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
-	}));
+	}, Game::Layers::GRABBABLE));
 	addComponent(new Game::Killable(*this, [this] () {
 		// on kill
 		_grab();
