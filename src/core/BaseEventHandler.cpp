@@ -19,6 +19,11 @@ bool BaseEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 			Game::options.vsync = !Game::options.vsync;
 			window.setFramerateLimit(Game::options.vsync ? Game::options.framerateLimit : 0);
 			return true;
+#ifndef RELEASE
+		case sf::Keyboard::Num0:
+			Game::options.printDrawStats = !Game::options.printDrawStats;
+			return true;
+#endif
 		default:
 			break;
 		}

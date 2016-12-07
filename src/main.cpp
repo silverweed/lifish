@@ -52,6 +52,10 @@
 #	include <thread>
 #endif
 
+#ifndef RELEASE
+#	include "Stats.hpp"
+#endif
+
 using namespace Game;
 
 static void print_version() {
@@ -202,6 +206,8 @@ int main(int argc, char **argv) {
 	contexts[Game::CTX_INTERLEVEL] = &game->getWLHandler()
 					.getInterlevelContext();
 	Game::WindowContext *cur_context = contexts[Game::CTX_GAME];
+	Game::Debug::Stats dbgStats;
+	unsigned cycle = 0;
 #endif
 
 #ifdef MULTITHREADED
@@ -261,11 +267,23 @@ int main(int argc, char **argv) {
 		///// RENDERING LOOP //////
 
 #ifndef MULTITHREADED
+#	ifndef RELEASE
+		dbgStats.timer.start("draw");
+#	endif
 		window.clear();
 		window.draw(*cur_context);
 		
 		Game::maybeShowFPS(window);
 		window.display();
+#	ifndef RELEASE
+		++cycle;
+		if (Game::options.printDrawStats && cycle % 50 == 0) {
+			std::ios::fmtflags flags(std::cerr.flags());
+			std::cerr << std::setfill(' ') << std::scientific << std::setprecision(4)
+				<< ">> Draw: " << std::setw(6) << dbgStats.timer.end("draw") << std::endl;
+			std::cerr.flags(flags);
+		}
+#	endif
 #else
 		// Just wait for the vsync
 		sf::sleep(frame_time_limit - frame_clock.restart());

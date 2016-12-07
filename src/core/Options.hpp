@@ -11,6 +11,8 @@ struct Options {
 	bool soundsMute;
 
 	bool showFPS;
+	/** If true, print to console time stats for the drawing phase */
+	bool printDrawStats;
 
 	bool vsync;
 	unsigned short framerateLimit;
