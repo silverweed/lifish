@@ -48,7 +48,11 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, const Game::Entity *const source
 
 	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& e) {
 		// on collision
-		if (&e.getOwner() == this->source || !e.isSolidFor(*collider)) 
+		// Note: the default layer doesn't automatically destroy a Bullet for
+		// practical reasons: it is typically used as a "catch-all" layer, but
+		// it should explicitly tell the bullet to selfdestroy if it's the intended
+		// behaviour. The bullet otherwise self-destructs as soon as it collides.
+		if (&e.getOwner() == this->source || e.getLayer() == Game::Layers::DEFAULT)
 			return;
 		auto klb = get<Game::Killable>();
 		if (!klb->isKilled()) {

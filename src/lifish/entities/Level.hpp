@@ -43,11 +43,7 @@ struct LevelInfo {
  * static information about it. Dynamic informations about the level
  * during the game are managed by Game::LevelManager.
  */
-class Level final 
-	: public Game::Entity
-	, public sf::Drawable
-	, private sf::NonCopyable
-{
+class Level final : public Game::Entity , private sf::NonCopyable {
 	friend class Game::LevelSet;
 
 	/** This ought to be set before calling level.init(); */
@@ -59,11 +55,9 @@ class Level final
 	/** This level's static (initial) tilemap */
 	Game::Matrix<Game::EntityType, LEVEL_HEIGHT, LEVEL_WIDTH> tiles;
 
-	/** The background texture */
 	sf::Texture *bgTexture = nullptr;
 	sf::Sprite bgSprite;
 
-	/** The borders' texture */
 	sf::Texture *borderTexture = nullptr;
 	sf::Sprite borderSprite;
 
@@ -92,7 +86,7 @@ public:
 	 *  be called before using this level. You need to specify a LevelSet
 	 *  this Level belongs to.
 	 */
-	Level(const LevelSet& levelSet);
+	explicit Level(const LevelSet& levelSet);
 
 	/** Loads the appropriate bgTexture, fills the bgTiles and makes this level
 	 *  usable. Must be called after setting levelInfo.
@@ -111,13 +105,14 @@ public:
 	/** Changes the origin of all tiles */
 	void setOrigin(const sf::Vector2f& origin) override;
 
-	/** Draws this level's background in the target window */
-	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
-
 	const Game::LevelSet& getLevelSet() const { return levelSet; }
 
 	std::string toString() const override;
 	std::string getTilemap() const;
+
+	const sf::Drawable& getBackground() const { return bgSprite; }
+	const sf::Drawable& getBorder() const { return borderSprite; }
+	const sf::Drawable* getNumText() const;
 };
 
 }

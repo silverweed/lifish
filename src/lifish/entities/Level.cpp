@@ -72,17 +72,6 @@ void Level::setOrigin(const sf::Vector2f& offset) {
 	levelnumtext->setOrigin(offset);
 }
 
-void Level::draw(sf::RenderTarget& window, sf::RenderStates states) const {
-	// Draw the border
-	window.draw(borderSprite, states);
-	// Draw the level background
-	window.draw(bgSprite, states);
-
-	// Draw the level number
-	if (levelnumtext != nullptr)
-		window.draw(*levelnumtext, states);
-}
-
 EntityType Level::getTile(unsigned short left, unsigned short top) const {
 	if (left >= LEVEL_WIDTH || top >= LEVEL_HEIGHT) 
 		return EntityType::UNKNOWN;
@@ -156,4 +145,8 @@ std::string Level::toString() const {
 
 	called = true;
 	return ss.str();
+} 
+
+const sf::Drawable* Level::getNumText() const {
+	return levelnumtext;
 }

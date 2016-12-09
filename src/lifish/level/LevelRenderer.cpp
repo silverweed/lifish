@@ -18,7 +18,8 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 	const auto level = owner.getLevel();
 	if (level == nullptr || !level->isInitialized()) return;
 
-	target.draw(*level, states);
+	// Draw the level background
+	target.draw(level->getBackground(), states);
 	owner._mtxUnlock();
 
 	// Draw according to z-index
@@ -28,7 +29,7 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 	owner.entities.apply([&target, &toDraw] (const Game::Entity *e) {
 		const auto d = e->get<Game::Drawable>();
 		if (d != nullptr) {
-			auto zidx = e->get<Game::ZIndexed>();
+			const auto zidx = e->get<Game::ZIndexed>();
 			if (zidx != nullptr)
 				toDraw[zidx->getZIndex()].push_back(d);
 			else
@@ -41,4 +42,12 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 			target.draw(*d, states);
 
 	owner.entities.mtxUnlock();
+
+	// Draw the level border
+	owner._mtxLock();
+	target.draw(level->getBorder(), states);
+	const auto levelnumtext = level->getNumText();
+	if (levelnumtext != nullptr)
+		target.draw(*levelnumtext, states);
+	owner._mtxUnlock();
 }
