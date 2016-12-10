@@ -147,7 +147,8 @@ void LevelSet::loadFromFile(const std::string& path) {
 	 *		"bg": ushort,
 	 *		"fixed": ushort,
 	 *		"breakable": ushort
-	 *	}
+	 *	},
+	 *	"effects": [string] [opt]
 	 * }
 	 */
 	for (const auto& lvinfo : levelsdata) {
@@ -160,6 +161,12 @@ void LevelSet::loadFromFile(const std::string& path) {
 		info.tileIDs.bg        = lvinfo["tileIDs"]["bg"];
 		info.tileIDs.fixed     = lvinfo["tileIDs"]["fixed"];
 		info.tileIDs.breakable = lvinfo["tileIDs"]["breakable"];
+		auto it = lvinfo.find("effects");
+		if (it != lvinfo.end()) {
+			for (const auto& s : *it) {
+				info.effects.insert(s.get<std::string>());
+			}
+		}
 		levels.push_back(info);
 	}
 }

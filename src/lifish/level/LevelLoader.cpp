@@ -17,6 +17,7 @@
 #include "Lifed.hpp"
 #include "Wisp.hpp"
 #include "Pond.hpp"
+#include "Fog.hpp"
 #include <iostream>
 
 using Game::TILE_SIZE;
@@ -172,6 +173,10 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 		}
 	}
 
+	const auto& effects = level.getInfo().effects;
+	if (effects.find("fog") != effects.end()) {
+		entities.add(new Game::Fog);	
+	}
 	lm.levelTime.resume();
 
 	return true;

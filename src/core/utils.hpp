@@ -65,7 +65,8 @@ constexpr double sqrDistance(const sf::Vector2<T>& a, const sf::Vector2<R>& b) {
 	return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
 }
 
-constexpr short manhattanDistance(const sf::Vector2i& tileA, const sf::Vector2i& tileB) {
+template<typename T, typename R>
+constexpr T manhattanDistance(const sf::Vector2<T>& tileA, const sf::Vector2<R>& tileB) {
 	return Game::abs(tileA.x - tileB.x) + Game::abs(tileA.y - tileB.y);
 }
 

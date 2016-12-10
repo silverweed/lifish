@@ -2,6 +2,7 @@
 #include "Options.hpp"
 #include "GameCache.hpp"
 #include <cstring>
+#include <chrono>
 
 #if defined(SFML_SYSTEM_MACOS)
 #	include <mach-o/dyld.h>
@@ -84,6 +85,12 @@ static bool _initPwd() {
 }
 
 bool Game::initCore() {
+	// Seed the random engine
+	try {
+		rng.seed(std::random_device{}());
+	} catch (std::exception) {
+		rng.seed(std::chrono::system_clock::now().time_since_epoch().count());
+	}
 	_initOptions();
 	return _initPwd();
 }

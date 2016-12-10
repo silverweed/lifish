@@ -2,6 +2,7 @@
 
 #include <string>
 #include <array>
+#include <unordered_set>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/System/NonCopyable.hpp>
@@ -36,6 +37,9 @@ struct LevelInfo {
 
 	/** String representation of the tilemap */
 	std::string tilemap;
+
+	/** Special effects for this level (e.g. Fog) */
+	std::unordered_set<std::string> effects;
 };
 
 /**
