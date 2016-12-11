@@ -15,7 +15,6 @@ using Game::Fog;
 
 Fog::Fog(float speed, sf::Time alphaDt) 
 	: Game::Entity(sf::Vector2f(0, 0)) 
-	, speed(speed)
 	, alphaDt(alphaDt)
 {
 	sprite = addComponent(new Game::Sprite(*this, Game::getAsset("graphics", "fog.png"), 

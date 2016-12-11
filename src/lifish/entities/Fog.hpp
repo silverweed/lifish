@@ -9,7 +9,6 @@ class Clock;
 class Sprite;
 
 class Fog : public Game::Entity {
-	const float speed;
 	/** The time to wait before changing the alpha */
 	const sf::Time alphaDt;
 
