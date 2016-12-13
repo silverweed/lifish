@@ -57,13 +57,11 @@ struct Attack {
 	 */
 	float fireRate;
 	
-	/** If attack is RANGED, bullet dies after `range` tiles (or pixels) from source */
-	union {
-		short tileRange;
-		float pixelRange;
-	};
-	bool rangeInTiles;
-	
+	/** If attack is RANGED, bullet dies after `range` pixels from source.
+	 *  A negative value means `infinite`.
+	 */
+	float range;
+
 	/** If attacktype is SIMPLE | BLOCKING, this is the time
 	 *  the enemy stops after shooting (should be more than Shooting::SHOOT_FRAME_TIME);
 	 */

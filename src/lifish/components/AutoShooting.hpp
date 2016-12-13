@@ -24,6 +24,8 @@ public:
 	void shoot(Game::Direction dir = Game::Direction::NONE);
 	void shoot(double angle);
 
+	const Game::Shooting* getShooting() const { return shooting; }
+
 	/** If this component's entity has shot a bullet since latest poll, return it
 	 *  and empty the internal "bullet buffer". Else, just return nullptr.
 	 *  Caller gets the ownership of the returned bullet.

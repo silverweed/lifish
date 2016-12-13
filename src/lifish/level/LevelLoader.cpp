@@ -16,6 +16,7 @@
 #include "Enemy.hpp"
 #include "Lifed.hpp"
 #include "Wisp.hpp"
+#include "AlienPredator.hpp"
 #include "Pond.hpp"
 #include "Fog.hpp"
 #include <iostream>
@@ -155,13 +156,17 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 			}
 			if (enemy_id > 0) {
 				Game::Enemy *enemy = nullptr;
+				const auto& info = ls.getEnemyInfo(enemy_id);
 				// Some enemies have their own classes, others are just 'Enemy'
 				switch (enemy_id) {
 				case 2:
-					enemy = new Game::Wisp(curPos, ls.getEnemyInfo(enemy_id));
+					enemy = new Game::Wisp(curPos, info);
+					break;
+				case 10:
+					enemy = new Game::AlienPredator(curPos, info);
 					break;
 				default:
-					enemy = new Game::Enemy(curPos, enemy_id, ls.getEnemyInfo(enemy_id));
+					enemy = new Game::Enemy(curPos, enemy_id, info);
 					break;
 				}
 				enemy->get<Game::AI>()->setLevelManager(&lm);

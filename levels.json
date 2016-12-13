@@ -122,7 +122,8 @@
 				"speed": 0.5,
 				"damage": 4,
 				"fireRate": 4,
-				"tileRange": 4
+				"tileRange": 4,
+				"blockTime": 260
 			}
 		},
 		{

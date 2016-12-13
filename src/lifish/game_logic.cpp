@@ -72,13 +72,12 @@ void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager& lm,
 void Game::Logic::spawningLogic(Game::Entity *e, Game::LevelManager&,
 		EntityList& tbspawned, EntityList&)
 {
-	auto spawning = e->get<Game::Spawning>();
-	if (spawning == nullptr) return;
-	
-	while (spawning->shouldSpawn()) {
-		auto spawned = spawning->spawn().release();
-		if (spawned != nullptr)
-			tbspawned.push_back(spawned);	
+	for (auto spawning : e->getAll<Game::Spawning>()) {
+		while (spawning->shouldSpawn()) {
+			auto spawned = spawning->spawn().release();
+			if (spawned != nullptr)
+				tbspawned.push_back(spawned);	
+		}
 	}
 }
 

@@ -84,6 +84,8 @@ protected:
 
 	virtual void _checkCollision(Game::Collider& coll);
 	void _checkShoot();
+	/** @return Whether entity `e` is within our Shooting range or not */
+	bool _inRange(const Game::Entity *const e) const;
 
 public:
 	constexpr static float BASE_SPEED = 75.f;

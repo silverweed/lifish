@@ -178,11 +178,16 @@ void Enemy::_checkShoot() {
 	
 	const auto& entitiesSeen = sighted->entitiesSeen(moving->getDirection());
 	for (const auto& pair : entitiesSeen) {
-		if (dynamic_cast<const Game::Player*>(pair.first) != nullptr) {
+		if (_inRange(pair.first) && dynamic_cast<const Game::Player*>(pair.first) != nullptr) {
 			autoShooting->shoot();
 			return;
 		}
 	}
+}
+
+bool Enemy::_inRange(const Game::Entity *const e) const {
+	const auto atk = autoShooting->getShooting()->getAttack();
+	return e == nullptr || atk.range < 0 || Game::manhattanDistance(e->getPosition(), position) <= atk.range;
 }
 
 void Enemy::setMorphed(bool b) {

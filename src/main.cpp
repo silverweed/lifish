@@ -85,6 +85,7 @@ static void parse_args(int argc, char **argv,
 	/* out */ unsigned short& start_level, /* out */ std::string& levelset_name)
 {
 	bool args_ended = false;
+	bool print_level_info = false;
 	int i = 1;
 	while (i < argc) {
 		if (!args_ended && argv[i][0] == '-') {
@@ -101,16 +102,33 @@ static void parse_args(int argc, char **argv,
 			case 'v':
 				print_version();
 				exit(0);
+			case 'i':
+				print_level_info = true;
+				break;
 			default:
-				std::cout << "Usage: " << argv[0] << " [-l <levelnum>] [-v] [levelset.json]\n"
-					  << "\t-l: start at level <levelnum>\n"
+				std::cout << "Usage: " << argv[0] << " [-l <levelnum>] [-v] [levelset.json]\r\n"
+					  << "\t-l: start at level <levelnum>\r\n"
+					  << "\t-i: print info about <levelset.json> and exit\r\n"
 					  << "\t-v: print version and exit" << std::endl;
-				exit(1);
+				std::exit(1);
 			}
 		} else {
 			levelset_name = std::string(argv[i]);
 		}
 		++i;
+	}
+
+	if (print_level_info) {
+		try {
+			Game::LevelSet ls(levelset_name);
+			std::cout << "--------------\r\nLevelset info:\r\n--------------\r\n"
+				<< ls.toString() << std::endl;
+			std::exit(0);
+		} catch (std::exception ex) {
+			std::cerr << "Error: file \"" << levelset_name
+				<< "\" not found or with wrong format." << std::endl;
+			std::exit(1);
+		}
 	}
 }
 
@@ -226,38 +244,36 @@ int main(int argc, char **argv) {
 		cur_context->handleEvents(window);
 
 		// Check context switch
-		{
-			const int nc = cur_context->getNewContext();
-			if (nc >= 0) {
-				cur_context->setActive(false);
-				cur_context->resetNewContext();
-				switch (nc) {
-				case Game::CTX_UI:
-					if (cur_context == game.get() && game->getLM().isGameOver())
-						ui.setCurrent("home");
-					else
-						ui.setCurrent("pause");
-					break;
-				case Game::CTX_INTERLEVEL:
-					if (cur_context == &ui && ui.getCurrent() == "home") {
-						// Game started: create a new GameContext
-						game.reset(new Game::GameContext(window, levelset_name, start_level));
-						game->setOrigin(origin);
-						contexts[Game::CTX_GAME] = game.get();
-						contexts[Game::CTX_INTERLEVEL] = &game->getWLHandler()
-										.getInterlevelContext();
-						game->getLM().pause();
-						static_cast<Game::InterlevelContext*>(contexts[Game::CTX_INTERLEVEL])
-											->setGettingReady(start_level);
-					}
-					break;
+		const int nc = cur_context->getNewContext();
+		if (nc >= 0) {
+			cur_context->setActive(false);
+			cur_context->resetNewContext();
+			switch (nc) {
+			case Game::CTX_UI:
+				if (cur_context == game.get() && game->getLM().isGameOver())
+					ui.setCurrent("home");
+				else
+					ui.setCurrent("pause");
+				break;
+			case Game::CTX_INTERLEVEL:
+				if (cur_context == &ui && ui.getCurrent() == "home") {
+					// Game started: create a new GameContext
+					game.reset(new Game::GameContext(window, levelset_name, start_level));
+					game->setOrigin(origin);
+					contexts[Game::CTX_GAME] = game.get();
+					contexts[Game::CTX_INTERLEVEL] = &game->getWLHandler()
+									.getInterlevelContext();
+					game->getLM().pause();
+					static_cast<Game::InterlevelContext*>(contexts[Game::CTX_INTERLEVEL])
+										->setGettingReady(start_level);
 				}
-				cur_context = contexts[nc];
-				cur_context->setActive(true);
-#ifdef MULTITHREADED
-				Game::curContext = cur_context;
-#endif
+				break;
 			}
+			cur_context = contexts[nc];
+			cur_context->setActive(true);
+#ifdef MULTITHREADED
+			Game::curContext = cur_context;
+#endif
 		}
 
 		///// LOGIC LOOP /////

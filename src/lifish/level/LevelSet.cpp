@@ -12,7 +12,7 @@ using Game::Level;
 
 /** Optional additional metadata; all values must be strings */
 static constexpr const char* AVAIL_METADATA[] = {
-	"author", "created", "difficulty"
+	"author", "created", "difficulty", "comment"
 };
 
 LevelSet::LevelSet(const std::string& path) {
@@ -67,8 +67,8 @@ void LevelSet::loadFromFile(const std::string& path) {
 	 *		"speed": float,      [opt]
 	 *		"fireRate": float,   [opt]
 	 *		"blockTime": float,  [opt]
-	 *		"tileRange": short,  [opt, default=-1]
-	 *		"pixelRange": float, [opt, only valid if tileRange is not specified]
+	 *		"range": float,      [opt, default=-1]
+	 *		"tileRange": short,  [opt, only valid if `range` was not specified]
 	 *	}
 	 *
 	 * }
@@ -83,12 +83,12 @@ void LevelSet::loadFromFile(const std::string& path) {
 		enemies[enemynum].attack.type = Game::AttackType::AXIS_BOUND;
 		for (unsigned short i = 0; i < atktype.size(); ++i) {
 			AttackType type;
-			auto at = atktype[i].get<std::string>();
+			const auto at = atktype[i].get<std::string>();
 			if (!Game::stringToAttackType(at, type))
 				throw std::invalid_argument(at.c_str());
 
 			enemies[enemynum].attack.type = AttackType(
-					static_cast<unsigned int>(enemies[enemynum].attack.type) 
+					static_cast<unsigned int>(enemies[enemynum].attack.type)
 					| static_cast<unsigned int>(type));
 		}
 
@@ -111,24 +111,20 @@ void LevelSet::loadFromFile(const std::string& path) {
 		if (it != atk.end())
 			enemies[enemynum].attack.blockTime = sf::milliseconds(it->get<float>());
 
+		// Find range: first search for `range` (in pixels); if not found, search `tileRange`.
+		// If neither is found, set range to -1 (infinite).
+		enemies[enemynum].attack.range = -1;
 		bool range_found = false;
-		enemies[enemynum].attack.rangeInTiles = true;
-		it = atk.find("tileRange");
+		it = atk.find("range");
 		if (it != atk.end()) {
-			enemies[enemynum].attack.tileRange = it->get<short>();
+			enemies[enemynum].attack.range = it->get<float>();
 			range_found = true;
 		}
 		if (!range_found) {
-			it = atk.find("pixelRange");
+			it = atk.find("tileRange");
 			if (it != atk.end()) {
-				enemies[enemynum].attack.pixelRange = it->get<float>();
-				enemies[enemynum].attack.rangeInTiles = false;
-				range_found = true;
+				enemies[enemynum].attack.range = float(it->get<short>() * Game::TILE_SIZE);
 			}
-		}
-		if (!range_found) {
-			enemies[enemynum].attack.tileRange = -1;
-			enemies[enemynum].attack.pixelRange = -1;
 		}
 		++enemynum;
 	}

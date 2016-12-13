@@ -36,9 +36,7 @@ Bullet::Bullet(const sf::Vector2f& pos, const Game::Entity *const source, const 
 	, origin(position)
 	, source(source)
 	, damage(attack.damage)
-	, range(attack.type & Game::AttackType::RANGED 
-			? attack.rangeInTiles ? attack.tileRange : attack.pixelRange
-			: -1)
+	, range(attack.range)
 {
 	addComponent(new Game::Sounded(*this, {
 		Game::getAsset("test", std::string("bullet") + Game::to_string(attack.id) + std::string("_hit.ogg")),
