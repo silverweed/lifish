@@ -53,6 +53,8 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, un
 
 	// Ensure lm is not paused
 	lm.resume();
+	gameRenderTex.create((Game::LEVEL_WIDTH + 2) * Game::TILE_SIZE, (Game::LEVEL_HEIGHT + 2) * Game::TILE_SIZE);
+	sidePanelRenderTex.create(Game::SIDE_PANEL_WIDTH, (Game::LEVEL_HEIGHT + 2) * Game::TILE_SIZE);
 }
 
 void GameContext::setActive(bool b) {
@@ -127,23 +129,32 @@ bool GameContext::handleEvent(sf::Window&, sf::Event event) {
 	return false;
 }
 
-void GameContext::setOrigin(const sf::Vector2f& o) {
-	Game::WindowContext::setOrigin(o);
-	lm.setOrigin(o);
-
-}
-
 void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const {
-	window.draw(lm, states);
-	window.draw(sidePanel, states);
+	// Draw the LevelManager in its render texture
+	gameRenderTex.clear();
+	gameRenderTex.draw(lm, states);
 #ifndef RELEASE
 	if ((debug >> DBG_DRAW_COLLIDERS) & 1)
-		Debug::DebugRenderer::drawColliders(window, lm.getEntities());
+		Debug::DebugRenderer::drawColliders(gameRenderTex, lm.getEntities());
 	if ((debug >> DBG_DRAW_SH_CELLS) & 1)
-		Debug::DebugRenderer::drawSHCells(window,
+		Debug::DebugRenderer::drawSHCells(gameRenderTex,
 				static_cast<const Game::SHCollisionDetector&>(
 					lm.getCollisionDetector()));
 #endif
+	gameRenderTex.display();
+
+	// Draw the SidePanel in its render texture
+	sidePanelRenderTex.clear();
+	sidePanelRenderTex.draw(sidePanel, states);
+	sidePanelRenderTex.display();
+	
+	// Draw both textures to window
+	sf::Sprite gameSprite(gameRenderTex.getTexture());
+	gameSprite.setOrigin(origin);
+	window.draw(gameSprite, states);
+
+	sf::Sprite sidePanelSprite(sidePanelRenderTex.getTexture());
+	window.draw(sidePanelSprite, states);
 }
 
 #ifndef RELEASE

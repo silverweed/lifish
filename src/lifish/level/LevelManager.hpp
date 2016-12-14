@@ -32,7 +32,7 @@ class Level;
  *  In particular, its update() method updates all entities,
  *  the collisions and the game logic.
  */
-class LevelManager final : private sf::NonCopyable, public sf::Drawable, public Game::WithOrigin {
+class LevelManager final : private sf::NonCopyable, public sf::Drawable {
 
 	friend class Game::LevelLoader;
 	friend class Game::LevelRenderer;
@@ -158,8 +158,6 @@ public:
 	void reset();
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
-	void setOrigin(const sf::Vector2f& o) override;
 
 #ifndef RELEASE
 	const Game::Debug::Stats& getStats() const { return dbgStats; }

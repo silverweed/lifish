@@ -43,7 +43,7 @@ void DebugRenderer::drawSHCells(sf::RenderTarget& target, const Game::SHCollisio
 
 	for (unsigned short i = 0; i < s; ++i)
 		for (unsigned short j = 0; j < s; ++j) {
-			rect.setPosition(sf::Vector2f(i * w + Game::SIDE_PANEL_WIDTH + Game::TILE_SIZE,
+			rect.setPosition(sf::Vector2f(i * w + Game::TILE_SIZE,
 						j * h + Game::TILE_SIZE));
 			target.draw(rect);
 		}

@@ -36,7 +36,7 @@ namespace {
  * A container for Entities, providing convenient methods for operating
  * on all or a specific type of them.
  */
-class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
+class EntityGroup final : private sf::NonCopyable {
 
 	bool alreadyPrunedThisUpdate = false;
 
@@ -132,8 +132,6 @@ public:
 
 	/** Removes all entities from this EntityGroup. */
 	void clear();
-
-	void setOrigin(const sf::Vector2f& origin) override;
 
 	template<class T>
 	size_t size() const;

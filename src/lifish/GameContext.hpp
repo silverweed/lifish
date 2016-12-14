@@ -40,6 +40,9 @@ private:
 	/** Whether this Context was already active (false if it has just been activated) */
 	bool wasActive = true;
 
+	mutable sf::RenderTexture gameRenderTex;
+	mutable sf::RenderTexture sidePanelRenderTex;
+
 	const sf::Window& window;
 	Game::LevelSet ls;
 	Game::LevelManager lm;
@@ -65,7 +68,6 @@ public:
 
 	void update() override;
 	bool handleEvent(sf::Window& window, sf::Event evt) override;
-	void setOrigin(const sf::Vector2f& o) override;
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 	void setActive(bool b) override;
 

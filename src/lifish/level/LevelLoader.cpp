@@ -180,8 +180,6 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 		}
 	}
 
-	entities.add(new Game::HauntedStatue(sf::Vector2f(32, 32)));
-	
 	const auto& effects = level.getInfo().effects;
 	if (effects.find("fog") != effects.end()) {
 		entities.add(new Game::Fog);	

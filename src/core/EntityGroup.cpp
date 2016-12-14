@@ -12,13 +12,6 @@ EntityGroup::EntityGroup() {
 		f.clear();
 }
 
-void EntityGroup::setOrigin(const sf::Vector2f& origin) {
-	WithOrigin::setOrigin(origin);
-
-	for (auto& e : entities)
-		e->setOrigin(origin);
-}
-
 void EntityGroup::validate() {
 	_pruneAll();
 	alreadyPrunedThisUpdate = true;
@@ -109,8 +102,6 @@ auto EntityGroup::getFixedAt(unsigned short x, unsigned short y) const
 }
 
 Game::Entity* EntityGroup::_putInAux(std::shared_ptr<Game::Entity> entity) {
-	entity->setOrigin(origin);
-
 	// Put in aux collections, if not already managed
 	auto klb = entity->getShared<Game::Killable>();
 	if (klb != nullptr/* && !_isManagedKillable(entity)*/) {

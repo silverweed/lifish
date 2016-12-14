@@ -150,13 +150,6 @@ void LevelManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	renderer.draw(target, states);
 }
 
-void LevelManager::setOrigin(const sf::Vector2f& pos) {
-	Game::WithOrigin::setOrigin(pos);
-	entities.setOrigin(pos);
-	if (level != nullptr)
-		level->setOrigin(pos);
-}
-
 void LevelManager::setNextLevel() {
 	if (level == nullptr)
 		throw std::logic_error("Called LevelManager::setNextLevel() with null level!");
@@ -169,7 +162,6 @@ void LevelManager::setNextLevel() {
 void LevelManager::setLevel(const Game::LevelSet& ls, unsigned short lvnum) {
 	_mtxLock();
 	level = ls.getLevel(lvnum);
-	level->setOrigin(origin);
 	Game::LevelLoader::load(*level, *this);
 	_mtxUnlock();
 	// Don't trigger EXTRA game if there were no coins in the level
