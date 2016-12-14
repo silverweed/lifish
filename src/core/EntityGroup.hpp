@@ -99,7 +99,7 @@ class EntityGroup final : public Game::WithOrigin, private sf::NonCopyable {
 	bool _isManagedFixed(std::shared_ptr<Game::Entity> entity) const;
 	/** @return whether a Killable in this group's `killables` refers to `entity` */
 	bool _isManagedKillable(std::shared_ptr<Game::Entity> entity) const;
-	/** @return whether a Collider in this group's `killables` refers to `entity` */
+	/** @return whether a Collider in this group's `collidingEntities` refers to `entity` */
 	bool _isManagedCollider(std::shared_ptr<Game::Entity> entity) const;
 
 public:
