@@ -14,6 +14,8 @@ class EntityGroup;
 
 /** A Sighted entity has knowledge of entities around it.
  *  Use either the specializations AxisSighted or FreeSighted for sight along axes or in all directions.
+ *  This component does NOT see killed entities, i.e. entities which have a Killable component with
+ *  `isKilled() == true`.
  */
 class Sighted : public Game::Component {
 protected:

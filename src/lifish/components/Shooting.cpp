@@ -83,7 +83,7 @@ Game::FreeBullet* Shooting::shoot(double angle) {
 
 bool Shooting::isRecharging() const {
 	return attack.fireRate > 0 && 
-		rechargeClock->getElapsedTime().asSeconds() < 1./(fireRateMult * attack.fireRate);
+		rechargeClock->getElapsedTime().asSeconds() < 1. / (fireRateMult * attack.fireRate);
 }
 
 void Shooting::update() {

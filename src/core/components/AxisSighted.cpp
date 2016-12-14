@@ -52,8 +52,12 @@ void AxisSighted::_fillLine(const Game::Direction dir) {
 		const auto etile = Game::tile(e->getPosition());
 		if (!same_line(etile, mtile)) return;
 		const auto dist = Game::manhattanDistance(etile, mtile);
-		if (visionRadius < 0 || dist <= visionRadius) 
-			seen[dir].push_back(std::make_pair(e, dist));
+		if (visionRadius < 0 || dist <= visionRadius) {
+			// Only see living entities
+			const auto killable = e->get<Game::Killable>();
+			if (killable == nullptr || !killable->isKilled())
+				seen[dir].push_back(std::make_pair(e, dist));
+		}
 	});
 
 	std::sort(seen[dir].begin(), seen[dir].end(), [] (
