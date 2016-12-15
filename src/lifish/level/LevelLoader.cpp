@@ -75,6 +75,10 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 				entities.add(new Game::Coin(curPos));
 				break;
 
+			case EntityType::HAUNTED_STATUE:
+				entities.add(new Game::HauntedStatue(curPos));
+				break;
+
 			case EntityType::PLAYER1: 
 				if (!is_game_over(0)) {
 					lm.players[0]->setWinning(false);
