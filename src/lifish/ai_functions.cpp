@@ -47,6 +47,8 @@ static Game::Direction directions[] = {
 	D::UP, D::RIGHT, D::DOWN, D::LEFT
 };
 
+// Selects a random direction where `moving` can go, choosing `opp` if
+// and only if no other viable direction is found.
 static Game::Direction select_random_viable(
 		const Game::AxisMoving& moving,
 		const Game::LevelManager& lm, 
@@ -55,7 +57,8 @@ static Game::Direction select_random_viable(
 	Game::Direction dirs[4];
 	unsigned short n = 0;
 	for (const auto& d : directions)
-		if (lm.canGo(moving, d) && d != opp) dirs[n++] = d;
+		if (lm.canGo(moving, d) && d != opp) {
+			dirs[n++] = d;		std::cerr << "[opp = " << Game::directionToString(opp) << "] adding direction " << Game::directionToString(d) << std::endl; }
 	if (n == 0)
 		dirs[n++] = opp;
 	std::uniform_int_distribution<int> dist(0, n - 1);
@@ -155,13 +158,11 @@ AIBoundFunction Game::ai_random_forward(Game::Entity& entity) {
 		HANDLE_UNALIGNED;
 		const D cur = moving->getDirection();
 		const bool colliding = collider->collidesWithSolid();
-
 		const D opp = Game::oppositeDirection(cur);
 		// colliding with a moving entity
 		if (colliding && lm.canGo(*moving, cur)) {
 			NEW_DIRECTION(opp)
 		}
-
 		NEW_DIRECTION(select_random_viable(*moving, lm, opp))
 	};
 }

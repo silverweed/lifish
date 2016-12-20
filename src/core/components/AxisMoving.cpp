@@ -5,6 +5,8 @@
 #include "Shooting.hpp"
 #include <exception>
 
+#include <iostream>
+
 using Game::AxisMoving;
 using Game::TILE_SIZE;
 
@@ -30,6 +32,10 @@ void AxisMoving::update() {
 	
 	const float effSpeed = _effectiveSpeed();
 
+	// FIXME: in the frame where AI changes this owner's direction, no shift is performed. WHY?
+	std::cerr << "--------------\ndirection = " << Game::directionToString(direction) << std::endl;
+	std::cerr << "pos: " << owner.getPosition() << (owner.isAligned() ? "[aligned]" : "");
+
 	switch (direction) {
 	case Direction::UP:
 		shift.y -= effSpeed;
@@ -48,14 +54,19 @@ void AxisMoving::update() {
 	}
 
 	if (!_collidesWithSolid()) {
+		std::cerr << "shift = " << shift << ", frametime: " << frameTime.asSeconds()<<std::endl;
 		owner.setPosition(owner.getPosition() + shift * frameTime.asSeconds());
 		const float delta = effSpeed * frameTime.asSeconds();
 		distTravelled += delta;
-		if (delta > 1 && ensureAlign)
-			_ensureAlign();
+		if (delta > 1 && ensureAlign) {
+			_ensureAlign(); std::cerr<<"delta="<<delta<<":ensure align ";}
 	} else if (autoRealign) {
 		realign();
-	}
+	} else 
+		// HEREH!
+		std::cerr << "in else; " << _collidesWithSolid() << "entities\n";
+
+	std::cerr << " -> " << owner.getPosition() << std::endl;
 
 	prevDirection = direction;
 }

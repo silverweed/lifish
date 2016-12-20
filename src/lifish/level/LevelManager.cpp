@@ -99,14 +99,20 @@ void LevelManager::update() {
 	DBGSTART("logic");
 
 	// Apply game logic rules
+#ifndef RELEASE
 	int i = 0;
+#endif
 	for (auto logic : Game::Logic::functions) {
+#ifndef RELEASE
 		std::stringstream n;
 		n << "logic_" << i;
-		DBGSTART(n.str());
+		dbgStats.timer.start(n.str());
+#endif
 		entities.apply(logic, *this, to_be_spawned, to_be_killed);
-		DBGEND(n.str());
+#ifndef RELEASE
+		dbgStats.timer.end(n.str());
 		++i;
+#endif
 	}
 
 	DBGEND("logic");
