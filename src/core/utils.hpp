@@ -42,6 +42,11 @@ inline sf::Vector2i tile(const sf::Vector2f& pos) {
 	return sf::Vector2i(pos.x / Game::TILE_SIZE, pos.y / Game::TILE_SIZE);
 }
 
+/** Like `tile`, but instead of flooring, round to the nearest tile. */
+inline sf::Vector2i tile2(const sf::Vector2f& pos) {
+	return sf::Vector2i(int(pos.x / Game::TILE_SIZE + 0.5), int(pos.y / Game::TILE_SIZE + 0.5));
+}
+
 /** Returns the pixel position `pos` aligned to the nearest tile. */
 inline sf::Vector2f aligned(const sf::Vector2f& pos) {
 	return sf::Vector2f(

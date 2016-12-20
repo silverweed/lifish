@@ -165,6 +165,7 @@ void Player::_checkCollision(Game::Collider& cld) {
 	unsigned short damage = 0;
 	switch (cld.getLayer()) {
 	case L::ENEMIES:
+	case L::ENEMIES_IGNORE_BREAKABLES:
 		if (cld.getOwner().get<Game::Killable>()->isKilled())
 			return;
 		{

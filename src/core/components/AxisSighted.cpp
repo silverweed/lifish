@@ -40,7 +40,7 @@ void AxisSighted::update() {
 void AxisSighted::_fillLine(const Game::Direction dir) {
 	// no check for lm != nullptr as it's done beforehand by update()
 
-	const auto mtile = Game::tile(owner.getPosition());
+	const auto mtile = Game::tile2(owner.getPosition());
 	auto same_line = dir == Game::Direction::UP ? check_up :
 			dir == Game::Direction::DOWN ? check_down :
 			dir == Game::Direction::LEFT ? check_left : check_right;
@@ -49,7 +49,7 @@ void AxisSighted::_fillLine(const Game::Direction dir) {
 
 	entities->apply([=] (const Game::Entity *e) {
 		if (e == &owner) return;
-		const auto etile = Game::tile(e->getPosition());
+		const auto etile = Game::tile2(e->getPosition());
 		if (!same_line(etile, mtile)) return;
 		const auto dist = Game::manhattanDistance(etile, mtile);
 		if (visionRadius < 0 || dist <= visionRadius) {

@@ -9,6 +9,8 @@
 #include "Animated.hpp"
 #include <cmath>
 
+#include <iostream>
+
 using Game::FreeBullet;
 using Game::TILE_SIZE;
 
@@ -19,8 +21,9 @@ FreeBullet::FreeBullet(const sf::Vector2f& pos, const Game::Entity *const source
 	FreeBulletPresets::setup(*this, attack.id);
 
 	addComponent(new Game::FreeMoving(*this, attack.speed, sf::Vector2f(std::cos(angle), std::sin(angle))));
-	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider&) {
+	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& cld) {
 		// on collision
+		std::cerr << "colliding with " << cld.getLayer() << std::endl;
 		auto klb = get<Game::Killable>();
 		if (!klb->isKilled()) {
 			klb->kill();

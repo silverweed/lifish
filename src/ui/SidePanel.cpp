@@ -158,6 +158,8 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 		text.setShadowSpacing(2, 2);
 		window.draw(text, states);
 
+		_drawExtraLetters(window, states, player.get());
+
 		// Draw health / game over
 		if (player == nullptr) {
 			text.setPosition(sf::Vector2f(HEALTH_SYM_POS_X, i == 0 
