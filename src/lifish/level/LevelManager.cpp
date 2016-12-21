@@ -23,8 +23,6 @@
 #include "core.hpp"
 #include <memory>
 
-#include <iostream>
-
 #ifndef RELEASE
 #	define DBGSTART(name) \
 		dbgStats.timer.start(name)
