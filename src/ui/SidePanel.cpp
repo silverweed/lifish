@@ -74,14 +74,14 @@ static void _drawWithShadow(sf::RenderTarget& window, sf::RenderStates states, c
 }
 
 void SidePanel::_drawHealthSprites(sf::RenderTarget& window, sf::RenderStates states, 
-		const Game::Player *player) const 
+		const Game::Player& player) const 
 {
-	const auto lifed = player->get<Game::Lifed>();
+	const auto lifed = player.get<Game::Lifed>();
 	const unsigned short n_tot = lifed->getMaxLife() / 2;
 	const unsigned short n_full = lifed->getLife() / 2;
 	const unsigned short n_half = lifed->getLife() % 2;
 
-	sf::Vector2f pos(HEALTH_SYM_POS_X, player->getInfo().id == 1 ? HEALTH_SYM_POS_Y_1 : HEALTH_SYM_POS_Y_2);
+	sf::Vector2f pos(HEALTH_SYM_POS_X, player.getInfo().id == 1 ? HEALTH_SYM_POS_Y_1 : HEALTH_SYM_POS_Y_2);
 	for (unsigned short j = 0; j < n_tot; ++j) {
 		const auto& hs = healthSprite[j < n_full 
 						? HEALTH_FULL : j < n_full + n_half
@@ -97,11 +97,11 @@ void SidePanel::_drawHealthSprites(sf::RenderTarget& window, sf::RenderStates st
 }
 
 void SidePanel::_drawExtraLetters(sf::RenderTarget& window, sf::RenderStates states,
-		const Game::Player *player) const
+		const Game::Player& player) const
 {
-	sf::Vector2f pos(EXTRA_LETTERS_POS_X, player->getInfo().id == 1 ? EXTRA_LETTERS_POS_Y_1 : EXTRA_LETTERS_POS_Y_2);
-	for (unsigned short j = 0; j < player->getInfo().extra.size(); ++j) {
-		const unsigned short i = player->getInfo().extra[j] ? j + 1 : 0;
+	sf::Vector2f pos(EXTRA_LETTERS_POS_X, player.getInfo().id == 1 ? EXTRA_LETTERS_POS_Y_1 : EXTRA_LETTERS_POS_Y_2);
+	for (unsigned short j = 0; j < player.getInfo().extra.size(); ++j) {
+		const unsigned short i = player.getInfo().extra[j] ? j + 1 : 0;
 		sf::Sprite sprite(extraLettersTexture[i], extraLettersSprite[i].getTextureRect());
 		sprite.setPosition(pos + sf::Vector2f(j * EXTRA_LETTERS_WIDTH, 0));
 		_drawWithShadow(window, states, sprite);
@@ -149,8 +149,10 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 		const auto player = lm.getPlayer(i + 1);
 		if (player == nullptr)
 			ss << "X0";
-		else
+		else {
+			_drawExtraLetters(window, states, *player);
 			ss << "X" << player->getInfo().remainingLives;
+		}
 
 		Game::ShadedText text(Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO), ss.str(), pos);
 		text.setCharacterSize(20);
@@ -158,7 +160,6 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 		text.setShadowSpacing(2, 2);
 		window.draw(text, states);
 
-		_drawExtraLetters(window, states, player.get());
 
 		// Draw health / game over
 		if (player == nullptr) {
@@ -168,7 +169,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			text.setString("GAME\nOVER");
 			window.draw(text, states);
 		} else {
-			_drawHealthSprites(window, states, player.get());
+			_drawHealthSprites(window, states, *player);
 
 			// Draw max bombs
 			const auto powers = player->getInfo().powers;

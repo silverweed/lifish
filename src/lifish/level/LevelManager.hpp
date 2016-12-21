@@ -113,8 +113,8 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable {
 public:
 	explicit LevelManager();
 
-	/** Generates n players and returns them. If n > MAX_PLAYERS, only generate MAX_PLAYERS players. */
-	auto createNewPlayers(unsigned short n = Game::MAX_PLAYERS) -> std::vector<std::shared_ptr<Game::Player>>;
+	/** Generates n players. If n > MAX_PLAYERS, only generate MAX_PLAYERS players. */
+	void createNewPlayers(unsigned short n = Game::MAX_PLAYERS);
 
 	bool isPlayer(const Game::Entity& e) const;
 	/** Returns the id-th player (id starting from 1) */

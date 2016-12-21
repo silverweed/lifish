@@ -33,6 +33,14 @@ void EntityGroup::updateAll() {
 void EntityGroup::remove(const Game::Entity& entity) {
 	mtxLock();
 	entities.remove_if([entity] (std::shared_ptr<Game::Entity> e) { return e.get() == &entity; });
+	_pruneAll();
+	mtxUnlock();
+}
+
+void EntityGroup::remove(std::shared_ptr<Game::Entity> entity) {
+	mtxLock();
+	entities.remove(entity);
+	_pruneAll();
 	mtxUnlock();
 }
 

@@ -79,9 +79,9 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	sf::Texture *bonusesTexture;
 
 	void _drawHealthSprites(sf::RenderTarget& window, sf::RenderStates states, 
-			const Game::Player *player) const;
+			const Game::Player& player) const;
 	void _drawExtraLetters(sf::RenderTarget& window, sf::RenderStates states, 
-			const Game::Player *player) const;
+			const Game::Player& player) const;
 	/** Draws the time remaining in format MM:SS */
 	void _drawTime(sf::RenderTarget& window, sf::RenderStates states) const;
 public:

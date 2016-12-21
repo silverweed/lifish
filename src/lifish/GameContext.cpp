@@ -38,9 +38,12 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, un
 		lvnum %= ls.getLevelsNum();
 
 	// Create the players
-	players = lm.createNewPlayers();
-	for (auto p : players)
-		p->get<Game::Controllable>()->setWindow(window);
+	lm.createNewPlayers();
+	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+		auto p = lm.getPlayer(i + 1);
+		if (p != nullptr)
+			p->get<Game::Controllable>()->setWindow(window);
+	}
 
 	lm.setLevel(ls, lvnum);
 
@@ -115,9 +118,12 @@ bool GameContext::handleEvent(sf::Window&, sf::Event event) {
 			pause_game();
 			return true;
 		case sf::Keyboard::Escape:
-			for (auto player : players) {
-				player->setRemainingLives(0);
-				player->get<Game::Killable>()->kill();
+			for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+				auto player = lm.getPlayer(i + 1);
+				if (player != nullptr) {
+					player->setRemainingLives(0);
+					player->get<Game::Killable>()->kill();
+				}
 			}
 			return true;
 		default: 

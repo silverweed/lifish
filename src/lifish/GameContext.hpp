@@ -48,7 +48,6 @@ private:
 	Game::LevelManager lm;
 	Game::SidePanel sidePanel;
 	Game::WinLoseHandler wlHandler;
-	std::vector<std::shared_ptr<Game::Player>> players;
 
 #ifndef RELEASE
 	void _printCDStats() const;

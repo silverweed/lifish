@@ -4,6 +4,7 @@
 #include "Entity.hpp"
 #include "game.hpp"
 #include "game_values.hpp"
+#include <iostream>
 
 namespace Game {
 
@@ -90,6 +91,8 @@ public:
 	explicit Player(const sf::Vector2f& pos, const unsigned short id);
 	/** Creates a player whose state is described by `info` */
 	explicit Player(const sf::Vector2f& pos, const Game::PlayerInfo& info);
+
+	virtual ~Player() { std::cerr << "destroyed player\n"; }
 
 	void resurrect();
 

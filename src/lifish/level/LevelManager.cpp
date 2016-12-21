@@ -23,6 +23,8 @@
 #include "core.hpp"
 #include <memory>
 
+#include <iostream>
+
 #ifndef RELEASE
 #	define DBGSTART(name) \
 		dbgStats.timer.start(name)
@@ -45,17 +47,13 @@ LevelManager::LevelManager()
 	dropTextManager.subscribe(entities);
 }
 
-auto LevelManager::createNewPlayers(unsigned short n) -> std::vector<std::shared_ptr<Game::Player>> {
-	std::vector<std::shared_ptr<Game::Player>> pls;
+void LevelManager::createNewPlayers(unsigned short n) {
 	for (int i = 0; i < n && i < Game::MAX_PLAYERS; ++i) {
 		// Pointers kept by LevelManager
 		players[i] = std::make_shared<Game::Player>(sf::Vector2f(0, 0), i + 1);
 		// Pointers owned by EntityGroup
 		entities.add(players[i]);
-		// Returned (unowned) pointers
-		pls.push_back(players[i]);
 	}
-	return pls;
 }
 
 void LevelManager::setPlayer(unsigned short id, std::shared_ptr<Game::Player> player) {
@@ -339,8 +337,10 @@ void LevelManager::_checkSpecialConditions() {
 void LevelManager::_checkResurrect() {
 	unsigned short living_players = 0;
 
-	for (auto& player : players) {
-		if (player == nullptr) continue;
+	for (unsigned short i = 0; i < players.size(); ++i) {
+		auto player = players[i];
+		if (player == nullptr)
+			continue;
 
 		auto klb = player->get<Game::Killable>();
 		if (klb->isKilled() && !klb->isKillInProgress()) {
@@ -351,6 +351,9 @@ void LevelManager::_checkResurrect() {
 				player->setRemainingLives(player->getInfo().remainingLives - 1);
 				entities.add(player);
 				++living_players;
+			} else {
+				entities.remove(player);
+				players[i] = nullptr;
 			}
 		} else {
 			++living_players;
