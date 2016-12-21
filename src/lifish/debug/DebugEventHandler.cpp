@@ -10,6 +10,7 @@
 #include "Bonusable.hpp"
 #include "MusicManager.hpp"
 #include "GameContext.hpp"
+#include <iostream>
 
 using Game::Debug::DebugEventHandler;
 
@@ -17,19 +18,68 @@ DebugEventHandler::DebugEventHandler(Game::GameContext& game)
 	: game(game)
 {}
 
+/*
+ * B : kill all bosses
+ * C : print all entities
+ * F : print CD stats
+ * G : draw colliders
+ * H : draw SH cells
+ * I : print game stats
+ * J : kill player 1
+ * K : pause game simulation
+ * L : step game simulation (pauses if needed)
+ * M : morph all enemies
+ * N : kill all enemies
+ * Q : terminate game
+ * . : give infinite shield to player
+ * + : forward one level
+ * - : back one level
+ */
 bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 	switch (event.type) {
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
-		case sf::Keyboard::Q:
-			Game::terminated = true;
+		case sf::Keyboard::B:
+			game.lm.getEntities().apply([] (Game::Entity *e) {
+				auto en = dynamic_cast<Game::Boss*>(e);
+				if (en) en->get<Game::Killable>()->kill();
+			});
+			return true;
+		case sf::Keyboard::C:
+			{
+				int i = 0;
+				game.lm.getEntities().apply([&i] (const Game::Entity *e) {
+					std::cerr << i++ << ": " << e->toString() << std::endl;
+				});
+			}
+			return true;
+		case sf::Keyboard::F:
+			game.toggleDebug(Game::GameContext::DBG_PRINT_CD_STATS);
+			return true;
+		case sf::Keyboard::G:
+			game.toggleDebug(Game::GameContext::DBG_DRAW_COLLIDERS);
+			return true;
+		case sf::Keyboard::H:
+			game.toggleDebug(Game::GameContext::DBG_DRAW_SH_CELLS);
+			return true;
+		case sf::Keyboard::I:
+			game.toggleDebug(Game::GameContext::DBG_PRINT_GAME_STATS);
 			return true;
 		case sf::Keyboard::J:
 			game.lm.getPlayer(1)->setRemainingLives(0);
 			game.lm.getPlayer(1)->get<Game::Killable>()->kill();
 			return true;
-		case sf::Keyboard::Period:
-			game.lm.getPlayer(1)->get<Game::Bonusable>()->giveBonus(Game::BonusType::SHIELD, sf::seconds(-1));
+		case sf::Keyboard::K:
+			if (!game.lm.isPaused())
+				game.lm.pause();
+			else
+				game.lm.resume();
+			return true;
+		case sf::Keyboard::L:
+			if (game.lm.isPaused())
+				game.lm.update();
+			else
+				game.lm.pause();
 			return true;
 		case sf::Keyboard::M:
 			game.lm.getEntities().apply([] (Game::Entity *e) {
@@ -44,11 +94,17 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 				if (en) en->get<Game::Killable>()->kill();
 			});
 			return true;
-		case sf::Keyboard::B:
-			game.lm.getEntities().apply([] (Game::Entity *e) {
-				auto en = dynamic_cast<Game::Boss*>(e);
-				if (en) en->get<Game::Killable>()->kill();
-			});
+		case sf::Keyboard::Q:
+			Game::terminated = true;
+			return true;
+		case sf::Keyboard::Period:
+			{
+				auto bns = game.lm.getPlayer(1)->get<Game::Bonusable>();
+				if (bns->hasBonus(Game::BonusType::SHIELD))
+					bns->giveBonus(Game::BonusType::SHIELD, sf::seconds(0));
+				else
+					bns->giveBonus(Game::BonusType::SHIELD, sf::seconds(-1));
+			}
 			return true;
 		case sf::Keyboard::Add:
 			game._advanceLevel();
@@ -63,30 +119,6 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 					.setVolume(Game::options.musicVolume).play();
 				return true;
 			}
-		case sf::Keyboard::L:
-			if (game.lm.isPaused())
-				game.lm.update();
-			else
-				game.lm.pause();
-			return true;
-		case sf::Keyboard::K:
-			if (!game.lm.isPaused())
-				game.lm.pause();
-			else
-				game.lm.resume();
-			return true;
-		case sf::Keyboard::G:
-			game.toggleDebug(Game::GameContext::DBG_DRAW_COLLIDERS);
-			return true;
-		case sf::Keyboard::H:
-			game.toggleDebug(Game::GameContext::DBG_DRAW_SH_CELLS);
-			return true;
-		case sf::Keyboard::F:
-			game.toggleDebug(Game::GameContext::DBG_PRINT_CD_STATS);
-			return true;
-		case sf::Keyboard::I:
-			game.toggleDebug(Game::GameContext::DBG_PRINT_GAME_STATS);
-			return true;
 		default: 
 			break;
 		}
