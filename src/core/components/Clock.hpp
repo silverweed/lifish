@@ -31,6 +31,10 @@ public:
 	sf::Time resume() {
 		return clock.resume();
 	}
+
+	sf::Time add(sf::Time time) {
+		return clock.add(time);
+	}
 };
 
 }

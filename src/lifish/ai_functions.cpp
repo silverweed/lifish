@@ -58,7 +58,9 @@ static Game::Direction select_random_viable(
 	unsigned short n = 0;
 	for (const auto& d : directions)
 		if (lm.canGo(moving, d) && d != opp) {
-			dirs[n++] = d;		std::cerr << "[opp = " << Game::directionToString(opp) << "] adding direction " << Game::directionToString(d) << std::endl; }
+			dirs[n++] = d;		
+			std::cerr << "[opp = " << Game::directionToString(opp) << "] adding direction " << Game::directionToString(d) << std::endl; 
+		}
 	if (n == 0)
 		dirs[n++] = opp;
 	std::uniform_int_distribution<int> dist(0, n - 1);
