@@ -22,6 +22,7 @@ AlienSprite::AlienSprite(Game::Entity& owner)
 	auto& a_left = animated->addAnimation("walk_left");
 	auto& a_right = animated->addAnimation("walk_right");
 	auto& a_death = animated->addAnimation("death");
+	animated->addAnimation("idle", { sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE) });
 
 	a_down.addFrame(sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE));
 	a_down.addFrame(sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));

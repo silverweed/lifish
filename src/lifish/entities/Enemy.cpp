@@ -125,6 +125,8 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 					TILE_SIZE));
 	}
 
+	animated->addAnimation("idle", { sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE) });
+
 	for (auto& frame : shootFrame) {
 		frame.setTexture(*a_down.getSpriteSheet());
 		frame.setOrigin(origin);
@@ -165,10 +167,10 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 void Enemy::update() {
 	Game::Entity::update();
 
-	if (moving->getDirection() != Game::Direction::NONE)
+	if (moving->getDirection() != Game::Direction::NONE) {
 		shootFrame[moving->getDirection()].setPosition(position);
-
-	_checkShoot();
+		_checkShoot();
+	}
 }
 
 void Enemy::_checkShoot() {

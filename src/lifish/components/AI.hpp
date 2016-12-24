@@ -28,6 +28,7 @@ public:
 	void setAI(AIFunction newAI);
 
 	void setLevelManager(Game::LevelManager *_lm);
+	const Game::LevelManager* getLevelManager() const { return lm; }
 
 	Game::Entity* init() override; 
 	void update() override;
