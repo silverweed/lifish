@@ -57,10 +57,8 @@ static Game::Direction select_random_viable(
 	Game::Direction dirs[4];
 	unsigned short n = 0;
 	for (const auto& d : directions)
-		if (lm.canGo(moving, d) && d != opp) {
+		if (lm.canGo(moving, d) && d != opp)
 			dirs[n++] = d;		
-			std::cerr << "[opp = " << Game::directionToString(opp) << "] adding direction " << Game::directionToString(d) << std::endl; 
-		}
 	if (n == 0)
 		dirs[n++] = opp;
 	std::uniform_int_distribution<int> dist(0, n - 1);
@@ -124,7 +122,6 @@ AIBoundFunction Game::ai_random(Game::Entity& entity) {
 			if (moving->getDistTravelled() < 2 * Game::TILE_SIZE && dist(Game::rng) <= 4)
 				SAME_DIRECTION
 		}
-		moving->setDistTravelled(0);
 		D dirs[4];
 		unsigned short n = 0;
 		if (entity.isAligned('x')) {
@@ -154,6 +151,7 @@ AIBoundFunction Game::ai_random_forward(Game::Entity& entity) {
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving"
 				" or Collider component!");
 	moving->setAutoRealignEnabled(false);
+	moving->setDistTravelled(3);
 
 	return [&entity, moving, collider] (const Game::LevelManager& lm) { 
 		HANDLE_NOT_MOVING;
@@ -165,7 +163,12 @@ AIBoundFunction Game::ai_random_forward(Game::Entity& entity) {
 		if (colliding && lm.canGo(*moving, cur)) {
 			NEW_DIRECTION(opp)
 		}
-		NEW_DIRECTION(select_random_viable(*moving, lm, opp))
+		if (moving->getDistTravelled() > 1 || moving->getDistTravelled() == 0) {
+			collider->reset();
+			NEW_DIRECTION(select_random_viable(*moving, lm, opp))
+		} else {
+			SAME_DIRECTION
+		}
 	};
 }
 
@@ -177,8 +180,9 @@ AIBoundFunction Game::ai_random_forward_haunt(Game::Entity& entity) {
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving, "
 				"Shooting or Collider component!");
 	moving->setAutoRealignEnabled(false);
+	auto random_forward = ai_random_forward(entity);
 
-	return [&entity, moving, collider, shooting] (const Game::LevelManager& lm) {
+	return [&entity, moving, random_forward, collider, shooting] (const Game::LevelManager& lm) {
 		HANDLE_NOT_MOVING;
 		HANDLE_UNALIGNED;
 		if (shooting->isShooting()) {
@@ -212,7 +216,7 @@ AIBoundFunction Game::ai_random_forward_haunt(Game::Entity& entity) {
 			shooting->setAttackAlign(sf::Vector2i(-1, shooting->getAttackAlign().y));
 			NEW_DIRECTION(dir)
 		}
-		ai_random_forward(entity)(lm);
+		random_forward(lm);
 	};
 }
 
@@ -224,6 +228,7 @@ AIBoundFunction Game::ai_follow(Game::Entity& entity) {
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving"
 				", Collider or AxisSighted component!");
 	moving->setAutoRealignEnabled(false);
+	moving->setDistTravelled(3);
 
 	return [&entity, moving, collider, sighted] (const Game::LevelManager& lm) {
 		HANDLE_NOT_MOVING;
@@ -242,8 +247,13 @@ AIBoundFunction Game::ai_follow(Game::Entity& entity) {
 				Game::cache.playSound(sounded->getSoundFile(Game::Sounds::YELL));
 			NEW_DIRECTION(sp)
 		}
-
-		NEW_DIRECTION(select_random_viable(*moving, lm, opp))
+		
+		if (moving->getDistTravelled() > 1 || moving->getDistTravelled() == 0) {
+			collider->reset();
+			NEW_DIRECTION(select_random_viable(*moving, lm, opp))
+		} else {
+			SAME_DIRECTION
+		}
 	};
 }
 
@@ -256,6 +266,7 @@ AIBoundFunction Game::ai_follow_dash(Game::Entity& entity) {
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has "
 				"no Moving, Collider, AxisSighted or Shooting component!");
 	moving->setAutoRealignEnabled(false);
+	moving->setDistTravelled(3);
 
 	return [&entity, shooting, moving, collider, sighted] (const Game::LevelManager& lm) {
 		HANDLE_NOT_MOVING;
@@ -285,7 +296,12 @@ AIBoundFunction Game::ai_follow_dash(Game::Entity& entity) {
 			NEW_DIRECTION(sp)
 		}
 
-		NEW_DIRECTION(select_random_viable(*moving, lm, opp))
+		if (moving->getDistTravelled() > 1 || moving->getDistTravelled() == 0) {
+			collider->reset();
+			NEW_DIRECTION(select_random_viable(*moving, lm, opp))
+		} else {
+			SAME_DIRECTION
+		}
 	};
 }
 

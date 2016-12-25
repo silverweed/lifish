@@ -4,6 +4,7 @@
 #include "Component.hpp"
 #include "utils.hpp"
 #include <sstream>
+#include <iostream>
 
 // Note: in theory, this should check for HAVE_CXA_DEMANGLE.
 // The GCC version that I'm using, though, despite being pretty recent (6.2.1),
