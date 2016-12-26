@@ -14,8 +14,6 @@
 #include "Foe.hpp"
 #include <cassert>
 
-#include <iostream>
-
 using Game::Boss;
 using Game::TILE_SIZE;
 
@@ -93,20 +91,9 @@ void Boss::_checkCollision(Game::Collider& coll) {
 	
 	assert(x > 0 && wx > 0 && y > 0 && wy > 0);
 
-	//std::cerr << "brect.left + brect.width = " << brect.left/Game::TILE_SIZE << " + " << brect.width /Game::TILE_SIZE<< " = "
-		//<< (brect.left + brect.width) / Game::TILE_SIZE << std::endl;
-	//std::cerr << "crect.left + crect.width = " << crect.left/Game::TILE_SIZE << " + " << crect.width /Game::TILE_SIZE<< " = "
-		//<< (crect.left + crect.width) / Game::TILE_SIZE << std::endl;
-	//std::cerr << "brect.top + brect.width = " << brect.top/Game::TILE_SIZE << " + " << brect.width /Game::TILE_SIZE<< " = "
-		//<< (brect.top + brect.width) / Game::TILE_SIZE << std::endl;
-	//std::cerr << "crect.top + crect.width = " << crect.top/Game::TILE_SIZE << " + " << crect.width /Game::TILE_SIZE<< " = "
-		//<< (crect.top + crect.width) / Game::TILE_SIZE << std::endl;
-	//std::cerr << "x = " << x / Game::TILE_SIZE<< ", wx = " << wx /Game::TILE_SIZE<< std::endl;
-	//std::cerr << "y = " << y / Game::TILE_SIZE<< ", wy = " << wy/Game::TILE_SIZE << std::endl;
 	const unsigned damage = std::round(float(wx - x) / Game::TILE_SIZE) 
 					* std::round(float(wy - y) / Game::TILE_SIZE) * expl.getDamage();
 	
-	//std::cerr << "dealt " << damage << " damage\n";
 	if (get<Game::Lifed>()->decLife(damage) > 0)
 		_hurt();
 	else

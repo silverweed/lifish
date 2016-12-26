@@ -29,7 +29,7 @@ namespace {
 	};
 
 	template<class T, typename... Args>
-	using AppliedFunc = typename identity<std::function<void(T*, Args...)>>::type;
+	using AppliedFunc = typename identity<std::function<void(T, Args...)>>::type;
 }
 
 /**
@@ -110,11 +110,15 @@ public:
 
 	/** Applies a void(Args...) function to all entities (ref-args version)  */
 	template<typename... Args>
-	void apply(AppliedFunc<Game::Entity, Args&...> func, Args&... args);
+	void apply(AppliedFunc<Game::Entity*, Args&...> func, Args&... args);
 
 	/** Applies a void(Args...) function to all entities (const version) */
 	template<typename... Args>
-	void apply(AppliedFunc<const Game::Entity, Args...> func, Args... args) const;
+	void apply(AppliedFunc<const Game::Entity*, Args...> func, Args... args) const;
+
+	/** Applies a void(Args...) function to all entities (weak_ptr version) */
+	template<typename... Args>
+	void apply(AppliedFunc<std::weak_ptr<Game::Entity>, Args...> func, Args... args) const;
 
 	template<class T>
 	Game::Entity* add(T *entity);
@@ -172,15 +176,21 @@ public:
 ///// Implementation /////
 
 template<typename... Args>
-void EntityGroup::apply(AppliedFunc<Game::Entity, Args&...> func, Args&... args) {
+void EntityGroup::apply(AppliedFunc<Game::Entity*, Args&...> func, Args&... args) {
 	for (auto& e : entities)
 		func(e.get(), args...);
 }
 
 template<typename... Args>
-void EntityGroup::apply(AppliedFunc<const Game::Entity, Args...> func, Args... args) const {
+void EntityGroup::apply(AppliedFunc<const Game::Entity*, Args...> func, Args... args) const {
 	for (const auto& e : entities)
 		func(e.get(), args...);
+}
+
+template<typename... Args>
+void EntityGroup::apply(AppliedFunc<std::weak_ptr<Game::Entity>, Args...> func, Args... args) const {
+	for (const auto& e : entities)
+		func(e, args...);
 }
 
 template<class T>

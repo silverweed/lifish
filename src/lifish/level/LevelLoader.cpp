@@ -20,6 +20,7 @@
 #include "Pond.hpp"
 #include "Fog.hpp"
 #include "HauntedStatue.hpp"
+#include "HauntingSpiritBoss.hpp"
 #include "Sprite.hpp"
 #include <iostream>
 
@@ -183,6 +184,8 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 			}
 		}
 	}
+
+	entities.add(new Game::HauntingSpiritBoss(sf::Vector2f(272, 240)));
 
 	const auto& effects = level.getInfo().effects;
 	if (effects.find("fog") != effects.end()) {

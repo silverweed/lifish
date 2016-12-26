@@ -66,9 +66,9 @@ void AlienBoss::_shoot() {
 	for (auto eye : eyes) {
 		++i;
 		const auto player = eye->get<Game::FreeSighted>()->nearest<Game::Player>();
-		if (player == nullptr) continue;
+		if (player.expired() || player.lock() == nullptr) continue;
 
-		const auto& ppos = player->getPosition();
+		const auto& ppos = player.lock()->getPosition();
 
 		// calculate angle with ppos: a = pi - arctan(dy / dx)
 		const double dx = eye->getPosition().x - ppos.x,

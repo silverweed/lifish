@@ -15,11 +15,12 @@ void FreeSighted::update() {
 	seen.clear();
 
 	const double sqrVR = visionRadius * Game::TILE_SIZE * visionRadius * Game::TILE_SIZE;
-	entities->apply([this, sqrVR] (const Game::Entity *e) {
-		double dist = Game::sqrDistance(e->getPosition(), owner.getPosition());
+	entities->apply([this, sqrVR] (std::weak_ptr<Game::Entity> e) {
+		if (e.expired()) return;
+		double dist = Game::sqrDistance(e.lock()->getPosition(), owner.getPosition());
 		if (sqrVR > 0 && dist > sqrVR) return;
 		// Only see living entities
-		const auto killable = e->get<Game::Killable>();
+		const auto killable = e.lock()->get<Game::Killable>();
 		if (killable == nullptr || !killable->isKilled())
 			seen.push_back(std::make_pair(e, dist));
 	});

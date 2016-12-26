@@ -41,11 +41,11 @@ public:
 	std::string getAnimationName() const;
 	bool hasAnimation(const std::string& name) const;
 
-	/** Sets the current animation to the one tagged `name`, if any.
+	/** Sets the current animation to the one tagged `name`, if any, and starts playing.
 	 *  Throws if `name` doesn't exist.
 	 */
 	void setAnimation(const std::string& name);
-	/** Sets the current animation to `anim` */
+	/** Sets the current animation to `anim` and starts playing */
 	void setAnimation(Animation& anim);
 
 	/** Sets the default frame time of all animations */

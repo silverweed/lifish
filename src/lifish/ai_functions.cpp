@@ -163,6 +163,9 @@ AIBoundFunction Game::ai_random_forward(Game::Entity& entity) {
 		if (colliding && lm.canGo(*moving, cur)) {
 			NEW_DIRECTION(opp)
 		}
+		// Note: this `if` prevents the entity to change direction twice in a row even
+		// when it shouldn't (due to the fact that, if its movement is less than 1px/frame,
+		// it may be considered "aligned" again after changing direction.)
 		if (moving->getDistTravelled() > 1 || moving->getDistTravelled() == 0) {
 			collider->reset();
 			NEW_DIRECTION(select_random_viable(*moving, lm, opp))
