@@ -69,12 +69,10 @@ void Animated::setAnimation(const std::string& name) {
 		animatedSprite.setFrameTime(it->second);
 	else if (defaultFrameTime != sf::Time::Zero)
 		animatedSprite.setFrameTime(defaultFrameTime);
-	animatedSprite.play();
 }
 
 void Animated::setAnimation(Animation& anim) {
 	animatedSprite.setAnimation(anim);
-	animatedSprite.play();
 }
 
 void Animated::update() {

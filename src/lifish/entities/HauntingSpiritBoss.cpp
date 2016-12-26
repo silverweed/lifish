@@ -1,9 +1,11 @@
 #include "HauntingSpiritBoss.hpp"
 #include "HauntedStatue.hpp"
+#include "Collider.hpp"
 #include "Animated.hpp"
 #include "Drawable.hpp"
 #include "Clock.hpp"
 #include "FreeSighted.hpp"
+#include "Killable.hpp"
 #include "core.hpp"
 #include <algorithm>
 
@@ -17,8 +19,11 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 {
 	// This boss has no Lifed component: it dies when there are no HauntedStatues left in the level.
 	addComponent(new Game::FreeSighted(*this))->setActive(false);
-	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "haunting_spirit.png"))); 
+	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "haunting_spirit.png")));
 	const auto size = 4 * Game::TILE_SIZE;
+	// This is needed by parent class
+	collider = addComponent(new Game::Collider(*this, Game::Layers::DEFAULT, sf::Vector2i(size, size),
+				sf::Vector2f(0, 0), true));
 	animated->addAnimation("idle", {
 		sf::IntRect(0, 0, size, size),
 		sf::IntRect(size, 0, size, size),
@@ -34,6 +39,19 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 		sf::IntRect(3 * size, size, size, size),
 		sf::IntRect(4 * size, size, size, size),
 		sf::IntRect(5 * size, size, size, size)
+	});
+	animated->addAnimation("transition", {
+		sf::IntRect(0, size, 2 * size, size),
+		sf::IntRect(size, size, 2 * size, size),
+		sf::IntRect(2 * size, 2 * size, size, size),
+	});
+	animated->addAnimation("death", {
+		sf::IntRect(0, size, 3 * size, size),
+		sf::IntRect(size, size, 3 * size, size),
+		sf::IntRect(2 * size, 3 * size, size, size),
+		sf::IntRect(3 * size, 3 * size, size, size),
+		sf::IntRect(4 * size, 3 * size, size, size),
+		sf::IntRect(5 * size, 3 * size, size, size)
 	});
 	animated->getSprite().setOrigin(size/2, size/2);
 	addComponent(new Game::Drawable(*this, *animated));
@@ -52,8 +70,11 @@ void HauntingSpiritBoss::update() {
 	case State::SEARCHING:
 		_updateSearching();
 		break;
-	case State::TRANSITIONING:
-		_updateTransitioning();
+	case State::TRANSITIONING_BEGIN:
+		_updateTransitioningBegin();
+		break;
+	case State::TRANSITIONING_END:
+		_updateTransitioningEnd();
 		break;
 	case State::HAUNTING:
 		_updateHaunting();
@@ -68,13 +89,15 @@ void HauntingSpiritBoss::_updateStart() {
 	// Task: play initial animation after a delay
 	if (animClock->getElapsedTime() < sf::seconds(2)) return;
 	if (!animated->getSprite().isPlaying()) {
-		animated->getSprite().setLooped(true);	
+		animated->getSprite().setLooped(true);
 		animated->setAnimation("idle");
+		animated->getSprite().play();
 		get<Game::FreeSighted>()->setActive(true);
 		state = State::SEARCHING;
 	} else if (animated->getAnimationName() == "idle") {
 		animated->getSprite().setLooped(false, false);	
 		animated->setAnimation("start");
+		animated->getSprite().play();
 	}
 }
 
@@ -84,15 +107,60 @@ void HauntingSpiritBoss::_updateSearching() {
 	const auto seen = sighted->entitiesSeen();
 	for (auto& pair : seen) {
 		if (auto statue = std::dynamic_pointer_cast<Game::HauntedStatue>(pair.first.lock()))
-			statues.push_back(statue);
+			if (!statue->isPossessed())
+				statues.push_back(statue);
 	}
 	sighted->setActive(false); // no need for this anymore
-	state = State::TRANSITIONING;
+
+	// Select a statue to possess
+	if (statues.size() == 0) {
+		state = State::DYING;
+		return;
+	}
+	std::uniform_int_distribution<> dist(0, statues.size());
+	targetStatue = statues[dist(Game::rng)];
+	targetStatue.lock()->setPossessed(true);
+	state = State::TRANSITIONING_BEGIN;
 }
 
-void HauntingSpiritBoss::_updateTransitioning() {
+void HauntingSpiritBoss::_updateTransitioningBegin() {
 	// Task: play the transitioning animation and set the next haunted statue as `possessed`
+	if (animated->getAnimationName() != "transition") {
+		animated->setAnimation("transition");
+		animated->getSprite().setLooped(false, false);
+		animated->getSprite().play();
+		animClock->restart();
+	}
+	if (position.y < 0) {
+		// Center on the target statue
+		const auto statue = targetStatue.lock();
+		if (statue == nullptr) {
+			state = State::DYING;
+			return;
+		}
+		position.x = statue->getPosition().x + Game::TILE_SIZE / 2;
+		animated->getSprite().rotate(180);
+		state = State::TRANSITIONING_END;
+	} else {
+		position.y -= animClock->restart().asSeconds() * 200;
+	}
+}
 
+void HauntingSpiritBoss::_updateTransitioningEnd() {
+	const auto statue = targetStatue.lock();
+	if (statue == nullptr) {
+		state = State::DYING;
+		return;
+	}
+	if (position.y >= statue->getPosition().y) {
+		animated->getSprite().rotate(180);
+		animated->getSprite().setLooped(true);
+		animated->setAnimation("idle");
+		animated->getSprite().play();
+		state = State::HAUNTING;
+		return;
+	}
+	position.y += animClock->restart().asSeconds() * 200;
 }
 
 void HauntingSpiritBoss::_updateHaunting() {
@@ -101,4 +169,10 @@ void HauntingSpiritBoss::_updateHaunting() {
 
 void HauntingSpiritBoss::_updateDying() {
 	// Task: play death animation
-}
+	if (animated->getAnimationName() != "death") {
+		// TODO: fix boss explosions position
+		killable->kill();
+		animated->setAnimation("death");
+		animated->getSprite().setLooped(false);
+		animated->getSprite().play();
+	}}

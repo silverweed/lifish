@@ -180,7 +180,8 @@ void Enemy::_checkShoot() {
 	
 	const auto& entitiesSeen = sighted->entitiesSeen(moving->getDirection());
 	for (const auto& pair : entitiesSeen) {
-		if (_inRange(pair.first) && dynamic_cast<const Game::Player*>(pair.first) != nullptr) {
+		const auto entity = pair.first.lock();
+		if (_inRange(entity.get()) && std::dynamic_pointer_cast<const Game::Player>(entity) != nullptr) {
 			autoShooting->shoot();
 			return;
 		}

@@ -16,13 +16,14 @@ class HauntingSpiritBoss : public Game::Boss {
 	enum class State {
 		START,
 		SEARCHING,
-		TRANSITIONING,
+		TRANSITIONING_BEGIN,
+		TRANSITIONING_END,
 		HAUNTING,
 		DYING
 	} state;
 
 	std::vector<std::weak_ptr<Game::HauntedStatue>> statues;
-	Game::HauntedStatue *targetStatue = nullptr;
+	std::weak_ptr<Game::HauntedStatue> targetStatue;
 
 	Game::Animated *animated = nullptr;
 	Game::Clock *animClock = nullptr,
@@ -30,7 +31,8 @@ class HauntingSpiritBoss : public Game::Boss {
 
 	void _updateStart();
 	void _updateSearching();
-	void _updateTransitioning();
+	void _updateTransitioningBegin();
+	void _updateTransitioningEnd();
 	void _updateHaunting();
 	void _updateDying();
 public:

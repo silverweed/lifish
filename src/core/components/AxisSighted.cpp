@@ -47,22 +47,26 @@ void AxisSighted::_fillLine(const Game::Direction dir) {
 
 	seen[dir].clear();
 
-	entities->apply([=] (const Game::Entity *e) {
-		if (e == &owner) return;
-		const auto etile = Game::tile2(e->getPosition());
+	entities->apply([=] (std::weak_ptr<Game::Entity> e) {
+		if (e.expired())
+			return;
+		auto ptr = e.lock();
+		if (ptr.get() == &owner)
+			return;
+		const auto etile = Game::tile2(ptr->getPosition());
 		if (!same_line(etile, mtile)) return;
 		const auto dist = Game::manhattanDistance(etile, mtile);
 		if (visionRadius < 0 || dist <= visionRadius) {
 			// Only see living entities
-			const auto killable = e->get<Game::Killable>();
+			const auto killable = ptr->get<Game::Killable>();
 			if (killable == nullptr || !killable->isKilled())
-				seen[dir].push_back(std::make_pair(e, dist));
+				seen[dir].push_back(std::make_pair(ptr, dist));
 		}
 	});
 
 	std::sort(seen[dir].begin(), seen[dir].end(), [] (
-				const std::pair<const Game::Entity*, unsigned short> a,
-				const std::pair<const Game::Entity*, unsigned short> b)
+				const std::pair<std::weak_ptr<Game::Entity>, unsigned short> a,
+				const std::pair<std::weak_ptr<Game::Entity>, unsigned short> b)
 	{
 		return a.second < b.second;
 	});
@@ -72,7 +76,7 @@ void AxisSighted::_fillLine(const Game::Direction dir) {
 		// to determine opaqueness; this assumes that we only see entities whose
 		// first collider determines their bounding box.
 		for (auto it = seen[dir].begin(); it != seen[dir].end(); ++it) {
-			const auto cld = it->first->get<Game::Collider>();
+			const auto cld = it->first.lock()->get<Game::Collider>();
 			if (cld != nullptr) {
 				const auto layer = cld->getLayer();
 				if (_isOpaque(layer)) {

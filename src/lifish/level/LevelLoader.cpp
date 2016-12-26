@@ -185,7 +185,9 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 		}
 	}
 
-	entities.add(new Game::HauntingSpiritBoss(sf::Vector2f(272, 240)));
+	auto hboss = new Game::HauntingSpiritBoss(sf::Vector2f(272, 240));
+	for (auto s : hboss->getAllRecursive<Game::Sighted>()) s->setEntityGroup(&lm.entities);
+	entities.add(hboss);
 
 	const auto& effects = level.getInfo().effects;
 	if (effects.find("fog") != effects.end()) {
