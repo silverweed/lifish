@@ -94,6 +94,8 @@ constexpr float centerY(const sf::Rect<T>& innerBounds, const sf::Rect<R>& outer
 template<typename T>
 inline sf::Vector2f normalized(const sf::Vector2<T>& v) {
 	const float norm = std::sqrt(v.x * v.x + v.y * v.y);
+	if (norm == 0)
+		return v;
 	return sf::Vector2f(v.x / norm, v.y / norm);
 }
 
