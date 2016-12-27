@@ -10,8 +10,9 @@
 #include "Drawable.hpp"
 #include "Lifed.hpp"
 #include "Scored.hpp"
-#include "Sprite.hpp"
+#include "Animated.hpp"
 #include "Shooting.hpp"
+#include "boss.hpp"
 
 using namespace Game::Conf::Boss::AlienBoss;
 using Game::AlienBoss;
@@ -30,8 +31,8 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 		_checkCollision(coll);
 	}, Game::Layers::BOSSES, SIZE));
 	addComponent(new Game::Scored(*this, VALUE));
-	addComponent(new Game::Drawable(*this, *addComponent(new Game::Sprite(*this, 
-				Game::getAsset("test", "alien_boss.png"), sf::IntRect(0, 0, SIZE.x, SIZE.y)))));
+	animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "alien_boss.png")));
+	animated->addAnimation("idle", { sf::IntRect(0, 0, SIZE.x, SIZE.y) }, true);
 	addComponent(new Game::Lifed(*this, LIFE));
 	shootClock = addComponent(new Game::Clock(*this));
 
@@ -50,7 +51,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 }
 
 void AlienBoss::update() {
-	Game::Boss::update();
+	Game::Entity::update();
 	if (killable->isKilled() || eyes[0]->get<Game::Shooting>()->isRecharging()) return;
 	
 	if (shotsFired > 0 || shootClock->getElapsedTime() > SHOOT_INTERVAL) {

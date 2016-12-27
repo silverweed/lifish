@@ -10,6 +10,7 @@
 #include "game.hpp"
 #include "Temporary.hpp"
 #include "utils.hpp"
+#include "zindex.hpp"
 
 using Game::Bullet;
 

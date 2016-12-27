@@ -48,9 +48,12 @@ public:
  * when they see them and is vulnerable to Bombs.
  */
 class Enemy : public Game::Entity {
-protected:
+
 	friend class EnemyDrawableProxy;
 
+	std::unique_ptr<Game::EnemyDrawableProxy> drawProxy;
+
+protected:
 	constexpr static unsigned short WALK_N_FRAMES = 4;
 	constexpr static int YELL_DELAY = 1000;
 	
@@ -69,7 +72,6 @@ protected:
 	Game::RegularEntityDeath *death = nullptr;
 
 	std::array<sf::Sprite, 4> shootFrame;
-	std::unique_ptr<Game::EnemyDrawableProxy> drawProxy;
 
 	Game::Clock *yellClock = nullptr,
 		    *dashClock = nullptr;

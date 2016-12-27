@@ -10,7 +10,7 @@
 #include "AxisMoving.hpp"
 #include "Fixed.hpp"
 #include "Spawning.hpp"
-#include "game_values.hpp"
+#include "teleport.hpp"
 
 using Game::Teleport;
 using Game::TILE_SIZE;
@@ -22,7 +22,9 @@ Teleport::Teleport(const sf::Vector2f& pos)
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "teleport.png")));
 	disableClock = addComponent(new Game::Clock(*this));
 	addComponent(new Game::Drawable(*this, *animated));
-	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& c) { warp(c); }, Game::Layers::TELEPORTS));
+	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& c) { 
+		warp(c);
+	}, Game::Layers::TELEPORTS));
 	addComponent(new Game::Spawning(*this, [this] (const Game::Spawning&) {
 		return mustSpawnFlash;
 	}, [this] () {

@@ -10,7 +10,7 @@
 #include "Temporary.hpp"
 #include "Collider.hpp"
 #include "game.hpp"
-#include "game_values.hpp"
+#include "bonus.hpp"
 
 using Game::Bonus;
 using Game::TILE_SIZE;

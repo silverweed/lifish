@@ -2,7 +2,7 @@
 
 #include <SFML/System.hpp>
 #include "Entity.hpp"
-#include "game_values.hpp"
+#include "bomb.hpp"
 
 namespace Game {
 

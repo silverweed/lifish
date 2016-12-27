@@ -5,7 +5,7 @@
 #include <cstring>
 #include <iostream>
 #include <array>
-#include "game_values.hpp"
+#include "player.hpp"
 
 std::array<unsigned int, Game::MAX_PLAYERS> Game::score;
 std::array<unsigned short, Game::MAX_PLAYERS> Game::playerContinues;

@@ -52,13 +52,12 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 		sf::IntRect(5 * size, 3 * size, size, size),
 	});
 	animated->getSprite().setOrigin(size/2, size/2);
-	addComponent(new Game::Drawable(*this, *animated));
 	animClock = addComponent(new Game::Clock(*this));
 	hauntClock = addComponent(new Game::Clock(*this));
 }
 
 void HauntingSpiritBoss::update() {
-	Game::Boss::update();
+	Game::Entity::update();
 
 	switch (state) {
 	case State::START:

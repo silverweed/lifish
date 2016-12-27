@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Entity.hpp"
-#include "game_values.hpp"
+#include "bullet.hpp"
 
 namespace Game {
 

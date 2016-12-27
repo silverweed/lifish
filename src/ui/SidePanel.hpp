@@ -2,7 +2,8 @@
 
 #include <array>
 #include <SFML/Graphics.hpp>
-#include "game_values.hpp"
+#include "bonus.hpp"
+#include "player.hpp"
 #include "game.hpp"
 #include "utils.hpp"
 

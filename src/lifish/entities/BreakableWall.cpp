@@ -16,7 +16,9 @@
 #include "Drawable.hpp"
 #include "Fixed.hpp"
 #include "utils.hpp"
-#include "game_values.hpp"
+#include "wall.hpp"
+#include "bonus.hpp"
+#include "zindex.hpp"
 
 using Game::BreakableWall;
 using Game::TILE_SIZE;

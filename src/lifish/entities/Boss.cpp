@@ -1,6 +1,8 @@
 #include "Boss.hpp"
 #include "ZIndexed.hpp"
 #include "game.hpp"
+#include "Drawable.hpp"
+#include "Animated.hpp"
 #include "Clock.hpp"
 #include "BossExplosion.hpp"
 #include "Spawning.hpp"
@@ -10,7 +12,8 @@
 #include "Sounded.hpp"
 #include "Explosion.hpp"
 #include "Lifed.hpp"
-#include "game_values.hpp"
+#include "zindex.hpp"
+#include "boss.hpp"
 #include "Foe.hpp"
 #include <cassert>
 
@@ -19,10 +22,13 @@ using Game::TILE_SIZE;
 
 Boss::Boss(const sf::Vector2f& pos)
 	: Game::Entity(pos)
+	, drawProxy(*this)
 {
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::BOSSES));
 	addComponent(new Game::Foe(*this));
 	explClock = addComponent(new Game::Clock(*this));
+	hurtClock = addComponent(new Game::Clock(*this));
+	hurtClock->add(Game::Conf::Boss::HURT_TIME);
 	deathClock = addComponent(new Game::Clock(*this));
 	killable = addComponent(new Game::Killable(*this, [this] () {
 		// on kill
@@ -48,11 +54,22 @@ Boss::Boss(const sf::Vector2f& pos)
 		Game::cache.playSound(expl->get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
 		return expl;
 	}));
+	addComponent(new Game::Drawable(*this, drawProxy));
+}
+
+Game::Entity* Boss::init() {
+	Game::Entity::init();
+	if (collider == nullptr)
+		throw std::logic_error("Collider is null for " + toString() + "!");
+	if (animated == nullptr)
+		throw std::logic_error("Animated is null for " + toString() + "!");
+	if (killable == nullptr)
+		throw std::logic_error("Killable is null for " + toString() + "!");
+	return this;
 }
 
 void Boss::_hurt() {
-	isHurt = true;
-	wasHurt = true;
+	hurtClock->restart();
 }
 
 void Boss::_kill() {
@@ -64,23 +81,12 @@ bool Boss::_killInProgress() const {
 	return deathClock->getElapsedTime() < Game::Conf::Boss::DEATH_TIME;
 }
 
-void Boss::update() {
-	Game::Entity::update();
-
-	if (wasHurt)
-		wasHurt = false;
-	else 
-		isHurt = false;
-}
-
 void Boss::_checkCollision(Game::Collider& coll) {
 	if (coll.getLayer() != Game::Layers::EXPLOSIONS) return;
 
 	auto& expl = static_cast<Game::Explosion&>(coll.getOwnerRW());
 	if (expl.hasDamaged(this)) return;
 
-	assert(collider != nullptr);
-	
 	// Calculate how many explosion tiles overlap with boss's ones
 	const auto brect = collider->getRect();
 	const auto crect = coll.getRect();
@@ -100,4 +106,26 @@ void Boss::_checkCollision(Game::Collider& coll) {
 		killable->kill();
 	expl.dealDamageTo(this);
 	Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::HURT));
+}
+
+
+///////// BossDrawableProxy /////////
+Game::BossDrawableProxy::BossDrawableProxy(const Game::Boss& b)
+	: boss(b)
+{}
+
+void Game::BossDrawableProxy::draw(sf::RenderTarget& window, sf::RenderStates states) const {
+	// Assume `boss.animated` is non-null for convenience
+	window.draw(*boss.animated, states);
+	if (boss.hurtClock->getElapsedTime() < Game::Conf::Boss::HURT_TIME) {
+		const auto& sprite = boss.animated->getSprite();
+		sf::Sprite hurtSprite(*boss.animated->getTexture(), 
+				sprite.getAnimation()->getFrame(sprite.getCurrentFrame()));
+		hurtSprite.setOrigin(sprite.getOrigin());
+		hurtSprite.setPosition(sprite.getPosition());
+		hurtSprite.setRotation(sprite.getRotation());
+		hurtSprite.setScale(sprite.getScale());
+		hurtSprite.setColor(sf::Color(255, 0, 0, 180));
+		window.draw(hurtSprite, states);
+	}
 }

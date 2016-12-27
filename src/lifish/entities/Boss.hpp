@@ -1,23 +1,41 @@
 #pragma once
 
+#include <memory>
+#include <SFML/Graphics.hpp>
 #include "Entity.hpp"
 
 namespace Game {
 
+class Animated;
 class Collider;
 class Killable;
 class Clock;
 
+class Boss;
+
+class BossDrawableProxy : public sf::Drawable {
+	const Game::Boss& boss;
+public:
+	explicit BossDrawableProxy(const Game::Boss& b);
+
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+};
+
 /** The base class for Bosses */
 class Boss : public Game::Entity {
-protected:
-	/** A Collider can be implemented by children */
-	Game::Collider *collider = nullptr;
-	Game::Killable *killable = nullptr;
+
+	friend class Game::BossDrawableProxy;
+	
+	Game::BossDrawableProxy drawProxy;
 	Game::Clock *explClock = nullptr,
+	            *hurtClock = nullptr,
 	            *deathClock = nullptr;
 
-	bool isHurt = false, wasHurt = false;
+protected:
+	// The following components MUST be added by children
+	Game::Collider *collider = nullptr;
+	Game::Animated *animated = nullptr;
+	Game::Killable *killable = nullptr;
 
 
 	void _checkCollision(Game::Collider& coll);
@@ -33,7 +51,7 @@ protected:
 public:
 	explicit Boss(const sf::Vector2f& pos);
 
-	void update() override;
+	Game::Entity* init() override;
 };
 
 }

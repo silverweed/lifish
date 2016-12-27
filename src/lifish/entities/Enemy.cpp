@@ -23,6 +23,8 @@
 #include "Sounded.hpp"
 #include "Collider.hpp"
 #include "ZIndexed.hpp"
+#include "enemy.hpp"
+#include "zindex.hpp"
 #include "utils.hpp"
 #include <sstream>
 
@@ -86,7 +88,7 @@ Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
 	sighted = addComponent(new Game::AxisSighted(*this));
 
 	drawProxy = std::unique_ptr<Game::EnemyDrawableProxy>(new Game::EnemyDrawableProxy(*this));
-	addComponent(new Game::Drawable(*this, *drawProxy.get()));
+	addComponent(new Game::Drawable(*this, *drawProxy));
 
 	unsigned short death_n_frames = 2;
 	switch (id) {

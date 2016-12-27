@@ -1,4 +1,4 @@
-#include "game_values.hpp"
+#include "bonus.hpp"
 
 /** Relative bonus probabilities */
 std::discrete_distribution<unsigned short> Game::Conf::Bonus::distribution {
