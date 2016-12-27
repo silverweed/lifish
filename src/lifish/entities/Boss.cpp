@@ -37,7 +37,7 @@ Boss::Boss(const sf::Vector2f& pos)
 	}, [this] () {
 		explClock->restart();
 		// Calculate a random location inside the boss
-		const auto bpos = position;
+		const auto bpos = collider->getPosition();
 		std::uniform_real_distribution<float> distX(-0.5 * TILE_SIZE,
 		                                            TILE_SIZE * (collider->getSize().x/TILE_SIZE - 0.5)),
 		                                      distY(-0.5 * TILE_SIZE,

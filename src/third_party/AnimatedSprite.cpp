@@ -173,9 +173,6 @@ void AnimatedSprite::update(sf::Time deltaTime)
                 m_currentFrame++;
             else
             {
-                // animation has ended
-                m_currentFrame = 0; // reset to start
-
                 if (!m_isLooped)
                 {
                     m_isPaused = true;
@@ -183,7 +180,11 @@ void AnimatedSprite::update(sf::Time deltaTime)
 		    if (m_hideNonLoopedOnStop)
 			    setColor(sf::Color(0, 0, 0, 0));
                 }
-
+		else
+		{
+			// animation has ended
+			m_currentFrame = 0; // reset to start
+		}
             }
 
             // set the current frame, not reseting the time

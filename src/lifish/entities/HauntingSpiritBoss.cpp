@@ -9,8 +9,6 @@
 #include "core.hpp"
 #include <algorithm>
 
-#include <iostream>
-
 using Game::HauntingSpiritBoss;
 
 HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
@@ -23,35 +21,35 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	const auto size = 4 * Game::TILE_SIZE;
 	// This is needed by parent class
 	collider = addComponent(new Game::Collider(*this, Game::Layers::DEFAULT, sf::Vector2i(size, size),
-				sf::Vector2f(0, 0), true));
+				sf::Vector2f(-size/2, -size/2), true));
 	animated->addAnimation("idle", {
-		sf::IntRect(0, 0, size, size),
-		sf::IntRect(size, 0, size, size),
+		sf::IntRect(0 * size, 0, size, size),
+		sf::IntRect(1 * size, 0, size, size),
 		sf::IntRect(2 * size, 0, size, size),
 		sf::IntRect(3 * size, 0, size, size),
 		sf::IntRect(4 * size, 0, size, size),
 		sf::IntRect(5 * size, 0, size, size)
 	}, true);
 	animated->addAnimation("start", {
-		sf::IntRect(0, size, size, size),
-		sf::IntRect(size, size, size, size),
+		sf::IntRect(0 * size, size, size, size),
+		sf::IntRect(1 * size, size, size, size),
 		sf::IntRect(2 * size, size, size, size),
 		sf::IntRect(3 * size, size, size, size),
 		sf::IntRect(4 * size, size, size, size),
 		sf::IntRect(5 * size, size, size, size)
 	});
 	animated->addAnimation("transition", {
-		sf::IntRect(0, size, 2 * size, size),
-		sf::IntRect(size, size, 2 * size, size),
+		sf::IntRect(0 * size, 2 * size, size, size),
+		sf::IntRect(1 * size, 2 * size, size, size),
 		sf::IntRect(2 * size, 2 * size, size, size),
 	});
 	animated->addAnimation("death", {
-		sf::IntRect(0, size, 3 * size, size),
-		sf::IntRect(size, size, 3 * size, size),
+		sf::IntRect(0 * size, 3 * size, size, size),
+		sf::IntRect(1 * size, 3 * size, size, size),
 		sf::IntRect(2 * size, 3 * size, size, size),
 		sf::IntRect(3 * size, 3 * size, size, size),
 		sf::IntRect(4 * size, 3 * size, size, size),
-		sf::IntRect(5 * size, 3 * size, size, size)
+		sf::IntRect(5 * size, 3 * size, size, size),
 	});
 	animated->getSprite().setOrigin(size/2, size/2);
 	addComponent(new Game::Drawable(*this, *animated));
@@ -62,7 +60,6 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 void HauntingSpiritBoss::update() {
 	Game::Boss::update();
 
-	std::cerr << "\rstate = " << int(state);
 	switch (state) {
 	case State::START:
 		_updateStart();
@@ -117,7 +114,7 @@ void HauntingSpiritBoss::_updateSearching() {
 		state = State::DYING;
 		return;
 	}
-	std::uniform_int_distribution<> dist(0, statues.size());
+	std::uniform_int_distribution<> dist(0, statues.size() - 1);
 	targetStatue = statues[dist(Game::rng)];
 	targetStatue.lock()->setPossessed(true);
 	state = State::TRANSITIONING_BEGIN;
@@ -170,9 +167,9 @@ void HauntingSpiritBoss::_updateHaunting() {
 void HauntingSpiritBoss::_updateDying() {
 	// Task: play death animation
 	if (animated->getAnimationName() != "death") {
-		// TODO: fix boss explosions position
 		killable->kill();
 		animated->setAnimation("death");
 		animated->getSprite().setLooped(false);
 		animated->getSprite().play();
-	}}
+	}
+}
