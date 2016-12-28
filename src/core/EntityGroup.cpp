@@ -44,47 +44,6 @@ void EntityGroup::remove(std::shared_ptr<Game::Entity> entity) {
 	mtxUnlock();
 }
 
-void EntityGroup::refresh(const Game::Entity& entity) {
-	// FIXME
-	/*auto eit = std::find_if(entities.begin(), entities.end(), [&entity] (std::shared_ptr<Game::Entity> e) {
-		return e.get() == &entity;
-	});
-	if (eit == entities.end()) 
-		throw std::invalid_argument("entity passed to EntityGroup::refresh() is not in this group!");
-	*/
-
-	std::remove_if(killables.begin(), killables.end(), [&entity] (std::weak_ptr<Game::Killable> k) {
-		return k.expired() || &k.lock().get()->getOwner() == &entity;
-	});
-	auto klb = entity.getShared<Game::Killable>();
-	if (klb != nullptr) {
-		killables.push_back(klb);
-	} 
-
-	std::remove_if(collidingEntities.begin(), collidingEntities.end(),
-		[&entity] (std::weak_ptr<Game::Collider> c) 
-	{
-		return c.expired() || &c.lock().get()->getOwner() == &entity;
-	});
-	for (auto cld : entity.getAllRecursiveShared<Game::Collider>()) {
-		if (cld != nullptr && !cld->isPhantom()) {
-			collidingEntities.push_back(cld);
-		}
-	}
-
-	// FIXME
-	/*
-	const auto tile = Game::tile(entity.getPosition());
-	auto& fxd = fixedEntities[(tile.y - 1) * Game::LEVEL_WIDTH + tile.x - 1];
-	std::remove_if(fxd.begin(), fxd.end(), [&entity] (std::weak_ptr<Game::Entity> e) {
-		return e.expired() || e.lock().get() == &entity;
-	});
-	if (entity.get<Game::Fixed>() != nullptr) {
-		_addFixedAt(tile.x, tile.y, *eit);
-	}
-	*/
-}
-
 void EntityGroup::clear() {
 	mtxLock();
 	entities.clear();
@@ -112,12 +71,12 @@ auto EntityGroup::getFixedAt(unsigned short x, unsigned short y) const
 Game::Entity* EntityGroup::_putInAux(std::shared_ptr<Game::Entity> entity) {
 	// Put in aux collections, if not already managed
 	auto klb = entity->getShared<Game::Killable>();
-	if (klb != nullptr/* && !_isManagedKillable(entity)*/) {
+	if (klb != nullptr) {
 		killables.push_back(klb);
 	} 
 
-	for (auto cld : entity->getAllRecursiveShared<Game::Collider>()) {
-		if (cld != nullptr && !cld->isPhantom()/* && !_isManagedCollider(entity)*/) {
+	for (auto cld : entity->getAllShared<Game::Collider>()) {
+		if (cld != nullptr && !cld->isPhantom()) {
 			collidingEntities.push_back(cld);
 		}
 	}
@@ -125,8 +84,7 @@ Game::Entity* EntityGroup::_putInAux(std::shared_ptr<Game::Entity> entity) {
 	// Put an entity marked as `Fixed` in fixedEntities
 	if (entity->get<Game::Fixed>() != nullptr) {
 		const auto tile = Game::tile(entity->getPosition());
-		//if (!_isManagedFixed(entity))
-			_addFixedAt(tile.x, tile.y, entity);
+		_addFixedAt(tile.x, tile.y, entity);
 	}
 
 	return entity.get();

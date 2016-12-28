@@ -130,11 +130,6 @@ public:
 	void remove(const Game::Entity& entity);
 	void remove(std::shared_ptr<Game::Entity> entity);
 
-	/** Makes the EntityGroup flush all weak ptrs referring to `entity` from internal collections, then
-	 *  readds them if necessary. Useful when a component is added or removed from `entity` after its creation.
-	 */
-	void refresh(const Game::Entity& entity);
-
 	/** Removes all entities from this EntityGroup. */
 	void clear();
 

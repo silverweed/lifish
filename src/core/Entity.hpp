@@ -44,6 +44,9 @@ public:
 	std::shared_ptr<T> getShared() const;
 
 	template<class T>
+	std::vector<std::shared_ptr<T>> getAllShared() const;
+
+	template<class T>
 	std::vector<std::shared_ptr<T>> getAllRecursiveShared() const;
 
 	virtual sf::Vector2f getPosition() const; 

@@ -56,6 +56,17 @@ std::shared_ptr<T> Entity::getShared() const {
 }
 
 template<class T>
+std::vector<std::shared_ptr<T>> Entity::getAllShared() const {
+	std::vector<std::shared_ptr<T>> all;
+	for (auto& comp : components) {
+		Component *ptr = comp.get();
+		if (ptr && dynamic_cast<T*>(ptr) != nullptr)
+			all.push_back(std::static_pointer_cast<T>(comp));
+	}
+	return all;
+}
+
+template<class T>
 std::vector<std::shared_ptr<T>> Entity::getAllRecursiveShared() const {
 	std::vector<std::shared_ptr<T>> all;
 	for (auto& comp : components) {

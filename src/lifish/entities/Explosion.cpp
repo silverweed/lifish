@@ -145,8 +145,6 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 		if (blocked[i]) --propagation[i];
 	_setPropagatedAnims();
 
-	lm.getEntities().refresh(*this);
-
 	return this;
 }
 
