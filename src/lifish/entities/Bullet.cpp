@@ -11,6 +11,7 @@
 #include "Temporary.hpp"
 #include "utils.hpp"
 #include "zindex.hpp"
+#include "bullet.hpp"
 
 using Game::Bullet;
 
@@ -29,11 +30,12 @@ using Game::Bullet;
 Bullet::Bullet(const sf::Vector2f& pos, const Game::Attack& attack)
 	: Game::Bullet(pos, nullptr, attack)
 {
-	setOrigin(pos);
+	//setOrigin(pos);
 }
 
 Bullet::Bullet(const sf::Vector2f& pos, const Game::Entity *const source, const Game::Attack& attack)
 	: Game::Entity(pos)
+	, info(Game::Conf::Bullet::info[attack.id])
 	, origin(position)
 	, source(source)
 	, damage(attack.damage)
@@ -80,7 +82,7 @@ void Bullet::_destroy() {
 	auto& animatedSprite = animated->getSprite();
 	animatedSprite.setLooped(false);
 	moving->stop();
-	if (nDestroyFrames > 0) {
+	if (info.nDestroyFrames > 0) {
 		animatedSprite.stop();
 		animated->setAnimation("destroy");
 		animatedSprite.play();

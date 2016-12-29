@@ -13,11 +13,10 @@
 #include "Animated.hpp"
 #include "Shooting.hpp"
 #include "boss.hpp"
+#include "shoot_utils.hpp"
 
 using namespace Game::Conf::Boss::AlienBoss;
 using Game::AlienBoss;
- 
-const sf::Vector2i AlienBoss::SIZE = sf::Vector2i(3 * Game::TILE_SIZE, 3 * Game::TILE_SIZE);
 
 AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	: Game::Boss(pos)
@@ -26,13 +25,14 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 		Game::getAsset("test", std::string("alienboss_death.ogg")),
 		Game::getAsset("test", std::string("alienboss_hurt.ogg"))
 	}));
+	const sf::Vector2i size(3 * Game::TILE_SIZE, 3 * Game::TILE_SIZE);
 	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
 		// on collision
 		_checkCollision(coll);
-	}, Game::Layers::BOSSES, SIZE));
+	}, Game::Layers::BOSSES, size));
 	addComponent(new Game::Scored(*this, VALUE));
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "alien_boss.png")));
-	animated->addAnimation("idle", { sf::IntRect(0, 0, SIZE.x, SIZE.y) }, true);
+	animated->addAnimation("idle", { sf::IntRect(0, 0, size.x, size.y) }, true);
 	addComponent(new Game::Lifed(*this, LIFE));
 	shootClock = addComponent(new Game::Clock(*this));
 
@@ -55,27 +55,10 @@ void AlienBoss::update() {
 	if (killable->isKilled() || eyes[0]->get<Game::Shooting>()->isRecharging()) return;
 	
 	if (shotsFired > 0 || shootClock->getElapsedTime() > SHOOT_INTERVAL) {
-		_shoot();
+		for (auto eye : eyes)
+			Game::shootToNearestPlayer(*eye);
 		shotsFired = (shotsFired + 1) % N_SHOTS;
 		if (shotsFired == 0)
 			shootClock->restart();
-	}
-}
-
-void AlienBoss::_shoot() {
-	int i = 0;
-	for (auto eye : eyes) {
-		++i;
-		const auto player = eye->get<Game::FreeSighted>()->nearest<Game::Player>();
-		if (player.expired() || player.lock() == nullptr) continue;
-
-		const auto& ppos = player.lock()->getPosition();
-
-		// calculate angle with ppos: a = pi - arctan(dy / dx)
-		const double dx = eye->getPosition().x - ppos.x,
-			     dy = ppos.y - eye->getPosition().y,
-			     angle = Game::PI - std::atan2(dy, dx);
-
-		eye->get<Game::AutoShooting>()->shoot(angle);
 	}
 }

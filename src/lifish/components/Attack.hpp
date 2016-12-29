@@ -30,11 +30,16 @@ enum AttackType : unsigned int {
 };
 
 inline bool stringToAttackType(const std::string& str, AttackType& type) {
-	if (str == "simple") type = AttackType::SIMPLE;
-	else if (str == "contact") type = AttackType::CONTACT;
-	else if (str == "ranged") type = AttackType::RANGED;
-	else if (str == "blocking") type = AttackType::BLOCKING;
-	else return false;
+	if (str == "simple")
+		type = AttackType::SIMPLE;
+	else if (str == "contact")
+		type = AttackType::CONTACT;
+	else if (str == "ranged")
+		type = AttackType::RANGED;
+	else if (str == "blocking")
+		type = AttackType::BLOCKING;
+	else
+		return false;
 
 	return true;
 }
@@ -43,7 +48,7 @@ inline bool stringToAttackType(const std::string& str, AttackType& type) {
 struct Attack {
 	AttackType type;
 
-	/** Bullet id */
+	/** Bullet id, used for texture, sounds and such "aesthetic" characteristics  */
 	unsigned short id;
 
 	/** Damage dealt */
