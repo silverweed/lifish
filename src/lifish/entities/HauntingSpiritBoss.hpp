@@ -11,6 +11,7 @@ class HauntedStatue;
 class Animated;
 class Clock;
 class ShootingPoint;
+class ShootingPattern;
 
 class HauntingSpiritBoss : public Game::Boss {
 	enum class State {
@@ -24,6 +25,7 @@ class HauntingSpiritBoss : public Game::Boss {
 
 	std::vector<std::weak_ptr<Game::HauntedStatue>> statues;
 	std::weak_ptr<Game::HauntedStatue> targetStatue;
+	std::array<Game::ShootingPattern*, 1> shootPatterns;
 
 	Game::Clock *animClock = nullptr,
 	            *hauntClock = nullptr;

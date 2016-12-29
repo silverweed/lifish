@@ -41,11 +41,11 @@ struct BulletInfo {
 	/** Determines the bullet's data */
 	unsigned short id;
 	/** The damage to deal to the impacted Entity */
-	int damage;
-	/** Bullet speed, relative to bullets' base speed */
-	float speed;
+	int damage = 1;
+	/** Bullet speed, relative to players' base speed (1 means "as fast as players") */
+	float speed = 1;
 	/** How many pixels does this bullet travel; -1 means infinite. */
-	float range;
+	float range = -1;
 };
 
 /**

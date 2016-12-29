@@ -30,8 +30,6 @@ namespace Logic {
 	DEF_LOGIC(spawningLogic);
 	/** Make Scored entities give points when killed */
 	DEF_LOGIC(scoredKillablesLogic);
-	/** Make entities shoot */
-	//DEF_LOGIC(shootLogic);
 	/** Trigger bonus effects */
 	DEF_LOGIC(bonusGrabLogic);
 

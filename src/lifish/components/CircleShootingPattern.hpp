@@ -15,25 +15,27 @@ class Clock;
  *   o    |
  *        |   o
  */
-class CircleShootingPattern : Game::ShootingPattern {
+class CircleShootingPattern : public Game::ShootingPattern {
 	unsigned short shotsFired = 0;
 
 	Game::Clock *shootClock = nullptr;
 
 	void _shoot();
 public:
-	sf::Time timeBetweenShots;
+	sf::Time timeBetweenShots = sf::seconds(1);
 	/** Self-deactivate after shooting this number of attacks. Negative means 'infinite'. */
 	short consecutiveShots;
 	/** Number of bullets per shot */
 	short bulletsPerShot;
-	/** Degrees to rotate shoot axis after a shot. */
+	/** Radians to rotate shoot axis after a shot. */
 	float rotationPerShot;
-	/** Versor towards direction of first bullet shot */
-	sf::Vector2f shootAxis;
+	/** Angle of the first bullet (relative to vertical axis, clockwise) */
+	float shootAngle;
 
-	explicit CircleShootingPattern(Game::Entity& owner, Game::Attack attack,
-			sf::Time timeBetweenShots, short consecutiveShots);
+	/** Note that, rather than passing all parameters in the constructor,
+	 *  you just set it directly, as the useful variables are public for convenience.
+	 */
+	explicit CircleShootingPattern(Game::Entity& owner, const Game::BulletInfo& bullet);
 
 	/** Resets all counters and clocks */
 	void reset();

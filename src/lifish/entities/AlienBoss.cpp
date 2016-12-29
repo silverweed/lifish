@@ -40,7 +40,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	attack.type = Game::AttackType::SIMPLE;
 	attack.bullet.id = 101;
 	attack.bullet.damage = 4;
-	attack.bullet.speed = 160;
+	attack.bullet.speed = 1.1;
 	attack.fireRate = 1. / SHOOT_SHORT_INTERVAL.asSeconds();
 
 	// Shooting points
@@ -48,6 +48,8 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	eyes[0]->setOffset(sf::Vector2f(17, 18));
 	eyes[1] = addComponent(new Game::ShootingPoint(*this, attack, SIGHT_RADIUS));
 	eyes[1]->setOffset(sf::Vector2f(50, 18));
+	addComponent(new Game::AutoShooting(*eyes[0]));
+	addComponent(new Game::AutoShooting(*eyes[1]));
 }
 
 void AlienBoss::update() {

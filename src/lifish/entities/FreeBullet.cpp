@@ -1,6 +1,7 @@
 #include "FreeBullet.hpp"
 #include "FreeMoving.hpp"
 #include "Killable.hpp"
+#include "bullet.hpp"
 #include "core.hpp"
 #include "collision_layers.hpp"
 #include "Collider.hpp"
@@ -11,11 +12,12 @@
 using Game::FreeBullet;
 using Game::TILE_SIZE;
 
-FreeBullet::FreeBullet(const sf::Vector2f& pos, float angle,
+FreeBullet::FreeBullet(const sf::Vector2f& pos, double angle,
 		const Game::BulletInfo& info, const Game::Entity *const source)
 	: Game::Bullet(pos, info, source)
 {
-	addComponent(new Game::FreeMoving(*this, info.speed, sf::Vector2f(std::cos(angle), std::sin(angle))));
+	addComponent(new Game::FreeMoving(*this, Game::Conf::Bullet::BASE_SPEED * info.speed,
+				sf::Vector2f(std::sin(angle), std::cos(angle))));
 	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider&) {
 		// on collision
 		auto klb = get<Game::Killable>();

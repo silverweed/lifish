@@ -1,8 +1,6 @@
 #pragma once
 
-#include <memory>
-#include <queue>
-#include "Spawning.hpp"
+#include "BufferedSpawner.hpp"
 #include "Direction.hpp"
 
 namespace Game {
@@ -14,8 +12,7 @@ class Bullet;
  *  Instead of returning the bullet directly, the method shoot()
  *  stores it in an internal buffer which can be polled later.
  */
-class AutoShooting : public Game::Spawning {
-	std::queue<std::unique_ptr<Game::Bullet>> latestShot;
+class AutoShooting : public Game::BufferedSpawner {
 	Game::Shooting *shooting = nullptr;
 
 public:
@@ -25,9 +22,6 @@ public:
 	void shoot(double angle);
 
 	Game::Entity* init() override;
-
-	bool shouldSpawn() const override;
-	std::unique_ptr<Game::Entity> spawn() override;
 };
 
 }

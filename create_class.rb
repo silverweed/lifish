@@ -54,8 +54,8 @@ when 'components'
 end
 
 if options[:parent]
-	derived = ": Game::#{options[:parent]} "
-	constr = "\n\t: Game::#{options[:parent]}(#{args})\n"
+	derived = ": public Game::#{options[:parent]} "
+	constr = "\n\t: Game::#{options[:parent]}()\n"
 	includes = "\n#include \"#{options[:parent]}.hpp\"\n"
 end
 

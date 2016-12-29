@@ -117,32 +117,6 @@ void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager&,
 	}
 }
 
-/*
-void Game::Logic::shootLogic(Game::Entity *e, Game::LevelManager&,
-		EntityList& tbspawned, EntityList&)
-{
-	auto shootAll = [&tbspawned] (Game::Entity* entity) {
-		auto shootings = entity->getAll<Game::AutoShooting>();
-		for (auto shooting : shootings) {
-			auto bullet = shooting->pollShot();
-			while (bullet != nullptr) {
-				Game::cache.playSound(
-					bullet->get<Game::Sounded>()->getSoundFile(Game::Sounds::SHOT));
-				tbspawned.push_back(bullet.release());
-				bullet = shooting->pollShot();
-			}
-		}
-	};
-	// Avoiding getAllRecursive here yields significant time saving.
-	auto shootingPts = e->getAll<Game::ShootingPoint>();
-	if (shootingPts.size() > 0) {
-		for (auto shootingPt : shootingPts)
-			shootAll(shootingPt);
-	} else {
-		shootAll(e);
-	}
-}*/
-
 void Game::Logic::bonusGrabLogic(Game::Entity *e, Game::LevelManager &lm, EntityList&, EntityList&) {
 	auto bonus = dynamic_cast<Game::Bonus*>(e);
 	if (bonus == nullptr) return;
@@ -160,7 +134,6 @@ void Game::Logic::bonusGrabLogic(Game::Entity *e, Game::LevelManager &lm, Entity
 std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bombDeployLogic,
 	bombExplosionLogic,
-	//shootLogic,
 	bonusGrabLogic,
 	scoredKillablesLogic,
 	spawningLogic

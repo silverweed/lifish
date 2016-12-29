@@ -5,6 +5,7 @@
 #include "Drawable.hpp"
 #include "Clock.hpp"
 #include "FreeSighted.hpp"
+#include "CircleShootingPattern.hpp"
 #include "Killable.hpp"
 #include "core.hpp"
 #include <algorithm>
@@ -55,6 +56,16 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	animated->getSprite().setOrigin(size/2, size/2);
 	animClock = addComponent(new Game::Clock(*this));
 	hauntClock = addComponent(new Game::Clock(*this));
+
+	Game::BulletInfo bullet;
+	bullet.id = 101;
+	bullet.speed = 1;
+	auto circle = addComponent(new Game::CircleShootingPattern(*this, bullet));
+	circle->consecutiveShots = 30;
+	circle->timeBetweenShots = sf::seconds(0.5);
+	circle->bulletsPerShot = 8;
+	circle->rotationPerShot = Game::PI / 3.;
+	shootPatterns[0] = circle;
 }
 
 void HauntingSpiritBoss::update() {
