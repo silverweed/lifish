@@ -17,7 +17,7 @@
 #include "GameCache.hpp"
 #include "ZIndexed.hpp"
 #include "utils.hpp"
-#include "zindex.hpp"
+#include "conf/zindex.hpp"
 #include <sstream>
 
 using Game::Player;

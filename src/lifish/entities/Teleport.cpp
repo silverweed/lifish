@@ -10,7 +10,7 @@
 #include "AxisMoving.hpp"
 #include "Fixed.hpp"
 #include "Spawning.hpp"
-#include "teleport.hpp"
+#include "conf/teleport.hpp"
 
 using Game::Teleport;
 using Game::TILE_SIZE;

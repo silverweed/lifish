@@ -37,7 +37,7 @@ include_directories(src/lifish/entities)
 # lifish/level/ contains classes for managing game levels
 include_directories(src/lifish/level)
 # lifish/conf/ contains the gameplay constants
-include_directories(src/lifish/conf)
+#include_directories(src/lifish/conf)
 file(GLOB LIFISH_SRC ${MAIN_FILE}
 	src/core/*cpp
 	src/core/entities/*cpp

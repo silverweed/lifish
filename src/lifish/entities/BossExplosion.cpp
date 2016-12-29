@@ -4,7 +4,7 @@
 #include "ZIndexed.hpp"
 #include "Sounded.hpp"
 #include "Temporary.hpp"
-#include "zindex.hpp"
+#include "conf/zindex.hpp"
 #include "utils.hpp"
 
 using Game::BossExplosion;

@@ -3,7 +3,7 @@
 #include "game.hpp"
 #include "Temporary.hpp"
 #include "utils.hpp"
-#include "zindex.hpp"
+#include "conf/zindex.hpp"
 #include "AxisMoving.hpp"
 #include "Drawable.hpp"
 #include "ZIndexed.hpp"

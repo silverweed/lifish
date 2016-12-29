@@ -2,7 +2,7 @@
 
 #include <array>
 #include <SFML/System/Time.hpp>
-#include "bonus.hpp"
+#include "conf/bonus.hpp"
 #include "Component.hpp"
 #include "bonus_type.hpp"
 

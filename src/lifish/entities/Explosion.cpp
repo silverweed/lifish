@@ -12,7 +12,7 @@
 #include "GameCache.hpp"
 #include "Temporary.hpp"
 #include "ZIndexed.hpp"
-#include "zindex.hpp"
+#include "conf/zindex.hpp"
 #include "Sounded.hpp"
 #include <list>
 #include <algorithm>

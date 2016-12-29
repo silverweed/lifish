@@ -10,8 +10,8 @@
 #include "Temporary.hpp"
 #include "Player.hpp"
 #include "utils.hpp"
-#include "zindex.hpp"
-#include "player.hpp"
+#include "conf/zindex.hpp"
+#include "conf/player.hpp"
 #include "GameCache.hpp"
 #include <cassert>
 #include <random>

@@ -9,8 +9,8 @@
 #include "game.hpp"
 #include "Temporary.hpp"
 #include "utils.hpp"
-#include "zindex.hpp"
-#include "bullet.hpp"
+#include "conf/zindex.hpp"
+#include "conf/bullet.hpp"
 
 using Game::Bullet;
 

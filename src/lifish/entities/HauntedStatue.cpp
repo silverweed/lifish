@@ -6,7 +6,7 @@
 #include "ZIndexed.hpp"
 #include "Fixed.hpp"
 #include "collision_layers.hpp"
-#include "zindex.hpp"
+#include "conf/zindex.hpp"
 
 using Game::HauntedStatue;
 

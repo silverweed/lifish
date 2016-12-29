@@ -3,8 +3,8 @@
 #include <array>
 #include "Entity.hpp"
 #include "game.hpp"
-#include "player.hpp"
-#include "bomb.hpp"
+#include "conf/player.hpp"
+#include "conf/bomb.hpp"
 
 namespace Game {
 

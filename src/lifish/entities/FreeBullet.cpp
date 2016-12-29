@@ -1,7 +1,7 @@
 #include "FreeBullet.hpp"
 #include "FreeMoving.hpp"
 #include "Killable.hpp"
-#include "bullet.hpp"
+#include "conf/bullet.hpp"
 #include "core.hpp"
 #include "collision_layers.hpp"
 #include "Collider.hpp"

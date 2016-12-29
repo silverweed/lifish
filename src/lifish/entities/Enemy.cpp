@@ -23,8 +23,8 @@
 #include "Sounded.hpp"
 #include "Collider.hpp"
 #include "ZIndexed.hpp"
-#include "enemy.hpp"
-#include "zindex.hpp"
+#include "conf/enemy.hpp"
+#include "conf/zindex.hpp"
 #include "utils.hpp"
 #include <sstream>
 

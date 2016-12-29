@@ -1,5 +1,5 @@
 #include "LevelTime.hpp"
-#include "global.hpp"
+#include "conf/global.hpp"
 #include "Clock.hpp"
 
 using Game::LevelTime;

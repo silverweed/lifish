@@ -5,7 +5,7 @@
 #include "Collider.hpp"
 #include "Killable.hpp"
 #include "game.hpp"
-#include "bullet.hpp"
+#include "conf/bullet.hpp"
 
 using Game::AxisBullet;
 using Game::TILE_SIZE;

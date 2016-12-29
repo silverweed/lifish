@@ -2,7 +2,7 @@
 #include "game.hpp"
 #include "Collider.hpp"
 #include "ZIndexed.hpp"
-#include "zindex.hpp"
+#include "conf/zindex.hpp"
 
 using Game::TransparentWall;
 

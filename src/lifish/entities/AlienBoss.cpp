@@ -12,7 +12,7 @@
 #include "Scored.hpp"
 #include "Animated.hpp"
 #include "Shooting.hpp"
-#include "boss.hpp"
+#include "conf/boss.hpp"
 #include "shoot_utils.hpp"
 
 using namespace Game::Conf::Boss::AlienBoss;

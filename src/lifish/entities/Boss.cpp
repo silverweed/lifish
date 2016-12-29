@@ -12,8 +12,8 @@
 #include "Sounded.hpp"
 #include "Explosion.hpp"
 #include "Lifed.hpp"
-#include "zindex.hpp"
-#include "boss.hpp"
+#include "conf/zindex.hpp"
+#include "conf/boss.hpp"
 #include "Foe.hpp"
 #include <cassert>
 

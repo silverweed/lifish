@@ -5,7 +5,7 @@
 #include "Collider.hpp"
 #include "Fixed.hpp"
 #include "ZIndexed.hpp"
-#include "zindex.hpp"
+#include "conf/zindex.hpp"
 
 using Game::FixedWall;
 using Game::TILE_SIZE;

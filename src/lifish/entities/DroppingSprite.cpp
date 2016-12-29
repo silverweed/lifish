@@ -4,7 +4,7 @@
 #include "AxisMoving.hpp"
 #include "Drawable.hpp"
 #include "ZIndexed.hpp"
-#include "zindex.hpp"
+#include "conf/zindex.hpp"
 #include "game.hpp"
 
 using Game::DroppingSprite;
