@@ -17,7 +17,7 @@ FreeBullet::FreeBullet(const sf::Vector2f& pos, double angle,
 	: Game::Bullet(pos, info, source)
 {
 	addComponent(new Game::FreeMoving(*this, Game::Conf::Bullet::BASE_SPEED * info.speed,
-				sf::Vector2f(std::sin(angle), std::cos(angle))));
+				sf::Vector2f(std::sin(angle), -std::cos(angle))));
 	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider&) {
 		// on collision
 		auto klb = get<Game::Killable>();

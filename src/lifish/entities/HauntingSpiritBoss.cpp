@@ -61,7 +61,7 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	bullet.id = 101;
 	bullet.speed = 1;
 	auto circle = addComponent(new Game::CircleShootingPattern(*this, bullet));
-	circle->consecutiveShots = 30;
+	circle->consecutiveShots = -1;
 	circle->timeBetweenShots = sf::seconds(0.5);
 	circle->bulletsPerShot = 8;
 	circle->rotationPerShot = Game::PI / 3.;
