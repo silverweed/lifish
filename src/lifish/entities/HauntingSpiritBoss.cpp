@@ -22,6 +22,7 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	// This is needed by parent class
 	collider = addComponent(new Game::Collider(*this, Game::Layers::DEFAULT, sf::Vector2i(size, size),
 				sf::Vector2f(-size/2, -size/2), true));
+	collider->setActive(false);
 	animated->addAnimation("idle", {
 		sf::IntRect(0 * size, 0, size, size),
 		sf::IntRect(1 * size, 0, size, size),

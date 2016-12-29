@@ -1,13 +1,13 @@
 #include <exception>
 #include "AutoShooting.hpp"
+#include "Shooting.hpp"
 #include "AxisBullet.hpp"
 #include "FreeBullet.hpp"
-#include "Shooting.hpp"
 
 using Game::AutoShooting;
 
 AutoShooting::AutoShooting(Game::Entity& owner)
-	: Game::Component(owner)
+	: Game::Spawning(owner)
 {}
 
 Game::Entity* AutoShooting::init() {
@@ -25,11 +25,15 @@ void AutoShooting::shoot(double angle) {
 	latestShot.push(std::unique_ptr<Game::Bullet>(shooting->shoot(angle)));
 }
 
-std::unique_ptr<Game::Bullet> AutoShooting::pollShot() {
-	std::unique_ptr<Game::Bullet> result;
+std::unique_ptr<Game::Entity> AutoShooting::spawn() {
+	std::unique_ptr<Game::Entity> result;
 	if (!latestShot.empty()) {
-		result = std::unique_ptr<Game::Bullet>(latestShot.front().release());
+		result = std::unique_ptr<Game::Entity>(latestShot.front().release());
 		latestShot.pop();
 	}
 	return result;
+}
+
+bool AutoShooting::shouldSpawn() const {
+	return !latestShot.empty();
 }

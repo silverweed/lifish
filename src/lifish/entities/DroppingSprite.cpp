@@ -23,8 +23,8 @@ DroppingSprite::DroppingSprite(const std::string& texture_name, const sf::Vector
 	pauseClock = addComponent(new Game::Clock(*this));
 	addComponent(new Game::Drawable(*this, *sprite));
 	moving = addComponent(new Game::AxisMoving(*this, speed));
-	moving->setAutoRealignEnabled(false);
-	moving->setEnsureAlignEnabled(false);
+	moving->setAutoRealign(false);
+	moving->setEnsureAlign(false);
 }
 
 void DroppingSprite::play() {

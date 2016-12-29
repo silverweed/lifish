@@ -9,8 +9,8 @@ namespace Game {
 class AxisBullet : public Game::Bullet {
 public:
 	/** Constructs a Bullet with a source Entity (using that Entity's position) */
-	explicit AxisBullet(const sf::Vector2f& pos, const Game::Entity *const source,
-			const Game::Direction dir, const Game::Attack& attack);
+	explicit AxisBullet(const sf::Vector2f& pos, Game::Direction dir, const Game::BulletInfo& info,
+			const Game::Entity *const source = nullptr);
 };
 
 }

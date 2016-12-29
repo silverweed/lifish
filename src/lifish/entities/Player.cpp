@@ -172,7 +172,7 @@ void Player::_checkCollision(Game::Collider& cld) {
 		{
 			const auto shooting = cld.getOwner().get<Game::Shooting>();
 			if (shooting->getAttack().type & Game::AttackType::CONTACT)
-				damage = shooting->getAttack().damage;
+				damage = shooting->getAttack().bullet.damage;
 			else
 				damage = 1;
 			break;
@@ -185,7 +185,7 @@ void Player::_checkCollision(Game::Collider& cld) {
 		{
 			auto& bullet = static_cast<Game::Bullet&>(cld.getOwnerRW());
 			if (bullet.hasDealtDamage()) return;
-			damage = bullet.getDamage();
+			damage = bullet.getInfo().damage;
 			bullet.dealDamage();
 			break;
 		}

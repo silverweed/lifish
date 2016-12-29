@@ -13,6 +13,9 @@ OptionParser.new do |opts|
 	opts.on('-f', '--force', 'Force overwrite') do |f|
 		options[:force_overwrite] = f
 	end
+	opts.on('-d', '--derive-from=CLASS', 'Set parent class') do |c|
+		options[:parent] = c
+	end
 	opts.on('-h', '--help', 'Generate this help') do
 		puts opts
 		exit
@@ -48,6 +51,12 @@ when 'components'
 	derived = ': public Game::Component '
 	args = 'Game::Entity& owner'
 	constr = "\n\t: Game::Component(owner)\n"
+end
+
+if options[:parent]
+	derived = ": Game::#{options[:parent]} "
+	constr = "\n\t: Game::#{options[:parent]}(#{args})\n"
+	includes = "\n#include \"#{options[:parent]}.hpp\"\n"
 end
 
 TEMPLATE_HPP = "#pragma once

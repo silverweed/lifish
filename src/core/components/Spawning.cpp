@@ -4,6 +4,8 @@
 
 using Game::Spawning;
 
+Spawning::Spawning(Game::Entity& owner) : Game::Component(owner) {}
+
 Spawning::Spawning(Game::Entity& owner, SpawnFunction spawnFunction)
 	: Game::Component(owner)
 	, spawnFunction(spawnFunction)

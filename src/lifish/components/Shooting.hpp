@@ -12,6 +12,15 @@ class AxisBullet;
 class FreeBullet;
 class AxisMoving;
 
+/**
+ * A Shooting is a component that manages a single Attack type.
+ * It provides methods for creating an Bullet with that Attack and querying
+ * for recharge time, along with tweaking the bullet's starting offset and
+ * firerate multiplier.
+ * A Shooting component is meant for the "regular entities' shooting stuff";
+ * the shoot() methods are overloaded for both AxisBullets and FreeBullets,
+ * and take care of the extra effects like blocking the attacker after the shot, etc.
+ */
 class Shooting : public Game::Component {
 	/** The duration of the shooting frame */
 	const static sf::Time SHOOT_FRAME_TIME;

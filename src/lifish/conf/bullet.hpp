@@ -5,13 +5,13 @@
 
 namespace Game {
 
-struct BulletInfo;
+struct BulletData;
 
 namespace Conf {
 	namespace Bullet {
 		constexpr float BASE_SPEED = 200.;
 
-		extern std::map<unsigned short, const Game::BulletInfo> info;
+		extern std::map<unsigned short, const Game::BulletData> data;
 	}
 }
 

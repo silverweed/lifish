@@ -34,14 +34,14 @@ public:
 	/** If set to `false`, entity won't auto-realign when colliding with solid OR when stop()ped.
 	 *  This is useful for AI-managed moving entities. Default: true
 	 */
-	void setAutoRealignEnabled(bool b) { autoRealign = b; }
+	void setAutoRealign(bool b) { autoRealign = b; }
 	bool isAutoRealignEnabled() const { return autoRealign; }
 	/** If set to `false`, entity won't guarantee to always be aligned to the tile
 	 *  it's passing through for at least 1 frame. This should never be true
 	 *  for entities which check for their alignment to accomplish some logic.
 	 *  Useful for bullets.
 	 */
-	void setEnsureAlignEnabled(bool b) { ensureAlign = b; }
+	void setEnsureAlign(bool b) { ensureAlign = b; }
 	bool isEnsureRealignEnabled() const { return ensureAlign; }
 
 	void realign();

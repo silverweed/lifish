@@ -109,7 +109,7 @@
 			"attack": {
 				"type": ["contact", "ranged"],
 				"damage": 1,
-				"fireRate": 2.5
+				"fireRate": 2
 			}
 		},
 		{

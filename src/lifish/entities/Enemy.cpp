@@ -32,7 +32,7 @@ using Game::Enemy;
 using Game::TILE_SIZE;
 using Game::Direction;
 
-Enemy::Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info)
+Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const Game::EnemyInfo& info)
 	: Game::Entity(pos)
 	, id(id)
 	, info(info)
@@ -191,8 +191,9 @@ void Enemy::_checkShoot() {
 }
 
 bool Enemy::_inRange(const Game::Entity *const e) const {
-	const auto atk = autoShooting->getShooting()->getAttack();
-	return e == nullptr || atk.range < 0 || Game::manhattanDistance(e->getPosition(), position) <= atk.range;
+	const auto atk = shooting->getAttack();
+	return e == nullptr || atk.bullet.range < 0
+		|| Game::manhattanDistance(e->getPosition(), position) <= atk.bullet.range;
 }
 
 void Enemy::setMorphed(bool b) {

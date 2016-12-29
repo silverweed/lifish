@@ -117,6 +117,7 @@ void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager&,
 	}
 }
 
+/*
 void Game::Logic::shootLogic(Game::Entity *e, Game::LevelManager&,
 		EntityList& tbspawned, EntityList&)
 {
@@ -140,7 +141,7 @@ void Game::Logic::shootLogic(Game::Entity *e, Game::LevelManager&,
 	} else {
 		shootAll(e);
 	}
-}
+}*/
 
 void Game::Logic::bonusGrabLogic(Game::Entity *e, Game::LevelManager &lm, EntityList&, EntityList&) {
 	auto bonus = dynamic_cast<Game::Bonus*>(e);
@@ -159,7 +160,7 @@ void Game::Logic::bonusGrabLogic(Game::Entity *e, Game::LevelManager &lm, Entity
 std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bombDeployLogic,
 	bombExplosionLogic,
-	shootLogic,
+	//shootLogic,
 	bonusGrabLogic,
 	scoredKillablesLogic,
 	spawningLogic

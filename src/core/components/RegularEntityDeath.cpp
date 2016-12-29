@@ -30,7 +30,7 @@ void RegularEntityDeath::kill() {
 	auto moving = owner.getAllRecursive<Game::AxisMoving>();
 	for (auto mv : moving) {
 		origAutoRealign[mv] = mv->isAutoRealignEnabled();
-		mv->setAutoRealignEnabled(false);
+		mv->setAutoRealign(false);
 		mv->stop();
 	}
 	
@@ -64,7 +64,7 @@ void RegularEntityDeath::resurrect() {
 	for (auto mv : moving) {
 		auto ar = origAutoRealign.find(mv);
 		if (ar != origAutoRealign.end())
-			mv->setAutoRealignEnabled(ar->second);
+			mv->setAutoRealign(ar->second);
 	}
 	
 	// Reset all MovingAnimators

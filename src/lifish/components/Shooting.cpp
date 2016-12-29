@@ -9,7 +9,7 @@
 
 using Game::Shooting;
 
-const sf::Time Shooting::SHOOT_FRAME_TIME = sf::milliseconds(250); 
+const sf::Time Shooting::SHOOT_FRAME_TIME = sf::milliseconds(250);
 
 Shooting::Shooting(Game::Entity& owner, const Attack& attack)
 	: Game::Component(owner)
@@ -30,11 +30,9 @@ Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 	if (attack.type & Game::AttackType::CONTACT) {
 		shooting = true;
 		rechargeClock->restart();
-		auto moving = owner.get<Game::Moving>();
 		attackAlign = Game::tile(owner.getPosition());
-		const auto axismoving = dynamic_cast<Game::AxisMoving*>(moving);
-		if (axismoving != nullptr) {
-			switch (axismoving->getDirection()) {
+		if (ownerMoving != nullptr) {
+			switch (ownerMoving->getDirection()) {
 			case Game::Direction::UP: --attackAlign.y; break;
 			case Game::Direction::DOWN: ++attackAlign.y; break;
 			case Game::Direction::LEFT: --attackAlign.x; break;
@@ -43,6 +41,7 @@ Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 			}
 		}
 		if (attack.type & Game::AttackType::RANGED) {
+			auto moving = ownerMoving == nullptr ? owner.get<Game::Moving>() : ownerMoving;
 			if (moving == nullptr)
 				throw std::logic_error("Called shoot() for a dashing attack on a non-Moving owner!");
 			moving->setDashing(4);
@@ -60,7 +59,7 @@ Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 		}
 		shooting = true;
 		rechargeClock->restart();
-		return new Game::AxisBullet(getPosition(), &owner, ownerMoving->getDirection(), attack);
+		return new Game::AxisBullet(getPosition(), ownerMoving->getDirection(), attack.bullet, &owner);
 	}
 
 	if (attack.type & Game::AttackType::BLOCKING) {
@@ -69,7 +68,7 @@ Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 	}
 	shooting = true;
 	rechargeClock->restart();
-	return new Game::AxisBullet(getPosition(), &owner, dir, attack);
+	return new Game::AxisBullet(getPosition(), dir, attack.bullet, &owner);
 }
 
 Game::FreeBullet* Shooting::shoot(double angle) {
@@ -78,7 +77,7 @@ Game::FreeBullet* Shooting::shoot(double angle) {
 
 	shooting = true;
 	rechargeClock->restart();
-	return new Game::FreeBullet(getPosition(), &owner, angle, attack);
+	return new Game::FreeBullet(getPosition(), angle, attack.bullet, &owner);
 }
 
 bool Shooting::isRecharging() const {

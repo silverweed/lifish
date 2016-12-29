@@ -38,9 +38,9 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 
 	Game::Attack attack;
 	attack.type = Game::AttackType::SIMPLE;
-	attack.id = 101;
-	attack.damage = 4;
-	attack.speed = 160;
+	attack.bullet.id = 101;
+	attack.bullet.damage = 4;
+	attack.bullet.speed = 160;
 	attack.fireRate = 1. / SHOOT_SHORT_INTERVAL.asSeconds();
 
 	// Shooting points

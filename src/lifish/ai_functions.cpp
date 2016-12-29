@@ -109,7 +109,7 @@ AIBoundFunction Game::ai_random(Game::Entity& entity) {
 	const auto collider = entity.get<Game::Collider>();
 	if (moving == nullptr || collider == nullptr)
 		throw std::invalid_argument("Entity passed to ai_random has no Moving or Collider component!");
-	moving->setAutoRealignEnabled(false);
+	moving->setAutoRealign(false);
 
 	return [&entity, moving, collider] (const Game::LevelManager& lm) { 
 		HANDLE_NOT_MOVING;
@@ -150,7 +150,7 @@ AIBoundFunction Game::ai_random_forward(Game::Entity& entity) {
 	if (moving == nullptr || collider == nullptr)
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving"
 				" or Collider component!");
-	moving->setAutoRealignEnabled(false);
+	moving->setAutoRealign(false);
 	moving->setDistTravelled(3);
 
 	return [&entity, moving, collider] (const Game::LevelManager& lm) { 
@@ -182,7 +182,7 @@ AIBoundFunction Game::ai_random_forward_haunt(Game::Entity& entity) {
 	if (moving == nullptr || collider == nullptr || shooting == nullptr)
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving, "
 				"Shooting or Collider component!");
-	moving->setAutoRealignEnabled(false);
+	moving->setAutoRealign(false);
 	auto random_forward = ai_random_forward(entity);
 
 	return [&entity, moving, random_forward, collider, shooting] (const Game::LevelManager& lm) {
@@ -230,7 +230,7 @@ AIBoundFunction Game::ai_follow(Game::Entity& entity) {
 	if (moving == nullptr || collider == nullptr || sighted == nullptr)
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving"
 				", Collider or AxisSighted component!");
-	moving->setAutoRealignEnabled(false);
+	moving->setAutoRealign(false);
 	moving->setDistTravelled(3);
 
 	return [&entity, moving, collider, sighted] (const Game::LevelManager& lm) {
@@ -268,7 +268,7 @@ AIBoundFunction Game::ai_follow_dash(Game::Entity& entity) {
 	if (moving == nullptr || collider == nullptr || sighted == nullptr || shooting == nullptr)
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has "
 				"no Moving, Collider, AxisSighted or Shooting component!");
-	moving->setAutoRealignEnabled(false);
+	moving->setAutoRealign(false);
 	moving->setDistTravelled(3);
 
 	return [&entity, shooting, moving, collider, sighted] (const Game::LevelManager& lm) {

@@ -1,20 +1,20 @@
 #pragma once
 
-#include "Shooting.hpp"
+#include "Attack.hpp"
 
 namespace Game {
 
 /**
- * This is the base abstract class for a component that drives the attacking pattern of a Shooting component.
+ * This is the base abstract class for a component that performs some kind of shooting pattern with a given Attack.
  */
 class ShootingPattern : public Game::Component {
 protected:
-	Game::Shooting& shooting;
+	Game::Attack attack;
 
 public:
-	explicit ShootingPattern(Game::Entity& owner, Game::Shooting& shooting)
+	explicit ShootingPattern(Game::Entity& owner, Game::Attack attack)
 		: Game::Component(owner)
-		, shooting(shooting)
+		, attack(attack)
 	{}
 
 	virtual void update() override = 0;

@@ -95,7 +95,7 @@ public:
 	unsigned short distanceWithNearestPlayer = 2 * Game::LEVEL_WIDTH * Game::TILE_SIZE;
 
 	// TODO: eliminate need for `id`
-	explicit Enemy(sf::Vector2f pos, unsigned short id, const Game::EnemyInfo& info);
+	explicit Enemy(const sf::Vector2f& pos, unsigned short id, const Game::EnemyInfo& info);
 
 	void setMorphed(bool b);
 	bool isMorphed() const { return morphed; }

@@ -93,15 +93,15 @@ void LevelSet::loadFromFile(const std::string& path) {
 		}
 
 		// Mandatory fields
-		enemies[enemynum].attack.damage = atk["damage"].get<short>();
+		enemies[enemynum].attack.bullet.damage = atk["damage"].get<short>();
 		// Optional fields
 		auto it = atk.find("speed");
 		if (it != atk.end())
-			enemies[enemynum].attack.speed = it->get<float>();
+			enemies[enemynum].attack.bullet.speed = it->get<float>();
 		
 		it = atk.find("id");
 		if (it != atk.end())
-			enemies[enemynum].attack.id = it->get<unsigned short>();
+			enemies[enemynum].attack.bullet.id = it->get<unsigned short>();
 
 		it = atk.find("fireRate");
 		if (it != atk.end())
@@ -113,17 +113,17 @@ void LevelSet::loadFromFile(const std::string& path) {
 
 		// Find range: first search for `range` (in pixels); if not found, search `tileRange`.
 		// If neither is found, set range to -1 (infinite).
-		enemies[enemynum].attack.range = -1;
+		enemies[enemynum].attack.bullet.range = -1;
 		bool range_found = false;
 		it = atk.find("range");
 		if (it != atk.end()) {
-			enemies[enemynum].attack.range = it->get<float>();
+			enemies[enemynum].attack.bullet.range = it->get<float>();
 			range_found = true;
 		}
 		if (!range_found) {
 			it = atk.find("tileRange");
 			if (it != atk.end()) {
-				enemies[enemynum].attack.range = float(it->get<short>() * Game::TILE_SIZE);
+				enemies[enemynum].attack.bullet.range = float(it->get<short>() * Game::TILE_SIZE);
 			}
 		}
 		++enemynum;

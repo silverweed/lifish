@@ -32,6 +32,12 @@ class Spawning : public Game::Component {
 	 */
 	SpawnCondition _spawnOnDeath(const Game::Killable*);
 
+protected:
+	/** Constructor used by child classes of Spawning, which typically override
+	 *  `shouldSpawn` and `spawn` directly.
+	 */
+	explicit Spawning(Game::Entity& owner);
+
 public:
 	COMP_NOT_UNIQUE
 
@@ -39,12 +45,11 @@ public:
 	explicit Spawning(Game::Entity& owner, SpawnFunction spawnFunction);
 	explicit Spawning(Game::Entity& owner, SpawnCondition spawnCondition, SpawnFunction spawnFunction);
 
-	bool shouldSpawn() const { return spawnCondition(*this); }
-
-	/** Returns the spawned entity */
-	std::unique_ptr<Game::Entity> spawn();
-
 	unsigned short nSpawned() const { return _nSpawned; }
+
+	virtual bool shouldSpawn() const { return spawnCondition(*this); }
+	/** @return the spawned entity */
+	virtual std::unique_ptr<Game::Entity> spawn();
 };
 
 }

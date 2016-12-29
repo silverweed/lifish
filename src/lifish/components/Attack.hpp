@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Bullet.hpp"
+
 namespace Game {
 
 /** The different types of attacks.
@@ -46,26 +48,14 @@ inline bool stringToAttackType(const std::string& str, AttackType& type) {
 
 /** Information about how an entity attacks */
 struct Attack {
-	AttackType type;
+	Game::AttackType type;
 
-	/** Bullet id, used for texture, sounds and such "aesthetic" characteristics  */
-	unsigned short id;
-
-	/** Damage dealt */
-	short damage;
-	
-	/** Projectile speed, in units of Bullet::BASE_SPEED */
-	float speed;
+	Game::BulletInfo bullet;
 	
 	/** Cooldown is 1/fireRate s. If AI is ai_follow_dash, determines
 	 *  the cooldown between two dashes.
 	 */
 	float fireRate;
-	
-	/** If attack is RANGED, bullet dies after `range` pixels from source.
-	 *  A negative value means `infinite`.
-	 */
-	float range;
 
 	/** If attacktype is SIMPLE | BLOCKING, this is the time
 	 *  the enemy stops after shooting (should be more than Shooting::SHOOT_FRAME_TIME);
