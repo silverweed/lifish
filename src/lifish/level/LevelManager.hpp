@@ -9,7 +9,7 @@
 #include "DroppingTextManager.hpp"
 #include "LevelRenderer.hpp"
 #include "LevelTime.hpp"
-#include "player.hpp"
+#include "conf/player.hpp"
 #include "Direction.hpp"
 #ifdef MULTITHREADED
 #	include <mutex>
