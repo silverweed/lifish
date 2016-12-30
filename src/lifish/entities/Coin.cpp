@@ -1,4 +1,3 @@
-#include <cassert>
 #include "Coin.hpp"
 #include "Scored.hpp"
 #include "Sounded.hpp"
@@ -31,8 +30,7 @@ Coin::Coin(const sf::Vector2f& pos)
 	addComponent(new Game::Drawable(*this, *animated));
 	grabbable = addComponent(new Game::Grabbable(*this));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
-		assert(coll.getLayer() == Game::Layers::PLAYERS);
-		if (grabbable->isGrabbed()) return;
+		if (coll.getLayer() != Game::Layers::PLAYERS || grabbable->isGrabbed()) return;
 		// only collides with player, so no check
 		get<Game::Killable>()->kill();			
 		get<Game::Scored>()->setTarget(static_cast<const Game::Player&>(coll.getOwner()).getInfo().id);

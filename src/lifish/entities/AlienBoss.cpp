@@ -25,7 +25,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 		Game::getAsset("test", std::string("alienboss_death.ogg")),
 		Game::getAsset("test", std::string("alienboss_hurt.ogg"))
 	}));
-	const sf::Vector2i size(3 * Game::TILE_SIZE, 3 * Game::TILE_SIZE);
+	const sf::Vector2f size(3 * Game::TILE_SIZE, 3 * Game::TILE_SIZE);
 	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
 		// on collision
 		_checkCollision(coll);

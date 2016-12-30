@@ -26,24 +26,6 @@
 
 using EntityList = std::list<Game::Entity*>;
 
-void Game::Logic::bombExplosionLogic(Game::Entity *e, Game::LevelManager& lm,
-		EntityList& tbspawned, EntityList& tbkilled)
-{
-	auto bomb = dynamic_cast<Game::Bomb*>(e);
-	if (bomb == nullptr) return;
-
-	if (bomb->isFuseOver()) {
-		auto killable = bomb->get<Game::Killable>();
-		if (killable->isKilled()) return;
-		killable->kill();
-		auto expl = new Game::Explosion(bomb->getPosition(),
-				bomb->getRadius(), &bomb->getSourcePlayer());
-		Game::cache.playSound(expl->get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
-		tbspawned.push_back(expl->propagate(lm));
-		tbkilled.push_back(bomb);
-	}
-}
-
 void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager& lm,
 		EntityList& tbspawned, EntityList&)
 {
@@ -64,19 +46,22 @@ void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager& lm,
 	{
 		auto bomb = new Game::Bomb(Game::aligned(player->getPosition()), 
 					*player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius);
-		Game::cache.playSound(bomb->get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
+		Game::cache.playSound(bomb->get<Game::Sounded>()->getSoundFile(Game::Sounds::SHOT));
 		tbspawned.push_back(bomb);
 	}
 }
 
-void Game::Logic::spawningLogic(Game::Entity *e, Game::LevelManager&,
+void Game::Logic::spawningLogic(Game::Entity *e, Game::LevelManager& lm,
 		EntityList& tbspawned, EntityList&)
 {
 	for (auto spawning : e->getAll<Game::Spawning>()) {
 		while (spawning->shouldSpawn()) {
 			auto spawned = spawning->spawn().release();
-			if (spawned != nullptr)
+			if (spawned != nullptr) {
+				if (auto expl = dynamic_cast<Game::Explosion*>(spawned))
+					expl->propagate(lm);
 				tbspawned.push_back(spawned);	
+			}
 		}
 	}
 }
@@ -133,7 +118,6 @@ void Game::Logic::bonusGrabLogic(Game::Entity *e, Game::LevelManager &lm, Entity
 
 std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
 	bombDeployLogic,
-	bombExplosionLogic,
 	bonusGrabLogic,
 	scoredKillablesLogic,
 	spawningLogic

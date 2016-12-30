@@ -19,6 +19,6 @@ bool BufferedSpawner::shouldSpawn() const {
 	return !spawned.empty();
 }
 
-void BufferedSpawner::_spawn(Game::Entity *e) {
+void BufferedSpawner::addSpawned(Game::Entity *e) {
 	spawned.push(std::unique_ptr<Game::Entity>(e));
 }

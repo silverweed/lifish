@@ -35,7 +35,7 @@ void CircleShootingPattern::_shoot() {
 	// Shoot first bullet towards `shootAxis`'s direction
 	double angle = shootAngle;
 	for (unsigned short i = 0; i < bulletsPerShot; ++i) {
-		_spawn(new Game::FreeBullet(owner.getPosition(), angle, bullet, &owner));
+		addSpawned(new Game::FreeBullet(owner.getPosition(), angle, bullet, &owner));
 		angle += delta;
 	}
 	shootAngle += rotationPerShot;

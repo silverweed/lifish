@@ -15,12 +15,13 @@ class BufferedSpawner : public Game::Spawning {
 protected:
 	std::queue<std::unique_ptr<Game::Entity>> spawned;
 
-	void _spawn(Game::Entity *e);
 public:
 	explicit BufferedSpawner(Game::Entity& owner);
 
 	bool shouldSpawn() const override;
 	std::unique_ptr<Game::Entity> spawn() override;
+
+	void addSpawned(Game::Entity *e);
 };
 
 }

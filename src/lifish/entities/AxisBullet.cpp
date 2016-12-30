@@ -52,7 +52,7 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, Game::Direction dir,
 		if (!klb->isKilled()) {
 			klb->kill();
 		}
-	}, Game::Layers::ENEMY_BULLETS, sf::Vector2i(data.size, data.size)));
+	}, Game::Layers::ENEMY_BULLETS, sf::Vector2f(data.size, data.size)));
 	auto moving = addComponent(new Game::AxisMoving(*this, Game::Conf::Bullet::BASE_SPEED * info.speed, dir));
 	moving->setEnsureAlign(false);
 	moving->setAutoRealign(false);

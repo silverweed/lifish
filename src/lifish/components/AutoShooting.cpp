@@ -21,10 +21,10 @@ Game::Entity* AutoShooting::init() {
 }
 
 void AutoShooting::shoot(Game::Direction dir) {
-	_spawn(shooting->shoot(dir));
+	addSpawned(shooting->shoot(dir));
 }
 
 void AutoShooting::shoot(double angle) {
 	// FIXME
-	_spawn(shooting->shoot(angle));
+	addSpawned(shooting->shoot(angle));
 }

@@ -17,7 +17,7 @@
 #include "Lifed.hpp"
 #include "Wisp.hpp"
 #include "AlienPredator.hpp"
-#include "Pond.hpp"
+#include "AcidPond.hpp"
 #include "Fog.hpp"
 #include "HauntedStatue.hpp"
 #include "HauntingSpiritBoss.hpp"
@@ -65,11 +65,7 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 				break;
 
 			case EntityType::ACID_POND:
-				// Acid pond damages only players
-				entities.add(new Game::Pond(curPos, "acid_pond.png",
-							sf::Vector2f(TILE_SIZE, TILE_SIZE),
-							1, // damage
-							{ Game::Layers::PLAYERS }));
+				entities.add(new Game::AcidPond(curPos, sf::Vector2f(TILE_SIZE, TILE_SIZE)));
 				break;
 
 			case EntityType::COIN:

@@ -1,6 +1,7 @@
 #include "Explosion.hpp"
 #include "LevelManager.hpp"
 #include "BreakableWall.hpp"
+#include "Fire.hpp"
 #include "Animated.hpp"
 #include "Direction.hpp"
 #include "Collider.hpp"
@@ -14,6 +15,7 @@
 #include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
 #include "Sounded.hpp"
+#include "BufferedSpawner.hpp"
 #include <list>
 #include <algorithm>
 
@@ -22,13 +24,12 @@ using Game::TILE_SIZE;
 using Game::Direction;
 
 Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, 
-		const Game::Entity *const source, unsigned short damage)
+		const Game::Entity *const source, bool isIncendiary, unsigned short damage)
 	: Game::Entity(pos)
 	, radius(_radius)
 	, damage(damage)
 	, sourceEntity(source)
 {
-	addComponent(new Game::Sounded(*this, { Game::getAsset("sounds", "explosion.ogg") }));
 	explosionC = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "explosionC.png")));
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::EXPLOSIONS));
 	explosionC->addAnimation("explode", {
@@ -55,8 +56,19 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 	explosionV->getSprite().setLooped(false);
 
 	addComponent(new Game::Temporary(*this, [this] () {
+		// expire condition
 		return !explosionC->getSprite().isPlaying();
+	}, [this] () {
+		// on kill: spawn fire if incendiary
+		if (spawner == nullptr) return;
+		spawner->addSpawned(new Game::Fire(explColliderH->getPosition(),
+					explColliderH->getSize(), sf::seconds(4)));
+		spawner->addSpawned(new Game::Fire(explColliderV->getPosition(), 
+					explColliderV->getSize(), sf::seconds(4)));
 	}));
+
+	if (isIncendiary)
+		spawner = addComponent(new Game::BufferedSpawner(*this));
 
 	propagation.fill(0);
 }
@@ -122,7 +134,7 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 	short reduction = blocked[Direction::RIGHT] + blocked[Direction::LEFT];
 	explColliderH = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
-			sf::Vector2i(
+			sf::Vector2f(
 				TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT]
 					+ 1 - reduction) + reduction,
 				TILE_SIZE - 2),
@@ -133,7 +145,7 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 	reduction = blocked[Direction::UP]  + blocked[Direction::DOWN];
 	explColliderV = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS,
 			// size
-			sf::Vector2i(
+			sf::Vector2f(
 				TILE_SIZE - 2,
 				TILE_SIZE * (propagation[Direction::UP] + propagation[Direction::DOWN]
 					+ 1 - reduction) + reduction),

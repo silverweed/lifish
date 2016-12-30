@@ -24,7 +24,7 @@ FreeBullet::FreeBullet(const sf::Vector2f& pos, double angle,
 		if (!klb->isKilled()) {
 			klb->kill();
 		}
-	}, Game::Layers::BOSS_BULLETS, sf::Vector2i(data.size, data.size)));
+	}, Game::Layers::BOSS_BULLETS, sf::Vector2f(data.size, data.size)));
 
 	position.x += (TILE_SIZE - data.size) / 2;
 	position.y += (TILE_SIZE - data.size) / 2;

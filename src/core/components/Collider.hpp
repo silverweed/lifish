@@ -21,7 +21,7 @@ protected:
 	
 	/** Offset relative to the owner's position */
 	sf::Vector2f offset; 
-	sf::Vector2i size;
+	sf::Vector2f size;
 	bool forceAck = false;
 	/** Collision layer */
 	Game::Layers::Layer layer;
@@ -33,14 +33,14 @@ public:
 
 	explicit Collider(Game::Entity& owner, 
 			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
-			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE),
+			  const sf::Vector2f& size = sf::Vector2f(Game::TILE_SIZE, Game::TILE_SIZE),
 			  const sf::Vector2f& offset = sf::Vector2f(0, 0),
 			  bool phantom = false);
 
 	explicit Collider(Game::Entity& owner,
 			  CollisionFunc onCollision,
 			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
-			  const sf::Vector2i& size = sf::Vector2i(Game::TILE_SIZE, Game::TILE_SIZE), 
+			  const sf::Vector2f& size = sf::Vector2f(Game::TILE_SIZE, Game::TILE_SIZE), 
 			  const sf::Vector2f& offset = sf::Vector2f(0, 0),
 			  bool phantom = false);
 	
@@ -61,8 +61,8 @@ public:
 	sf::Vector2f getOffset() const { return offset; }
 	void setOffset(const sf::Vector2f& off) { offset = off; }
 
-	virtual sf::Vector2i getSize() const { return size; }
-	void setSize(const sf::Vector2i& sz) { size = sz; }
+	virtual sf::Vector2f getSize() const { return size; }
+	void setSize(const sf::Vector2f& sz) { size = sz; }
 
 	/** If a Collider is phantom, it won't be automatically managed by EntityGroup
 	 *  (and therefore CollisionDetector). A phantom collider may be useful if you

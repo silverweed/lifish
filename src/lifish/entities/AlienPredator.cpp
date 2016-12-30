@@ -8,7 +8,7 @@
 #include "AxisMoving.hpp"
 #include "AI.hpp"
 #include "MovingAnimator.hpp"
-#include "Pond.hpp"
+#include "AcidPond.hpp"
 #include "Temporary.hpp"
 #include "core.hpp"
 #include <list>
@@ -24,10 +24,7 @@ const sf::Time AlienPredator::TUNNEL_TRANSITION_TIME = sf::seconds(1);
 AlienPredator::AlienPredator(const sf::Vector2f& pos, const Game::EnemyInfo& info) : Game::Enemy(pos, 10, info) {
 	addComponent(new Game::Spawning(*this, [this] () {
 		// Spawn Acid Pond on death, which persists for N seconds.
-		auto pond = new Game::Pond(position, "acid_pond.png",
-					sf::Vector2f(TILE_SIZE, TILE_SIZE),
-					1, // damage
-					{ Game::Layers::PLAYERS });
+		auto pond = new Game::AcidPond(position, sf::Vector2f(TILE_SIZE, TILE_SIZE));
 		sf::Clock clock;
 		pond->addComponent(new Game::Temporary(*pond, [clock] () {
 			return clock.getElapsedTime() > POND_LIFETIME;

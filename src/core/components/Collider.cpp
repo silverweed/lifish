@@ -4,7 +4,7 @@
 
 using Game::Collider;
 
-Collider::Collider(Game::Entity& owner, Game::Layers::Layer layer, const sf::Vector2i& size,
+Collider::Collider(Game::Entity& owner, Game::Layers::Layer layer, const sf::Vector2f& size,
 		const sf::Vector2f& offset, bool phantom)
 	: Game::Component(owner)
 	, phantom(phantom)
@@ -14,7 +14,7 @@ Collider::Collider(Game::Entity& owner, Game::Layers::Layer layer, const sf::Vec
 {}
 
 Collider::Collider(Game::Entity& owner, CollisionFunc onCollision,
-		Game::Layers::Layer layer, const sf::Vector2i& size, 
+		Game::Layers::Layer layer, const sf::Vector2f& size, 
 		const sf::Vector2f& offset, bool phantom)
 	: Game::Component(owner)
 	, phantom(phantom)

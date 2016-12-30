@@ -8,7 +8,9 @@
 namespace Game {
 
 /**
- * A Pond damaging whoever steps on it
+ * An entity damaging whoever steps on it. Can either be used directly 
+ * (but in this case the sprite, damage and layer bitmask must be added manually)
+ * or via a child class. 
  */
 class Pond : public Game::Entity {
 	/** Bitmask determining which layers get influenced by this Pond */
@@ -16,7 +18,7 @@ class Pond : public Game::Entity {
 	int damage;
 
 public:
-	explicit Pond(const sf::Vector2f& pos, const std::string& spriteName, const sf::Vector2f& size, 
+	explicit Pond(const sf::Vector2f& pos, const sf::Vector2f& size,
 			int damage, std::initializer_list<Game::Layers::Layer> damaged);
 };
 

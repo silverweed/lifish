@@ -24,6 +24,8 @@ class Bomb : public Game::Entity {
 	bool exploded = false;
 	/** Whether this bomb has already started the "near-explosion" animation or not */
 	bool switched = false;
+	/** An incendiary bomb will spawn Fire on explosion */ 
+	bool incendiary = false;
 
 	Game::Animated *animated = nullptr;
 	Game::Killable *killable = nullptr;
@@ -35,7 +37,8 @@ public:
 
 	explicit Bomb(const sf::Vector2f& pos, const Game::Player& source, 
 			const sf::Time& fuseTime = Game::Conf::Bomb::DEFAULT_FUSE, 
-			const unsigned short radius = Game::Conf::Bomb::DEFAULT_RADIUS);
+			const unsigned short radius = Game::Conf::Bomb::DEFAULT_RADIUS,
+			bool isIncendiary = false);
 
 	void update() override;
 	
@@ -48,8 +51,9 @@ public:
 	void setRadius(unsigned short r) { radius = r; }
 
 	/** Returns true if this bomb's fuse is over and the bomb should blow off. */
-	bool isFuseOver() const;
 	void setFuseTime(const sf::Time& ft) { fuseTime = ft; }
+
+	void setIncendiary(bool b) { incendiary = b; }
 
 	const Game::Player& getSourcePlayer() const { return sourcePlayer; }
 };

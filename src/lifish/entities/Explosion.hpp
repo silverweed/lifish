@@ -12,6 +12,7 @@ class Collider;
 class Player;
 class Animated;
 class Explosion;
+class BufferedSpawner;
 
 /**
  * A bomb's explosion; like in original BOOM, the explosion
@@ -26,13 +27,15 @@ class Explosion : public Game::Entity, public sf::Drawable {
 	               *explosionH = nullptr, // horizontal explosion
 		       *explosionV = nullptr; // vertical explosion
 
+	/** This is only non-null if explosion is incendiary */
+	Game::BufferedSpawner *spawner = nullptr;
+
 	/** Colliders used to check explosion's hits */
 	Game::Collider *explColliderH = nullptr,
 	               *explColliderV = nullptr;
 
 	/** The radius of this explosion */
 	unsigned short radius;
-	
 	/** The damage caused by this explosion per tick */
 	unsigned short damage;
 
@@ -64,6 +67,7 @@ public:
 	 */
 	explicit Explosion(const sf::Vector2f& pos, unsigned short radius, 
 			const Game::Entity *const sourceEntity = nullptr,
+			bool isIncendiary = false,
 			unsigned short damage = 1);
 
 	/** Calculate the tiles this explosion propagates to and fill `propagation`

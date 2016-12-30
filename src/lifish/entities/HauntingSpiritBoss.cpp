@@ -21,7 +21,8 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "haunting_spirit.png")));
 	const auto size = 4 * Game::TILE_SIZE;
 	// This is needed by parent class
-	collider = addComponent(new Game::Collider(*this, Game::Layers::DEFAULT, sf::Vector2i(size, size),
+	collider = addComponent(new Game::Collider(*this, Game::Layers::DEFAULT,
+				sf::Vector2f(size, size),
 				sf::Vector2f(-size/2, -size/2), true));
 	collider->setActive(false);
 	animated->addAnimation("idle", {

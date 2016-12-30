@@ -2,9 +2,12 @@
 #include "Sounded.hpp"
 #include "Player.hpp"
 #include "Drawable.hpp"
+#include "Spawning.hpp"
 #include "Clock.hpp"
 #include "Animated.hpp"
-#include "Killable.hpp"
+#include "Temporary.hpp"
+#include "GameCache.hpp"
+#include "Explosion.hpp"
 #include "Collider.hpp"
 #include "game.hpp"
 #include "Fixed.hpp"
@@ -14,18 +17,27 @@ using Game::TILE_SIZE;
 using namespace Game::Conf::Bomb;
 
 Bomb::Bomb(const sf::Vector2f& pos, const Game::Player& source, 
-		const sf::Time& _fuseTime, const unsigned short _radius)
+		const sf::Time& _fuseTime, const unsigned short _radius,
+		bool isIncendiary)
 	: Game::Entity(pos)
 	, fuseTime(_fuseTime)
 	, radius(_radius)
+	, incendiary(isIncendiary)
 	, sourcePlayer(source)
 {
 	addComponent(new Game::Fixed(*this));
 	fuseClock = addComponent(new Game::Clock(*this));
-	addComponent(new Game::Sounded(*this, { Game::getAsset("sounds", "fuse.ogg") })); 
-	killable = addComponent(new Game::Killable(*this, [this] () {
+	addComponent(new Game::Sounded(*this, {
+		Game::getAsset("sounds", "explosion.ogg"),
+		Game::getAsset("sounds", "fuse.ogg") 
+	})); 
+	killable = addComponent(new Game::Temporary(*this, [this] () {
+		// Expire condition
+		return fuseClock->getElapsedTime() >= fuseTime;
+	}, [this] () {
 		// On kill
 		exploded = true;
+		Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
 	}));
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "bomb.png")));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& cld) {
@@ -34,6 +46,9 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player& source,
 			ignite();
 	}, Game::Layers::BOMBS));
 	addComponent(new Game::Drawable(*this, *animated));
+	addComponent(new Game::Spawning(*this, [this] () {
+		return new Game::Explosion(position, radius, &sourcePlayer, incendiary);
+	}));
 
 	auto& a_normal_idle = animated->addAnimation("normal_idle", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),
@@ -74,8 +89,4 @@ void Bomb::ignite() {
 	fuseTime = sf::milliseconds(50); 
 	fuseClock->restart();
 	ignited = true; 
-}
- 
-bool Bomb::isFuseOver() const {
-	return fuseClock->getElapsedTime() >= fuseTime; 
 }

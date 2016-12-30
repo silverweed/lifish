@@ -22,8 +22,6 @@ namespace Logic {
 			std::list<Game::Entity*>&  // list of entities to be removed after calling game logic
 			)>;
 
-	/** Make bombs explode */
-	DEF_LOGIC(bombExplosionLogic);
 	/** Make players drop bombs */
 	DEF_LOGIC(bombDeployLogic);
 	/** Make entities spawn other entities on certain conditions */
