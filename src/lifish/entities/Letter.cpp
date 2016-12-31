@@ -13,7 +13,6 @@
 #include "conf/zindex.hpp"
 #include "conf/player.hpp"
 #include "GameCache.hpp"
-#include <cassert>
 #include <random>
 
 using Game::Letter;
@@ -39,9 +38,8 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	addComponent(new Game::Drawable(*this, *animated));
 	addComponent(new Game::Killable(*this));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
-		assert(coll.getLayer() == Game::Layers::PLAYERS);
-		if (grabbable->isGrabbed()) return;
-
+		if (coll.getLayer() != Game::Layers::PLAYERS || grabbable->isGrabbed())
+			return;
 		get<Game::Killable>()->kill();			
 		grabbable->grab();
 		get<Game::Scored>()->setTarget(static_cast<const Game::Player&>(coll.getOwner()).getInfo().id);

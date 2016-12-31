@@ -25,6 +25,7 @@ struct PlayerInfo {
 		unsigned short bombRadius = Game::Conf::Bomb::DEFAULT_RADIUS;
 		unsigned short maxBombs   = Game::Conf::Player::DEFAULT_MAX_BOMBS;
 		sf::Time bombFuseTime     = Game::Conf::Bomb::DEFAULT_FUSE;
+		bool incendiaryBomb       = false;
 	} powers;
 
 	short remainingLives = Game::Conf::Player::INITIAL_LIVES - 1;
@@ -42,6 +43,7 @@ struct PlayerInfo {
 		powers.bombRadius = Game::Conf::Bomb::DEFAULT_RADIUS;
 		powers.maxBombs = Game::Conf::Player::DEFAULT_MAX_BOMBS;
 		powers.bombFuseTime = Game::Conf::Bomb::DEFAULT_FUSE;
+		powers.incendiaryBomb = false;
 	}
 };
 
@@ -98,8 +100,10 @@ public:
 	void setBombRadius(unsigned short r) { info.powers.bombRadius = r; }
 	void setMaxBombs(unsigned short m) { info.powers.maxBombs = m; }
 	void setBombFuseTime(sf::Time t) { info.powers.bombFuseTime = t; }
+	void setIncendiaryBomb(bool b) { info.powers.incendiaryBomb = b; }
 	void setExtra(unsigned short n, bool e) { info.extra[n] = e; }
 	void setRemainingLives(short l) { info.remainingLives = l; }
+
 	void setWinning(bool b);
 
 	void update() override;

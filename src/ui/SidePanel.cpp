@@ -47,14 +47,17 @@ SidePanel::SidePanel(const Game::LevelManager& lm)
 	}
 
 	// Load bonuses
-	bonusesTexture = Game::cache.loadTexture(Game::getAsset("graphics", "bonuses.png"));
+	const auto bonusesTexture = Game::cache.loadTexture(Game::getAsset("graphics", "bonuses.png"));
 	for (unsigned short i = 0; i < bonusesSprite.size(); ++i) {
 		sf::Vector2f pos(BONUS_ICON_POS_X, i == 0 ? BONUS_ICON_POS_Y_1 : BONUS_ICON_POS_Y_2);
 		for (unsigned short j = 0; j < bonusesSprite[i].size(); ++j) {
 			bonusesSprite[i][j].setTexture(*bonusesTexture);
-			bonusesSprite[i][j].setTextureRect(sf::IntRect(TILE_SIZE * j, (j / 10) * TILE_SIZE,
+			bonusesSprite[i][j].setTextureRect(sf::IntRect(
+						j * TILE_SIZE,
+						(j / 10) * TILE_SIZE,
 						TILE_SIZE, TILE_SIZE));
-			bonusesSprite[i][j].setScale(float(BONUS_ICON_WIDTH) / TILE_SIZE,
+			bonusesSprite[i][j].setScale(
+					float(BONUS_ICON_WIDTH) / TILE_SIZE,
 					float(BONUS_ICON_HEIGHT) / TILE_SIZE);
 			bonusesSprite[i][j].setPosition(pos);
 			bonusesSprite[i][j].setColor(DISABLED_COLOR);
@@ -62,6 +65,8 @@ SidePanel::SidePanel(const Game::LevelManager& lm)
 			if (j != 0 && j % 10 == 0) 
 				pos.y += BONUS_ICON_HEIGHT;
 		}
+		bonusesSprite[i][bonusesSprite[i].size() - 1].setPosition(sf::Vector2f(
+					pos.x - 2 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT));
 	}
 }
 
@@ -73,8 +78,8 @@ static void _drawWithShadow(sf::RenderTarget& window, sf::RenderStates states, c
 	window.draw(sprite, states);
 }
 
-void SidePanel::_drawHealthSprites(sf::RenderTarget& window, sf::RenderStates states, 
-		const Game::Player& player) const 
+void SidePanel::_drawHealthSprites(sf::RenderTarget& window, sf::RenderStates states,
+		const Game::Player& player) const
 {
 	const auto lifed = player.get<Game::Lifed>();
 	const unsigned short n_tot = lifed->getMaxLife() / 2;
@@ -218,7 +223,7 @@ void SidePanel::update() {
 			const auto powers = player->getInfo().powers;
 			const auto bonusable = player->get<Game::Bonusable>();
 			for (unsigned short j = 0; j < bonusesSprite[i].size(); ++j) {
-				switch (j) {
+				switch (Game::BonusType(j)) {
 					using B = Game::BonusType;
 				case B::QUICK_FUSE:
 					bonusesSprite[i][j].setColor(

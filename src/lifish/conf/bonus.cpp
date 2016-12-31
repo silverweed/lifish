@@ -7,9 +7,10 @@ std::discrete_distribution<unsigned short> Game::Conf::Bonus::distribution {
 	5,   // max range
 	5,   // shield
 	5,   // speedy
+	2,   // incendiary bomb
 	1,   // zapper
 	1,   // sudden death
 	5,   // health small
 	4,   // health full
-	490  // no bonus
+	518  // no bonus
 };

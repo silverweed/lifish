@@ -7,15 +7,14 @@ namespace Game {
 class LevelManager;
 class Player;
 
-// This enum is not `enum class` because it's used by classes like SidePanel in a 'comparable' way
-// or as an array index.
-enum BonusType : unsigned {
+enum class BonusType {
 	// "Permanent" bonuses
 	MAX_BOMBS,
 	QUICK_FUSE,
 	MAX_RANGE,
 	SHIELD,
 	SPEEDY,
+	INCENDIARY_BOMB,
 	// One-time bonuses
 	ZAPPER,
 	SUDDEN_DEATH,

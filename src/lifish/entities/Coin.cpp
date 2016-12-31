@@ -30,8 +30,9 @@ Coin::Coin(const sf::Vector2f& pos)
 	addComponent(new Game::Drawable(*this, *animated));
 	grabbable = addComponent(new Game::Grabbable(*this));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
-		if (coll.getLayer() != Game::Layers::PLAYERS || grabbable->isGrabbed()) return;
-		// only collides with player, so no check
+		if (coll.getLayer() != Game::Layers::PLAYERS || grabbable->isGrabbed()) 
+			return;
+		// only collides with player, so no further check
 		get<Game::Killable>()->kill();			
 		get<Game::Scored>()->setTarget(static_cast<const Game::Player&>(coll.getOwner()).getInfo().id);
 		Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));

@@ -77,7 +77,6 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 
 	/** The Bonus icons */
 	Matrix<sf::Sprite, Game::MAX_PLAYERS, Game::Conf::Bonus::N_PERMANENT_BONUS_TYPES> bonusesSprite;
-	sf::Texture *bonusesTexture;
 
 	void _drawHealthSprites(sf::RenderTarget& window, sf::RenderStates states, 
 			const Game::Player& player) const;

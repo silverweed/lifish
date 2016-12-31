@@ -28,8 +28,8 @@ Bonus::Bonus(const sf::Vector2f& pos, const Game::BonusType type)
 					TILE_SIZE,
 					TILE_SIZE)));
 	addComponent(new Game::Collider(*this, [this] (const Game::Collider& cld) {
-		if (grabbable->isGrabbed()) return;
-		// on collision (no check since its layer only collides with players)
+		if (cld.getLayer() != Game::Layers::PLAYERS || grabbable->isGrabbed())
+			return;
 		_grab(static_cast<Game::Player&>(cld.getOwnerRW()));
 	}, Game::Layers::GRABBABLE));
 	addComponent(new Game::Drawable(*this, *sprite));

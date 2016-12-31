@@ -11,25 +11,27 @@
 
 using B = Game::BonusType;
 
-std::string Game::bonusToString(BonusType type) {
+std::string Game::bonusToString(Game::BonusType type) {
 	switch (type) {
-	case MAX_BOMBS:
+	case B::MAX_BOMBS:
 		return "Max Bombs Up";
-	case QUICK_FUSE:
+	case B::QUICK_FUSE:
 		return "Quick Fuse";
-	case MAX_RANGE:
+	case B::MAX_RANGE:
 		return "Max Range Up";
-	case SHIELD:
+	case B::SHIELD:
 		return "Shield";
-	case SPEEDY:
+	case B::SPEEDY:
 		return "Speedy";
-	case ZAPPER:
+	case B::INCENDIARY_BOMB:
+		return "Incendiary Bomb";
+	case B::ZAPPER:
 		return "Zapper";
-	case SUDDEN_DEATH:
+	case B::SUDDEN_DEATH:
 		return "Sudden Death";
-	case HEALTH_SMALL:
+	case B::HEALTH_SMALL:
 		return "Small Health";
-	case HEALTH_FULL:
+	case B::HEALTH_FULL:
 		return "Full Health";
 	default:
 		break;
@@ -59,6 +61,9 @@ void Game::triggerBonus(Game::LevelManager& lm, Game::BonusType type, Game::Play
 		break;
 	case B::SPEEDY:
 		player.get<Game::Bonusable>()->giveBonus(B::SPEEDY, Game::Conf::Bonus::SPEEDY_DURATION);
+		break;
+	case B::INCENDIARY_BOMB:
+		player.setIncendiaryBomb(true);
 		break;
 	case B::ZAPPER:
 		lm.getEntities().apply([] (Game::Entity *e) {

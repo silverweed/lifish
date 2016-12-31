@@ -45,7 +45,8 @@ void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager& lm,
 		&& lm.canDeployBombAt(Game::tile(player->getPosition())))
 	{
 		auto bomb = new Game::Bomb(Game::aligned(player->getPosition()), 
-					*player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius);
+					*player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius,
+					pinfo.powers.incendiaryBomb);
 		Game::cache.playSound(bomb->get<Game::Sounded>()->getSoundFile(Game::Sounds::SHOT));
 		tbspawned.push_back(bomb);
 	}
