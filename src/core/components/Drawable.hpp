@@ -14,7 +14,8 @@ public:
 		, delegate(delegate) {}
 
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override {
-		window.draw(delegate, states);
+		if (active)
+			window.draw(delegate, states);
 	}
 };
 

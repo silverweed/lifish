@@ -1,0 +1,1 @@
+-std=c++11 -Isrc -Isrc/core -Isrc/core/entities -Isrc/core/components -Isrc/core/collisions -Isrc/core/debug -Isrc/lifish -Isrc/lifish/entities -Isrc/lifish/components -Isrc/lifish/debug -Isrc/lifish/level -Isrc/lifish/conf -Isrc/ui -Isrc/third_party

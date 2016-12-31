@@ -62,6 +62,7 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	Game::BulletInfo bullet;
 	bullet.id = 101;
 	bullet.speed = 1;
+	bullet.damage = 4;
 	auto circle = addComponent(new Game::CircleShootingPattern(*this, bullet));
 	circle->consecutiveShots = 6;
 	circle->timeBetweenShots = sf::seconds(0.5);
@@ -72,7 +73,7 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	spiral->consecutiveShots = 50;
 	spiral->timeBetweenShots = sf::seconds(0.1);
 	spiral->bulletsPerShot = 1;
-	spiral->rotationPerShot = 0.1;
+	spiral->rotationPerShot = 0.3;
 	spiral->randomizeShootAngle = true;
 	shootPatterns[1] = spiral;
 }
@@ -188,6 +189,7 @@ void HauntingSpiritBoss::_updateTransitioningEnd() {
 		hauntClock->restart();
 		atkClock->restart();
 		targetStatue.lock()->setPossessed(true);
+		get<Game::Drawable>()->setActive(false);
 		state = State::HAUNTING;
 		return;
 	}
@@ -197,6 +199,7 @@ void HauntingSpiritBoss::_updateTransitioningEnd() {
 void HauntingSpiritBoss::_updateHaunting() {
 	// Task: attack the player; leave after some delay
 	if (targetStatue.expired()) {
+		get<Game::Drawable>()->setActive(true);
 		state = State::SELECT_NEW_STATUE;
 		if (curShootPattern != nullptr)
 			curShootPattern->setActive(false);
@@ -207,7 +210,9 @@ void HauntingSpiritBoss::_updateHaunting() {
 		return;
 	}
 	if (hauntClock->getElapsedTime() > sf::seconds(25)) {
-		state = State::SEARCHING;
+		get<Game::Drawable>()->setActive(true);
+		targetStatue.lock()->setPossessed(false);
+		state = State::SELECT_NEW_STATUE;
 		return;
 	}
 	if (atkClock->getElapsedTime() > sf::seconds(3)) {
