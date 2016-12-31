@@ -21,6 +21,7 @@
 #include "LevelManager.hpp"
 #include "Explosion.hpp"
 #include "Sounded.hpp"
+#include "collision_functions.hpp"
 #include "Collider.hpp"
 #include "ZIndexed.hpp"
 #include "conf/enemy.hpp"
@@ -59,10 +60,6 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const Game::EnemyInfo& 
 	}
 	ai = addComponent(new Game::AI(*this, Game::ai_functions[info.ai]));
 	moving = addComponent(new Game::AxisMoving(*this, BASE_SPEED * originalSpeed, Game::Direction::DOWN));
-	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
-		// on collision
-		_checkCollision(coll);
-	}, Game::Layers::ENEMIES));
 	animated = addComponent(new Game::Animated(*this, 
 		Game::getAsset("graphics", std::string("enemy") + Game::to_string(id) + std::string(".png"))));
 	yellClock = addComponent(new Game::Clock(*this));
@@ -89,6 +86,13 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const Game::EnemyInfo& 
 
 	drawProxy = std::unique_ptr<Game::EnemyDrawableProxy>(new Game::EnemyDrawableProxy(*this));
 	addComponent(new Game::Drawable(*this, *drawProxy));
+
+	auto hurt_by_explosion = Game::hurtByExplosions(*this, Game::CFO_TAKE_SINGLE_HIT);
+	collider = addComponent(new Game::Collider(*this, [this, hurt_by_explosion] (Game::Collider& coll) {
+		// on collision
+		if (!_checkCollision(coll))
+			hurt_by_explosion(coll);
+	}, Game::Layers::ENEMIES));
 
 	unsigned short death_n_frames = 2;
 	switch (id) {
@@ -190,6 +194,17 @@ void Enemy::_checkShoot() {
 	}
 }
 
+bool Enemy::_checkCollision(Game::Collider& coll) {
+	if (coll.getLayer() == Game::Layers::PLAYERS 
+			&& (shooting->getAttack().type & Game::AttackType::CONTACT)
+			&& !shooting->isRecharging())
+	{
+		shooting->shoot();
+		return true;
+	}
+	return false;
+}
+
 bool Enemy::_inRange(const Game::Entity *const e) const {
 	const auto atk = shooting->getAttack();
 	return e == nullptr || atk.bullet.range < 0
@@ -198,21 +213,6 @@ bool Enemy::_inRange(const Game::Entity *const e) const {
 
 void Enemy::setMorphed(bool b) {
 	morphed = b;
-}
-
-void Enemy::_checkCollision(Game::Collider& coll) {
-	if (coll.getLayer() == Game::Layers::PLAYERS && (shooting->getAttack().type & Game::AttackType::CONTACT)) {
-		if (!shooting->isRecharging())
-			shooting->shoot();
-		return;
-	}
-	if (coll.getLayer() != Game::Layers::EXPLOSIONS) return;
-	const auto& expl = static_cast<const Game::Explosion&>(coll.getOwner());
-	if (get<Game::Lifed>()->decLife(expl.getDamage()) <= 0) {
-		const auto source = dynamic_cast<const Game::Player*>(expl.getSourceEntity());
-		if (source != nullptr)
-			get<Game::Scored>()->setTarget(source->getInfo().id);
-	}
 }
 
 //////// EnemyDrawableProxy //////////

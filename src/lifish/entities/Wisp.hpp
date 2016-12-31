@@ -10,7 +10,7 @@ class Wisp : public Game::Enemy {
 
 	bool inWall = false;
 
-	void _checkCollision(Game::Collider& c) override;
+	bool _checkCollision(Game::Collider& c) override;
 public:
 	explicit Wisp(const sf::Vector2f& pos, const Game::EnemyInfo& info);
 

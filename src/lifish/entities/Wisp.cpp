@@ -16,8 +16,9 @@ void Wisp::update() {
 	inWall = false;
 }
 
-void Wisp::_checkCollision(Game::Collider& coll) {
-	Game::Enemy::_checkCollision(coll);
+bool Wisp::_checkCollision(Game::Collider& coll) {
+	bool b = Game::Enemy::_checkCollision(coll);
 	if (coll.getLayer() == Game::Layers::BREAKABLES)
 		inWall = true;
+	return b;
 }

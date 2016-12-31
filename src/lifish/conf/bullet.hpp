@@ -1,7 +1,7 @@
 #pragma once
 
 #include <map>
-#include "Bullet.hpp"
+#include "entities/Bullet.hpp"
 #include "conf/player.hpp"
 
 namespace Game {
