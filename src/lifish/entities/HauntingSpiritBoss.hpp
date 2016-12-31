@@ -17,6 +17,7 @@ class HauntingSpiritBoss : public Game::Boss {
 	enum class State {
 		START,
 		SEARCHING,
+		SELECT_NEW_STATUE,
 		TRANSITIONING_BEGIN,
 		TRANSITIONING_END,
 		HAUNTING,
@@ -25,17 +26,21 @@ class HauntingSpiritBoss : public Game::Boss {
 
 	std::vector<std::weak_ptr<Game::HauntedStatue>> statues;
 	std::weak_ptr<Game::HauntedStatue> targetStatue;
-	std::array<Game::ShootingPattern*, 1> shootPatterns;
+	std::array<Game::ShootingPattern*, 2> shootPatterns;
+	Game::ShootingPattern *curShootPattern = nullptr;
 
 	Game::Clock *animClock = nullptr,
-	            *hauntClock = nullptr;
+	            *atkClock = nullptr,   // used for shooting
+		    *hauntClock = nullptr; // used for changing haunted statue after delay
 
 	void _updateStart();
 	void _updateSearching();
+	void _updateSelectNewStatue();
 	void _updateTransitioningBegin();
 	void _updateTransitioningEnd();
 	void _updateHaunting();
 	void _updateDying();
+	bool _isShooting() const;
 public:
 	explicit HauntingSpiritBoss(const sf::Vector2f& pos);
 

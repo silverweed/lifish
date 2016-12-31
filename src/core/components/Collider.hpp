@@ -9,9 +9,10 @@
 namespace Game {
 
 class Collider : public Game::Component {
-protected:
+public:
 	using CollisionFunc = std::function<void(Game::Collider&)>;
 
+protected:
 	const bool phantom;
 
 	/** All the Colliders which are colliding with this one */

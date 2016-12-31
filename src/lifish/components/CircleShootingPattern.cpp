@@ -24,10 +24,15 @@ void CircleShootingPattern::update() {
 	}
 }
 
-void CircleShootingPattern::reset() {
+void CircleShootingPattern::_reset() {
 	shootClock->restart();
 	shotsFired = 0;
-	shootAngle = 0;
+	if (randomizeShootAngle) {
+		std::uniform_real_distribution<double> dist(0, 360);
+		shootAngle = dist(Game::rng);
+	} else {
+		shootAngle = 0;
+	}
 }
 
 void CircleShootingPattern::_shoot() {

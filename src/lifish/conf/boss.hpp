@@ -20,6 +20,7 @@ namespace Conf {
 
 		namespace HauntingSpiritBoss {
 			constexpr unsigned int VALUE = 10000;
+			constexpr unsigned int HAUNTED_STATUE_LIFE = 4;
 		}
 
 		namespace BigAlienBoss {

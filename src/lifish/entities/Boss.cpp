@@ -85,7 +85,7 @@ void Boss::_checkCollision(Game::Collider& coll) {
 	if (coll.getLayer() != Game::Layers::EXPLOSIONS) return;
 
 	auto& expl = static_cast<Game::Explosion&>(coll.getOwnerRW());
-	if (expl.hasDamaged(this)) return;
+	if (expl.hasDamaged(*this)) return;
 
 	// Calculate how many explosion tiles overlap with boss's ones
 	const auto brect = collider->getRect();
@@ -104,7 +104,7 @@ void Boss::_checkCollision(Game::Collider& coll) {
 		_hurt();
 	else
 		killable->kill();
-	expl.dealDamageTo(this);
+	expl.dealDamageTo(*this);
 	Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::HURT));
 }
 

@@ -15,11 +15,10 @@ using Game::RegularEntityDeath;
 RegularEntityDeath::RegularEntityDeath(Game::Entity& owner, sf::Time deathTime)
 	: Game::Component(owner)
 	, deathTime(deathTime)
-{
-	killable = owner.get<Game::Killable>();
-}
+{}
 
 Game::Entity* RegularEntityDeath::init() {
+	killable = owner.get<Game::Killable>();
 	if (killable == nullptr)
 		throw std::invalid_argument("RegularEntityDeath's owner has no Killable component!");
 	return this;

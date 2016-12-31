@@ -13,12 +13,20 @@ class ShootingPattern : public Game::BufferedSpawner {
 protected:
 	Game::BulletInfo bullet;
 
+	virtual void _reset() {}
 public:
+	COMP_NOT_UNIQUE
+
 	explicit ShootingPattern(Game::Entity& owner, Game::BulletInfo bullet)
 		: Game::BufferedSpawner(owner)
 		, bullet(bullet)
 	{
 		active = false;
+	}
+
+	void resetAndPlay() {
+		_reset();
+		setActive(true);
 	}
 
 	virtual void update() override = 0;

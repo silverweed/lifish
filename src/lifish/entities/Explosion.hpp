@@ -83,13 +83,13 @@ public:
 
 	unsigned short getDamage() const { return damage; }
 
-	/** Use this function to tell this Explosion it damaged this Entity;
-	 *  Explosion can be then queries via `hasDamaged(Entity)`.
+	/** Use this function to tell this Explosion it damaged `entity`;
+	 *  Explosion can be then queried via `hasDamaged(entity)`.
 	 *  Useful for interacting with entities that can only take 1 hit from
 	 *  an Explosion.
 	 */
-	void dealDamageTo(const Game::Entity* entity); 
-	bool hasDamaged(const Game::Entity* entity) const;
+	void dealDamageTo(const Game::Entity& entity);
+	bool hasDamaged(const Game::Entity& entity) const;
 };
 
 }

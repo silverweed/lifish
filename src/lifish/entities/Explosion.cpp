@@ -194,10 +194,10 @@ void Explosion::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	window.draw(*explosionC, states);
 }
 
-void Explosion::dealDamageTo(const Game::Entity* entity) {
-	damagedEntities.insert(entity);
+void Explosion::dealDamageTo(const Game::Entity& entity) {
+	damagedEntities.insert(&entity);
 }
 
-bool Explosion::hasDamaged(const Game::Entity* entity) const {
-	return damagedEntities.find(entity) != damagedEntities.end();
+bool Explosion::hasDamaged(const Game::Entity& entity) const {
+	return damagedEntities.count(&entity) > 0;
 }

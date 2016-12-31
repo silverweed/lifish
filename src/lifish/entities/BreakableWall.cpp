@@ -16,6 +16,7 @@
 #include "Drawable.hpp"
 #include "Fixed.hpp"
 #include "utils.hpp"
+#include "collision_functions.hpp"
 #include "conf/wall.hpp"
 #include "conf/bonus.hpp"
 #include "conf/zindex.hpp"
@@ -23,7 +24,7 @@
 using Game::BreakableWall;
 using Game::TILE_SIZE;
 
-BreakableWall::BreakableWall(const sf::Vector2f& pos, const std::string& texture_name, 
+BreakableWall::BreakableWall(const sf::Vector2f& pos, const std::string& texture_name,
 		unsigned short life, unsigned int score)
 	: Game::Entity(pos)
 {
@@ -60,17 +61,15 @@ void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
 	addComponent(new Game::Lifed(*this, life));
 	addComponent(new Game::Sounded(*this, { Game::getAsset("sounds", "wall_break.ogg") })); 
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::WALLS));
-	addComponent(new Game::Collider(*this, [this] (Game::Collider& cld) { 
-		// on collision
-		_checkCollision(cld); 
-	}, Game::Layers::BREAKABLES));
-	killable = addComponent(new Game::Killable(*this, [this] () {
+	addComponent(new Game::Killable(*this, [this] () {
 		// on kill
 		animated->getSprite().play();
 	}, [this] () {
 		// is kill in progress
 		return animated->getSprite().isPlaying();
 	}));
+	addComponent(new Game::Collider(*this, Game::hurtByExplosions(*this, Game::CFO_ONLY_ADJACENT),
+				Game::Layers::BREAKABLES));
 	// Spawn bonus on death
 	addComponent(new Game::Spawning(*this, [this] () {
 		// spawn function
@@ -89,19 +88,6 @@ Animation& BreakableWall::_setupAnimations(const std::string& texture_name) {
 	animatedSprite.pause();
 
 	return animation;
-}
-
-void BreakableWall::_checkCollision(Game::Collider& cld) {
-	if (cld.getLayer() != Game::Layers::EXPLOSIONS || killable->isKilled()) return;
-	const auto etile = Game::tile(cld.getOwner().getPosition());
-	const auto mtile = Game::tile(position);
-	if (Game::manhattanDistance(etile, mtile) == 1) {
-		killable->kill();
-		const auto source = dynamic_cast<const Game::Player*>(static_cast<const Game::Explosion&>(
-					cld.getOwner()).getSourceEntity());
-		if (source != nullptr)
-			get<Game::Scored>()->setTarget(source->getInfo().id);
-	}
 }
 
 Game::Entity* BreakableWall::_spawnBonus() {

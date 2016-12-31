@@ -207,9 +207,8 @@ void Enemy::_checkCollision(Game::Collider& coll) {
 		return;
 	}
 	if (coll.getLayer() != Game::Layers::EXPLOSIONS) return;
-	auto lifed = get<Game::Lifed>();
 	const auto& expl = static_cast<const Game::Explosion&>(coll.getOwner());
-	if (lifed->decLife(expl.getDamage()) <= 0) {
+	if (get<Game::Lifed>()->decLife(expl.getDamage()) <= 0) {
 		const auto source = dynamic_cast<const Game::Player*>(expl.getSourceEntity());
 		if (source != nullptr)
 			get<Game::Scored>()->setTarget(source->getInfo().id);
