@@ -4,7 +4,6 @@
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Graphics.hpp>
 #include "EntityGroup.hpp"
-#include "SimpleCollisionDetector.hpp"
 #include "SHCollisionDetector.hpp"
 #include "DroppingTextManager.hpp"
 #include "LevelRenderer.hpp"
@@ -27,6 +26,7 @@ class WinLoseHandler;
 class Player;
 class Bomb;
 class Level;
+class AxisMoving;
 
 /** The class that manages all the level's entities and events.
  *  In particular, its update() method updates all entities,

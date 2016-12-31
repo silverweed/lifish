@@ -2,11 +2,9 @@
 
 #include <map>
 #include "Bullet.hpp"
-#include "player.hpp"
+#include "conf/player.hpp"
 
 namespace Game {
-
-struct BulletData;
 
 namespace Conf {
 	namespace Bullet {

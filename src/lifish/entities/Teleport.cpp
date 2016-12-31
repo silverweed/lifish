@@ -1,7 +1,6 @@
 #include "Teleport.hpp"
 #include "Animated.hpp"
 #include "Clock.hpp"
-#include "Collider.hpp"
 #include "game.hpp"
 #include "GameCache.hpp"
 #include "Flash.hpp"

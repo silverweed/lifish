@@ -1,5 +1,4 @@
 #include "DebugEventHandler.hpp"
-#include "Enemy.hpp"
 #include "Killable.hpp"
 #include "game.hpp"
 #include "Player.hpp"

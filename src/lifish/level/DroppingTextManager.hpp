@@ -2,10 +2,10 @@
 
 #include <memory>
 #include <SFML/System/NonCopyable.hpp>
-#include "DroppingSprite.hpp"
 
 namespace Game {
 
+class DroppingSprite;
 class EntityGroup;
 
 class DroppingTextManager final : private sf::NonCopyable {

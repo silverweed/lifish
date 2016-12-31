@@ -2,7 +2,6 @@
 
 #include <array>
 #include <memory>
-#include <SFML/Graphics.hpp>
 #include "Boss.hpp"
 #include "game.hpp"
 

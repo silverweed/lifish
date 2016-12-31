@@ -4,7 +4,6 @@
 #include "Clock.hpp"
 #include "AxisMoving.hpp"
 #include "Explosion.hpp"
-#include "LevelSet.hpp"
 #include "Foe.hpp"
 #include "Music.hpp"
 #include "MusicManager.hpp"
