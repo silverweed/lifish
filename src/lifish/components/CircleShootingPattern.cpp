@@ -7,7 +7,6 @@ using Game::CircleShootingPattern;
 
 CircleShootingPattern::CircleShootingPattern(Game::Entity& owner, const Game::BulletInfo& bullet)
 	: Game::ShootingPattern(owner, bullet)
-	, shootAngle(0)
 {
 	shootClock = addComponent(new Game::Clock(*this));
 }
@@ -29,16 +28,16 @@ void CircleShootingPattern::_reset() {
 	shotsFired = 0;
 	if (randomizeShootAngle) {
 		std::uniform_real_distribution<double> dist(0, 360);
-		shootAngle = dist(Game::rng);
+		shootAngle = Game::degrees(dist(Game::rng));
 	} else {
-		shootAngle = 0;
+		shootAngle = Game::degrees(0);
 	}
 }
 
 void CircleShootingPattern::_shoot() {
-	const double delta = 2 * Game::PI / bulletsPerShot;
+	const auto delta = Game::radians(2 * Game::PI / bulletsPerShot);
 	// Shoot first bullet towards `shootAxis`'s direction
-	double angle = shootAngle;
+	auto angle = shootAngle;
 	for (unsigned short i = 0; i < bulletsPerShot; ++i) {
 		addSpawned(new Game::FreeBullet(owner.getPosition(), angle, bullet, &owner));
 		angle += delta;

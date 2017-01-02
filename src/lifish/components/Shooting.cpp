@@ -71,7 +71,7 @@ Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 	return new Game::AxisBullet(getPosition(), dir, attack.bullet, &owner);
 }
 
-Game::FreeBullet* Shooting::shoot(double angle) {
+Game::FreeBullet* Shooting::shoot(Game::Angle angle) {
 	if (attack.type & Game::AttackType::CONTACT)
 		throw std::logic_error("Called shoot(angle) for a CONTACT attack!");
 

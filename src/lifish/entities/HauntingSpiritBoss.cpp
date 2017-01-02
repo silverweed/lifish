@@ -7,6 +7,7 @@
 #include "FreeSighted.hpp"
 #include "CircleShootingPattern.hpp"
 #include "Killable.hpp"
+#include "Angle.hpp"
 #include "core.hpp"
 #include <algorithm>
 
@@ -67,13 +68,13 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	circle->consecutiveShots = 6;
 	circle->timeBetweenShots = sf::seconds(0.5);
 	circle->bulletsPerShot = 6;
-	circle->rotationPerShot = Game::PI / 5.;
+	circle->rotationPerShot = Game::radians(Game::PI / 5.);
 	shootPatterns[0] = circle;
 	auto spiral = addComponent(new Game::CircleShootingPattern(*this, bullet));
 	spiral->consecutiveShots = 50;
 	spiral->timeBetweenShots = sf::seconds(0.1);
 	spiral->bulletsPerShot = 1;
-	spiral->rotationPerShot = 0.3;
+	spiral->rotationPerShot = Game::radians(0.3);
 	spiral->randomizeShootAngle = true;
 	shootPatterns[1] = spiral;
 }

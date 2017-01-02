@@ -24,7 +24,7 @@ void AutoShooting::shoot(Game::Direction dir) {
 	addSpawned(shooting->shoot(dir));
 }
 
-void AutoShooting::shoot(double angle) {
+void AutoShooting::shoot(Game::Angle angle) {
 	// FIXME
 	addSpawned(shooting->shoot(angle));
 }

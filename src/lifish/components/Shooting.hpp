@@ -1,9 +1,10 @@
 #pragma once
 
+#include <exception>
 #include "Component.hpp"
 #include "Attack.hpp"
 #include "Direction.hpp"
-#include <exception>
+#include "Angle.hpp"
 
 namespace Game {
 
@@ -58,12 +59,12 @@ public:
 	 */
 	Game::AxisBullet* shoot(Game::Direction dir = Game::Direction::NONE);
 
-	/** Creates a FreeBullet moving with angle `angle` (rad) from its owner.
+	/** Creates a FreeBullet moving with angle `angle` from its owner.
 	 *  Caller must take care of its destruction. 
 	 *  Throws if attack is CONTACT.
 	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
-	Game::FreeBullet* shoot(double angle);
+	Game::FreeBullet* shoot(Game::Angle angle);
 	bool isShooting() const { return shooting; }
 
 	bool isRecharging() const;

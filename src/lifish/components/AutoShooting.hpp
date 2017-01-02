@@ -2,6 +2,7 @@
 
 #include "BufferedSpawner.hpp"
 #include "Direction.hpp"
+#include "Angle.hpp"
 
 namespace Game {
 
@@ -19,7 +20,7 @@ public:
 	explicit AutoShooting(Game::Entity& owner);
 
 	void shoot(Game::Direction dir = Game::Direction::NONE);
-	void shoot(double angle);
+	void shoot(Game::Angle angle);
 
 	Game::Entity* init() override;
 };

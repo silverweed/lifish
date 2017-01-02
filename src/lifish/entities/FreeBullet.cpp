@@ -12,12 +12,12 @@
 using Game::FreeBullet;
 using Game::TILE_SIZE;
 
-FreeBullet::FreeBullet(const sf::Vector2f& pos, double angle,
+FreeBullet::FreeBullet(const sf::Vector2f& pos, Game::Angle angle,
 		const Game::BulletInfo& info, const Game::Entity *const source)
 	: Game::Bullet(pos, info, source)
 {
 	addComponent(new Game::FreeMoving(*this, Game::Conf::Bullet::BASE_SPEED * info.speed,
-				sf::Vector2f(std::sin(angle), -std::cos(angle))));
+				sf::Vector2f(std::sin(angle.asRadians()), -std::cos(angle.asRadians()))));
 	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider&) {
 		// on collision
 		auto klb = get<Game::Killable>();

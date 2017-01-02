@@ -2,6 +2,7 @@
 
 #include <SFML/System.hpp>
 #include "ShootingPattern.hpp"
+#include "Angle.hpp"
 
 namespace Game {
 
@@ -28,10 +29,10 @@ public:
 	short consecutiveShots;
 	/** Number of bullets per shot */
 	short bulletsPerShot;
-	/** Radians to rotate shoot axis after a shot. */
-	float rotationPerShot;
+	/** Angle to rotate shoot axis after a shot. */
+	Game::Angle rotationPerShot;
 	/** Angle of the first bullet (relative to vertical axis, clockwise) */
-	float shootAngle;
+	Game::Angle shootAngle;
 	/** If true, `shootAngle` gets randomized at every reset */
 	bool randomizeShootAngle;
 

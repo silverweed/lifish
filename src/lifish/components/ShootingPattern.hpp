@@ -17,12 +17,13 @@ protected:
 public:
 	COMP_NOT_UNIQUE
 
-	explicit ShootingPattern(Game::Entity& owner, Game::BulletInfo bullet)
+	explicit ShootingPattern(Game::Entity& owner, const Game::BulletInfo& bullet)
 		: Game::BufferedSpawner(owner)
 		, bullet(bullet)
 	{
 		active = false;
 	}
+	virtual ~ShootingPattern() {}
 
 	void resetAndPlay() {
 		_reset();

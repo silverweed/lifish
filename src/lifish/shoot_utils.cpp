@@ -11,8 +11,8 @@ void Game::shootToNearestPlayer(Game::Entity& shooter) {
 
 	// calculate angle with ppos: a = pi - arctan(dy / dx)
 	const double dx = shooter.getPosition().x - ppos.x,
-		     dy = ppos.y - shooter.getPosition().y,
-		     angle = Game::PI - std::atan2(dy, dx);
+		     dy = ppos.y - shooter.getPosition().y;
+	const auto angle = Game::radians(Game::PI - std::atan2(dy, dx));
 
 	shooter.get<Game::AutoShooting>()->shoot(angle);
 }
