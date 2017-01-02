@@ -26,7 +26,7 @@ class HauntingSpiritBoss : public Game::Boss {
 
 	std::vector<std::weak_ptr<Game::HauntedStatue>> statues;
 	std::weak_ptr<Game::HauntedStatue> targetStatue;
-	std::array<Game::ShootingPattern*, 2> shootPatterns;
+	std::array<Game::ShootingPattern*, 3> shootPatterns;
 	Game::ShootingPattern *curShootPattern = nullptr;
 
 	Game::Clock *animClock = nullptr,
