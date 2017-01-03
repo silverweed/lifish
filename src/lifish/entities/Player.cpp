@@ -58,9 +58,12 @@ void Player::_init() {
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::PLAYERS));
 	addComponent(new Game::Drawable(*this, drawProxy));
 	addComponent(new Game::Sounded(*this, {
-		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_death.ogg")),
-		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_hurt.ogg")),
-		Game::getAsset("test", std::string("player") + Game::to_string(info.id) + std::string("_win.ogg")),
+		std::make_pair("death", Game::getAsset("test", std::string("player")
+					+ Game::to_string(info.id) + std::string("_death.ogg"))),
+		std::make_pair("hurt", Game::getAsset("test", std::string("player")
+					+ Game::to_string(info.id) + std::string("_hurt.ogg"))),
+		std::make_pair("win", Game::getAsset("test", std::string("player")
+				+ Game::to_string(info.id) + std::string("_win.ogg"))),
 	}));
 	killable = addComponent(new Game::Killable(*this, [this] () {
 		// on kill
@@ -197,7 +200,7 @@ void Player::_checkCollision(Game::Collider& cld) {
 	}
 
 	auto lifed = get<Game::Lifed>();
-	Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::HURT));
+	Game::cache.playSound(get<Game::Sounded>()->getSoundFile("hurt"));
 	if (lifed->decLife(damage) <= 0) {
 		killable->kill();
 		return;
@@ -228,6 +231,7 @@ void Player::_hurt() {
 	moving->block(Game::Conf::Player::HURT_ANIM_DURATION);
 	hurtClock->restart();
 	bonusable->giveBonus(Game::BonusType::SHIELD, Game::Conf::Player::DAMAGE_SHIELD_TIME);
+	Game::cache.playSound(get<Game::Sounded>()->getSoundFile("hurt"));
 }
 
 //// PlayerDrawProxy ////

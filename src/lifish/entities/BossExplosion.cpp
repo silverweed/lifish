@@ -15,7 +15,9 @@ BossExplosion::BossExplosion(const sf::Vector2f& pos)
 {
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "bossbullet.png")));
 	addComponent(new Game::Drawable(*this, *animated));
-	addComponent(new Game::Sounded(*this, { Game::getAsset("test", "bossbullet_hit.ogg") }));
+	addComponent(new Game::Sounded(*this, { 
+		std::make_pair("explode", Game::getAsset("test", "bossbullet_hit.ogg")) 
+	}));
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::BOSS_EXPLOSIONS));
 
 	animated->addAnimation("explosion", {

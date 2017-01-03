@@ -51,7 +51,7 @@ Boss::Boss(const sf::Vector2f& pos)
 		const float x = distX(rng),
 		            y = distY(rng);
 		auto expl = new Game::BossExplosion(sf::Vector2f(bpos.x + x, bpos.y + y));
-		Game::cache.playSound(expl->get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
+		Game::cache.playSound(expl->get<Game::Sounded>()->getSoundFile("explode"));
 		return expl;
 	}));
 	addComponent(new Game::Drawable(*this, drawProxy));
@@ -105,7 +105,7 @@ void Boss::_checkCollision(Game::Collider& coll) {
 	else
 		killable->kill();
 	expl.dealDamageTo(*this);
-	Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::HURT));
+	Game::cache.playSound(get<Game::Sounded>()->getSoundFile("hurt"));
 }
 
 

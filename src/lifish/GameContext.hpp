@@ -56,7 +56,7 @@ private:
 	void _advanceLevel();
 
 public:
-	explicit GameContext(sf::Window& window, const std::string& levelsetName, unsigned short startLv);
+	explicit GameContext(sf::Window& window, const std::string& levelsetName, short startLv);
 
 	Game::WinLoseHandler& getWLHandler() { return wlHandler; }
 	const Game::WinLoseHandler& getWLHandler() const { return wlHandler; }

@@ -81,9 +81,14 @@ static void print_version() {
 #endif
 }
 
-static void parse_args(int argc, char **argv, 
-	/* out */ unsigned short& start_level, /* out */ std::string& levelset_name)
-{
+struct MainArgs {
+	short start_level;
+	std::string levelset_name;
+	bool mute_sounds;
+	bool mute_music;
+};
+
+static void parse_args(int argc, char **argv, /* out */ MainArgs& args) {
 	bool args_ended = false;
 	bool print_level_info = false;
 	int i = 1;
@@ -95,9 +100,15 @@ static void parse_args(int argc, char **argv,
 				break;
 			case 'l':
 				if (i < argc - 1)
-					start_level = std::atoi(argv[++i]);
+					args.start_level = std::atoi(argv[++i]);
 				else
 					std::cerr << "[ WARNING ] Expected numeral after -l flag" << std::endl;
+				break;
+			case 's':
+				args.mute_sounds = !args.mute_sounds;
+				break;
+			case 'm':
+				args.mute_music = !args.mute_music;
 				break;
 			case 'v':
 				print_version();
@@ -109,23 +120,25 @@ static void parse_args(int argc, char **argv,
 				std::cout << "Usage: " << argv[0] << " [-l <levelnum>] [-v] [levelset.json]\r\n"
 					  << "\t-l: start at level <levelnum>\r\n"
 					  << "\t-i: print info about <levelset.json> and exit\r\n"
+					  << "\t-s: start with sounds muted\r\n"
+					  << "\t-m: start with music muted\r\n"
 					  << "\t-v: print version and exit" << std::endl;
 				std::exit(1);
 			}
 		} else {
-			levelset_name = std::string(argv[i]);
+			args.levelset_name = std::string(argv[i]);
 		}
 		++i;
 	}
 
 	if (print_level_info) {
 		try {
-			Game::LevelSet ls(levelset_name);
+			Game::LevelSet ls(args.levelset_name);
 			std::cout << "--------------\r\nLevelset info:\r\n--------------\r\n"
 				<< ls.toString() << std::endl;
 			std::exit(0);
 		} catch (std::exception ex) {
-			std::cerr << "Error: file \"" << levelset_name
+			std::cerr << "Error: file \"" << args.levelset_name
 				<< "\" not found or with wrong format." << std::endl;
 			std::exit(1);
 		}
@@ -159,9 +172,12 @@ int main(int argc, char **argv) {
 	XInitThreads();
 #endif
 	// Argument parsing
-	unsigned short start_level = 1;
-	std::string levelset_name = "";
-	parse_args(argc, argv, start_level, levelset_name);
+	MainArgs args;
+	args.start_level = 1;
+	args.levelset_name = "";
+	args.mute_music = true; // FIXME
+	args.mute_sounds = true; // FIXME
+	parse_args(argc, argv, args);
 	
 	// Create the MusicManager (in a local scope)
 	Game::MusicManager mm;
@@ -173,11 +189,12 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	Game::options.musicVolume = 0; // FIXME
-	Game::options.soundsVolume = 0; // FIXME
-
-	if (levelset_name.length() < 1)
-		levelset_name = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
+	if (args.mute_sounds)
+		Game::options.soundsVolume = 0;
+	if (args.mute_music)
+		Game::options.musicVolume = 0;
+	if (args.levelset_name.length() < 1)
+		args.levelset_name = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
 	
 	// Create the game window
 	Game::options.windowSize = sf::Vector2u(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
@@ -218,7 +235,7 @@ int main(int argc, char **argv) {
 #ifdef RELEASE
 	Game::WindowContext *cur_context = contexts[Game::CTX_UI];
 #else
-	game.reset(new Game::GameContext(window, levelset_name, start_level));
+	game.reset(new Game::GameContext(window, args.levelset_name, args.start_level));
 	game->setOrigin(origin);
 	contexts[Game::CTX_GAME] = game.get();
 	contexts[Game::CTX_INTERLEVEL] = &game->getWLHandler()
@@ -258,14 +275,15 @@ int main(int argc, char **argv) {
 			case Game::CTX_INTERLEVEL:
 				if (cur_context == &ui && ui.getCurrent() == "home") {
 					// Game started: create a new GameContext
-					game.reset(new Game::GameContext(window, levelset_name, start_level));
+					game.reset(new Game::GameContext(window,
+							args.levelset_name, args.start_level));
 					game->setOrigin(origin);
 					contexts[Game::CTX_GAME] = game.get();
 					contexts[Game::CTX_INTERLEVEL] = &game->getWLHandler()
 									.getInterlevelContext();
 					game->getLM().pause();
 					static_cast<Game::InterlevelContext*>(contexts[Game::CTX_INTERLEVEL])
-										->setGettingReady(start_level);
+										->setGettingReady(args.start_level);
 				}
 				break;
 			}

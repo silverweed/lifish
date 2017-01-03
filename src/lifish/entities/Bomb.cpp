@@ -28,8 +28,8 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player& source,
 	addComponent(new Game::Fixed(*this));
 	fuseClock = addComponent(new Game::Clock(*this));
 	addComponent(new Game::Sounded(*this, {
-		Game::getAsset("sounds", "explosion.ogg"),
-		Game::getAsset("sounds", "fuse.ogg") 
+		std::make_pair("explosion", Game::getAsset("sounds", "explosion.ogg")),
+		std::make_pair("fuse", Game::getAsset("sounds", "fuse.ogg"))
 	})); 
 	killable = addComponent(new Game::Temporary(*this, [this] () {
 		// Expire condition
@@ -37,7 +37,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player& source,
 	}, [this] () {
 		// On kill
 		exploded = true;
-		Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
+		Game::cache.playSound(get<Game::Sounded>()->getSoundFile("explosion"));
 	}));
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "bomb.png")));
 	addComponent(new Game::Collider(*this, [this] (Game::Collider& cld) {

@@ -32,7 +32,7 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	, id(_id)
 {
 	addComponent(new Game::Scored(*this, 100));
-	addComponent(new Game::Sounded(*this,{ Game::getAsset("test", "letter_grab.ogg") }));
+	addComponent(new Game::Sounded(*this, { std::make_pair("grab", Game::getAsset("test", "letter_grab.ogg")) }));
 	transitionClock = addComponent(new Game::Clock(*this));
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "extra_letters.png")));
 	addComponent(new Game::Drawable(*this, *animated));
@@ -43,7 +43,7 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 		get<Game::Killable>()->kill();			
 		grabbable->grab();
 		get<Game::Scored>()->setTarget(static_cast<const Game::Player&>(coll.getOwner()).getInfo().id);
-		Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
+		Game::cache.playSound(get<Game::Sounded>()->getSoundFile("grab"));
 		
 		// Give letter to player
 		auto& player = static_cast<Game::Player&>(coll.getOwnerRW());

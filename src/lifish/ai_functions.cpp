@@ -247,7 +247,7 @@ AIBoundFunction Game::ai_follow(Game::Entity& entity) {
 		if (sp != Game::Direction::NONE) {	
 			auto sounded = entity.get<Game::Sounded>();
 			if (sounded != nullptr)
-				Game::cache.playSound(sounded->getSoundFile(Game::Sounds::YELL));
+				Game::cache.playSound(sounded->getSoundFile("yell"));
 			NEW_DIRECTION(sp)
 		}
 		
@@ -294,7 +294,7 @@ AIBoundFunction Game::ai_follow_dash(Game::Entity& entity) {
 				shooting->shoot();
 				auto sounded = entity.get<Game::Sounded>();
 				if (sounded != nullptr)
-					Game::cache.playSound(sounded->getSoundFile(Game::Sounds::ATTACK));
+					Game::cache.playSound(sounded->getSoundFile("attack"));
 			}
 			NEW_DIRECTION(sp)
 		}

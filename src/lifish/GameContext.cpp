@@ -20,7 +20,7 @@
 
 using Game::GameContext;
 
-GameContext::GameContext(sf::Window& window, const std::string& levelsetName, unsigned short startLv)
+GameContext::GameContext(sf::Window& window, const std::string& levelsetName, short startLv)
 	: Game::WindowContext()
 	, window(window)
 	, lm()
@@ -36,6 +36,8 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, un
 	ls.loadFromFile(levelsetName);
 	if (lvnum > ls.getLevelsNum())
 		lvnum %= ls.getLevelsNum();
+	else while (lvnum <= 0)
+		lvnum += ls.getLevelsNum();
 
 	// Create the players
 	lm.createNewPlayers();
@@ -52,7 +54,8 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, un
 		throw std::invalid_argument("Level " + Game::to_string(lvnum) + " not found in levelset!");
 
 	// Setup the music
-	Game::musicManager->set(level->get<Game::Music>()->getMusic()); 
+	Game::musicManager->set(level->get<Game::Music>()->getMusic())
+			.setVolume(Game::options.musicVolume).play();
 
 	// Ensure lm is not paused
 	lm.resume();

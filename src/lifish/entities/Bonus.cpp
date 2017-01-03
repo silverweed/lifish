@@ -35,7 +35,7 @@ Bonus::Bonus(const sf::Vector2f& pos, const Game::BonusType type)
 	addComponent(new Game::Drawable(*this, *sprite));
 	addComponent(new Game::Scored(*this, Game::Conf::Bonus::VALUE));
 	expireClock = addComponent(new Game::Clock(*this));
-	addComponent(new Game::Sounded(*this, { Game::getAsset("test", "bonus_grab.ogg") }));
+	addComponent(new Game::Sounded(*this, { std::make_pair("grab", Game::getAsset("test", "bonus_grab.ogg")) }));
 	addComponent(new Game::Temporary(*this, [this] () {
 		// expire condition
 		return grabbable->isGrabbed() || expireClock->getElapsedTime() > EXPIRE_TIME;

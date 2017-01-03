@@ -62,29 +62,13 @@ constexpr float MAIN_WINDOW_SHIFT = 1 + SIDE_PANEL_WIDTH;
 constexpr unsigned short N_ENEMIES = 10;
 
 namespace Fonts {
-	constexpr auto POINTS = "pf_tempesta_seven_bold.ttf";
-	constexpr auto INTERLEVEL = "pf_tempesta_seven_bold.ttf";
-	constexpr auto LEVELNUM = "pf_tempesta_seven.ttf";
-	constexpr auto DEBUG_INFO = "pf_tempesta_seven_condensed.ttf";
-	constexpr auto SIDE_PANEL = "pf_tempesta_seven_bold.ttf";
+	constexpr auto POINTS          = "pf_tempesta_seven_bold.ttf";
+	constexpr auto INTERLEVEL      = "pf_tempesta_seven_bold.ttf";
+	constexpr auto LEVELNUM        = "pf_tempesta_seven.ttf";
+	constexpr auto DEBUG_INFO      = "pf_tempesta_seven_condensed.ttf";
+	constexpr auto SIDE_PANEL      = "pf_tempesta_seven_bold.ttf";
 	constexpr auto SIDE_PANEL_MONO = "Hack-Regular.ttf";
-	constexpr auto SCREEN = "pf_tempesta_seven_bold.ttf";
-}
-
-/** Indexing convention for Game::Sounded entities */
-namespace Sounds {
-	/** Enemy's, player's, boss's death, bullet's hit */
-	constexpr unsigned short DEATH  = 0;
-	/** Bullet's shooting sound */
-	constexpr unsigned short SHOT   = 1;
-	/** Enemy's yell */
-	constexpr unsigned short YELL   = 1;
-	/** Boss's / Player's hurt sound */
-	constexpr unsigned short HURT   = 1;
-	/** Player's win sound */
-	constexpr unsigned short WIN    = 2;
-	/** Enemy's attack sound */
-	constexpr unsigned short ATTACK = 2;
+	constexpr auto SCREEN          = "pf_tempesta_seven_bold.ttf";
 }
 
 constexpr auto HURRY_UP_SOUND    = "hurryup.ogg";

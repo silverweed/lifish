@@ -54,7 +54,7 @@ void RegularEntityDeath::kill() {
 	// Play death sound
 	auto sounded = owner.get<Game::Sounded>();
 	if (sounded != nullptr)
-		Game::cache.playSound(sounded->getSoundFile(Game::Sounds::DEATH));
+		Game::cache.playSound(sounded->getSoundFile("death"));
 }
 
 void RegularEntityDeath::resurrect() {

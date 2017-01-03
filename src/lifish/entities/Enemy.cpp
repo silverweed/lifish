@@ -41,11 +41,14 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const Game::EnemyInfo& 
 {
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::ENEMIES));
 	addComponent(new Game::Sounded(*this, {
-		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_death.ogg")),
-		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_yell.ogg")),
+		std::make_pair("death", Game::getAsset("test", std::string("enemy")
+					+ Game::to_string(id) + std::string("_death.ogg"))),
+		std::make_pair("yell", Game::getAsset("test", std::string("enemy")
+					+ Game::to_string(id) + std::string("_yell.ogg"))),
 		// Note: this is an invalid sound if enemy.attackType is not CONTACT. This is not an issue,
 		// since in that case the sound never gets played, so the cache doesn't even load it.
-		Game::getAsset("test", std::string("enemy") + Game::to_string(id) + std::string("_attack.ogg"))
+		std::make_pair("attack", Game::getAsset("test", std::string("enemy")
+					+ Game::to_string(id) + std::string("_attack.ogg")))
 	}));
 	addComponent(new Game::Lifed(*this, 1, [this] (int newLife) {
 		// on hurt

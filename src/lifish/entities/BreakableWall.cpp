@@ -59,11 +59,14 @@ void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
 	addComponent(new Game::Fixed(*this));
 	addComponent(new Game::Scored(*this, score));
 	addComponent(new Game::Lifed(*this, life));
-	addComponent(new Game::Sounded(*this, { Game::getAsset("sounds", "wall_break.ogg") })); 
+	addComponent(new Game::Sounded(*this, { 
+		std::make_pair("death", Game::getAsset("sounds", "wall_break.ogg"))
+	})); 
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::WALLS));
 	addComponent(new Game::Killable(*this, [this] () {
 		// on kill
 		animated->getSprite().play();
+		Game::cache.playSound(get<Game::Sounded>()->getSoundFile("death"));
 	}, [this] () {
 		// is kill in progress
 		return animated->getSprite().isPlaying();

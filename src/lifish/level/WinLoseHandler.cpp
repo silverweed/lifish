@@ -60,7 +60,7 @@ void WinLoseHandler::_handleWin() {
 		for (unsigned short id = 1; id <= Game::MAX_PLAYERS; ++id) {
 			auto player = lm.getPlayer(id);
 			if (player != nullptr && !player->get<Game::Killable>()->isKillInProgress()) {
-				Game::cache.playSound(player->get<Game::Sounded>()->getSoundFile(Game::Sounds::WIN));
+				Game::cache.playSound(player->get<Game::Sounded>()->getSoundFile("win"));
 				player->setWinning(true);
 			}
 		}

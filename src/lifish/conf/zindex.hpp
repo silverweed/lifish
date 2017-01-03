@@ -15,6 +15,7 @@ namespace Conf {
 		constexpr int BOSSES          = 8;
 		constexpr int FOG             = 9;
 		constexpr int BOSS_EXPLOSIONS = 10;
+		constexpr int FLASHES         = 10;
 		constexpr int POINTS          = 42;
 		constexpr int DROPPING_TEXTS  = 42;
 	}

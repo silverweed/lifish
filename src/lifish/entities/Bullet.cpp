@@ -3,6 +3,7 @@
 #include "AxisMoving.hpp"
 #include "Animated.hpp"
 #include "Sounded.hpp"
+#include "GameCache.hpp"
 #include "Collider.hpp"
 #include "Drawable.hpp"
 #include "ZIndexed.hpp"
@@ -21,8 +22,10 @@ Bullet::Bullet(const sf::Vector2f& pos, const Game::BulletInfo& _info, const Gam
 	, source(source)
 {
 	addComponent(new Game::Sounded(*this, {
-		Game::getAsset("test", std::string("bullet") + Game::to_string(info.id) + std::string("_hit.ogg")),
-		Game::getAsset("test", std::string("bullet") + Game::to_string(info.id) + std::string("_shot.ogg"))
+		std::make_pair("hit", Game::getAsset("test", std::string("bullet")
+					+ Game::to_string(info.id) + std::string("_hit.ogg"))),
+		std::make_pair("shot", Game::getAsset("test", std::string("bullet")
+					+ Game::to_string(info.id) + std::string("_shot.ogg")))
 	}));
 	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::BULLETS));
 
@@ -59,6 +62,7 @@ void Bullet::_destroy() {
 	auto animated = get<Game::Animated>();
 	auto moving = get<Game::Moving>();
 	auto& animatedSprite = animated->getSprite();
+	Game::cache.playSound(get<Game::Sounded>()->getSoundFile("hit"));
 	animatedSprite.setLooped(false);
 	moving->stop();
 	if (data.nDestroyFrames > 0) {

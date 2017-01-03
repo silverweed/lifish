@@ -4,6 +4,8 @@
 #include "AxisMoving.hpp"
 #include "AxisBullet.hpp"
 #include "FreeBullet.hpp"
+#include "GameCache.hpp"
+#include "Sounded.hpp"
 #include "utils.hpp"
 #include <exception>
 
@@ -29,6 +31,7 @@ Game::Entity* Shooting::init() {
 Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 	if (attack.type & Game::AttackType::CONTACT) {
 		shooting = true;
+		Game::cache.playSound(owner.get<Game::Sounded>()->getSoundFile("attack"));
 		rechargeClock->restart();
 		attackAlign = Game::tile(owner.getPosition());
 		if (ownerMoving != nullptr) {
@@ -59,7 +62,9 @@ Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 		}
 		shooting = true;
 		rechargeClock->restart();
-		return new Game::AxisBullet(getPosition(), ownerMoving->getDirection(), attack.bullet, &owner);
+		auto bullet = new Game::AxisBullet(getPosition(), ownerMoving->getDirection(), attack.bullet, &owner);
+		Game::cache.playSound(bullet->get<Game::Sounded>()->getSoundFile("shot"));
+		return bullet;
 	}
 
 	if (attack.type & Game::AttackType::BLOCKING) {
@@ -68,7 +73,9 @@ Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 	}
 	shooting = true;
 	rechargeClock->restart();
-	return new Game::AxisBullet(getPosition(), dir, attack.bullet, &owner);
+	auto bullet = new Game::AxisBullet(getPosition(), dir, attack.bullet, &owner);
+	Game::cache.playSound(bullet->get<Game::Sounded>()->getSoundFile("shot"));
+	return bullet;
 }
 
 Game::FreeBullet* Shooting::shoot(Game::Angle angle) {
@@ -77,7 +84,9 @@ Game::FreeBullet* Shooting::shoot(Game::Angle angle) {
 
 	shooting = true;
 	rechargeClock->restart();
-	return new Game::FreeBullet(getPosition(), angle, attack.bullet, &owner);
+	auto bullet = new Game::FreeBullet(getPosition(), angle, attack.bullet, &owner);
+	Game::cache.playSound(bullet->get<Game::Sounded>()->getSoundFile("shot"));
+	return bullet;
 }
 
 bool Shooting::isRecharging() const {

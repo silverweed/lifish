@@ -22,7 +22,7 @@ Coin::Coin(const sf::Vector2f& pos)
 {
 	addComponent(new Game::Fixed(*this));
 	addComponent(new Game::Scored(*this, VALUE));
-	addComponent(new Game::Sounded(*this, { Game::getAsset("sounds", "coin.ogg") }));
+	addComponent(new Game::Sounded(*this, { std::make_pair("grab", Game::getAsset("sounds", "coin.ogg")) }));
 	grabClock = addComponent(new Game::Clock(*this));
 	std::string texname = Game::getAsset("graphics", "coin.png");
 	animated = addComponent(new Game::Animated(*this, texname));
@@ -35,7 +35,7 @@ Coin::Coin(const sf::Vector2f& pos)
 		// only collides with player, so no further check
 		get<Game::Killable>()->kill();			
 		get<Game::Scored>()->setTarget(static_cast<const Game::Player&>(coll.getOwner()).getInfo().id);
-		Game::cache.playSound(get<Game::Sounded>()->getSoundFile(Game::Sounds::DEATH));
+		Game::cache.playSound(get<Game::Sounded>()->getSoundFile("grab"));
 	}, Game::Layers::GRABBABLE));
 	addComponent(new Game::Killable(*this, [this] () {
 		// on kill

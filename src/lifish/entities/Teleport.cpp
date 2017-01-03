@@ -9,6 +9,7 @@
 #include "AxisMoving.hpp"
 #include "Fixed.hpp"
 #include "Spawning.hpp"
+#include "Sounded.hpp"
 #include "conf/teleport.hpp"
 
 using Game::Teleport;
@@ -21,7 +22,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "teleport.png")));
 	disableClock = addComponent(new Game::Clock(*this));
 	addComponent(new Game::Drawable(*this, *animated));
-	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& c) { 
+	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& c) {
 		warp(c);
 	}, Game::Layers::TELEPORTS));
 	addComponent(new Game::Spawning(*this, [this] (const Game::Spawning&) {
@@ -30,6 +31,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 		mustSpawnFlash = false;
 		return new Game::Flash(position);
 	}));
+	addComponent(new Game::Sounded(*this, { std::make_pair("warp", Game::getAsset("test", "teleport.ogg")) }));
 
 	auto& anim = animated->addAnimation("teleport");
 	for (unsigned short i = 0; i < N_ANIM_FRAMES; ++i)
@@ -83,6 +85,7 @@ void Teleport::warp(Game::Collider& cld) {
 
 	mustSpawnFlash = true;
 	nxt->mustSpawnFlash = true;
+	Game::cache.playSound(get<Game::Sounded>()->getSoundFile("warp"));
 	disable();
 	nxt->disable();
 }

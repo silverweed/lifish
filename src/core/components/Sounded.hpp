@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <unordered_map>
 #include "Component.hpp"
 
 /**
@@ -10,17 +10,23 @@
 namespace Game {
 
 class Sounded : public Game::Component {
-	std::vector<std::string> soundFiles;
+	std::unordered_map<std::string, std::string> soundFiles;
 public:
-	explicit Sounded(Game::Entity& owner, std::initializer_list<std::string> _soundFiles) 
+	explicit Sounded(Game::Entity& owner, std::initializer_list<std::pair<std::string, std::string>> _soundFiles)
 		: Game::Component(owner)
 	{
 		for (auto& s : _soundFiles)
-			soundFiles.push_back(s);
+			soundFiles[s.first] = s.second;
 	}
 
-	std::string getSoundFile(unsigned short n = 0) const { 
-		return n >= soundFiles.size() ? "" : soundFiles[n];
+	std::string getSoundFile(std::string name) const {
+		auto it = soundFiles.find(name);
+		if (it == soundFiles.end()) return "";
+		return it->second;
+	}
+
+	void setSoundFile(std::string name, std::string file) {
+		soundFiles[name] = file;
 	}
 };
 

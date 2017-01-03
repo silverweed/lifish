@@ -22,8 +22,8 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	: Game::Boss(pos)
 {
 	addComponent(new Game::Sounded(*this, {
-		Game::getAsset("test", std::string("alienboss_death.ogg")),
-		Game::getAsset("test", std::string("alienboss_hurt.ogg"))
+		std::make_pair("death", Game::getAsset("test", std::string("alienboss_death.ogg"))),
+		std::make_pair("hurt", Game::getAsset("test", std::string("alienboss_hurt.ogg")))
 	}));
 	const sf::Vector2f size(3 * Game::TILE_SIZE, 3 * Game::TILE_SIZE);
 	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {

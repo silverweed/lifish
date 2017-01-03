@@ -47,7 +47,7 @@ void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager& lm,
 		auto bomb = new Game::Bomb(Game::aligned(player->getPosition()), 
 					*player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius,
 					pinfo.powers.incendiaryBomb);
-		Game::cache.playSound(bomb->get<Game::Sounded>()->getSoundFile(Game::Sounds::SHOT));
+		Game::cache.playSound(bomb->get<Game::Sounded>()->getSoundFile("fuse"));
 		tbspawned.push_back(bomb);
 	}
 }

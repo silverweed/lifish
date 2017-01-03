@@ -11,6 +11,7 @@
 #include "BreakableWall.hpp"
 #include "AlienBoss.hpp"
 #include "AI.hpp"
+#include "Flash.hpp"
 #include "TransparentWall.hpp"
 #include "Coin.hpp"
 #include "Enemy.hpp"
@@ -83,6 +84,7 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 					lm.players[0]->get<Game::Animated>()->setAnimation("idle");
 					lm.players[0]->get<Game::Moving>()->stop();
 					entities.add(lm.players[0]);
+					entities.add(new Game::Flash(curPos));
 				}
 				break;
 			case EntityType::PLAYER2: 
@@ -92,6 +94,7 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 					lm.players[1]->get<Game::Animated>()->setAnimation("idle");
 					lm.players[1]->get<Game::Moving>()->stop();
 					entities.add(lm.players[1]);
+					entities.add(new Game::Flash(curPos));
 				}
 				break;
 			case EntityType::TELEPORT:
