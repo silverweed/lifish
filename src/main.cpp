@@ -86,6 +86,9 @@ struct MainArgs {
 	std::string levelset_name;
 	bool mute_sounds;
 	bool mute_music;
+#ifndef RELEASE
+	bool start_from_home;
+#endif	
 };
 
 static void parse_args(int argc, char **argv, /* out */ MainArgs& args) {
@@ -110,6 +113,11 @@ static void parse_args(int argc, char **argv, /* out */ MainArgs& args) {
 			case 'm':
 				args.mute_music = !args.mute_music;
 				break;
+#ifndef RELEASE
+			case 'u':
+				args.start_from_home = true;
+				break;
+#endif
 			case 'v':
 				print_version();
 				exit(0);
@@ -122,6 +130,9 @@ static void parse_args(int argc, char **argv, /* out */ MainArgs& args) {
 					  << "\t-i: print info about <levelset.json> and exit\r\n"
 					  << "\t-s: start with sounds muted\r\n"
 					  << "\t-m: start with music muted\r\n"
+#ifndef RELEASE
+					  << "\t-u: start in the home screen, not in game\r\n"
+#endif
 					  << "\t-v: print version and exit" << std::endl;
 				std::exit(1);
 			}
@@ -232,15 +243,16 @@ int main(int argc, char **argv) {
 	contexts[Game::CTX_UI] = &ui;
 	contexts[Game::CTX_GAME] = game.get();
 	// Note: this is always assumed non-null throughout the program
-#ifdef RELEASE
 	Game::WindowContext *cur_context = contexts[Game::CTX_UI];
-#else
-	game.reset(new Game::GameContext(window, args.levelset_name, args.start_level));
-	game->setOrigin(origin);
-	contexts[Game::CTX_GAME] = game.get();
-	contexts[Game::CTX_INTERLEVEL] = &game->getWLHandler()
-					.getInterlevelContext();
-	Game::WindowContext *cur_context = contexts[Game::CTX_GAME];
+#ifndef RELEASE
+	if (!args.start_from_home) {
+		game.reset(new Game::GameContext(window, args.levelset_name, args.start_level));
+		game->setOrigin(origin);
+		contexts[Game::CTX_GAME] = game.get();
+		contexts[Game::CTX_INTERLEVEL] = &game->getWLHandler()
+						.getInterlevelContext();
+		cur_context = contexts[Game::CTX_GAME];
+	}
 	Game::Debug::Stats dbgStats;
 	unsigned cycle = 0;
 #endif

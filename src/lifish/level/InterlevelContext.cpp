@@ -16,7 +16,8 @@ static const sf::FloatRect WIN_BOUNDS(Game::MAIN_WINDOW_SHIFT, 0,
 			Game::LEVEL_HEIGHT * Game::TILE_SIZE);
 
 InterlevelContext::InterlevelContext(Game::LevelManager& lm, const Game::SidePanel& sidePanel)
-	: lm(lm)
+	: Game::WindowContext()
+	, lm(lm)
 	, sidePanel(sidePanel)
 {
 	handlers.push_back(std::unique_ptr<Game::EventHandler>(new Game::BaseEventHandler));

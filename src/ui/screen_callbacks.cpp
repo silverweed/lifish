@@ -10,13 +10,12 @@ static Action cb_exit() { return Action::EXIT; }
 static Action cb_back() { return Action::SWITCH_TO_PARENT; }
 static Action cb_start() { return Action::START_GAME; }
 static Action cb_resume() { return Action::DEACTIVATE_UI; }
-static Action cb_about() { return Game::UI::screenCallbackArg = "about", Action::SWITCH_SCREEN; }
-static Action cb_preferences() { 
-	Game::UI::screenCallbackArg = "preferences";
-	// May be called both by home and pause (FIXME: can we just always override the parent?)
-	return Action::SWITCH_SCREEN_OVERRIDE_PARENT; 
+static ScreenCallback cb_switchTo(const std::string& screen) {
+	return [screen] () {
+		Game::UI::screenCallbackArg = screen;
+		return Action::SWITCH_SCREEN_OVERRIDE_PARENT;
+	};
 }
-static Action cb_controls() { return Game::UI::screenCallbackArg = "controls", Action::SWITCH_SCREEN; }
 static Action cb_load() { 
 	const auto fname = Game::display_load_dialog();
 	if (fname.length() > 0) {
@@ -39,9 +38,10 @@ std::unordered_map<std::string, ScreenCallback> Game::UI::screenCallbacks = {
 	{ "exit", cb_exit },
 	{ "back", cb_back },
 	{ "start", cb_start },
-	{ "about", cb_about },
+	{ "about", cb_switchTo("about") },
 	{ "load", cb_load },
-	{ "preferences", cb_preferences },
-	{ "controls", cb_controls },
+	{ "home", cb_switchTo("home") },
+	{ "preferences", cb_switchTo("preferences") },
+	{ "controls", cb_switchTo("controls") },
 	{ "resume", cb_resume }
 };

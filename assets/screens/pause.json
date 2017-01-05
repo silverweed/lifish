@@ -9,6 +9,11 @@
 				"font": "pf_tempesta_seven_bold.ttf",
 				"character-size": 24,
 				"spacing": 15
+			},
+			"version": {
+				"font": "pf_tempesta_seven_bold.ttf",
+				"character-size": 10,
+				"spacing": 5
 			}
 		},
 		"elements": [
@@ -32,12 +37,24 @@
 			},
 			{
 				"type": "text",
+				"name": "home",
+				"string": "Quit to Menu",
+				"interactable": true
+			},
+			{
+				"type": "text",
 				"name": "exit",
 				"string": "Exit",
 				"interactable": true,
 				"style-override": {
 					"spacing": 45
 				}
+			},
+			{
+				"type": "text",
+				"string": "{{FULL_VERSION}}",
+				"style": "version",
+				"position": [ 5, -18 ]
 			}
 		]
 	}
