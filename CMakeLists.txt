@@ -97,9 +97,17 @@ if(CCACHE_FOUND)
 endif(CCACHE_FOUND)
 
 # SFML
+if(MSYS)
+	# On Windows we statically link SFML
+	message(STATUS "Using static SFML libs")
+	set(SFML_STATIC_LIBRARIES true)
+endif()
 find_package(SFML 2.4 REQUIRED graphics window audio system)
 include_directories(${SFML_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES})
+if(MSYS)
+	target_link_libraries(${PROJECT_NAME} ${SFML_DEPENDENCIES})
+endif()
 
 # Use separate threads for logic and rendering (experimental)
 if(${MULTITHREADED})
