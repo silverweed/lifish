@@ -43,7 +43,7 @@ Player::Player(const sf::Vector2f& pos, const unsigned short id)
 
 void Player::_init() {
 	// Setup components
-	addComponent(new lif::Lifed(*this, lif::Conf::Player::MAX_LIFE, [this] (int) {
+	addComponent(new lif::Lifed(*this, lif::conf::player::MAX_LIFE, [this] (int) {
 		// on hurt			
 		_hurt();
 	}));
@@ -51,11 +51,11 @@ void Player::_init() {
 		// on collision
 		if (!killable->isKilled())
 			_checkCollision(cld);
-	}, lif::Layers::PLAYERS));
-	moving = addComponent(new lif::AxisMoving(*this, lif::Conf::Player::DEFAULT_SPEED));
+	}, lif::c_layers::PLAYERS));
+	moving = addComponent(new lif::AxisMoving(*this, lif::conf::player::DEFAULT_SPEED));
 	animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", std::string("player") +
 				lif::to_string(info.id) + std::string(".png"))));
-	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::PLAYERS));
+	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::PLAYERS));
 	addComponent(new lif::Drawable(*this, drawProxy));
 	addComponent(new lif::Sounded(*this, {
 		std::make_pair("death", lif::getAsset("test", std::string("player")
@@ -73,9 +73,9 @@ void Player::_init() {
 	}));
 	bonusable = addComponent(new lif::Bonusable(*this));
 	movingAnimator = addComponent(new lif::MovingAnimator(*this));
-	addComponent(new lif::Controllable(*this, lif::Controls::players[info.id-1], lif::Controls::useJoystick[info.id-1]));
+	addComponent(new lif::Controllable(*this, lif::controls::players[info.id-1], lif::controls::useJoystick[info.id-1]));
 	hurtClock = addComponent(new lif::Clock(*this));
-	death = addComponent(new lif::RegularEntityDeath(*this, lif::Conf::Player::DEATH_TIME));
+	death = addComponent(new lif::RegularEntityDeath(*this, lif::conf::player::DEATH_TIME));
 
 	// Setup animations
 	auto& a_down = animated->addAnimation("walk_down");
@@ -121,13 +121,13 @@ void Player::update() {
 	else if (moving->isDashing())
 		moving->setDashing(0);
 
-	if (killable->isKilled() && killable->timeSinceDeath() > lif::Conf::Player::DEATH_STOP_ANIM_TIME
+	if (killable->isKilled() && killable->timeSinceDeath() > lif::conf::player::DEATH_STOP_ANIM_TIME
 			&& animated->getSprite().isPlaying())
 	{
 		animated->getSprite().stop();
 		animated->getSprite().setFrame(1);
 	} else if (animated->getAnimationName() == "hurt" && 
-			hurtClock->getElapsedTime() > lif::Conf::Player::HURT_ANIM_DURATION)
+			hurtClock->getElapsedTime() > lif::conf::player::HURT_ANIM_DURATION)
 	{
 		const auto dir = moving->getDirection();
 		if (dir != lif::Direction::NONE)
@@ -161,7 +161,7 @@ void Player::_checkCollision(lif::Collider& cld) {
 	 * - Explosions
 	 * - Bullets
 	 */
-	using L = lif::Layers::Layer;
+	using L = lif::c_layers::Layer;
 	
 	if (bonusable->hasBonus(lif::BonusType::SHIELD))
 		return;
@@ -193,7 +193,7 @@ void Player::_checkCollision(lif::Collider& cld) {
 			break;
 		}
 	case L::BOSSES:
-		damage = lif::Conf::Player::MAX_LIFE;
+		damage = lif::conf::player::MAX_LIFE;
 		break;
 	default:
 		return;
@@ -212,14 +212,14 @@ void Player::_checkCollision(lif::Collider& cld) {
 		const auto& sprite = expl.get<lif::Animated>()->getSprite();
 		// Give the "long" shield only if this is the explosion's last frame
 		if (sprite.getCurrentFrame() == sprite.getAnimation()->getSize() - 1) 
-			bonusable->giveBonus(lif::BonusType::SHIELD, lif::Conf::Player::DAMAGE_SHIELD_TIME);
+			bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::player::DAMAGE_SHIELD_TIME);
 		else
-			bonusable->giveBonus(lif::BonusType::SHIELD, lif::Conf::Player::DAMAGE_SHIELD_TIME / 40.f);
+			bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::player::DAMAGE_SHIELD_TIME / 40.f);
 	} 
 }
 
 void Player::resurrect() {
-	get<lif::Lifed>()->setLife(lif::Conf::Player::MAX_LIFE);
+	get<lif::Lifed>()->setLife(lif::conf::player::MAX_LIFE);
 	moving->realign();
 	killable->resurrect();
 	death->resurrect();
@@ -228,9 +228,9 @@ void Player::resurrect() {
 
 void Player::_hurt() {
 	animated->setAnimation("hurt");
-	moving->block(lif::Conf::Player::HURT_ANIM_DURATION);
+	moving->block(lif::conf::player::HURT_ANIM_DURATION);
 	hurtClock->restart();
-	bonusable->giveBonus(lif::BonusType::SHIELD, lif::Conf::Player::DAMAGE_SHIELD_TIME);
+	bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::player::DAMAGE_SHIELD_TIME);
 	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("hurt"));
 }
 

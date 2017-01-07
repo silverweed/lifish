@@ -5,7 +5,7 @@
 
 namespace lif {
 
-namespace Debug {
+namespace debug {
 
 /**
  * A simple key-value counter.

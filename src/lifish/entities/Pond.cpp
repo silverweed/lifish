@@ -7,16 +7,16 @@
 using lif::Pond;
 
 Pond::Pond(const sf::Vector2f& pos, const sf::Vector2f& size, int dam,
-		std::initializer_list<lif::Layers::Layer> damaged)
+		std::initializer_list<lif::c_layers::Layer> damaged)
 	: lif::Entity(pos)
 	, damage(dam)
 {
 	for (auto layer : damaged)
-		damagedLayers |= 1 << layer;
+		damagedc_layers |= 1 << layer;
 
 	addComponent(new lif::Collider(*this, [this] (lif::Collider& cld) {
 		// on collision
-		if (!((damagedLayers >> cld.getLayer()) & 1)) return;
+		if (!((damagedc_layers >> cld.getLayer()) & 1)) return;
 
 		auto lifed = cld.getOwner().get<lif::Lifed>();
 		if (lifed == nullptr) return;
@@ -24,5 +24,5 @@ Pond::Pond(const sf::Vector2f& pos, const sf::Vector2f& size, int dam,
 		auto bonusable = cld.getOwner().get<lif::Bonusable>();
 		if (bonusable == nullptr || !bonusable->hasBonus(lif::BonusType::SHIELD))
 			lifed->decLife(damage);
-	}, lif::Layers::DEFAULT, size));
+	}, lif::c_layers::DEFAULT, size));
 }

@@ -14,8 +14,8 @@ class Clock;
 class Bonusable : public lif::Component {
 protected:
 	// bonus time; sf::Time::Zero means "no bonus"; negative means 'infinite'
-	std::array<sf::Time, lif::Conf::Bonus::N_BONUS_TYPES> bonusTime;
-	std::array<lif::Clock*, lif::Conf::Bonus::N_BONUS_TYPES> bonusClock;
+	std::array<sf::Time, lif::conf::bonus::N_BONUS_TYPES> bonusTime;
+	std::array<lif::Clock*, lif::conf::bonus::N_BONUS_TYPES> bonusClock;
 
 public:
 	explicit Bonusable(lif::Entity& owner);

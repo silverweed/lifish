@@ -13,14 +13,14 @@ class AxisMoving;
 class Controllable : public lif::Component {
 	const sf::Window *window = nullptr;
 	/** Reference to an external array telling us how to map keys to controls */
-	const std::array<sf::Keyboard::Key, lif::Controls::CONTROLS_NUM>& controls;
+	const std::array<sf::Keyboard::Key, lif::controls::CONTROLS_NUM>& controls;
 	/** Reference to an external variable telling us if we're using a joystick */
 	short& joystickUsed;	
 	lif::AxisMoving *moving = nullptr;
 
 public:
 	explicit Controllable(lif::Entity& owner, 
-			const std::array<sf::Keyboard::Key, lif::Controls::CONTROLS_NUM>& controls,
+			const std::array<sf::Keyboard::Key, lif::controls::CONTROLS_NUM>& controls,
 			short& joystickUsed);
 
 	lif::Entity* init() override;

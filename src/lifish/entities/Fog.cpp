@@ -24,7 +24,7 @@ Fog::Fog(float speed, sf::Time alphaDt)
 	sprite->getTexture()->setRepeated(true);
 	sprite->getTexture()->setSmooth(true);
 	addComponent(new lif::Drawable(*this, *sprite));
-	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::FOG));
+	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::FOG));
 
 	// Set a random velocity
 	std::uniform_real_distribution<float> dist(-1, 1);

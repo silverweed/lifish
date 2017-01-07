@@ -46,14 +46,14 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, lif::Direction dir,
 		// practical reasons: it is typically used as a "catch-all" layer, but
 		// it should explicitly tell the bullet to selfdestroy if it's the intended
 		// behaviour. The bullet otherwise self-destructs as soon as it collides.
-		if (&e.getOwner() == this->source || e.getLayer() == lif::Layers::DEFAULT)
+		if (&e.getOwner() == this->source || e.getLayer() == lif::c_layers::DEFAULT)
 			return;
 		auto klb = get<lif::Killable>();
 		if (!klb->isKilled()) {
 			klb->kill();
 		}
-	}, lif::Layers::ENEMY_BULLETS, sf::Vector2f(data.size, data.size)));
-	auto moving = addComponent(new lif::AxisMoving(*this, lif::Conf::Bullet::BASE_SPEED * info.speed, dir));
+	}, lif::c_layers::ENEMY_BULLETS, sf::Vector2f(data.size, data.size)));
+	auto moving = addComponent(new lif::AxisMoving(*this, lif::conf::bullet::BASE_SPEED * info.speed, dir));
 	moving->setEnsureAlign(false);
 	moving->setAutoRealign(false);
 	auto animated = addComponent(new lif::Animated(*this, lif::getAsset("test", "axisbullets.png")));

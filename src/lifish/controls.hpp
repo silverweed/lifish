@@ -8,7 +8,7 @@
 
 namespace lif {
 
-namespace Controls {
+namespace controls {
 
 enum Control {
 	CTRL_UP    = 0,

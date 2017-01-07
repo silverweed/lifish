@@ -2,7 +2,7 @@
 
 namespace lif {
 
-namespace UI {
+namespace ui {
 
 enum class Action {
 	START_GAME,

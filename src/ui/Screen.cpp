@@ -4,7 +4,7 @@
 #include "core.hpp"
 #include "GameCache.hpp"
 
-using lif::UI::Screen;
+using lif::ui::Screen;
 
 Screen::Screen(const sf::RenderWindow& window, const sf::Vector2u& size)
 	: window(window)
@@ -15,7 +15,7 @@ Screen::Screen(const std::string& layoutFileName, const sf::RenderWindow& window
 	: window(window)
 	, size(size)
 {
-	lif::UI::ScreenBuilder builder;
+	lif::ui::ScreenBuilder builder;
 	builder.build(*this, layoutFileName);	
 }
 
@@ -72,7 +72,7 @@ bool Screen::hasCallback(const std::string& name) const {
 	return callbacks.find(name) != callbacks.end();
 }
 
-lif::UI::Action Screen::fireCallback(const std::string& name) {
+lif::ui::Action Screen::fireCallback(const std::string& name) {
 	return callbacks[name]();
 }
 

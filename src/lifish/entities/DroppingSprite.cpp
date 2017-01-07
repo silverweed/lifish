@@ -16,7 +16,7 @@ DroppingSprite::DroppingSprite(const std::string& texture_name, const sf::Vector
 	, origPosition(position)
 	, height(texture_rect.y / 2.)
 {
-	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::DROPPING_TEXTS));
+	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::DROPPING_TEXTS));
 	auto sprite = addComponent(new lif::Sprite(*this, texture_name, 
 				sf::IntRect(0, 0, texture_rect.x, texture_rect.y)));
 

@@ -1,6 +1,6 @@
 #include "controls.hpp"
 
-std::array<sf::Keyboard::Key, lif::Controls::CONTROLS_NUM> lif::Controls::players[] =
+std::array<sf::Keyboard::Key, lif::controls::CONTROLS_NUM> lif::controls::players[] =
 {
 	{{
 		/* Control::UP,   */ sf::Keyboard::Key::Up,
@@ -18,5 +18,5 @@ std::array<sf::Keyboard::Key, lif::Controls::CONTROLS_NUM> lif::Controls::player
 	}}
 };
 
-std::array<unsigned int, lif::MAX_PLAYERS> lif::Controls::joystickBombKey = {{ 0, 0 }};
-std::array<short, lif::MAX_PLAYERS> lif::Controls::useJoystick;
+std::array<unsigned int, lif::MAX_PLAYERS> lif::controls::joystickBombKey = {{ 0, 0 }};
+std::array<short, lif::MAX_PLAYERS> lif::controls::useJoystick;

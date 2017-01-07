@@ -2,9 +2,9 @@
 
 namespace lif {
 
-namespace Conf {
-	namespace Wall {
-		namespace Breakable {
+namespace conf {
+	namespace wall {
+		namespace breakable {
 			constexpr unsigned short VALUE = 10;
 		}
 	}

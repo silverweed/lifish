@@ -5,7 +5,7 @@
 using lif::AcidPond;
 
 AcidPond::AcidPond(const sf::Vector2f& pos, const sf::Vector2f& size)
-	: lif::Pond(pos, size, 1, { lif::Layers::PLAYERS })
+	: lif::Pond(pos, size, 1, { lif::c_layers::PLAYERS })
 {
 	auto sprite = addComponent(new lif::Sprite(*this,
 				lif::getAsset("graphics", "acid_pond.png"),

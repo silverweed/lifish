@@ -9,12 +9,12 @@
 #include <memory>
 #include <iostream>
 
-using lif::UI::PreferencesScreen;
-using lif::UI::Interactable;
-using Action = lif::UI::Action;
+using lif::ui::PreferencesScreen;
+using lif::ui::Interactable;
+using Action = lif::ui::Action;
 
 PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& sz) 
-	: lif::UI::Screen(window, sz) 
+	: lif::ui::Screen(window, sz) 
 {
 	name = "preferences";
 	parent = "home";
@@ -28,7 +28,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	 *
 	 * Exit
 	 */
-	const auto font = lif::getAsset("fonts", lif::Fonts::SCREEN);
+	const auto font = lif::getAsset("fonts", lif::fonts::SCREEN);
 	const auto win_bounds = sf::FloatRect(0, 0, lif::WINDOW_WIDTH, lif::WINDOW_HEIGHT);
 
 	const auto size = 24;

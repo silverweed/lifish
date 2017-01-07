@@ -14,7 +14,7 @@ namespace lif {
 class Player;
 
 #ifndef RELEASE
-namespace Debug {
+namespace debug {
 
 class DebugEventHandler;
 
@@ -31,7 +31,7 @@ public:
 	};
 private:
 #ifndef RELEASE
-       friend class lif::Debug::DebugEventHandler;
+       friend class lif::debug::DebugEventHandler;
 #endif
 
 	unsigned debug = 0;

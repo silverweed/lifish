@@ -1,10 +1,10 @@
 #include "screen_callbacks.hpp"
 #include "dialogs.hpp"
 
-using ScreenCallback = lif::UI::Screen::Callback;
-using lif::UI::Action;
+using ScreenCallback = lif::ui::Screen::Callback;
+using lif::ui::Action;
 
-std::string lif::UI::screenCallbackArg;
+std::string lif::ui::screenCallbackArg;
 
 static Action cb_exit() { return Action::EXIT; }
 static Action cb_back() { return Action::SWITCH_TO_PARENT; }
@@ -12,7 +12,7 @@ static Action cb_start() { return Action::START_GAME; }
 static Action cb_resume() { return Action::DEACTIVATE_UI; }
 static ScreenCallback cb_switchTo(const std::string& screen) {
 	return [screen] () {
-		lif::UI::screenCallbackArg = screen;
+		lif::ui::screenCallbackArg = screen;
 		return Action::SWITCH_SCREEN_OVERRIDE_PARENT;
 	};
 }
@@ -34,7 +34,7 @@ static Action cb_load() {
 	return Action::DO_NOTHING;
 }
 
-std::unordered_map<std::string, ScreenCallback> lif::UI::screenCallbacks = {
+std::unordered_map<std::string, ScreenCallback> lif::ui::screenCallbacks = {
 	{ "exit", cb_exit },
 	{ "back", cb_back },
 	{ "start", cb_start },

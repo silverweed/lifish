@@ -6,7 +6,7 @@
 using lif::Wisp;
 
 Wisp::Wisp(const sf::Vector2f& pos, const lif::EnemyInfo& info) : lif::Enemy(pos, 2, info) {
-	collider->setLayer(lif::Layers::ENEMIES_IGNORE_BREAKABLES);	
+	collider->setLayer(lif::c_layers::ENEMIES_IGNORE_BREAKABLES);	
 }
 
 void Wisp::update() {
@@ -18,7 +18,7 @@ void Wisp::update() {
 
 bool Wisp::_checkCollision(lif::Collider& coll) {
 	bool b = lif::Enemy::_checkCollision(coll);
-	if (coll.getLayer() == lif::Layers::BREAKABLES)
+	if (coll.getLayer() == lif::c_layers::BREAKABLES)
 		inWall = true;
 	return b;
 }

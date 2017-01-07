@@ -11,7 +11,7 @@
 #include "GameContext.hpp"
 #include <iostream>
 
-using lif::Debug::DebugEventHandler;
+using lif::debug::DebugEventHandler;
 
 DebugEventHandler::DebugEventHandler(lif::GameContext& game)
 	: game(game)

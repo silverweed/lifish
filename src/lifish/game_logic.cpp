@@ -26,7 +26,7 @@
 
 using EntityList = std::list<lif::Entity*>;
 
-void lif::Logic::bombDeployLogic(lif::Entity *e, lif::LevelManager& lm,
+void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::LevelManager& lm,
 		EntityList& tbspawned, EntityList&)
 {
 	if (!lm.isPlayer(*e)) return;
@@ -35,12 +35,12 @@ void lif::Logic::bombDeployLogic(lif::Entity *e, lif::LevelManager& lm,
 	const auto pinfo = player->getInfo();
 	if (player->get<lif::Controllable>()->hasFocus() 
 		&& player->isAligned() 
-		&& ((lif::Controls::useJoystick[pinfo.id-1] >= 0 
+		&& ((lif::controls::useJoystick[pinfo.id-1] >= 0 
 			&& sf::Joystick::isButtonPressed(
-				lif::Controls::useJoystick[pinfo.id-1], 
-				lif::Controls::joystickBombKey[pinfo.id-1]))
+				lif::controls::useJoystick[pinfo.id-1], 
+				lif::controls::joystickBombKey[pinfo.id-1]))
 			|| sf::Keyboard::isKeyPressed(
-				lif::Controls::players[pinfo.id-1][lif::Controls::CTRL_BOMB]))
+				lif::controls::players[pinfo.id-1][lif::controls::CTRL_BOMB]))
 		&& lm.bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs
 		&& lm.canDeployBombAt(lif::tile(player->getPosition())))
 	{
@@ -52,7 +52,7 @@ void lif::Logic::bombDeployLogic(lif::Entity *e, lif::LevelManager& lm,
 	}
 }
 
-void lif::Logic::spawningLogic(lif::Entity *e, lif::LevelManager& lm,
+void lif::game_logic::spawningLogic(lif::Entity *e, lif::LevelManager& lm,
 		EntityList& tbspawned, EntityList&)
 {
 	for (auto spawning : e->getAll<lif::Spawning>()) {
@@ -67,7 +67,7 @@ void lif::Logic::spawningLogic(lif::Entity *e, lif::LevelManager& lm,
 	}
 }
 
-void lif::Logic::scoredKillablesLogic(lif::Entity *e, lif::LevelManager&,
+void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::LevelManager&,
 		EntityList& tbspawned, EntityList&)
 {
 	auto scored = e->get<lif::Scored>();
@@ -103,7 +103,7 @@ void lif::Logic::scoredKillablesLogic(lif::Entity *e, lif::LevelManager&,
 	}
 }
 
-void lif::Logic::bonusGrabLogic(lif::Entity *e, lif::LevelManager &lm, EntityList&, EntityList&) {
+void lif::game_logic::bonusGrabLogic(lif::Entity *e, lif::LevelManager &lm, EntityList&, EntityList&) {
 	auto bonus = dynamic_cast<lif::Bonus*>(e);
 	if (bonus == nullptr) return;
 	
@@ -117,7 +117,7 @@ void lif::Logic::bonusGrabLogic(lif::Entity *e, lif::LevelManager &lm, EntityLis
 	grb->grab();
 }
 
-std::vector<lif::Logic::GameLogicFunc> lif::Logic::functions = {
+std::vector<lif::game_logic::GameLogicFunc> lif::game_logic::functions = {
 	bombDeployLogic,
 	bonusGrabLogic,
 	scoredKillablesLogic,

@@ -14,12 +14,12 @@ namespace lif {
  */
 class Pond : public lif::Entity {
 	/** Bitmask determining which layers get influenced by this Pond */
-	unsigned damagedLayers = 0;
+	unsigned damagedc_layers = 0;
 	int damage;
 
 public:
 	explicit Pond(const sf::Vector2f& pos, const sf::Vector2f& size,
-			int damage, std::initializer_list<lif::Layers::Layer> damaged);
+			int damage, std::initializer_list<lif::c_layers::Layer> damaged);
 };
 
 }

@@ -22,7 +22,7 @@ InterlevelContext::InterlevelContext(lif::LevelManager& lm, const lif::SidePanel
 {
 	handlers.push_back(std::unique_ptr<lif::EventHandler>(new lif::BaseEventHandler));
 
-	const std::string fontname = lif::getAsset("fonts", lif::Fonts::INTERLEVEL);
+	const std::string fontname = lif::getAsset("fonts", lif::fonts::INTERLEVEL);
 	if (!interlevelFont.loadFromFile(fontname)) {
 		std::cerr << "[WinLoseHandler.cpp] Error: couldn't load font " << fontname << std::endl;
 	}

@@ -39,7 +39,7 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	, info(info)
 	, originalSpeed(info.speed)
 {
-	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::ENEMIES));
+	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::ENEMIES));
 	addComponent(new lif::Sounded(*this, {
 		std::make_pair("death", lif::getAsset("test", std::string("enemy")
 					+ lif::to_string(id) + std::string("_death.ogg"))),
@@ -82,7 +82,7 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	}, [this] () {
 		return new lif::Letter(position, lif::Letter::randomId());
 	}));
-	death = addComponent(new lif::RegularEntityDeath(*this, lif::Conf::Enemy::DEATH_TIME));
+	death = addComponent(new lif::RegularEntityDeath(*this, lif::conf::enemy::DEATH_TIME));
 	shooting = addComponent(new lif::Shooting(*this, info.attack));
 	autoShooting = addComponent(new lif::AutoShooting(*this));
 	sighted = addComponent(new lif::AxisSighted(*this));
@@ -95,7 +95,7 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 		// on collision
 		if (!_checkCollision(coll))
 			hurt_by_explosion(coll);
-	}, lif::Layers::ENEMIES));
+	}, lif::c_layers::ENEMIES));
 
 	unsigned short death_n_frames = 2;
 	switch (id) {
@@ -198,7 +198,7 @@ void Enemy::_checkShoot() {
 }
 
 bool Enemy::_checkCollision(lif::Collider& coll) {
-	if (coll.getLayer() == lif::Layers::PLAYERS 
+	if (coll.getLayer() == lif::c_layers::PLAYERS 
 			&& (shooting->getAttack().type & lif::AttackType::CONTACT)
 			&& !shooting->isRecharging())
 	{

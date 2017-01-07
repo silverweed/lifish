@@ -3,7 +3,7 @@
 #include "FreeBullet.hpp"
 #include "core.hpp"
 
-std::map<unsigned short, const lif::BulletData> lif::Conf::Bullet::data = {
+std::map<unsigned short, const lif::BulletData> lif::conf::bullet::data = {
 	//// Bullets ////
 	// shot(size, motion frames, destroy frames, directionality)
 	{ 1, lif::BulletData(7, 1, 4, 1) },

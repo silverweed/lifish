@@ -1,7 +1,7 @@
 #include "bonus.hpp"
 
 /** Relative bonus probabilities */
-std::discrete_distribution<unsigned short> lif::Conf::Bonus::distribution {
+std::discrete_distribution<unsigned short> lif::conf::bonus::distribution {
 	5,   // max bombs
 	4,   // quick fuse
 	5,   // max range

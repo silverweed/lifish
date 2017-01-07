@@ -102,7 +102,7 @@ void LevelManager::update() {
 #ifndef RELEASE
 	int i = 0;
 #endif
-	for (auto logic : lif::Logic::functions) {
+	for (auto logic : lif::game_logic::functions) {
 #ifndef RELEASE
 		std::stringstream n;
 		n << "logic_" << i;
@@ -349,7 +349,7 @@ void LevelManager::_checkResurrect() {
 			if (player->getInfo().remainingLives > 0) {
 				player->resurrect();
 				player->get<lif::Bonusable>()->giveBonus(lif::BonusType::SHIELD,
-				                                          lif::Conf::Player::RESURRECT_SHIELD_TIME);
+				                                          lif::conf::player::RESURRECT_SHIELD_TIME);
 				player->setRemainingLives(player->getInfo().remainingLives - 1);
 				entities.add(player);
 				++living_players;

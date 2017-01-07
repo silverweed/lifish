@@ -14,7 +14,7 @@ class Entity;
 class LevelManager;
 
 /** Namespace containing game logic rules */
-namespace Logic {
+namespace game_logic {
 	using GameLogicFunc = std::function<void(
 			lif::Entity*,             // for-each loop variable 
 			lif::LevelManager&,       // LevelManager calling this function

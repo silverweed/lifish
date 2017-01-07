@@ -18,7 +18,7 @@ protected:
 	/** The rectangle defining the level boundaries */
 	const sf::FloatRect levelLimit;
 #ifndef RELEASE
-	lif::Debug::Stats dbgStats;
+	lif::debug::Stats dbgStats;
 #endif
 
 public:
@@ -30,7 +30,7 @@ public:
 	virtual void update() = 0;
 
 #ifndef RELEASE
-	const lif::Debug::Stats& getStats() const { return dbgStats; }
+	const lif::debug::Stats& getStats() const { return dbgStats; }
 #endif
 };
 

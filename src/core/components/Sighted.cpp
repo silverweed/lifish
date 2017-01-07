@@ -8,7 +8,7 @@ Sighted::Sighted(lif::Entity& owner, float visionRadius)
 	, visionRadius(visionRadius)
 {}
 
-void Sighted::setOpaque(std::initializer_list<lif::Layers::Layer> layers, bool opaque) {
+void Sighted::setOpaque(std::initializer_list<lif::c_layers::Layer> layers, bool opaque) {
 	for (auto layer : layers) {
 		const auto shift = static_cast<unsigned>(layer);
 		if (opaque)
@@ -18,7 +18,7 @@ void Sighted::setOpaque(std::initializer_list<lif::Layers::Layer> layers, bool o
 	}
 }
 
-bool Sighted::_isOpaque(lif::Layers::Layer layer) const {
+bool Sighted::_isOpaque(lif::c_layers::Layer layer) const {
 	return (opaqueMask >> static_cast<unsigned>(layer)) & 1;
 }
 

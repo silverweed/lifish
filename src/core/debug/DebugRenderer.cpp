@@ -6,7 +6,7 @@
 #define COLLIDER_PHANTOM_COLOR sf::Color(194, 194, 194, 110)
 #define COLLIDER_COMPOUND_COLOR sf::Color(194, 194, 194, 92)
 
-using lif::Debug::DebugRenderer;
+using lif::debug::DebugRenderer;
 
 void DebugRenderer::drawColliders(sf::RenderTarget& target, const lif::EntityGroup& group) {
 	group.apply([&target] (const lif::Entity *e) {

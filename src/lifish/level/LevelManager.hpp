@@ -55,7 +55,7 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable {
 	}
 
 #ifndef RELEASE
-	lif::Debug::Stats dbgStats;
+	lif::debug::Stats dbgStats;
 #endif
 
 	/** The currently managed level */
@@ -92,7 +92,7 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable {
 	std::array<std::shared_ptr<lif::Player>, lif::MAX_PLAYERS> players;
 
 	/** Unowned references to bombs currently deployed by players */
-	Matrix<std::weak_ptr<lif::Bomb>, lif::MAX_PLAYERS, lif::Conf::Player::MAX_MAX_BOMBS> bombs;
+	Matrix<std::weak_ptr<lif::Bomb>, lif::MAX_PLAYERS, lif::conf::player::MAX_MAX_BOMBS> bombs;
 
 
 	/** Adds the given entity to `entities` */
@@ -160,7 +160,7 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 #ifndef RELEASE
-	const lif::Debug::Stats& getStats() const { return dbgStats; }
+	const lif::debug::Stats& getStats() const { return dbgStats; }
 #endif
 };
 

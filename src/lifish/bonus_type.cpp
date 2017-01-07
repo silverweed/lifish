@@ -45,22 +45,22 @@ void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& 
 
 	switch (type) {
 	case B::MAX_BOMBS:
-		if (powers.maxBombs < lif::Conf::Player::MAX_MAX_BOMBS)
+		if (powers.maxBombs < lif::conf::player::MAX_MAX_BOMBS)
 			player.setMaxBombs(powers.maxBombs + 1);
 		break;
 	case B::QUICK_FUSE:
-		if (powers.bombFuseTime == lif::Conf::Bomb::DEFAULT_FUSE)
-			player.setBombFuseTime(lif::Conf::Bomb::QUICK_FUSE);
+		if (powers.bombFuseTime == lif::conf::bomb::DEFAULT_FUSE)
+			player.setBombFuseTime(lif::conf::bomb::QUICK_FUSE);
 		break;
 	case B::MAX_RANGE:
-		if (powers.bombRadius < lif::Conf::Bomb::MAX_RADIUS)
+		if (powers.bombRadius < lif::conf::bomb::MAX_RADIUS)
 			player.setBombRadius(powers.bombRadius + 1);
 		break;
 	case B::SHIELD:
-		player.get<lif::Bonusable>()->giveBonus(B::SHIELD, lif::Conf::Bonus::SHIELD_DURATION);
+		player.get<lif::Bonusable>()->giveBonus(B::SHIELD, lif::conf::bonus::SHIELD_DURATION);
 		break;
 	case B::SPEEDY:
-		player.get<lif::Bonusable>()->giveBonus(B::SPEEDY, lif::Conf::Bonus::SPEEDY_DURATION);
+		player.get<lif::Bonusable>()->giveBonus(B::SPEEDY, lif::conf::bonus::SPEEDY_DURATION);
 		break;
 	case B::INCENDIARY_BOMB:
 		player.setIncendiaryBomb(true);

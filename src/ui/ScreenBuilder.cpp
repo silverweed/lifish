@@ -10,10 +10,10 @@
 #include <unordered_map>
 #include <algorithm>
 
-using lif::UI::ScreenBuilder;
+using lif::ui::ScreenBuilder;
 using json = nlohmann::json;
 
-static void add_style_property(lif::UI::ScreenStyle& style, const std::string& key, const json& value) {
+static void add_style_property(lif::ui::ScreenStyle& style, const std::string& key, const json& value) {
 	if (key == "spacing")
 		style.spacing = value.get<int>();
 	else if (key == "interactable")
@@ -41,7 +41,7 @@ static std::string convert_special_string(const std::string& s) {
 	return s;
 }
 
-void ScreenBuilder::_parseStyles(lif::UI::Screen& screen, const json& stylesJSON) {
+void ScreenBuilder::_parseStyles(lif::ui::Screen& screen, const json& stylesJSON) {
 	for (auto it = stylesJSON.begin(); it != stylesJSON.end(); ++it) {
 		auto style = it.value();
 		for (auto sit = style.begin(); sit != style.end(); ++sit)
@@ -50,7 +50,7 @@ void ScreenBuilder::_parseStyles(lif::UI::Screen& screen, const json& stylesJSON
 }
 
 // TODO: refactor this and _addImage to DRY
-void ScreenBuilder::_addText(lif::UI::Screen& screen, const json& text) {
+void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 	bool interactable = false, consecutive = false;
 	sf::Vector2f manualPosition(-1, -1);
 	std::string style_name = "default";
@@ -115,15 +115,15 @@ void ScreenBuilder::_addText(lif::UI::Screen& screen, const json& text) {
 
 	if (interactable) {
 		const auto name = text["name"].get<std::string>();
-		screen.interactables[name] = std::unique_ptr<lif::UI::Interactable>(
-				new lif::UI::Interactable(newtxt));
+		screen.interactables[name] = std::unique_ptr<lif::ui::Interactable>(
+				new lif::ui::Interactable(newtxt));
 	} else {
 		newtxt->setShadowSpacing(2, 2);
 		screen.nonInteractables.push_back(std::unique_ptr<sf::Drawable>(newtxt));
 	}
 }
 
-void ScreenBuilder::_addImage(lif::UI::Screen& screen, const json& image) {
+void ScreenBuilder::_addImage(lif::ui::Screen& screen, const json& image) {
 	bool interactable = false, consecutive = false;
 	sf::Vector2f manualPosition(-1, -1);
 	std::string style_name = "default";
@@ -183,13 +183,13 @@ void ScreenBuilder::_addImage(lif::UI::Screen& screen, const json& image) {
 
 	if (interactable) {
 		const auto name = image["name"].get<std::string>();
-		screen.interactables[name] = std::unique_ptr<lif::UI::Interactable>(
-				new lif::UI::Interactable(newimg));
+		screen.interactables[name] = std::unique_ptr<lif::ui::Interactable>(
+				new lif::ui::Interactable(newimg));
 	} else
 		screen.nonInteractables.push_back(std::unique_ptr<sf::Drawable>(newimg));
 }
 
-void ScreenBuilder::_addElement(lif::UI::Screen& screen, const json& element) {
+void ScreenBuilder::_addElement(lif::ui::Screen& screen, const json& element) {
 	const auto type = element["type"].get<std::string>();
 	if (type == "text")
 		_addText(screen, element);
@@ -200,7 +200,7 @@ void ScreenBuilder::_addElement(lif::UI::Screen& screen, const json& element) {
 }
 
 // center all non-absolute-positioned elements
-void ScreenBuilder::_fixAlign(lif::UI::Screen& screen) {
+void ScreenBuilder::_fixAlign(lif::ui::Screen& screen) {
 	const float yOffset = vAlign == "top" ? V_PADDING
 				: vAlign == "bottom" ? (screen.size.y - totHeight - V_PADDING)
 				: (screen.size.y - totHeight) / 2;
@@ -220,7 +220,7 @@ void ScreenBuilder::_fixAlign(lif::UI::Screen& screen) {
 	}
 }
 
-void ScreenBuilder::build(lif::UI::Screen& screen, const std::string& layoutFileName) {
+void ScreenBuilder::build(lif::ui::Screen& screen, const std::string& layoutFileName) {
 	if (screen.wasBuilt())
 		throw std::logic_error("screen passed to ScreenBuilder has already been built!");
 

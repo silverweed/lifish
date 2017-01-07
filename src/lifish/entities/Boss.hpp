@@ -46,7 +46,7 @@ protected:
 	void _hurt();
 	/** Resets deathClock */
 	virtual void _kill();
-	/** `true` while deathClock->getElapsedTime() < lif::Conf::Boss::DEATH_TIME */
+	/** `true` while deathClock->getElapsedTime() < lif::conf::boss::DEATH_TIME */
 	bool _killInProgress() const;
 public:
 	explicit Boss(const sf::Vector2f& pos);

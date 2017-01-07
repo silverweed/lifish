@@ -1,7 +1,7 @@
 #include "TimeStats.hpp"
 #include <exception>
 
-using lif::Debug::TimeStats;
+using lif::debug::TimeStats;
 
 clock_t TimeStats::start(std::string name) {
 	return timers[name] = clock();

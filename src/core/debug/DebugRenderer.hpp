@@ -7,7 +7,7 @@ namespace lif {
 class EntityGroup;
 class SHCollisionDetector;
 
-namespace Debug {
+namespace debug {
 
 class DebugRenderer {
 public:

@@ -61,7 +61,7 @@ constexpr float MAIN_WINDOW_SHIFT = 1 + SIDE_PANEL_WIDTH;
 
 constexpr unsigned short N_ENEMIES = 10;
 
-namespace Fonts {
+namespace fonts {
 	constexpr auto POINTS          = "pf_tempesta_seven_bold.ttf";
 	constexpr auto INTERLEVEL      = "pf_tempesta_seven_bold.ttf";
 	constexpr auto LEVELNUM        = "pf_tempesta_seven.ttf";

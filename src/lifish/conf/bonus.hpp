@@ -5,8 +5,8 @@
 
 namespace lif {
 
-namespace Conf {
-	namespace Bonus {
+namespace conf {
+	namespace bonus {
 		constexpr unsigned int VALUE = 100; // FIXME
 		constexpr unsigned short N_BONUS_TYPES = 9;
 		constexpr unsigned short N_PERMANENT_BONUS_TYPES = 6;

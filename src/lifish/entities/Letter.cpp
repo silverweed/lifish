@@ -17,7 +17,7 @@
 
 using lif::Letter;
 using lif::TILE_SIZE;
-using lif::Conf::Player::N_EXTRA_LETTERS;
+using lif::conf::player::N_EXTRA_LETTERS;
 
 const sf::Time Letter::TRANSITION_DELAY = sf::milliseconds(3000);
 
@@ -38,7 +38,7 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	addComponent(new lif::Drawable(*this, *animated));
 	addComponent(new lif::Killable(*this));
 	addComponent(new lif::Collider(*this, [this] (lif::Collider& coll) {
-		if (coll.getLayer() != lif::Layers::PLAYERS || grabbable->isGrabbed())
+		if (coll.getLayer() != lif::c_layers::PLAYERS || grabbable->isGrabbed())
 			return;
 		get<lif::Killable>()->kill();			
 		grabbable->grab();

@@ -8,7 +8,7 @@ namespace lif {
 class Collider;
 class AxisMoving;
 
-namespace CollisionUtils {
+namespace collision_utils {
 
 /** Checks if `cld1` and `cld2` collide, given that the owner of `cld1` has direction `dir`. */
 bool collide(const lif::Collider& cld1, const lif::Collider& cld2, const lif::Direction dir);

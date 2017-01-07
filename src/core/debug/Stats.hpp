@@ -5,7 +5,7 @@
 
 namespace lif {
 
-namespace Debug {
+namespace debug {
 
 struct Stats {
 	TimeStats timer;

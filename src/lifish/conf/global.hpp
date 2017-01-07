@@ -4,7 +4,7 @@
 
 namespace lif {
 
-namespace Conf {
+namespace conf {
 	const sf::Time EXTRA_GAME_DURATION = sf::seconds(30);
 }
 

@@ -48,15 +48,15 @@ HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : lif::Entity(pos) {
 		// is kill in progress
 		return animated->getSprite().isPlaying();
 	}));
-	addComponent(new lif::Lifed(*this, lif::Conf::Boss::HauntingSpiritBoss::HAUNTED_STATUE_LIFE));
+	addComponent(new lif::Lifed(*this, lif::conf::boss::haunting_spirit_boss::HAUNTED_STATUE_LIFE));
 	addComponent(new lif::Drawable(*this, *this));
 	auto hurt_by_explosion = lif::hurtByExplosions(*this, lif::CFO_TAKE_SINGLE_HIT | lif::CFO_ONLY_ADJACENT);
 	addComponent(new lif::Collider(*this, [this, hurt_by_explosion] (lif::Collider& cld) {
 		// on collision
 		if (!possessed) return;
 		hurt_by_explosion(cld);
-	}, lif::Layers::BREAKABLES, sf::Vector2f(TILE_SIZE, TILE_SIZE)));
-	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::TALL_ENTITIES));
+	}, lif::c_layers::BREAKABLES, sf::Vector2f(TILE_SIZE, TILE_SIZE)));
+	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::TALL_ENTITIES));
 	addComponent(new lif::Fixed(*this));
 }
 

@@ -72,11 +72,11 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	sf::Texture *healthTexture;
 
 	/** The EXTRA letters icons: (empty, E, X, T, R, A) */
-	std::array<sf::Sprite, lif::Conf::Player::N_EXTRA_LETTERS + 1> extraLettersSprite;
+	std::array<sf::Sprite, lif::conf::player::N_EXTRA_LETTERS + 1> extraLettersSprite;
 	sf::Texture *extraLettersTexture;
 
 	/** The Bonus icons */
-	Matrix<sf::Sprite, lif::MAX_PLAYERS, lif::Conf::Bonus::N_PERMANENT_BONUS_TYPES> bonusesSprite;
+	Matrix<sf::Sprite, lif::MAX_PLAYERS, lif::conf::bonus::N_PERMANENT_BONUS_TYPES> bonusesSprite;
 
 	void _drawHealthSprites(sf::RenderTarget& window, sf::RenderStates states, 
 			const lif::Player& player) const;

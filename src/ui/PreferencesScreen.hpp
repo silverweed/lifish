@@ -7,9 +7,9 @@ namespace lif {
 
 class ShadedText;
 
-namespace UI {
+namespace ui {
 
-class PreferencesScreen : public lif::UI::Screen {
+class PreferencesScreen : public lif::ui::Screen {
 	enum class VolumeType { MUSIC, SOUND };
 	enum class VolumeAction { RAISE, LOWER, MUTE_TOGGLE };
 
@@ -28,7 +28,7 @@ class PreferencesScreen : public lif::UI::Screen {
 	float prevMusicVolume = -1;
 	sf::Texture *speakerTexture = nullptr;
 
-	lif::UI::Action _changeVolume(VolumeType which, VolumeAction what);
+	lif::ui::Action _changeVolume(VolumeType which, VolumeAction what);
 public:
 	explicit PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& size);
 };

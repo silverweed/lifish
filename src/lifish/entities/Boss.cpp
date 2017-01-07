@@ -24,11 +24,11 @@ Boss::Boss(const sf::Vector2f& pos)
 	: lif::Entity(pos)
 	, drawProxy(*this)
 {
-	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::BOSSES));
+	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::BOSSES));
 	addComponent(new lif::Foe(*this));
 	explClock = addComponent(new lif::Clock(*this));
 	hurtClock = addComponent(new lif::Clock(*this));
-	hurtClock->add(lif::Conf::Boss::HURT_TIME);
+	hurtClock->add(lif::conf::boss::HURT_TIME);
 	deathClock = addComponent(new lif::Clock(*this));
 	killable = addComponent(new lif::Killable(*this, [this] () {
 		// on kill
@@ -74,15 +74,15 @@ void Boss::_hurt() {
 
 void Boss::_kill() {
 	deathClock->restart();
-	collider->setLayer(lif::Layers::DEFAULT);
+	collider->setLayer(lif::c_layers::DEFAULT);
 }
 
 bool Boss::_killInProgress() const {
-	return deathClock->getElapsedTime() < lif::Conf::Boss::DEATH_TIME;
+	return deathClock->getElapsedTime() < lif::conf::boss::DEATH_TIME;
 }
 
 void Boss::_checkCollision(lif::Collider& coll) {
-	if (coll.getLayer() != lif::Layers::EXPLOSIONS) return;
+	if (coll.getLayer() != lif::c_layers::EXPLOSIONS) return;
 
 	auto& expl = static_cast<lif::Explosion&>(coll.getOwnerRW());
 	if (expl.hasDamaged(*this)) return;
@@ -117,7 +117,7 @@ lif::BossDrawableProxy::BossDrawableProxy(const lif::Boss& b)
 void lif::BossDrawableProxy::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	// Assume `boss.animated` is non-null for convenience
 	window.draw(*boss.animated, states);
-	if (boss.hurtClock->getElapsedTime() < lif::Conf::Boss::HURT_TIME) {
+	if (boss.hurtClock->getElapsedTime() < lif::conf::boss::HURT_TIME) {
 		const auto& sprite = boss.animated->getSprite();
 		sf::Sprite hurtSprite(*boss.animated->getTexture(), 
 				sprite.getAnimation()->getFrame(sprite.getCurrentFrame()));

@@ -224,14 +224,14 @@ int main(int argc, char **argv) {
 	load_icon(window);
 
 	// Setup UI
-	lif::UI::UI& ui = lif::UI::UI::getInstance();
+	lif::ui::UI& ui = lif::ui::UI::getInstance();
 	ui.setSize(lif::options.windowSize);
 
 	// load static screens
 	ui.load(window, { "home.json", "about.json", "pause.json" });
 	// load dynamic screens
-	ui.add(new lif::UI::ControlsScreen(window, lif::options.windowSize));
-	ui.add(new lif::UI::PreferencesScreen(window, lif::options.windowSize));
+	ui.add(new lif::ui::ControlsScreen(window, lif::options.windowSize));
+	ui.add(new lif::ui::PreferencesScreen(window, lif::options.windowSize));
 
 	// Create pointer to game context
 	std::unique_ptr<GameContext> game;
@@ -253,7 +253,7 @@ int main(int argc, char **argv) {
 						.getInterlevelContext();
 		cur_context = contexts[lif::CTX_GAME];
 	}
-	lif::Debug::Stats dbgStats;
+	lif::debug::Stats dbgStats;
 	unsigned cycle = 0;
 #endif
 

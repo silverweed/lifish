@@ -21,7 +21,7 @@ CollisionFunc lif::hurtByExplosions(lif::Entity& e, unsigned opts) {
 
 	return [e, killable, lifed, scored, opts] (lif::Collider& cld) {
 		// Check valid hit
-		if (cld.getLayer() != lif::Layers::EXPLOSIONS || killable->isKilled())
+		if (cld.getLayer() != lif::c_layers::EXPLOSIONS || killable->isKilled())
 			return;
 
 		auto& expl = static_cast<lif::Explosion&>(cld.getOwnerRW());

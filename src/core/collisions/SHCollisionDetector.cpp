@@ -7,7 +7,7 @@
 #include "Explosion.hpp"
 #include <iostream>
 
-using namespace lif::CollisionUtils;
+using namespace lif::collision_utils;
 using lif::SHContainer;
 using lif::SHCollisionDetector;
 

@@ -118,13 +118,13 @@ void testMusic();
 /** If lif::options.showFPS == true, then display FPS on screen */
 void maybeShowFPS(sf::RenderWindow& window);
 
-namespace KeyUtils {
+namespace key_utils {
 	short keyToNumber(sf::Keyboard::Key key);
 
 	std::string keyToString(sf::Keyboard::Key key);
 }
 
-namespace JoystickUtils {
+namespace joystick_utils {
 	short getPauseButton(unsigned int joystickId);
 }
 

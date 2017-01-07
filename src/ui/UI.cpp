@@ -8,7 +8,7 @@
 #include <exception>
 #include <iostream>
 
-using lif::UI::UI;
+using lif::ui::UI;
 
 UI::UI() : lif::WindowContext() {
 	handlers.push_back(std::unique_ptr<lif::EventHandler>(new lif::BaseEventHandler));
@@ -20,12 +20,12 @@ void UI::load(const sf::RenderWindow& window, std::initializer_list<std::string>
 			std::cerr << "[ WARNING ] Screen " << name << " already loaded: skipping." << std::endl;	
 			continue;
 		}
-		auto screen = new lif::UI::Screen(name, window, size);
+		auto screen = new lif::ui::Screen(name, window, size);
 		if (curScreen == nullptr) {
 			curScreen = screen;
 			curScreen->setOrigin(origin);
 		}
-		screens[screen->getName()] = std::unique_ptr<lif::UI::Screen>(screen);
+		screens[screen->getName()] = std::unique_ptr<lif::ui::Screen>(screen);
 	}
 }
 
@@ -41,7 +41,7 @@ bool UI::handleEvent(sf::Window& window, sf::Event event) {
 	case sf::Event::JoystickButtonPressed:
 		{
 			const auto btn = event.joystickButton;
-			const short pb = lif::JoystickUtils::getPauseButton(btn.joystickId);
+			const short pb = lif::joystick_utils::getPauseButton(btn.joystickId);
 			if (pb >= 0 && btn.button == static_cast<unsigned int>(pb))
 				active = !active;
 			return true;
@@ -63,8 +63,8 @@ bool UI::handleEvent(sf::Window& window, sf::Event event) {
 	return false;
 }
 
-void UI::add(lif::UI::Screen *screen) {
-	screens[screen->getName()] = std::unique_ptr<lif::UI::Screen>(screen); 
+void UI::add(lif::ui::Screen *screen) {
+	screens[screen->getName()] = std::unique_ptr<lif::ui::Screen>(screen); 
 }
 
 void UI::setOrigin(const sf::Vector2f& pos) {
@@ -85,14 +85,14 @@ void UI::fireClick() {
 	if (curScreen == nullptr) return;
 	auto cbname = curScreen->getSelected();
 
-	lif::UI::Action action;
+	lif::ui::Action action;
 
 	// Check if screen has an internal registered callback for that element; if not, call an external one.
 	if (curScreen->hasCallback(cbname)) {
 		action = curScreen->fireCallback(cbname);
 	} else {
-		auto it = lif::UI::screenCallbacks.find(cbname);
-		if (it == lif::UI::screenCallbacks.end()) return;
+		auto it = lif::ui::screenCallbacks.find(cbname);
+		if (it == lif::ui::screenCallbacks.end()) return;
 		action = it->second();
 	}
 
@@ -106,10 +106,10 @@ void UI::fireClick() {
 		// TODO
 		break;
 	case Action::SWITCH_SCREEN:
-		setCurrent(lif::UI::screenCallbackArg);
+		setCurrent(lif::ui::screenCallbackArg);
 		break;
 	case Action::SWITCH_SCREEN_OVERRIDE_PARENT:
-		setCurrent(lif::UI::screenCallbackArg, true);
+		setCurrent(lif::ui::screenCallbackArg, true);
 		break;
 	case Action::SWITCH_TO_PARENT:
 		setCurrentToParent();

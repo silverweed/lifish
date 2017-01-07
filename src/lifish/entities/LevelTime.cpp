@@ -17,7 +17,7 @@ sf::Time LevelTime::getRemainingTime() const {
 }
 
 sf::Time LevelTime::getRemainingExtraGameTime() const {
-	return lif::Conf::EXTRA_GAME_DURATION - extraGameClock->getElapsedTime();
+	return lif::conf::EXTRA_GAME_DURATION - extraGameClock->getElapsedTime();
 }
 
 void LevelTime::startExtraGame() {

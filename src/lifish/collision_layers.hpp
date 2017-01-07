@@ -4,7 +4,7 @@
 
 namespace lif {
 
-namespace Layers {
+namespace c_layers {
 
 enum Layer : unsigned {
 	DEFAULT,
@@ -24,8 +24,8 @@ enum Layer : unsigned {
 	N_LAYERS
 };
 
-extern Matrix<bool, Layers::N_LAYERS, Layers::N_LAYERS> collide, // whether levels "see" each other
-                                                        solid;   // whether levels are solid for each other
+extern Matrix<bool, c_layers::N_LAYERS, c_layers::N_LAYERS> collide, // whether levels "see" each other
+                                                            solid;   // whether levels are solid for each other
 
 /** To be called by lif::init() */
 void init();

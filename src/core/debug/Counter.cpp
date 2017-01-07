@@ -1,7 +1,7 @@
 #include "Counter.hpp"
 #include <exception>
 
-using lif::Debug::Counter;
+using lif::debug::Counter;
 
 int Counter::inc(std::string name) {
 	return ++counts[name]; 

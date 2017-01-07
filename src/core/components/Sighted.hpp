@@ -29,7 +29,7 @@ protected:
 	float visionRadius;
 
 
-	bool _isOpaque(lif::Layers::Layer layer) const;
+	bool _isOpaque(lif::c_layers::Layer layer) const;
 
 public:
 	COMP_NOT_UNIQUE
@@ -37,7 +37,7 @@ public:
 	explicit Sighted(lif::Entity& owner, float visionRadius);
 
 	/** Sets all layers in `layers` as (`opaque` ? opaque : transparent) */
-	void setOpaque(std::initializer_list<lif::Layers::Layer> layers, bool opaque = true);
+	void setOpaque(std::initializer_list<lif::c_layers::Layer> layers, bool opaque = true);
 
 	void setEntityGroup(const lif::EntityGroup *eg);
 

@@ -6,7 +6,7 @@
 #include "collision_utils.hpp"
 #include <algorithm>
 
-using namespace lif::CollisionUtils;
+using namespace lif::collision_utils;
 using lif::Direction;
 using lif::SimpleCollisionDetector;
 using lif::TILE_SIZE;

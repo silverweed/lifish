@@ -8,7 +8,7 @@ using lif::Fire;
 using lif::TILE_SIZE;
 
 Fire::Fire(const sf::Vector2f& pos, const sf::Vector2f& size, sf::Time duration)
-	: lif::Pond(pos, size, 1, { lif::Layers::ENEMIES, lif::Layers::ENEMIES_IGNORE_BREAKABLES })
+	: lif::Pond(pos, size, 1, { lif::c_layers::ENEMIES, lif::c_layers::ENEMIES_IGNORE_BREAKABLES })
 {
 	auto animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "fire.png")));
 	animated->addAnimation("burn", {

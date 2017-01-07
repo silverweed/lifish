@@ -2,8 +2,8 @@
 
 namespace lif {
 
-namespace Conf {
-	namespace Bomb {
+namespace conf {
+	namespace bomb {
 		const sf::Time DEFAULT_FUSE = sf::seconds(2/*5*/);
 		const sf::Time QUICK_FUSE = DEFAULT_FUSE / 2.f;
 		constexpr unsigned short DEFAULT_RADIUS = 2;

@@ -22,16 +22,16 @@ class RegularEntityDeath;
 struct PlayerInfo {
 	unsigned short id;
 	struct {
-		unsigned short bombRadius = lif::Conf::Bomb::DEFAULT_RADIUS;
-		unsigned short maxBombs   = lif::Conf::Player::DEFAULT_MAX_BOMBS;
-		sf::Time bombFuseTime     = lif::Conf::Bomb::DEFAULT_FUSE;
+		unsigned short bombRadius = lif::conf::bomb::DEFAULT_RADIUS;
+		unsigned short maxBombs   = lif::conf::player::DEFAULT_MAX_BOMBS;
+		sf::Time bombFuseTime     = lif::conf::bomb::DEFAULT_FUSE;
 		bool incendiaryBomb       = false;
 	} powers;
 
-	short remainingLives = lif::Conf::Player::INITIAL_LIVES - 1;
+	short remainingLives = lif::conf::player::INITIAL_LIVES - 1;
 
 	/** The EXTRA letters of this player */
-	std::array<bool, lif::Conf::Player::N_EXTRA_LETTERS> extra;
+	std::array<bool, lif::conf::player::N_EXTRA_LETTERS> extra;
 
 	PlayerInfo(unsigned short id) : id(id) {
 		extra.fill(false);
@@ -40,9 +40,9 @@ struct PlayerInfo {
 	void reset(bool resetExtra) {
 		if (resetExtra)
 			extra.fill(false);
-		powers.bombRadius = lif::Conf::Bomb::DEFAULT_RADIUS;
-		powers.maxBombs = lif::Conf::Player::DEFAULT_MAX_BOMBS;
-		powers.bombFuseTime = lif::Conf::Bomb::DEFAULT_FUSE;
+		powers.bombRadius = lif::conf::bomb::DEFAULT_RADIUS;
+		powers.maxBombs = lif::conf::player::DEFAULT_MAX_BOMBS;
+		powers.bombFuseTime = lif::conf::bomb::DEFAULT_FUSE;
 		powers.incendiaryBomb = false;
 	}
 };

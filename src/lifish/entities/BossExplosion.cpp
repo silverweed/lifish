@@ -18,7 +18,7 @@ BossExplosion::BossExplosion(const sf::Vector2f& pos)
 	addComponent(new lif::Sounded(*this, { 
 		std::make_pair("explode", lif::getAsset("test", "bossbullet_hit.ogg")) 
 	}));
-	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::BOSS_EXPLOSIONS));
+	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::BOSS_EXPLOSIONS));
 
 	animated->addAnimation("explosion", {
 		sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),

@@ -5,7 +5,7 @@
 
 namespace lif {
 
-namespace Dialog {
+namespace dialog {
 
 std::string openFile();
 std::string saveFile();

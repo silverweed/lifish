@@ -29,7 +29,7 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, sh
 {
 	handlers.push_back(std::unique_ptr<lif::EventHandler>(new lif::BaseEventHandler));
 #ifndef RELEASE
-	handlers.push_back(std::unique_ptr<lif::EventHandler>(new lif::Debug::DebugEventHandler(*this)));
+	handlers.push_back(std::unique_ptr<lif::EventHandler>(new lif::debug::DebugEventHandler(*this)));
 #endif
 
 	int lvnum = startLv;
@@ -110,7 +110,7 @@ bool GameContext::handleEvent(sf::Window&, sf::Event event) {
 	case sf::Event::JoystickButtonPressed:
 		{
 			const auto btn = event.joystickButton;
-			const short pb = JoystickUtils::getPauseButton(btn.joystickId);
+			const short pb = joystick_utils::getPauseButton(btn.joystickId);
 			if (pb >= 0 && btn.button == static_cast<unsigned int>(pb))
 				pause_game();
 			return true;
@@ -144,9 +144,9 @@ void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const 
 	gameRenderTex.draw(lm, states);
 #ifndef RELEASE
 	if ((debug >> DBG_DRAW_COLLIDERS) & 1)
-		Debug::DebugRenderer::drawColliders(gameRenderTex, lm.getEntities());
+		debug::DebugRenderer::drawColliders(gameRenderTex, lm.getEntities());
 	if ((debug >> DBG_DRAW_SH_CELLS) & 1)
-		Debug::DebugRenderer::drawSHCells(gameRenderTex,
+		debug::DebugRenderer::drawSHCells(gameRenderTex,
 				static_cast<const lif::SHCollisionDetector&>(
 					lm.getCollisionDetector()));
 #endif
@@ -185,7 +185,7 @@ void GameContext::_printCDStats() const {
 	std::cerr.flags(flags);
 }
 
-static float get_percentage(const lif::Debug::Stats& stats, const char *totn, const char *name, char *percentage) {
+static float get_percentage(const lif::debug::Stats& stats, const char *totn, const char *name, char *percentage) {
 	const auto tot = stats.timer.safeGet(totn);
 	if (tot < 0) return -1;
 	const float ratio = stats.timer.safeGet(name) / tot;
@@ -211,7 +211,7 @@ void GameContext::_printGameStats() const {
 			<< (ratio >= 0 ? " " + lif::to_string(int(ratio*100)) + "%" : "");
 	}
 	std::cerr << "\r\n -- logic: --";
-	for (unsigned short i = 0; i < lif::Logic::functions.size(); ++i) {
+	for (unsigned short i = 0; i < lif::game_logic::functions.size(); ++i) {
 		std::stringstream t;
 		t << "logic_" << i;
 		char percentage[21] = {0};

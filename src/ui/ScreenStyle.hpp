@@ -2,7 +2,7 @@
 
 namespace lif {
 
-namespace UI {
+namespace ui {
 
 struct ScreenStyle {
 	std::string name;

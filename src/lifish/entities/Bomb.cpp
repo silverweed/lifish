@@ -14,7 +14,7 @@
 
 using lif::Bomb;
 using lif::TILE_SIZE;
-using namespace lif::Conf::Bomb;
+using namespace lif::conf::bomb;
 
 Bomb::Bomb(const sf::Vector2f& pos, const lif::Player& source, 
 		const sf::Time& _fuseTime, const unsigned short _radius,
@@ -42,9 +42,9 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Player& source,
 	animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "bomb.png")));
 	addComponent(new lif::Collider(*this, [this] (lif::Collider& cld) {
 		// On collide
-		if (cld.getLayer() == lif::Layers::EXPLOSIONS && !ignited)
+		if (cld.getLayer() == lif::c_layers::EXPLOSIONS && !ignited)
 			ignite();
-	}, lif::Layers::BOMBS));
+	}, lif::c_layers::BOMBS));
 	addComponent(new lif::Drawable(*this, *animated));
 	addComponent(new lif::Spawning(*this, [this] () {
 		return new lif::Explosion(position, radius, &sourcePlayer, incendiary);

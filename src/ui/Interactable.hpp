@@ -6,7 +6,7 @@
 
 namespace lif {
 
-namespace UI {
+namespace ui {
 
 /** Wrapper class for the glue code needed to merge functionality of
  *  lif::ShadedText and sf::Sprite

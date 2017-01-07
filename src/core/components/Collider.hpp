@@ -25,7 +25,7 @@ protected:
 	sf::Vector2f size;
 	bool forceAck = false;
 	/** Collision layer */
-	lif::Layers::Layer layer;
+	lif::c_layers::Layer layer;
 	/** Optional callback to be called at every update */
 	CollisionFunc onCollision;
 
@@ -33,14 +33,14 @@ public:
 	COMP_NOT_UNIQUE
 
 	explicit Collider(lif::Entity& owner, 
-			  lif::Layers::Layer layer = lif::Layers::DEFAULT,
+			  lif::c_layers::Layer layer = lif::c_layers::DEFAULT,
 			  const sf::Vector2f& size = sf::Vector2f(lif::TILE_SIZE, lif::TILE_SIZE),
 			  const sf::Vector2f& offset = sf::Vector2f(0, 0),
 			  bool phantom = false);
 
 	explicit Collider(lif::Entity& owner,
 			  CollisionFunc onCollision,
-			  lif::Layers::Layer layer = lif::Layers::DEFAULT,
+			  lif::c_layers::Layer layer = lif::c_layers::DEFAULT,
 			  const sf::Vector2f& size = sf::Vector2f(lif::TILE_SIZE, lif::TILE_SIZE), 
 			  const sf::Vector2f& offset = sf::Vector2f(0, 0),
 			  bool phantom = false);
@@ -55,9 +55,9 @@ public:
 	void reset();
 
 	/** @return the collision layer of this Collider */
-	lif::Layers::Layer getLayer() const { return layer; }
+	lif::c_layers::Layer getLayer() const { return layer; }
 	/** Sets the collision layer of this Collider */
-	void setLayer(lif::Layers::Layer l) { layer = l; }
+	void setLayer(lif::c_layers::Layer l) { layer = l; }
 
 	sf::Vector2f getOffset() const { return offset; }
 	void setOffset(const sf::Vector2f& off) { offset = off; }

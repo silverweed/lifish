@@ -14,7 +14,7 @@
 
 using lif::Bonus;
 using lif::TILE_SIZE;
-using lif::Conf::Bonus::EXPIRE_TIME;
+using lif::conf::bonus::EXPIRE_TIME;
 	
 Bonus::Bonus(const sf::Vector2f& pos, const lif::BonusType type)
 	: lif::Entity(pos)
@@ -28,12 +28,12 @@ Bonus::Bonus(const sf::Vector2f& pos, const lif::BonusType type)
 					TILE_SIZE,
 					TILE_SIZE)));
 	addComponent(new lif::Collider(*this, [this] (const lif::Collider& cld) {
-		if (cld.getLayer() != lif::Layers::PLAYERS || grabbable->isGrabbed())
+		if (cld.getLayer() != lif::c_layers::PLAYERS || grabbable->isGrabbed())
 			return;
 		_grab(static_cast<lif::Player&>(cld.getOwnerRW()));
-	}, lif::Layers::GRABBABLE));
+	}, lif::c_layers::GRABBABLE));
 	addComponent(new lif::Drawable(*this, *sprite));
-	addComponent(new lif::Scored(*this, lif::Conf::Bonus::VALUE));
+	addComponent(new lif::Scored(*this, lif::conf::bonus::VALUE));
 	expireClock = addComponent(new lif::Clock(*this));
 	addComponent(new lif::Sounded(*this, { std::make_pair("grab", lif::getAsset("test", "bonus_grab.ogg")) }));
 	addComponent(new lif::Temporary(*this, [this] () {

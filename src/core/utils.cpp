@@ -23,7 +23,7 @@
 	//return dirs[dist(lif::rng)];
 //}
 
-short lif::KeyUtils::keyToNumber(sf::Keyboard::Key key) {
+short lif::key_utils::keyToNumber(sf::Keyboard::Key key) {
 	switch (key) {
 		using K = sf::Keyboard::Key;
 	case K::Num0: case K::Numpad0: return 0;
@@ -40,7 +40,7 @@ short lif::KeyUtils::keyToNumber(sf::Keyboard::Key key) {
 	}
 }
 
-std::string lif::KeyUtils::keyToString(sf::Keyboard::Key key) {
+std::string lif::key_utils::keyToString(sf::Keyboard::Key key) {
 	switch (key) {
 		using K = sf::Keyboard::Key;
 	case K::A: return "A";
@@ -152,7 +152,7 @@ void lif::maybeShowFPS(sf::RenderWindow& window) {
 	static double cur_time;
 	static int n_updates = 0;
 	static sf::Clock fps_clock, fps_update_clock;
-	static lif::ShadedText fps_text(lif::getAsset("fonts", lif::Fonts::DEBUG_INFO), "-", sf::Vector2f(
+	static lif::ShadedText fps_text(lif::getAsset("fonts", lif::fonts::DEBUG_INFO), "-", sf::Vector2f(
 				lif::SIDE_PANEL_WIDTH + (lif::LEVEL_WIDTH - 5.5) * lif::TILE_SIZE, 
 				lif::WINDOW_HEIGHT - lif::TILE_SIZE));
 	static bool textSetUp = false;
@@ -190,7 +190,7 @@ void lif::testMusic() {
 	sample.stop();
 }
 
-short lif::JoystickUtils::getPauseButton(unsigned int id) {
+short lif::joystick_utils::getPauseButton(unsigned int id) {
 	if (!sf::Joystick::isConnected(id)) return -1;
 	// Heuristic approach to "known" joysticks: we distinguish them by their
 	// button count and hope they're really that type of joystick.

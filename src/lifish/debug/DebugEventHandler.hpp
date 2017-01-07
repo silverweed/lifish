@@ -6,7 +6,7 @@ namespace lif {
 
 class GameContext;
 
-namespace Debug {
+namespace debug {
 
 class DebugEventHandler : public lif::EventHandler {
 	lif::GameContext& game;

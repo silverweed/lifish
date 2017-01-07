@@ -14,7 +14,7 @@ Flash::Flash(const sf::Vector2f& pos)
 {
 	animated = addComponent(new lif::Animated(*this, lif::getAsset("test", "flash.png")));
 	addComponent(new lif::Drawable(*this, *animated));
-	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::FLASHES));
+	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::FLASHES));
 
 	animated->addAnimation("flash", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),

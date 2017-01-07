@@ -5,7 +5,7 @@
 using lif::TILE_SIZE;
 
 // Checks if `cld1` and `cld2` collide, given that the owner of `cld1` has direction `dir`.
-bool lif::CollisionUtils::collide(const lif::Collider& cld1, const lif::Collider& cld2, const lif::Direction dir) {
+bool lif::collision_utils::collide(const lif::Collider& cld1, const lif::Collider& cld2, const lif::Direction dir) {
 	sf::IntRect rect = cld1.getRect(),
 		    orect = cld2.getRect();
 
@@ -31,7 +31,7 @@ bool lif::CollisionUtils::collide(const lif::Collider& cld1, const lif::Collider
 
 // Checks if `cld` is at the level limit. Algorithm used depends on whether
 // that Entity is AxisMoving or not.
-bool lif::CollisionUtils::is_at_boundaries(const lif::Collider& cld,
+bool lif::collision_utils::is_at_boundaries(const lif::Collider& cld,
 		const lif::AxisMoving *const am, const sf::FloatRect& limits)
 {
 	const auto pos = cld.getPosition();
@@ -58,7 +58,7 @@ bool lif::CollisionUtils::is_at_boundaries(const lif::Collider& cld,
 }
 
 // Checks if `ocld` is along the forward direction of `cld`
-bool lif::CollisionUtils::direction_is_viable(const lif::Collider& cld, 
+bool lif::collision_utils::direction_is_viable(const lif::Collider& cld, 
 		const lif::AxisMoving& moving, const lif::Collider& ocld)
 {
 	const auto pos = cld.getPosition();

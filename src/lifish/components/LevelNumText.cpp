@@ -6,7 +6,7 @@ using lif::LevelNumText;
 
 LevelNumText::LevelNumText(lif::Entity& owner, const unsigned short levelnum)
 	: lif::Component(owner)
-	, text(lif::getAsset("fonts", lif::Fonts::LEVELNUM),
+	, text(lif::getAsset("fonts", lif::fonts::LEVELNUM),
 		lif::to_string(levelnum),
 		sf::Vector2f(lif::TILE_SIZE * (lif::LEVEL_WIDTH+1), 0))
 {

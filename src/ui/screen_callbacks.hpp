@@ -6,9 +6,9 @@
 
 namespace lif {
 
-namespace UI {
+namespace ui {
 
-extern std::unordered_map<std::string, lif::UI::Screen::Callback> screenCallbacks;
+extern std::unordered_map<std::string, lif::ui::Screen::Callback> screenCallbacks;
 extern std::string screenCallbackArg;
 
 }

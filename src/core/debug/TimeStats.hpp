@@ -6,7 +6,7 @@
 
 namespace lif {
 
-namespace Debug {
+namespace debug {
 
 /**
  * Contains time statistics for performance analysis

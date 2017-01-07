@@ -4,8 +4,8 @@
 
 namespace lif {
 
-namespace Conf {
-	namespace Enemy {
+namespace conf {
+	namespace enemy {
 		const sf::Time DEATH_TIME = sf::seconds(2);
 	}
 }

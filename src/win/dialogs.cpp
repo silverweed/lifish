@@ -65,10 +65,10 @@ static std::string _showDialog(bool open) {
 	return path;
 }
 
-std::string lif::Dialog::openFile() {
+std::string lif::dialog::openFile() {
 	return _showDialog(true);
 }
 
-std::string lif::Dialog::saveFile() { 
+std::string lif::dialog::saveFile() { 
 	return _showDialog(false);
 }

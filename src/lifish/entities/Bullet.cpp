@@ -18,7 +18,7 @@ using lif::Bullet;
 Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif::Entity *const source)
 	: lif::Entity(pos)
 	, info(_info)
-	, data(lif::Conf::Bullet::data[info.id])
+	, data(lif::conf::bullet::data[info.id])
 	, source(source)
 {
 	addComponent(new lif::Sounded(*this, {
@@ -27,7 +27,7 @@ Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif:
 		std::make_pair("shot", lif::getAsset("test", std::string("bullet")
 					+ lif::to_string(info.id) + std::string("_shot.ogg")))
 	}));
-	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::BULLETS));
+	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::BULLETS));
 
 	addComponent(new lif::Temporary(*this, [this] () {
 		// expire condition

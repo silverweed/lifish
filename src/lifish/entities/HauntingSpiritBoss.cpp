@@ -23,7 +23,7 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "haunting_spirit.png")));
 	const auto size = 4 * lif::TILE_SIZE;
 	// This is needed by parent class
-	collider = addComponent(new lif::Collider(*this, lif::Layers::DEFAULT,
+	collider = addComponent(new lif::Collider(*this, lif::c_layers::DEFAULT,
 				sf::Vector2f(size, size),
 				sf::Vector2f(-size/2, -size/2), true));
 	collider->setActive(false);

@@ -132,7 +132,7 @@ void SidePanel::_drawTime(sf::RenderTarget& window, sf::RenderStates states) con
 	}
 
 	lif::ShadedText timeText(
-			lif::getAsset("fonts", lif::Fonts::SIDE_PANEL_MONO),
+			lif::getAsset("fonts", lif::fonts::SIDE_PANEL_MONO),
 			ss.str(), TIME_POS);
 	timeText.setCharacterSize(16);
 	timeText.setShadowSpacing(2, 2);
@@ -159,7 +159,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			ss << "X" << player->getInfo().remainingLives;
 		}
 
-		lif::ShadedText text(lif::getAsset("fonts", lif::Fonts::SIDE_PANEL_MONO), ss.str(), pos);
+		lif::ShadedText text(lif::getAsset("fonts", lif::fonts::SIDE_PANEL_MONO), ss.str(), pos);
 		text.setCharacterSize(20);
 		text.setStyle(sf::Text::Bold);
 		text.setShadowSpacing(2, 2);
@@ -202,7 +202,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			pos.x = SCORE_POS_X;
 			pos.y = i == 0 ? SCORE_POS_Y_1 : SCORE_POS_Y_2;
 			lif::ShadedText scoreText(
-					lif::getAsset("fonts", lif::Fonts::SIDE_PANEL_MONO),
+					lif::getAsset("fonts", lif::fonts::SIDE_PANEL_MONO),
 					ss.str(), pos);
 			scoreText.setCharacterSize(16);
 			scoreText.setShadowSpacing(2, 2);
@@ -227,7 +227,7 @@ void SidePanel::update() {
 					using B = lif::BonusType;
 				case B::QUICK_FUSE:
 					bonusesSprite[i][j].setColor(
-							powers.bombFuseTime == lif::Conf::Bomb::DEFAULT_FUSE
+							powers.bombFuseTime == lif::conf::bomb::DEFAULT_FUSE
 							? DISABLED_COLOR : sf::Color::White);
 					break;
 				case B::SHIELD:

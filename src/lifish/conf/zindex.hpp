@@ -2,8 +2,8 @@
 
 namespace lif {
 
-namespace Conf {
-	namespace ZIndex {
+namespace conf {
+	namespace zindex {
 		// Default layer is 0
 		constexpr int EXPLOSIONS      = 1;
 		constexpr int TRANSP_WALLS    = 2;

@@ -32,7 +32,7 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 	, sourceEntity(source)
 {
 	explosionC = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "explosionC.png")));
-	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::EXPLOSIONS));
+	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::EXPLOSIONS));
 	explosionC->addAnimation("explode", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),
 		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
@@ -63,9 +63,9 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 		// on kill: spawn fire if incendiary
 		if (spawner == nullptr) return;
 		spawner->addSpawned(new lif::Fire(explColliderH->getPosition(),
-					explColliderH->getSize(), lif::Conf::Bonus::FIRE_DURATION));
+					explColliderH->getSize(), lif::conf::bonus::FIRE_DURATION));
 		spawner->addSpawned(new lif::Fire(explColliderV->getPosition(), 
-					explColliderV->getSize(), lif::Conf::Bonus::FIRE_DURATION));
+					explColliderV->getSize(), lif::conf::bonus::FIRE_DURATION));
 	}));
 
 	if (isIncendiary)
@@ -111,8 +111,8 @@ lif::Explosion* Explosion::propagate(lif::LevelManager& lm) {
 			// Check if a solid fixed entity blocks propagation in this direction
 			for (auto ent : entities.getEntitiesAtTile(new_tile)) {
 				const auto entcld = ent.lock()->get<lif::Collider>();
-				if (entcld != nullptr && lif::Layers::solid[entcld->getLayer()][
-						lif::Layers::EXPLOSIONS])
+				if (entcld != nullptr && lif::c_layers::solid[entcld->getLayer()][
+						lif::c_layers::EXPLOSIONS])
 				{
 					propagating[dir] = false;
 					blocked[dir] = true;
@@ -132,7 +132,7 @@ lif::Explosion* Explosion::propagate(lif::LevelManager& lm) {
 	 */
 	// Note: no cast required, as `true` is promoted to integral value "1" by C++ standard (§4.7 conv.integral)
 	short reduction = blocked[Direction::RIGHT] + blocked[Direction::LEFT];
-	explColliderH = addComponent(new lif::Collider(*this, lif::Layers::EXPLOSIONS,
+	explColliderH = addComponent(new lif::Collider(*this, lif::c_layers::EXPLOSIONS,
 			// size
 			sf::Vector2f(
 				TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT]
@@ -143,7 +143,7 @@ lif::Explosion* Explosion::propagate(lif::LevelManager& lm) {
 				+ (TILE_SIZE - 1) * blocked[Direction::LEFT], 1)));
 
 	reduction = blocked[Direction::UP]  + blocked[Direction::DOWN];
-	explColliderV = addComponent(new lif::Collider(*this, lif::Layers::EXPLOSIONS,
+	explColliderV = addComponent(new lif::Collider(*this, lif::c_layers::EXPLOSIONS,
 			// size
 			sf::Vector2f(
 				TILE_SIZE - 2,

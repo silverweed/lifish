@@ -15,7 +15,7 @@
 #include "conf/boss.hpp"
 #include "shoot_utils.hpp"
 
-using namespace lif::Conf::Boss::AlienBoss;
+using namespace lif::conf::boss::alien_boss;
 using lif::AlienBoss;
 
 AlienBoss::AlienBoss(const sf::Vector2f& pos)
@@ -29,7 +29,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	collider = addComponent(new lif::Collider(*this, [this] (lif::Collider& coll) {
 		// on collision
 		_checkCollision(coll);
-	}, lif::Layers::BOSSES, size));
+	}, lif::c_layers::BOSSES, size));
 	addComponent(new lif::Scored(*this, VALUE));
 	animated = addComponent(new lif::Animated(*this, lif::getAsset("test", "alien_boss.png")));
 	animated->addAnimation("idle", { sf::IntRect(0, 0, size.x, size.y) }, true);

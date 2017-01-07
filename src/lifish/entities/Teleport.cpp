@@ -24,7 +24,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 	addComponent(new lif::Drawable(*this, *animated));
 	collider = addComponent(new lif::Collider(*this, [this] (lif::Collider& c) {
 		warp(c);
-	}, lif::Layers::TELEPORTS));
+	}, lif::c_layers::TELEPORTS));
 	addComponent(new lif::Spawning(*this, [this] (const lif::Spawning&) {
 		return mustSpawnFlash;
 	}, [this] () {
@@ -46,7 +46,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 
 void Teleport::update() {
 	lif::Entity::update();
-	if (disabled && disableClock->getElapsedTime() >= lif::Conf::Teleport::COOLDOWN_TIME
+	if (disabled && disableClock->getElapsedTime() >= lif::conf::teleport::COOLDOWN_TIME
 			&& collider->getColliding().size() == 0)
 	{
 		disabled = false;

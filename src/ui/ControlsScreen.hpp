@@ -6,9 +6,9 @@ namespace lif {
 
 class ShadedText;
 
-namespace UI {
+namespace ui {
 
-class ControlsScreen : public lif::UI::Screen {
+class ControlsScreen : public lif::ui::Screen {
 	/** Whose player we're changing controls */
 	unsigned short selectedPlayer = 1;
 	/** The control we're changing right now, if any */
@@ -19,11 +19,11 @@ class ControlsScreen : public lif::UI::Screen {
 
 	// Callbacks
 	/** Selects `id`-th player (starting from 1) */
-	lif::UI::Action _selectPlayer(unsigned short id);
+	lif::ui::Action _selectPlayer(unsigned short id);
 	/** Sets the `textKey` text to be in 'changing' state */
-	lif::UI::Action _changeControl(const std::string& textKey);
+	lif::ui::Action _changeControl(const std::string& textKey);
 	/** Toggles the lif::useJoystick variable for the selected player */
-	lif::UI::Action _toggleJoystick();
+	lif::ui::Action _toggleJoystick();
 
 public:
 	explicit ControlsScreen(const sf::RenderWindow& window, const sf::Vector2u& size);

@@ -44,7 +44,7 @@ BreakableWall::BreakableWall(const sf::Vector2f& pos,
 		const unsigned short id, unsigned short life)
 	: lif::Entity(pos)
 {
-	_setupComponents(life, lif::Conf::Wall::Breakable::VALUE);
+	_setupComponents(life, lif::conf::wall::breakable::VALUE);
 	auto& animation = _setupAnimations(lif::getAsset("graphics", "breakable.png"));	
 	for (unsigned short i = 0; i < 4; ++i)
 		animation.addFrame(sf::IntRect(
@@ -62,7 +62,7 @@ void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
 	addComponent(new lif::Sounded(*this, { 
 		std::make_pair("death", lif::getAsset("sounds", "wall_break.ogg"))
 	})); 
-	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::WALLS));
+	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::WALLS));
 	addComponent(new lif::Killable(*this, [this] () {
 		// on kill
 		animated->getSprite().play();
@@ -72,7 +72,7 @@ void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
 		return animated->getSprite().isPlaying();
 	}));
 	addComponent(new lif::Collider(*this, lif::hurtByExplosions(*this, lif::CFO_ONLY_ADJACENT),
-				lif::Layers::BREAKABLES));
+				lif::c_layers::BREAKABLES));
 	// Spawn bonus on death
 	addComponent(new lif::Spawning(*this, [this] () {
 		// spawn function
@@ -94,8 +94,8 @@ Animation& BreakableWall::_setupAnimations(const std::string& texture_name) {
 }
 
 lif::Entity* BreakableWall::_spawnBonus() {
-	const auto bonus_type = lif::Conf::Bonus::distribution(lif::rng);
-	if (bonus_type < lif::Conf::Bonus::N_BONUS_TYPES)
+	const auto bonus_type = lif::conf::bonus::distribution(lif::rng);
+	if (bonus_type < lif::conf::bonus::N_BONUS_TYPES)
 		return new lif::Bonus(position, static_cast<lif::BonusType>(bonus_type));
 
 	return nullptr;

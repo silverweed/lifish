@@ -5,7 +5,7 @@
 using lif::Controllable;
 
 Controllable::Controllable(lif::Entity& owner,
-		const std::array<sf::Keyboard::Key, lif::Controls::CONTROLS_NUM>& controls,
+		const std::array<sf::Keyboard::Key, lif::controls::CONTROLS_NUM>& controls,
 		short& joystickUsed)
 	: lif::Component(owner)
 	, controls(controls)
@@ -39,13 +39,13 @@ void Controllable::update() {
 			else if (horizontal > lif::JOYSTICK_INPUT_THRESHOLD)
 				dir = lif::Direction::RIGHT;
 		} else {
-			if (sf::Keyboard::isKeyPressed(controls[lif::Controls::CTRL_UP]))
+			if (sf::Keyboard::isKeyPressed(controls[lif::controls::CTRL_UP]))
 				dir = lif::Direction::UP;
-			else if (sf::Keyboard::isKeyPressed(controls[lif::Controls::CTRL_LEFT]))
+			else if (sf::Keyboard::isKeyPressed(controls[lif::controls::CTRL_LEFT]))
 				dir = lif::Direction::LEFT;
-			else if (sf::Keyboard::isKeyPressed(controls[lif::Controls::CTRL_DOWN]))
+			else if (sf::Keyboard::isKeyPressed(controls[lif::controls::CTRL_DOWN]))
 				dir = lif::Direction::DOWN;
-			else if (sf::Keyboard::isKeyPressed(controls[lif::Controls::CTRL_RIGHT]))
+			else if (sf::Keyboard::isKeyPressed(controls[lif::controls::CTRL_RIGHT]))
 				dir = lif::Direction::RIGHT;
 		}
 	}

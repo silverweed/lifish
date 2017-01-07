@@ -16,7 +16,7 @@ FreeBullet::FreeBullet(const sf::Vector2f& pos, lif::Angle angle,
 		const lif::BulletInfo& info, const lif::Entity *const source)
 	: lif::Bullet(pos, info, source)
 {
-	addComponent(new lif::FreeMoving(*this, lif::Conf::Bullet::BASE_SPEED * info.speed,
+	addComponent(new lif::FreeMoving(*this, lif::conf::bullet::BASE_SPEED * info.speed,
 				sf::Vector2f(std::sin(angle.asRadians()), -std::cos(angle.asRadians()))));
 	collider = addComponent(new lif::Collider(*this, [this] (lif::Collider&) {
 		// on collision
@@ -24,7 +24,7 @@ FreeBullet::FreeBullet(const sf::Vector2f& pos, lif::Angle angle,
 		if (!klb->isKilled()) {
 			klb->kill();
 		}
-	}, lif::Layers::BOSS_BULLETS, sf::Vector2f(data.size, data.size)));
+	}, lif::c_layers::BOSS_BULLETS, sf::Vector2f(data.size, data.size)));
 
 	position.x += (TILE_SIZE - data.size) / 2;
 	position.y += (TILE_SIZE - data.size) / 2;

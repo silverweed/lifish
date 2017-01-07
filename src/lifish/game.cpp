@@ -12,11 +12,11 @@ std::array<unsigned short, lif::MAX_PLAYERS> lif::playerContinues;
 
 bool lif::init() {
 	if (!lif::initCore()) return false;
-	lif::playerContinues.fill(lif::Conf::Player::INITIAL_CONTINUES);
-	lif::Controls::useJoystick.fill(-1);
+	lif::playerContinues.fill(lif::conf::player::INITIAL_CONTINUES);
+	lif::controls::useJoystick.fill(-1);
 
 	// Setup collision layers
-	lif::Layers::init();
+	lif::c_layers::init();
 
 	return true;
 }

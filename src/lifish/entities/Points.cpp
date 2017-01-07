@@ -13,14 +13,14 @@ using lif::Points;
 Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color, unsigned short charSize) 
 	: lif::Entity(pos)
 	, initialPos(pos)
-	, text(lif::getAsset("fonts", lif::Fonts::POINTS), str, pos, color, sf::Color::Black)
+	, text(lif::getAsset("fonts", lif::fonts::POINTS), str, pos, color, sf::Color::Black)
 {
 	text.setCharacterSize(charSize);
 	text.setShadowSpacing(1.5, 1);
 
 	addComponent(new lif::AxisMoving(*this, SPEED, lif::Direction::UP));
 	addComponent(new lif::Drawable(*this, text));
-	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::POINTS));
+	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::POINTS));
 	addComponent(new lif::Temporary(*this, [this] () {
 		return (initialPos - position).y >= 20;
 	}));

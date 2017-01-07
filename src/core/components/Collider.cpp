@@ -4,7 +4,7 @@
 
 using lif::Collider;
 
-Collider::Collider(lif::Entity& owner, lif::Layers::Layer layer, const sf::Vector2f& size,
+Collider::Collider(lif::Entity& owner, lif::c_layers::Layer layer, const sf::Vector2f& size,
 		const sf::Vector2f& offset, bool phantom)
 	: lif::Component(owner)
 	, phantom(phantom)
@@ -14,7 +14,7 @@ Collider::Collider(lif::Entity& owner, lif::Layers::Layer layer, const sf::Vecto
 {}
 
 Collider::Collider(lif::Entity& owner, CollisionFunc onCollision,
-		lif::Layers::Layer layer, const sf::Vector2f& size, 
+		lif::c_layers::Layer layer, const sf::Vector2f& size, 
 		const sf::Vector2f& offset, bool phantom)
 	: lif::Component(owner)
 	, phantom(phantom)
@@ -54,11 +54,11 @@ sf::IntRect Collider::getRect() const {
 }
 
 bool Collider::collidesWith(const lif::Collider& other) const {
-	return lif::Layers::collide[layer][other.layer];
+	return lif::c_layers::collide[layer][other.layer];
 }
 
 bool Collider::isSolidFor(const lif::Collider& other) const {
-	return lif::Layers::solid[layer][other.layer];
+	return lif::c_layers::solid[layer][other.layer];
 }
 
 std::vector<std::weak_ptr<Collider>> Collider::getColliding() const { 
