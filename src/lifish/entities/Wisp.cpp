@@ -2,6 +2,7 @@
 #include "Collider.hpp"
 #include "collision_layers.hpp"
 #include "AxisMoving.hpp"
+#include "conf/enemy.hpp"
 
 using lif::Wisp;
 
@@ -12,7 +13,7 @@ Wisp::Wisp(const sf::Vector2f& pos, const lif::EnemyInfo& info) : lif::Enemy(pos
 void Wisp::update() {
 	lif::Enemy::update();
 
-	moving->setSpeed(1 - (inWall ? IN_WALL_SPEED_REDUCTION : 0), true);
+	moving->setSpeed(1 - (inWall ? lif::conf::enemy::wisp::IN_WALL_SPEED_REDUCTION : 0), true);
 	inWall = false;
 }
 

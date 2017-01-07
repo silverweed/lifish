@@ -7,6 +7,11 @@ namespace lif {
 namespace conf {
 	namespace enemy {
 		const sf::Time DEATH_TIME = sf::seconds(2);
+
+		namespace wisp {
+			/** Wisp's speed in walls is (1 - IN_WALL_SPEED_REDUCTION) * speed */
+			constexpr float IN_WALL_SPEED_REDUCTION = 0.5;
+		}
 	}
 }
 

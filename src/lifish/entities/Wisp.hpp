@@ -6,8 +6,6 @@ namespace lif {
 
 class Wisp : public lif::Enemy {
 
-	static constexpr float IN_WALL_SPEED_REDUCTION = 0.3;
-
 	bool inWall = false;
 
 	bool _checkCollision(lif::Collider& c) override;
