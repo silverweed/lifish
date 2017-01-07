@@ -10,6 +10,12 @@
 	collide[a][b] = true; \
 	collide[b][a] = true;
 
+#define DOES_NOT_COLLIDE(a, b) \
+	collide[a][b] = false; \
+	collide[b][a] = false; \
+	solid[a][b] = false; \
+	solid[b][a] = false;
+
 /** Defines layer `a` to be "solid" for `b` and vice-versa.
  *  Implies COLLIDES(a, b).
  */
@@ -34,6 +40,8 @@ void lif::c_layers::init() {
 
 	// Default layer collides with everything
 	collide[L::DEFAULT].fill(true);
+	// ...except with Teleport; else, entities like Fire would prevent teleporting
+	DOES_NOT_COLLIDE(L::DEFAULT, L::TELEPORTS)
 
 	COLLIDES(L::PLAYERS, L::ENEMIES)
 	COLLIDES(L::PLAYERS, L::ENEMIES_IGNORE_BREAKABLES)
