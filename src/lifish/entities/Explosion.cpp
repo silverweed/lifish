@@ -108,12 +108,11 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 			++propagation[dir];
 
 			// Check if a solid fixed entity blocks propagation in this direction
-			auto fxdlist = entities.getFixedAt(new_tile.x, new_tile.y);
-			for (const auto& fxd : fxdlist) {
-				const auto fxdcld = fxd.get().get<Game::Collider>();
-				if (fxdcld != nullptr && Game::Layers::solid[fxdcld->getLayer()][
-						Game::Layers::EXPLOSIONS]) 
-				{ 
+			for (auto ent : entities.getEntitiesAtTile(new_tile)) {
+				const auto entcld = ent.lock()->get<Game::Collider>();
+				if (entcld != nullptr && Game::Layers::solid[entcld->getLayer()][
+						Game::Layers::EXPLOSIONS])
+				{
 					propagating[dir] = false;
 					blocked[dir] = true;
 					break;

@@ -395,18 +395,13 @@ bool LevelManager::canGo(const Game::AxisMoving& am, const Game::Direction dir) 
 	if (collider == nullptr)
 		return true;
 
-	const auto fixed = entities.getFixedAt(iposx, iposy);
-	for (const auto& f : fixed) {
-		const auto fcollider = f.get().get<Game::Collider>();
+	for (auto ptr : entities.getEntitiesAtTile(sf::Vector2i(iposx, iposy))) {
+		auto e = ptr.lock();
+		if (e->get<Game::Fixed>() == nullptr) continue;
+		const auto fcollider = e->get<Game::Collider>();
 		if (fcollider != nullptr && collider->isSolidFor(*fcollider))
 			return false;
 	}
-
-	// TODO
-	//const auto bosses = lm->getBosses();
-	//const sf::FloatRect r(iposx, iposy, TILE_SIZE, TILE_SIZE);
-	//for (auto& boss : bosses)
-		//if (boss->intersects(r)) return false;
 
 	return true;
 }

@@ -50,10 +50,7 @@ class EntityGroup final : private sf::NonCopyable {
 	/** The colliders of entities which have one */
 	std::vector<std::weak_ptr<Game::Collider>> collidingEntities;
 
-	/** The static entities, which are always grid-aligned and cannot move */
-	std::array<std::vector<std::weak_ptr<Game::Entity>>, Game::LEVEL_WIDTH * Game::LEVEL_HEIGHT> fixedEntities;
-
-	/** The list of the killable entities, which ought to be removed when 
+	/** The list of the killable entities, which ought to be removed when
 	 *  their `isKilled()` method yields true.
 	 */
 	std::list<std::weak_ptr<Game::Killable>> killables;
@@ -74,29 +71,15 @@ class EntityGroup final : private sf::NonCopyable {
 	 */
 	void _checkDead();
 
-	/** @return The list of fixed entities in `tile` (empty vector if none) */
-	auto _fixedAt(const sf::Vector2i& tile) -> std::vector<std::weak_ptr<Game::Entity>>&;
-	/** const version of `_fixedAt` */
-	auto _fixedAt(const sf::Vector2i& tile) const -> const std::vector<std::weak_ptr<Game::Entity>>&;
-	/** Adds a fixed entity at tile x, y. Fails silently if x or y are out of bounds. */
-	void _addFixedAt(unsigned short x, unsigned short y, std::shared_ptr<Game::Entity> e);
-	/** Removes fixed entity `e` from tile x, y. Fails silently if x or y are out of bounds or if `e` is not
-	 *  at that tile.
-	 */
-	void _rmFixedAt(unsigned short x, unsigned short y, const Game::Entity& e);
-
 	/** Iterate over aux collections and remove all expired weak pointers. 
 	 *  Note that, differently from the `_check*` methods, the `_prune*` ones do NOT
 	 *  affect the main `entities` collection.
 	 */
 	void _pruneAll();
-	void _pruneFixed();
 	void _pruneColliding();
 
 	Game::Entity* _putInAux(std::shared_ptr<Game::Entity> entity);
 
-	/** @return whether `entity` is in this group's fixedEntities */
-	bool _isManagedFixed(std::shared_ptr<Game::Entity> entity) const;
 	/** @return whether a Killable in this group's `killables` refers to `entity` */
 	bool _isManagedKillable(std::shared_ptr<Game::Entity> entity) const;
 	/** @return whether a Collider in this group's `collidingEntities` refers to `entity` */
@@ -147,14 +130,12 @@ public:
 	void validate();
 	void updateAll();
 
-	/** Returns the fixed entity at tile (x, y), where x and y range from 1 to width/height.
-	 *  Returns an empty vector if x or y are out of bounds.
-	 */ 
-	std::vector<std::reference_wrapper<Game::Entity>> getFixedAt(unsigned short x, unsigned short y) const;
-
 	auto getColliding() -> std::vector<std::weak_ptr<Game::Collider>>& {
 		return collidingEntities;
 	}
+
+	/** @return all entities whose tile is `tile` */
+	auto getEntitiesAtTile(const sf::Vector2i& tile) const -> std::vector<std::weak_ptr<Game::Entity>>;
 
 	inline void mtxLock() const {
 #ifdef MULTITHREADED

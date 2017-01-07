@@ -7,10 +7,7 @@
 
 using Game::EntityGroup;
 
-EntityGroup::EntityGroup() {
-	for (auto& f : fixedEntities)
-		f.clear();
-}
+EntityGroup::EntityGroup() {}
 
 void EntityGroup::validate() {
 	_pruneAll();
@@ -44,28 +41,20 @@ void EntityGroup::remove(std::shared_ptr<Game::Entity> entity) {
 	mtxUnlock();
 }
 
+auto EntityGroup::getEntitiesAtTile(const sf::Vector2i& tile) const -> std::vector<std::weak_ptr<Game::Entity>> {
+	std::vector<std::weak_ptr<Game::Entity>> ents;
+	for (auto& e : entities) {
+		if (Game::tile(e->getPosition()) == tile)
+			ents.push_back(e);
+	}
+	return ents;
+}
+
 void EntityGroup::clear() {
 	mtxLock();
 	entities.clear();
 	mtxUnlock();
 	collidingEntities.clear();
-}
-
-auto EntityGroup::getFixedAt(unsigned short x, unsigned short y) const
-		-> std::vector<std::reference_wrapper<Game::Entity>>
-{
-	std::vector<std::reference_wrapper<Game::Entity>> fxd;
-
-	if (x < 1 || x > Game::LEVEL_WIDTH || y < 1 || y > Game::LEVEL_HEIGHT)
-		return fxd;
-
-	for (const auto& f : _fixedAt(sf::Vector2i(x, y))) 
-		if (!f.expired()) {
-			auto shd = f.lock();
-			if (shd.get() != nullptr)
-				fxd.push_back(*shd.get());
-		}
-	return fxd;
 }
 
 Game::Entity* EntityGroup::_putInAux(std::shared_ptr<Game::Entity> entity) {
@@ -81,37 +70,11 @@ Game::Entity* EntityGroup::_putInAux(std::shared_ptr<Game::Entity> entity) {
 		}
 	}
 
-	// Put an entity marked as `Fixed` in fixedEntities
-	if (entity->get<Game::Fixed>() != nullptr) {
-		const auto tile = Game::tile(entity->getPosition());
-		_addFixedAt(tile.x, tile.y, entity);
-	}
-
 	return entity.get();
 }
 
-auto EntityGroup::_fixedAt(const sf::Vector2i& tile) -> std::vector<std::weak_ptr<Game::Entity>>& {
-	return fixedEntities[(tile.y - 1) * Game::LEVEL_WIDTH + tile.x - 1];
-}
-
-auto EntityGroup::_fixedAt(const sf::Vector2i& tile) const -> const std::vector<std::weak_ptr<Game::Entity>>& {
-	return fixedEntities[(tile.y - 1) * Game::LEVEL_WIDTH + tile.x - 1];
-}
-
 void EntityGroup::_pruneAll() {
-	_pruneFixed();
 	_pruneColliding();
-}
-
-void EntityGroup::_pruneFixed() {
-	for (unsigned i = 0; i < fixedEntities.size(); ++i) {
-		for (auto it = fixedEntities[i].begin(); it != fixedEntities[i].end(); ) {
-			if (it->expired())
-				it = fixedEntities[i].erase(it);
-			else
-				++it;
-		}
-	}
 }
 
 void EntityGroup::_pruneColliding() {
@@ -123,21 +86,6 @@ void EntityGroup::_pruneColliding() {
 	}
 }
 
-void EntityGroup::_addFixedAt(unsigned short x, unsigned short y, std::shared_ptr<Game::Entity> e) {
-	if (x < 1 || x > Game::LEVEL_WIDTH || y < 1 || y > Game::LEVEL_HEIGHT)
-		return;
-	fixedEntities[(y - 1) * Game::LEVEL_WIDTH + x - 1].push_back(e);
-}
-
-void EntityGroup::_rmFixedAt(unsigned short x, unsigned short y, const Game::Entity& entity) {
-	if (x < 1 || x > Game::LEVEL_WIDTH || y < 1 || y > Game::LEVEL_HEIGHT)
-		return;
-	auto& fixed = fixedEntities[(y - 1) * Game::LEVEL_WIDTH + x - 1];
-	std::remove_if(fixed.begin(), fixed.end(), [entity] (std::weak_ptr<Game::Entity> e) {
-		return !e.expired() && e.lock().get() == &entity;
-	});
-}
-
 void EntityGroup::_checkKilled() {
 	for (auto it = killables.begin(); it != killables.end(); ) {
 		if (it->expired()) {
@@ -146,10 +94,6 @@ void EntityGroup::_checkKilled() {
 		}
 		auto klb = it->lock();
 		if (klb->isKilled()) {
-			// Remove this from fixedEntities
-			const auto tile = Game::tile(klb->getOwner().getPosition());
-			_rmFixedAt(tile.x, tile.y, klb->getOwner());
-
 			if (klb->isKillInProgress()) {
 				// Will be finalized later
 				dying.push_back(klb);
@@ -214,12 +158,4 @@ bool EntityGroup::_isManagedCollider(std::shared_ptr<Game::Entity> entity) const
 		[&entity] (std::weak_ptr<Game::Collider> p) {
 			return !p.expired() && &p.lock().get()->getOwner() == entity.get();
 		}) != collidingEntities.end();
-}
-
-bool EntityGroup::_isManagedFixed(std::shared_ptr<Game::Entity> entity) const {
-	const auto& fx = _fixedAt(Game::tile(entity.get()->getPosition()));
-	return std::find_if(fx.begin(), fx.end(),
-		[&entity] (std::weak_ptr<Game::Entity> p) {
-			return !p.expired() && p.lock().get() == entity.get();
-		}) != fx.end();
 }
