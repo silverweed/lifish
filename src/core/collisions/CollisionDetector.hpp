@@ -25,6 +25,8 @@ public:
 	explicit CollisionDetector(Game::EntityGroup& group, const sf::FloatRect& levelLimit);
 	virtual ~CollisionDetector() {}
 
+	sf::FloatRect getLevelLimit() const { return levelLimit; }
+
 	virtual void update() = 0;
 
 #ifndef RELEASE
