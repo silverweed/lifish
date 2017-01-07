@@ -2,17 +2,17 @@
 
 #include "Moving.hpp"
 
-namespace Game {
+namespace lif {
 
 /**
  * An object moving in any direction. Does not align to grid.
  */
-class FreeMoving : public Game::Moving {
+class FreeMoving : public lif::Moving {
 	/** Normalized velocity vector */
 	sf::Vector2f velocity;
 
 public:
-	explicit FreeMoving(Game::Entity& owner, float speed, 
+	explicit FreeMoving(lif::Entity& owner, float speed, 
 			sf::Vector2f velocity = sf::Vector2f(0.f, 0.f));
 
 	sf::Vector2f getVelocity() const { return velocity; }

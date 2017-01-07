@@ -18,18 +18,18 @@
 #	include "game_logic.hpp"
 #endif
 
-using Game::GameContext;
+using lif::GameContext;
 
 GameContext::GameContext(sf::Window& window, const std::string& levelsetName, short startLv)
-	: Game::WindowContext()
+	: lif::WindowContext()
 	, window(window)
 	, lm()
 	, sidePanel(lm)
 	, wlHandler(lm, sidePanel)
 {
-	handlers.push_back(std::unique_ptr<Game::EventHandler>(new Game::BaseEventHandler));
+	handlers.push_back(std::unique_ptr<lif::EventHandler>(new lif::BaseEventHandler));
 #ifndef RELEASE
-	handlers.push_back(std::unique_ptr<Game::EventHandler>(new Game::Debug::DebugEventHandler(*this)));
+	handlers.push_back(std::unique_ptr<lif::EventHandler>(new lif::Debug::DebugEventHandler(*this)));
 #endif
 
 	int lvnum = startLv;
@@ -41,30 +41,30 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, sh
 
 	// Create the players
 	lm.createNewPlayers();
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+	for (unsigned short i = 0; i < lif::MAX_PLAYERS; ++i) {
 		auto p = lm.getPlayer(i + 1);
 		if (p != nullptr)
-			p->get<Game::Controllable>()->setWindow(window);
+			p->get<lif::Controllable>()->setWindow(window);
 	}
 
 	lm.setLevel(ls, lvnum);
 
 	const auto level = lm.getLevel();
 	if (level == nullptr)
-		throw std::invalid_argument("Level " + Game::to_string(lvnum) + " not found in levelset!");
+		throw std::invalid_argument("Level " + lif::to_string(lvnum) + " not found in levelset!");
 
 	// Setup the music
-	Game::musicManager->set(level->get<Game::Music>()->getMusic())
-			.setVolume(Game::options.musicVolume).play();
+	lif::musicManager->set(level->get<lif::Music>()->getMusic())
+			.setVolume(lif::options.musicVolume).play();
 
 	// Ensure lm is not paused
 	lm.resume();
-	gameRenderTex.create((Game::LEVEL_WIDTH + 2) * Game::TILE_SIZE, (Game::LEVEL_HEIGHT + 2) * Game::TILE_SIZE);
-	sidePanelRenderTex.create(Game::SIDE_PANEL_WIDTH, (Game::LEVEL_HEIGHT + 2) * Game::TILE_SIZE);
+	gameRenderTex.create((lif::LEVEL_WIDTH + 2) * lif::TILE_SIZE, (lif::LEVEL_HEIGHT + 2) * lif::TILE_SIZE);
+	sidePanelRenderTex.create(lif::SIDE_PANEL_WIDTH, (lif::LEVEL_HEIGHT + 2) * lif::TILE_SIZE);
 }
 
 void GameContext::setActive(bool b) {
-	Game::Activable::setActive(b);
+	lif::Activable::setActive(b);
 	if (active)
 		lm.resume();
 }
@@ -73,14 +73,14 @@ void GameContext::update() {
 	// Handle win / loss cases
 	wlHandler.handleWinLose();
 	switch (wlHandler.getState()) {
-	case Game::WinLoseHandler::State::ADVANCING_LEVEL:
-		newContext = Game::CTX_INTERLEVEL;
+	case lif::WinLoseHandler::State::ADVANCING_LEVEL:
+		newContext = lif::CTX_INTERLEVEL;
 		return;
-	case Game::WinLoseHandler::State::ADVANCED_LEVEL:
+	case lif::WinLoseHandler::State::ADVANCED_LEVEL:
 		_advanceLevel();	
 		break;
-	case Game::WinLoseHandler::State::EXIT_GAME:
-		newContext = Game::CTX_UI;
+	case lif::WinLoseHandler::State::EXIT_GAME:
+		newContext = lif::CTX_UI;
 		break;
 	default: 
 		break;
@@ -104,7 +104,7 @@ void GameContext::update() {
 bool GameContext::handleEvent(sf::Window&, sf::Event event) {
 	auto pause_game = [this] () {
 		lm.pause();
-		newContext = Game::CTX_UI;
+		newContext = lif::CTX_UI;
 	};
 	switch (event.type) {
 	case sf::Event::JoystickButtonPressed:
@@ -121,11 +121,11 @@ bool GameContext::handleEvent(sf::Window&, sf::Event event) {
 			pause_game();
 			return true;
 		case sf::Keyboard::Escape:
-			for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+			for (unsigned short i = 0; i < lif::MAX_PLAYERS; ++i) {
 				auto player = lm.getPlayer(i + 1);
 				if (player != nullptr) {
 					player->setRemainingLives(0);
-					player->get<Game::Killable>()->kill();
+					player->get<lif::Killable>()->kill();
 				}
 			}
 			return true;
@@ -147,7 +147,7 @@ void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const 
 		Debug::DebugRenderer::drawColliders(gameRenderTex, lm.getEntities());
 	if ((debug >> DBG_DRAW_SH_CELLS) & 1)
 		Debug::DebugRenderer::drawSHCells(gameRenderTex,
-				static_cast<const Game::SHCollisionDetector&>(
+				static_cast<const lif::SHCollisionDetector&>(
 					lm.getCollisionDetector()));
 #endif
 	gameRenderTex.display();
@@ -185,7 +185,7 @@ void GameContext::_printCDStats() const {
 	std::cerr.flags(flags);
 }
 
-static float get_percentage(const Game::Debug::Stats& stats, const char *totn, const char *name, char *percentage) {
+static float get_percentage(const lif::Debug::Stats& stats, const char *totn, const char *name, char *percentage) {
 	const auto tot = stats.timer.safeGet(totn);
 	if (tot < 0) return -1;
 	const float ratio = stats.timer.safeGet(name) / tot;
@@ -208,16 +208,16 @@ void GameContext::_printGameStats() const {
 		const float ratio = get_percentage(dbgStats, "tot", t, percentage);
 		std::cerr << "\r\n | " << std::left << std::setw(12) << t << ": " 
 			<< std::setw(7) << dbgStats.timer.safeGet(t) << " " << percentage
-			<< (ratio >= 0 ? " " + Game::to_string(int(ratio*100)) + "%" : "");
+			<< (ratio >= 0 ? " " + lif::to_string(int(ratio*100)) + "%" : "");
 	}
 	std::cerr << "\r\n -- logic: --";
-	for (unsigned short i = 0; i < Game::Logic::functions.size(); ++i) {
+	for (unsigned short i = 0; i < lif::Logic::functions.size(); ++i) {
 		std::stringstream t;
 		t << "logic_" << i;
 		char percentage[21] = {0};
 		const float ratio = get_percentage(dbgStats, "logic", t.str().c_str(), percentage);
 		std::cerr << "\r\n | " << i << ": " << std::setw(7) << dbgStats.timer.safeGet(t.str())
-			<< " " << percentage << (ratio >= 0 ? " " + Game::to_string(int(ratio*100)) + "%" : "");
+			<< " " << percentage << (ratio >= 0 ? " " + lif::to_string(int(ratio*100)) + "%" : "");
 	}
 	std::cerr << std::endl;
 	std::cerr.flags(flags);
@@ -238,19 +238,19 @@ void GameContext::_advanceLevel() {
 
 	// Resurrect any dead player which has a 'continue' left and
 	// remove temporary effects
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+	for (unsigned short i = 0; i < lif::MAX_PLAYERS; ++i) {
 		auto player = lm.getPlayer(i + 1);
-		if ((player == nullptr || player->get<Game::Killable>()->isKilled())) {
-			if (Game::playerContinues[i] > 0) {
-				--Game::playerContinues[i];
+		if ((player == nullptr || player->get<lif::Killable>()->isKilled())) {
+			if (lif::playerContinues[i] > 0) {
+				--lif::playerContinues[i];
 				auto player = std::make_shared<Player>(sf::Vector2f(0, 0), i + 1);
-				player->get<Game::Controllable>()->setWindow(window); 
+				player->get<lif::Controllable>()->setWindow(window); 
 				lm.setPlayer(i + 1, player);
 			} else {
 				lm.removePlayer(i + 1);
 			}
 		} else if (player != nullptr) {
-			auto bns = player->get<Game::Bonusable>();
+			auto bns = player->get<lif::Bonusable>();
 			bns->expireTemporaryBonuses();
 		}
 	}
@@ -259,10 +259,10 @@ void GameContext::_advanceLevel() {
 	{
 		const auto level = lm.getLevel();
 		if (level == nullptr)
-			throw std::logic_error("No levels found after " + Game::to_string(lvnum) 
+			throw std::logic_error("No levels found after " + lif::to_string(lvnum) 
 					+ " but end game not triggered!");
-		Game::musicManager->set(level->get<Game::Music>()->getMusic())
-			.setVolume(Game::options.musicVolume)
+		lif::musicManager->set(level->get<lif::Music>()->getMusic())
+			.setVolume(lif::options.musicVolume)
 			.play();
 	}
 }

@@ -4,24 +4,24 @@
 #include <queue>
 #include "Spawning.hpp"
 
-namespace Game {
+namespace lif {
 
 /**
  * This class is a generic Spawning component endued with a buffer.
  * Useful for complex behaviours where several entities may be spawned simultaneously
  * or in general when passing lambdas to the constructor of Spawning is unsuitable.
  */
-class BufferedSpawner : public Game::Spawning {
+class BufferedSpawner : public lif::Spawning {
 protected:
-	std::queue<std::unique_ptr<Game::Entity>> spawned;
+	std::queue<std::unique_ptr<lif::Entity>> spawned;
 
 public:
-	explicit BufferedSpawner(Game::Entity& owner);
+	explicit BufferedSpawner(lif::Entity& owner);
 
 	bool shouldSpawn() const override;
-	std::unique_ptr<Game::Entity> spawn() override;
+	std::unique_ptr<lif::Entity> spawn() override;
 
-	void addSpawned(Game::Entity *e);
+	void addSpawned(lif::Entity *e);
 };
 
 }

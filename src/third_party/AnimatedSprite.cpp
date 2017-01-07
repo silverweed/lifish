@@ -101,8 +101,8 @@ sf::FloatRect AnimatedSprite::getLocalBounds() const
 {
     sf::IntRect rect = m_animation->getFrame(m_currentFrame);
 
-    float width = static_cast<float>(Game::abs(rect.width));
-    float height = static_cast<float>(Game::abs(rect.height));
+    float width = static_cast<float>(lif::abs(rect.width));
+    float height = static_cast<float>(lif::abs(rect.height));
 
     return sf::FloatRect(0.f, 0.f, width, height);
 }

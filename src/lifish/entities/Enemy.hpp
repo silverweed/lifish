@@ -7,7 +7,7 @@
 #include "Attack.hpp"
 #include "game.hpp"
 
-namespace Game {
+namespace lif {
 
 class Enemy;
 class Collider;
@@ -34,11 +34,11 @@ struct EnemyInfo {
  * or its AlienSprite according to the morphed state of the Enemy.
  */
 class EnemyDrawableProxy : public sf::Drawable {
-	const Game::Enemy& enemy;
-	const Game::Animated& morphedAnim;
+	const lif::Enemy& enemy;
+	const lif::Animated& morphedAnim;
 
 public:
-	explicit EnemyDrawableProxy(const Game::Enemy& e);
+	explicit EnemyDrawableProxy(const lif::Enemy& e);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
@@ -47,64 +47,64 @@ public:
  * An Enemy is a MovingEntity which (usually) shoots towards players 
  * when they see them and is vulnerable to Bombs.
  */
-class Enemy : public Game::Entity {
+class Enemy : public lif::Entity {
 
 	friend class EnemyDrawableProxy;
 
-	std::unique_ptr<Game::EnemyDrawableProxy> drawProxy;
+	std::unique_ptr<lif::EnemyDrawableProxy> drawProxy;
 
 protected:
 	constexpr static unsigned short WALK_N_FRAMES = 4;
 	constexpr static int YELL_DELAY = 1000;
 	
 	const unsigned short id;
-	const Game::EnemyInfo info;
+	const lif::EnemyInfo info;
 
-	Game::Shooting *shooting = nullptr;
-	Game::AutoShooting *autoShooting = nullptr;
-	Game::Collider *collider = nullptr;
-	Game::Animated *animated = nullptr;
-	Game::AxisMoving *moving = nullptr;
-	Game::Killable *killable = nullptr;
-	Game::MovingAnimator *movingAnimator = nullptr;
-	Game::AxisSighted *sighted = nullptr;
-	Game::AI *ai = nullptr;
-	Game::RegularEntityDeath *death = nullptr;
+	lif::Shooting *shooting = nullptr;
+	lif::AutoShooting *autoShooting = nullptr;
+	lif::Collider *collider = nullptr;
+	lif::Animated *animated = nullptr;
+	lif::AxisMoving *moving = nullptr;
+	lif::Killable *killable = nullptr;
+	lif::MovingAnimator *movingAnimator = nullptr;
+	lif::AxisSighted *sighted = nullptr;
+	lif::AI *ai = nullptr;
+	lif::RegularEntityDeath *death = nullptr;
 
 	std::array<sf::Sprite, 4> shootFrame;
 
-	Game::Clock *yellClock = nullptr,
+	lif::Clock *yellClock = nullptr,
 		    *dashClock = nullptr;
 	sf::Time morphDuration;
 
 	/** True when the enemy is morphed into a harmless Alien during EXTRA game */
 	bool morphed = false;
-	Game::AlienSprite *alienSprite = nullptr;
+	lif::AlienSprite *alienSprite = nullptr;
 
 	const float originalSpeed;
 
 	/** Used to perform some actions before calling 'hurtByExplosions'.
 	 *  @return true if 'hurtByExplosions' should NOT be called.
 	 */
-	virtual bool _checkCollision(Game::Collider& coll);
+	virtual bool _checkCollision(lif::Collider& coll);
 	void _checkShoot();
 	/** @return Whether entity `e` is within our Shooting range or not */
-	bool _inRange(const Game::Entity *const e) const;
+	bool _inRange(const lif::Entity *const e) const;
 
 public:
 	constexpr static float BASE_SPEED = 75.f;
 
-	unsigned short distanceWithNearestPlayer = 2 * Game::LEVEL_WIDTH * Game::TILE_SIZE;
+	unsigned short distanceWithNearestPlayer = 2 * lif::LEVEL_WIDTH * lif::TILE_SIZE;
 
 	// TODO: eliminate need for `id`
-	explicit Enemy(const sf::Vector2f& pos, unsigned short id, const Game::EnemyInfo& info);
+	explicit Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& info);
 
 	void setMorphed(bool b);
 	bool isMorphed() const { return morphed; }
 
 	void update() override;
 	void setOrigin(const sf::Vector2f& pos) override {
-		Game::Entity::setOrigin(pos);
+		lif::Entity::setOrigin(pos);
 		for (auto& frame : shootFrame)
 			frame.setOrigin(pos);
 	}

@@ -2,14 +2,14 @@
 #include "conf/global.hpp"
 #include "Clock.hpp"
 
-using Game::LevelTime;
+using lif::LevelTime;
 
 LevelTime::LevelTime(sf::Time time)
-	: Game::Entity()
+	: lif::Entity()
 	, initialTime(time)
 {
-	clock = addComponent(new Game::Clock(*this)); 
-	extraGameClock = addComponent(new Game::Clock(*this)); 
+	clock = addComponent(new lif::Clock(*this)); 
+	extraGameClock = addComponent(new lif::Clock(*this)); 
 }
 
 sf::Time LevelTime::getRemainingTime() const {
@@ -17,7 +17,7 @@ sf::Time LevelTime::getRemainingTime() const {
 }
 
 sf::Time LevelTime::getRemainingExtraGameTime() const {
-	return Game::Conf::EXTRA_GAME_DURATION - extraGameClock->getElapsedTime();
+	return lif::Conf::EXTRA_GAME_DURATION - extraGameClock->getElapsedTime();
 }
 
 void LevelTime::startExtraGame() {
@@ -31,7 +31,7 @@ void LevelTime::setTime(sf::Time time) {
 }
 
 void LevelTime::update() {
-	Game::Entity::update();
+	lif::Entity::update();
 	if (isHurryUp) return;
 
 	int diff = int(getRemainingTime().asSeconds());

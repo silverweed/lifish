@@ -4,7 +4,7 @@ template<class T>
 T* Entity::addComponent(T* comp) {
 	if (T::requiredUnique() && get<T>() != nullptr)
 		throw std::logic_error("Two components of the same type were added to this Entity!");
-	components.push_back(std::unique_ptr<Game::Component>(comp));
+	components.push_back(std::unique_ptr<lif::Component>(comp));
 	return comp;
 } 
 

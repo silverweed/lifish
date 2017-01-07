@@ -7,8 +7,8 @@
 #include <typeinfo>
 
 using json = nlohmann::json;
-using Game::LevelSet;
-using Game::Level;
+using lif::LevelSet;
+using lif::Level;
 
 /** Optional additional metadata; all values must be strings */
 static constexpr const char* AVAIL_METADATA[] = {
@@ -80,11 +80,11 @@ void LevelSet::loadFromFile(const std::string& path) {
 		auto atk = enemyinfo["attack"];
 		auto atktype = atk["type"];
 		
-		enemies[enemynum].attack.type = Game::AttackType::AXIS_BOUND;
+		enemies[enemynum].attack.type = lif::AttackType::AXIS_BOUND;
 		for (unsigned short i = 0; i < atktype.size(); ++i) {
 			AttackType type;
 			const auto at = atktype[i].get<std::string>();
-			if (!Game::stringToAttackType(at, type))
+			if (!lif::stringToAttackType(at, type))
 				throw std::invalid_argument(at.c_str());
 
 			enemies[enemynum].attack.type = AttackType(
@@ -123,7 +123,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 		if (!range_found) {
 			it = atk.find("tileRange");
 			if (it != atk.end()) {
-				enemies[enemynum].attack.bullet.range = float(it->get<short>() * Game::TILE_SIZE);
+				enemies[enemynum].attack.bullet.range = float(it->get<short>() * lif::TILE_SIZE);
 			}
 		}
 		++enemynum;

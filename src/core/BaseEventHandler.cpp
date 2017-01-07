@@ -3,7 +3,7 @@
 #include "Options.hpp"
 #include <SFML/Graphics.hpp>
 
-using Game::BaseEventHandler;
+using lif::BaseEventHandler;
 
 bool BaseEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 	switch (event.type) {
@@ -11,17 +11,17 @@ bool BaseEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 		window.close();
 		return true;
 	case sf::Event::Resized:
-		static_cast<sf::RenderWindow&>(window).setView(_keepRatio(event.size, Game::options.windowSize));
+		static_cast<sf::RenderWindow&>(window).setView(_keepRatio(event.size, lif::options.windowSize));
 		return true;
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
 		case sf::Keyboard::V:
-			Game::options.vsync = !Game::options.vsync;
-			window.setFramerateLimit(Game::options.vsync ? Game::options.framerateLimit : 0);
+			lif::options.vsync = !lif::options.vsync;
+			window.setFramerateLimit(lif::options.vsync ? lif::options.framerateLimit : 0);
 			return true;
 #ifndef RELEASE
 		case sf::Keyboard::Num0:
-			Game::options.printDrawStats = !Game::options.printDrawStats;
+			lif::options.printDrawStats = !lif::options.printDrawStats;
 			return true;
 #endif
 		default:

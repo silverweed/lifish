@@ -7,9 +7,9 @@
 
 class LoopingMusic;
 
-namespace Game {
+namespace lif {
 
-class Music : public Game::Component {
+class Music : public lif::Component {
 	/** The input sound file for the BGM */
 	sf::InputSoundFile musicInput;
 
@@ -17,13 +17,13 @@ class Music : public Game::Component {
 	std::shared_ptr<LoopingMusic> music;
 
 	/** The music track data */
-	Game::Track track;
+	lif::Track track;
 
 public:
-	explicit Music(Game::Entity& owner, const Game::Track& track);
+	explicit Music(lif::Entity& owner, const lif::Track& track);
 	
 	std::shared_ptr<LoopingMusic> getMusic() const { return music; }
-	const Game::Track& getTrack() const { return track; }
+	const lif::Track& getTrack() const { return track; }
 };
 
 }

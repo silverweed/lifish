@@ -24,42 +24,42 @@
 #include "BreakableWall.hpp"
 #include "ShootingPoint.hpp"
 
-using EntityList = std::list<Game::Entity*>;
+using EntityList = std::list<lif::Entity*>;
 
-void Game::Logic::bombDeployLogic(Game::Entity *e, Game::LevelManager& lm,
+void lif::Logic::bombDeployLogic(lif::Entity *e, lif::LevelManager& lm,
 		EntityList& tbspawned, EntityList&)
 {
 	if (!lm.isPlayer(*e)) return;
-	auto player = static_cast<Game::Player*>(e);
+	auto player = static_cast<lif::Player*>(e);
 
 	const auto pinfo = player->getInfo();
-	if (player->get<Game::Controllable>()->hasFocus() 
+	if (player->get<lif::Controllable>()->hasFocus() 
 		&& player->isAligned() 
-		&& ((Game::Controls::useJoystick[pinfo.id-1] >= 0 
+		&& ((lif::Controls::useJoystick[pinfo.id-1] >= 0 
 			&& sf::Joystick::isButtonPressed(
-				Game::Controls::useJoystick[pinfo.id-1], 
-				Game::Controls::joystickBombKey[pinfo.id-1]))
+				lif::Controls::useJoystick[pinfo.id-1], 
+				lif::Controls::joystickBombKey[pinfo.id-1]))
 			|| sf::Keyboard::isKeyPressed(
-				Game::Controls::players[pinfo.id-1][Game::Controls::CTRL_BOMB]))
+				lif::Controls::players[pinfo.id-1][lif::Controls::CTRL_BOMB]))
 		&& lm.bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs
-		&& lm.canDeployBombAt(Game::tile(player->getPosition())))
+		&& lm.canDeployBombAt(lif::tile(player->getPosition())))
 	{
-		auto bomb = new Game::Bomb(Game::aligned(player->getPosition()), 
+		auto bomb = new lif::Bomb(lif::aligned(player->getPosition()), 
 					*player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius,
 					pinfo.powers.incendiaryBomb);
-		Game::cache.playSound(bomb->get<Game::Sounded>()->getSoundFile("fuse"));
+		lif::cache.playSound(bomb->get<lif::Sounded>()->getSoundFile("fuse"));
 		tbspawned.push_back(bomb);
 	}
 }
 
-void Game::Logic::spawningLogic(Game::Entity *e, Game::LevelManager& lm,
+void lif::Logic::spawningLogic(lif::Entity *e, lif::LevelManager& lm,
 		EntityList& tbspawned, EntityList&)
 {
-	for (auto spawning : e->getAll<Game::Spawning>()) {
+	for (auto spawning : e->getAll<lif::Spawning>()) {
 		while (spawning->shouldSpawn()) {
 			auto spawned = spawning->spawn().release();
 			if (spawned != nullptr) {
-				if (auto expl = dynamic_cast<Game::Explosion*>(spawned))
+				if (auto expl = dynamic_cast<lif::Explosion*>(spawned))
 					expl->propagate(lm);
 				tbspawned.push_back(spawned);	
 			}
@@ -67,57 +67,57 @@ void Game::Logic::spawningLogic(Game::Entity *e, Game::LevelManager& lm,
 	}
 }
 
-void Game::Logic::scoredKillablesLogic(Game::Entity *e, Game::LevelManager&,
+void lif::Logic::scoredKillablesLogic(lif::Entity *e, lif::LevelManager&,
 		EntityList& tbspawned, EntityList&)
 {
-	auto scored = e->get<Game::Scored>();
+	auto scored = e->get<lif::Scored>();
 	if (scored == nullptr || scored->hasGivenPoints()) return;
 	
-	auto klb = e->get<Game::Killable>();
+	auto klb = e->get<lif::Killable>();
 	if (klb != nullptr && klb->isKilled()) {
 		// Special behaviour for bosses
-		const bool is_boss = dynamic_cast<const Game::Boss*>(&klb->getOwner()) != nullptr;
+		const bool is_boss = dynamic_cast<const lif::Boss*>(&klb->getOwner()) != nullptr;
 		if (is_boss && klb->isKillInProgress()) return;
 
 		// Give and spawn points
 		auto target = scored->getTarget();
 		if (target < 0) {
 			// give points to all players
-			for (auto& s : Game::score)
+			for (auto& s : lif::score)
 				s += scored->getPointsGiven();
 			scored->givePoints();
 		} else {
-			Game::score[target - 1] += scored->givePoints();
+			lif::score[target - 1] += scored->givePoints();
 		}
 		auto points = is_boss
-			? new Game::Points(e->getPosition(), scored->getPointsGiven(), sf::Color::Magenta, 30)
-			: new Game::Points(e->getPosition(), scored->getPointsGiven());
-		sf::Vector2f bounds_size(Game::TILE_SIZE, Game::TILE_SIZE);
-		const auto cld = e->get<Game::Collider>();
+			? new lif::Points(e->getPosition(), scored->getPointsGiven(), sf::Color::Magenta, 30)
+			: new lif::Points(e->getPosition(), scored->getPointsGiven());
+		sf::Vector2f bounds_size(lif::TILE_SIZE, lif::TILE_SIZE);
+		const auto cld = e->get<lif::Collider>();
 		if (cld != nullptr)
 			bounds_size = sf::Vector2f(cld->getSize());
 		points->setPosition(sf::Vector2f(
-				Game::centerX(points->getGlobalBounds(), sf::FloatRect(e->getPosition(), bounds_size)),
+				lif::centerX(points->getGlobalBounds(), sf::FloatRect(e->getPosition(), bounds_size)),
 				points->getPosition().y));
 		tbspawned.push_back(points);
 	}
 }
 
-void Game::Logic::bonusGrabLogic(Game::Entity *e, Game::LevelManager &lm, EntityList&, EntityList&) {
-	auto bonus = dynamic_cast<Game::Bonus*>(e);
+void lif::Logic::bonusGrabLogic(lif::Entity *e, lif::LevelManager &lm, EntityList&, EntityList&) {
+	auto bonus = dynamic_cast<lif::Bonus*>(e);
 	if (bonus == nullptr) return;
 	
-	auto grb = bonus->get<Game::Grabbable>();
+	auto grb = bonus->get<lif::Grabbable>();
 	if (grb->isGrabbed()) return;
 	
 	auto player = grb->getGrabbingEntity();
 	if (player == nullptr) return;
 	
-	Game::triggerBonus(lm, bonus->getType(), *static_cast<Game::Player*>(player));
+	lif::triggerBonus(lm, bonus->getType(), *static_cast<lif::Player*>(player));
 	grb->grab();
 }
 
-std::vector<Game::Logic::GameLogicFunc> Game::Logic::functions = {
+std::vector<lif::Logic::GameLogicFunc> lif::Logic::functions = {
 	bombDeployLogic,
 	bonusGrabLogic,
 	scoredKillablesLogic,

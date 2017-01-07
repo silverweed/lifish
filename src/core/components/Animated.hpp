@@ -8,7 +8,7 @@
 #include "AnimatedSprite.hpp"
 #include "Animation.hpp"
 
-namespace Game {
+namespace lif {
 
 class Clock;
 
@@ -16,10 +16,10 @@ class Clock;
  * An Animated is a drawable object whose sprite has a certain
  * number of associated animations.
  */
-class Animated : public Game::Component, public sf::Drawable {
+class Animated : public lif::Component, public sf::Drawable {
 protected:
 	sf::Texture *texture;
-	Game::Clock *frameClock;
+	lif::Clock *frameClock;
 	std::unordered_map<std::string, Animation> animations;
 	std::unordered_map<std::string, sf::Time> frameTimes;
 	sf::Time defaultFrameTime = sf::Time::Zero;
@@ -29,7 +29,7 @@ protected:
 public:
 	COMP_NOT_UNIQUE
 
-	explicit Animated(Game::Entity& owner, const std::string& texture_name);
+	explicit Animated(lif::Entity& owner, const std::string& texture_name);
 	
 	/** Adds a new empty animation to this Animated and returns it */
 	Animation& addAnimation(const std::string& name);
@@ -71,7 +71,7 @@ public:
 	}
 
 	void setPosition(const sf::Vector2f& pos) override {
-		Game::Entity::setPosition(pos);
+		lif::Entity::setPosition(pos);
 		manualPosition = true;
 	}
 };

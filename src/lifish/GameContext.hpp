@@ -9,7 +9,7 @@
 #include "WinLoseHandler.hpp"
 #include "SidePanel.hpp"
 
-namespace Game {
+namespace lif {
 
 class Player;
 
@@ -21,7 +21,7 @@ class DebugEventHandler;
 }
 #endif
 
-class GameContext : public Game::WindowContext {
+class GameContext : public lif::WindowContext {
 public:
 	enum : unsigned {
 		DBG_DRAW_COLLIDERS   = 1,
@@ -31,7 +31,7 @@ public:
 	};
 private:
 #ifndef RELEASE
-       friend class Game::Debug::DebugEventHandler;
+       friend class lif::Debug::DebugEventHandler;
 #endif
 
 	unsigned debug = 0;
@@ -44,10 +44,10 @@ private:
 	mutable sf::RenderTexture sidePanelRenderTex;
 
 	const sf::Window& window;
-	Game::LevelSet ls;
-	Game::LevelManager lm;
-	Game::SidePanel sidePanel;
-	Game::WinLoseHandler wlHandler;
+	lif::LevelSet ls;
+	lif::LevelManager lm;
+	lif::SidePanel sidePanel;
+	lif::WinLoseHandler wlHandler;
 
 #ifndef RELEASE
 	void _printCDStats() const;
@@ -58,12 +58,12 @@ private:
 public:
 	explicit GameContext(sf::Window& window, const std::string& levelsetName, short startLv);
 
-	Game::WinLoseHandler& getWLHandler() { return wlHandler; }
-	const Game::WinLoseHandler& getWLHandler() const { return wlHandler; }
-	Game::LevelManager& getLM() { return lm; }
-	const Game::LevelManager& getLM() const { return lm; }
-	Game::SidePanel& getSidePanel() { return sidePanel; }
-	const Game::SidePanel& getSidePanel() const { return sidePanel; }
+	lif::WinLoseHandler& getWLHandler() { return wlHandler; }
+	const lif::WinLoseHandler& getWLHandler() const { return wlHandler; }
+	lif::LevelManager& getLM() { return lm; }
+	const lif::LevelManager& getLM() const { return lm; }
+	lif::SidePanel& getSidePanel() { return sidePanel; }
+	const lif::SidePanel& getSidePanel() const { return sidePanel; }
 
 	void update() override;
 	bool handleEvent(sf::Window& window, sf::Event evt) override;

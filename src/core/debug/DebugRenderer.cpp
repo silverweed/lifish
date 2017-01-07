@@ -6,13 +6,13 @@
 #define COLLIDER_PHANTOM_COLOR sf::Color(194, 194, 194, 110)
 #define COLLIDER_COMPOUND_COLOR sf::Color(194, 194, 194, 92)
 
-using Game::Debug::DebugRenderer;
+using lif::Debug::DebugRenderer;
 
-void DebugRenderer::drawColliders(sf::RenderTarget& target, const Game::EntityGroup& group) {
-	group.apply([&target] (const Game::Entity *e) {
-		auto cls = e->getAllRecursive<Game::Collider>();
+void DebugRenderer::drawColliders(sf::RenderTarget& target, const lif::EntityGroup& group) {
+	group.apply([&target] (const lif::Entity *e) {
+		auto cls = e->getAllRecursive<lif::Collider>();
 
-		auto draw_coll_rect = [] (sf::RenderTarget& target, const Game::Collider& c, sf::Color color) {
+		auto draw_coll_rect = [] (sf::RenderTarget& target, const lif::Collider& c, sf::Color color) {
 			const auto cr = c.getRect();
 			sf::RectangleShape rect(sf::Vector2f(cr.width - 1, cr.height - 1));
 			rect.setPosition(cr.left, cr.top);
@@ -31,7 +31,7 @@ void DebugRenderer::drawColliders(sf::RenderTarget& target, const Game::EntityGr
 	});
 }
 
-void DebugRenderer::drawSHCells(sf::RenderTarget& target, const Game::SHCollisionDetector& cd) {
+void DebugRenderer::drawSHCells(sf::RenderTarget& target, const lif::SHCollisionDetector& cd) {
 	const unsigned s = cd.getSubdivisions();
 	const auto limit = cd.getLevelLimit();
 	const float w = float(limit.width - limit.left) / s,
@@ -43,8 +43,8 @@ void DebugRenderer::drawSHCells(sf::RenderTarget& target, const Game::SHCollisio
 
 	for (unsigned short i = 0; i < s; ++i)
 		for (unsigned short j = 0; j < s; ++j) {
-			rect.setPosition(sf::Vector2f(i * w + Game::TILE_SIZE,
-						j * h + Game::TILE_SIZE));
+			rect.setPosition(sf::Vector2f(i * w + lif::TILE_SIZE,
+						j * h + lif::TILE_SIZE));
 			target.draw(rect);
 		}
 }

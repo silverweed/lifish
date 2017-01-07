@@ -4,13 +4,13 @@
 #include "Component.hpp"
 #include "ShadedText.hpp"
 
-namespace Game {
+namespace lif {
 
-class LevelNumText : public Game::Component, public sf::Drawable {
-	Game::ShadedText text;
+class LevelNumText : public lif::Component, public sf::Drawable {
+	lif::ShadedText text;
 
 public:
-	explicit LevelNumText(Game::Entity& owner, 
+	explicit LevelNumText(lif::Entity& owner, 
 			const unsigned short levelnum);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

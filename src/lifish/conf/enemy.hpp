@@ -2,7 +2,7 @@
 
 #include <SFML/System/Time.hpp>
 
-namespace Game {
+namespace lif {
 
 namespace Conf {
 	namespace Enemy {

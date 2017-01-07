@@ -3,7 +3,7 @@
 #include "Options.hpp"
 #include <iostream>
 
-using Game::GameCache;
+using lif::GameCache;
 
 GameCache::GameCache() {
 	sounds.reserve(maxParallelSounds);
@@ -57,7 +57,7 @@ bool GameCache::loadSound(sf::Sound& sound, const std::string& sound_name) {
 }
 
 void GameCache::playSound(const std::string& sound_name) {
-	if (Game::options.soundsMute) return;
+	if (lif::options.soundsMute) return;
 
 	unsigned idx = 0;
 	do {
@@ -79,7 +79,7 @@ void GameCache::playSound(const std::string& sound_name) {
 	if (!loadSound(sound, sound_name))
 		return;
 
-	sound.setVolume(Game::options.soundsVolume);
+	sound.setVolume(lif::options.soundsVolume);
 	sound.play();
 }
 

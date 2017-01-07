@@ -2,7 +2,7 @@
 
 #include <SFML/System/Time.hpp>
 
-namespace Game {
+namespace lif {
 
 namespace Conf {
 	const sf::Time EXTRA_GAME_DURATION = sf::seconds(30);

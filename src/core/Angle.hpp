@@ -3,7 +3,7 @@
 #define DEG2RAD 0.017453292519943295
 #define RAD2DEG 57.29577951308232
 
-namespace Game {
+namespace lif {
 
 /**
  * Generic class for representing angles. Does NOT autowrap values, and allows negative angles.

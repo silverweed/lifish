@@ -3,7 +3,7 @@
 #include "TimeStats.hpp"
 #include "Counter.hpp"
 
-namespace Game {
+namespace lif {
 
 namespace Debug {
 

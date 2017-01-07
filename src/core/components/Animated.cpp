@@ -4,13 +4,13 @@
 #include "core.hpp"
 #include "utils.hpp"
 
-using Game::Animated;
+using lif::Animated;
 
-Animated::Animated(Game::Entity& owner, const std::string& texture_name) 
-	: Game::Component(owner)
+Animated::Animated(lif::Entity& owner, const std::string& texture_name) 
+	: lif::Component(owner)
 {
-	texture = Game::cache.loadTexture(texture_name);
-	frameClock = addComponent(new Game::Clock(*this));
+	texture = lif::cache.loadTexture(texture_name);
+	frameClock = addComponent(new lif::Clock(*this));
 }
 
 Animation& Animated::addAnimation(const std::string& name) {
@@ -76,7 +76,7 @@ void Animated::setAnimation(Animation& anim) {
 }
 
 void Animated::update() {
-	Game::Component::update();
+	lif::Component::update();
 	if (manualPosition)
 		animatedSprite.setPosition(position);
 	else

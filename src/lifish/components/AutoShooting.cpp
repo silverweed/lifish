@@ -5,14 +5,14 @@
 #include "FreeBullet.hpp"
 #include <iostream>
 
-using Game::AutoShooting;
+using lif::AutoShooting;
 
-AutoShooting::AutoShooting(Game::Entity& owner)
-	: Game::BufferedSpawner(owner)
+AutoShooting::AutoShooting(lif::Entity& owner)
+	: lif::BufferedSpawner(owner)
 {}
 
-Game::Entity* AutoShooting::init() {
-	Game::BufferedSpawner::init();
+lif::Entity* AutoShooting::init() {
+	lif::BufferedSpawner::init();
 	shooting = owner.get<Shooting>();
 	std::cerr << "my owner is " << owner.toString() << std::endl;
 	if (shooting == nullptr)
@@ -20,11 +20,11 @@ Game::Entity* AutoShooting::init() {
 	return this;
 }
 
-void AutoShooting::shoot(Game::Direction dir) {
+void AutoShooting::shoot(lif::Direction dir) {
 	addSpawned(shooting->shoot(dir));
 }
 
-void AutoShooting::shoot(Game::Angle angle) {
+void AutoShooting::shoot(lif::Angle angle) {
 	// FIXME
 	addSpawned(shooting->shoot(angle));
 }

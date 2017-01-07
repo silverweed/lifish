@@ -32,7 +32,7 @@ static std::string demangle(const char *name) {
 #	define DEMANGLE(name) name
 #endif
 
-using Game::Entity;
+using lif::Entity;
 
 Entity::Entity() {}
 
@@ -50,14 +50,14 @@ void Entity::setOrigin(const sf::Vector2f& origin) {
 
 bool Entity::isAligned(const char axis) const {
 	switch (axis) {
-		case 'x': return int(position.x) % Game::TILE_SIZE == 0;
-		case 'y': return int(position.y) % Game::TILE_SIZE == 0;
+		case 'x': return int(position.x) % lif::TILE_SIZE == 0;
+		case 'y': return int(position.y) % lif::TILE_SIZE == 0;
 	}
-	return int(position.x) % Game::TILE_SIZE == 0 
-		&& int(position.y) % Game::TILE_SIZE == 0;
+	return int(position.x) % lif::TILE_SIZE == 0 
+		&& int(position.y) % lif::TILE_SIZE == 0;
 }
 
-Game::Entity* Entity::init() {
+lif::Entity* Entity::init() {
 	if (_initialized) return this;
 
 	for (auto& c : components)
@@ -81,7 +81,7 @@ std::string Entity::_toString(unsigned short indent) const {
 		return ss;
 	};
 	put_indent(indent) << "[" << DEMANGLE(typeid(*this).name())
-		<< " @ " << position << " / " << Game::tile(position)
+		<< " @ " << position << " / " << lif::tile(position)
 		<< " ~ aligned = " << isAligned() << "]";
 	if (components.size() > 0) {
 		ss << "\r\n";

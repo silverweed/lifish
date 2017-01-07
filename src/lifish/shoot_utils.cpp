@@ -3,8 +3,8 @@
 #include "Player.hpp"
 #include "AutoShooting.hpp"
 
-void Game::shootToNearestPlayer(Game::Entity& shooter) {
-	const auto player = shooter.get<Game::FreeSighted>()->nearest<Game::Player>();
+void lif::shootToNearestPlayer(lif::Entity& shooter) {
+	const auto player = shooter.get<lif::FreeSighted>()->nearest<lif::Player>();
 	if (player.expired() || player.lock() == nullptr) return;
 
 	const auto& ppos = player.lock()->getPosition();
@@ -12,7 +12,7 @@ void Game::shootToNearestPlayer(Game::Entity& shooter) {
 	// calculate angle with ppos: a = pi - arctan(dy / dx)
 	const double dx = shooter.getPosition().x - ppos.x,
 		     dy = ppos.y - shooter.getPosition().y;
-	const auto angle = Game::radians(Game::PI - std::atan2(dy, dx));
+	const auto angle = lif::radians(lif::PI - std::atan2(dy, dx));
 
-	shooter.get<Game::AutoShooting>()->shoot(angle);
+	shooter.get<lif::AutoShooting>()->shoot(angle);
 }

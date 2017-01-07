@@ -2,7 +2,7 @@
 
 #include <ostream>
 
-namespace Game {
+namespace lif {
 
 // Don't change values of these, as they're used to index arrays
 enum Direction {

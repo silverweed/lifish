@@ -2,16 +2,16 @@
 #include "LevelManager.hpp"
 #include "AxisMoving.hpp"
 
-using Game::AI;
+using lif::AI;
 
-AI::AI(Game::Entity& owner, AIFunction ai)
-	: Game::Component(owner) 
+AI::AI(lif::Entity& owner, AIFunction ai)
+	: lif::Component(owner) 
 	, ai(ai)
 {}
 
-Game::Entity* AI::init() {
-	Game::Component::init();
-	moving = owner.get<Game::Moving>();
+lif::Entity* AI::init() {
+	lif::Component::init();
+	moving = owner.get<lif::Moving>();
 	setAI(ai);
 	return this;
 }
@@ -22,10 +22,10 @@ void AI::update() {
 	func(*lm);
 }
 
-void AI::setLevelManager(Game::LevelManager *_lm) {
+void AI::setLevelManager(lif::LevelManager *_lm) {
 	lm = _lm;
 }
 
-void AI::setAI(Game::AIFunction newAI) {
+void AI::setAI(lif::AIFunction newAI) {
 	func = newAI(owner);
 }

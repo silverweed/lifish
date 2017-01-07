@@ -2,15 +2,15 @@
 
 #include "Entity.hpp"
 
-namespace Game {
+namespace lif {
 
 class Animated;
 
 /**
  * The explosions appearing when a Boss dies.
  */
-class BossExplosion : public Game::Entity {
-	Game::Animated *animated = nullptr;
+class BossExplosion : public lif::Entity {
+	lif::Animated *animated = nullptr;
 
 public:
 	explicit BossExplosion(const sf::Vector2f& pos);

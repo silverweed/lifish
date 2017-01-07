@@ -2,7 +2,7 @@
 
 #include "utils.hpp"
 
-namespace Game {
+namespace lif {
 
 namespace Layers {
 
@@ -27,7 +27,7 @@ enum Layer : unsigned {
 extern Matrix<bool, Layers::N_LAYERS, Layers::N_LAYERS> collide, // whether levels "see" each other
                                                         solid;   // whether levels are solid for each other
 
-/** To be called by Game::init() */
+/** To be called by lif::init() */
 void init();
 
 }

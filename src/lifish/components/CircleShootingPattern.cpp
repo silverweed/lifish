@@ -3,16 +3,16 @@
 #include "Clock.hpp"
 #include "core.hpp"
 
-using Game::CircleShootingPattern;
+using lif::CircleShootingPattern;
 
-CircleShootingPattern::CircleShootingPattern(Game::Entity& owner, const Game::BulletInfo& bullet)
-	: Game::ShootingPattern(owner, bullet)
+CircleShootingPattern::CircleShootingPattern(lif::Entity& owner, const lif::BulletInfo& bullet)
+	: lif::ShootingPattern(owner, bullet)
 {
-	shootClock = addComponent(new Game::Clock(*this));
+	shootClock = addComponent(new lif::Clock(*this));
 }
 
 void CircleShootingPattern::update() {
-	Game::Component::update();
+	lif::Component::update();
 
 	if (shootClock->getElapsedTime() > timeBetweenShots) {
 		_shoot();
@@ -28,18 +28,18 @@ void CircleShootingPattern::_reset() {
 	shotsFired = 0;
 	if (randomizeShootAngle) {
 		std::uniform_real_distribution<double> dist(0, 360);
-		shootAngle = Game::degrees(dist(Game::rng));
+		shootAngle = lif::degrees(dist(lif::rng));
 	} else {
-		shootAngle = Game::degrees(0);
+		shootAngle = lif::degrees(0);
 	}
 }
 
 void CircleShootingPattern::_shoot() {
-	const auto delta = Game::radians(2 * Game::PI / bulletsPerShot);
+	const auto delta = lif::radians(2 * lif::PI / bulletsPerShot);
 	// Shoot first bullet towards `shootAxis`'s direction
 	auto angle = shootAngle;
 	for (unsigned short i = 0; i < bulletsPerShot; ++i) {
-		addSpawned(new Game::FreeBullet(owner.getPosition(), angle, bullet, &owner));
+		addSpawned(new lif::FreeBullet(owner.getPosition(), angle, bullet, &owner));
 		angle += delta;
 	}
 	shootAngle += rotationPerShot;

@@ -3,7 +3,7 @@
 #include "Collider.hpp"
 #include "EntityGroup.hpp"
 
-using Game::AxisSighted;
+using lif::AxisSighted;
 
 // Helper functions for _fillLine
 static bool check_up(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
@@ -24,49 +24,49 @@ static bool check_right(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
 // end helper functions
 
 
-AxisSighted::AxisSighted(Game::Entity& owner, float visionRadius)
-	: Game::Sighted(owner, visionRadius)
+AxisSighted::AxisSighted(lif::Entity& owner, float visionRadius)
+	: lif::Sighted(owner, visionRadius)
 {}
 
 void AxisSighted::update() {
-	Game::Component::update();
+	lif::Component::update();
 	if (entities == nullptr) return;
 
-	for (unsigned short i = 0; i < (unsigned short)Game::Direction::NONE; ++i) {
-		_fillLine(static_cast<Game::Direction>(i));	
+	for (unsigned short i = 0; i < (unsigned short)lif::Direction::NONE; ++i) {
+		_fillLine(static_cast<lif::Direction>(i));	
 	}
 }
 
-void AxisSighted::_fillLine(const Game::Direction dir) {
+void AxisSighted::_fillLine(const lif::Direction dir) {
 	// no check for lm != nullptr as it's done beforehand by update()
 
-	const auto mtile = Game::tile2(owner.getPosition());
-	auto same_line = dir == Game::Direction::UP ? check_up :
-			dir == Game::Direction::DOWN ? check_down :
-			dir == Game::Direction::LEFT ? check_left : check_right;
+	const auto mtile = lif::tile2(owner.getPosition());
+	auto same_line = dir == lif::Direction::UP ? check_up :
+			dir == lif::Direction::DOWN ? check_down :
+			dir == lif::Direction::LEFT ? check_left : check_right;
 
 	seen[dir].clear();
 
-	entities->apply([=] (std::weak_ptr<Game::Entity> e) {
+	entities->apply([=] (std::weak_ptr<lif::Entity> e) {
 		if (e.expired())
 			return;
 		auto ptr = e.lock();
 		if (ptr.get() == &owner)
 			return;
-		const auto etile = Game::tile2(ptr->getPosition());
+		const auto etile = lif::tile2(ptr->getPosition());
 		if (!same_line(etile, mtile)) return;
-		const auto dist = Game::manhattanDistance(etile, mtile);
+		const auto dist = lif::manhattanDistance(etile, mtile);
 		if (visionRadius < 0 || dist <= visionRadius) {
 			// Only see living entities
-			const auto killable = ptr->get<Game::Killable>();
+			const auto killable = ptr->get<lif::Killable>();
 			if (killable == nullptr || !killable->isKilled())
 				seen[dir].push_back(std::make_pair(ptr, dist));
 		}
 	});
 
 	std::sort(seen[dir].begin(), seen[dir].end(), [] (
-				const std::pair<std::weak_ptr<Game::Entity>, unsigned short> a,
-				const std::pair<std::weak_ptr<Game::Entity>, unsigned short> b)
+				const std::pair<std::weak_ptr<lif::Entity>, unsigned short> a,
+				const std::pair<std::weak_ptr<lif::Entity>, unsigned short> b)
 	{
 		return a.second < b.second;
 	});
@@ -76,7 +76,7 @@ void AxisSighted::_fillLine(const Game::Direction dir) {
 		// to determine opaqueness; this assumes that we only see entities whose
 		// first collider determines their bounding box.
 		for (auto it = seen[dir].begin(); it != seen[dir].end(); ++it) {
-			const auto cld = it->first.lock()->get<Game::Collider>();
+			const auto cld = it->first.lock()->get<lif::Collider>();
 			if (cld != nullptr) {
 				const auto layer = cld->getLayer();
 				if (_isOpaque(layer)) {

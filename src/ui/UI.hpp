@@ -5,16 +5,16 @@
 #include <SFML/Graphics.hpp>
 #include "WindowContext.hpp"
 
-namespace Game {
+namespace lif {
 
 namespace UI {
 
 class Screen;
 
 /** High-level interface to UI. It's a singleton class */
-class UI final : public Game::WindowContext {
-	std::unordered_map<std::string, std::unique_ptr<Game::UI::Screen>> screens;
-	Game::UI::Screen *curScreen = nullptr;
+class UI final : public lif::WindowContext {
+	std::unordered_map<std::string, std::unique_ptr<lif::UI::Screen>> screens;
+	lif::UI::Screen *curScreen = nullptr;
 	sf::Vector2u size;
 
 	UI();
@@ -29,7 +29,7 @@ public:
 	/** Loads all screens from `scrNames` into `screens`. Will ignore already-loaded screens. */
 	void load(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames);
 	/** Adds a custom Screen to the screens (used to manage dynamic screens). */
-	void add(Game::UI::Screen *screen);
+	void add(lif::UI::Screen *screen);
 
 	/** The size of the UI is used to construct any screen loaded via `load`.
 	 *  This method should be called once immediately after loading the screens.
@@ -51,4 +51,4 @@ public:
 
 } // end namespace UI
 
-} // end namespace Game
+} // end namespace lif

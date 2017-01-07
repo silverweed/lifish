@@ -3,22 +3,22 @@
 #include "collision_layers.hpp"
 #include "AxisMoving.hpp"
 
-using Game::Wisp;
+using lif::Wisp;
 
-Wisp::Wisp(const sf::Vector2f& pos, const Game::EnemyInfo& info) : Game::Enemy(pos, 2, info) {
-	collider->setLayer(Game::Layers::ENEMIES_IGNORE_BREAKABLES);	
+Wisp::Wisp(const sf::Vector2f& pos, const lif::EnemyInfo& info) : lif::Enemy(pos, 2, info) {
+	collider->setLayer(lif::Layers::ENEMIES_IGNORE_BREAKABLES);	
 }
 
 void Wisp::update() {
-	Game::Enemy::update();
+	lif::Enemy::update();
 
 	moving->setSpeed(1 - (inWall ? IN_WALL_SPEED_REDUCTION : 0), true);
 	inWall = false;
 }
 
-bool Wisp::_checkCollision(Game::Collider& coll) {
-	bool b = Game::Enemy::_checkCollision(coll);
-	if (coll.getLayer() == Game::Layers::BREAKABLES)
+bool Wisp::_checkCollision(lif::Collider& coll) {
+	bool b = lif::Enemy::_checkCollision(coll);
+	if (coll.getLayer() == lif::Layers::BREAKABLES)
 		inWall = true;
 	return b;
 }

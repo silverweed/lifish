@@ -4,7 +4,7 @@
 #include "Direction.hpp"
 #include "Angle.hpp"
 
-namespace Game {
+namespace lif {
 
 class Shooting;
 class Bullet;
@@ -13,16 +13,16 @@ class Bullet;
  *  Instead of returning the bullet directly, the method shoot()
  *  stores it in an internal buffer which can be polled later.
  */
-class AutoShooting : public Game::BufferedSpawner {
-	Game::Shooting *shooting = nullptr;
+class AutoShooting : public lif::BufferedSpawner {
+	lif::Shooting *shooting = nullptr;
 
 public:
-	explicit AutoShooting(Game::Entity& owner);
+	explicit AutoShooting(lif::Entity& owner);
 
-	void shoot(Game::Direction dir = Game::Direction::NONE);
-	void shoot(Game::Angle angle);
+	void shoot(lif::Direction dir = lif::Direction::NONE);
+	void shoot(lif::Angle angle);
 
-	Game::Entity* init() override;
+	lif::Entity* init() override;
 };
 
 }

@@ -2,26 +2,26 @@
 #include "AxisMoving.hpp"
 #include "Animated.hpp"
 
-using Game::MovingAnimator;
+using lif::MovingAnimator;
 
-MovingAnimator::MovingAnimator(Game::Entity& owner)
-	: Game::Component(owner)
+MovingAnimator::MovingAnimator(lif::Entity& owner)
+	: lif::Component(owner)
 {}
 
-Game::Entity* MovingAnimator::init() {
-	moving = owner.get<Game::AxisMoving>();
+lif::Entity* MovingAnimator::init() {
+	moving = owner.get<lif::AxisMoving>();
 	if (moving == nullptr)
 		throw std::invalid_argument("owner has no Moving!");
 
-	animated = owner.get<Game::Animated>();
+	animated = owner.get<lif::Animated>();
 	if (animated == nullptr)
 		throw std::invalid_argument("owner has no Animated!");
 	
 	return this;
 }
 
-MovingAnimator::MovingAnimator(Game::Entity& owner, Game::AxisMoving *m, Game::Animated *a)
-	: Game::Component(owner)
+MovingAnimator::MovingAnimator(lif::Entity& owner, lif::AxisMoving *m, lif::Animated *a)
+	: lif::Component(owner)
 	, moving(m)
 	, animated(a)
 {
@@ -32,15 +32,15 @@ MovingAnimator::MovingAnimator(Game::Entity& owner, Game::AxisMoving *m, Game::A
 }
 
 void MovingAnimator::update() {
-	Game::Component::update();
+	lif::Component::update();
 
-	Game::Direction dir = moving->getDirection();
+	lif::Direction dir = moving->getDirection();
 	auto& sprite = animated->getSprite();
 
 	if (prev == dir) return;
 
 	if (!moving->isMoving()) {
-		if (prev != Game::Direction::NONE) {
+		if (prev != lif::Direction::NONE) {
 			animated->setAnimation("idle");
 			sprite.play();
 		}
@@ -49,19 +49,19 @@ void MovingAnimator::update() {
 	}
 
 	switch (dir) {
-	case Game::Direction::UP:
+	case lif::Direction::UP:
 		animated->setAnimation("walk_up");
 		sprite.play();
 		break;
-	case Game::Direction::DOWN:
+	case lif::Direction::DOWN:
 		animated->setAnimation("walk_down");
 		sprite.play();
 		break;
-	case Game::Direction::LEFT:
+	case lif::Direction::LEFT:
 		animated->setAnimation("walk_left");
 		sprite.play();
 		break;
-	case Game::Direction::RIGHT:
+	case lif::Direction::RIGHT:
 		animated->setAnimation("walk_right");
 		sprite.play();
 		break;

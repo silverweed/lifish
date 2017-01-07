@@ -4,7 +4,7 @@
 #include "Entity.hpp"
 #include "conf/bomb.hpp"
 
-namespace Game {
+namespace lif {
 
 class Player;
 class Clock;
@@ -12,11 +12,11 @@ class Animated;
 class Killable;
 
 /**
- * The players' bomb. Upon explosion, a Game::Explosion is spawned
+ * The players' bomb. Upon explosion, a lif::Explosion is spawned
  * where the bomb was deployed.
  */
-class Bomb : public Game::Entity {
-	Game::Clock *fuseClock = nullptr;
+class Bomb : public lif::Entity {
+	lif::Clock *fuseClock = nullptr;
 	sf::Time fuseTime;
 	unsigned short radius;
 	
@@ -27,17 +27,17 @@ class Bomb : public Game::Entity {
 	/** An incendiary bomb will spawn Fire on explosion */ 
 	bool incendiary = false;
 
-	Game::Animated *animated = nullptr;
-	Game::Killable *killable = nullptr;
+	lif::Animated *animated = nullptr;
+	lif::Killable *killable = nullptr;
 
 	/** The player who dropped this bomb */
-	const Game::Player& sourcePlayer;
+	const lif::Player& sourcePlayer;
 
 public:
 
-	explicit Bomb(const sf::Vector2f& pos, const Game::Player& source, 
-			const sf::Time& fuseTime = Game::Conf::Bomb::DEFAULT_FUSE, 
-			const unsigned short radius = Game::Conf::Bomb::DEFAULT_RADIUS,
+	explicit Bomb(const sf::Vector2f& pos, const lif::Player& source, 
+			const sf::Time& fuseTime = lif::Conf::Bomb::DEFAULT_FUSE, 
+			const unsigned short radius = lif::Conf::Bomb::DEFAULT_RADIUS,
 			bool isIncendiary = false);
 
 	void update() override;
@@ -55,7 +55,7 @@ public:
 
 	void setIncendiary(bool b) { incendiary = b; }
 
-	const Game::Player& getSourcePlayer() const { return sourcePlayer; }
+	const lif::Player& getSourcePlayer() const { return sourcePlayer; }
 };
 
 }

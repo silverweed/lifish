@@ -3,12 +3,12 @@
 #include <SFML/Graphics.hpp>
 #include "Entity.hpp"
 
-namespace Game {
+namespace lif {
 
 /**
  * A sf::Text container which draws a string with a shadow behind
  */
-class ShadedText final : public Game::Entity, public sf::Drawable {
+class ShadedText final : public lif::Entity, public sf::Drawable {
 	sf::Text fgtext, bgtext;
 	sf::Vector2f shadowSpacing;
 

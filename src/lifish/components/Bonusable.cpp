@@ -1,36 +1,36 @@
 #include "Bonusable.hpp"
 #include "Clock.hpp"
 
-using Game::Bonusable;
+using lif::Bonusable;
 
-Bonusable::Bonusable(Game::Entity& owner)
-	: Game::Component(owner)
+Bonusable::Bonusable(lif::Entity& owner)
+	: lif::Component(owner)
 {
-	bonusClock.fill(addComponent(new Game::Clock(*this)));
+	bonusClock.fill(addComponent(new lif::Clock(*this)));
 	bonusTime.fill(sf::Time::Zero);
 }
 
-void Bonusable::giveBonus(Game::BonusType type, const sf::Time& time) {
+void Bonusable::giveBonus(lif::BonusType type, const sf::Time& time) {
 	const auto i = static_cast<unsigned short>(type);
 	bonusTime[i] = time;
 	bonusClock[i]->restart();
 }
 
-bool Bonusable::hasBonus(Game::BonusType type) const {
+bool Bonusable::hasBonus(lif::BonusType type) const {
 	const auto i = static_cast<unsigned short>(type);
 	return bonusTime[i] < sf::Time::Zero || 
 		(bonusTime[i] > sf::Time::Zero && bonusClock[i]->getElapsedTime() <= bonusTime[i]);
 }
 
-sf::Time Bonusable::getTime(Game::BonusType type) const {
+sf::Time Bonusable::getTime(lif::BonusType type) const {
 	return bonusTime[static_cast<unsigned short>(type)]; 
 }
 
-sf::Time Bonusable::getElapsedTime(Game::BonusType type) const {
+sf::Time Bonusable::getElapsedTime(lif::BonusType type) const {
 	return bonusClock[static_cast<unsigned short>(type)]->getElapsedTime();
 }
 
-sf::Time Bonusable::getRemainingTime(Game::BonusType type) const {
+sf::Time Bonusable::getRemainingTime(lif::BonusType type) const {
 	const auto i = static_cast<unsigned short>(type);
 	return std::max(sf::Time::Zero, bonusTime[i] - bonusClock[i]->getElapsedTime());
 }

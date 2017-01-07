@@ -4,7 +4,7 @@
 #include "bonus_type.hpp"
 #include "Entity.hpp"
 
-namespace Game {
+namespace lif {
 
 class Clock;
 class Sprite;
@@ -14,18 +14,18 @@ class Player;
 /**
  * The bonuses dropped by walls
  */
-class Bonus : public Game::Entity {
-	const Game::BonusType type;
+class Bonus : public lif::Entity {
+	const lif::BonusType type;
 
-	Game::Clock *expireClock = nullptr;
-	Game::Sprite *sprite = nullptr;
-	Game::Grabbable *grabbable = nullptr;
+	lif::Clock *expireClock = nullptr;
+	lif::Sprite *sprite = nullptr;
+	lif::Grabbable *grabbable = nullptr;
 
-	void _grab(Game::Player& player);
+	void _grab(lif::Player& player);
 public:
-	explicit Bonus(const sf::Vector2f& pos, const Game::BonusType type);
+	explicit Bonus(const sf::Vector2f& pos, const lif::BonusType type);
 
-	Game::BonusType getType() const { return type; }
+	lif::BonusType getType() const { return type; }
 
 	void update() override;
 };

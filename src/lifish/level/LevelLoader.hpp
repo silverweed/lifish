@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Game {
+namespace lif {
 
 class Level;
 class LevelManager;
@@ -11,7 +11,7 @@ public:
 	 * Loads `level` into the LevelManager `lm`.
 	 * Returns whether have been errors or not.
 	 */
-	static bool load(const Game::Level& level, Game::LevelManager& lm);
+	static bool load(const lif::Level& level, lif::LevelManager& lm);
 };
 
 }

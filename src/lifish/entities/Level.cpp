@@ -10,29 +10,29 @@
 #include "LevelNumText.hpp"
 #include <sstream>
 
-using Game::Level;
-using Game::pwd;
-using Game::DIRSEP;
-using Game::LEVEL_WIDTH;
-using Game::LEVEL_HEIGHT;
-using Game::TILE_SIZE;
-using Game::EntityType;
+using lif::Level;
+using lif::pwd;
+using lif::DIRSEP;
+using lif::LEVEL_WIDTH;
+using lif::LEVEL_HEIGHT;
+using lif::TILE_SIZE;
+using lif::EntityType;
 
-Level::Level(const Game::LevelSet& _levelSet) 
-	: Game::Entity()
+Level::Level(const lif::LevelSet& _levelSet) 
+	: lif::Entity()
 	, levelSet(_levelSet) 
 {}
 
-Game::Entity* Level::init() {
+lif::Entity* Level::init() {
 	if (initialized) return this;
 	
 	if (!_setTilemap(levelInfo.tilemap))
 		return nullptr;
 
-	addComponent(new Game::Music(*this, levelInfo.track));
+	addComponent(new lif::Music(*this, levelInfo.track));
 	_loadTextures();
 
-	levelnumtext = addComponent(new Game::LevelNumText(*this, levelInfo.levelnum));
+	levelnumtext = addComponent(new lif::LevelNumText(*this, levelInfo.levelnum));
 
 	initialized = true;
 
@@ -43,13 +43,13 @@ void Level::_loadTextures() {
 	std::stringstream ss;
 	ss << "bg" << levelInfo.tileIDs.bg << ".png";
 	// Load background texture
-	bgTexture = Game::cache.loadTexture(Game::getAsset("graphics", ss.str()));
+	bgTexture = lif::cache.loadTexture(lif::getAsset("graphics", ss.str()));
 	bgTexture->setSmooth(true);
 	bgTexture->setRepeated(true);
 	// Load borderTexture
 	ss.str("");
 	ss << "border" << levelInfo.tileIDs.border << ".png";
-	borderTexture = Game::cache.loadTexture(Game::getAsset("graphics", ss.str()));
+	borderTexture = lif::cache.loadTexture(lif::getAsset("graphics", ss.str()));
 	borderTexture->setSmooth(true);
 	_loadTiles();
 }
@@ -66,7 +66,7 @@ void Level::_loadTiles() {
 }
 
 void Level::setOrigin(const sf::Vector2f& offset) {
-	Game::Entity::setOrigin(offset);
+	lif::Entity::setOrigin(offset);
 	bgSprite.setOrigin(offset);
 	borderSprite.setOrigin(offset);
 	levelnumtext->setOrigin(offset);
@@ -82,7 +82,7 @@ bool Level::_setTilemap(const std::string& tilemap) {
 	unsigned short x = 0, y = 0;
 	bool player_set[] = { false, false };
 	for (unsigned int i = 0; i < tilemap.length(); ++i) {
-		EntityType et = Game::entityFromLetter(tilemap[i]);
+		EntityType et = lif::entityFromLetter(tilemap[i]);
 		if (et == EntityType::UNKNOWN) return false;
 		if (et == EntityType::PLAYER1) {
 			if (player_set[0]) return false;
@@ -136,7 +136,7 @@ std::string Level::toString() const {
 	   << "    border: " << levelInfo.tileIDs.border << "\r\n"
 	   << "    fixed: " << levelInfo.tileIDs.fixed << "\r\n"
 	   << "    breakable: " << levelInfo.tileIDs.breakable << "\r\n}\r\n"
-	   << "Music: " << get<Game::Music>()->getTrack().name << "\r\n"
+	   << "Music: " << get<lif::Music>()->getTrack().name << "\r\n"
 	   << "Belongs to: >>>\r\n"
 	   << levelSet.toString()
 	   << "<<<\r\n"

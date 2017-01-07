@@ -4,15 +4,15 @@
 #include "Boss.hpp"
 #include "game.hpp"
 
-namespace Game {
+namespace lif {
 
 class Clock;
 class ShootingPoint;
 
-class AlienBoss : public Game::Boss {
+class AlienBoss : public lif::Boss {
 	unsigned short shotsFired = 0;
-	Game::Clock *shootClock = nullptr;
-	std::array<Game::ShootingPoint*, 2> eyes;
+	lif::Clock *shootClock = nullptr;
+	std::array<lif::ShootingPoint*, 2> eyes;
 
 public:
 	explicit AlienBoss(const sf::Vector2f& pos);

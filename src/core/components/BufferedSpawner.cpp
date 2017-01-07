@@ -1,15 +1,15 @@
 #include "BufferedSpawner.hpp"
 
-using Game::BufferedSpawner;
+using lif::BufferedSpawner;
 
-BufferedSpawner::BufferedSpawner(Game::Entity& owner)
-	: Game::Spawning(owner)
+BufferedSpawner::BufferedSpawner(lif::Entity& owner)
+	: lif::Spawning(owner)
 {}
 
-std::unique_ptr<Game::Entity> BufferedSpawner::spawn() {
-	std::unique_ptr<Game::Entity> result;
+std::unique_ptr<lif::Entity> BufferedSpawner::spawn() {
+	std::unique_ptr<lif::Entity> result;
 	if (!spawned.empty()) {
-		result = std::unique_ptr<Game::Entity>(spawned.front().release());
+		result = std::unique_ptr<lif::Entity>(spawned.front().release());
 		spawned.pop();
 	}
 	return result;
@@ -19,6 +19,6 @@ bool BufferedSpawner::shouldSpawn() const {
 	return !spawned.empty();
 }
 
-void BufferedSpawner::addSpawned(Game::Entity *e) {
-	spawned.push(std::unique_ptr<Game::Entity>(e));
+void BufferedSpawner::addSpawned(lif::Entity *e) {
+	spawned.push(std::unique_ptr<lif::Entity>(e));
 }

@@ -15,19 +15,19 @@
 #endif
 
 // Define extern variables of core.hpp
-char Game::pwd[Game::PWD_BUFSIZE];
-Game::GameCache Game::cache;
-std::default_random_engine Game::rng;
-Game::Options Game::options;
-bool Game::terminated = false;
-int Game::exitCode = 0;
-Game::MusicManager *Game::musicManager = nullptr;
+char lif::pwd[lif::PWD_BUFSIZE];
+lif::GameCache lif::cache;
+std::default_random_engine lif::rng;
+lif::Options lif::options;
+bool lif::terminated = false;
+int lif::exitCode = 0;
+lif::MusicManager *lif::musicManager = nullptr;
 #ifdef MULTITHREADED
-Game::WindowContext *Game::curContext = nullptr;
+lif::WindowContext *lif::curContext = nullptr;
 #endif
 
 static void _initOptions() {
-	using Game::options;
+	using lif::options;
 
 	// Setup default options
 	options.musicVolume = 100;
@@ -40,17 +40,17 @@ static void _initOptions() {
 }
 
 static bool _initPwd() {
-	using Game::pwd;
-	using Game::DIRSEP;
+	using lif::pwd;
+	using lif::DIRSEP;
 
 	// Setup pwd variable cross-platform
 	pwd[0] = '\0';
 
 #if defined(SFML_SYSTEM_WINDOWS)
-	GetModuleFileName(NULL, pwd, Game::PWD_BUFSIZE);
+	GetModuleFileName(NULL, pwd, lif::PWD_BUFSIZE);
 
 #elif defined(SFML_SYSTEM_MACOS)
-	auto bufsz = static_cast<uint32_t>(Game::PWD_BUFSIZE);
+	auto bufsz = static_cast<uint32_t>(lif::PWD_BUFSIZE);
 	if (_NSGetExecutablePath(pwd, &bufsz) != 0)
 		return false;
 
@@ -58,11 +58,11 @@ static bool _initPwd() {
 	ssize_t bytes = 0;
 	if (access("/proc/self/exe", F_OK) != -1) {
 		// Linux
-		bytes = readlink("/proc/self/exe", pwd, Game::PWD_BUFSIZE-1);
+		bytes = readlink("/proc/self/exe", pwd, lif::PWD_BUFSIZE-1);
 
 	} else if (access("/proc/curproc/file", F_OK) != -1) {
 		// BSD
-		bytes = readlink("/proc/curproc/file", pwd, Game::PWD_BUFSIZE-1);
+		bytes = readlink("/proc/curproc/file", pwd, lif::PWD_BUFSIZE-1);
 	}
 
 	if (bytes < 1) return false;
@@ -84,7 +84,7 @@ static bool _initPwd() {
 	return true;
 }
 
-bool Game::initCore() {
+bool lif::initCore() {
 	// Seed the random engine
 	try {
 		rng.seed(std::random_device{}());

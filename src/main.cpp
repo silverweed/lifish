@@ -56,7 +56,7 @@
 #	include "Stats.hpp"
 #endif
 
-using namespace Game;
+using namespace lif;
 
 static void print_version() {
 	std::cout << "lifish v." VERSION " rev." COMMIT;
@@ -144,7 +144,7 @@ static void parse_args(int argc, char **argv, /* out */ MainArgs& args) {
 
 	if (print_level_info) {
 		try {
-			Game::LevelSet ls(args.levelset_name);
+			lif::LevelSet ls(args.levelset_name);
 			std::cout << "--------------\r\nLevelset info:\r\n--------------\r\n"
 				<< ls.toString() << std::endl;
 			std::exit(0);
@@ -158,7 +158,7 @@ static void parse_args(int argc, char **argv, /* out */ MainArgs& args) {
 
 static void load_icon(sf::Window& window) {
 	sf::Image iconImg;
-	if (iconImg.loadFromFile(Game::getAsset("graphics", "icon.png"))) {
+	if (iconImg.loadFromFile(lif::getAsset("graphics", "icon.png"))) {
 		auto pixels = iconImg.getPixelsPtr();
 		auto size = iconImg.getSize();
 		window.setIcon(size.x, size.y, pixels);
@@ -167,10 +167,10 @@ static void load_icon(sf::Window& window) {
 
 #ifdef MULTITHREADED
 static void rendering_loop(sf::RenderWindow& window) {
-	while (window.isOpen() && !Game::terminated) {
+	while (window.isOpen() && !lif::terminated) {
 		window.clear();
-		window.draw(*Game::curContext);
-		Game::maybeShowFPS(window);
+		window.draw(*lif::curContext);
+		lif::maybeShowFPS(window);
 		window.display();
 	}
 	if (window.isOpen())
@@ -191,74 +191,74 @@ int main(int argc, char **argv) {
 	parse_args(argc, argv, args);
 	
 	// Create the MusicManager (in a local scope)
-	Game::MusicManager mm;
-	Game::musicManager = &mm;
+	lif::MusicManager mm;
+	lif::musicManager = &mm;
 
 	// Initialize game variables
-	if (!Game::init()) {
+	if (!lif::init()) {
 		std::cerr << "[ FATAL ] Failed to initialize the game!" << std::endl;
 		return 1;
 	}
 
 	if (args.mute_sounds)
-		Game::options.soundsVolume = 0;
+		lif::options.soundsVolume = 0;
 	if (args.mute_music)
-		Game::options.musicVolume = 0;
+		lif::options.musicVolume = 0;
 	if (args.levelset_name.length() < 1)
-		args.levelset_name = std::string(Game::pwd) + Game::DIRSEP + std::string("levels.json");
+		args.levelset_name = std::string(lif::pwd) + lif::DIRSEP + std::string("levels.json");
 	
 	// Create the game window
-	Game::options.windowSize = sf::Vector2u(Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
+	lif::options.windowSize = sf::Vector2u(lif::WINDOW_WIDTH, lif::WINDOW_HEIGHT);
 	sf::RenderWindow window(
-			sf::VideoMode(Game::options.windowSize.x, Game::options.windowSize.y),
+			sf::VideoMode(lif::options.windowSize.x, lif::options.windowSize.y),
 			"Lifish " VERSION);
-	Game::options.vsync = true;
-	Game::options.framerateLimit = 120;
-	window.setFramerateLimit(Game::options.framerateLimit);
-	window.setJoystickThreshold(Game::JOYSTICK_INPUT_THRESHOLD);
+	lif::options.vsync = true;
+	lif::options.framerateLimit = 120;
+	window.setFramerateLimit(lif::options.framerateLimit);
+	window.setJoystickThreshold(lif::JOYSTICK_INPUT_THRESHOLD);
 #ifndef RELEASE
-	Game::options.showFPS = true;
+	lif::options.showFPS = true;
 #endif
 
 	// Setup icon
 	load_icon(window);
 
 	// Setup UI
-	Game::UI::UI& ui = Game::UI::UI::getInstance();
-	ui.setSize(Game::options.windowSize);
+	lif::UI::UI& ui = lif::UI::UI::getInstance();
+	ui.setSize(lif::options.windowSize);
 
 	// load static screens
 	ui.load(window, { "home.json", "about.json", "pause.json" });
 	// load dynamic screens
-	ui.add(new Game::UI::ControlsScreen(window, Game::options.windowSize));
-	ui.add(new Game::UI::PreferencesScreen(window, Game::options.windowSize));
+	ui.add(new lif::UI::ControlsScreen(window, lif::options.windowSize));
+	ui.add(new lif::UI::PreferencesScreen(window, lif::options.windowSize));
 
 	// Create pointer to game context
 	std::unique_ptr<GameContext> game;
 
 	// Adjust the origin to make room for side panel
-	sf::Vector2f origin(-Game::SIDE_PANEL_WIDTH, 0);
+	sf::Vector2f origin(-lif::SIDE_PANEL_WIDTH, 0);
 
-	std::array<Game::WindowContext*, 3> contexts;
-	contexts[Game::CTX_UI] = &ui;
-	contexts[Game::CTX_GAME] = game.get();
+	std::array<lif::WindowContext*, 3> contexts;
+	contexts[lif::CTX_UI] = &ui;
+	contexts[lif::CTX_GAME] = game.get();
 	// Note: this is always assumed non-null throughout the program
-	Game::WindowContext *cur_context = contexts[Game::CTX_UI];
+	lif::WindowContext *cur_context = contexts[lif::CTX_UI];
 #ifndef RELEASE
 	if (!args.start_from_home) {
-		game.reset(new Game::GameContext(window, args.levelset_name, args.start_level));
+		game.reset(new lif::GameContext(window, args.levelset_name, args.start_level));
 		game->setOrigin(origin);
-		contexts[Game::CTX_GAME] = game.get();
-		contexts[Game::CTX_INTERLEVEL] = &game->getWLHandler()
+		contexts[lif::CTX_GAME] = game.get();
+		contexts[lif::CTX_INTERLEVEL] = &game->getWLHandler()
 						.getInterlevelContext();
-		cur_context = contexts[Game::CTX_GAME];
+		cur_context = contexts[lif::CTX_GAME];
 	}
-	Game::Debug::Stats dbgStats;
+	lif::Debug::Stats dbgStats;
 	unsigned cycle = 0;
 #endif
 
 #ifdef MULTITHREADED
-	Game::curContext = cur_context;
+	lif::curContext = cur_context;
 	// Start the rendering thread
 	window.setActive(false);
 	const sf::Time frame_time_limit = sf::seconds(1 / 60.);
@@ -266,7 +266,7 @@ int main(int argc, char **argv) {
 	std::thread rendering_thread(rendering_loop, std::ref(window));
 #endif
 
-	while (window.isOpen() && !Game::terminated) {
+	while (window.isOpen() && !lif::terminated) {
 
 		///// EVENT LOOP /////
 		
@@ -278,23 +278,23 @@ int main(int argc, char **argv) {
 			cur_context->setActive(false);
 			cur_context->resetNewContext();
 			switch (nc) {
-			case Game::CTX_UI:
+			case lif::CTX_UI:
 				if (cur_context == game.get() && game->getLM().isGameOver())
 					ui.setCurrent("home");
 				else
 					ui.setCurrent("pause");
 				break;
-			case Game::CTX_INTERLEVEL:
+			case lif::CTX_INTERLEVEL:
 				if (cur_context == &ui && ui.getCurrent() == "home") {
 					// Game started: create a new GameContext
-					game.reset(new Game::GameContext(window,
+					game.reset(new lif::GameContext(window,
 							args.levelset_name, args.start_level));
 					game->setOrigin(origin);
-					contexts[Game::CTX_GAME] = game.get();
-					contexts[Game::CTX_INTERLEVEL] = &game->getWLHandler()
+					contexts[lif::CTX_GAME] = game.get();
+					contexts[lif::CTX_INTERLEVEL] = &game->getWLHandler()
 									.getInterlevelContext();
 					game->getLM().pause();
-					static_cast<Game::InterlevelContext*>(contexts[Game::CTX_INTERLEVEL])
+					static_cast<lif::InterlevelContext*>(contexts[lif::CTX_INTERLEVEL])
 										->setGettingReady(args.start_level);
 				}
 				break;
@@ -302,7 +302,7 @@ int main(int argc, char **argv) {
 			cur_context = contexts[nc];
 			cur_context->setActive(true);
 #ifdef MULTITHREADED
-			Game::curContext = cur_context;
+			lif::curContext = cur_context;
 #endif
 		}
 
@@ -319,11 +319,11 @@ int main(int argc, char **argv) {
 		window.clear();
 		window.draw(*cur_context);
 		
-		Game::maybeShowFPS(window);
+		lif::maybeShowFPS(window);
 		window.display();
 #	ifndef RELEASE
 		++cycle;
-		if (Game::options.printDrawStats && cycle % 50 == 0) {
+		if (lif::options.printDrawStats && cycle % 50 == 0) {
 			std::ios::fmtflags flags(std::cerr.flags());
 			std::cerr << std::setfill(' ') << std::scientific << std::setprecision(4)
 				<< ">> Draw: " << std::setw(6) << dbgStats.timer.end("draw") << std::endl;
@@ -346,5 +346,5 @@ int main(int argc, char **argv) {
 	mm.stop();
 	cache.finalize();
 
-	return Game::exitCode;
+	return lif::exitCode;
 }

@@ -1,8 +1,8 @@
 #include "entity_type.hpp"
 
-using Game::EntityType;
+using lif::EntityType;
 
-EntityType Game::entityFromLetter(const char c) {
+EntityType lif::entityFromLetter(const char c) {
 	switch (c) {
 	case '0': return EntityType::EMPTY;
 	case '1': return EntityType::FIXED;
@@ -30,7 +30,7 @@ EntityType Game::entityFromLetter(const char c) {
 	return EntityType::UNKNOWN;
 }
 
-std::ostream& Game::operator<<(std::ostream& stream, const EntityType& et) {
+std::ostream& lif::operator<<(std::ostream& stream, const EntityType& et) {
 	switch (et) {
 	case EntityType::EMPTY:            stream << '0'; break;
 	case EntityType::FIXED:            stream << '1'; break;

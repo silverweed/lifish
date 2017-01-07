@@ -4,12 +4,12 @@
 #include <SFML/System.hpp>
 #include "Entity.hpp"
 
-namespace Game {
+namespace lif {
 
 /**
  * An unbreakable wall
  */
-class FixedWall : public Game::Entity {
+class FixedWall : public lif::Entity {
 public:
 	explicit FixedWall(const sf::Vector2f& pos, const unsigned short id);
 };

@@ -1,6 +1,6 @@
 #include "Angle.hpp"
 
-namespace Game {
+namespace lif {
 
 Angle operator +(Angle left, Angle right) {
 	return radians(left.asRadians() + right.asRadians());

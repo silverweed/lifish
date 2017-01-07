@@ -6,7 +6,7 @@
 #include <SFML/System/Vector2.hpp>
 #include "game.hpp"
 
-namespace Game {
+namespace lif {
 
 template<class T, size_t ROWS, size_t COLS>
 using Matrix = std::array<std::array<T, COLS>, ROWS>;
@@ -39,12 +39,12 @@ inline std::string to_string(T val) {
  *  flooring its components and dividing by TILE_SIZE.
  */
 inline sf::Vector2i tile(const sf::Vector2f& pos) {
-	return sf::Vector2i(pos.x / Game::TILE_SIZE, pos.y / Game::TILE_SIZE);
+	return sf::Vector2i(pos.x / lif::TILE_SIZE, pos.y / lif::TILE_SIZE);
 }
 
 /** Like `tile`, but instead of flooring, round to the nearest tile. */
 inline sf::Vector2i tile2(const sf::Vector2f& pos) {
-	return sf::Vector2i(int(pos.x / Game::TILE_SIZE + 0.5), int(pos.y / Game::TILE_SIZE + 0.5));
+	return sf::Vector2i(int(pos.x / lif::TILE_SIZE + 0.5), int(pos.y / lif::TILE_SIZE + 0.5));
 }
 
 /** Returns the pixel position `pos` aligned to the nearest tile. */
@@ -72,7 +72,7 @@ constexpr double sqrDistance(const sf::Vector2<T>& a, const sf::Vector2<R>& b) {
 
 template<typename T, typename R>
 constexpr T manhattanDistance(const sf::Vector2<T>& tileA, const sf::Vector2<R>& tileB) {
-	return Game::abs(tileA.x - tileB.x) + Game::abs(tileA.y - tileB.y);
+	return lif::abs(tileA.x - tileB.x) + lif::abs(tileA.y - tileB.y);
 }
 
 /** @return A float indicating the X coordinate where `innerBounds` is to be positioned in 
@@ -105,7 +105,7 @@ inline sf::Vector2f normalized(const sf::Vector2<T>& v) {
  *  rect = container to center the object within (default: main game window)
  */
 inline sf::Vector2f center(const sf::FloatRect& innerBounds, const sf::FloatRect& outerBounds) {
-	return sf::Vector2f(Game::centerX(innerBounds, outerBounds), Game::centerY(innerBounds, outerBounds));
+	return sf::Vector2f(lif::centerX(innerBounds, outerBounds), lif::centerY(innerBounds, outerBounds));
 }
 
 inline bool startsWith(const std::string& haystack, const std::string& needle) {
@@ -115,7 +115,7 @@ inline bool startsWith(const std::string& haystack, const std::string& needle) {
 /** Plays a brief sound */
 void testMusic();
 
-/** If Game::options.showFPS == true, then display FPS on screen */
+/** If lif::options.showFPS == true, then display FPS on screen */
 void maybeShowFPS(sf::RenderWindow& window);
 
 namespace KeyUtils {
@@ -128,4 +128,4 @@ namespace JoystickUtils {
 	short getPauseButton(unsigned int joystickId);
 }
 
-} // end namespace Game
+} // end namespace lif

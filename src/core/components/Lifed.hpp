@@ -4,12 +4,12 @@
 #include <functional>
 #include "Component.hpp"
 
-namespace Game {
+namespace lif {
 
 /**
  * An object with a life. Life cannot be < 0.
  */
-class Lifed : public Game::Component {
+class Lifed : public lif::Component {
 	using OnHurtCallback = std::function<void(int)>;
 
 	OnHurtCallback onHurt;
@@ -19,8 +19,8 @@ protected:
 	const int maxLife;
 
 public:
-	explicit Lifed(Game::Entity& owner, const int life);
-	explicit Lifed(Game::Entity& owner, const int life, OnHurtCallback onHurt);
+	explicit Lifed(lif::Entity& owner, const int life);
+	explicit Lifed(lif::Entity& owner, const int life, OnHurtCallback onHurt);
 
 	bool isAlive() const { return life > 0; }
 	int getLife() const { return life; }

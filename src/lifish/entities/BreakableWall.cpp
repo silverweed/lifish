@@ -21,12 +21,12 @@
 #include "conf/bonus.hpp"
 #include "conf/zindex.hpp"
 
-using Game::BreakableWall;
-using Game::TILE_SIZE;
+using lif::BreakableWall;
+using lif::TILE_SIZE;
 
 BreakableWall::BreakableWall(const sf::Vector2f& pos, const std::string& texture_name,
 		unsigned short life, unsigned int score)
-	: Game::Entity(pos)
+	: lif::Entity(pos)
 {
 	_setupComponents(life, score);
 	auto& animation = _setupAnimations(texture_name);
@@ -42,10 +42,10 @@ BreakableWall::BreakableWall(const sf::Vector2f& pos, const std::string& texture
 
 BreakableWall::BreakableWall(const sf::Vector2f& pos, 
 		const unsigned short id, unsigned short life)
-	: Game::Entity(pos)
+	: lif::Entity(pos)
 {
-	_setupComponents(life, Game::Conf::Wall::Breakable::VALUE);
-	auto& animation = _setupAnimations(Game::getAsset("graphics", "breakable.png"));	
+	_setupComponents(life, lif::Conf::Wall::Breakable::VALUE);
+	auto& animation = _setupAnimations(lif::getAsset("graphics", "breakable.png"));	
 	for (unsigned short i = 0; i < 4; ++i)
 		animation.addFrame(sf::IntRect(
 					i * TILE_SIZE, 
@@ -56,33 +56,33 @@ BreakableWall::BreakableWall(const sf::Vector2f& pos,
 }
 
 void BreakableWall::_setupComponents(unsigned short life, unsigned int score) {
-	addComponent(new Game::Fixed(*this));
-	addComponent(new Game::Scored(*this, score));
-	addComponent(new Game::Lifed(*this, life));
-	addComponent(new Game::Sounded(*this, { 
-		std::make_pair("death", Game::getAsset("sounds", "wall_break.ogg"))
+	addComponent(new lif::Fixed(*this));
+	addComponent(new lif::Scored(*this, score));
+	addComponent(new lif::Lifed(*this, life));
+	addComponent(new lif::Sounded(*this, { 
+		std::make_pair("death", lif::getAsset("sounds", "wall_break.ogg"))
 	})); 
-	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::WALLS));
-	addComponent(new Game::Killable(*this, [this] () {
+	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::WALLS));
+	addComponent(new lif::Killable(*this, [this] () {
 		// on kill
 		animated->getSprite().play();
-		Game::cache.playSound(get<Game::Sounded>()->getSoundFile("death"));
+		lif::cache.playSound(get<lif::Sounded>()->getSoundFile("death"));
 	}, [this] () {
 		// is kill in progress
 		return animated->getSprite().isPlaying();
 	}));
-	addComponent(new Game::Collider(*this, Game::hurtByExplosions(*this, Game::CFO_ONLY_ADJACENT),
-				Game::Layers::BREAKABLES));
+	addComponent(new lif::Collider(*this, lif::hurtByExplosions(*this, lif::CFO_ONLY_ADJACENT),
+				lif::Layers::BREAKABLES));
 	// Spawn bonus on death
-	addComponent(new Game::Spawning(*this, [this] () {
+	addComponent(new lif::Spawning(*this, [this] () {
 		// spawn function
 		return _spawnBonus();
 	}));
 }
 
 Animation& BreakableWall::_setupAnimations(const std::string& texture_name) {
-	animated = addComponent(new Game::Animated(*this, texture_name));
-	addComponent(new Game::Drawable(*this, *animated));
+	animated = addComponent(new lif::Animated(*this, texture_name));
+	addComponent(new lif::Drawable(*this, *animated));
 	auto& animation = animated->addAnimation("break");
 	auto& animatedSprite = animated->getSprite();
 
@@ -93,10 +93,10 @@ Animation& BreakableWall::_setupAnimations(const std::string& texture_name) {
 	return animation;
 }
 
-Game::Entity* BreakableWall::_spawnBonus() {
-	const auto bonus_type = Game::Conf::Bonus::distribution(Game::rng);
-	if (bonus_type < Game::Conf::Bonus::N_BONUS_TYPES)
-		return new Game::Bonus(position, static_cast<Game::BonusType>(bonus_type));
+lif::Entity* BreakableWall::_spawnBonus() {
+	const auto bonus_type = lif::Conf::Bonus::distribution(lif::rng);
+	if (bonus_type < lif::Conf::Bonus::N_BONUS_TYPES)
+		return new lif::Bonus(position, static_cast<lif::BonusType>(bonus_type));
 
 	return nullptr;
 }

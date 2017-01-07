@@ -5,12 +5,12 @@
 #include "Sounded.hpp"
 #include "conf/zindex.hpp"
 
-using Game::TransparentWall;
+using lif::TransparentWall;
 
 TransparentWall::TransparentWall(const sf::Vector2f& pos)
-	: BreakableWall(pos, Game::getAsset("graphics", "transparent_wall.png"), 1, SCORE) 
+	: BreakableWall(pos, lif::getAsset("graphics", "transparent_wall.png"), 1, SCORE) 
 {
-	get<Game::Collider>()->setLayer(Game::Layers::TRANSP_WALLS);
-	get<Game::ZIndexed>()->setZIndex(Game::Conf::ZIndex::TRANSP_WALLS);
-	get<Game::Sounded>()->setSoundFile("death", Game::getAsset("sounds", "transp_wall_break.ogg"));
+	get<lif::Collider>()->setLayer(lif::Layers::TRANSP_WALLS);
+	get<lif::ZIndexed>()->setZIndex(lif::Conf::ZIndex::TRANSP_WALLS);
+	get<lif::Sounded>()->setSoundFile("death", lif::getAsset("sounds", "transp_wall_break.ogg"));
 }

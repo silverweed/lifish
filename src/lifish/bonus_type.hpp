@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace Game {
+namespace lif {
 
 class LevelManager;
 class Player;
@@ -23,6 +23,6 @@ enum class BonusType {
 };
 
 std::string bonusToString(BonusType type);
-void triggerBonus(Game::LevelManager& lm, BonusType type, Game::Player& player);
+void triggerBonus(lif::LevelManager& lm, BonusType type, lif::Player& player);
 
 }

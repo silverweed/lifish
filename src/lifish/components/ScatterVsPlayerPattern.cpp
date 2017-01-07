@@ -5,18 +5,18 @@
 #include "Player.hpp"
 #include <cmath>
 
-using Game::ScatterVsPlayerPattern;
+using lif::ScatterVsPlayerPattern;
 
-ScatterVsPlayerPattern::ScatterVsPlayerPattern(Game::Entity& owner, const Game::BulletInfo& bullet)
-	: Game::ShootingPattern(owner, bullet)
+ScatterVsPlayerPattern::ScatterVsPlayerPattern(lif::Entity& owner, const lif::BulletInfo& bullet)
+	: lif::ShootingPattern(owner, bullet)
 {
-	shootClock = addComponent(new Game::Clock(*this));
+	shootClock = addComponent(new lif::Clock(*this));
 }
 
-Game::Entity* ScatterVsPlayerPattern::init() {
-	Game::Component::init();
+lif::Entity* ScatterVsPlayerPattern::init() {
+	lif::Component::init();
 
-	sighted = owner.get<Game::FreeSighted>();
+	sighted = owner.get<lif::FreeSighted>();
 	if (sighted == nullptr)
 		throw std::invalid_argument("Owner of ScatterVsPlayerPattern has no FreeSighted!");
 	
@@ -24,16 +24,16 @@ Game::Entity* ScatterVsPlayerPattern::init() {
 }
 
 void ScatterVsPlayerPattern::update() {
-	Game::Component::update();
+	lif::Component::update();
 	if (!positionLocked) {
 		// Find out player position; will keep using that until reset.
-		auto player = sighted->nearest<Game::Player>().lock();
+		auto player = sighted->nearest<lif::Player>().lock();
 		if (player == nullptr) {
 			setActive(false);
 			return;
 		}
 		playerAngle = _calcAngle(player->getPosition() 
-				+ sf::Vector2f(Game::TILE_SIZE / 2, Game::TILE_SIZE / 2));
+				+ sf::Vector2f(lif::TILE_SIZE / 2, lif::TILE_SIZE / 2));
 		positionLocked = true;
 	}
 	if (shootClock->getElapsedTime() > timeBetweenShots) {
@@ -45,9 +45,9 @@ void ScatterVsPlayerPattern::update() {
 	}
 }
 
-Game::Angle ScatterVsPlayerPattern::_calcAngle(const sf::Vector2f& pos) const {
+lif::Angle ScatterVsPlayerPattern::_calcAngle(const sf::Vector2f& pos) const {
 	const auto mpos = owner.getPosition();
-	return Game::radians(Game::PI / 2. + std::atan2(pos.y - mpos.y, pos.x - mpos.x));
+	return lif::radians(lif::PI / 2. + std::atan2(pos.y - mpos.y, pos.x - mpos.x));
 }
 
 void ScatterVsPlayerPattern::_reset() {
@@ -59,8 +59,8 @@ void ScatterVsPlayerPattern::_reset() {
 void ScatterVsPlayerPattern::_shoot() {
 	// Fire a bullet in a random direction inside the cone with angle
 	// `scatterAngle` and centered towards `playerPos`.
-	playerAngle = _calcAngle(sighted->nearest<Game::Player>().lock()->getPosition());
+	playerAngle = _calcAngle(sighted->nearest<lif::Player>().lock()->getPosition());
 	std::uniform_real_distribution<double> scatter(-scatterAngle.asRadians() / 2, scatterAngle.asRadians() / 2);
-	addSpawned(new Game::FreeBullet(owner.getPosition(), 
-				playerAngle + Game::radians(scatter(Game::rng)), bullet, &owner));
+	addSpawned(new lif::FreeBullet(owner.getPosition(), 
+				playerAngle + lif::radians(scatter(lif::rng)), bullet, &owner));
 }

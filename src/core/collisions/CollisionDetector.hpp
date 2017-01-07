@@ -5,7 +5,7 @@
 #	include "Stats.hpp"
 #endif
 
-namespace Game {
+namespace lif {
 
 class EntityGroup;
 
@@ -14,15 +14,15 @@ class EntityGroup;
  */
 class CollisionDetector {
 protected:
-	Game::EntityGroup& group;
+	lif::EntityGroup& group;
 	/** The rectangle defining the level boundaries */
 	const sf::FloatRect levelLimit;
 #ifndef RELEASE
-	Game::Debug::Stats dbgStats;
+	lif::Debug::Stats dbgStats;
 #endif
 
 public:
-	explicit CollisionDetector(Game::EntityGroup& group, const sf::FloatRect& levelLimit);
+	explicit CollisionDetector(lif::EntityGroup& group, const sf::FloatRect& levelLimit);
 	virtual ~CollisionDetector() {}
 
 	sf::FloatRect getLevelLimit() const { return levelLimit; }
@@ -30,7 +30,7 @@ public:
 	virtual void update() = 0;
 
 #ifndef RELEASE
-	const Game::Debug::Stats& getStats() const { return dbgStats; }
+	const lif::Debug::Stats& getStats() const { return dbgStats; }
 #endif
 };
 

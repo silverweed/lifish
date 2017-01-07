@@ -12,26 +12,26 @@
 #include "Sounded.hpp"
 #include "conf/teleport.hpp"
 
-using Game::Teleport;
-using Game::TILE_SIZE;
+using lif::Teleport;
+using lif::TILE_SIZE;
 
 Teleport::Teleport(const sf::Vector2f& pos) 
-	: Game::Entity(pos)
+	: lif::Entity(pos)
 {
-	addComponent(new Game::Fixed(*this));
-	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "teleport.png")));
-	disableClock = addComponent(new Game::Clock(*this));
-	addComponent(new Game::Drawable(*this, *animated));
-	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& c) {
+	addComponent(new lif::Fixed(*this));
+	animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "teleport.png")));
+	disableClock = addComponent(new lif::Clock(*this));
+	addComponent(new lif::Drawable(*this, *animated));
+	collider = addComponent(new lif::Collider(*this, [this] (lif::Collider& c) {
 		warp(c);
-	}, Game::Layers::TELEPORTS));
-	addComponent(new Game::Spawning(*this, [this] (const Game::Spawning&) {
+	}, lif::Layers::TELEPORTS));
+	addComponent(new lif::Spawning(*this, [this] (const lif::Spawning&) {
 		return mustSpawnFlash;
 	}, [this] () {
 		mustSpawnFlash = false;
-		return new Game::Flash(position);
+		return new lif::Flash(position);
 	}));
-	addComponent(new Game::Sounded(*this, { std::make_pair("warp", Game::getAsset("test", "teleport.ogg")) }));
+	addComponent(new lif::Sounded(*this, { std::make_pair("warp", lif::getAsset("test", "teleport.ogg")) }));
 
 	auto& anim = animated->addAnimation("teleport");
 	for (unsigned short i = 0; i < N_ANIM_FRAMES; ++i)
@@ -45,8 +45,8 @@ Teleport::Teleport(const sf::Vector2f& pos)
 }
 
 void Teleport::update() {
-	Game::Entity::update();
-	if (disabled && disableClock->getElapsedTime() >= Game::Conf::Teleport::COOLDOWN_TIME
+	lif::Entity::update();
+	if (disabled && disableClock->getElapsedTime() >= lif::Conf::Teleport::COOLDOWN_TIME
 			&& collider->getColliding().size() == 0)
 	{
 		disabled = false;
@@ -60,18 +60,18 @@ void Teleport::disable() {
 	disableClock->restart();
 }
 
-void Teleport::warp(Game::Collider& cld) {
+void Teleport::warp(lif::Collider& cld) {
 	if (disabled) return;
 	
 	const auto& entity = cld.getOwner();
-	auto am = entity.get<Game::AxisMoving>();
-	if (am != nullptr && !(entity.isAligned() && Game::tile(entity.getPosition()) == Game::tile(position))) {
+	auto am = entity.get<lif::AxisMoving>();
+	if (am != nullptr && !(entity.isAligned() && lif::tile(entity.getPosition()) == lif::tile(position))) {
 		return;
 	}
 
 	Teleport *nxt = _next;
 	for ( ; nxt != nullptr && nxt != this; nxt = nxt->next()) {
-		if (nxt->isDisabled() || nxt->get<Game::Collider>()->getColliding().size() > 0)
+		if (nxt->isDisabled() || nxt->get<lif::Collider>()->getColliding().size() > 0)
 			continue;
 		break;
 	}
@@ -80,12 +80,12 @@ void Teleport::warp(Game::Collider& cld) {
 
 	cld.getOwnerRW().setPosition(nxt->getPosition());
 	if (am != nullptr) {
-		am->setPrevAlign(Game::tile(nxt->getPosition()));
+		am->setPrevAlign(lif::tile(nxt->getPosition()));
 	}
 
 	mustSpawnFlash = true;
 	nxt->mustSpawnFlash = true;
-	Game::cache.playSound(get<Game::Sounded>()->getSoundFile("warp"));
+	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("warp"));
 	disable();
 	nxt->disable();
 }

@@ -4,15 +4,15 @@
 #include <memory>
 #include "Sighted.hpp"
 
-namespace Game {
+namespace lif {
 
-class FreeSighted : public Game::Sighted {
-	using SeenEntitiesList = std::vector<std::pair<std::weak_ptr<Game::Entity>, float>>;
+class FreeSighted : public lif::Sighted {
+	using SeenEntitiesList = std::vector<std::pair<std::weak_ptr<lif::Entity>, float>>;
 
 	SeenEntitiesList seen;
 
 public:
-	explicit FreeSighted(Game::Entity& owner, float visionRadius = -1);
+	explicit FreeSighted(lif::Entity& owner, float visionRadius = -1);
 
 	/** @return A list of pairs {entity, squared distance in pixel} */
 	const SeenEntitiesList& entitiesSeen() const { return seen; }
@@ -41,12 +41,12 @@ std::weak_ptr<T> FreeSighted::nearest() {
 }
 
 template<>
-inline std::weak_ptr<Game::Entity> FreeSighted::nearest<Game::Entity>() {
-	using Pair = std::pair<std::weak_ptr<Game::Entity>, float>;
+inline std::weak_ptr<lif::Entity> FreeSighted::nearest<lif::Entity>() {
+	using Pair = std::pair<std::weak_ptr<lif::Entity>, float>;
 	auto it = std::min_element(seen.begin(), seen.end(), [] (Pair a, Pair b) {
 		return a.second < b.second;
 	});
-	if (it == seen.end()) return std::weak_ptr<Game::Entity>();
+	if (it == seen.end()) return std::weak_ptr<lif::Entity>();
 	return it->first;
 }
 

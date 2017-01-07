@@ -15,41 +15,41 @@
 #include "GameCache.hpp"
 #include <random>
 
-using Game::Letter;
-using Game::TILE_SIZE;
-using Game::Conf::Player::N_EXTRA_LETTERS;
+using lif::Letter;
+using lif::TILE_SIZE;
+using lif::Conf::Player::N_EXTRA_LETTERS;
 
 const sf::Time Letter::TRANSITION_DELAY = sf::milliseconds(3000);
 
 static std::uniform_int_distribution<unsigned short> dist(0, N_EXTRA_LETTERS - 1);
 
 unsigned short Letter::randomId() {
-	return dist(Game::rng);
+	return dist(lif::rng);
 }
 
 Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
-	: Game::Entity(pos)
+	: lif::Entity(pos)
 	, id(_id)
 {
-	addComponent(new Game::Scored(*this, 100));
-	addComponent(new Game::Sounded(*this, { std::make_pair("grab", Game::getAsset("test", "letter_grab.ogg")) }));
-	transitionClock = addComponent(new Game::Clock(*this));
-	animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "extra_letters.png")));
-	addComponent(new Game::Drawable(*this, *animated));
-	addComponent(new Game::Killable(*this));
-	addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
-		if (coll.getLayer() != Game::Layers::PLAYERS || grabbable->isGrabbed())
+	addComponent(new lif::Scored(*this, 100));
+	addComponent(new lif::Sounded(*this, { std::make_pair("grab", lif::getAsset("test", "letter_grab.ogg")) }));
+	transitionClock = addComponent(new lif::Clock(*this));
+	animated = addComponent(new lif::Animated(*this, lif::getAsset("test", "extra_letters.png")));
+	addComponent(new lif::Drawable(*this, *animated));
+	addComponent(new lif::Killable(*this));
+	addComponent(new lif::Collider(*this, [this] (lif::Collider& coll) {
+		if (coll.getLayer() != lif::Layers::PLAYERS || grabbable->isGrabbed())
 			return;
-		get<Game::Killable>()->kill();			
+		get<lif::Killable>()->kill();			
 		grabbable->grab();
-		get<Game::Scored>()->setTarget(static_cast<const Game::Player&>(coll.getOwner()).getInfo().id);
-		Game::cache.playSound(get<Game::Sounded>()->getSoundFile("grab"));
+		get<lif::Scored>()->setTarget(static_cast<const lif::Player&>(coll.getOwner()).getInfo().id);
+		lif::cache.playSound(get<lif::Sounded>()->getSoundFile("grab"));
 		
 		// Give letter to player
-		auto& player = static_cast<Game::Player&>(coll.getOwnerRW());
+		auto& player = static_cast<lif::Player&>(coll.getOwnerRW());
 		player.setExtra(id, true);
 	}));
-	grabbable = addComponent(new Game::Grabbable(*this));
+	grabbable = addComponent(new lif::Grabbable(*this));
 
 	// Letters are indexed 0 to N_EXTRA_LETTERS - 1.
 	if (id > N_EXTRA_LETTERS - 1) 
@@ -58,7 +58,7 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	auto& animatedSprite = animated->getSprite();
 
 	for (unsigned short i = 0; i < N_EXTRA_LETTERS; ++i) {	
-		auto& anim = animated->addAnimation(Game::to_string(i));
+		auto& anim = animated->addAnimation(lif::to_string(i));
 		// Total different frames are 4 * N_EXTRA_LETTERS
 		// (full letter + 3 transitions to next, cyclic).
 		// Here, animations[i] is _5_ frames long, because it contains:
@@ -83,12 +83,12 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 }
 
 void Letter::update() {
-	Game::Entity::update();
+	lif::Entity::update();
 	auto& animatedSprite = animated->getSprite();
 	if (!animatedSprite.isPlaying() && transitioning) {
 		transitioning = false;
 		id = (id + 1) % N_EXTRA_LETTERS;
-		animatedSprite.setAnimation(*get<Game::Animated>()->getAnimation(Game::to_string(id)));
+		animatedSprite.setAnimation(*get<lif::Animated>()->getAnimation(lif::to_string(id)));
 		animatedSprite.pause();
 	} else if (transitionClock->getElapsedTime() >= TRANSITION_DELAY) {
 		transitionClock->restart();

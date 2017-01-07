@@ -17,7 +17,7 @@
 #	include <mutex>
 #endif
 
-namespace Game {
+namespace lif {
 
 class CollisionDetector;
 class LevelRenderer;
@@ -45,20 +45,20 @@ class EntityGroup final : private sf::NonCopyable {
 #endif
 
 	/** All the entities (owning references) */
-	std::list<std::shared_ptr<Game::Entity>> entities;
+	std::list<std::shared_ptr<lif::Entity>> entities;
 
 	/** The colliders of entities which have one */
-	std::vector<std::weak_ptr<Game::Collider>> collidingEntities;
+	std::vector<std::weak_ptr<lif::Collider>> collidingEntities;
 
 	/** The list of the killable entities, which ought to be removed when
 	 *  their `isKilled()` method yields true.
 	 */
-	std::list<std::weak_ptr<Game::Killable>> killables;
+	std::list<std::weak_ptr<lif::Killable>> killables;
 
 	/** The list of Killable entities who are being destroyed (those whose isKilled() is
 	 *  true but isKillInProgress() is true as well).
 	 */
-	std::list<std::weak_ptr<Game::Killable>> dying;
+	std::list<std::weak_ptr<lif::Killable>> dying;
 
 
 	/** Removes any killed entity from all internal collections (including the main one) and destroys them.
@@ -78,12 +78,12 @@ class EntityGroup final : private sf::NonCopyable {
 	void _pruneAll();
 	void _pruneColliding();
 
-	Game::Entity* _putInAux(std::shared_ptr<Game::Entity> entity);
+	lif::Entity* _putInAux(std::shared_ptr<lif::Entity> entity);
 
 	/** @return whether a Killable in this group's `killables` refers to `entity` */
-	bool _isManagedKillable(std::shared_ptr<Game::Entity> entity) const;
+	bool _isManagedKillable(std::shared_ptr<lif::Entity> entity) const;
 	/** @return whether a Collider in this group's `collidingEntities` refers to `entity` */
-	bool _isManagedCollider(std::shared_ptr<Game::Entity> entity) const;
+	bool _isManagedCollider(std::shared_ptr<lif::Entity> entity) const;
 
 public:
 	/**
@@ -93,25 +93,25 @@ public:
 
 	/** Applies a void(Args...) function to all entities (ref-args version)  */
 	template<typename... Args>
-	void apply(AppliedFunc<Game::Entity*, Args&...> func, Args&... args);
+	void apply(AppliedFunc<lif::Entity*, Args&...> func, Args&... args);
 
 	/** Applies a void(Args...) function to all entities (const version) */
 	template<typename... Args>
-	void apply(AppliedFunc<const Game::Entity*, Args...> func, Args... args) const;
+	void apply(AppliedFunc<const lif::Entity*, Args...> func, Args... args) const;
 
 	/** Applies a void(Args...) function to all entities (weak_ptr version) */
 	template<typename... Args>
-	void apply(AppliedFunc<std::weak_ptr<Game::Entity>, Args...> func, Args... args) const;
+	void apply(AppliedFunc<std::weak_ptr<lif::Entity>, Args...> func, Args... args) const;
 
 	template<class T>
-	Game::Entity* add(T *entity);
+	lif::Entity* add(T *entity);
 
 	template<class T>
-	Game::Entity* add(std::shared_ptr<T>& entity);
+	lif::Entity* add(std::shared_ptr<T>& entity);
 
 	/** Removes an entity from all internal collections. */
-	void remove(const Game::Entity& entity);
-	void remove(std::shared_ptr<Game::Entity> entity);
+	void remove(const lif::Entity& entity);
+	void remove(std::shared_ptr<lif::Entity> entity);
 
 	/** Removes all entities from this EntityGroup. */
 	void clear();
@@ -130,12 +130,12 @@ public:
 	void validate();
 	void updateAll();
 
-	auto getColliding() -> std::vector<std::weak_ptr<Game::Collider>>& {
+	auto getColliding() -> std::vector<std::weak_ptr<lif::Collider>>& {
 		return collidingEntities;
 	}
 
 	/** @return all entities whose tile is `tile` */
-	auto getEntitiesAtTile(const sf::Vector2i& tile) const -> std::vector<std::weak_ptr<Game::Entity>>;
+	auto getEntitiesAtTile(const sf::Vector2i& tile) const -> std::vector<std::weak_ptr<lif::Entity>>;
 
 	inline void mtxLock() const {
 #ifdef MULTITHREADED
@@ -152,32 +152,32 @@ public:
 ///// Implementation /////
 
 template<typename... Args>
-void EntityGroup::apply(AppliedFunc<Game::Entity*, Args&...> func, Args&... args) {
+void EntityGroup::apply(AppliedFunc<lif::Entity*, Args&...> func, Args&... args) {
 	for (auto& e : entities)
 		func(e.get(), args...);
 }
 
 template<typename... Args>
-void EntityGroup::apply(AppliedFunc<const Game::Entity*, Args...> func, Args... args) const {
+void EntityGroup::apply(AppliedFunc<const lif::Entity*, Args...> func, Args... args) const {
 	for (const auto& e : entities)
 		func(e.get(), args...);
 }
 
 template<typename... Args>
-void EntityGroup::apply(AppliedFunc<std::weak_ptr<Game::Entity>, Args...> func, Args... args) const {
+void EntityGroup::apply(AppliedFunc<std::weak_ptr<lif::Entity>, Args...> func, Args... args) const {
 	for (const auto& e : entities)
 		func(e, args...);
 }
 
 template<class T>
-Game::Entity* EntityGroup::add(T *entity) {
+lif::Entity* EntityGroup::add(T *entity) {
 	entity->init();
-	entities.push_back(std::shared_ptr<Game::Entity>(entity));
+	entities.push_back(std::shared_ptr<lif::Entity>(entity));
 	return _putInAux(entities.back());
 }
 
 template<class T>
-Game::Entity* EntityGroup::add(std::shared_ptr<T>& entity) {
+lif::Entity* EntityGroup::add(std::shared_ptr<T>& entity) {
 	entity->init();
 	entities.push_back(entity);
 	return _putInAux(entities.back());

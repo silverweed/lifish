@@ -2,7 +2,7 @@
 
 #include "Entity.hpp"
 
-namespace Game {
+namespace lif {
 
 class Animated;
 class Clock;
@@ -11,7 +11,7 @@ class Collider;
 /**
  * A teleport can be used both by players and enemies.
  */
-class Teleport : public Game::Entity {
+class Teleport : public lif::Entity {
 	static constexpr unsigned int N_ANIM_FRAMES = 8;
 
 	/** The Teleport this one teleports to */
@@ -22,12 +22,12 @@ class Teleport : public Game::Entity {
 	bool mustSpawnFlash = false;
 
 	/** Time to wait before reactivating */
-	Game::Clock *disableClock = nullptr;
-	Game::Collider *collider = nullptr;
-	Game::Animated *animated = nullptr;
+	lif::Clock *disableClock = nullptr;
+	lif::Collider *collider = nullptr;
+	lif::Animated *animated = nullptr;
 
 
-	void warp(Game::Collider& cld);
+	void warp(lif::Collider& cld);
 
 public:
 	explicit Teleport(const sf::Vector2f& pos);

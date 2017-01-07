@@ -2,17 +2,17 @@
 
 #include "EventHandler.hpp"
 
-namespace Game {
+namespace lif {
 
 class GameContext;
 
 namespace Debug {
 
-class DebugEventHandler : public Game::EventHandler {
-	Game::GameContext& game;
+class DebugEventHandler : public lif::EventHandler {
+	lif::GameContext& game;
 
 public:
-	DebugEventHandler(Game::GameContext& game);
+	DebugEventHandler(lif::GameContext& game);
 
 	bool handleEvent(sf::Window& window, sf::Event event) override;
 };

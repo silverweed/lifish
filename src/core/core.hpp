@@ -14,7 +14,7 @@
 #	define COMMIT "unknown"
 #endif
 
-namespace Game {
+namespace lif {
 
 struct Options;
 class MusicManager;
@@ -49,25 +49,25 @@ constexpr short JOYSTICK_INPUT_THRESHOLD = 50;
 extern char pwd[PWD_BUFSIZE];
 
 /** Global game cache (caches textures in memory for faster loading) */
-extern Game::GameCache cache;
+extern lif::GameCache cache;
 
 /** Random number generator */
 extern std::default_random_engine rng;
 
 /** The game options */
-extern Game::Options options;
+extern lif::Options options;
 
 /** Pointer to an unowned MusicManager, which *MUST* be created in the main function.
  *  Allows easy access to the music manager throughout the code, but the object
  *  itself has automatic lifetime and is guaranteed to die before the main's exit.
  */
-extern Game::MusicManager *musicManager;
+extern lif::MusicManager *musicManager;
 
 #ifdef MULTITHREADED
 /** Pointer to the current WindowContext (unowned), used by the rendering thread
  *  to draw the correct context with no hassle.
  */
-extern Game::WindowContext *curContext;
+extern lif::WindowContext *curContext;
 #endif
 
 /** If true, the game exits after the current loop */

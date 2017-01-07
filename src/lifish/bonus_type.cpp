@@ -9,9 +9,9 @@
 #include "Bonusable.hpp"
 #include "game.hpp"
 
-using B = Game::BonusType;
+using B = lif::BonusType;
 
-std::string Game::bonusToString(Game::BonusType type) {
+std::string lif::bonusToString(lif::BonusType type) {
 	switch (type) {
 	case B::MAX_BOMBS:
 		return "Max Bombs Up";
@@ -40,64 +40,64 @@ std::string Game::bonusToString(Game::BonusType type) {
 	return "Unknown Bonus";
 }
 
-void Game::triggerBonus(Game::LevelManager& lm, Game::BonusType type, Game::Player& player) {
+void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& player) {
 	const auto powers = player.getInfo().powers;
 
 	switch (type) {
 	case B::MAX_BOMBS:
-		if (powers.maxBombs < Game::Conf::Player::MAX_MAX_BOMBS)
+		if (powers.maxBombs < lif::Conf::Player::MAX_MAX_BOMBS)
 			player.setMaxBombs(powers.maxBombs + 1);
 		break;
 	case B::QUICK_FUSE:
-		if (powers.bombFuseTime == Game::Conf::Bomb::DEFAULT_FUSE)
-			player.setBombFuseTime(Game::Conf::Bomb::QUICK_FUSE);
+		if (powers.bombFuseTime == lif::Conf::Bomb::DEFAULT_FUSE)
+			player.setBombFuseTime(lif::Conf::Bomb::QUICK_FUSE);
 		break;
 	case B::MAX_RANGE:
-		if (powers.bombRadius < Game::Conf::Bomb::MAX_RADIUS)
+		if (powers.bombRadius < lif::Conf::Bomb::MAX_RADIUS)
 			player.setBombRadius(powers.bombRadius + 1);
 		break;
 	case B::SHIELD:
-		player.get<Game::Bonusable>()->giveBonus(B::SHIELD, Game::Conf::Bonus::SHIELD_DURATION);
+		player.get<lif::Bonusable>()->giveBonus(B::SHIELD, lif::Conf::Bonus::SHIELD_DURATION);
 		break;
 	case B::SPEEDY:
-		player.get<Game::Bonusable>()->giveBonus(B::SPEEDY, Game::Conf::Bonus::SPEEDY_DURATION);
+		player.get<lif::Bonusable>()->giveBonus(B::SPEEDY, lif::Conf::Bonus::SPEEDY_DURATION);
 		break;
 	case B::INCENDIARY_BOMB:
 		player.setIncendiaryBomb(true);
 		break;
 	case B::ZAPPER:
-		lm.getEntities().apply([] (Game::Entity *e) {
-			auto brk = dynamic_cast<Game::BreakableWall*>(e);
+		lm.getEntities().apply([] (lif::Entity *e) {
+			auto brk = dynamic_cast<lif::BreakableWall*>(e);
 			if (brk == nullptr) return;
 
-			auto klb = brk->get<Game::Killable>();
+			auto klb = brk->get<lif::Killable>();
 			if (klb->isKilled()) return;
 
-			const auto score = brk->get<Game::Scored>()->getPointsGiven();
+			const auto score = brk->get<lif::Scored>()->getPointsGiven();
 			klb->kill();
-			for (unsigned short i = 0; i < Game::score.size(); ++i)
-				Game::score[i] += score;
+			for (unsigned short i = 0; i < lif::score.size(); ++i)
+				lif::score[i] += score;
 		});
 		break;
 	case B::SUDDEN_DEATH:
-		lm.getEntities().apply([] (Game::Entity *e) {
-			auto enemy = dynamic_cast<Game::Enemy*>(e);
+		lm.getEntities().apply([] (lif::Entity *e) {
+			auto enemy = dynamic_cast<lif::Enemy*>(e);
 			if (enemy == nullptr) return;
 
-			auto klb = enemy->get<Game::Killable>();
+			auto klb = enemy->get<lif::Killable>();
 			if (klb->isKilled()) return;
 
-			const auto score = enemy->get<Game::Scored>()->getPointsGiven();
+			const auto score = enemy->get<lif::Scored>()->getPointsGiven();
 			klb->kill();
-			for (unsigned short i = 0; i < Game::score.size(); ++i)
-				Game::score[i] += score;
+			for (unsigned short i = 0; i < lif::score.size(); ++i)
+				lif::score[i] += score;
 		});
 		break;
 	case B::HEALTH_FULL:
-		player.get<Game::Lifed>()->refillLife();
+		player.get<lif::Lifed>()->refillLife();
 		break;
 	case B::HEALTH_SMALL:
-		player.get<Game::Lifed>()->decLife(-2);
+		player.get<lif::Lifed>()->decLife(-2);
 		break;
 	}
 }

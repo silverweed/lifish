@@ -4,7 +4,7 @@
 #include <map>
 #include <ctime>
 
-namespace Game {
+namespace lif {
 
 namespace Debug {
 

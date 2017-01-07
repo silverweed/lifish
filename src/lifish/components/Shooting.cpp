@@ -9,42 +9,42 @@
 #include "utils.hpp"
 #include <exception>
 
-using Game::Shooting;
+using lif::Shooting;
 
 const sf::Time Shooting::SHOOT_FRAME_TIME = sf::milliseconds(250);
 
-Shooting::Shooting(Game::Entity& owner, const Attack& attack)
-	: Game::Component(owner)
+Shooting::Shooting(lif::Entity& owner, const Attack& attack)
+	: lif::Component(owner)
 	, attackAlign(-1.f, -1.f)
 	, attack(attack) 
 {
 	position = owner.getPosition();
-	rechargeClock = addComponent(new Game::Clock(*this));
+	rechargeClock = addComponent(new lif::Clock(*this));
 }
 
-Game::Entity* Shooting::init() {
+lif::Entity* Shooting::init() {
 	// optional
-	ownerMoving = owner.get<Game::AxisMoving>();
+	ownerMoving = owner.get<lif::AxisMoving>();
 	return this;
 }
 
-Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
-	if (attack.type & Game::AttackType::CONTACT) {
+lif::AxisBullet* Shooting::shoot(lif::Direction dir) {
+	if (attack.type & lif::AttackType::CONTACT) {
 		shooting = true;
-		Game::cache.playSound(owner.get<Game::Sounded>()->getSoundFile("attack"));
+		lif::cache.playSound(owner.get<lif::Sounded>()->getSoundFile("attack"));
 		rechargeClock->restart();
-		attackAlign = Game::tile(owner.getPosition());
+		attackAlign = lif::tile(owner.getPosition());
 		if (ownerMoving != nullptr) {
 			switch (ownerMoving->getDirection()) {
-			case Game::Direction::UP: --attackAlign.y; break;
-			case Game::Direction::DOWN: ++attackAlign.y; break;
-			case Game::Direction::LEFT: --attackAlign.x; break;
-			case Game::Direction::RIGHT: ++attackAlign.x; break;
+			case lif::Direction::UP: --attackAlign.y; break;
+			case lif::Direction::DOWN: ++attackAlign.y; break;
+			case lif::Direction::LEFT: --attackAlign.x; break;
+			case lif::Direction::RIGHT: ++attackAlign.x; break;
 			default: break;
 			}
 		}
-		if (attack.type & Game::AttackType::RANGED) {
-			auto moving = ownerMoving == nullptr ? owner.get<Game::Moving>() : ownerMoving;
+		if (attack.type & lif::AttackType::RANGED) {
+			auto moving = ownerMoving == nullptr ? owner.get<lif::Moving>() : ownerMoving;
 			if (moving == nullptr)
 				throw std::logic_error("Called shoot() for a dashing attack on a non-Moving owner!");
 			moving->setDashing(4);
@@ -52,40 +52,40 @@ Game::AxisBullet* Shooting::shoot(Game::Direction dir) {
 		return nullptr;
 	}
 
-	if (dir == Game::Direction::NONE) {
+	if (dir == lif::Direction::NONE) {
 		if (ownerMoving == nullptr)
 			throw std::logic_error("Called shoot(Direction::NONE) on a non-AxisMoving owner!");
 		
-		if (attack.type & Game::AttackType::BLOCKING) {
+		if (attack.type & lif::AttackType::BLOCKING) {
 			if (ownerMoving != nullptr)
 				ownerMoving->block(attack.blockTime);
 		}
 		shooting = true;
 		rechargeClock->restart();
-		auto bullet = new Game::AxisBullet(getPosition(), ownerMoving->getDirection(), attack.bullet, &owner);
-		Game::cache.playSound(bullet->get<Game::Sounded>()->getSoundFile("shot"));
+		auto bullet = new lif::AxisBullet(getPosition(), ownerMoving->getDirection(), attack.bullet, &owner);
+		lif::cache.playSound(bullet->get<lif::Sounded>()->getSoundFile("shot"));
 		return bullet;
 	}
 
-	if (attack.type & Game::AttackType::BLOCKING) {
+	if (attack.type & lif::AttackType::BLOCKING) {
 		if (ownerMoving != nullptr)
 			ownerMoving->block(attack.blockTime);
 	}
 	shooting = true;
 	rechargeClock->restart();
-	auto bullet = new Game::AxisBullet(getPosition(), dir, attack.bullet, &owner);
-	Game::cache.playSound(bullet->get<Game::Sounded>()->getSoundFile("shot"));
+	auto bullet = new lif::AxisBullet(getPosition(), dir, attack.bullet, &owner);
+	lif::cache.playSound(bullet->get<lif::Sounded>()->getSoundFile("shot"));
 	return bullet;
 }
 
-Game::FreeBullet* Shooting::shoot(Game::Angle angle) {
-	if (attack.type & Game::AttackType::CONTACT)
+lif::FreeBullet* Shooting::shoot(lif::Angle angle) {
+	if (attack.type & lif::AttackType::CONTACT)
 		throw std::logic_error("Called shoot(angle) for a CONTACT attack!");
 
 	shooting = true;
 	rechargeClock->restart();
-	auto bullet = new Game::FreeBullet(getPosition(), angle, attack.bullet, &owner);
-	Game::cache.playSound(bullet->get<Game::Sounded>()->getSoundFile("shot"));
+	auto bullet = new lif::FreeBullet(getPosition(), angle, attack.bullet, &owner);
+	lif::cache.playSound(bullet->get<lif::Sounded>()->getSoundFile("shot"));
 	return bullet;
 }
 
@@ -95,7 +95,7 @@ bool Shooting::isRecharging() const {
 }
 
 void Shooting::update() {
-	Game::Component::update();
+	lif::Component::update();
 	if (shooting && rechargeClock->getElapsedTime() > SHOOT_FRAME_TIME) {
 		shooting = false;
 	}
@@ -108,7 +108,7 @@ void Shooting::setFireRateMult(float fr) {
 }
 
 void Shooting::setPosition(const sf::Vector2f& pos) {
-	Game::Component::setPosition(pos);
+	lif::Component::setPosition(pos);
 	manualPosition = true;
 }
 

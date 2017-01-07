@@ -12,18 +12,18 @@
 #include "core.hpp"
 #include <algorithm>
 
-using Game::HauntingSpiritBoss;
+using lif::HauntingSpiritBoss;
 
 HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
-	: Game::Boss(pos)
+	: lif::Boss(pos)
 	, state(State::START)
 {
 	// This boss has no Lifed component: it dies when there are no HauntedStatues left in the level.
-	addComponent(new Game::FreeSighted(*this))->setActive(false);
-	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "haunting_spirit.png")));
-	const auto size = 4 * Game::TILE_SIZE;
+	addComponent(new lif::FreeSighted(*this))->setActive(false);
+	animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "haunting_spirit.png")));
+	const auto size = 4 * lif::TILE_SIZE;
 	// This is needed by parent class
-	collider = addComponent(new Game::Collider(*this, Game::Layers::DEFAULT,
+	collider = addComponent(new lif::Collider(*this, lif::Layers::DEFAULT,
 				sf::Vector2f(size, size),
 				sf::Vector2f(-size/2, -size/2), true));
 	collider->setActive(false);
@@ -57,36 +57,36 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 		sf::IntRect(5 * size, 3 * size, size, size),
 	});
 	animated->getSprite().setOrigin(size/2, size/2);
-	animClock = addComponent(new Game::Clock(*this));
-	hauntClock = addComponent(new Game::Clock(*this));
-	atkClock = addComponent(new Game::Clock(*this));
+	animClock = addComponent(new lif::Clock(*this));
+	hauntClock = addComponent(new lif::Clock(*this));
+	atkClock = addComponent(new lif::Clock(*this));
 
-	Game::BulletInfo bullet;
+	lif::BulletInfo bullet;
 	bullet.id = 101;
 	bullet.speed = 1;
 	bullet.damage = 4;
-	auto circle = addComponent(new Game::CircleShootingPattern(*this, bullet));
+	auto circle = addComponent(new lif::CircleShootingPattern(*this, bullet));
 	circle->consecutiveShots = 6;
 	circle->timeBetweenShots = sf::seconds(0.5);
 	circle->bulletsPerShot = 6;
-	circle->rotationPerShot = Game::radians(Game::PI / 5.);
+	circle->rotationPerShot = lif::radians(lif::PI / 5.);
 	shootPatterns[0] = circle;
-	auto spiral = addComponent(new Game::CircleShootingPattern(*this, bullet));
+	auto spiral = addComponent(new lif::CircleShootingPattern(*this, bullet));
 	spiral->consecutiveShots = 50;
 	spiral->timeBetweenShots = sf::seconds(0.1);
 	spiral->bulletsPerShot = 1;
-	spiral->rotationPerShot = Game::radians(0.4);
+	spiral->rotationPerShot = lif::radians(0.4);
 	spiral->randomizeShootAngle = true;
 	shootPatterns[1] = spiral;
-	auto scatter = addComponent(new Game::ScatterVsPlayerPattern(*this, bullet));
+	auto scatter = addComponent(new lif::ScatterVsPlayerPattern(*this, bullet));
 	scatter->consecutiveShots = 18;
 	scatter->timeBetweenShots = sf::seconds(0.1);
-	scatter->scatterAngle = Game::degrees(30);
+	scatter->scatterAngle = lif::degrees(30);
 	shootPatterns[2] = scatter;
 }
 
 void HauntingSpiritBoss::update() {
-	Game::Entity::update();
+	lif::Entity::update();
 
 	switch (state) {
 	case State::START:
@@ -120,7 +120,7 @@ void HauntingSpiritBoss::_updateStart() {
 		animated->getSprite().setLooped(true);
 		animated->setAnimation("idle");
 		animated->getSprite().play();
-		get<Game::FreeSighted>()->setActive(true);
+		get<lif::FreeSighted>()->setActive(true);
 		state = State::SEARCHING;
 	} else if (animated->getAnimationName() == "idle") {
 		animated->getSprite().setLooped(false, false);	
@@ -131,10 +131,10 @@ void HauntingSpiritBoss::_updateStart() {
 
 void HauntingSpiritBoss::_updateSearching() {
 	// Task: find all the HauntedStatues in the level. Do this once and keep track of them internally thereafter.
-	auto sighted = get<Game::FreeSighted>();
+	auto sighted = get<lif::FreeSighted>();
 	const auto seen = sighted->entitiesSeen();
 	for (auto& pair : seen) {
-		if (auto statue = std::dynamic_pointer_cast<Game::HauntedStatue>(pair.first.lock()))
+		if (auto statue = std::dynamic_pointer_cast<lif::HauntedStatue>(pair.first.lock()))
 			if (!statue->isPossessed())
 				statues.push_back(statue);
 	}
@@ -155,7 +155,7 @@ void HauntingSpiritBoss::_updateSelectNewStatue() {
 		return;
 	}
 	std::uniform_int_distribution<> dist(0, statues.size() - 1);
-	targetStatue = statues[dist(Game::rng)];
+	targetStatue = statues[dist(lif::rng)];
 	state = State::TRANSITIONING_BEGIN;
 }
 
@@ -174,7 +174,7 @@ void HauntingSpiritBoss::_updateTransitioningBegin() {
 			state = State::DYING;
 			return;
 		}
-		position.x = statue->getPosition().x + Game::TILE_SIZE / 2;
+		position.x = statue->getPosition().x + lif::TILE_SIZE / 2;
 		animated->getSprite().rotate(180);
 		state = State::TRANSITIONING_END;
 	} else {
@@ -196,7 +196,7 @@ void HauntingSpiritBoss::_updateTransitioningEnd() {
 		hauntClock->restart();
 		atkClock->restart();
 		targetStatue.lock()->setPossessed(true);
-		get<Game::Drawable>()->setActive(false);
+		get<lif::Drawable>()->setActive(false);
 		state = State::HAUNTING;
 		return;
 	}
@@ -206,7 +206,7 @@ void HauntingSpiritBoss::_updateTransitioningEnd() {
 void HauntingSpiritBoss::_updateHaunting() {
 	// Task: attack the player; leave after some delay
 	if (targetStatue.expired()) {
-		get<Game::Drawable>()->setActive(true);
+		get<lif::Drawable>()->setActive(true);
 		state = State::SELECT_NEW_STATUE;
 		if (curShootPattern != nullptr)
 			curShootPattern->setActive(false);
@@ -217,14 +217,14 @@ void HauntingSpiritBoss::_updateHaunting() {
 		return;
 	}
 	if (hauntClock->getElapsedTime() > sf::seconds(25)) {
-		get<Game::Drawable>()->setActive(true);
+		get<lif::Drawable>()->setActive(true);
 		targetStatue.lock()->setPossessed(false);
 		state = State::SELECT_NEW_STATUE;
 		return;
 	}
 	if (atkClock->getElapsedTime() > sf::seconds(3)) {
 		std::uniform_int_distribution<unsigned short> dist(0, shootPatterns.size() - 1);
-		curShootPattern = shootPatterns[dist(Game::rng)];
+		curShootPattern = shootPatterns[dist(lif::rng)];
 		curShootPattern->resetAndPlay();
 	}
 }

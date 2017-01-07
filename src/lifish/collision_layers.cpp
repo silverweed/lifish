@@ -19,12 +19,12 @@
 	collide[a][b] = true; \
 	collide[b][a] = true;
 
-using L = Game::Layers::Layer;
+using L = lif::Layers::Layer;
 
-Game::Matrix<bool, L::N_LAYERS, L::N_LAYERS> Game::Layers::collide,
-	                                     Game::Layers::solid;
+lif::Matrix<bool, L::N_LAYERS, L::N_LAYERS> lif::Layers::collide,
+	                                     lif::Layers::solid;
 
-void Game::Layers::init() {
+void lif::Layers::init() {
 	for (auto& l : collide)
 		l.fill(false);
 	for (auto& l : solid)

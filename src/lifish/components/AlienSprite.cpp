@@ -7,15 +7,15 @@
 #include "utils.hpp"
 #include "Drawable.hpp"
 
-using Game::AlienSprite;
-using Game::Direction;
-using Game::TILE_SIZE;
+using lif::AlienSprite;
+using lif::Direction;
+using lif::TILE_SIZE;
 
-AlienSprite::AlienSprite(Game::Entity& owner)
-	: Game::Component(owner)
+AlienSprite::AlienSprite(lif::Entity& owner)
+	: lif::Component(owner)
 {
-	animated = addComponent(new Game::Animated(owner, Game::getAsset("test", "aliensprite.png")));
-	addComponent(new Game::Drawable(*this, *animated));
+	animated = addComponent(new lif::Animated(owner, lif::getAsset("test", "aliensprite.png")));
+	addComponent(new lif::Drawable(*this, *animated));
 
 	auto& a_down = animated->addAnimation("walk_down");
 	auto& a_up = animated->addAnimation("walk_up");
@@ -50,8 +50,8 @@ AlienSprite::AlienSprite(Game::Entity& owner)
 	animatedSprite.play();
 }
 
-Game::Entity* AlienSprite::init() {
-	Game::Component::init();
-	movingAnimator = addComponent(new Game::MovingAnimator(*this, owner.get<Game::AxisMoving>(), animated));
+lif::Entity* AlienSprite::init() {
+	lif::Component::init();
+	movingAnimator = addComponent(new lif::MovingAnimator(*this, owner.get<lif::AxisMoving>(), animated));
 	return this;
 }

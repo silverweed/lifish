@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace Game {
+namespace lif {
 
 class Stringable {
 public:

@@ -4,26 +4,26 @@
 #include "ShadedText.hpp"
 #include <random>
 
-//static Game::Direction directions[] = { 
-	//Game::Direction::UP,
-	//Game::Direction::RIGHT,
-	//Game::Direction::DOWN, 
-	//Game::Direction::LEFT 
+//static lif::Direction directions[] = { 
+	//lif::Direction::UP,
+	//lif::Direction::RIGHT,
+	//lif::Direction::DOWN, 
+	//lif::Direction::LEFT 
 //};
 
-//Game::Direction Game::selectRandomViable(const Game::MovingEntity *const entity,
-		//const Game::LevelManager *const lr, const Game::Direction opp) {
-	//Game::Direction dirs[4];
+//lif::Direction lif::selectRandomViable(const lif::MovingEntity *const entity,
+		//const lif::LevelManager *const lr, const lif::Direction opp) {
+	//lif::Direction dirs[4];
 	//unsigned short n = 0;
 	//for (const auto& d : directions)
 		//if (entity->canGo(d, lr) && d != opp) dirs[n++] = d;
 	//if (n == 0)
 		//dirs[n++] = opp;
 	//std::uniform_int_distribution<int> dist(0, n - 1);
-	//return dirs[dist(Game::rng)];
+	//return dirs[dist(lif::rng)];
 //}
 
-short Game::KeyUtils::keyToNumber(sf::Keyboard::Key key) {
+short lif::KeyUtils::keyToNumber(sf::Keyboard::Key key) {
 	switch (key) {
 		using K = sf::Keyboard::Key;
 	case K::Num0: case K::Numpad0: return 0;
@@ -40,7 +40,7 @@ short Game::KeyUtils::keyToNumber(sf::Keyboard::Key key) {
 	}
 }
 
-std::string Game::KeyUtils::keyToString(sf::Keyboard::Key key) {
+std::string lif::KeyUtils::keyToString(sf::Keyboard::Key key) {
 	switch (key) {
 		using K = sf::Keyboard::Key;
 	case K::A: return "A";
@@ -148,13 +148,13 @@ std::string Game::KeyUtils::keyToString(sf::Keyboard::Key key) {
 	}
 }
 
-void Game::maybeShowFPS(sf::RenderWindow& window) {
+void lif::maybeShowFPS(sf::RenderWindow& window) {
 	static double cur_time;
 	static int n_updates = 0;
 	static sf::Clock fps_clock, fps_update_clock;
-	static Game::ShadedText fps_text(Game::getAsset("fonts", Game::Fonts::DEBUG_INFO), "-", sf::Vector2f(
-				Game::SIDE_PANEL_WIDTH + (Game::LEVEL_WIDTH - 5.5) * Game::TILE_SIZE, 
-				Game::WINDOW_HEIGHT - Game::TILE_SIZE));
+	static lif::ShadedText fps_text(lif::getAsset("fonts", lif::Fonts::DEBUG_INFO), "-", sf::Vector2f(
+				lif::SIDE_PANEL_WIDTH + (lif::LEVEL_WIDTH - 5.5) * lif::TILE_SIZE, 
+				lif::WINDOW_HEIGHT - lif::TILE_SIZE));
 	static bool textSetUp = false;
 
 	// Setup text once
@@ -165,13 +165,13 @@ void Game::maybeShowFPS(sf::RenderWindow& window) {
 	}	
 
 	float t = fps_clock.restart().asSeconds();
-	if (Game::options.showFPS) {
+	if (lif::options.showFPS) {
 		cur_time += t;
 		++n_updates;
 		if (fps_update_clock.getElapsedTime().asSeconds() >= 1) {
 			int fps = (int)(n_updates / cur_time);
 			std::stringstream ss;
-			ss << fps << " fps (vsync " << (Game::options.vsync ? "ON" : "OFF") << ")";
+			ss << fps << " fps (vsync " << (lif::options.vsync ? "ON" : "OFF") << ")";
 			fps_text.setString(ss.str());
 			fps_update_clock.restart();
 			n_updates = 0;
@@ -181,16 +181,16 @@ void Game::maybeShowFPS(sf::RenderWindow& window) {
 	}
 }
 
-void Game::testMusic() {
+void lif::testMusic() {
 	sf::Music sample;
-	sample.openFromFile(Game::getAsset("music", "music1.ogg"));
+	sample.openFromFile(lif::getAsset("music", "music1.ogg"));
 	sample.play();
-	sample.setVolume(Game::options.musicVolume);
+	sample.setVolume(lif::options.musicVolume);
 	sf::sleep(sf::milliseconds(200));
 	sample.stop();
 }
 
-short Game::JoystickUtils::getPauseButton(unsigned int id) {
+short lif::JoystickUtils::getPauseButton(unsigned int id) {
 	if (!sf::Joystick::isConnected(id)) return -1;
 	// Heuristic approach to "known" joysticks: we distinguish them by their
 	// button count and hope they're really that type of joystick.

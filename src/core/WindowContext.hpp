@@ -8,7 +8,7 @@
 #include "WithOrigin.hpp"
 #include "Activable.hpp"
 
-namespace Game {
+namespace lif {
 
 /**
  * A WindowContext defines what portion of the game is currently active
@@ -17,9 +17,9 @@ namespace Game {
  */
 class WindowContext
 	: public sf::Drawable
-	, public Game::WithOrigin
-	, public Game::Activable
-	, public Game::EventHandler
+	, public lif::WithOrigin
+	, public lif::Activable
+	, public lif::EventHandler
 {
 protected:
 	/** The chain of fallback handlers.
@@ -27,7 +27,7 @@ protected:
 	 *  which will try sequentially to catch it.
 	 *  Useful to share and reuse functionality of event handlers.
 	 */
-	std::deque<std::unique_ptr<Game::EventHandler>> handlers;
+	std::deque<std::unique_ptr<lif::EventHandler>> handlers;
 	int newContext = -1;
 
 public:

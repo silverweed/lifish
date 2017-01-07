@@ -7,7 +7,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/System/NonCopyable.hpp>
 
-namespace Game {
+namespace lif {
 
 /**
  * Keeps the loaded textures and sounds in memory for faster loading;
@@ -50,7 +50,7 @@ public:
 
 	/** Requests that the sound `sound_name` be played. This means the following
 	 *  actions:
-	 *  1- if Game::options.soundsMute is true, do nothing and return;
+	 *  1- if lif::options.soundsMute is true, do nothing and return;
 	 *  2- if `sounds.size() >= MAX_PARALLEL_SOUNDS`, check if there is a sound which
 	 *     is not playing anymore; remove it if found, else return;
 	 *  3- if a sound buffer `sound_name` is not in cache, load if from file;

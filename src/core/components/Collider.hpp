@@ -6,17 +6,17 @@
 #include "Component.hpp"
 #include "collision_layers.hpp"
 
-namespace Game {
+namespace lif {
 
-class Collider : public Game::Component {
+class Collider : public lif::Component {
 public:
-	using CollisionFunc = std::function<void(Game::Collider&)>;
+	using CollisionFunc = std::function<void(lif::Collider&)>;
 
 protected:
 	const bool phantom;
 
 	/** All the Colliders which are colliding with this one */
-	std::vector<std::weak_ptr<Game::Collider>> colliding;
+	std::vector<std::weak_ptr<lif::Collider>> colliding;
 	/** Whether this entity is at a level's boundary */
 	bool atLimit = false;
 	
@@ -25,39 +25,39 @@ protected:
 	sf::Vector2f size;
 	bool forceAck = false;
 	/** Collision layer */
-	Game::Layers::Layer layer;
+	lif::Layers::Layer layer;
 	/** Optional callback to be called at every update */
 	CollisionFunc onCollision;
 
 public:
 	COMP_NOT_UNIQUE
 
-	explicit Collider(Game::Entity& owner, 
-			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
-			  const sf::Vector2f& size = sf::Vector2f(Game::TILE_SIZE, Game::TILE_SIZE),
+	explicit Collider(lif::Entity& owner, 
+			  lif::Layers::Layer layer = lif::Layers::DEFAULT,
+			  const sf::Vector2f& size = sf::Vector2f(lif::TILE_SIZE, lif::TILE_SIZE),
 			  const sf::Vector2f& offset = sf::Vector2f(0, 0),
 			  bool phantom = false);
 
-	explicit Collider(Game::Entity& owner,
+	explicit Collider(lif::Entity& owner,
 			  CollisionFunc onCollision,
-			  Game::Layers::Layer layer = Game::Layers::DEFAULT,
-			  const sf::Vector2f& size = sf::Vector2f(Game::TILE_SIZE, Game::TILE_SIZE), 
+			  lif::Layers::Layer layer = lif::Layers::DEFAULT,
+			  const sf::Vector2f& size = sf::Vector2f(lif::TILE_SIZE, lif::TILE_SIZE), 
 			  const sf::Vector2f& offset = sf::Vector2f(0, 0),
 			  bool phantom = false);
 	
-	Collider(const Game::Collider& other);
+	Collider(const lif::Collider& other);
 
 	/** @return the list of Colliders colliding with this one */
-	std::vector<std::weak_ptr<Game::Collider>> getColliding() const;
+	std::vector<std::weak_ptr<lif::Collider>> getColliding() const;
 	/** Manually sets `coll` to be colliding with this collider */
-	void addColliding(std::weak_ptr<Game::Collider> coll);
+	void addColliding(std::weak_ptr<lif::Collider> coll);
 	/** Resets the list of colliding entities */
 	void reset();
 
 	/** @return the collision layer of this Collider */
-	Game::Layers::Layer getLayer() const { return layer; }
+	lif::Layers::Layer getLayer() const { return layer; }
 	/** Sets the collision layer of this Collider */
-	void setLayer(Game::Layers::Layer l) { layer = l; }
+	void setLayer(lif::Layers::Layer l) { layer = l; }
 
 	sf::Vector2f getOffset() const { return offset; }
 	void setOffset(const sf::Vector2f& off) { offset = off; }
@@ -85,10 +85,10 @@ public:
 	void setForceAck(bool b) { forceAck = b; }
 
 	/** @return whether this collider's layer collides with other's layer */
-	bool collidesWith(const Game::Collider& other) const;
+	bool collidesWith(const lif::Collider& other) const;
 
 	/** @return whether this collider's layer is solid for other's layer */
-	bool isSolidFor(const Game::Collider& other) const;
+	bool isSolidFor(const lif::Collider& other) const;
 
 	/** @return whether this Collider is at the level boundary. This is set
 	 *  externally by CollisionDetector.
@@ -97,7 +97,7 @@ public:
 	void setAtLimit(bool b) { atLimit = b; }
 
 	/** @return whether this Collider intersects `other` */
-	virtual bool contains(const Game::Collider& other) const;
+	virtual bool contains(const lif::Collider& other) const;
 
 	/** @return whether this Collider is either "at limit" or has more than 0 colliding Colliders */
 	virtual bool isColliding() const;

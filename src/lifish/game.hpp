@@ -33,7 +33,7 @@
 /**
  * Game-specific definitions, global functions and variables
  */
-namespace Game {
+namespace lif {
 
 /****************************************************************************/
 /*                         GLOBAL DEFINITIONS                               */
@@ -90,4 +90,4 @@ extern std::array<unsigned short, MAX_PLAYERS> playerContinues;
 
 bool init();
 
-} // end namespace Game
+} // end namespace lif

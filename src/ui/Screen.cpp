@@ -4,7 +4,7 @@
 #include "core.hpp"
 #include "GameCache.hpp"
 
-using Game::UI::Screen;
+using lif::UI::Screen;
 
 Screen::Screen(const sf::RenderWindow& window, const sf::Vector2u& size)
 	: window(window)
@@ -15,7 +15,7 @@ Screen::Screen(const std::string& layoutFileName, const sf::RenderWindow& window
 	: window(window)
 	, size(size)
 {
-	Game::UI::ScreenBuilder builder;
+	lif::UI::ScreenBuilder builder;
 	builder.build(*this, layoutFileName);	
 }
 
@@ -56,10 +56,10 @@ std::string Screen::getSelected() const {
 }
 
 void Screen::setOrigin(const sf::Vector2f& pos) {
-	Game::WithOrigin::setOrigin(pos);
+	lif::WithOrigin::setOrigin(pos);
 	bgSprite.setOrigin(pos);
 	for (auto& e : nonInteractables) {
-		if (auto t = dynamic_cast<Game::ShadedText*>(e.get()))
+		if (auto t = dynamic_cast<lif::ShadedText*>(e.get()))
 			t->setOrigin(pos);
 		else
 			static_cast<sf::Sprite*>(e.get())->setOrigin(pos);
@@ -72,12 +72,12 @@ bool Screen::hasCallback(const std::string& name) const {
 	return callbacks.find(name) != callbacks.end();
 }
 
-Game::UI::Action Screen::fireCallback(const std::string& name) {
+lif::UI::Action Screen::fireCallback(const std::string& name) {
 	return callbacks[name]();
 }
 
 void Screen::_loadBGSprite(const std::string& bgSpritePath) {
-	auto texture = Game::cache.loadTexture(bgSpritePath);
+	auto texture = lif::cache.loadTexture(bgSpritePath);
 	texture->setRepeated(true);
 	texture->setSmooth(true);
 	bgSprite.setTexture(*texture);

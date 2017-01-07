@@ -1,6 +1,6 @@
 #include "Direction.hpp"
 
-using Game::Direction;
+using lif::Direction;
 
 static Direction directions[] = { 
 	Direction::UP,
@@ -9,7 +9,7 @@ static Direction directions[] = {
 	Direction::LEFT 
 };
 
-Direction Game::turnRight(const Direction dir, short times) {
+Direction lif::turnRight(const Direction dir, short times) {
 	if (dir == Direction::NONE) return Direction::NONE;
 
 	int i = 0;

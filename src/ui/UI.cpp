@@ -8,10 +8,10 @@
 #include <exception>
 #include <iostream>
 
-using Game::UI::UI;
+using lif::UI::UI;
 
-UI::UI() : Game::WindowContext() {
-	handlers.push_back(std::unique_ptr<Game::EventHandler>(new Game::BaseEventHandler));
+UI::UI() : lif::WindowContext() {
+	handlers.push_back(std::unique_ptr<lif::EventHandler>(new lif::BaseEventHandler));
 }
 
 void UI::load(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames) {
@@ -20,12 +20,12 @@ void UI::load(const sf::RenderWindow& window, std::initializer_list<std::string>
 			std::cerr << "[ WARNING ] Screen " << name << " already loaded: skipping." << std::endl;	
 			continue;
 		}
-		auto screen = new Game::UI::Screen(name, window, size);
+		auto screen = new lif::UI::Screen(name, window, size);
 		if (curScreen == nullptr) {
 			curScreen = screen;
 			curScreen->setOrigin(origin);
 		}
-		screens[screen->getName()] = std::unique_ptr<Game::UI::Screen>(screen);
+		screens[screen->getName()] = std::unique_ptr<lif::UI::Screen>(screen);
 	}
 }
 
@@ -41,7 +41,7 @@ bool UI::handleEvent(sf::Window& window, sf::Event event) {
 	case sf::Event::JoystickButtonPressed:
 		{
 			const auto btn = event.joystickButton;
-			const short pb = Game::JoystickUtils::getPauseButton(btn.joystickId);
+			const short pb = lif::JoystickUtils::getPauseButton(btn.joystickId);
 			if (pb >= 0 && btn.button == static_cast<unsigned int>(pb))
 				active = !active;
 			return true;
@@ -63,12 +63,12 @@ bool UI::handleEvent(sf::Window& window, sf::Event event) {
 	return false;
 }
 
-void UI::add(Game::UI::Screen *screen) {
-	screens[screen->getName()] = std::unique_ptr<Game::UI::Screen>(screen); 
+void UI::add(lif::UI::Screen *screen) {
+	screens[screen->getName()] = std::unique_ptr<lif::UI::Screen>(screen); 
 }
 
 void UI::setOrigin(const sf::Vector2f& pos) {
-	Game::WithOrigin::setOrigin(pos);
+	lif::WithOrigin::setOrigin(pos);
 }
 
 void UI::update() {
@@ -85,40 +85,40 @@ void UI::fireClick() {
 	if (curScreen == nullptr) return;
 	auto cbname = curScreen->getSelected();
 
-	Game::UI::Action action;
+	lif::UI::Action action;
 
 	// Check if screen has an internal registered callback for that element; if not, call an external one.
 	if (curScreen->hasCallback(cbname)) {
 		action = curScreen->fireCallback(cbname);
 	} else {
-		auto it = Game::UI::screenCallbacks.find(cbname);
-		if (it == Game::UI::screenCallbacks.end()) return;
+		auto it = lif::UI::screenCallbacks.find(cbname);
+		if (it == lif::UI::screenCallbacks.end()) return;
 		action = it->second();
 	}
 
 	switch (action) {
 	case Action::EXIT:
 		// terminate the game
-		Game::exitCode = 0;
-		Game::terminated = true;
+		lif::exitCode = 0;
+		lif::terminated = true;
 		break;
 	case Action::SAVE_GAME:
 		// TODO
 		break;
 	case Action::SWITCH_SCREEN:
-		setCurrent(Game::UI::screenCallbackArg);
+		setCurrent(lif::UI::screenCallbackArg);
 		break;
 	case Action::SWITCH_SCREEN_OVERRIDE_PARENT:
-		setCurrent(Game::UI::screenCallbackArg, true);
+		setCurrent(lif::UI::screenCallbackArg, true);
 		break;
 	case Action::SWITCH_TO_PARENT:
 		setCurrentToParent();
 		break;
 	case Action::START_GAME:
-		newContext = Game::CTX_INTERLEVEL;
+		newContext = lif::CTX_INTERLEVEL;
 		break;
 	case Action::DEACTIVATE_UI:
-		newContext = Game::CTX_GAME;
+		newContext = lif::CTX_GAME;
 		break;
 	default:
 		break;

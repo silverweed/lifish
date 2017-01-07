@@ -2,7 +2,7 @@
 
 #include "Component.hpp"
 
-namespace Game {
+namespace lif {
 
 class Clock;
 class Collider;
@@ -12,7 +12,7 @@ class Collider;
  * AxisMoving for restricting motion along axes or its child
  * FreeMoving for generic 2d motion.
  */
-class Moving : public Game::Component {
+class Moving : public lif::Component {
 protected:
 	const static sf::Time MAX_FRAME_TIME;
 
@@ -28,13 +28,13 @@ protected:
 	bool blocked = false;
 	
 	sf::Vector2f prevAlign;
-	Game::Clock *frameClock = nullptr,
+	lif::Clock *frameClock = nullptr,
 		    *blockClock = nullptr;
 	/** This is the _first_ collider (if any) of the owner.
 	 *  It is the sole collider used to determine if we're colliding
 	 *  with something solid for us.
 	 */
-	Game::Collider *collider = nullptr;
+	lif::Collider *collider = nullptr;
 
 
 	bool _collidesWithSolid() const;
@@ -48,7 +48,7 @@ protected:
 	 */
 	float _effectiveSpeed() const;
 public:
-	explicit Moving(Game::Entity& owner, float speed);
+	explicit Moving(lif::Entity& owner, float speed);
 
 	float getSpeed() const { return speed; }
 	float getOriginalSpeed() const { return originalSpeed; }
@@ -79,7 +79,7 @@ public:
 
 	virtual bool isMoving() const { return moving; }
 
-	virtual Game::Entity* init() override;
+	virtual lif::Entity* init() override;
 	virtual void update() override = 0;
 };
 

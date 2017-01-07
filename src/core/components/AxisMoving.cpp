@@ -5,20 +5,20 @@
 #include "Shooting.hpp"
 #include <exception>
 
-using Game::AxisMoving;
-using Game::TILE_SIZE;
+using lif::AxisMoving;
+using lif::TILE_SIZE;
 
-AxisMoving::AxisMoving(Game::Entity& owner, float speed, Game::Direction dir)
-	: Game::Moving(owner, speed)
+AxisMoving::AxisMoving(lif::Entity& owner, float speed, lif::Direction dir)
+	: lif::Moving(owner, speed)
 	, direction(dir)
-	, prevDirection(Game::Direction::NONE)
+	, prevDirection(lif::Direction::NONE)
 	, prevAlign(-1.f, -1.f)
 {
-	moving = dir != Game::Direction::NONE;
+	moving = dir != lif::Direction::NONE;
 }
 
 void AxisMoving::update() {
-	Game::Component::update();
+	lif::Component::update();
 	if (!moving || _handleBlock()) return;
 
 	sf::Vector2f shift(0.f, 0.f);
@@ -67,20 +67,20 @@ void AxisMoving::realign() {
 	auto pos = owner.getPosition();
 
 	switch (direction) {
-	case Game::Direction::UP:
+	case lif::Direction::UP:
 		pos = sf::Vector2f(pos.x, (int(((pos.y-1) / TILE_SIZE) + 1)) * TILE_SIZE);
 		break;
-	case Game::Direction::LEFT:
+	case lif::Direction::LEFT:
 		pos = sf::Vector2f((int(((pos.x-1) / TILE_SIZE) + 1)) * TILE_SIZE, pos.y);
 		break;
-	case Game::Direction::DOWN:
+	case lif::Direction::DOWN:
 		pos = sf::Vector2f(pos.x, int((pos.y / TILE_SIZE)) * TILE_SIZE);
 		break;
-	case Game::Direction::RIGHT:
+	case lif::Direction::RIGHT:
 		pos = sf::Vector2f(int((pos.x / TILE_SIZE)) * TILE_SIZE, pos.y);
 		break;
 	default: 
-		pos = Game::aligned(pos);
+		pos = lif::aligned(pos);
 		break;
 	}
 	
@@ -88,13 +88,13 @@ void AxisMoving::realign() {
 }
 
 void AxisMoving::stop() {
-	Game::Moving::stop();
-	direction = prevDirection = Game::Direction::NONE;
+	lif::Moving::stop();
+	direction = prevDirection = lif::Direction::NONE;
 	if (autoRealign)
 		realign();
 }
 
-void AxisMoving::setDirection(Game::Direction dir) {
+void AxisMoving::setDirection(lif::Direction dir) {
 	if (dir == direction) return;
 	const auto pos = owner.getPosition();
 	switch (dir) {
@@ -112,14 +112,14 @@ void AxisMoving::setDirection(Game::Direction dir) {
 
 	direction = dir; 
 	distTravelled = 0;
-	moving = dir != Game::Direction::NONE;
+	moving = dir != lif::Direction::NONE;
 }
 
 void AxisMoving::turn(short straightAngles, bool clockwise) {
 	if (!clockwise)
 		straightAngles *= -1;
 
-	direction = Game::turnRight(direction, straightAngles);
+	direction = lif::turnRight(direction, straightAngles);
 }
 
 void AxisMoving::_ensureAlign() {
@@ -129,16 +129,16 @@ void AxisMoving::_ensureAlign() {
 	switch (direction) {
 	case Direction::RIGHT:
 	case Direction::DOWN:
-		if (Game::tile(pos) != prevAlign)
-			pos = Game::aligned(pos);
+		if (lif::tile(pos) != prevAlign)
+			pos = lif::aligned(pos);
 		break;
 	case Direction::LEFT:
-		if (Game::tile(pos).x == prevAlign.x - 2)
-			pos = Game::aligned(pos) + sf::Vector2f(Game::TILE_SIZE, 0);
+		if (lif::tile(pos).x == prevAlign.x - 2)
+			pos = lif::aligned(pos) + sf::Vector2f(lif::TILE_SIZE, 0);
 		break;
 	case Direction::UP:
-		if (Game::tile(pos).y == prevAlign.y - 2)
-			pos = Game::aligned(pos) + sf::Vector2f(0, Game::TILE_SIZE);
+		if (lif::tile(pos).y == prevAlign.y - 2)
+			pos = lif::aligned(pos) + sf::Vector2f(0, lif::TILE_SIZE);
 		break;
 	case Direction::NONE:
 		return;

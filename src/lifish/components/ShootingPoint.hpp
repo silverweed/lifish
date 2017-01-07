@@ -2,7 +2,7 @@
 
 #include "Component.hpp"
 
-namespace Game {
+namespace lif {
 
 struct Attack;
 class AutoShooting;
@@ -12,15 +12,15 @@ class Shooting;
 /** A ShootingPoint is a component with a sight and an AutoShooting.
  *  Can be used to give an entity multiple "weapons".
  */
-class ShootingPoint : public Game::Component {
+class ShootingPoint : public lif::Component {
 	sf::Vector2f offset;
-	Game::FreeSighted *sighted = nullptr;
-	Game::Shooting *shooting = nullptr;
+	lif::FreeSighted *sighted = nullptr;
+	lif::Shooting *shooting = nullptr;
 
 public:
 	COMP_NOT_UNIQUE
 
-	explicit ShootingPoint(Game::Entity& owner, const Game::Attack& attack, float visionRadius = -1);
+	explicit ShootingPoint(lif::Entity& owner, const lif::Attack& attack, float visionRadius = -1);
 
 	void setOffset(const sf::Vector2f& off) { offset = off; }
 

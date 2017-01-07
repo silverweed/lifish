@@ -3,22 +3,22 @@
 #include "Attack.hpp"
 #include "BufferedSpawner.hpp"
 
-namespace Game {
+namespace lif {
 
 /**
  * This is the base abstract class for a component that performs some kind of shooting pattern with a given Attack.
  * This component starts deactivated by default (since it shoots whenever it's active).
  */
-class ShootingPattern : public Game::BufferedSpawner {
+class ShootingPattern : public lif::BufferedSpawner {
 protected:
-	Game::BulletInfo bullet;
+	lif::BulletInfo bullet;
 
 	virtual void _reset() {}
 public:
 	COMP_NOT_UNIQUE
 
-	explicit ShootingPattern(Game::Entity& owner, const Game::BulletInfo& bullet)
-		: Game::BufferedSpawner(owner)
+	explicit ShootingPattern(lif::Entity& owner, const lif::BulletInfo& bullet)
+		: lif::BufferedSpawner(owner)
 		, bullet(bullet)
 	{
 		active = false;

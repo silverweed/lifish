@@ -5,7 +5,7 @@
 #include "Boss.hpp"
 #include "game.hpp"
 
-namespace Game {
+namespace lif {
 
 class HauntedStatue;
 class Animated;
@@ -13,7 +13,7 @@ class Clock;
 class ShootingPoint;
 class ShootingPattern;
 
-class HauntingSpiritBoss : public Game::Boss {
+class HauntingSpiritBoss : public lif::Boss {
 	enum class State {
 		START,
 		SEARCHING,
@@ -24,12 +24,12 @@ class HauntingSpiritBoss : public Game::Boss {
 		DYING
 	} state;
 
-	std::vector<std::weak_ptr<Game::HauntedStatue>> statues;
-	std::weak_ptr<Game::HauntedStatue> targetStatue;
-	std::array<Game::ShootingPattern*, 3> shootPatterns;
-	Game::ShootingPattern *curShootPattern = nullptr;
+	std::vector<std::weak_ptr<lif::HauntedStatue>> statues;
+	std::weak_ptr<lif::HauntedStatue> targetStatue;
+	std::array<lif::ShootingPattern*, 3> shootPatterns;
+	lif::ShootingPattern *curShootPattern = nullptr;
 
-	Game::Clock *animClock = nullptr,
+	lif::Clock *animClock = nullptr,
 	            *atkClock = nullptr,   // used for shooting
 		    *hauntClock = nullptr; // used for changing haunted statue after delay
 

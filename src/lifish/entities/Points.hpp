@@ -3,14 +3,14 @@
 #include "Entity.hpp"
 #include "ShadedText.hpp"
 
-namespace Game {
+namespace lif {
 
 /**
  * A temporary sprite showing a small text rising from a position
  */
-class Points : public Game::Entity {
+class Points : public lif::Entity {
 	const sf::Vector2f initialPos;
-	Game::ShadedText text;
+	lif::ShadedText text;
 
 public:
 	constexpr static unsigned short CHARACTER_SIZE = 10;

@@ -15,50 +15,50 @@
 #include "conf/boss.hpp"
 #include "shoot_utils.hpp"
 
-using namespace Game::Conf::Boss::AlienBoss;
-using Game::AlienBoss;
+using namespace lif::Conf::Boss::AlienBoss;
+using lif::AlienBoss;
 
 AlienBoss::AlienBoss(const sf::Vector2f& pos)
-	: Game::Boss(pos)
+	: lif::Boss(pos)
 {
-	addComponent(new Game::Sounded(*this, {
-		std::make_pair("death", Game::getAsset("test", std::string("alienboss_death.ogg"))),
-		std::make_pair("hurt", Game::getAsset("test", std::string("alienboss_hurt.ogg")))
+	addComponent(new lif::Sounded(*this, {
+		std::make_pair("death", lif::getAsset("test", std::string("alienboss_death.ogg"))),
+		std::make_pair("hurt", lif::getAsset("test", std::string("alienboss_hurt.ogg")))
 	}));
-	const sf::Vector2f size(3 * Game::TILE_SIZE, 3 * Game::TILE_SIZE);
-	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& coll) {
+	const sf::Vector2f size(3 * lif::TILE_SIZE, 3 * lif::TILE_SIZE);
+	collider = addComponent(new lif::Collider(*this, [this] (lif::Collider& coll) {
 		// on collision
 		_checkCollision(coll);
-	}, Game::Layers::BOSSES, size));
-	addComponent(new Game::Scored(*this, VALUE));
-	animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "alien_boss.png")));
+	}, lif::Layers::BOSSES, size));
+	addComponent(new lif::Scored(*this, VALUE));
+	animated = addComponent(new lif::Animated(*this, lif::getAsset("test", "alien_boss.png")));
 	animated->addAnimation("idle", { sf::IntRect(0, 0, size.x, size.y) }, true);
-	addComponent(new Game::Lifed(*this, LIFE));
-	shootClock = addComponent(new Game::Clock(*this));
+	addComponent(new lif::Lifed(*this, LIFE));
+	shootClock = addComponent(new lif::Clock(*this));
 
-	Game::Attack attack;
-	attack.type = Game::AttackType::SIMPLE;
+	lif::Attack attack;
+	attack.type = lif::AttackType::SIMPLE;
 	attack.bullet.id = 101;
 	attack.bullet.damage = 4;
 	attack.bullet.speed = 1.1;
 	attack.fireRate = 1. / SHOOT_SHORT_INTERVAL.asSeconds();
 
 	// Shooting points
-	eyes[0] = addComponent(new Game::ShootingPoint(*this, attack, SIGHT_RADIUS));
+	eyes[0] = addComponent(new lif::ShootingPoint(*this, attack, SIGHT_RADIUS));
 	eyes[0]->setOffset(sf::Vector2f(17, 18));
-	eyes[1] = addComponent(new Game::ShootingPoint(*this, attack, SIGHT_RADIUS));
+	eyes[1] = addComponent(new lif::ShootingPoint(*this, attack, SIGHT_RADIUS));
 	eyes[1]->setOffset(sf::Vector2f(50, 18));
-	addComponent(new Game::AutoShooting(*eyes[0]));
-	addComponent(new Game::AutoShooting(*eyes[1]));
+	addComponent(new lif::AutoShooting(*eyes[0]));
+	addComponent(new lif::AutoShooting(*eyes[1]));
 }
 
 void AlienBoss::update() {
-	Game::Entity::update();
-	if (killable->isKilled() || eyes[0]->get<Game::Shooting>()->isRecharging()) return;
+	lif::Entity::update();
+	if (killable->isKilled() || eyes[0]->get<lif::Shooting>()->isRecharging()) return;
 	
 	if (shotsFired > 0 || shootClock->getElapsedTime() > SHOOT_INTERVAL) {
 		for (auto eye : eyes)
-			Game::shootToNearestPlayer(*eye);
+			lif::shootToNearestPlayer(*eye);
 		shotsFired = (shotsFired + 1) % N_SHOTS;
 		if (shotsFired == 0)
 			shootClock->restart();

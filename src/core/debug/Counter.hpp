@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 
-namespace Game {
+namespace lif {
 
 namespace Debug {
 

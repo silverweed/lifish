@@ -1,7 +1,7 @@
 #include "WindowContext.hpp"
 #include <SFML/Window.hpp>
 
-using Game::WindowContext;
+using lif::WindowContext;
 
 void WindowContext::handleEvents(sf::Window& window) {
 	sf::Event event;

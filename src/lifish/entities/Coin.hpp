@@ -3,7 +3,7 @@
 #include <SFML/System.hpp>
 #include "Entity.hpp"
 
-namespace Game {
+namespace lif {
 
 class Clock;
 class Grabbable;
@@ -13,14 +13,14 @@ class Animated;
  * A coin can be taken by any player. Taking all coins triggers
  * EXTRA game, which morphs all enemies into harmless Aliens.
  */
-class Coin : public Game::Entity {
+class Coin : public lif::Entity {
 	const static sf::Time GRAB_TIME; 
 	constexpr static unsigned int VALUE = 150;
 
-	Game::Clock *grabClock;
-	Game::Grabbable *grabbable = nullptr;
+	lif::Clock *grabClock;
+	lif::Grabbable *grabbable = nullptr;
 
-	Game::Animated *animated = nullptr;
+	lif::Animated *animated = nullptr;
 
 	void _grab();
 

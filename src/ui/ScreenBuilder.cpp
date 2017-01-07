@@ -10,10 +10,10 @@
 #include <unordered_map>
 #include <algorithm>
 
-using Game::UI::ScreenBuilder;
+using lif::UI::ScreenBuilder;
 using json = nlohmann::json;
 
-static void add_style_property(Game::UI::ScreenStyle& style, const std::string& key, const json& value) {
+static void add_style_property(lif::UI::ScreenStyle& style, const std::string& key, const json& value) {
 	if (key == "spacing")
 		style.spacing = value.get<int>();
 	else if (key == "interactable")
@@ -41,7 +41,7 @@ static std::string convert_special_string(const std::string& s) {
 	return s;
 }
 
-void ScreenBuilder::_parseStyles(Game::UI::Screen& screen, const json& stylesJSON) {
+void ScreenBuilder::_parseStyles(lif::UI::Screen& screen, const json& stylesJSON) {
 	for (auto it = stylesJSON.begin(); it != stylesJSON.end(); ++it) {
 		auto style = it.value();
 		for (auto sit = style.begin(); sit != style.end(); ++sit)
@@ -50,7 +50,7 @@ void ScreenBuilder::_parseStyles(Game::UI::Screen& screen, const json& stylesJSO
 }
 
 // TODO: refactor this and _addImage to DRY
-void ScreenBuilder::_addText(Game::UI::Screen& screen, const json& text) {
+void ScreenBuilder::_addText(lif::UI::Screen& screen, const json& text) {
 	bool interactable = false, consecutive = false;
 	sf::Vector2f manualPosition(-1, -1);
 	std::string style_name = "default";
@@ -66,13 +66,13 @@ void ScreenBuilder::_addText(Game::UI::Screen& screen, const json& text) {
 		if (it != text.end()) {
 			manualPosition.x = (*it)[0].get<int>();
 			if (manualPosition.x < 0)
-				manualPosition.x += Game::WINDOW_WIDTH;
+				manualPosition.x += lif::WINDOW_WIDTH;
 			manualPosition.y = (*it)[1].get<int>();
 			if (manualPosition.y < 0)
-				manualPosition.y += Game::WINDOW_HEIGHT;
+				manualPosition.y += lif::WINDOW_HEIGHT;
 		}
 	}
-	auto newtxt = new Game::ShadedText;
+	auto newtxt = new lif::ShadedText;
 	auto style = screen.styles[style_name];
 	{
 		auto it = text.find("style-override");
@@ -87,7 +87,7 @@ void ScreenBuilder::_addText(Game::UI::Screen& screen, const json& text) {
 	// set char size
 	newtxt->setCharacterSize(style.characterSize);
 	// set font
-	newtxt->setFont(Game::getAsset("fonts", style.font));
+	newtxt->setFont(lif::getAsset("fonts", style.font));
 	// set string
 	newtxt->setString(convert_special_string(text["string"].get<std::string>()));
 
@@ -115,15 +115,15 @@ void ScreenBuilder::_addText(Game::UI::Screen& screen, const json& text) {
 
 	if (interactable) {
 		const auto name = text["name"].get<std::string>();
-		screen.interactables[name] = std::unique_ptr<Game::UI::Interactable>(
-				new Game::UI::Interactable(newtxt));
+		screen.interactables[name] = std::unique_ptr<lif::UI::Interactable>(
+				new lif::UI::Interactable(newtxt));
 	} else {
 		newtxt->setShadowSpacing(2, 2);
 		screen.nonInteractables.push_back(std::unique_ptr<sf::Drawable>(newtxt));
 	}
 }
 
-void ScreenBuilder::_addImage(Game::UI::Screen& screen, const json& image) {
+void ScreenBuilder::_addImage(lif::UI::Screen& screen, const json& image) {
 	bool interactable = false, consecutive = false;
 	sf::Vector2f manualPosition(-1, -1);
 	std::string style_name = "default";
@@ -139,10 +139,10 @@ void ScreenBuilder::_addImage(Game::UI::Screen& screen, const json& image) {
 		if (it != image.end()) {
 			manualPosition.x = (*it)[0].get<int>();
 			if (manualPosition.x < 0)
-				manualPosition.x += Game::WINDOW_WIDTH;
+				manualPosition.x += lif::WINDOW_WIDTH;
 			manualPosition.y = (*it)[1].get<int>();
 			if (manualPosition.y < 0)
-				manualPosition.y += Game::WINDOW_HEIGHT;
+				manualPosition.y += lif::WINDOW_HEIGHT;
 		}
 	}
 	auto newimg = new sf::Sprite;
@@ -155,7 +155,7 @@ void ScreenBuilder::_addImage(Game::UI::Screen& screen, const json& image) {
 	}
 	
 	// set string
-	newimg->setTexture(*Game::cache.loadTexture(Game::getAsset("graphics", image["src"].get<std::string>())));
+	newimg->setTexture(*lif::cache.loadTexture(lif::getAsset("graphics", image["src"].get<std::string>())));
 	const auto size = image["size"];
 	newimg->setTextureRect(sf::IntRect(0, 0, size[0].get<int>(), size[1].get<int>()));
 
@@ -183,13 +183,13 @@ void ScreenBuilder::_addImage(Game::UI::Screen& screen, const json& image) {
 
 	if (interactable) {
 		const auto name = image["name"].get<std::string>();
-		screen.interactables[name] = std::unique_ptr<Game::UI::Interactable>(
-				new Game::UI::Interactable(newimg));
+		screen.interactables[name] = std::unique_ptr<lif::UI::Interactable>(
+				new lif::UI::Interactable(newimg));
 	} else
 		screen.nonInteractables.push_back(std::unique_ptr<sf::Drawable>(newimg));
 }
 
-void ScreenBuilder::_addElement(Game::UI::Screen& screen, const json& element) {
+void ScreenBuilder::_addElement(lif::UI::Screen& screen, const json& element) {
 	const auto type = element["type"].get<std::string>();
 	if (type == "text")
 		_addText(screen, element);
@@ -200,7 +200,7 @@ void ScreenBuilder::_addElement(Game::UI::Screen& screen, const json& element) {
 }
 
 // center all non-absolute-positioned elements
-void ScreenBuilder::_fixAlign(Game::UI::Screen& screen) {
+void ScreenBuilder::_fixAlign(lif::UI::Screen& screen) {
 	const float yOffset = vAlign == "top" ? V_PADDING
 				: vAlign == "bottom" ? (screen.size.y - totHeight - V_PADDING)
 				: (screen.size.y - totHeight) / 2;
@@ -211,7 +211,7 @@ void ScreenBuilder::_fixAlign(Game::UI::Screen& screen) {
 		const float xOffset = rowAligns[row] == "left" ? H_PADDING
 					: rowAligns[row] == "right" ? (screen.size.x - rowWidths[row] - H_PADDING)
 					: (screen.size.x - rowWidths[row]) / 2;
-		if (auto text = dynamic_cast<Game::ShadedText*>(e)) {
+		if (auto text = dynamic_cast<lif::ShadedText*>(e)) {
 			text->setPosition(text->getPosition() + sf::Vector2f(xOffset, yOffset));
 		} else {
 			auto sprite = static_cast<sf::Sprite*>(e);
@@ -220,12 +220,12 @@ void ScreenBuilder::_fixAlign(Game::UI::Screen& screen) {
 	}
 }
 
-void ScreenBuilder::build(Game::UI::Screen& screen, const std::string& layoutFileName) {
+void ScreenBuilder::build(lif::UI::Screen& screen, const std::string& layoutFileName) {
 	if (screen.wasBuilt())
 		throw std::logic_error("screen passed to ScreenBuilder has already been built!");
 
 	// See assets/screens/README for the layout format
-	const auto absname = Game::getAsset("screens", layoutFileName);
+	const auto absname = lif::getAsset("screens", layoutFileName);
 	std::cerr << "Loading screen " << absname << std::endl;
 	json screenJSON = json::parse(std::ifstream(absname.c_str()));
 	
@@ -240,7 +240,7 @@ void ScreenBuilder::build(Game::UI::Screen& screen, const std::string& layoutFil
 		if (it != screenJSON.end())
 			vAlign = it->get<std::string>();
 	}
-	const auto bgSpritePath = Game::getAsset("graphics", screenJSON["bg"].get<std::string>());
+	const auto bgSpritePath = lif::getAsset("graphics", screenJSON["bg"].get<std::string>());
 	auto layoutJSON = screenJSON["layout"];
 
 	// styles

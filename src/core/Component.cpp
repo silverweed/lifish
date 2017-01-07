@@ -1,7 +1,7 @@
 #include "Component.hpp"
 
-using Game::Component;
+using lif::Component;
 
-Component::Component(Game::Entity& owner)
+Component::Component(lif::Entity& owner)
 	: owner(owner)
 {}

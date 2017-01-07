@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include "Component.hpp"
 
-namespace Game {
+namespace lif {
 
 class Killable;
 
@@ -11,20 +11,20 @@ class Killable;
  *  In particular, it handles the case where owner has an Animated, an AxisMoving,
  *  a MovingAnimator or a Sounded component.
  */
-class RegularEntityDeath : public Game::Component {
+class RegularEntityDeath : public lif::Component {
 	const sf::Time deathTime;
-	Game::Killable *killable = nullptr;
-	std::unordered_map<Game::Component*, bool> origAutoRealign;
+	lif::Killable *killable = nullptr;
+	std::unordered_map<lif::Component*, bool> origAutoRealign;
 
 public:
-	explicit RegularEntityDeath(Game::Entity& owner, sf::Time deathTime);
+	explicit RegularEntityDeath(lif::Entity& owner, sf::Time deathTime);
 
 	void kill();
 	bool isKillInProgress() const;
 	/** Restores all owner's components altered by kill() */
 	void resurrect();
 
-	Game::Entity* init() override;
+	lif::Entity* init() override;
 };
 
 }

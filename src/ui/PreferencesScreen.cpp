@@ -9,16 +9,16 @@
 #include <memory>
 #include <iostream>
 
-using Game::UI::PreferencesScreen;
-using Game::UI::Interactable;
-using Action = Game::UI::Action;
+using lif::UI::PreferencesScreen;
+using lif::UI::Interactable;
+using Action = lif::UI::Action;
 
 PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& sz) 
-	: Game::UI::Screen(window, sz) 
+	: lif::UI::Screen(window, sz) 
 {
 	name = "preferences";
 	parent = "home";
-	_loadBGSprite(Game::getAsset("graphics", "screenbg1.png"));
+	_loadBGSprite(lif::getAsset("graphics", "screenbg1.png"));
 
 	/* Layout:
 	 * 
@@ -28,24 +28,24 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	 *
 	 * Exit
 	 */
-	const auto font = Game::getAsset("fonts", Game::Fonts::SCREEN);
-	const auto win_bounds = sf::FloatRect(0, 0, Game::WINDOW_WIDTH, Game::WINDOW_HEIGHT);
+	const auto font = lif::getAsset("fonts", lif::Fonts::SCREEN);
+	const auto win_bounds = sf::FloatRect(0, 0, lif::WINDOW_WIDTH, lif::WINDOW_HEIGHT);
 
 	const auto size = 24;
 	const float ipadx = 25,
 		    ipady = 15;
-	auto text = new Game::ShadedText(font, "Music:", sf::Vector2f(ipadx, ipady));
+	auto text = new lif::ShadedText(font, "Music:", sf::Vector2f(ipadx, ipady));
 	text->setCharacterSize(size);
 	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	// Music volume
 	auto pos = text->getPosition();
 
-	text = new Game::ShadedText(font, "-", sf::Vector2f(ipadx + 150, ipady - 8));
+	text = new lif::ShadedText(font, "-", sf::Vector2f(ipadx + 150, ipady - 8));
 	text->setCharacterSize(32);
 	interactables["music_volume_down"] = std::unique_ptr<Interactable>(new Interactable(text));
 
-	text = new Game::ShadedText(font, "placeholder", sf::Vector2f(ipadx + 200, ipady));
+	text = new lif::ShadedText(font, "placeholder", sf::Vector2f(ipadx + 200, ipady));
 	// Draw the full volume bar to get the measure of this element's max width
 	// (also, the volume is maxed by default, so we don't need to do any further checks here)
 	std::stringstream ss;
@@ -58,55 +58,55 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	auto bounds = text->getGlobalBounds();
-	text = new Game::ShadedText(font, "+", sf::Vector2f(ipadx + 200 + bounds.width + 40, ipady - 6));
+	text = new lif::ShadedText(font, "+", sf::Vector2f(ipadx + 200 + bounds.width + 40, ipady - 6));
 	text->setCharacterSize(30);
 	interactables["music_volume_up"] = std::unique_ptr<Interactable>(new Interactable(text));
 
 	bounds = text->getGlobalBounds();
 	auto image = new sf::Sprite;
-	speakerTexture = Game::cache.loadTexture(Game::getAsset("graphics", "speaker.png"));
+	speakerTexture = lif::cache.loadTexture(lif::getAsset("graphics", "speaker.png"));
 	image->setTexture(*speakerTexture);
 	image->setTextureRect(sf::IntRect(prevMusicVolume >= 0 ? 25 : 0, 0, 25, 25));
 	image->setPosition(sf::Vector2f(bounds.left + bounds.width + 20, ipady));
 	interactables["music_mute_toggle"] = std::unique_ptr<Interactable>(new Interactable(image));
 
 	// FX Volume
-	text = new Game::ShadedText(font, "FX:", sf::Vector2f(ipadx, ipady + bounds.height + 20));
+	text = new lif::ShadedText(font, "FX:", sf::Vector2f(ipadx, ipady + bounds.height + 20));
 	text->setCharacterSize(size);
 	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	pos = text->getPosition();
-	text = new Game::ShadedText(font, "-", sf::Vector2f(ipadx + 150, pos.y - 8));
+	text = new lif::ShadedText(font, "-", sf::Vector2f(ipadx + 150, pos.y - 8));
 	text->setCharacterSize(32);
 	interactables["sounds_volume_down"] = std::unique_ptr<Interactable>(new Interactable(text));
 
-	text = new Game::ShadedText(font, ss.str(), sf::Vector2f(ipadx + 200, pos.y));
+	text = new lif::ShadedText(font, ss.str(), sf::Vector2f(ipadx + 200, pos.y));
 	text->setCharacterSize(20);
 	soundsVolumeBar = text;
 	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	bounds = text->getGlobalBounds();
-	text = new Game::ShadedText(font, "+", sf::Vector2f(ipadx + 200 + bounds.width + 40, pos.y - 6));
+	text = new lif::ShadedText(font, "+", sf::Vector2f(ipadx + 200 + bounds.width + 40, pos.y - 6));
 	text->setCharacterSize(30);
 	interactables["sounds_volume_up"] = std::unique_ptr<Interactable>(new Interactable(text));
 
 	bounds = text->getGlobalBounds();
 	image = new sf::Sprite;
-	speakerTexture = Game::cache.loadTexture(Game::getAsset("graphics", "speaker.png"));
+	speakerTexture = lif::cache.loadTexture(lif::getAsset("graphics", "speaker.png"));
 	image->setTexture(*speakerTexture);
-	image->setTextureRect(sf::IntRect(Game::options.soundsMute ? SPEAKER_SPRITE_SIZE : 0,
+	image->setTextureRect(sf::IntRect(lif::options.soundsMute ? SPEAKER_SPRITE_SIZE : 0,
 				0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
 	image->setPosition(sf::Vector2f(bounds.left + bounds.width + 20, bounds.top));
 	interactables["sounds_mute_toggle"] = std::unique_ptr<Interactable>(new Interactable(image));
 
-	text = new Game::ShadedText(font, "Controls", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
+	text = new lif::ShadedText(font, "Controls", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
 	text->setCharacterSize(size);
 	interactables["controls"] = std::unique_ptr<Interactable>(new Interactable(text));
 	
-	text = new Game::ShadedText(font, "Back", pos);
+	text = new lif::ShadedText(font, "Back", pos);
 	text->setCharacterSize(size);
 	bounds = text->getGlobalBounds();
-	text->setPosition(sf::Vector2f(Game::center(bounds, win_bounds).x, win_bounds.height - 2 * bounds.height));
+	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 2 * bounds.height));
 	interactables["back"] = std::unique_ptr<Interactable>(new Interactable(text));
 
 	// Setup internal callbacks
@@ -125,23 +125,23 @@ Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {
 		case VolumeType::MUSIC: 
 			if (prevMusicVolume < 0) {
 				// unmute->mute
-				prevMusicVolume = Game::options.musicVolume;
-				Game::options.musicVolume = 0;
+				prevMusicVolume = lif::options.musicVolume;
+				lif::options.musicVolume = 0;
 			} else {
 				// mute->unmute
-				Game::options.musicVolume = prevMusicVolume;
+				lif::options.musicVolume = prevMusicVolume;
 				prevMusicVolume = -1;
 			}
 			interactables["music_mute_toggle"]->getSprite()->setTextureRect(
 					sf::IntRect(prevMusicVolume >= 0 ? SPEAKER_SPRITE_SIZE : 0,
 						0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
-			if (Game::musicManager != nullptr)
-				Game::musicManager->setVolume(Game::options.musicVolume);
+			if (lif::musicManager != nullptr)
+				lif::musicManager->setVolume(lif::options.musicVolume);
 			break;
 		case VolumeType::SOUND:
-			Game::options.soundsMute = !Game::options.soundsMute;
+			lif::options.soundsMute = !lif::options.soundsMute;
 			interactables["sounds_mute_toggle"]->getSprite()->setTextureRect(
-					sf::IntRect(Game::options.soundsMute ? SPEAKER_SPRITE_SIZE : 0,
+					sf::IntRect(lif::options.soundsMute ? SPEAKER_SPRITE_SIZE : 0,
 						0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
 			break;
 		default: 
@@ -164,12 +164,12 @@ Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {
 	}
 
 	if (which == VolumeType::MUSIC) {
-		Game::options.musicVolume = vol * 100 / MAX_VOLUME;
+		lif::options.musicVolume = vol * 100 / MAX_VOLUME;
 		musicVolumeBar->setString(ss.str());
-		if (Game::musicManager != nullptr)
-			Game::musicManager->setVolume(Game::options.musicVolume);
+		if (lif::musicManager != nullptr)
+			lif::musicManager->setVolume(lif::options.musicVolume);
 	} else {
-		Game::options.soundsVolume = vol * 100 / MAX_VOLUME;
+		lif::options.soundsVolume = vol * 100 / MAX_VOLUME;
 		soundsVolumeBar->setString(ss.str());
 	}
 

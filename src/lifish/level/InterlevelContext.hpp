@@ -6,7 +6,7 @@
 #include "WindowContext.hpp"
 #include "game.hpp"
 
-namespace Game {
+namespace lif {
 
 class LevelManager;
 class SidePanel;
@@ -14,7 +14,7 @@ class SidePanel;
 /**
  * WindowContext handling level advancing and game over prompts
  */
-class InterlevelContext : public Game::WindowContext {
+class InterlevelContext : public lif::WindowContext {
 
 	enum class State {
 		DISTRIBUTING_POINTS,
@@ -32,20 +32,20 @@ class InterlevelContext : public Game::WindowContext {
 	sf::Text subsubtitleText; // this is under `subtitleText`
 	sf::Text yesText, noText;
 
-	Game::LevelManager& lm;
-	const Game::SidePanel& sidePanel;
+	lif::LevelManager& lm;
+	const lif::SidePanel& sidePanel;
 
 	sf::Time bonusTime = sf::Time::Zero;
 	int bonusPoints = 0;
 	/** Whether player (i+1) needs to be prompted for continue or not */
-	std::array<bool, Game::MAX_PLAYERS> mustPromptPlayer;
+	std::array<bool, lif::MAX_PLAYERS> mustPromptPlayer;
 	unsigned short curPromptedPlayer;
 	/** Whether player is selecting 'yes' or 'no' during PROMPT_CONTINUE */
 	bool yesSelected;
 
 	/** @return true if player chose to continue, else false */
-	//bool _displayContinue(sf::RenderWindow& target, const Game::SidePanel& panel, short playerId);
-	//void _displayGetReady(sf::RenderWindow& target, const Game::SidePanel& panel, short lvnum);
+	//bool _displayContinue(sf::RenderWindow& target, const lif::SidePanel& panel, short playerId);
+	//void _displayGetReady(sf::RenderWindow& target, const lif::SidePanel& panel, short lvnum);
 	void _givePoints(int amount);
 	void _tickDistributePoints();
 	void _tickWaitDistributePoints();
@@ -57,7 +57,7 @@ class InterlevelContext : public Game::WindowContext {
 	void _ackPromptResponse();
 
 public:
-	explicit InterlevelContext(Game::LevelManager& lm, const Game::SidePanel& sidePanel);
+	explicit InterlevelContext(lif::LevelManager& lm, const lif::SidePanel& sidePanel);
 
 	void setGettingReady(unsigned short lvnum);
 	void setAdvancingLevel();

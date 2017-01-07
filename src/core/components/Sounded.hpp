@@ -7,13 +7,13 @@
 /**
  * An object which has one or more sounds associated with it. 
  */
-namespace Game {
+namespace lif {
 
-class Sounded : public Game::Component {
+class Sounded : public lif::Component {
 	std::unordered_map<std::string, std::string> soundFiles;
 public:
-	explicit Sounded(Game::Entity& owner, std::initializer_list<std::pair<std::string, std::string>> _soundFiles)
-		: Game::Component(owner)
+	explicit Sounded(lif::Entity& owner, std::initializer_list<std::pair<std::string, std::string>> _soundFiles)
+		: lif::Component(owner)
 	{
 		for (auto& s : _soundFiles)
 			soundFiles[s.first] = s.second;

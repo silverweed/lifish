@@ -2,24 +2,24 @@
 #include "Clock.hpp"
 #include "Collider.hpp"
 
-using Game::Moving;
+using lif::Moving;
 
 const sf::Time Moving::MAX_FRAME_TIME = sf::seconds(1 / 60.f);
 
-Moving::Moving(Game::Entity& owner, float speed)
-	: Game::Component(owner)
+Moving::Moving(lif::Entity& owner, float speed)
+	: lif::Component(owner)
 	, originalSpeed(speed)
 	, speed(speed)
 {
-	frameClock = addComponent(new Game::Clock(*this));
-	blockClock = addComponent(new Game::Clock(*this));
+	frameClock = addComponent(new lif::Clock(*this));
+	blockClock = addComponent(new lif::Clock(*this));
 }
 
-Game::Entity* Moving::init() {
-	Game::Component::init();
+lif::Entity* Moving::init() {
+	lif::Component::init();
 
 	// optional
-	collider = owner.get<Game::Collider>();
+	collider = owner.get<lif::Collider>();
 
 	return this;
 }

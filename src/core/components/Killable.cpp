@@ -1,18 +1,18 @@
 #include "Killable.hpp"
 
-using Game::Killable;
+using lif::Killable;
 
-Killable::Killable(Game::Entity& owner)
-	: Game::Component(owner)
+Killable::Killable(lif::Entity& owner)
+	: lif::Component(owner)
 {}
 
-Killable::Killable(Game::Entity& owner, OnKillCallback callback)
+Killable::Killable(lif::Entity& owner, OnKillCallback callback)
 	: Killable(owner)
 {
 	onKill = callback;
 }
 
-Killable::Killable(Game::Entity& owner, OnKillCallback callback, CheckKillCallback checkKill)
+Killable::Killable(lif::Entity& owner, OnKillCallback callback, CheckKillCallback checkKill)
 	: Killable(owner, callback)
 {
 	checkKillProgress = checkKill;

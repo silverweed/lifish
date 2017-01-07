@@ -14,28 +14,28 @@
 #include <list>
 #include <limits>
 
-using Game::AlienPredator;
-using Game::TILE_SIZE;
+using lif::AlienPredator;
+using lif::TILE_SIZE;
 
 const sf::Time AlienPredator::POND_LIFETIME = sf::seconds(5);
 const sf::Time AlienPredator::TUNNEL_PERIOD = sf::seconds(20);
 const sf::Time AlienPredator::TUNNEL_TRANSITION_TIME = sf::seconds(1);
 
-AlienPredator::AlienPredator(const sf::Vector2f& pos, const Game::EnemyInfo& info) : Game::Enemy(pos, 10, info) {
-	addComponent(new Game::Spawning(*this, [this] () {
+AlienPredator::AlienPredator(const sf::Vector2f& pos, const lif::EnemyInfo& info) : lif::Enemy(pos, 10, info) {
+	addComponent(new lif::Spawning(*this, [this] () {
 		// Spawn Acid Pond on death, which persists for N seconds.
-		auto pond = new Game::AcidPond(position, sf::Vector2f(TILE_SIZE, TILE_SIZE));
+		auto pond = new lif::AcidPond(position, sf::Vector2f(TILE_SIZE, TILE_SIZE));
 		sf::Clock clock;
-		pond->addComponent(new Game::Temporary(*pond, [clock] () {
+		pond->addComponent(new lif::Temporary(*pond, [clock] () {
 			return clock.getElapsedTime() > POND_LIFETIME;
 		}));
 		return pond;
 	}));
-	tunnelClock = addComponent(new Game::Clock(*this));
+	tunnelClock = addComponent(new lif::Clock(*this));
 	// Add an initial random time
 	std::uniform_real_distribution<float> dist(0, TUNNEL_PERIOD.asSeconds());
-	tunnelClock->add(sf::seconds(dist(Game::rng)));
-	tunnelAnimClock = addComponent(new Game::Clock(*this));
+	tunnelClock->add(sf::seconds(dist(lif::rng)));
+	tunnelAnimClock = addComponent(new lif::Clock(*this));
 	// Add the tunneling animation
 	auto& a_tunnel = animated->addAnimation("tunnel");
 	for (unsigned short i = 0; i < TUNNEL_N_FRAMES; ++i) {
@@ -47,7 +47,7 @@ AlienPredator::AlienPredator(const sf::Vector2f& pos, const Game::EnemyInfo& inf
 }
 
 void AlienPredator::update() {
-	Game::Enemy::update();
+	lif::Enemy::update();
 
 	if (tunneling) {
 		const auto t = tunnelAnimClock->getElapsedTime();
@@ -57,9 +57,9 @@ void AlienPredator::update() {
 			animated->setAnimation("walk_down");
 			tunnelClock->restart();
 			movingAnimator->setActive(true);
-			moving->setDirection(Game::Direction::DOWN);
+			moving->setDirection(lif::Direction::DOWN);
 		} else if (!tunnelChangedPosition && t > TUNNEL_TRANSITION_TIME / 2.f) {
-			position = _findTunneledPosition(*get<Game::AI>()->getLevelManager());
+			position = _findTunneledPosition(*get<lif::AI>()->getLevelManager());
 			tunnelChangedPosition = true;
 		}
 	} else if (shooting->isShooting()) {
@@ -73,7 +73,7 @@ void AlienPredator::update() {
 	}
 }
 
-sf::Vector2f AlienPredator::_findTunneledPosition(const Game::LevelManager& lm) const {
+sf::Vector2f AlienPredator::_findTunneledPosition(const lif::LevelManager& lm) const {
 	// If finding a new position fails, fallback to the current one.
 	sf::Vector2f newPos(position);
 
@@ -84,17 +84,17 @@ sf::Vector2f AlienPredator::_findTunneledPosition(const Game::LevelManager& lm) 
 	 */
 	// First, construct the list of possible tiles.
 	std::list<sf::Vector2i> tiles;
-	for (unsigned short i = 1; i <= Game::LEVEL_WIDTH; ++i)
-		for (unsigned short j = 1; j <= Game::LEVEL_HEIGHT; ++j)
+	for (unsigned short i = 1; i <= lif::LEVEL_WIDTH; ++i)
+		for (unsigned short j = 1; j <= lif::LEVEL_HEIGHT; ++j)
 			tiles.push_back(sf::Vector2i(i, j));
 
 	// Remove all tiles which are too close to a player
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+	for (unsigned short i = 0; i < lif::MAX_PLAYERS; ++i) {
 		const auto player = lm.getPlayer(i + 1);
 		if (player != nullptr) {
-			const auto ptile = Game::tile(player->getPosition());
+			const auto ptile = lif::tile(player->getPosition());
 			for (auto it = tiles.begin(); it != tiles.end(); ) {
-				if (Game::manhattanDistance(*it, ptile) < 5)
+				if (lif::manhattanDistance(*it, ptile) < 5)
 					it = tiles.erase(it);
 				else
 					++it;
@@ -103,31 +103,31 @@ sf::Vector2f AlienPredator::_findTunneledPosition(const Game::LevelManager& lm) 
 	}
 
 	// Then exclude all tiles occupied by solid entities or nearby moving solid entities
-	lm.getEntities().apply([this, &tiles] (const Game::Entity *e) {
+	lm.getEntities().apply([this, &tiles] (const lif::Entity *e) {
 		if (tiles.size() == 0) return;
 
-		const auto cld = e->get<Game::Collider>();
+		const auto cld = e->get<lif::Collider>();
 		if (cld == nullptr || !cld->isSolidFor(*collider))
 			return;
 	
-		sf::Vector2i etile(Game::tile(e->getPosition()));
+		sf::Vector2i etile(lif::tile(e->getPosition()));
 		tiles.remove(etile);
-		const auto mv = e->get<Game::AxisMoving>();
+		const auto mv = e->get<lif::AxisMoving>();
 		if (mv == nullptr)
 			return;
 
 		for (unsigned short i = 0; i < 3; ++i) {
 			switch (mv->getDirection()) {
-			case Game::Direction::UP:
+			case lif::Direction::UP:
 				--etile.y;
 				break;
-			case Game::Direction::DOWN:
+			case lif::Direction::DOWN:
 				++etile.y;
 				break;
-			case Game::Direction::LEFT:
+			case lif::Direction::LEFT:
 				--etile.x;
 				break;
-			case Game::Direction::RIGHT:
+			case lif::Direction::RIGHT:
 				++etile.x;
 				break;
 			default:
@@ -142,10 +142,10 @@ sf::Vector2f AlienPredator::_findTunneledPosition(const Game::LevelManager& lm) 
 
 	std::uniform_int_distribution<short> dist(0, tiles.size());
 	auto it = tiles.begin();
-	std::advance(it, dist(Game::rng));
+	std::advance(it, dist(lif::rng));
 
 	// FIXME: this should never happen, but it does in some cases.
-	if (it->x < 1 || it->y < 1 || it->x > Game::LEVEL_WIDTH || it->y > Game::LEVEL_HEIGHT)
+	if (it->x < 1 || it->y < 1 || it->x > lif::LEVEL_WIDTH || it->y > lif::LEVEL_HEIGHT)
 		return newPos;
 
 	return sf::Vector2f(int(TILE_SIZE) * *it);

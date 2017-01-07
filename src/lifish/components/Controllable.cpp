@@ -2,51 +2,51 @@
 #include "AxisMoving.hpp"
 #include <exception>
 
-using Game::Controllable;
+using lif::Controllable;
 
-Controllable::Controllable(Game::Entity& owner,
-		const std::array<sf::Keyboard::Key, Game::Controls::CONTROLS_NUM>& controls,
+Controllable::Controllable(lif::Entity& owner,
+		const std::array<sf::Keyboard::Key, lif::Controls::CONTROLS_NUM>& controls,
 		short& joystickUsed)
-	: Game::Component(owner)
+	: lif::Component(owner)
 	, controls(controls)
 	, joystickUsed(joystickUsed)
 {}
 
-Game::Entity* Controllable::init() {
-	moving = owner.get<Game::AxisMoving>();
+lif::Entity* Controllable::init() {
+	moving = owner.get<lif::AxisMoving>();
 	if (moving == nullptr)
 		throw std::invalid_argument("Entity passed to Controllable has no AxisMoving component!");
 	return this;
 }
 
 void Controllable::update() {
-	Game::Component::update();
+	lif::Component::update();
 	if (window == nullptr)
 		throw std::logic_error("window is null in Controllable::update()!");
 
-	Game::Direction dir(Game::Direction::NONE);
+	lif::Direction dir(lif::Direction::NONE);
 
 	if (window->hasFocus()) {
 		if (joystickUsed >= 0) {
 			const auto horizontal = sf::Joystick::getAxisPosition(joystickUsed, sf::Joystick::X),
 				   vertical = sf::Joystick::getAxisPosition(joystickUsed, sf::Joystick::Y);
-			if (vertical < -Game::JOYSTICK_INPUT_THRESHOLD) 
-				dir = Game::Direction::UP;
-			else if (vertical > Game::JOYSTICK_INPUT_THRESHOLD)
-				dir = Game::Direction::DOWN;
-			else if (horizontal < -Game::JOYSTICK_INPUT_THRESHOLD)
-				dir = Game::Direction::LEFT;
-			else if (horizontal > Game::JOYSTICK_INPUT_THRESHOLD)
-				dir = Game::Direction::RIGHT;
+			if (vertical < -lif::JOYSTICK_INPUT_THRESHOLD) 
+				dir = lif::Direction::UP;
+			else if (vertical > lif::JOYSTICK_INPUT_THRESHOLD)
+				dir = lif::Direction::DOWN;
+			else if (horizontal < -lif::JOYSTICK_INPUT_THRESHOLD)
+				dir = lif::Direction::LEFT;
+			else if (horizontal > lif::JOYSTICK_INPUT_THRESHOLD)
+				dir = lif::Direction::RIGHT;
 		} else {
-			if (sf::Keyboard::isKeyPressed(controls[Game::Controls::CTRL_UP]))
-				dir = Game::Direction::UP;
-			else if (sf::Keyboard::isKeyPressed(controls[Game::Controls::CTRL_LEFT]))
-				dir = Game::Direction::LEFT;
-			else if (sf::Keyboard::isKeyPressed(controls[Game::Controls::CTRL_DOWN]))
-				dir = Game::Direction::DOWN;
-			else if (sf::Keyboard::isKeyPressed(controls[Game::Controls::CTRL_RIGHT]))
-				dir = Game::Direction::RIGHT;
+			if (sf::Keyboard::isKeyPressed(controls[lif::Controls::CTRL_UP]))
+				dir = lif::Direction::UP;
+			else if (sf::Keyboard::isKeyPressed(controls[lif::Controls::CTRL_LEFT]))
+				dir = lif::Direction::LEFT;
+			else if (sf::Keyboard::isKeyPressed(controls[lif::Controls::CTRL_DOWN]))
+				dir = lif::Direction::DOWN;
+			else if (sf::Keyboard::isKeyPressed(controls[lif::Controls::CTRL_RIGHT]))
+				dir = lif::Direction::RIGHT;
 		}
 	}
 

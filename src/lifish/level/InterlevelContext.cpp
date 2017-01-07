@@ -9,20 +9,20 @@
 #include "SidePanel.hpp"
 #include <iostream>
 
-using Game::InterlevelContext;
+using lif::InterlevelContext;
 
-static const sf::FloatRect WIN_BOUNDS(Game::MAIN_WINDOW_SHIFT, 0,
-			Game::LEVEL_WIDTH * Game::TILE_SIZE,
-			Game::LEVEL_HEIGHT * Game::TILE_SIZE);
+static const sf::FloatRect WIN_BOUNDS(lif::MAIN_WINDOW_SHIFT, 0,
+			lif::LEVEL_WIDTH * lif::TILE_SIZE,
+			lif::LEVEL_HEIGHT * lif::TILE_SIZE);
 
-InterlevelContext::InterlevelContext(Game::LevelManager& lm, const Game::SidePanel& sidePanel)
-	: Game::WindowContext()
+InterlevelContext::InterlevelContext(lif::LevelManager& lm, const lif::SidePanel& sidePanel)
+	: lif::WindowContext()
 	, lm(lm)
 	, sidePanel(sidePanel)
 {
-	handlers.push_back(std::unique_ptr<Game::EventHandler>(new Game::BaseEventHandler));
+	handlers.push_back(std::unique_ptr<lif::EventHandler>(new lif::BaseEventHandler));
 
-	const std::string fontname = Game::getAsset("fonts", Game::Fonts::INTERLEVEL);
+	const std::string fontname = lif::getAsset("fonts", lif::Fonts::INTERLEVEL);
 	if (!interlevelFont.loadFromFile(fontname)) {
 		std::cerr << "[WinLoseHandler.cpp] Error: couldn't load font " << fontname << std::endl;
 	}
@@ -41,7 +41,7 @@ InterlevelContext::InterlevelContext(Game::LevelManager& lm, const Game::SidePan
 	// Position yes / no texts
 	sf::Text dummyText("YES / NO_", interlevelFont, 13);
 	auto bounds = dummyText.getGlobalBounds();
-	dummyText.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0, 2 * bounds.height));
+	dummyText.setPosition(lif::center(bounds, WIN_BOUNDS) + sf::Vector2f(0, 2 * bounds.height));
 	yesText.setString("YES");
 	yesText.setPosition(dummyText.getPosition());
 	dummyText.setString("YES /_");
@@ -64,29 +64,29 @@ void InterlevelContext::setAdvancingLevel() {
 	bonusTime = sf::Time::Zero;
 	centralText.setString("TIME BONUS!");
 	auto bounds = centralText.getGlobalBounds();
-	centralText.setPosition(Game::center(bounds, WIN_BOUNDS));
+	centralText.setPosition(lif::center(bounds, WIN_BOUNDS));
 	subtitleText.setString("0");
 	bounds = subtitleText.getGlobalBounds();
-	subtitleText.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
+	subtitleText.setPosition(lif::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
 }
 
 void InterlevelContext::setGettingReady(unsigned short lvnum) {
 	state = State::GETTING_READY;
 	clock.restart();
-	centralText.setString("LEVEL " + Game::to_string(lvnum));
+	centralText.setString("LEVEL " + lif::to_string(lvnum));
 	auto bounds = centralText.getGlobalBounds();
-	centralText.setPosition(Game::center(bounds, WIN_BOUNDS));
+	centralText.setPosition(lif::center(bounds, WIN_BOUNDS));
 	subtitleText.setString("GET READY!");
 	bounds = subtitleText.getGlobalBounds();
-	subtitleText.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
+	subtitleText.setPosition(lif::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
 }
 
 void InterlevelContext::_setPromptContinue() {
 	// Check if there are dead players with continues left
 	mustPromptPlayer.fill(false);
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+	for (unsigned short i = 0; i < lif::MAX_PLAYERS; ++i) {
 		const auto player = lm.getPlayer(i + 1);
-		if ((player == nullptr || player->get<Game::Killable>()->isKilled()) && Game::playerContinues[i] > 0) {
+		if ((player == nullptr || player->get<lif::Killable>()->isKilled()) && lif::playerContinues[i] > 0) {
 			mustPromptPlayer[i] = true;	
 		}
 	}
@@ -104,20 +104,20 @@ void InterlevelContext::_setPromptContinue() {
 
 void InterlevelContext::_preparePromptContinue(unsigned short idx) {
 	curPromptedPlayer = idx;
-	centralText.setString("P" + Game::to_string(idx+1) + " CONTINUE? (" 
-			+ Game::to_string(Game::playerContinues[idx]) + " left)");
+	centralText.setString("P" + lif::to_string(idx+1) + " CONTINUE? (" 
+			+ lif::to_string(lif::playerContinues[idx]) + " left)");
 	auto bounds = centralText.getGlobalBounds();
-	centralText.setPosition(Game::center(bounds, WIN_BOUNDS));
+	centralText.setPosition(lif::center(bounds, WIN_BOUNDS));
 	subtitleText.setString("/");
 	bounds = subtitleText.getGlobalBounds();
-	subtitleText.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
+	subtitleText.setPosition(lif::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
 	subsubtitleText.setString("Arrows / Enter to select");
 	subsubtitleText.setCharacterSize(13);
 	bounds = subsubtitleText.getGlobalBounds();
-	subsubtitleText.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 4 * bounds.height));
+	subsubtitleText.setPosition(lif::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 4 * bounds.height));
 	subsubtitleText.setCharacterSize(10);
 	bounds = subsubtitleText.getGlobalBounds();
-	subsubtitleText.setPosition(Game::centerX(bounds, WIN_BOUNDS), bounds.top);
+	subsubtitleText.setPosition(lif::centerX(bounds, WIN_BOUNDS), bounds.top);
 	yesText.setFillColor(sf::Color::Red);
 	yesText.setCharacterSize(15);
 	noText.setFillColor(sf::Color::White);
@@ -161,8 +161,8 @@ void InterlevelContext::_tickDistributePoints() {
 		}
 	}
 
-	auto& levelTime = const_cast<Game::LevelTime&>(lm.getLevelTime());
-	const auto time_bonus_sound = Game::getAsset("sounds", Game::TIME_BONUS_SOUND);
+	auto& levelTime = const_cast<lif::LevelTime&>(lm.getLevelTime());
+	const auto time_bonus_sound = lif::getAsset("sounds", lif::TIME_BONUS_SOUND);
 	if (bonusTime > sf::seconds(60)) {
 		bonusTime -= sf::seconds(60);
 		levelTime.setTime(bonusTime);
@@ -174,16 +174,16 @@ void InterlevelContext::_tickDistributePoints() {
 		bonusPoints += 100;
 		_givePoints(100);
 	}
-	subtitleText.setString(Game::to_string(bonusPoints));
+	subtitleText.setString(lif::to_string(bonusPoints));
 	const auto bounds = subtitleText.getGlobalBounds();
-	subtitleText.setPosition(Game::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
-	Game::cache.playSound(time_bonus_sound);
+	subtitleText.setPosition(lif::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
+	lif::cache.playSound(time_bonus_sound);
 	lastTickTime = time;
 }
 
 void InterlevelContext::_tickGettingReady() {
 	if (clock.getElapsedTime() > sf::seconds(3))
-		newContext = Game::CTX_GAME;
+		newContext = lif::CTX_GAME;
 }
 
 void InterlevelContext::_tickWaitDistributePoints() {
@@ -196,7 +196,7 @@ void InterlevelContext::_ackPromptResponse() {
 	// to check if the player has spare continues, and will resurrect it if so.
 	// Otherwise, zero its continues so it won't be resurrected.
 	if (!yesSelected)
-		Game::playerContinues[curPromptedPlayer] = 0;
+		lif::playerContinues[curPromptedPlayer] = 0;
 	do {
 		++curPromptedPlayer;
 	} while (!mustPromptPlayer[curPromptedPlayer] && curPromptedPlayer < mustPromptPlayer.size());
@@ -256,9 +256,9 @@ void InterlevelContext::draw(sf::RenderTarget& window, sf::RenderStates states) 
 }
 
 void InterlevelContext::_givePoints(int amount) {
-	for (unsigned short i = 0; i < Game::MAX_PLAYERS; ++i) {
+	for (unsigned short i = 0; i < lif::MAX_PLAYERS; ++i) {
 		auto player = lm.getPlayer(i + 1);
 		if (player != nullptr)
-			Game::score[i] += amount;
+			lif::score[i] += amount;
 	}
 }

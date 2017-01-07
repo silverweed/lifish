@@ -7,9 +7,9 @@ namespace sf {
 	class View;
 }
 
-namespace Game {
+namespace lif {
 
-class BaseEventHandler : public Game::EventHandler {
+class BaseEventHandler : public lif::EventHandler {
 	sf::View _keepRatio(const sf::Event::SizeEvent& size, const sf::Vector2u& designedsize);
 
 public:

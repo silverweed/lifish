@@ -20,13 +20,13 @@
 #include "conf/zindex.hpp"
 #include <sstream>
 
-using Game::Player;
-using Game::TILE_SIZE;
+using lif::Player;
+using lif::TILE_SIZE;
 
 const sf::Time Player::DEATH_TIME = sf::milliseconds(5000); 
 
-Player::Player(const sf::Vector2f& pos, const Game::PlayerInfo& info)
-	: Game::Entity(pos)
+Player::Player(const sf::Vector2f& pos, const lif::PlayerInfo& info)
+	: lif::Entity(pos)
 	, info(info)
 	, drawProxy(*this)
 {
@@ -34,7 +34,7 @@ Player::Player(const sf::Vector2f& pos, const Game::PlayerInfo& info)
 }
 
 Player::Player(const sf::Vector2f& pos, const unsigned short id) 
-	: Game::Entity(pos)
+	: lif::Entity(pos)
 	, info(id)
 	, drawProxy(*this)
 {
@@ -43,39 +43,39 @@ Player::Player(const sf::Vector2f& pos, const unsigned short id)
 
 void Player::_init() {
 	// Setup components
-	addComponent(new Game::Lifed(*this, Game::Conf::Player::MAX_LIFE, [this] (int) {
+	addComponent(new lif::Lifed(*this, lif::Conf::Player::MAX_LIFE, [this] (int) {
 		// on hurt			
 		_hurt();
 	}));
-	addComponent(new Game::Collider(*this, [this] (Game::Collider& cld) {
+	addComponent(new lif::Collider(*this, [this] (lif::Collider& cld) {
 		// on collision
 		if (!killable->isKilled())
 			_checkCollision(cld);
-	}, Game::Layers::PLAYERS));
-	moving = addComponent(new Game::AxisMoving(*this, Game::Conf::Player::DEFAULT_SPEED));
-	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", std::string("player") +
-				Game::to_string(info.id) + std::string(".png"))));
-	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::PLAYERS));
-	addComponent(new Game::Drawable(*this, drawProxy));
-	addComponent(new Game::Sounded(*this, {
-		std::make_pair("death", Game::getAsset("test", std::string("player")
-					+ Game::to_string(info.id) + std::string("_death.ogg"))),
-		std::make_pair("hurt", Game::getAsset("test", std::string("player")
-					+ Game::to_string(info.id) + std::string("_hurt.ogg"))),
-		std::make_pair("win", Game::getAsset("test", std::string("player")
-				+ Game::to_string(info.id) + std::string("_win.ogg"))),
+	}, lif::Layers::PLAYERS));
+	moving = addComponent(new lif::AxisMoving(*this, lif::Conf::Player::DEFAULT_SPEED));
+	animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", std::string("player") +
+				lif::to_string(info.id) + std::string(".png"))));
+	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::PLAYERS));
+	addComponent(new lif::Drawable(*this, drawProxy));
+	addComponent(new lif::Sounded(*this, {
+		std::make_pair("death", lif::getAsset("test", std::string("player")
+					+ lif::to_string(info.id) + std::string("_death.ogg"))),
+		std::make_pair("hurt", lif::getAsset("test", std::string("player")
+					+ lif::to_string(info.id) + std::string("_hurt.ogg"))),
+		std::make_pair("win", lif::getAsset("test", std::string("player")
+				+ lif::to_string(info.id) + std::string("_win.ogg"))),
 	}));
-	killable = addComponent(new Game::Killable(*this, [this] () {
+	killable = addComponent(new lif::Killable(*this, [this] () {
 		// on kill
 		_kill(); 
 	}, [this] () {
 		return death->isKillInProgress();
 	}));
-	bonusable = addComponent(new Game::Bonusable(*this));
-	movingAnimator = addComponent(new Game::MovingAnimator(*this));
-	addComponent(new Game::Controllable(*this, Game::Controls::players[info.id-1], Game::Controls::useJoystick[info.id-1]));
-	hurtClock = addComponent(new Game::Clock(*this));
-	death = addComponent(new Game::RegularEntityDeath(*this, Game::Conf::Player::DEATH_TIME));
+	bonusable = addComponent(new lif::Bonusable(*this));
+	movingAnimator = addComponent(new lif::MovingAnimator(*this));
+	addComponent(new lif::Controllable(*this, lif::Controls::players[info.id-1], lif::Controls::useJoystick[info.id-1]));
+	hurtClock = addComponent(new lif::Clock(*this));
+	death = addComponent(new lif::RegularEntityDeath(*this, lif::Conf::Player::DEATH_TIME));
 
 	// Setup animations
 	auto& a_down = animated->addAnimation("walk_down");
@@ -113,25 +113,25 @@ void Player::_init() {
 }
 
 void Player::update() {
-	Game::Entity::update();
+	lif::Entity::update();
 
 	// Check for speedy bonus
-	if (bonusable->hasBonus(Game::BonusType::SPEEDY) && !moving->isDashing())
+	if (bonusable->hasBonus(lif::BonusType::SPEEDY) && !moving->isDashing())
 		moving->setDashing(2);
 	else if (moving->isDashing())
 		moving->setDashing(0);
 
-	if (killable->isKilled() && killable->timeSinceDeath() > Game::Conf::Player::DEATH_STOP_ANIM_TIME
+	if (killable->isKilled() && killable->timeSinceDeath() > lif::Conf::Player::DEATH_STOP_ANIM_TIME
 			&& animated->getSprite().isPlaying())
 	{
 		animated->getSprite().stop();
 		animated->getSprite().setFrame(1);
 	} else if (animated->getAnimationName() == "hurt" && 
-			hurtClock->getElapsedTime() > Game::Conf::Player::HURT_ANIM_DURATION)
+			hurtClock->getElapsedTime() > lif::Conf::Player::HURT_ANIM_DURATION)
 	{
 		const auto dir = moving->getDirection();
-		if (dir != Game::Direction::NONE)
-			animated->setAnimation("walk_" + Game::directionToString(dir));
+		if (dir != lif::Direction::NONE)
+			animated->setAnimation("walk_" + lif::directionToString(dir));
 		else {
 			animated->setAnimation("idle");
 			moving->stop();
@@ -148,59 +148,59 @@ void Player::setWinning(bool b) {
 }
 
 void Player::_kill() {
-	get<Game::Controllable>()->setActive(false);
-	get<Game::Bonusable>()->reset();
+	get<lif::Controllable>()->setActive(false);
+	get<lif::Bonusable>()->reset();
 	info.reset(false);
 	death->kill();
 }
 
-void Player::_checkCollision(Game::Collider& cld) {
+void Player::_checkCollision(lif::Collider& cld) {
 	/* A Player collides with:
 	 * - Enemies' bodies
 	 * - Bosses' bodies
 	 * - Explosions
 	 * - Bullets
 	 */
-	using L = Game::Layers::Layer;
+	using L = lif::Layers::Layer;
 	
-	if (bonusable->hasBonus(Game::BonusType::SHIELD))
+	if (bonusable->hasBonus(lif::BonusType::SHIELD))
 		return;
 
 	unsigned short damage = 0;
 	switch (cld.getLayer()) {
 	case L::ENEMIES:
 	case L::ENEMIES_IGNORE_BREAKABLES:
-		if (cld.getOwner().get<Game::Killable>()->isKilled())
+		if (cld.getOwner().get<lif::Killable>()->isKilled())
 			return;
 		{
-			const auto shooting = cld.getOwner().get<Game::Shooting>();
-			if (shooting->getAttack().type & Game::AttackType::CONTACT)
+			const auto shooting = cld.getOwner().get<lif::Shooting>();
+			if (shooting->getAttack().type & lif::AttackType::CONTACT)
 				damage = shooting->getAttack().bullet.damage;
 			else
 				damage = 1;
 			break;
 		}
 	case L::EXPLOSIONS:
-		damage = static_cast<const Game::Explosion&>(cld.getOwner()).getDamage();
+		damage = static_cast<const lif::Explosion&>(cld.getOwner()).getDamage();
 		break;
 	case L::ENEMY_BULLETS:
 	case L::BOSS_BULLETS:
 		{
-			auto& bullet = static_cast<Game::Bullet&>(cld.getOwnerRW());
+			auto& bullet = static_cast<lif::Bullet&>(cld.getOwnerRW());
 			if (bullet.hasDealtDamage()) return;
 			damage = bullet.getInfo().damage;
 			bullet.dealDamage();
 			break;
 		}
 	case L::BOSSES:
-		damage = Game::Conf::Player::MAX_LIFE;
+		damage = lif::Conf::Player::MAX_LIFE;
 		break;
 	default:
 		return;
 	}
 
-	auto lifed = get<Game::Lifed>();
-	Game::cache.playSound(get<Game::Sounded>()->getSoundFile("hurt"));
+	auto lifed = get<lif::Lifed>();
+	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("hurt"));
 	if (lifed->decLife(damage) <= 0) {
 		killable->kill();
 		return;
@@ -208,43 +208,43 @@ void Player::_checkCollision(Game::Collider& cld) {
 
 	// Give shield after receiving damage
 	if (cld.getLayer() == L::EXPLOSIONS) {
-		const auto& expl = static_cast<const Game::Explosion&>(cld.getOwner());
-		const auto& sprite = expl.get<Game::Animated>()->getSprite();
+		const auto& expl = static_cast<const lif::Explosion&>(cld.getOwner());
+		const auto& sprite = expl.get<lif::Animated>()->getSprite();
 		// Give the "long" shield only if this is the explosion's last frame
 		if (sprite.getCurrentFrame() == sprite.getAnimation()->getSize() - 1) 
-			bonusable->giveBonus(Game::BonusType::SHIELD, Game::Conf::Player::DAMAGE_SHIELD_TIME);
+			bonusable->giveBonus(lif::BonusType::SHIELD, lif::Conf::Player::DAMAGE_SHIELD_TIME);
 		else
-			bonusable->giveBonus(Game::BonusType::SHIELD, Game::Conf::Player::DAMAGE_SHIELD_TIME / 40.f);
+			bonusable->giveBonus(lif::BonusType::SHIELD, lif::Conf::Player::DAMAGE_SHIELD_TIME / 40.f);
 	} 
 }
 
 void Player::resurrect() {
-	get<Game::Lifed>()->setLife(Game::Conf::Player::MAX_LIFE);
+	get<lif::Lifed>()->setLife(lif::Conf::Player::MAX_LIFE);
 	moving->realign();
 	killable->resurrect();
 	death->resurrect();
-	get<Game::Controllable>()->setActive(true);
+	get<lif::Controllable>()->setActive(true);
 }
 
 void Player::_hurt() {
 	animated->setAnimation("hurt");
-	moving->block(Game::Conf::Player::HURT_ANIM_DURATION);
+	moving->block(lif::Conf::Player::HURT_ANIM_DURATION);
 	hurtClock->restart();
-	bonusable->giveBonus(Game::BonusType::SHIELD, Game::Conf::Player::DAMAGE_SHIELD_TIME);
-	Game::cache.playSound(get<Game::Sounded>()->getSoundFile("hurt"));
+	bonusable->giveBonus(lif::BonusType::SHIELD, lif::Conf::Player::DAMAGE_SHIELD_TIME);
+	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("hurt"));
 }
 
 //// PlayerDrawProxy ////
-Game::PlayerDrawProxy::PlayerDrawProxy(const Player& player)
+lif::PlayerDrawProxy::PlayerDrawProxy(const Player& player)
 	: player(player)
 {}
 
-void Game::PlayerDrawProxy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void lif::PlayerDrawProxy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(*player.animated, states);
-	if (player.bonusable->hasBonus(Game::BonusType::SHIELD)) {
-		const float s = player.bonusable->getElapsedTime(Game::BonusType::SHIELD).asSeconds();
+	if (player.bonusable->hasBonus(lif::BonusType::SHIELD)) {
+		const float s = player.bonusable->getElapsedTime(lif::BonusType::SHIELD).asSeconds();
 		const float diff = s - std::floor(s);
-		if (player.bonusable->getRemainingTime(Game::BonusType::SHIELD) > sf::seconds(3)
+		if (player.bonusable->getRemainingTime(lif::BonusType::SHIELD) > sf::seconds(3)
 				|| 4 * diff - std::floor(4 * diff) < 0.5)
 		{
 			AnimatedSprite shieldSprite(player.animated->getSprite());

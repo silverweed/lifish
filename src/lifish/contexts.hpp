@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Game {
+namespace lif {
 
 enum Context {
 	CTX_GAME       = 0,

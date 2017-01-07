@@ -4,16 +4,16 @@
 #include "Chronometer.hpp"
 #include "Component.hpp"
 
-namespace Game {
+namespace lif {
 
-class Clock : public Game::Component {
+class Clock : public lif::Component {
 	sftools::Chronometer clock;
 
 public:
 	COMP_NOT_UNIQUE
 
-	explicit Clock(Game::Entity& owner)
-		: Game::Component(owner)
+	explicit Clock(lif::Entity& owner)
+		: lif::Component(owner)
 	{}
 
 	sf::Time restart() {

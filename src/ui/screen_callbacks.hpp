@@ -4,11 +4,11 @@
 #include <functional>
 #include "Screen.hpp"
 
-namespace Game {
+namespace lif {
 
 namespace UI {
 
-extern std::unordered_map<std::string, Game::UI::Screen::Callback> screenCallbacks;
+extern std::unordered_map<std::string, lif::UI::Screen::Callback> screenCallbacks;
 extern std::string screenCallbackArg;
 
 }

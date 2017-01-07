@@ -4,25 +4,25 @@
 #include <SFML/Graphics.hpp>
 #include "ShadedText.hpp"
 
-namespace Game {
+namespace lif {
 
 namespace UI {
 
 /** Wrapper class for the glue code needed to merge functionality of
- *  Game::ShadedText and sf::Sprite
+ *  lif::ShadedText and sf::Sprite
  */
-class Interactable : public sf::Drawable, public Game::WithOrigin {
+class Interactable : public sf::Drawable, public lif::WithOrigin {
 	enum class Type {
 		TEXT, SPRITE
 	};
 	union {
-		Game::ShadedText *text;
+		lif::ShadedText *text;
 		sf::Sprite *sprite;
 	};
 	const Type type;
 
 public:
-	explicit Interactable(Game::ShadedText *text) 
+	explicit Interactable(lif::ShadedText *text) 
 		: text(text)
 		, type(Type::TEXT)
 	{}
@@ -81,7 +81,7 @@ public:
 		}
 	}
 
-	Game::ShadedText* getText() const {
+	lif::ShadedText* getText() const {
 		if (type != Type::TEXT)
 			throw std::bad_cast();
 		return text;

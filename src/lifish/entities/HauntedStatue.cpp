@@ -12,11 +12,11 @@
 #include "conf/zindex.hpp"
 #include "conf/boss.hpp"
 
-using Game::HauntedStatue;
-using Game::TILE_SIZE;
+using lif::HauntedStatue;
+using lif::TILE_SIZE;
 
-HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : Game::Entity(pos) {
-	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "haunted_statue.png")));
+HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : lif::Entity(pos) {
+	animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "haunted_statue.png")));
 	animated->addAnimation("death", {
 		sf::IntRect(0 * TILE_SIZE, 0, TILE_SIZE, 2 * TILE_SIZE),
 		sf::IntRect(1 * TILE_SIZE, 0, TILE_SIZE, 2 * TILE_SIZE),
@@ -29,7 +29,7 @@ HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : Game::Entity(pos) {
 	animatedSprite.setFrameTime(sf::seconds(0.2));
 	animatedSprite.pause();
 
-	spirit = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "haunted_statue_spirit.png")));
+	spirit = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "haunted_statue_spirit.png")));
 	spirit->addAnimation("wave", {
 		sf::IntRect(0 * TILE_SIZE, 0, TILE_SIZE, 2 * TILE_SIZE),
 		sf::IntRect(1 * TILE_SIZE, 0, TILE_SIZE, 2 * TILE_SIZE),
@@ -41,23 +41,23 @@ HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : Game::Entity(pos) {
 	spiritSprite.setFrameTime(sf::seconds(0.1));
 	spiritSprite.play();
 
-	addComponent(new Game::Killable(*this, [this] () {
+	addComponent(new lif::Killable(*this, [this] () {
 		// on kill
 		animated->getSprite().play();
 	}, [this] () {
 		// is kill in progress
 		return animated->getSprite().isPlaying();
 	}));
-	addComponent(new Game::Lifed(*this, Game::Conf::Boss::HauntingSpiritBoss::HAUNTED_STATUE_LIFE));
-	addComponent(new Game::Drawable(*this, *this));
-	auto hurt_by_explosion = Game::hurtByExplosions(*this, Game::CFO_TAKE_SINGLE_HIT | Game::CFO_ONLY_ADJACENT);
-	addComponent(new Game::Collider(*this, [this, hurt_by_explosion] (Game::Collider& cld) {
+	addComponent(new lif::Lifed(*this, lif::Conf::Boss::HauntingSpiritBoss::HAUNTED_STATUE_LIFE));
+	addComponent(new lif::Drawable(*this, *this));
+	auto hurt_by_explosion = lif::hurtByExplosions(*this, lif::CFO_TAKE_SINGLE_HIT | lif::CFO_ONLY_ADJACENT);
+	addComponent(new lif::Collider(*this, [this, hurt_by_explosion] (lif::Collider& cld) {
 		// on collision
 		if (!possessed) return;
 		hurt_by_explosion(cld);
-	}, Game::Layers::BREAKABLES, sf::Vector2f(TILE_SIZE, TILE_SIZE)));
-	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::TALL_ENTITIES));
-	addComponent(new Game::Fixed(*this));
+	}, lif::Layers::BREAKABLES, sf::Vector2f(TILE_SIZE, TILE_SIZE)));
+	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::TALL_ENTITIES));
+	addComponent(new lif::Fixed(*this));
 }
 
 void HauntedStatue::draw(sf::RenderTarget& window, sf::RenderStates states) const {

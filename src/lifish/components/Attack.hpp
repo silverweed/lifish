@@ -2,7 +2,7 @@
 
 #include "Bullet.hpp"
 
-namespace Game {
+namespace lif {
 
 /** The different types of attacks.
  *  SIMPLE: the enemy shoots a single bullet at a time
@@ -48,9 +48,9 @@ inline bool stringToAttackType(const std::string& str, AttackType& type) {
 
 /** Information about how an entity attacks */
 struct Attack {
-	Game::AttackType type;
+	lif::AttackType type;
 
-	Game::BulletInfo bullet;
+	lif::BulletInfo bullet;
 	
 	/** Cooldown is 1/fireRate s. If AI is ai_follow_dash, determines
 	 *  the cooldown between two dashes.

@@ -7,9 +7,9 @@
 #include "Explosion.hpp"
 #include <iostream>
 
-using namespace Game::CollisionUtils;
-using Game::SHContainer;
-using Game::SHCollisionDetector;
+using namespace lif::CollisionUtils;
+using lif::SHContainer;
+using lif::SHCollisionDetector;
 
 ////// SHContainer ///////
 SHContainer::SHContainer(const sf::Vector2f& levelSize, unsigned subdivisions)
@@ -24,7 +24,7 @@ void SHContainer::clear() {
 		b.clear();
 }
 
-void SHContainer::insert(std::weak_ptr<Game::Collider> obj) {
+void SHContainer::insert(std::weak_ptr<lif::Collider> obj) {
 	if (obj.expired()) return;
 	
 	auto ids = _getIdFor(*obj.lock().get());
@@ -33,18 +33,18 @@ void SHContainer::insert(std::weak_ptr<Game::Collider> obj) {
 	}
 }
 
-std::unordered_set<unsigned> SHContainer::_getIdFor(const Game::Collider& obj) const {
+std::unordered_set<unsigned> SHContainer::_getIdFor(const lif::Collider& obj) const {
 	std::unordered_set<unsigned> ids;
 	
 	const auto pos = obj.getPosition();
 	const auto size = obj.getSize();
 	
 	const sf::Vector2i upleft(
-				(pos.x - Game::TILE_SIZE) / cellSize.x,
-				(pos.y - Game::TILE_SIZE) / cellSize.y),
+				(pos.x - lif::TILE_SIZE) / cellSize.x,
+				(pos.y - lif::TILE_SIZE) / cellSize.y),
 	                   downright(
-				(pos.x - Game::TILE_SIZE + size.x) / cellSize.x,
-				(pos.y - Game::TILE_SIZE + size.y) / cellSize.y);
+				(pos.x - lif::TILE_SIZE + size.x) / cellSize.x,
+				(pos.y - lif::TILE_SIZE + size.y) / cellSize.y);
 
 	// Insert the object in all the buckets within its vertices
 	for (int i = upleft.x; i <= downright.x; ++i)
@@ -61,8 +61,8 @@ std::unordered_set<unsigned> SHContainer::_getIdFor(const Game::Collider& obj) c
 	return ids;
 }
 
-auto SHContainer::getNearby(const Game::Collider& obj) const -> std::list<std::weak_ptr<Game::Collider>> {
-	std::list<std::weak_ptr<Game::Collider>> nearby;
+auto SHContainer::getNearby(const lif::Collider& obj) const -> std::list<std::weak_ptr<lif::Collider>> {
+	std::list<std::weak_ptr<lif::Collider>> nearby;
 
 	auto ids = _getIdFor(obj);
 	for (auto id : ids) {
@@ -81,9 +81,9 @@ auto SHContainer::getNearby(const Game::Collider& obj) const -> std::list<std::w
 }
 
 ////// SHCollisionDetector ///////
-SHCollisionDetector::SHCollisionDetector(Game::EntityGroup& group,
+SHCollisionDetector::SHCollisionDetector(lif::EntityGroup& group,
 		const sf::FloatRect& limit, unsigned subdivisions)
-	: Game::CollisionDetector(group, limit)
+	: lif::CollisionDetector(group, limit)
 	, container(sf::Vector2f(limit.width - limit.left, limit.height - limit.top), subdivisions)
 {
 #ifndef RELEASE
@@ -127,11 +127,11 @@ void SHCollisionDetector::update() {
 		auto collider = it->lock();
 
 		// Fixed entities only collide passively
-		if (collider->getOwner().get<Game::Fixed>() != nullptr)
+		if (collider->getOwner().get<lif::Fixed>() != nullptr)
 			continue;
 
-		const auto moving = collider->getOwner().get<Game::Moving>();
-		const auto axismoving = moving ? dynamic_cast<Game::AxisMoving*>(moving) : nullptr;
+		const auto moving = collider->getOwner().get<lif::Moving>();
+		const auto axismoving = moving ? dynamic_cast<lif::AxisMoving*>(moving) : nullptr;
 		if (moving && is_at_boundaries(*collider, axismoving, levelLimit)) {
 			collider->setAtLimit(true);
 			continue;
@@ -156,7 +156,7 @@ void SHCollisionDetector::update() {
 					//std::cerr << &collider->getOwner() << " colliding with " << &othcollider->getOwner()<<std::endl;
 					collider->addColliding(oth);
 					if (collider->requestsForceAck() || othcollider->requestsForceAck()
-							|| othcollider->getOwner().get<Game::Moving>() == nullptr) 
+							|| othcollider->getOwner().get<lif::Moving>() == nullptr) 
 					{
 						// Let the entity know we collided with it.
 						// We only do that for non-moving entities to avoid problems with

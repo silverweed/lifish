@@ -32,33 +32,33 @@
 #	define DBGEND(name)
 #endif
 
-using Game::LevelManager;
+using lif::LevelManager;
 
 LevelManager::LevelManager()
 	: renderer(*this)
 	, cd(entities,
 		// level boundaries
 		sf::FloatRect(
-			Game::TILE_SIZE,
-			Game::TILE_SIZE,
-			(Game::LEVEL_WIDTH + 1) * Game::TILE_SIZE,
-			(Game::LEVEL_HEIGHT + 1) * Game::TILE_SIZE),
-		Game::SHCD_SUBDIVISIONS)
+			lif::TILE_SIZE,
+			lif::TILE_SIZE,
+			(lif::LEVEL_WIDTH + 1) * lif::TILE_SIZE,
+			(lif::LEVEL_HEIGHT + 1) * lif::TILE_SIZE),
+		lif::SHCD_SUBDIVISIONS)
 {
 	levelTime.init();
 	dropTextManager.subscribe(entities);
 }
 
 void LevelManager::createNewPlayers(unsigned short n) {
-	for (int i = 0; i < n && i < Game::MAX_PLAYERS; ++i) {
+	for (int i = 0; i < n && i < lif::MAX_PLAYERS; ++i) {
 		// Pointers kept by LevelManager
-		players[i] = std::make_shared<Game::Player>(sf::Vector2f(0, 0), i + 1);
+		players[i] = std::make_shared<lif::Player>(sf::Vector2f(0, 0), i + 1);
 		// Pointers owned by EntityGroup
 		entities.add(players[i]);
 	}
 }
 
-void LevelManager::setPlayer(unsigned short id, std::shared_ptr<Game::Player> player) {
+void LevelManager::setPlayer(unsigned short id, std::shared_ptr<lif::Player> player) {
 	players[id - 1].swap(player);
 }
 
@@ -70,17 +70,17 @@ void LevelManager::update() {
 	// Update level time
 	levelTime.update();
 
-	std::list<Game::Entity*> to_be_spawned, to_be_killed;
+	std::list<lif::Entity*> to_be_spawned, to_be_killed;
 
 	DBGSTART("tot");
 	DBGSTART("reset_align");
 
 	// Set prevAligns for aligned entities
-	entities.apply([] (Game::Entity *e) {
+	entities.apply([] (lif::Entity *e) {
 		if (!e->isAligned()) return;
-		auto moving = e->get<Game::AxisMoving>();
+		auto moving = e->get<lif::AxisMoving>();
 		if (moving == nullptr) return;
-		moving->setPrevAlign(Game::tile(e->getPosition()));
+		moving->setPrevAlign(lif::tile(e->getPosition()));
 	});
 
 	DBGEND("reset_align");
@@ -102,7 +102,7 @@ void LevelManager::update() {
 #ifndef RELEASE
 	int i = 0;
 #endif
-	for (auto logic : Game::Logic::functions) {
+	for (auto logic : lif::Logic::functions) {
 #ifndef RELEASE
 		std::stringstream n;
 		n << "logic_" << i;
@@ -142,13 +142,13 @@ void LevelManager::update() {
 	DBGEND("tot");
 }
 
-bool LevelManager::isPlayer(const Game::Entity& e) const {
+bool LevelManager::isPlayer(const lif::Entity& e) const {
 	for (const auto& p : players)
 		if (&e == p.get()) return true;
 	return false;
 }
 
-const std::shared_ptr<Game::Player> LevelManager::getPlayer(unsigned short id) const {
+const std::shared_ptr<lif::Player> LevelManager::getPlayer(unsigned short id) const {
 	return players[id-1];
 }
 
@@ -165,20 +165,20 @@ void LevelManager::setNextLevel() {
 	setLevel(level->getLevelSet(), lvnum);
 }
 
-void LevelManager::setLevel(const Game::LevelSet& ls, unsigned short lvnum) {
+void LevelManager::setLevel(const lif::LevelSet& ls, unsigned short lvnum) {
 	_mtxLock();
 	level = ls.getLevel(lvnum);
-	Game::LevelLoader::load(*level, *this);
+	lif::LevelLoader::load(*level, *this);
 	_mtxUnlock();
 	// Don't trigger EXTRA game if there were no coins in the level
-	if (entities.size<Game::Coin>() == 0)
+	if (entities.size<lif::Coin>() == 0)
 		extraGameTriggered = true;
 }
 
 void LevelManager::pause() {
 	levelTime.pause();
-	entities.apply([] (Game::Entity *e) {
-		auto clocks = e->getAllRecursive<Game::Clock>();
+	entities.apply([] (lif::Entity *e) {
+		auto clocks = e->getAllRecursive<lif::Clock>();
 		for (auto clock : clocks)
 			clock->pause();
 	});
@@ -187,8 +187,8 @@ void LevelManager::pause() {
 
 void LevelManager::resume() {
 	levelTime.resume();
-	entities.apply([] (Game::Entity *e) {
-		auto clocks = e->getAllRecursive<Game::Clock>();
+	entities.apply([] (lif::Entity *e) {
+		auto clocks = e->getAllRecursive<lif::Clock>();
 		for (auto clock : clocks)
 			clock->resume();
 	});
@@ -210,9 +210,9 @@ void LevelManager::reset() {
 bool LevelManager::canDeployBombAt(const sf::Vector2i& tile) const {
 	if (_isBombAt(tile)) return false;
 	bool there_are_expl = false;
-	entities.apply([tile, &there_are_expl] (const Game::Entity *e) {
+	entities.apply([tile, &there_are_expl] (const lif::Entity *e) {
 		if (there_are_expl) return;
-		if (Game::tile(e->getPosition()) == tile && dynamic_cast<const Game::Explosion*>(e) != nullptr)
+		if (lif::tile(e->getPosition()) == tile && dynamic_cast<const lif::Explosion*>(e) != nullptr)
 			there_are_expl = true;
 	});
 	return !there_are_expl;
@@ -221,39 +221,39 @@ bool LevelManager::canDeployBombAt(const sf::Vector2i& tile) const {
 bool LevelManager::_isBombAt(const sf::Vector2i& tile) const {
 	for (unsigned short i = 0; i < bombs.size(); ++i)
 		for (auto bomb : bombs[i])
-			if (!bomb.expired() && Game::tile(bomb.lock()->getPosition()) == tile)
+			if (!bomb.expired() && lif::tile(bomb.lock()->getPosition()) == tile)
 				return true;
 	return false;
 }
 
 unsigned short LevelManager::bombsDeployedBy(unsigned short id) const {
-	return std::count_if(bombs[id-1].begin(), bombs[id-1].end(), [] (std::weak_ptr<Game::Bomb> b) {
+	return std::count_if(bombs[id-1].begin(), bombs[id-1].end(), [] (std::weak_ptr<lif::Bomb> b) {
 		return !b.expired();
 	});
 }
 
 bool LevelManager::isLevelClear() const {
 	bool clear = true;
-	entities.apply([&clear] (const Game::Entity *e) {
-		if (clear && e->get<Game::Foe>() != nullptr)
+	entities.apply([&clear] (const lif::Entity *e) {
+		if (clear && e->get<lif::Foe>() != nullptr)
 			clear = false;
 	});
 	return clear;
 }
 
-void LevelManager::_spawn(Game::Entity *e) {
-	if (auto b = dynamic_cast<Game::Bomb*>(e))
+void LevelManager::_spawn(lif::Entity *e) {
+	if (auto b = dynamic_cast<lif::Bomb*>(e))
 		_spawnBomb(b);
 	else
 		entities.add(e);
 }
 
-void LevelManager::_spawnBomb(Game::Bomb *b) {
+void LevelManager::_spawnBomb(lif::Bomb *b) {
 	const auto id = b->getSourcePlayer().getInfo().id - 1;
 	// Spawn bomb only if player has not deployed all the available ones already
 	for (unsigned short i = 0; i < bombs[id].size(); ++i) {
 		if (bombs[id][i].expired()) {
-			std::shared_ptr<Game::Bomb> bomb(b);
+			std::shared_ptr<lif::Bomb> bomb(b);
 			entities.add(bomb);
 			bombs[id][i] = bomb;
 			break;
@@ -262,42 +262,42 @@ void LevelManager::_spawnBomb(Game::Bomb *b) {
 }
 
 void LevelManager::_triggerHurryUpWarning() {
-	dropTextManager.trigger(Game::DroppingTextManager::Text::HURRY_UP);
+	dropTextManager.trigger(lif::DroppingTextManager::Text::HURRY_UP);
 	hurryUpWarningGiven = true;
 }
 
 void LevelManager::_triggerHurryUp() {
-	entities.apply([] (Game::Entity *e) {
-		auto enemy = dynamic_cast<Game::Enemy*>(e);
+	entities.apply([] (lif::Entity *e) {
+		auto enemy = dynamic_cast<lif::Enemy*>(e);
 		if (enemy == nullptr) return;
 
-		auto moving = enemy->get<Game::Moving>();
+		auto moving = enemy->get<lif::Moving>();
 		moving->setSpeed(moving->getOriginalSpeed() * 2);
-		enemy->get<Game::Shooting>()->setFireRateMult(2);
+		enemy->get<lif::Shooting>()->setFireRateMult(2);
 	});
 	hurryUp = true;
 }
 
 void LevelManager::_triggerExtraGame() {
-	entities.apply([] (Game::Entity *e) {
-		auto enemy = dynamic_cast<Game::Enemy*>(e);
+	entities.apply([] (lif::Entity *e) {
+		auto enemy = dynamic_cast<lif::Enemy*>(e);
 		if (enemy == nullptr) return;
 		
 		enemy->setMorphed(true);
 	});
-	dropTextManager.trigger(Game::DroppingTextManager::Text::EXTRA_GAME);
+	dropTextManager.trigger(lif::DroppingTextManager::Text::EXTRA_GAME);
 	levelTime.startExtraGame();
 	extraGameTriggered = extraGame = true;
 }
 
 void LevelManager::_endExtraGame() {
-	entities.apply([] (Game::Entity *e) {
-		if (auto letter = dynamic_cast<Game::Letter*>(e)) {
-			letter->get<Game::Killable>()->kill();
+	entities.apply([] (lif::Entity *e) {
+		if (auto letter = dynamic_cast<lif::Letter*>(e)) {
+			letter->get<lif::Killable>()->kill();
 			return;
 		}
 
-		auto enemy = dynamic_cast<Game::Enemy*>(e);
+		auto enemy = dynamic_cast<lif::Enemy*>(e);
 		if (enemy == nullptr) return;
 		
 		enemy->setMorphed(false);
@@ -309,13 +309,13 @@ void LevelManager::_endExtraGame() {
 bool LevelManager::_shouldTriggerExtraGame() const {
 	bool there_are_coins = false;
 
-	entities.apply([&there_are_coins] (const Game::Entity *e) {
+	entities.apply([&there_are_coins] (const lif::Entity *e) {
 		if (there_are_coins) return;
 
-		auto coin = dynamic_cast<const Game::Coin*>(e);
+		auto coin = dynamic_cast<const lif::Coin*>(e);
 		if (coin == nullptr) return;
 
-		if (!coin->get<Game::Killable>()->isKilled()) {
+		if (!coin->get<lif::Killable>()->isKilled()) {
 			there_are_coins = true;
 			return;
 		}
@@ -325,9 +325,9 @@ bool LevelManager::_shouldTriggerExtraGame() const {
 }
 
 void LevelManager::_checkSpecialConditions() {
-	if (!hurryUpWarningGiven && levelTime.checkHurryUp() == Game::LevelTime::HurryUpResponse::HURRY_UP_NEAR)
+	if (!hurryUpWarningGiven && levelTime.checkHurryUp() == lif::LevelTime::HurryUpResponse::HURRY_UP_NEAR)
 		_triggerHurryUpWarning();
-	else if (!hurryUp && levelTime.checkHurryUp() == Game::LevelTime::HurryUpResponse::HURRY_UP_ON)
+	else if (!hurryUp && levelTime.checkHurryUp() == lif::LevelTime::HurryUpResponse::HURRY_UP_ON)
 		_triggerHurryUp();
 
 	if (!extraGameTriggered && _shouldTriggerExtraGame())
@@ -344,12 +344,12 @@ void LevelManager::_checkResurrect() {
 		if (player == nullptr)
 			continue;
 
-		auto klb = player->get<Game::Killable>();
+		auto klb = player->get<lif::Killable>();
 		if (klb->isKilled() && !klb->isKillInProgress()) {
 			if (player->getInfo().remainingLives > 0) {
 				player->resurrect();
-				player->get<Game::Bonusable>()->giveBonus(Game::BonusType::SHIELD,
-				                                          Game::Conf::Player::RESURRECT_SHIELD_TIME);
+				player->get<lif::Bonusable>()->giveBonus(lif::BonusType::SHIELD,
+				                                          lif::Conf::Player::RESURRECT_SHIELD_TIME);
 				player->setRemainingLives(player->getInfo().remainingLives - 1);
 				entities.add(player);
 				++living_players;
@@ -366,7 +366,7 @@ void LevelManager::_checkResurrect() {
 		gameOver = true;
 }
 
-bool LevelManager::canGo(const Game::AxisMoving& am, const Game::Direction dir) const {
+bool LevelManager::canGo(const lif::AxisMoving& am, const lif::Direction dir) const {
 	auto pos = am.getOwner().getPosition();
 	int iposx = int(pos.x / TILE_SIZE),
 	    iposy = int(pos.y / TILE_SIZE);
@@ -391,14 +391,14 @@ bool LevelManager::canGo(const Game::AxisMoving& am, const Game::Direction dir) 
 	if (iposx <= 0 || iposx > LEVEL_WIDTH || iposy <= 0 || iposy > LEVEL_HEIGHT)
 		return false;
 
-	const auto collider = am.getOwner().get<Game::Collider>();
+	const auto collider = am.getOwner().get<lif::Collider>();
 	if (collider == nullptr)
 		return true;
 
 	for (auto ptr : entities.getEntitiesAtTile(sf::Vector2i(iposx, iposy))) {
 		auto e = ptr.lock();
-		if (e->get<Game::Fixed>() == nullptr) continue;
-		const auto fcollider = e->get<Game::Collider>();
+		if (e->get<lif::Fixed>() == nullptr) continue;
+		const auto fcollider = e->get<lif::Collider>();
 		if (fcollider != nullptr && collider->isSolidFor(*fcollider))
 			return false;
 	}

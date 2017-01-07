@@ -6,7 +6,7 @@
 #include "Direction.hpp"
 #include "Angle.hpp"
 
-namespace Game {
+namespace lif {
 
 class Clock;
 class AxisBullet;
@@ -22,7 +22,7 @@ class AxisMoving;
  * the shoot() methods are overloaded for both AxisBullets and FreeBullets,
  * and take care of the extra effects like blocking the attacker after the shot, etc.
  */
-class Shooting : public Game::Component {
+class Shooting : public lif::Component {
 	/** The duration of the shooting frame */
 	const static sf::Time SHOOT_FRAME_TIME;
 	
@@ -37,11 +37,11 @@ protected:
 	float fireRateMult = 1;
 	sf::Vector2f offset;
 
-	Game::Clock *rechargeClock = nullptr;
-	Game::AxisMoving *ownerMoving = nullptr;
+	lif::Clock *rechargeClock = nullptr;
+	lif::AxisMoving *ownerMoving = nullptr;
 	
 public:
-	explicit Shooting(Game::Entity& owner, const Attack& attack);
+	explicit Shooting(lif::Entity& owner, const Attack& attack);
 
 	const Attack& getAttack() const { return attack; }
 	
@@ -57,14 +57,14 @@ public:
 	 *  In this case, the owner must have an AxisMoving component, or an exception is thrown.
 	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
-	Game::AxisBullet* shoot(Game::Direction dir = Game::Direction::NONE);
+	lif::AxisBullet* shoot(lif::Direction dir = lif::Direction::NONE);
 
 	/** Creates a FreeBullet moving with angle `angle` from its owner.
 	 *  Caller must take care of its destruction. 
 	 *  Throws if attack is CONTACT.
 	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
-	Game::FreeBullet* shoot(Game::Angle angle);
+	lif::FreeBullet* shoot(lif::Angle angle);
 	bool isShooting() const { return shooting; }
 
 	bool isRecharging() const;
@@ -76,7 +76,7 @@ public:
 	sf::Vector2f getPosition() const override;
 	void setOffset(const sf::Vector2f& off) { offset = off; }
 
-	Game::Entity* init() override;
+	lif::Entity* init() override;
 	void update() override;
 };
 

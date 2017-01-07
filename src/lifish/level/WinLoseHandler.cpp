@@ -15,14 +15,14 @@
 #include "SidePanel.hpp"
 #include <iostream>
 
-using Game::WinLoseHandler;
+using lif::WinLoseHandler;
 using State = WinLoseHandler::State;
 
-static const sf::FloatRect WIN_BOUNDS(Game::MAIN_WINDOW_SHIFT, 0,
-			Game::LEVEL_WIDTH * Game::TILE_SIZE,
-			Game::LEVEL_HEIGHT * Game::TILE_SIZE);
+static const sf::FloatRect WIN_BOUNDS(lif::MAIN_WINDOW_SHIFT, 0,
+			lif::LEVEL_WIDTH * lif::TILE_SIZE,
+			lif::LEVEL_HEIGHT * lif::TILE_SIZE);
 
-WinLoseHandler::WinLoseHandler(Game::LevelManager& lm, const Game::SidePanel& sidePanel)
+WinLoseHandler::WinLoseHandler(lif::LevelManager& lm, const lif::SidePanel& sidePanel)
 	: lm(lm)
 	, interlevelCtx(lm, sidePanel)
 {}
@@ -57,25 +57,25 @@ void WinLoseHandler::_handleWin() {
 		state = State::ADVANCING_LEVEL;
 
 	} else if (time >= sf::seconds(1.8) && !playerWinSoundPlayed) {
-		for (unsigned short id = 1; id <= Game::MAX_PLAYERS; ++id) {
+		for (unsigned short id = 1; id <= lif::MAX_PLAYERS; ++id) {
 			auto player = lm.getPlayer(id);
-			if (player != nullptr && !player->get<Game::Killable>()->isKillInProgress()) {
-				Game::cache.playSound(player->get<Game::Sounded>()->getSoundFile("win"));
+			if (player != nullptr && !player->get<lif::Killable>()->isKillInProgress()) {
+				lif::cache.playSound(player->get<lif::Sounded>()->getSoundFile("win"));
 				player->setWinning(true);
 			}
 		}
 		playerWinSoundPlayed = true;
 
 	} else if (time >= sf::seconds(1) && !levelClearSoundPlayed) {
-		Game::musicManager->stop();
-		Game::cache.playSound(Game::getAsset("test", Game::LEVEL_CLEAR_SOUND));
+		lif::musicManager->stop();
+		lif::cache.playSound(lif::getAsset("test", lif::LEVEL_CLEAR_SOUND));
 		levelClearSoundPlayed = true;
 	}
 }
 
 void WinLoseHandler::_handleLoss() {
 	// Wait for the GAMEOVER text to stop playing
-	if (lm.dropTextManager.isPlaying(Game::DroppingTextManager::Text::GAME_OVER))
+	if (lm.dropTextManager.isPlaying(lif::DroppingTextManager::Text::GAME_OVER))
 		return;
 
 	state = State::EXIT_GAME;
@@ -84,7 +84,7 @@ void WinLoseHandler::_handleLoss() {
 void WinLoseHandler::_checkCondition() {
 	if (lm.isGameOver()) {
 		state = State::HANDLING_LOSS;
-		lm.dropTextManager.trigger(Game::DroppingTextManager::Text::GAME_OVER);
+		lm.dropTextManager.trigger(lif::DroppingTextManager::Text::GAME_OVER);
 		_handleLoss();
 	} else if (lm.isLevelClear()) {
 		state = State::HANDLING_WIN;

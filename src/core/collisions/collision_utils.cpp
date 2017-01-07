@@ -2,10 +2,10 @@
 #include "AxisMoving.hpp"
 #include "Collider.hpp"
 
-using Game::TILE_SIZE;
+using lif::TILE_SIZE;
 
 // Checks if `cld1` and `cld2` collide, given that the owner of `cld1` has direction `dir`.
-bool Game::CollisionUtils::collide(const Game::Collider& cld1, const Game::Collider& cld2, const Game::Direction dir) {
+bool lif::CollisionUtils::collide(const lif::Collider& cld1, const lif::Collider& cld2, const lif::Direction dir) {
 	sf::IntRect rect = cld1.getRect(),
 		    orect = cld2.getRect();
 
@@ -31,8 +31,8 @@ bool Game::CollisionUtils::collide(const Game::Collider& cld1, const Game::Colli
 
 // Checks if `cld` is at the level limit. Algorithm used depends on whether
 // that Entity is AxisMoving or not.
-bool Game::CollisionUtils::is_at_boundaries(const Game::Collider& cld,
-		const Game::AxisMoving *const am, const sf::FloatRect& limits)
+bool lif::CollisionUtils::is_at_boundaries(const lif::Collider& cld,
+		const lif::AxisMoving *const am, const sf::FloatRect& limits)
 {
 	const auto pos = cld.getPosition();
 	const auto rect = cld.getRect();
@@ -58,8 +58,8 @@ bool Game::CollisionUtils::is_at_boundaries(const Game::Collider& cld,
 }
 
 // Checks if `ocld` is along the forward direction of `cld`
-bool Game::CollisionUtils::direction_is_viable(const Game::Collider& cld, 
-		const Game::AxisMoving& moving, const Game::Collider& ocld)
+bool lif::CollisionUtils::direction_is_viable(const lif::Collider& cld, 
+		const lif::AxisMoving& moving, const lif::Collider& ocld)
 {
 	const auto pos = cld.getPosition();
 	const auto opos = ocld.getPosition();

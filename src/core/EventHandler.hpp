@@ -2,7 +2,7 @@
 
 #include <SFML/Window/Window.hpp>
 
-namespace Game {
+namespace lif {
 
 class EventHandler {
 public:

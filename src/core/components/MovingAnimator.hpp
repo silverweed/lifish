@@ -3,7 +3,7 @@
 #include "Component.hpp"
 #include "Direction.hpp"
 
-namespace Game {
+namespace lif {
 
 class AxisMoving;
 class Animated;
@@ -11,17 +11,17 @@ class Animated;
 /** 
  * A Component which animates an Animated entity based on its direction.
  */
-class MovingAnimator : public Game::Component {
+class MovingAnimator : public lif::Component {
 
-	Game::AxisMoving *moving = nullptr;
-	Game::Animated *animated = nullptr;
-	Game::Direction prev = Game::Direction::NONE;
+	lif::AxisMoving *moving = nullptr;
+	lif::Animated *animated = nullptr;
+	lif::Direction prev = lif::Direction::NONE;
 
 public:
-	explicit MovingAnimator(Game::Entity& owner);
-	explicit MovingAnimator(Game::Entity& owner, Game::AxisMoving *m, Game::Animated *a);
+	explicit MovingAnimator(lif::Entity& owner);
+	explicit MovingAnimator(lif::Entity& owner, lif::AxisMoving *m, lif::Animated *a);
 
-	Game::Entity* init() override;
+	lif::Entity* init() override;
 	void update() override;
 };
 

@@ -12,39 +12,39 @@
 #include "game.hpp"
 #include "conf/bonus.hpp"
 
-using Game::Bonus;
-using Game::TILE_SIZE;
-using Game::Conf::Bonus::EXPIRE_TIME;
+using lif::Bonus;
+using lif::TILE_SIZE;
+using lif::Conf::Bonus::EXPIRE_TIME;
 	
-Bonus::Bonus(const sf::Vector2f& pos, const Game::BonusType type)
-	: Game::Entity(pos)
+Bonus::Bonus(const sf::Vector2f& pos, const lif::BonusType type)
+	: lif::Entity(pos)
 	, type(type)
 {
-	sprite = addComponent(new Game::Sprite(*this,
-				Game::getAsset("graphics", "bonuses.png"), 
+	sprite = addComponent(new lif::Sprite(*this,
+				lif::getAsset("graphics", "bonuses.png"), 
 				sf::IntRect(
 					static_cast<unsigned short>(type) * TILE_SIZE, 
 					static_cast<unsigned short>(type) / 10 * TILE_SIZE, 
 					TILE_SIZE,
 					TILE_SIZE)));
-	addComponent(new Game::Collider(*this, [this] (const Game::Collider& cld) {
-		if (cld.getLayer() != Game::Layers::PLAYERS || grabbable->isGrabbed())
+	addComponent(new lif::Collider(*this, [this] (const lif::Collider& cld) {
+		if (cld.getLayer() != lif::Layers::PLAYERS || grabbable->isGrabbed())
 			return;
-		_grab(static_cast<Game::Player&>(cld.getOwnerRW()));
-	}, Game::Layers::GRABBABLE));
-	addComponent(new Game::Drawable(*this, *sprite));
-	addComponent(new Game::Scored(*this, Game::Conf::Bonus::VALUE));
-	expireClock = addComponent(new Game::Clock(*this));
-	addComponent(new Game::Sounded(*this, { std::make_pair("grab", Game::getAsset("test", "bonus_grab.ogg")) }));
-	addComponent(new Game::Temporary(*this, [this] () {
+		_grab(static_cast<lif::Player&>(cld.getOwnerRW()));
+	}, lif::Layers::GRABBABLE));
+	addComponent(new lif::Drawable(*this, *sprite));
+	addComponent(new lif::Scored(*this, lif::Conf::Bonus::VALUE));
+	expireClock = addComponent(new lif::Clock(*this));
+	addComponent(new lif::Sounded(*this, { std::make_pair("grab", lif::getAsset("test", "bonus_grab.ogg")) }));
+	addComponent(new lif::Temporary(*this, [this] () {
 		// expire condition
 		return grabbable->isGrabbed() || expireClock->getElapsedTime() > EXPIRE_TIME;
 	}));
-	grabbable = addComponent(new Game::Grabbable(*this));
+	grabbable = addComponent(new lif::Grabbable(*this));
 }
 
 void Bonus::update() {
-	Game::Entity::update();
+	lif::Entity::update();
 	const float s = expireClock->getElapsedTime().asSeconds();
 	if (EXPIRE_TIME.asSeconds() - s <= 3.) {
 		const float diff = s - std::floor(s);
@@ -55,7 +55,7 @@ void Bonus::update() {
 	}
 }
 
-void Bonus::_grab(Game::Player& player) {
-	get<Game::Scored>()->setTarget(player.getInfo().id);
+void Bonus::_grab(lif::Player& player) {
+	get<lif::Scored>()->setTarget(player.getInfo().id);
 	grabbable->setGrabbingEntity(&player);
 }

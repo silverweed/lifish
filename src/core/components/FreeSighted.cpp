@@ -2,31 +2,31 @@
 #include "utils.hpp"
 #include "LevelManager.hpp"
 
-using Game::FreeSighted;
+using lif::FreeSighted;
 
-FreeSighted::FreeSighted(Game::Entity& owner, float visionRadius)
-	: Game::Sighted(owner, visionRadius)
+FreeSighted::FreeSighted(lif::Entity& owner, float visionRadius)
+	: lif::Sighted(owner, visionRadius)
 {}
 
 void FreeSighted::update() {
-	Game::Component::update();
+	lif::Component::update();
 	if (entities == nullptr) return;
 
 	seen.clear();
 
-	const double sqrVR = visionRadius * Game::TILE_SIZE * visionRadius * Game::TILE_SIZE;
-	entities->apply([this, sqrVR] (std::weak_ptr<Game::Entity> e) {
+	const double sqrVR = visionRadius * lif::TILE_SIZE * visionRadius * lif::TILE_SIZE;
+	entities->apply([this, sqrVR] (std::weak_ptr<lif::Entity> e) {
 		if (e.expired())
 			return;
 		auto ptr = e.lock();
 		// Don't see self
 		if (ptr.get() == &owner)
 			return;
-		double dist = Game::sqrDistance(ptr->getPosition(), owner.getPosition());
+		double dist = lif::sqrDistance(ptr->getPosition(), owner.getPosition());
 		if (visionRadius > 0 && dist > sqrVR)
 			return;
 		// Only see living entities
-		const auto killable = ptr->get<Game::Killable>();
+		const auto killable = ptr->get<lif::Killable>();
 		if (killable == nullptr || !killable->isKilled())
 			seen.push_back(std::make_pair(e, dist));
 	});

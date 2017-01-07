@@ -4,7 +4,7 @@
 #include "ShootingPattern.hpp"
 #include "Angle.hpp"
 
-namespace Game {
+namespace lif {
 
 class Clock;
 
@@ -16,10 +16,10 @@ class Clock;
  *   o    |
  *        |   o
  */
-class CircleShootingPattern : public Game::ShootingPattern {
+class CircleShootingPattern : public lif::ShootingPattern {
 	unsigned short shotsFired = 0;
 
-	Game::Clock *shootClock = nullptr;
+	lif::Clock *shootClock = nullptr;
 
 	void _shoot();
 	void _reset() override;
@@ -30,16 +30,16 @@ public:
 	/** Number of bullets per shot */
 	short bulletsPerShot;
 	/** Angle to rotate shoot axis after a shot. */
-	Game::Angle rotationPerShot;
+	lif::Angle rotationPerShot;
 	/** Angle of the first bullet (relative to vertical axis, clockwise) */
-	Game::Angle shootAngle;
+	lif::Angle shootAngle;
 	/** If true, `shootAngle` gets randomized at every reset */
 	bool randomizeShootAngle;
 
 	/** Note that, rather than passing all parameters in the constructor,
 	 *  you just set it directly, as the useful variables are public for convenience.
 	 */
-	explicit CircleShootingPattern(Game::Entity& owner, const Game::BulletInfo& bullet);
+	explicit CircleShootingPattern(lif::Entity& owner, const lif::BulletInfo& bullet);
 	
 	void update() override;
 };

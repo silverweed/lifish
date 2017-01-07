@@ -9,7 +9,7 @@
 		return *this; \
 	}
 
-using Game::MusicManager;
+using lif::MusicManager;
 
 MusicManager& MusicManager::set(std::shared_ptr<LoopingMusic> m) {
 	stop();

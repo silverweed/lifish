@@ -10,17 +10,17 @@
 #include "Stringable.hpp"
 #include "Enemy.hpp"
 
-namespace Game {
+namespace lif {
 
 /**
  * A LevelSet groups information about a set of Levels, along with
  * extra info about enemies, music, etc. Basically, it holds the
  * customizable game configuration read from a JSON file.
  */
-class LevelSet final : public Game::Stringable, private sf::NonCopyable {
-	std::vector<Game::LevelInfo> levels;
-	std::vector<Game::Track> tracks;
-	std::array<EnemyInfo, Game::N_ENEMIES> enemies;
+class LevelSet final : public lif::Stringable, private sf::NonCopyable {
+	std::vector<lif::LevelInfo> levels;
+	std::vector<lif::Track> tracks;
+	std::array<EnemyInfo, lif::N_ENEMIES> enemies;
 	std::unordered_map<std::string, std::string> metadata;
 
 public:

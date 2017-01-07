@@ -10,19 +10,19 @@
 #include "Action.hpp"
 #include "WindowContext.hpp"
 
-namespace Game {
+namespace lif {
 
 namespace UI {
 
 class ScreenBuilder;
 class Interactable;
 
-class Screen : public Game::WindowContext {
+class Screen : public lif::WindowContext {
 public:
-	using Callback = std::function<Game::UI::Action()>;
+	using Callback = std::function<lif::UI::Action()>;
 
 private:
-	friend class Game::UI::ScreenBuilder;
+	friend class lif::UI::ScreenBuilder;
 
 protected:
 	/** The window this screen is rendered in */
@@ -40,9 +40,9 @@ protected:
 	bool built = false;
 
 	/** The styles */
-	std::unordered_map<std::string, Game::UI::ScreenStyle> styles;
+	std::unordered_map<std::string, lif::UI::ScreenStyle> styles;
 	/** The interactable texts/images */
-	std::unordered_map<std::string, std::unique_ptr<Game::UI::Interactable>> interactables;
+	std::unordered_map<std::string, std::unique_ptr<lif::UI::Interactable>> interactables;
 	/** The non-interactable texts/images */
 	std::vector<std::unique_ptr<sf::Drawable>> nonInteractables;
 
@@ -50,7 +50,7 @@ protected:
 	std::unordered_map<std::string, Callback> callbacks;
 
 	/** The currently selected element, if any */
-	std::pair<std::string, Game::UI::Interactable*> selected;
+	std::pair<std::string, lif::UI::Interactable*> selected;
 
 
 	Screen(const sf::RenderWindow& window, const sf::Vector2u& size);
@@ -68,7 +68,7 @@ public:
 	std::string getSelected() const;
 
 	bool hasCallback(const std::string& name) const;
-	Game::UI::Action fireCallback(const std::string& name);
+	lif::UI::Action fireCallback(const std::string& name);
 
 	/** This may be used by child classes to do specific logic;
 	 *  @return true if signal was caught and should be ignored by UI's event loop.

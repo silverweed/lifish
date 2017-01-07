@@ -8,7 +8,7 @@
 #include "collision_layers.hpp"
 #include "Component.hpp"
 
-namespace Game {
+namespace lif {
 
 class EntityGroup;
 
@@ -17,29 +17,29 @@ class EntityGroup;
  *  This component does NOT see killed entities, i.e. entities which have a Killable component with
  *  `isKilled() == true`.
  */
-class Sighted : public Game::Component {
+class Sighted : public lif::Component {
 protected:
 	/** Bitmask for opaque layers (entities with no Collider are always transparent) */
 	intmax_t opaqueMask = 0;
 
 	/** The entities which can potentially be seen */
-	const Game::EntityGroup *entities = nullptr;
+	const lif::EntityGroup *entities = nullptr;
 
 	/** Vision radius in number of tiles. Negative means infinite. */
 	float visionRadius;
 
 
-	bool _isOpaque(Game::Layers::Layer layer) const;
+	bool _isOpaque(lif::Layers::Layer layer) const;
 
 public:
 	COMP_NOT_UNIQUE
 
-	explicit Sighted(Game::Entity& owner, float visionRadius);
+	explicit Sighted(lif::Entity& owner, float visionRadius);
 
 	/** Sets all layers in `layers` as (`opaque` ? opaque : transparent) */
-	void setOpaque(std::initializer_list<Game::Layers::Layer> layers, bool opaque = true);
+	void setOpaque(std::initializer_list<lif::Layers::Layer> layers, bool opaque = true);
 
-	void setEntityGroup(const Game::EntityGroup *eg);
+	void setEntityGroup(const lif::EntityGroup *eg);
 
 	virtual void update() = 0;
 };

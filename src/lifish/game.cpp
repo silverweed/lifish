@@ -7,16 +7,16 @@
 #include <array>
 #include "conf/player.hpp"
 
-std::array<unsigned int, Game::MAX_PLAYERS> Game::score;
-std::array<unsigned short, Game::MAX_PLAYERS> Game::playerContinues;
+std::array<unsigned int, lif::MAX_PLAYERS> lif::score;
+std::array<unsigned short, lif::MAX_PLAYERS> lif::playerContinues;
 
-bool Game::init() {
-	if (!Game::initCore()) return false;
-	Game::playerContinues.fill(Game::Conf::Player::INITIAL_CONTINUES);
-	Game::Controls::useJoystick.fill(-1);
+bool lif::init() {
+	if (!lif::initCore()) return false;
+	lif::playerContinues.fill(lif::Conf::Player::INITIAL_CONTINUES);
+	lif::Controls::useJoystick.fill(-1);
 
 	// Setup collision layers
-	Game::Layers::init();
+	lif::Layers::init();
 
 	return true;
 }

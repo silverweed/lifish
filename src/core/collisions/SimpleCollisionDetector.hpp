@@ -2,14 +2,14 @@
 
 #include "CollisionDetector.hpp"
 
-namespace Game {
+namespace lif {
 
 /**
  * This class implements a quadratic collision check on colliding entities of `group`.
  */
-class SimpleCollisionDetector : public Game::CollisionDetector {
+class SimpleCollisionDetector : public lif::CollisionDetector {
 public:
-	explicit SimpleCollisionDetector(Game::EntityGroup& group, const sf::FloatRect& levelLimit);
+	explicit SimpleCollisionDetector(lif::EntityGroup& group, const sf::FloatRect& levelLimit);
 
 	void update() override;
 };

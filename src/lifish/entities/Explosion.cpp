@@ -20,19 +20,19 @@
 #include <list>
 #include <algorithm>
 
-using Game::Explosion;
-using Game::TILE_SIZE;
-using Game::Direction;
+using lif::Explosion;
+using lif::TILE_SIZE;
+using lif::Direction;
 
 Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, 
-		const Game::Entity *const source, bool isIncendiary, unsigned short damage)
-	: Game::Entity(pos)
+		const lif::Entity *const source, bool isIncendiary, unsigned short damage)
+	: lif::Entity(pos)
 	, radius(_radius)
 	, damage(damage)
 	, sourceEntity(source)
 {
-	explosionC = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "explosionC.png")));
-	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::EXPLOSIONS));
+	explosionC = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "explosionC.png")));
+	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::EXPLOSIONS));
 	explosionC->addAnimation("explode", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),
 		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
@@ -42,12 +42,12 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE)
 	}, true);
-	explosionV = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "explosionV.png")));
+	explosionV = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "explosionV.png")));
 	explosionV->getTexture()->setRepeated(true);
-	explosionH = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "explosionH.png")));
+	explosionH = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "explosionH.png")));
 	explosionH->getTexture()->setRepeated(true);
 
-	addComponent(new Game::Drawable(*this, *this));
+	addComponent(new lif::Drawable(*this, *this));
 
 	explosionC->getSprite().setFrameTime(sf::seconds(0.05));
 	explosionH->getSprite().setFrameTime(sf::seconds(0.05));
@@ -56,26 +56,26 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 	explosionH->getSprite().setLooped(false);
 	explosionV->getSprite().setLooped(false);
 
-	addComponent(new Game::Temporary(*this, [this] () {
+	addComponent(new lif::Temporary(*this, [this] () {
 		// expire condition
 		return !explosionC->getSprite().isPlaying();
 	}, [this] () {
 		// on kill: spawn fire if incendiary
 		if (spawner == nullptr) return;
-		spawner->addSpawned(new Game::Fire(explColliderH->getPosition(),
-					explColliderH->getSize(), Game::Conf::Bonus::FIRE_DURATION));
-		spawner->addSpawned(new Game::Fire(explColliderV->getPosition(), 
-					explColliderV->getSize(), Game::Conf::Bonus::FIRE_DURATION));
+		spawner->addSpawned(new lif::Fire(explColliderH->getPosition(),
+					explColliderH->getSize(), lif::Conf::Bonus::FIRE_DURATION));
+		spawner->addSpawned(new lif::Fire(explColliderV->getPosition(), 
+					explColliderV->getSize(), lif::Conf::Bonus::FIRE_DURATION));
 	}));
 
 	if (isIncendiary)
-		spawner = addComponent(new Game::BufferedSpawner(*this));
+		spawner = addComponent(new lif::BufferedSpawner(*this));
 
 	propagation.fill(0);
 }
 
-Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
-	const sf::Vector2i m_tile = Game::tile(position);
+lif::Explosion* Explosion::propagate(lif::LevelManager& lm) {
+	const sf::Vector2i m_tile = lif::tile(position);
 	bool propagating[] = { true, true, true, true };
 	bool blocked[] = { false, false, false, false };
 	auto& entities = lm.getEntities();
@@ -100,8 +100,8 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 				break;
 			}
 			
-			if (new_tile.x < 1 || new_tile.x > Game::LEVEL_WIDTH 
-					|| new_tile.y < 1 || new_tile.y > Game::LEVEL_HEIGHT) {
+			if (new_tile.x < 1 || new_tile.x > lif::LEVEL_WIDTH 
+					|| new_tile.y < 1 || new_tile.y > lif::LEVEL_HEIGHT) {
 				propagating[dir] = false;
 				continue;
 			}
@@ -110,9 +110,9 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 
 			// Check if a solid fixed entity blocks propagation in this direction
 			for (auto ent : entities.getEntitiesAtTile(new_tile)) {
-				const auto entcld = ent.lock()->get<Game::Collider>();
-				if (entcld != nullptr && Game::Layers::solid[entcld->getLayer()][
-						Game::Layers::EXPLOSIONS])
+				const auto entcld = ent.lock()->get<lif::Collider>();
+				if (entcld != nullptr && lif::Layers::solid[entcld->getLayer()][
+						lif::Layers::EXPLOSIONS])
 				{
 					propagating[dir] = false;
 					blocked[dir] = true;
@@ -132,7 +132,7 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 	 */
 	// Note: no cast required, as `true` is promoted to integral value "1" by C++ standard (§4.7 conv.integral)
 	short reduction = blocked[Direction::RIGHT] + blocked[Direction::LEFT];
-	explColliderH = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS,
+	explColliderH = addComponent(new lif::Collider(*this, lif::Layers::EXPLOSIONS,
 			// size
 			sf::Vector2f(
 				TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT]
@@ -143,7 +143,7 @@ Game::Explosion* Explosion::propagate(Game::LevelManager& lm) {
 				+ (TILE_SIZE - 1) * blocked[Direction::LEFT], 1)));
 
 	reduction = blocked[Direction::UP]  + blocked[Direction::DOWN];
-	explColliderV = addComponent(new Game::Collider(*this, Game::Layers::EXPLOSIONS,
+	explColliderV = addComponent(new lif::Collider(*this, lif::Layers::EXPLOSIONS,
 			// size
 			sf::Vector2f(
 				TILE_SIZE - 2,
@@ -194,10 +194,10 @@ void Explosion::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	window.draw(*explosionC, states);
 }
 
-void Explosion::dealDamageTo(const Game::Entity& entity) {
+void Explosion::dealDamageTo(const lif::Entity& entity) {
 	damagedEntities.insert(&entity);
 }
 
-bool Explosion::hasDamaged(const Game::Entity& entity) const {
+bool Explosion::hasDamaged(const lif::Entity& entity) const {
 	return damagedEntities.count(&entity) > 0;
 }

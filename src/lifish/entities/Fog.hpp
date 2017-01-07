@@ -2,19 +2,19 @@
 
 #include "Entity.hpp"
 
-namespace Game {
+namespace lif {
 
 class FreeMoving;
 class Clock;
 class Sprite;
 
-class Fog : public Game::Entity {
+class Fog : public lif::Entity {
 	/** The time to wait before changing the alpha */
 	const sf::Time alphaDt;
 
-	Game::FreeMoving *moving = nullptr;
-	Game::Sprite *sprite = nullptr;
-	Game::Clock *clock = nullptr;
+	lif::FreeMoving *moving = nullptr;
+	lif::Sprite *sprite = nullptr;
+	lif::Clock *clock = nullptr;
 
 	bool fading = false;
 

@@ -2,28 +2,28 @@
 
 #include "Screen.hpp"
 
-namespace Game {
+namespace lif {
 
 class ShadedText;
 
 namespace UI {
 
-class ControlsScreen : public Game::UI::Screen {
+class ControlsScreen : public lif::UI::Screen {
 	/** Whose player we're changing controls */
 	unsigned short selectedPlayer = 1;
 	/** The control we're changing right now, if any */
-	Game::ShadedText *changingCtrlText = nullptr;
+	lif::ShadedText *changingCtrlText = nullptr;
 
 	void _highlightSelectedPlayer();
 	void _resyncCommandStrings();
 
 	// Callbacks
 	/** Selects `id`-th player (starting from 1) */
-	Game::UI::Action _selectPlayer(unsigned short id);
+	lif::UI::Action _selectPlayer(unsigned short id);
 	/** Sets the `textKey` text to be in 'changing' state */
-	Game::UI::Action _changeControl(const std::string& textKey);
-	/** Toggles the Game::useJoystick variable for the selected player */
-	Game::UI::Action _toggleJoystick();
+	lif::UI::Action _changeControl(const std::string& textKey);
+	/** Toggles the lif::useJoystick variable for the selected player */
+	lif::UI::Action _toggleJoystick();
 
 public:
 	explicit ControlsScreen(const sf::RenderWindow& window, const sf::Vector2u& size);

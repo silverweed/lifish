@@ -7,7 +7,7 @@
 #include <SFML/System/Vector2.hpp>
 #include "CollisionDetector.hpp"
 
-namespace Game {
+namespace lif {
 
 /** Allow the preferred number of the SpatialHashingCollisionDetector subdivisions
  *  to be tuned when compiling. For Lifish's purposes, 7 is a good choice.
@@ -24,7 +24,7 @@ class Collider;
  * Container for spatial hashing algorithm. Has `subdivision^2` buckets.
  */
 class SHContainer {
-	using Bucket = std::list<std::weak_ptr<Game::Collider>>;
+	using Bucket = std::list<std::weak_ptr<lif::Collider>>;
 
 	const sf::Vector2f levelSize,
 	                   cellSize;
@@ -32,7 +32,7 @@ class SHContainer {
 	std::vector<Bucket> buckets;
 
 	/** @return An unordered_set of bucket indexes for the buckets containing `obj`. */
-	std::unordered_set<unsigned> _getIdFor(const Game::Collider& obj) const;
+	std::unordered_set<unsigned> _getIdFor(const lif::Collider& obj) const;
 
 public:
 	explicit SHContainer(const sf::Vector2f& levelSize, unsigned subdivisions);
@@ -40,19 +40,19 @@ public:
 	unsigned getSubdivisions() const { return subdivisions; }
 
 	void clear();
-	void insert(std::weak_ptr<Game::Collider> obj);
+	void insert(std::weak_ptr<lif::Collider> obj);
 	/** @return A set of all colliders in an adjacent cell to `obj`. */
-	auto getNearby(const Game::Collider& obj) const -> std::list<std::weak_ptr<Game::Collider>>;
+	auto getNearby(const lif::Collider& obj) const -> std::list<std::weak_ptr<lif::Collider>>;
 };
 
 /**
  * Implements a spatial hashing algorithm for collision detection.
  */
-class SHCollisionDetector : public Game::CollisionDetector {
+class SHCollisionDetector : public lif::CollisionDetector {
 	SHContainer container;
 
 public:
-	explicit SHCollisionDetector(Game::EntityGroup& group, const sf::FloatRect& levelLimit, unsigned subdivisions);
+	explicit SHCollisionDetector(lif::EntityGroup& group, const sf::FloatRect& levelLimit, unsigned subdivisions);
 
 	void update() override;
 

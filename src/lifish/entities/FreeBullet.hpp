@@ -3,17 +3,17 @@
 #include "Bullet.hpp"
 #include "Angle.hpp"
 
-namespace Game {
+namespace lif {
 
 /** A Bullet which travels along any angle */
-class FreeBullet : public Game::Bullet {
+class FreeBullet : public lif::Bullet {
 public:
 	/** Constructs a Bullet with a source Entity (using that Entity's position),
 	 *  traveling at `angle` radians from the vertical axis (CW).
 	 */
-	explicit FreeBullet(const sf::Vector2f& pos, Game::Angle angle,
-			const Game::BulletInfo& info,
-			const Game::Entity *const source = nullptr);
+	explicit FreeBullet(const sf::Vector2f& pos, lif::Angle angle,
+			const lif::BulletInfo& info,
+			const lif::Entity *const source = nullptr);
 
 };
 

@@ -17,7 +17,7 @@
 #	include "Stats.hpp"
 #endif
 
-namespace Game {
+namespace lif {
 
 class LevelLoader;
 class LevelSet;
@@ -34,10 +34,10 @@ class AxisMoving;
  */
 class LevelManager final : private sf::NonCopyable, public sf::Drawable {
 
-	friend class Game::LevelLoader;
-	friend class Game::LevelRenderer;
-	friend class Game::SaveManager;
-	friend class Game::WinLoseHandler;
+	friend class lif::LevelLoader;
+	friend class lif::LevelRenderer;
+	friend class lif::SaveManager;
+	friend class lif::WinLoseHandler;
 
 #ifdef MULTITHREADED
 	mutable std::mutex lvMutex;
@@ -55,13 +55,13 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable {
 	}
 
 #ifndef RELEASE
-	Game::Debug::Stats dbgStats;
+	lif::Debug::Stats dbgStats;
 #endif
 
 	/** The currently managed level */
-	std::unique_ptr<Game::Level> level;
-	Game::LevelRenderer renderer;
-	Game::LevelTime levelTime;
+	std::unique_ptr<lif::Level> level;
+	lif::LevelRenderer renderer;
+	lif::LevelTime levelTime;
 
 	/** Whether hurry up has already been triggered or not */
 	bool hurryUp = false;
@@ -76,9 +76,9 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable {
 	/** This is set to `true` when the last level is completed */
 	bool gameWon = false;
 
-	Game::EntityGroup entities;
-	Game::SHCollisionDetector cd;
-	Game::DroppingTextManager dropTextManager;
+	lif::EntityGroup entities;
+	lif::SHCollisionDetector cd;
+	lif::DroppingTextManager dropTextManager;
 
 	/** "Owned" pointers to players.
 	 *  The players' lifecycle is the following:
@@ -89,15 +89,15 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable {
 	 *     their pointers, so the RC doesn't drop to 0;
 	 *  5) the players are then readded to the EntityGroup.
 	 */
-	std::array<std::shared_ptr<Game::Player>, Game::MAX_PLAYERS> players;
+	std::array<std::shared_ptr<lif::Player>, lif::MAX_PLAYERS> players;
 
 	/** Unowned references to bombs currently deployed by players */
-	Matrix<std::weak_ptr<Game::Bomb>, Game::MAX_PLAYERS, Game::Conf::Player::MAX_MAX_BOMBS> bombs;
+	Matrix<std::weak_ptr<lif::Bomb>, lif::MAX_PLAYERS, lif::Conf::Player::MAX_MAX_BOMBS> bombs;
 
 
 	/** Adds the given entity to `entities` */
-	void _spawn(Game::Entity *e);
-	void _spawnBomb(Game::Bomb *b);
+	void _spawn(lif::Entity *e);
+	void _spawnBomb(lif::Bomb *b);
 	/** Checks if there are any player to resurrect. If no players are found alive,
 	 *  sets the `gameOver` flag to `true`.
 	 */
@@ -114,32 +114,32 @@ public:
 	explicit LevelManager();
 
 	/** Generates n players. If n > MAX_PLAYERS, only generate MAX_PLAYERS players. */
-	void createNewPlayers(unsigned short n = Game::MAX_PLAYERS);
+	void createNewPlayers(unsigned short n = lif::MAX_PLAYERS);
 
-	bool isPlayer(const Game::Entity& e) const;
+	bool isPlayer(const lif::Entity& e) const;
 	/** Returns the id-th player (id starting from 1) */
-	const std::shared_ptr<Game::Player> getPlayer(unsigned short id) const;
-	void setPlayer(unsigned short id, std::shared_ptr<Game::Player> player);
+	const std::shared_ptr<lif::Player> getPlayer(unsigned short id) const;
+	void setPlayer(unsigned short id, std::shared_ptr<lif::Player> player);
 	void removePlayer(unsigned short id);
 
-	const Game::EntityGroup& getEntities() const { return entities; }
-	Game::EntityGroup& getEntities() { return entities; }
+	const lif::EntityGroup& getEntities() const { return entities; }
+	lif::EntityGroup& getEntities() { return entities; }
 
-	const Game::Level* getLevel() const { return level != nullptr ? level.get() : nullptr; }
+	const lif::Level* getLevel() const { return level != nullptr ? level.get() : nullptr; }
 	/** Loads `lvnum`-th level from `ls` into this LevelManager. Destroys previous level if any */
-	void setLevel(const Game::LevelSet& ls, unsigned short lvnum);
+	void setLevel(const lif::LevelSet& ls, unsigned short lvnum);
 	/** Loads next level from `level->getLevelSet()`. Throws if `level` is currently null */
 	void setNextLevel();
 
-	const Game::LevelTime& getLevelTime() const { return levelTime; }
-	const Game::CollisionDetector& getCollisionDetector() const { return cd; }
+	const lif::LevelTime& getLevelTime() const { return levelTime; }
+	const lif::CollisionDetector& getCollisionDetector() const { return cd; }
 
 	bool isGameOver() const { return gameOver; }
 	bool isLevelClear() const;
 	bool isGameWon() const { return gameWon; }
 
 	/** Checks whether the owner of `am` can proceed along direction `dir` */
-	bool canGo(const Game::AxisMoving& am, const Game::Direction dir) const;
+	bool canGo(const lif::AxisMoving& am, const lif::Direction dir) const;
 	/** A bomb can be deployed in a tile only if no other bomb or explosion is currently in that tile */
 	bool canDeployBombAt(const sf::Vector2i& tile) const;
 	/** Returns the number of bombs currently deployed by id-th player */
@@ -160,7 +160,7 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 #ifndef RELEASE
-	const Game::Debug::Stats& getStats() const { return dbgStats; }
+	const lif::Debug::Stats& getStats() const { return dbgStats; }
 #endif
 };
 

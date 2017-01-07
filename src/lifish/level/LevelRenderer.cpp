@@ -7,9 +7,9 @@
 #include <map>
 #include <vector>
 
-using Game::LevelRenderer;
+using lif::LevelRenderer;
 
-LevelRenderer::LevelRenderer(Game::LevelManager& owner)
+LevelRenderer::LevelRenderer(lif::LevelManager& owner)
 	: owner(owner)
 {}
 
@@ -23,13 +23,13 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 	owner._mtxUnlock();
 
 	// Draw according to z-index
-	std::map<int, std::vector<const Game::Drawable*>> toDraw;
+	std::map<int, std::vector<const lif::Drawable*>> toDraw;
 
 	owner.entities.mtxLock();
-	owner.entities.apply([&target, &toDraw] (const Game::Entity *e) {
-		const auto d = e->get<Game::Drawable>();
+	owner.entities.apply([&target, &toDraw] (const lif::Entity *e) {
+		const auto d = e->get<lif::Drawable>();
 		if (d != nullptr) {
-			const auto zidx = e->get<Game::ZIndexed>();
+			const auto zidx = e->get<lif::ZIndexed>();
 			if (zidx != nullptr)
 				toDraw[zidx->getZIndex()].push_back(d);
 			else

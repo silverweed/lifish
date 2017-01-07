@@ -6,26 +6,26 @@
 #include "Component.hpp"
 #include "bonus_type.hpp"
 
-namespace Game {
+namespace lif {
 
 class Clock;
 
 /** A component that can get bonuses */
-class Bonusable : public Game::Component {
+class Bonusable : public lif::Component {
 protected:
 	// bonus time; sf::Time::Zero means "no bonus"; negative means 'infinite'
-	std::array<sf::Time, Game::Conf::Bonus::N_BONUS_TYPES> bonusTime;
-	std::array<Game::Clock*, Game::Conf::Bonus::N_BONUS_TYPES> bonusClock;
+	std::array<sf::Time, lif::Conf::Bonus::N_BONUS_TYPES> bonusTime;
+	std::array<lif::Clock*, lif::Conf::Bonus::N_BONUS_TYPES> bonusClock;
 
 public:
-	explicit Bonusable(Game::Entity& owner);
+	explicit Bonusable(lif::Entity& owner);
 
-	void giveBonus(Game::BonusType type, const sf::Time& time);
-	bool hasBonus(Game::BonusType type) const;
+	void giveBonus(lif::BonusType type, const sf::Time& time);
+	bool hasBonus(lif::BonusType type) const;
 
-	sf::Time getTime(Game::BonusType type) const;
-	sf::Time getElapsedTime(Game::BonusType type) const;
-	sf::Time getRemainingTime(Game::BonusType type) const;
+	sf::Time getTime(lif::BonusType type) const;
+	sf::Time getElapsedTime(lif::BonusType type) const;
+	sf::Time getRemainingTime(lif::BonusType type) const;
 	
 	void reset();
 	void expireTemporaryBonuses();

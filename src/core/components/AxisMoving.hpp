@@ -3,14 +3,14 @@
 #include "Moving.hpp"
 #include "Direction.hpp"
 
-namespace Game {
+namespace lif {
 
 /**
  * An object moving only parallel to axes 
  */
-class AxisMoving : public Game::Moving {
-	Game::Direction direction;
-	Game::Direction prevDirection;
+class AxisMoving : public lif::Moving {
+	lif::Direction direction;
+	lif::Direction prevDirection;
 	sf::Vector2i prevAlign;
 	/** Whether this entity will auto-realign when colliding with a solid entity */
 	bool autoRealign = true;
@@ -21,14 +21,14 @@ class AxisMoving : public Game::Moving {
 	void _ensureAlign();
 
 public:
-	explicit AxisMoving(Game::Entity& owner, float speed, 
-			Game::Direction dir = Game::Direction::NONE);
+	explicit AxisMoving(lif::Entity& owner, float speed, 
+			lif::Direction dir = lif::Direction::NONE);
 
-	Game::Direction getDirection() const { return direction; }
-	Game::Direction getPrevDirection() const { return prevDirection; }
+	lif::Direction getDirection() const { return direction; }
+	lif::Direction getPrevDirection() const { return prevDirection; }
 	sf::Vector2i getPrevAlign() const { return prevAlign; }
 
-	void setDirection(Game::Direction dir);
+	void setDirection(lif::Direction dir);
 	void turn(short straightAngles, bool clockwise);
 	void setPrevAlign(const sf::Vector2i& a) { prevAlign = a; }
 	/** If set to `false`, entity won't auto-realign when colliding with solid OR when stop()ped.

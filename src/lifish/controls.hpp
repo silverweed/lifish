@@ -6,7 +6,7 @@
 #include <array>
 #include "game.hpp"
 
-namespace Game {
+namespace lif {
 
 namespace Controls {
 
@@ -20,10 +20,10 @@ enum Control {
 
 constexpr static unsigned short CONTROLS_NUM = 5;
 
-extern std::array<sf::Keyboard::Key, CONTROLS_NUM> players[Game::MAX_PLAYERS];
-extern std::array<unsigned int, Game::MAX_PLAYERS> joystickBombKey;
+extern std::array<sf::Keyboard::Key, CONTROLS_NUM> players[lif::MAX_PLAYERS];
+extern std::array<unsigned int, lif::MAX_PLAYERS> joystickBombKey;
 /** -1 if i-th player doesn't use joystick, else the joystick index. */
-extern std::array<short, Game::MAX_PLAYERS> useJoystick;
+extern std::array<short, lif::MAX_PLAYERS> useJoystick;
 
 inline Control fromString(const std::string& name) {
 	if (name == "up" || name == "UP") return CTRL_UP;
@@ -35,4 +35,4 @@ inline Control fromString(const std::string& name) {
 
 } // end namespace Controls
 
-} // end namespace Game
+} // end namespace lif

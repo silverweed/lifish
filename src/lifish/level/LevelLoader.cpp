@@ -25,20 +25,20 @@
 #include "Sprite.hpp"
 #include <iostream>
 
-using Game::TILE_SIZE;
+using lif::TILE_SIZE;
 
-bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
+bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 
 	lm.levelTime.setTime(sf::seconds(level.getInfo().time));
 
-	Game::Teleport *first_teleport = nullptr,
+	lif::Teleport *first_teleport = nullptr,
 		       *latest_teleport = nullptr;
 
 	lm.reset();
 	auto& entities = lm.getEntities();
 
-	for (unsigned short top = 0; top < Game::LEVEL_HEIGHT; ++top) {
-		for (unsigned short left = 0; left < Game::LEVEL_WIDTH; ++left) {
+	for (unsigned short top = 0; top < lif::LEVEL_HEIGHT; ++top) {
+		for (unsigned short left = 0; left < lif::LEVEL_WIDTH; ++left) {
 
 			const sf::Vector2f curPos((left + 1) * TILE_SIZE, (top + 1) * TILE_SIZE);
 			unsigned short enemy_id = 0;
@@ -47,59 +47,59 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 			auto is_game_over = [&lm] (unsigned short id) -> bool {
 				return lm.players[id] == nullptr || (
 						lm.players[id]->getInfo().remainingLives <= 0
-						&& lm.players[id]->get<Game::Lifed>()->getLife() <= 0
-						&& Game::playerContinues[id] <= 0
+						&& lm.players[id]->get<lif::Lifed>()->getLife() <= 0
+						&& lif::playerContinues[id] <= 0
 					);
 			};
 
 			switch (level.getTile(left, top)) {
 			case EntityType::FIXED: 
-				entities.add(new Game::FixedWall(curPos, level.getInfo().tileIDs.fixed));
+				entities.add(new lif::FixedWall(curPos, level.getInfo().tileIDs.fixed));
 				break;
 
 			case EntityType::BREAKABLE:
-				entities.add(new Game::BreakableWall(curPos, level.getInfo().tileIDs.breakable));
+				entities.add(new lif::BreakableWall(curPos, level.getInfo().tileIDs.breakable));
 				break;
 
 			case EntityType::TRANSPARENT_WALL:
-				entities.add(new Game::TransparentWall(curPos));
+				entities.add(new lif::TransparentWall(curPos));
 				break;
 
 			case EntityType::ACID_POND:
-				entities.add(new Game::AcidPond(curPos, sf::Vector2f(TILE_SIZE, TILE_SIZE)));
+				entities.add(new lif::AcidPond(curPos, sf::Vector2f(TILE_SIZE, TILE_SIZE)));
 				break;
 
 			case EntityType::COIN:
-				entities.add(new Game::Coin(curPos));
+				entities.add(new lif::Coin(curPos));
 				break;
 
 			case EntityType::HAUNTED_STATUE:
-				entities.add(new Game::HauntedStatue(curPos));
+				entities.add(new lif::HauntedStatue(curPos));
 				break;
 
 			case EntityType::PLAYER1: 
 				if (!is_game_over(0)) {
 					lm.players[0]->setWinning(false);
 					lm.players[0]->setPosition(curPos);
-					lm.players[0]->get<Game::Animated>()->setAnimation("idle");
-					lm.players[0]->get<Game::Moving>()->stop();
+					lm.players[0]->get<lif::Animated>()->setAnimation("idle");
+					lm.players[0]->get<lif::Moving>()->stop();
 					entities.add(lm.players[0]);
-					entities.add(new Game::Flash(curPos));
+					entities.add(new lif::Flash(curPos));
 				}
 				break;
 			case EntityType::PLAYER2: 
 				if (!is_game_over(1)) {
 					lm.players[1]->setWinning(false);
 					lm.players[1]->setPosition(curPos);
-					lm.players[1]->get<Game::Animated>()->setAnimation("idle");
-					lm.players[1]->get<Game::Moving>()->stop();
+					lm.players[1]->get<lif::Animated>()->setAnimation("idle");
+					lm.players[1]->get<lif::Moving>()->stop();
 					entities.add(lm.players[1]);
-					entities.add(new Game::Flash(curPos));
+					entities.add(new lif::Flash(curPos));
 				}
 				break;
 			case EntityType::TELEPORT:
 				{
-					auto teleport = new Game::Teleport(curPos);
+					auto teleport = new lif::Teleport(curPos);
 
 					// Save the first Teleport added
 					if (first_teleport == nullptr)
@@ -117,8 +117,8 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 				}
 			case EntityType::BOSS:
 				{
-					auto boss = new Game::AlienBoss(curPos);
-					for (auto s : boss->getAllRecursive<Game::Sighted>())
+					auto boss = new lif::AlienBoss(curPos);
+					for (auto s : boss->getAllRecursive<lif::Sighted>())
 						s->setEntityGroup(&lm.entities);
 					entities.add(boss);
 				}
@@ -161,36 +161,36 @@ bool Game::LevelLoader::load(const Game::Level& level, Game::LevelManager& lm) {
 				break;
 			}
 			if (enemy_id > 0) {
-				Game::Enemy *enemy = nullptr;
+				lif::Enemy *enemy = nullptr;
 				const auto& info = ls.getEnemyInfo(enemy_id);
 				// Some enemies have their own classes, others are just 'Enemy'
 				switch (enemy_id) {
 				case 2:
-					enemy = new Game::Wisp(curPos, info);
+					enemy = new lif::Wisp(curPos, info);
 					break;
 				case 10:
-					enemy = new Game::AlienPredator(curPos, info);
+					enemy = new lif::AlienPredator(curPos, info);
 					break;
 				default:
-					enemy = new Game::Enemy(curPos, enemy_id, info);
+					enemy = new lif::Enemy(curPos, enemy_id, info);
 					break;
 				}
-				enemy->get<Game::AI>()->setLevelManager(&lm);
-				auto sighted = enemy->get<Game::Sighted>();
+				enemy->get<lif::AI>()->setLevelManager(&lm);
+				auto sighted = enemy->get<lif::Sighted>();
 				sighted->setEntityGroup(&lm.entities);
-				sighted->setOpaque({ Game::Layers::BREAKABLES, Game::Layers::UNBREAKABLES });
+				sighted->setOpaque({ lif::Layers::BREAKABLES, lif::Layers::UNBREAKABLES });
 				entities.add(enemy);
 			}
 		}
 	}
 
-	auto hboss = new Game::HauntingSpiritBoss(sf::Vector2f(272, 240));
-	for (auto s : hboss->getAllRecursive<Game::Sighted>()) s->setEntityGroup(&lm.entities);
+	auto hboss = new lif::HauntingSpiritBoss(sf::Vector2f(272, 240));
+	for (auto s : hboss->getAllRecursive<lif::Sighted>()) s->setEntityGroup(&lm.entities);
 	//entities.add(hboss);
 
 	const auto& effects = level.getInfo().effects;
 	if (effects.find("fog") != effects.end()) {
-		entities.add(new Game::Fog);	
+		entities.add(new lif::Fog);	
 	}
 	lm.levelTime.resume();
 

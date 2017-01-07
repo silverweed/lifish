@@ -2,7 +2,7 @@
 
 #include <ostream>
 
-namespace Game {
+namespace lif {
 
 enum class EntityType {
 	UNKNOWN,
@@ -31,6 +31,6 @@ enum class EntityType {
 
 EntityType entityFromLetter(const char c);
 
-std::ostream& operator<<(std::ostream& stream, const Game::EntityType& et);
+std::ostream& operator<<(std::ostream& stream, const lif::EntityType& et);
 
 }

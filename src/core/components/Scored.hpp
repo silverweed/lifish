@@ -3,12 +3,12 @@
 #include <exception>
 #include "Component.hpp"
 
-namespace Game {
+namespace lif {
 
 /**
  * Something which is worth points
  */
-class Scored : public Game::Component {
+class Scored : public lif::Component {
 protected:
 	const int pointsGiven;
 	bool givenPoints = false;
@@ -16,8 +16,8 @@ protected:
 	short target = -1;
 
 public:
-	explicit Scored(Game::Entity& owner, const int points) 
-		: Game::Component(owner)
+	explicit Scored(lif::Entity& owner, const int points) 
+		: lif::Component(owner)
 		, pointsGiven(points)
 	{}
 

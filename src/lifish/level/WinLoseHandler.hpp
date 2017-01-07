@@ -5,7 +5,7 @@
 #include "Chronometer.hpp"
 #include "InterlevelContext.hpp"
 
-namespace Game {
+namespace lif {
 
 class LevelManager;
 class Level;
@@ -32,8 +32,8 @@ public:
 private:
 	State state = State::DEFAULT;
 	
-	Game::LevelManager& lm;
-	Game::InterlevelContext interlevelCtx;
+	lif::LevelManager& lm;
+	lif::InterlevelContext interlevelCtx;
 	sftools::Chronometer clock;
 	bool levelClearSoundPlayed = false,
 	     playerWinSoundPlayed = false;
@@ -42,14 +42,14 @@ private:
 	void _handleLoss();
 	void _checkCondition();
 public:
-	explicit WinLoseHandler(Game::LevelManager& lm, const Game::SidePanel& sidePanel);
+	explicit WinLoseHandler(lif::LevelManager& lm, const lif::SidePanel& sidePanel);
 
-	Game::WindowContext& getInterlevelContext() { return interlevelCtx; }
+	lif::WindowContext& getInterlevelContext() { return interlevelCtx; }
 
 	/** In case of win or loss, performs the due actions */
 	void handleWinLose();
 	State getState() const { return state; }
-	//void advanceLevel(sf::RenderWindow& target, const Game::SidePanel& panel);
+	//void advanceLevel(sf::RenderWindow& target, const lif::SidePanel& panel);
 };
 
 }

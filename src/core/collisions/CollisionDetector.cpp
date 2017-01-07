@@ -1,9 +1,9 @@
 #include "CollisionDetector.hpp"
 #include "EntityGroup.hpp"
 
-using Game::CollisionDetector;
+using lif::CollisionDetector;
 
-CollisionDetector::CollisionDetector(Game::EntityGroup& group, const sf::FloatRect& limit)
+CollisionDetector::CollisionDetector(lif::EntityGroup& group, const sf::FloatRect& limit)
 	: group(group)
 	, levelLimit(limit)
 {}

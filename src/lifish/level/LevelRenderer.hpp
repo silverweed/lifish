@@ -2,15 +2,15 @@
 
 #include <SFML/Graphics.hpp>
 
-namespace Game {
+namespace lif {
 
 class LevelManager;
 
 class LevelRenderer final : public sf::Drawable {
-	Game::LevelManager& owner;
+	lif::LevelManager& owner;
 
 public:
-	explicit LevelRenderer(Game::LevelManager& owner);
+	explicit LevelRenderer(lif::LevelManager& owner);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };

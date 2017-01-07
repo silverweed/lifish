@@ -2,7 +2,7 @@
 
 #include <SFML/System.hpp>
 
-namespace Game {
+namespace lif {
 
 class WithOrigin {
 protected:

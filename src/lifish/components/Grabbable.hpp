@@ -2,23 +2,23 @@
 
 #include "Component.hpp"
 
-namespace Game {
+namespace lif {
 
-class Grabbable : public Game::Component {
+class Grabbable : public lif::Component {
 	bool grabbed = false;
-	Game::Entity *grabbingEntity = nullptr;
+	lif::Entity *grabbingEntity = nullptr;
 
 public:
-	explicit Grabbable(Game::Entity& owner)
-		: Game::Component(owner) 
+	explicit Grabbable(lif::Entity& owner)
+		: lif::Component(owner) 
 	{}
 
 	/** `grab` shall be called when the Grabbable is grabbed to avoid reprocess it */
 	void grab() { grabbed = true; }
 	bool isGrabbed() const { return grabbed; }
 
-	void setGrabbingEntity(Game::Entity *e) { grabbingEntity = e; }
-	Game::Entity* getGrabbingEntity() const { return grabbingEntity; }
+	void setGrabbingEntity(lif::Entity *e) { grabbingEntity = e; }
+	lif::Entity* getGrabbingEntity() const { return grabbingEntity; }
 };
 
 }

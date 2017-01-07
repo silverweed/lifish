@@ -2,24 +2,24 @@
 #include "GameCache.hpp"
 #include "core.hpp"
 
-using Game::Sprite;
+using lif::Sprite;
 
-Sprite::Sprite(Game::Entity& owner, const std::string& texture_name) 
-	: Game::Component(owner)
+Sprite::Sprite(lif::Entity& owner, const std::string& texture_name) 
+	: lif::Component(owner)
 {
-	texture = Game::cache.loadTexture(texture_name);
+	texture = lif::cache.loadTexture(texture_name);
 	sprite.setTexture(*texture);
 }
 
-Sprite::Sprite(Game::Entity& owner, const std::string& texture_name, 
+Sprite::Sprite(lif::Entity& owner, const std::string& texture_name, 
 		const sf::IntRect& division) 
 	: Sprite(owner, texture_name)
 {
 	sprite.setTextureRect(division);
 }
 
-Game::Entity* Sprite::init() {
-	Game::Component::init();
+lif::Entity* Sprite::init() {
+	lif::Component::init();
 	sprite.setPosition(owner.getPosition());
 	return this;
 }
@@ -29,11 +29,11 @@ void Sprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 }
 
 void Sprite::update() {
-	Game::Component::update();
+	lif::Component::update();
 	sprite.setPosition(owner.getPosition());
 }
 
 void Sprite::setOrigin(const sf::Vector2f& o) {
-	Game::Component::setOrigin(o);
+	lif::Component::setOrigin(o);
 	sprite.setOrigin(o);
 }

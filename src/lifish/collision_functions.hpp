@@ -2,7 +2,7 @@
 
 #include "Collider.hpp"
 
-namespace Game {
+namespace lif {
 
 enum CollisionFuncOptions : unsigned {
 	/** Take only the first hit from any explosion */
@@ -15,6 +15,6 @@ enum CollisionFuncOptions : unsigned {
  *  Required: owner must have a Lifed and a Killable.
  *  Optional: owner may have a Scored.
  */
-Game::Collider::CollisionFunc hurtByExplosions(Game::Entity& e, unsigned opts = 0);
+lif::Collider::CollisionFunc hurtByExplosions(lif::Entity& e, unsigned opts = 0);
 
 }

@@ -7,19 +7,19 @@
 #include "Lifed.hpp"
 #include <iomanip>
 
-using Game::SidePanel;
+using lif::SidePanel;
 
-SidePanel::SidePanel(const Game::LevelManager& lm)
+SidePanel::SidePanel(const lif::LevelManager& lm)
 	: lm(lm)
 {
 	// Load background
-	bgTexture = Game::cache.loadTexture(Game::getAsset("graphics", "panel.png"));
+	bgTexture = lif::cache.loadTexture(lif::getAsset("graphics", "panel.png"));
 	backgroundSprite.setTexture(*bgTexture);
-	backgroundSprite.setTextureRect(sf::IntRect(0, 0, Game::SIDE_PANEL_WIDTH, Game::SIDE_PANEL_HEIGHT));	
+	backgroundSprite.setTextureRect(sf::IntRect(0, 0, lif::SIDE_PANEL_WIDTH, lif::SIDE_PANEL_HEIGHT));	
 	backgroundSprite.setPosition(0, 0);
 
 	// Load player heads
-	playerHeadsTexture = Game::cache.loadTexture(Game::getAsset("graphics", "playerheads.png"));
+	playerHeadsTexture = lif::cache.loadTexture(lif::getAsset("graphics", "playerheads.png"));
 	for (unsigned short i = 0; i < playerHeadsSprite.size(); ++i) {
 		playerHeadsSprite[i].setTexture(*playerHeadsTexture);
 		playerHeadsSprite[i].setTextureRect(sf::IntRect(PLAYER_HEAD_WIDTH * i, 0,
@@ -29,7 +29,7 @@ SidePanel::SidePanel(const Game::LevelManager& lm)
 	playerHeadsSprite[1].setPosition(16, 268);
 
 	// Load health symbols
-	healthTexture = Game::cache.loadTexture(Game::getAsset("graphics", "health.png"));
+	healthTexture = lif::cache.loadTexture(lif::getAsset("graphics", "health.png"));
 	healthTexture->setSmooth(true);
 	for (unsigned short i = 0; i < healthSprite.size(); ++i) {
 		healthSprite[i].setTexture(*healthTexture);
@@ -38,7 +38,7 @@ SidePanel::SidePanel(const Game::LevelManager& lm)
 	}
 
 	// Load EXTRA letters
-	extraLettersTexture = Game::cache.loadTexture(Game::getAsset("test", "extra_icons.png"));
+	extraLettersTexture = lif::cache.loadTexture(lif::getAsset("test", "extra_icons.png"));
 	extraLettersTexture->setSmooth(true);
 	for (unsigned short i = 0; i < extraLettersSprite.size(); ++i) {
 		extraLettersSprite[i].setTexture(*extraLettersTexture);
@@ -47,7 +47,7 @@ SidePanel::SidePanel(const Game::LevelManager& lm)
 	}
 
 	// Load bonuses
-	const auto bonusesTexture = Game::cache.loadTexture(Game::getAsset("graphics", "bonuses.png"));
+	const auto bonusesTexture = lif::cache.loadTexture(lif::getAsset("graphics", "bonuses.png"));
 	for (unsigned short i = 0; i < bonusesSprite.size(); ++i) {
 		sf::Vector2f pos(BONUS_ICON_POS_X, i == 0 ? BONUS_ICON_POS_Y_1 : BONUS_ICON_POS_Y_2);
 		for (unsigned short j = 0; j < bonusesSprite[i].size(); ++j) {
@@ -79,9 +79,9 @@ static void _drawWithShadow(sf::RenderTarget& window, sf::RenderStates states, c
 }
 
 void SidePanel::_drawHealthSprites(sf::RenderTarget& window, sf::RenderStates states,
-		const Game::Player& player) const
+		const lif::Player& player) const
 {
-	const auto lifed = player.get<Game::Lifed>();
+	const auto lifed = player.get<lif::Lifed>();
 	const unsigned short n_tot = lifed->getMaxLife() / 2;
 	const unsigned short n_full = lifed->getLife() / 2;
 	const unsigned short n_half = lifed->getLife() % 2;
@@ -102,7 +102,7 @@ void SidePanel::_drawHealthSprites(sf::RenderTarget& window, sf::RenderStates st
 }
 
 void SidePanel::_drawExtraLetters(sf::RenderTarget& window, sf::RenderStates states,
-		const Game::Player& player) const
+		const lif::Player& player) const
 {
 	sf::Vector2f pos(EXTRA_LETTERS_POS_X, player.getInfo().id == 1 ? EXTRA_LETTERS_POS_Y_1 : EXTRA_LETTERS_POS_Y_2);
 	for (unsigned short j = 0; j < player.getInfo().extra.size(); ++j) {
@@ -131,8 +131,8 @@ void SidePanel::_drawTime(sf::RenderTarget& window, sf::RenderStates states) con
 		ss << seconds;
 	}
 
-	Game::ShadedText timeText(
-			Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO),
+	lif::ShadedText timeText(
+			lif::getAsset("fonts", lif::Fonts::SIDE_PANEL_MONO),
 			ss.str(), TIME_POS);
 	timeText.setCharacterSize(16);
 	timeText.setShadowSpacing(2, 2);
@@ -159,7 +159,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			ss << "X" << player->getInfo().remainingLives;
 		}
 
-		Game::ShadedText text(Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO), ss.str(), pos);
+		lif::ShadedText text(lif::getAsset("fonts", lif::Fonts::SIDE_PANEL_MONO), ss.str(), pos);
 		text.setCharacterSize(20);
 		text.setStyle(sf::Text::Bold);
 		text.setShadowSpacing(2, 2);
@@ -184,12 +184,12 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			text.setPosition(sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 2));
 			text.setCharacterSize(11);
 			text.setShadowSpacing(1, 1);
-			text.setString("x" + Game::to_string(powers.maxBombs));
+			text.setString("x" + lif::to_string(powers.maxBombs));
 			window.draw(text, states);
 
 			// Draw bomb radius
 			text.setPosition(sf::Vector2f(pos.x + 2 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
-			text.setString("x" + Game::to_string(powers.bombRadius));
+			text.setString("x" + lif::to_string(powers.bombRadius));
 			window.draw(text, states);
 
 			// Draw bonuses
@@ -198,11 +198,11 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 
 			// Draw score
 			ss.str("");
-			ss << std::setfill('0') << std::setw(7) << Game::score[i];
+			ss << std::setfill('0') << std::setw(7) << lif::score[i];
 			pos.x = SCORE_POS_X;
 			pos.y = i == 0 ? SCORE_POS_Y_1 : SCORE_POS_Y_2;
-			Game::ShadedText scoreText(
-					Game::getAsset("fonts", Game::Fonts::SIDE_PANEL_MONO),
+			lif::ShadedText scoreText(
+					lif::getAsset("fonts", lif::Fonts::SIDE_PANEL_MONO),
 					ss.str(), pos);
 			scoreText.setCharacterSize(16);
 			scoreText.setShadowSpacing(2, 2);
@@ -221,19 +221,19 @@ void SidePanel::update() {
 		if (player != nullptr) {
 			// Update bonuses
 			const auto powers = player->getInfo().powers;
-			const auto bonusable = player->get<Game::Bonusable>();
+			const auto bonusable = player->get<lif::Bonusable>();
 			for (unsigned short j = 0; j < bonusesSprite[i].size(); ++j) {
-				switch (Game::BonusType(j)) {
-					using B = Game::BonusType;
+				switch (lif::BonusType(j)) {
+					using B = lif::BonusType;
 				case B::QUICK_FUSE:
 					bonusesSprite[i][j].setColor(
-							powers.bombFuseTime == Game::Conf::Bomb::DEFAULT_FUSE
+							powers.bombFuseTime == lif::Conf::Bomb::DEFAULT_FUSE
 							? DISABLED_COLOR : sf::Color::White);
 					break;
 				case B::SHIELD:
 				case B::SPEEDY:
 					bonusesSprite[i][j].setColor(bonusable->hasBonus(
-								static_cast<Game::BonusType>(j))
+								static_cast<lif::BonusType>(j))
 							? sf::Color::White : DISABLED_COLOR);
 					break;
 				default:

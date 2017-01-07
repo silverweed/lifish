@@ -2,7 +2,7 @@
 
 #include "Entity.hpp"
 
-namespace Game {
+namespace lif {
 
 class Collider;
 
@@ -51,35 +51,35 @@ struct BulletInfo {
 /**
  * A bullet travels until it impacts with another Entity which is not transparent to it.
  */
-class Bullet : public Game::Entity {
+class Bullet : public lif::Entity {
 protected:
 	const BulletInfo info;
 	const BulletData data;
 	/** The Entity that shot this bullet (optional) */
-	const Game::Entity *const source;
+	const lif::Entity *const source;
 
 	/** Whether this bullet already dealt its damage */
 	bool dealtDamage = false;
 
 	/** This should be implemented by child classes */
-	Game::Collider *collider = nullptr;
+	lif::Collider *collider = nullptr;
 
 
 	void _destroy();
 
 public:
-	explicit Bullet(const sf::Vector2f& pos, const Game::BulletInfo& info,
-			const Game::Entity *const source = nullptr);
+	explicit Bullet(const sf::Vector2f& pos, const lif::BulletInfo& info,
+			const lif::Entity *const source = nullptr);
 
-	const Game::Entity* getSource() const { return source; }
+	const lif::Entity* getSource() const { return source; }
 
 	bool hasDealtDamage() const { return dealtDamage; }
 	/** Marks this bullet as 'already dealt damage', so that it's not applied more than once. */
 	void dealDamage() { dealtDamage = true; }
 
-	const Game::BulletInfo& getInfo() const { return info; }
+	const lif::BulletInfo& getInfo() const { return info; }
 
-	Game::Entity* init() override;
+	lif::Entity* init() override;
 	void update() override;
 };
 

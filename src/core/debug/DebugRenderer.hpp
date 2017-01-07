@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
-namespace Game {
+namespace lif {
 
 class EntityGroup;
 class SHCollisionDetector;
@@ -11,8 +11,8 @@ namespace Debug {
 
 class DebugRenderer {
 public:
-	static void drawColliders(sf::RenderTarget& target, const Game::EntityGroup& group);
-	static void drawSHCells(sf::RenderTarget& target, const Game::SHCollisionDetector& group);
+	static void drawColliders(sf::RenderTarget& target, const lif::EntityGroup& group);
+	static void drawSHCells(sf::RenderTarget& target, const lif::SHCollisionDetector& group);
 };
 
 }

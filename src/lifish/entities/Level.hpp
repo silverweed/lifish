@@ -12,7 +12,7 @@
 #include "entity_type.hpp"
 #include "utils.hpp"
 
-namespace Game {
+namespace lif {
 
 class LevelSet;
 class LevelNumText;
@@ -27,7 +27,7 @@ struct LevelInfo {
 	} tileIDs;
 	
 	/** This game's track info */
-	Game::Track track;
+	lif::Track track;
 
 	/** Number of the level */
 	unsigned short levelnum = 0;
@@ -45,19 +45,19 @@ struct LevelInfo {
 /**
  * The Level class contains the template of a level, with all the
  * static information about it. Dynamic informations about the level
- * during the game are managed by Game::LevelManager.
+ * during the game are managed by lif::LevelManager.
  */
-class Level final : public Game::Entity , private sf::NonCopyable {
-	friend class Game::LevelSet;
+class Level final : public lif::Entity , private sf::NonCopyable {
+	friend class lif::LevelSet;
 
 	/** This ought to be set before calling level.init(); */
-	Game::LevelInfo levelInfo;
+	lif::LevelInfo levelInfo;
 	
 	/** The text containing the level number */
-	Game::LevelNumText *levelnumtext = nullptr;
+	lif::LevelNumText *levelnumtext = nullptr;
 	
 	/** This level's static (initial) tilemap */
-	Game::Matrix<Game::EntityType, LEVEL_HEIGHT, LEVEL_WIDTH> tiles;
+	lif::Matrix<lif::EntityType, LEVEL_HEIGHT, LEVEL_WIDTH> tiles;
 
 	sf::Texture *bgTexture = nullptr;
 	sf::Sprite bgSprite;
@@ -66,7 +66,7 @@ class Level final : public Game::Entity , private sf::NonCopyable {
 	sf::Sprite borderSprite;
 
 	/** The LevelSet this level belongs to */
-	const Game::LevelSet& levelSet;
+	const lif::LevelSet& levelSet;
 
 	/** Whether this level has been initialized or not */
 	bool initialized = false;
@@ -96,7 +96,7 @@ public:
 	 *  usable. Must be called after setting levelInfo.
 	 *  Returns nullptr if there were errors, self otherwise.
 	 */
-	Game::Entity* init() override;
+	lif::Entity* init() override;
 	bool isInitialized() const { return initialized; }
 
 	const LevelInfo& getInfo() const { return levelInfo; }
@@ -109,7 +109,7 @@ public:
 	/** Changes the origin of all tiles */
 	void setOrigin(const sf::Vector2f& origin) override;
 
-	const Game::LevelSet& getLevelSet() const { return levelSet; }
+	const lif::LevelSet& getLevelSet() const { return levelSet; }
 
 	std::string toString() const override;
 	std::string getTilemap() const;

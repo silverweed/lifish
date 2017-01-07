@@ -41,21 +41,21 @@ func_impl = ""
 case subdir
 when 'entities'
 	includes = "\n#include \"Entity.hpp\"\n"
-	derived = ': public Game::Entity '
+	derived = ': public lif::Entity '
 	args = 'const sf::Vector2f& pos'
 	etc = "\n\n\tvoid update() override;"
-	constr = "\n\t: Game::Entity(pos)\n"
-	func_impl = "\n\nvoid #{clsname}::update() {\n\tGame::Entity::update();\n}"
+	constr = "\n\t: lif::Entity(pos)\n"
+	func_impl = "\n\nvoid #{clsname}::update() {\n\tlif::Entity::update();\n}"
 when 'components'
 	includes = "\n#include \"Component.hpp\"\n"
-	derived = ': public Game::Component '
-	args = 'Game::Entity& owner'
-	constr = "\n\t: Game::Component(owner)\n"
+	derived = ': public lif::Component '
+	args = 'lif::Entity& owner'
+	constr = "\n\t: lif::Component(owner)\n"
 end
 
 if options[:parent]
-	derived = ": public Game::#{options[:parent]} "
-	constr = "\n\t: Game::#{options[:parent]}()\n"
+	derived = ": public lif::#{options[:parent]} "
+	constr = "\n\t: lif::#{options[:parent]}()\n"
 	includes = "\n#include \"#{options[:parent]}.hpp\"\n"
 end
 
@@ -72,7 +72,7 @@ public:
 
 TEMPLATE_CPP = "#include \"#{clsname}.hpp\"
 
-using Game::#{clsname};
+using lif::#{clsname};
 
 #{clsname}::#{clsname}(#{args})#{constr}{}#{func_impl}"
 

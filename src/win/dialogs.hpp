@@ -3,7 +3,7 @@
 #include <shobjidl.h>
 #include <string>
 
-namespace Game {
+namespace lif {
 
 namespace Dialog {
 
@@ -12,4 +12,4 @@ std::string saveFile();
 
 } // end namespace Dialog
 
-} // end namespace Game
+} // end namespace lif

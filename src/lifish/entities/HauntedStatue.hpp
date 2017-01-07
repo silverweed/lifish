@@ -3,14 +3,14 @@
 #include <SFML/Graphics.hpp>
 #include "Entity.hpp"
 
-namespace Game {
+namespace lif {
 
 class Animated;
 
-class HauntedStatue : public Game::Entity, public sf::Drawable {
+class HauntedStatue : public lif::Entity, public sf::Drawable {
 	bool possessed = false;
 
-	Game::Animated *animated = nullptr,
+	lif::Animated *animated = nullptr,
 	               *spirit = nullptr;
 
 public:

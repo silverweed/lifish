@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Game {
+namespace lif {
 
 class Entity;
 
@@ -11,6 +11,6 @@ class Entity;
  * 	(e.g. a ShootingPoint).
  * Action: shoots a FreeBullet with direction going from `shooter` to the nearest player in sight.
  */
-void shootToNearestPlayer(Game::Entity& shooter);
+void shootToNearestPlayer(lif::Entity& shooter);
 
 }

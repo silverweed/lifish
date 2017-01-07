@@ -7,31 +7,31 @@
 #include "game.hpp"
 #include "conf/bullet.hpp"
 
-using Game::AxisBullet;
-using Game::TILE_SIZE;
+using lif::AxisBullet;
+using lif::TILE_SIZE;
 
-AxisBullet::AxisBullet(const sf::Vector2f& pos, Game::Direction dir,
-		const Game::BulletInfo& info, const Game::Entity *const source)
-	: Game::Bullet(pos, info, source)
+AxisBullet::AxisBullet(const sf::Vector2f& pos, lif::Direction dir,
+		const lif::BulletInfo& info, const lif::Entity *const source)
+	: lif::Bullet(pos, info, source)
 {
 	unsigned short d = 0;
 	switch (dir) {
-	case Game::Direction::DOWN:
+	case lif::Direction::DOWN:
 		d = 0;
 		position.x += (TILE_SIZE - data.size) / 2;
 		position.y += TILE_SIZE;
 		break;
-	case Game::Direction::UP:
+	case lif::Direction::UP:
 		d = data.directionality == 4 ? 1 : 0;
 		position.x += (TILE_SIZE - data.size) / 2;
 		position.y -= data.size;
 		break;
-	case Game::Direction::RIGHT:
+	case lif::Direction::RIGHT:
 		d = data.directionality == 4 ? 2 : data.directionality == 2 ? 1 : 0;
 		position.y += (TILE_SIZE - data.size) / 2;
 		position.x += TILE_SIZE;
 		break;
-	case Game::Direction::LEFT:
+	case lif::Direction::LEFT:
 		d = data.directionality == 4 ? 3 : data.directionality == 2 ? 1 : 0;
 		position.y += (TILE_SIZE - data.size) / 2;
 		position.x -= data.size;
@@ -40,24 +40,24 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, Game::Direction dir,
 		break;
 	}
 
-	collider = addComponent(new Game::Collider(*this, [this] (Game::Collider& e) {
+	collider = addComponent(new lif::Collider(*this, [this] (lif::Collider& e) {
 		// on collision
 		// Note: the default layer doesn't automatically destroy a Bullet for
 		// practical reasons: it is typically used as a "catch-all" layer, but
 		// it should explicitly tell the bullet to selfdestroy if it's the intended
 		// behaviour. The bullet otherwise self-destructs as soon as it collides.
-		if (&e.getOwner() == this->source || e.getLayer() == Game::Layers::DEFAULT)
+		if (&e.getOwner() == this->source || e.getLayer() == lif::Layers::DEFAULT)
 			return;
-		auto klb = get<Game::Killable>();
+		auto klb = get<lif::Killable>();
 		if (!klb->isKilled()) {
 			klb->kill();
 		}
-	}, Game::Layers::ENEMY_BULLETS, sf::Vector2f(data.size, data.size)));
-	auto moving = addComponent(new Game::AxisMoving(*this, Game::Conf::Bullet::BASE_SPEED * info.speed, dir));
+	}, lif::Layers::ENEMY_BULLETS, sf::Vector2f(data.size, data.size)));
+	auto moving = addComponent(new lif::AxisMoving(*this, lif::Conf::Bullet::BASE_SPEED * info.speed, dir));
 	moving->setEnsureAlign(false);
 	moving->setAutoRealign(false);
-	auto animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "axisbullets.png")));
-	addComponent(new Game::Drawable(*this, *animated));
+	auto animated = addComponent(new lif::Animated(*this, lif::getAsset("test", "axisbullets.png")));
+	addComponent(new lif::Drawable(*this, *animated));
 
 	auto& a_move = animated->addAnimation("move");
 	auto& a_destroy = animated->addAnimation("destroy");

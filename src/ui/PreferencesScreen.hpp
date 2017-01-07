@@ -3,13 +3,13 @@
 #include "Screen.hpp"
 #include "Action.hpp"
 
-namespace Game {
+namespace lif {
 
 class ShadedText;
 
 namespace UI {
 
-class PreferencesScreen : public Game::UI::Screen {
+class PreferencesScreen : public lif::UI::Screen {
 	enum class VolumeType { MUSIC, SOUND };
 	enum class VolumeAction { RAISE, LOWER, MUTE_TOGGLE };
 
@@ -17,9 +17,9 @@ class PreferencesScreen : public Game::UI::Screen {
 	constexpr static unsigned short SPEAKER_SPRITE_SIZE = 25;
 
 	/** Hook for the music volume bar (used in draw()) */
-	Game::ShadedText *musicVolumeBar = nullptr;
+	lif::ShadedText *musicVolumeBar = nullptr;
 	/** Hook for the sounds volume bar (used in draw()) */
-	Game::ShadedText *soundsVolumeBar = nullptr;
+	lif::ShadedText *soundsVolumeBar = nullptr;
 
 	short relMusicVolume = MAX_VOLUME,
 	      relSoundVolume = MAX_VOLUME;
@@ -28,7 +28,7 @@ class PreferencesScreen : public Game::UI::Screen {
 	float prevMusicVolume = -1;
 	sf::Texture *speakerTexture = nullptr;
 
-	Game::UI::Action _changeVolume(VolumeType which, VolumeAction what);
+	lif::UI::Action _changeVolume(VolumeType which, VolumeAction what);
 public:
 	explicit PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& size);
 };

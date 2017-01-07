@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iostream>
 
-using Game::EntityGroup;
+using lif::EntityGroup;
 
 EntityGroup::EntityGroup() {}
 
@@ -27,24 +27,24 @@ void EntityGroup::updateAll() {
 	alreadyPrunedThisUpdate = false;
 }
 
-void EntityGroup::remove(const Game::Entity& entity) {
+void EntityGroup::remove(const lif::Entity& entity) {
 	mtxLock();
-	entities.remove_if([entity] (std::shared_ptr<Game::Entity> e) { return e.get() == &entity; });
+	entities.remove_if([entity] (std::shared_ptr<lif::Entity> e) { return e.get() == &entity; });
 	_pruneAll();
 	mtxUnlock();
 }
 
-void EntityGroup::remove(std::shared_ptr<Game::Entity> entity) {
+void EntityGroup::remove(std::shared_ptr<lif::Entity> entity) {
 	mtxLock();
 	entities.remove(entity);
 	_pruneAll();
 	mtxUnlock();
 }
 
-auto EntityGroup::getEntitiesAtTile(const sf::Vector2i& tile) const -> std::vector<std::weak_ptr<Game::Entity>> {
-	std::vector<std::weak_ptr<Game::Entity>> ents;
+auto EntityGroup::getEntitiesAtTile(const sf::Vector2i& tile) const -> std::vector<std::weak_ptr<lif::Entity>> {
+	std::vector<std::weak_ptr<lif::Entity>> ents;
 	for (auto& e : entities) {
-		if (Game::tile(e->getPosition()) == tile)
+		if (lif::tile(e->getPosition()) == tile)
 			ents.push_back(e);
 	}
 	return ents;
@@ -57,14 +57,14 @@ void EntityGroup::clear() {
 	collidingEntities.clear();
 }
 
-Game::Entity* EntityGroup::_putInAux(std::shared_ptr<Game::Entity> entity) {
+lif::Entity* EntityGroup::_putInAux(std::shared_ptr<lif::Entity> entity) {
 	// Put in aux collections, if not already managed
-	auto klb = entity->getShared<Game::Killable>();
+	auto klb = entity->getShared<lif::Killable>();
 	if (klb != nullptr) {
 		killables.push_back(klb);
 	} 
 
-	for (auto cld : entity->getAllShared<Game::Collider>()) {
+	for (auto cld : entity->getAllShared<lif::Collider>()) {
 		if (cld != nullptr && !cld->isPhantom()) {
 			collidingEntities.push_back(cld);
 		}
@@ -102,7 +102,7 @@ void EntityGroup::_checkKilled() {
 			}
 
 			auto eit = std::find_if(entities.begin(), entities.end(), 
-					[klb] (std::shared_ptr<Game::Entity> ptr) 
+					[klb] (std::shared_ptr<lif::Entity> ptr) 
 			{
 				return ptr.get() == &klb->getOwner();
 			});
@@ -129,7 +129,7 @@ void EntityGroup::_checkDead() {
 		if (!tmp->isKillInProgress()) {
 			// kill function has ended, we can safely destroy this.
 			auto eit = std::find_if(entities.begin(), entities.end(), 
-					[tmp] (std::shared_ptr<Game::Entity>& ptr) 
+					[tmp] (std::shared_ptr<lif::Entity>& ptr) 
 			{
 				return ptr.get() == &tmp->getOwner();
 			});
@@ -146,16 +146,16 @@ void EntityGroup::_checkDead() {
 	}
 }
 
-bool EntityGroup::_isManagedKillable(std::shared_ptr<Game::Entity> entity) const {
+bool EntityGroup::_isManagedKillable(std::shared_ptr<lif::Entity> entity) const {
 	return std::find_if(killables.begin(), killables.end(), 
-		[&entity] (std::weak_ptr<Game::Killable> p) {
+		[&entity] (std::weak_ptr<lif::Killable> p) {
 			return !p.expired() && &p.lock().get()->getOwner() == entity.get();
 		}) != killables.end();
 }
 
-bool EntityGroup::_isManagedCollider(std::shared_ptr<Game::Entity> entity) const {
+bool EntityGroup::_isManagedCollider(std::shared_ptr<lif::Entity> entity) const {
 	return std::find_if(collidingEntities.begin(), collidingEntities.end(), 
-		[&entity] (std::weak_ptr<Game::Collider> p) {
+		[&entity] (std::weak_ptr<lif::Collider> p) {
 			return !p.expired() && &p.lock().get()->getOwner() == entity.get();
 		}) != collidingEntities.end();
 }

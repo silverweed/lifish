@@ -10,15 +10,15 @@
 #include "core.hpp"
 #include <exception>
 
-using Game::RegularEntityDeath;
+using lif::RegularEntityDeath;
 
-RegularEntityDeath::RegularEntityDeath(Game::Entity& owner, sf::Time deathTime)
-	: Game::Component(owner)
+RegularEntityDeath::RegularEntityDeath(lif::Entity& owner, sf::Time deathTime)
+	: lif::Component(owner)
 	, deathTime(deathTime)
 {}
 
-Game::Entity* RegularEntityDeath::init() {
-	killable = owner.get<Game::Killable>();
+lif::Entity* RegularEntityDeath::init() {
+	killable = owner.get<lif::Killable>();
 	if (killable == nullptr)
 		throw std::invalid_argument("RegularEntityDeath's owner has no Killable component!");
 	return this;
@@ -26,7 +26,7 @@ Game::Entity* RegularEntityDeath::init() {
 
 void RegularEntityDeath::kill() {
 	// Stop all moving components
-	auto moving = owner.getAllRecursive<Game::AxisMoving>();
+	auto moving = owner.getAllRecursive<lif::AxisMoving>();
 	for (auto mv : moving) {
 		origAutoRealign[mv] = mv->isAutoRealignEnabled();
 		mv->setAutoRealign(false);
@@ -34,12 +34,12 @@ void RegularEntityDeath::kill() {
 	}
 	
 	// Disable all MovingAnimators
-	auto movingAnimators = owner.getAllRecursive<Game::MovingAnimator>();
+	auto movingAnimators = owner.getAllRecursive<lif::MovingAnimator>();
 	for (auto movingAnimator : movingAnimators)
 		movingAnimator->setActive(false);
 
 	// Switch to death animation
-	auto animated = owner.getAllRecursive<Game::Animated>();
+	auto animated = owner.getAllRecursive<lif::Animated>();
 	for (auto anim : animated) {
 		if (!anim->hasAnimation("death")) continue;
 		auto& animSprite = anim->getSprite();
@@ -47,19 +47,19 @@ void RegularEntityDeath::kill() {
 		animSprite.play();
 	}
 
-	auto colliders = owner.getAllRecursive<Game::Collider>();
+	auto colliders = owner.getAllRecursive<lif::Collider>();
 	for (auto cld : colliders)
 		cld->reset();
 
 	// Play death sound
-	auto sounded = owner.get<Game::Sounded>();
+	auto sounded = owner.get<lif::Sounded>();
 	if (sounded != nullptr)
-		Game::cache.playSound(sounded->getSoundFile("death"));
+		lif::cache.playSound(sounded->getSoundFile("death"));
 }
 
 void RegularEntityDeath::resurrect() {
 	// Reset all moving components
-	auto moving = owner.getAllRecursive<Game::AxisMoving>();
+	auto moving = owner.getAllRecursive<lif::AxisMoving>();
 	for (auto mv : moving) {
 		auto ar = origAutoRealign.find(mv);
 		if (ar != origAutoRealign.end())
@@ -67,12 +67,12 @@ void RegularEntityDeath::resurrect() {
 	}
 	
 	// Reset all MovingAnimators
-	auto movingAnimators = owner.getAllRecursive<Game::MovingAnimator>();
+	auto movingAnimators = owner.getAllRecursive<lif::MovingAnimator>();
 	for (auto movingAnimator : movingAnimators)
 		movingAnimator->setActive(true);
 
 	// Switch to idle animation
-	auto animated = owner.getAllRecursive<Game::Animated>();
+	auto animated = owner.getAllRecursive<lif::Animated>();
 	for (auto anim : animated) {
 		if (!anim->hasAnimation("death")) continue;
 		auto& animSprite = anim->getSprite();

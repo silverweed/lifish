@@ -1,11 +1,11 @@
 #include "Track.hpp"
 #include "core.hpp"
 
-Game::Track Game::getNthTrack(unsigned short num, float start, float length) {
-	using Game::DIRSEP;
+lif::Track lif::getNthTrack(unsigned short num, float start, float length) {
+	using lif::DIRSEP;
 	std::stringstream ss;
-	ss << Game::pwd << DIRSEP << "assets" << DIRSEP << "music" << DIRSEP << "music" << num << ".ogg";
-	Game::Track track;
+	ss << lif::pwd << DIRSEP << "assets" << DIRSEP << "music" << DIRSEP << "music" << num << ".ogg";
+	lif::Track track;
 	track.name = ss.str();
 	track.loopstart = start;
 	track.looplength = length;

@@ -4,22 +4,22 @@
 #include "Drawable.hpp"
 #include "core.hpp"
 
-using Game::Fire;
-using Game::TILE_SIZE;
+using lif::Fire;
+using lif::TILE_SIZE;
 
 Fire::Fire(const sf::Vector2f& pos, const sf::Vector2f& size, sf::Time duration)
-	: Game::Pond(pos, size, 1, { Game::Layers::ENEMIES, Game::Layers::ENEMIES_IGNORE_BREAKABLES })
+	: lif::Pond(pos, size, 1, { lif::Layers::ENEMIES, lif::Layers::ENEMIES_IGNORE_BREAKABLES })
 {
-	auto animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "fire.png")));
+	auto animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "fire.png")));
 	animated->addAnimation("burn", {
 		sf::IntRect(0, 0, size.x, size.y),
 		sf::IntRect(TILE_SIZE, 0, size.x, size.y)
 	}, true);
 	animated->getTexture()->setRepeated(true);
-	addComponent(new Game::Drawable(*this, *animated));
+	addComponent(new lif::Drawable(*this, *animated));
 	if (duration > sf::Time::Zero) {
 		sf::Clock clock;
-		addComponent(new Game::Temporary(*this, [clock, duration] () {
+		addComponent(new lif::Temporary(*this, [clock, duration] () {
 			return clock.getElapsedTime() > duration;
 		}));
 	}

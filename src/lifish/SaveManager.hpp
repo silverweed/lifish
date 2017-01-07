@@ -3,7 +3,7 @@
 #include <string>
 #include <fstream>
 
-namespace Game {
+namespace lif {
 
 class LevelManager;
 
@@ -31,11 +31,11 @@ class LevelManager;
 class SaveManager {
 public:
 	/** Saves the game state into `filename` */
-	static bool saveGame(const std::string& filename, const Game::LevelManager& lr);
+	static bool saveGame(const std::string& filename, const lif::LevelManager& lr);
 
 	/** Loads a game state saved in `filename` into `lr` and `start_level` */
 	static bool loadGame(const std::string& filename,
-			Game::LevelManager& lr, unsigned short& start_level);
+			lif::LevelManager& lr, unsigned short& start_level);
 };
 
 }

@@ -3,15 +3,15 @@
 #include <SFML/System.hpp>
 #include "Entity.hpp"
 
-namespace Game {
+namespace lif {
 
 class Animated;
 
 /**
  * The flash made by a Teleport
  */
-class Flash : public Game::Entity {
-	Game::Animated *animated = nullptr;
+class Flash : public lif::Entity {
+	lif::Animated *animated = nullptr;
 
 public:
 	explicit Flash(const sf::Vector2f& pos);

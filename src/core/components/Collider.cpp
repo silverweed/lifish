@@ -2,21 +2,21 @@
 #include <sstream>
 #include <algorithm>
 
-using Game::Collider;
+using lif::Collider;
 
-Collider::Collider(Game::Entity& owner, Game::Layers::Layer layer, const sf::Vector2f& size,
+Collider::Collider(lif::Entity& owner, lif::Layers::Layer layer, const sf::Vector2f& size,
 		const sf::Vector2f& offset, bool phantom)
-	: Game::Component(owner)
+	: lif::Component(owner)
 	, phantom(phantom)
 	, offset(offset)
 	, size(size)
 	, layer(layer)
 {}
 
-Collider::Collider(Game::Entity& owner, CollisionFunc onCollision,
-		Game::Layers::Layer layer, const sf::Vector2f& size, 
+Collider::Collider(lif::Entity& owner, CollisionFunc onCollision,
+		lif::Layers::Layer layer, const sf::Vector2f& size, 
 		const sf::Vector2f& offset, bool phantom)
-	: Game::Component(owner)
+	: lif::Component(owner)
 	, phantom(phantom)
 	, offset(offset)
 	, size(size)
@@ -24,15 +24,15 @@ Collider::Collider(Game::Entity& owner, CollisionFunc onCollision,
 	, onCollision(onCollision)
 {}
 
-Collider::Collider(const Game::Collider& other)
-	: Game::Component(other.owner)
+Collider::Collider(const lif::Collider& other)
+	: lif::Component(other.owner)
 	, phantom(other.phantom)
 	, offset(other.offset)
 	, size(other.size)
 {}
 
 void Collider::update() {
-	Game::Component::update();
+	lif::Component::update();
 	
 	if (onCollision)
 		for (auto cld : colliding)
@@ -53,28 +53,28 @@ sf::IntRect Collider::getRect() const {
 	return sf::IntRect(pos.x, pos.y, size.x, size.y);
 }
 
-bool Collider::collidesWith(const Game::Collider& other) const {
-	return Game::Layers::collide[layer][other.layer];
+bool Collider::collidesWith(const lif::Collider& other) const {
+	return lif::Layers::collide[layer][other.layer];
 }
 
-bool Collider::isSolidFor(const Game::Collider& other) const {
-	return Game::Layers::solid[layer][other.layer];
+bool Collider::isSolidFor(const lif::Collider& other) const {
+	return lif::Layers::solid[layer][other.layer];
 }
 
 std::vector<std::weak_ptr<Collider>> Collider::getColliding() const { 
 	return colliding; 
 }
 
-void Collider::addColliding(std::weak_ptr<Game::Collider> coll) {
+void Collider::addColliding(std::weak_ptr<lif::Collider> coll) {
 	// avoid duplicates
-	if (std::find_if(colliding.begin(), colliding.end(), [&coll] (std::weak_ptr<Game::Collider> oth) {
+	if (std::find_if(colliding.begin(), colliding.end(), [&coll] (std::weak_ptr<lif::Collider> oth) {
 		return !oth.expired() && oth.lock().get() == coll.lock().get();
 	}) == colliding.end()) {
 		colliding.push_back(coll);
 	}
 }
 
-bool Collider::contains(const Game::Collider& other) const {
+bool Collider::contains(const lif::Collider& other) const {
 	return getRect().intersects(other.getRect());
 }
 

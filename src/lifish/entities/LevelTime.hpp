@@ -2,12 +2,12 @@
 
 #include "Entity.hpp"
 
-namespace Game {
+namespace lif {
 
 class Clock;
 
 /** This class handles the level's time and the extra game's time */
-class LevelTime : public Game::Entity {
+class LevelTime : public lif::Entity {
 public:
 	enum class HurryUpResponse {
 		HURRY_UP_ON,
@@ -16,7 +16,7 @@ public:
 	};
 
 private:
-	Game::Clock *clock = nullptr,
+	lif::Clock *clock = nullptr,
 		    *extraGameClock = nullptr;
 	sf::Time initialTime;
 	bool isHurryUp = false;

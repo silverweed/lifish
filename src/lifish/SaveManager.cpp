@@ -6,9 +6,9 @@
 #include "Lifed.hpp"
 #include <iostream>
 
-using Game::SaveManager;
+using lif::SaveManager;
 
-bool SaveManager::saveGame(const std::string& filename, const Game::LevelManager& lr) {
+bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager& lr) {
 	std::ofstream saveFile(filename);
 
 	nlohmann::json save;
@@ -23,7 +23,7 @@ bool SaveManager::saveGame(const std::string& filename, const Game::LevelManager
 			// Only save the score
 			save["players"][i] = {
 				{ "continues", 0 },
-				{ "score", Game::score[i] }
+				{ "score", lif::score[i] }
 			};
 			continue;
 		}
@@ -31,9 +31,9 @@ bool SaveManager::saveGame(const std::string& filename, const Game::LevelManager
 		const auto powers = player->getInfo().powers;
 		const auto info = player->getInfo();
 		save["players"][i] = {
-			{ "continues", Game::playerContinues[i] },
+			{ "continues", lif::playerContinues[i] },
 			{ "remainingLives", info.remainingLives },
-			{ "life", player->get<Game::Lifed>()->getLife() },
+			{ "life", player->get<lif::Lifed>()->getLife() },
 			{ "powers",
 				{
 					{ "bombFuseTime", powers.bombFuseTime.asMilliseconds() },
@@ -41,11 +41,11 @@ bool SaveManager::saveGame(const std::string& filename, const Game::LevelManager
 					{ "maxBombs",     powers.maxBombs }
 				}
 			},
-			{ "score", Game::score[i] }
+			{ "score", lif::score[i] }
 		};
 
 		// Letters
-		for (unsigned short j = 0; j < Game::Conf::Player::N_EXTRA_LETTERS; ++j)
+		for (unsigned short j = 0; j < lif::Conf::Player::N_EXTRA_LETTERS; ++j)
 			save["players"][i]["extra"][j] = info.extra[j];
 	}
 
@@ -55,7 +55,7 @@ bool SaveManager::saveGame(const std::string& filename, const Game::LevelManager
 }
 
 bool SaveManager::loadGame(const std::string& filename, 
-		Game::LevelManager& lr, unsigned short& start_level)
+		lif::LevelManager& lr, unsigned short& start_level)
 {
 	std::ifstream saveFile(filename);
 
@@ -69,13 +69,13 @@ bool SaveManager::loadGame(const std::string& filename,
 			const auto& player = players[i];
 			const auto pldata = load["players"][i];
 			// Continues
-			Game::playerContinues[i] = pldata["continues"];
+			lif::playerContinues[i] = pldata["continues"];
 
 			// Remaining Lives
 			player->setRemainingLives(pldata["remainingLives"]);
 
 			// Current health
-			player->get<Game::Lifed>()->setLife(pldata["life"]);
+			player->get<lif::Lifed>()->setLife(pldata["life"]);
 
 			// Powers
 			const auto powdata = pldata["powers"];
@@ -90,11 +90,11 @@ bool SaveManager::loadGame(const std::string& filename,
 
 			// Letters
 			const auto exdata = pldata["extra"];
-			for (unsigned short j = 0; j < Game::Conf::Player::N_EXTRA_LETTERS; ++j)
+			for (unsigned short j = 0; j < lif::Conf::Player::N_EXTRA_LETTERS; ++j)
 				player->setExtra(j, pldata["extra"]);
 
 			// Score
-			Game::score[i] = pldata["score"];
+			lif::score[i] = pldata["score"];
 		}
 	} catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;

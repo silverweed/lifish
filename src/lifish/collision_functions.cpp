@@ -8,32 +8,32 @@
 
 #include <iostream>
 
-using CollisionFunc = Game::Collider::CollisionFunc;
+using CollisionFunc = lif::Collider::CollisionFunc;
 
-CollisionFunc Game::hurtByExplosions(Game::Entity& e, unsigned opts) {
-	auto killable = e.get<Game::Killable>();
+CollisionFunc lif::hurtByExplosions(lif::Entity& e, unsigned opts) {
+	auto killable = e.get<lif::Killable>();
 	if (killable == nullptr)
 		throw std::invalid_argument("Entity given to `hurtByAdjacentExplosions` has no Killable!");
-	auto lifed = e.get<Game::Lifed>();
+	auto lifed = e.get<lif::Lifed>();
 	if (lifed == nullptr)
 		throw std::invalid_argument("Entity given to `hurtByAdjacentExplosions` has no Lifed!");
-	auto scored = e.get<Game::Scored>();
+	auto scored = e.get<lif::Scored>();
 
-	return [e, killable, lifed, scored, opts] (Game::Collider& cld) {
+	return [e, killable, lifed, scored, opts] (lif::Collider& cld) {
 		// Check valid hit
-		if (cld.getLayer() != Game::Layers::EXPLOSIONS || killable->isKilled())
+		if (cld.getLayer() != lif::Layers::EXPLOSIONS || killable->isKilled())
 			return;
 
-		auto& expl = static_cast<Game::Explosion&>(cld.getOwnerRW());
+		auto& expl = static_cast<lif::Explosion&>(cld.getOwnerRW());
 		if ((opts & CFO_TAKE_SINGLE_HIT) && expl.hasDamaged(e))
 			return;
 
 		// Check adjacent condition
 		bool ignore = false;
 		if ((opts & CFO_ONLY_ADJACENT)) {
-			const auto etile = Game::tile(cld.getOwner().getPosition());
-			const auto mtile = Game::tile(e.getPosition());
-			ignore = Game::manhattanDistance(etile, mtile) != 1;
+			const auto etile = lif::tile(cld.getOwner().getPosition());
+			const auto mtile = lif::tile(e.getPosition());
+			ignore = lif::manhattanDistance(etile, mtile) != 1;
 		}
 		if (ignore)
 			return;
@@ -47,7 +47,7 @@ CollisionFunc Game::hurtByExplosions(Game::Entity& e, unsigned opts) {
 		if (scored == nullptr)
 			return;
 
-		const auto source = dynamic_cast<const Game::Player*>(expl.getSourceEntity());
+		const auto source = dynamic_cast<const lif::Player*>(expl.getSourceEntity());
 		if (source != nullptr)
 			scored->setTarget(source->getInfo().id);
 	};

@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Entity.hpp"
 
-namespace Game {
+namespace lif {
 
 class Animated;
 class Collider;
@@ -14,31 +14,31 @@ class Clock;
 class Boss;
 
 class BossDrawableProxy : public sf::Drawable {
-	const Game::Boss& boss;
+	const lif::Boss& boss;
 public:
-	explicit BossDrawableProxy(const Game::Boss& b);
+	explicit BossDrawableProxy(const lif::Boss& b);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
 /** The base class for Bosses */
-class Boss : public Game::Entity {
+class Boss : public lif::Entity {
 
-	friend class Game::BossDrawableProxy;
+	friend class lif::BossDrawableProxy;
 	
-	Game::BossDrawableProxy drawProxy;
-	Game::Clock *explClock = nullptr,
+	lif::BossDrawableProxy drawProxy;
+	lif::Clock *explClock = nullptr,
 	            *hurtClock = nullptr,
 	            *deathClock = nullptr;
 
 protected:
 	// The following components MUST be added by children
-	Game::Collider *collider = nullptr;
-	Game::Animated *animated = nullptr;
-	Game::Killable *killable = nullptr;
+	lif::Collider *collider = nullptr;
+	lif::Animated *animated = nullptr;
+	lif::Killable *killable = nullptr;
 
 
-	void _checkCollision(Game::Collider& coll);
+	void _checkCollision(lif::Collider& coll);
 
 	/** Sets this boss as hurt for the next update, so that it can be e.g.
 	 * drawn in a different way for that frame.
@@ -46,12 +46,12 @@ protected:
 	void _hurt();
 	/** Resets deathClock */
 	virtual void _kill();
-	/** `true` while deathClock->getElapsedTime() < Game::Conf::Boss::DEATH_TIME */
+	/** `true` while deathClock->getElapsedTime() < lif::Conf::Boss::DEATH_TIME */
 	bool _killInProgress() const;
 public:
 	explicit Boss(const sf::Vector2f& pos);
 
-	Game::Entity* init() override;
+	lif::Entity* init() override;
 };
 
 }

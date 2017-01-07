@@ -3,7 +3,7 @@
 #include <random>
 #include <SFML/System/Time.hpp>
 
-namespace Game {
+namespace lif {
 
 namespace Conf {
 	namespace Bonus {

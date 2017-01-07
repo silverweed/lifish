@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "Entity.hpp"
 
-namespace Game {
+namespace lif {
 
 class LevelManager;
 class Collider;
@@ -19,19 +19,19 @@ class BufferedSpawner;
  * doesn't propagate in time: rather, it blossoms in all involved
  * tiles at once and has a duration of ~200 ms (framerate: 0.05)
  */
-class Explosion : public Game::Entity, public sf::Drawable {
+class Explosion : public lif::Entity, public sf::Drawable {
 	sf::Texture explosionHTexture,
 		    explosionVTexture;
 
-	Game::Animated *explosionC = nullptr, // central explosion
+	lif::Animated *explosionC = nullptr, // central explosion
 	               *explosionH = nullptr, // horizontal explosion
 		       *explosionV = nullptr; // vertical explosion
 
 	/** This is only non-null if explosion is incendiary */
-	Game::BufferedSpawner *spawner = nullptr;
+	lif::BufferedSpawner *spawner = nullptr;
 
 	/** Colliders used to check explosion's hits */
-	Game::Collider *explColliderH = nullptr,
+	lif::Collider *explColliderH = nullptr,
 	               *explColliderV = nullptr;
 
 	/** The radius of this explosion */
@@ -48,13 +48,13 @@ class Explosion : public Game::Entity, public sf::Drawable {
 	/** The Entity that generated this explosion, if any. Usually, this means the Player who
 	 *  dropped the bomb that cause this explosion.
 	 */
-	const Game::Entity *const sourceEntity;
+	const lif::Entity *const sourceEntity;
 
 	/** The set of the entities already damaged by this Explosion.
 	 *  Note: we keep const pointers instead of references because
 	 *  reference_wrapper is not trivially hashable.
 	 */
-	std::unordered_set<const Game::Entity*> damagedEntities;
+	std::unordered_set<const lif::Entity*> damagedEntities;
 
 
 	/** To be called after `propagate()`; sets the correct positions for explosionH/V */
@@ -66,7 +66,7 @@ public:
 	 *  are given at all.
 	 */
 	explicit Explosion(const sf::Vector2f& pos, unsigned short radius, 
-			const Game::Entity *const sourceEntity = nullptr,
+			const lif::Entity *const sourceEntity = nullptr,
 			bool isIncendiary = false,
 			unsigned short damage = 1);
 
@@ -75,11 +75,11 @@ public:
 	 *  walls within the explosion. (called once in the Explosion's lifetime).
 	 *  @return self
 	 */
-	Game::Explosion* propagate(Game::LevelManager& lm);
+	lif::Explosion* propagate(lif::LevelManager& lm);
 
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 
-	const Game::Entity* getSourceEntity() const { return sourceEntity; }
+	const lif::Entity* getSourceEntity() const { return sourceEntity; }
 
 	unsigned short getDamage() const { return damage; }
 
@@ -88,8 +88,8 @@ public:
 	 *  Useful for interacting with entities that can only take 1 hit from
 	 *  an Explosion.
 	 */
-	void dealDamageTo(const Game::Entity& entity);
-	bool hasDamaged(const Game::Entity& entity) const;
+	void dealDamageTo(const lif::Entity& entity);
+	bool hasDamaged(const lif::Entity& entity) const;
 };
 
 }

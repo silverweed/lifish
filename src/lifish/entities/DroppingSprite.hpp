@@ -2,7 +2,7 @@
 
 #include "Entity.hpp"
 
-namespace Game {
+namespace lif {
 
 class Clock;
 class AxisMoving;
@@ -14,13 +14,13 @@ class AxisMoving;
  * The DroppingSprite will auto-reset as soon as it goes out of the bottom of the screen,
  * so it can be play()ed again.
  */
-class DroppingSprite : public Game::Entity {
+class DroppingSprite : public lif::Entity {
 	const sf::Time PAUSE_TIME = sf::seconds(1);
 	const sf::Vector2f origPosition;
 	const float height;
 	
-	Game::Clock *pauseClock = nullptr;
-	Game::AxisMoving *moving = nullptr;
+	lif::Clock *pauseClock = nullptr;
+	lif::AxisMoving *moving = nullptr;
 	bool stoppedAtMiddle = false;
 	bool playing = false;
 

@@ -7,18 +7,18 @@
 #include "WithOrigin.hpp"
 #include "Stringable.hpp"
 
-namespace Game {
+namespace lif {
 
 class Component;
 
 /**
  * Base class for game entities (walls, enemies, players, ...)
  */
-class Entity : public Game::WithOrigin, public Game::Stringable {
+class Entity : public lif::WithOrigin, public lif::Stringable {
 	bool _initialized = false;
 
 protected:
-	std::vector<std::shared_ptr<Game::Component>> components;
+	std::vector<std::shared_ptr<lif::Component>> components;
 	sf::Vector2f position;
 	std::string _toString(unsigned short indent) const;
 
@@ -59,7 +59,7 @@ public:
 	 *  added at this time.
 	 *  @return this
 	 */
-	virtual Game::Entity* init();
+	virtual lif::Entity* init();
 	/** Called every frame */
 	virtual void update();
 
@@ -76,9 +76,9 @@ public:
 /**
  * A generic component of a game entity. Inherit this to add behavior.
  */
-class Component : public Game::Entity, public Game::Activable {
+class Component : public lif::Entity, public lif::Activable {
 protected:
-	Game::Entity& owner;
+	lif::Entity& owner;
 
 public:
 	/** If true, adding more than a component of this type to an Entity
@@ -86,13 +86,13 @@ public:
 	 */
 	static constexpr bool requiredUnique() { return true; }
 
-	explicit Component(Game::Entity& owner);
+	explicit Component(lif::Entity& owner);
 
 	/** Gets the owner of this component */
-	const Game::Entity& getOwner() const { return owner; }
+	const lif::Entity& getOwner() const { return owner; }
 
 	/** Gets the owner of this component (non-const) */
-	Game::Entity& getOwnerRW() const { return owner; }
+	lif::Entity& getOwnerRW() const { return owner; }
 };
 
 #include "Entity.impl.hpp"

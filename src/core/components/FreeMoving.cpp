@@ -2,17 +2,17 @@
 #include "Clock.hpp"
 #include "utils.hpp"
 
-using Game::FreeMoving;
+using lif::FreeMoving;
 
-FreeMoving::FreeMoving(Game::Entity& owner, float speed, sf::Vector2f velocity)
-	: Game::Moving(owner, speed)
+FreeMoving::FreeMoving(lif::Entity& owner, float speed, sf::Vector2f velocity)
+	: lif::Moving(owner, speed)
 {
 	moving = true;
 	setVelocity(velocity);
 }
 
 void FreeMoving::update() {
-	Game::Component::update();
+	lif::Component::update();
 	if (!moving || _handleBlock()) return;
 
 	const auto effSpeed = _effectiveSpeed();
@@ -33,5 +33,5 @@ void FreeMoving::update() {
 }
 
 void FreeMoving::setVelocity(const sf::Vector2f& vel) {
-	velocity = Game::normalized(vel);
+	velocity = lif::normalized(vel);
 }

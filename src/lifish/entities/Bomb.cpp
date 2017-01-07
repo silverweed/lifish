@@ -12,42 +12,42 @@
 #include "game.hpp"
 #include "Fixed.hpp"
 
-using Game::Bomb;
-using Game::TILE_SIZE;
-using namespace Game::Conf::Bomb;
+using lif::Bomb;
+using lif::TILE_SIZE;
+using namespace lif::Conf::Bomb;
 
-Bomb::Bomb(const sf::Vector2f& pos, const Game::Player& source, 
+Bomb::Bomb(const sf::Vector2f& pos, const lif::Player& source, 
 		const sf::Time& _fuseTime, const unsigned short _radius,
 		bool isIncendiary)
-	: Game::Entity(pos)
+	: lif::Entity(pos)
 	, fuseTime(_fuseTime)
 	, radius(_radius)
 	, incendiary(isIncendiary)
 	, sourcePlayer(source)
 {
-	addComponent(new Game::Fixed(*this));
-	fuseClock = addComponent(new Game::Clock(*this));
-	addComponent(new Game::Sounded(*this, {
-		std::make_pair("explosion", Game::getAsset("sounds", "explosion.ogg")),
-		std::make_pair("fuse", Game::getAsset("sounds", "fuse.ogg"))
+	addComponent(new lif::Fixed(*this));
+	fuseClock = addComponent(new lif::Clock(*this));
+	addComponent(new lif::Sounded(*this, {
+		std::make_pair("explosion", lif::getAsset("sounds", "explosion.ogg")),
+		std::make_pair("fuse", lif::getAsset("sounds", "fuse.ogg"))
 	})); 
-	killable = addComponent(new Game::Temporary(*this, [this] () {
+	killable = addComponent(new lif::Temporary(*this, [this] () {
 		// Expire condition
 		return fuseClock->getElapsedTime() >= fuseTime;
 	}, [this] () {
 		// On kill
 		exploded = true;
-		Game::cache.playSound(get<Game::Sounded>()->getSoundFile("explosion"));
+		lif::cache.playSound(get<lif::Sounded>()->getSoundFile("explosion"));
 	}));
-	animated = addComponent(new Game::Animated(*this, Game::getAsset("graphics", "bomb.png")));
-	addComponent(new Game::Collider(*this, [this] (Game::Collider& cld) {
+	animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "bomb.png")));
+	addComponent(new lif::Collider(*this, [this] (lif::Collider& cld) {
 		// On collide
-		if (cld.getLayer() == Game::Layers::EXPLOSIONS && !ignited)
+		if (cld.getLayer() == lif::Layers::EXPLOSIONS && !ignited)
 			ignite();
-	}, Game::Layers::BOMBS));
-	addComponent(new Game::Drawable(*this, *animated));
-	addComponent(new Game::Spawning(*this, [this] () {
-		return new Game::Explosion(position, radius, &sourcePlayer, incendiary);
+	}, lif::Layers::BOMBS));
+	addComponent(new lif::Drawable(*this, *animated));
+	addComponent(new lif::Spawning(*this, [this] () {
+		return new lif::Explosion(position, radius, &sourcePlayer, incendiary);
 	}));
 
 	auto& a_normal_idle = animated->addAnimation("normal_idle", {
@@ -75,7 +75,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const Game::Player& source,
 }
 
 void Bomb::update() {
-	Game::Entity::update();
+	lif::Entity::update();
 	if (!switched && fuseTime - fuseClock->getElapsedTime() < sf::milliseconds(2000)
 			&& !killable->isKilled())
 	{

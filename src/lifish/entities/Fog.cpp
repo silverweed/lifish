@@ -11,35 +11,35 @@
 #include <SFML/System.hpp>
 #include <random>
 
-using Game::Fog;
+using lif::Fog;
 
 Fog::Fog(float speed, sf::Time alphaDt) 
-	: Game::Entity(sf::Vector2f(0, 0)) 
+	: lif::Entity(sf::Vector2f(0, 0)) 
 	, alphaDt(alphaDt)
 {
-	sprite = addComponent(new Game::Sprite(*this, Game::getAsset("graphics", "fog.png"), 
+	sprite = addComponent(new lif::Sprite(*this, lif::getAsset("graphics", "fog.png"), 
 				sf::IntRect(0, 0, 
-					3 * Game::LEVEL_WIDTH * Game::TILE_SIZE, 
-					3 * Game::LEVEL_HEIGHT * Game::TILE_SIZE)));
+					3 * lif::LEVEL_WIDTH * lif::TILE_SIZE, 
+					3 * lif::LEVEL_HEIGHT * lif::TILE_SIZE)));
 	sprite->getTexture()->setRepeated(true);
 	sprite->getTexture()->setSmooth(true);
-	addComponent(new Game::Drawable(*this, *sprite));
-	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::FOG));
+	addComponent(new lif::Drawable(*this, *sprite));
+	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::FOG));
 
 	// Set a random velocity
 	std::uniform_real_distribution<float> dist(-1, 1);
-	const sf::Vector2f velocity(dist(Game::rng), dist(Game::rng));
-	moving = addComponent(new Game::FreeMoving(*this, speed, velocity));
-	clock = addComponent(new Game::Clock(*this));
+	const sf::Vector2f velocity(dist(lif::rng), dist(lif::rng));
+	moving = addComponent(new lif::FreeMoving(*this, speed, velocity));
+	clock = addComponent(new lif::Clock(*this));
 
 	// Set the initial position
-	position.x = (1 - Game::LEVEL_WIDTH) * Game::TILE_SIZE;
-	position.y = (1 - Game::LEVEL_HEIGHT) * Game::TILE_SIZE;
+	position.x = (1 - lif::LEVEL_WIDTH) * lif::TILE_SIZE;
+	position.y = (1 - lif::LEVEL_HEIGHT) * lif::TILE_SIZE;
 	sprite->getSprite().setColor(sf::Color(255, 255, 255, 255));
 }
 
 void Fog::update() {
-	Game::Entity::update();
+	lif::Entity::update();
 	
 	// Fade in/out sprite
 	if (clock->getElapsedTime() >= alphaDt) {
@@ -50,8 +50,8 @@ void Fog::update() {
 			if (c.a < 5) {
 				fading = false;
 				// Reset the position
-				position.x = (1 - Game::LEVEL_WIDTH) * Game::TILE_SIZE;
-				position.y = (1 - Game::LEVEL_HEIGHT) * Game::TILE_SIZE;
+				position.x = (1 - lif::LEVEL_WIDTH) * lif::TILE_SIZE;
+				position.y = (1 - lif::LEVEL_HEIGHT) * lif::TILE_SIZE;
 			}
 		} else {
 			c.a += 1;

@@ -3,11 +3,11 @@
 #include "AutoShooting.hpp"
 #include "FreeSighted.hpp"
 
-using Game::ShootingPoint;
+using lif::ShootingPoint;
 
-ShootingPoint::ShootingPoint(Game::Entity& owner, const Game::Attack& attack, float visionRadius)
-	: Game::Component(owner)
+ShootingPoint::ShootingPoint(lif::Entity& owner, const lif::Attack& attack, float visionRadius)
+	: lif::Component(owner)
 {
-	sighted = addComponent(new Game::FreeSighted(*this, visionRadius));
-	shooting = addComponent(new Game::Shooting(*this, attack));
+	sighted = addComponent(new lif::FreeSighted(*this, visionRadius));
+	shooting = addComponent(new lif::Shooting(*this, attack));
 }

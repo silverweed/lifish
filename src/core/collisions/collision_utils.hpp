@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "Direction.hpp"
 
-namespace Game {
+namespace lif {
 
 class Collider;
 class AxisMoving;
@@ -11,14 +11,14 @@ class AxisMoving;
 namespace CollisionUtils {
 
 /** Checks if `cld1` and `cld2` collide, given that the owner of `cld1` has direction `dir`. */
-bool collide(const Game::Collider& cld1, const Game::Collider& cld2, const Game::Direction dir);
+bool collide(const lif::Collider& cld1, const lif::Collider& cld2, const lif::Direction dir);
 
 /** Checks if `cld` is at the level limit. */
-bool is_at_boundaries(const Game::Collider& cld, const Game::AxisMoving *const am, const sf::FloatRect& limits);
+bool is_at_boundaries(const lif::Collider& cld, const lif::AxisMoving *const am, const sf::FloatRect& limits);
 
 /** Checks if `ocld` is along the forward direction of `cld` */
-bool direction_is_viable(const Game::Collider& cld, 
-		const Game::AxisMoving& moving, const Game::Collider& ocld);
+bool direction_is_viable(const lif::Collider& cld, 
+		const lif::AxisMoving& moving, const lif::Collider& ocld);
 
 }
 

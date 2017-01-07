@@ -3,7 +3,7 @@
 #include <string>
 #include <sstream>
 
-namespace Game {
+namespace lif {
 
 /**
  * Struct containing a track's data

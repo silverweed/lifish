@@ -4,7 +4,7 @@
 
 class Animation;
 
-namespace Game {
+namespace lif {
 
 class Collider;
 class Animated;
@@ -12,10 +12,10 @@ class Animated;
 /**
  * A breakable wall
  */
-class BreakableWall : public Game::Entity {
-	Game::Animated *animated = nullptr;
+class BreakableWall : public lif::Entity {
+	lif::Animated *animated = nullptr;
 
-	Game::Entity* _spawnBonus();
+	lif::Entity* _spawnBonus();
 protected:
 	/** Constructor used by TransparentWall */
 	BreakableWall(const sf::Vector2f& pos, const std::string& texture_name, 

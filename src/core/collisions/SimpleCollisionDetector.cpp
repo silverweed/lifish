@@ -6,15 +6,15 @@
 #include "collision_utils.hpp"
 #include <algorithm>
 
-using namespace Game::CollisionUtils;
-using Game::Direction;
-using Game::SimpleCollisionDetector;
-using Game::TILE_SIZE;
+using namespace lif::CollisionUtils;
+using lif::Direction;
+using lif::SimpleCollisionDetector;
+using lif::TILE_SIZE;
 
 //////// SimpleCollisionDetector methods ////////
 
-SimpleCollisionDetector::SimpleCollisionDetector(Game::EntityGroup& group, const sf::FloatRect& limit)
-	: Game::CollisionDetector(group, limit)
+SimpleCollisionDetector::SimpleCollisionDetector(lif::EntityGroup& group, const sf::FloatRect& limit)
+	: lif::CollisionDetector(group, limit)
 {}
 
 void SimpleCollisionDetector::update() {
@@ -45,11 +45,11 @@ void SimpleCollisionDetector::update() {
 		auto collider = it->lock();
 
 		// Fixed entities only collide passively
-		if (collider->getOwner().get<Game::Fixed>() != nullptr)
+		if (collider->getOwner().get<lif::Fixed>() != nullptr)
 			continue;
 
-		const auto moving = collider->getOwner().get<Game::Moving>();
-		const auto axismoving = moving ? dynamic_cast<Game::AxisMoving*>(moving) : nullptr; 
+		const auto moving = collider->getOwner().get<lif::Moving>();
+		const auto axismoving = moving ? dynamic_cast<lif::AxisMoving*>(moving) : nullptr; 
 		if (moving && is_at_boundaries(*collider, axismoving, levelLimit)) {
 			collider->setAtLimit(true);	
 			continue;
@@ -76,7 +76,7 @@ void SimpleCollisionDetector::update() {
 					//std::cerr << &collider->getOwner() << " colliding with " << &othcollider->getOwner()<<std::endl;
 					collider->addColliding(*jt);
 					if (collider->requestsForceAck() || othcollider->requestsForceAck()
-							|| othcollider->getOwner().get<Game::Moving>() == nullptr) 
+							|| othcollider->getOwner().get<lif::Moving>() == nullptr) 
 					{
 						// Let the entity know we collided with it.
 						// We only do that for non-moving entities to avoid problems with

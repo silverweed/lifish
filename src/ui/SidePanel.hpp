@@ -7,7 +7,7 @@
 #include "game.hpp"
 #include "utils.hpp"
 
-namespace Game {
+namespace lif {
 
 class LevelManager;
 class Player;
@@ -21,7 +21,7 @@ class Player;
  * - Score
  * - Time left
  * A side panel always contains info about max 2 players,
- * independently from Game::MAX_PLAYERS.
+ * independently from lif::MAX_PLAYERS.
  */
 class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	// Elements' coordinates (in pixel)
@@ -52,7 +52,7 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	const sf::Vector2f TIME_POS = sf::Vector2f(21, 230);
 
 	/** The LevelManager this panel is connected with */
-	const Game::LevelManager& lm;
+	const lif::LevelManager& lm;
 
 	/** The background image */
 	sf::Sprite backgroundSprite;
@@ -72,20 +72,20 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	sf::Texture *healthTexture;
 
 	/** The EXTRA letters icons: (empty, E, X, T, R, A) */
-	std::array<sf::Sprite, Game::Conf::Player::N_EXTRA_LETTERS + 1> extraLettersSprite;
+	std::array<sf::Sprite, lif::Conf::Player::N_EXTRA_LETTERS + 1> extraLettersSprite;
 	sf::Texture *extraLettersTexture;
 
 	/** The Bonus icons */
-	Matrix<sf::Sprite, Game::MAX_PLAYERS, Game::Conf::Bonus::N_PERMANENT_BONUS_TYPES> bonusesSprite;
+	Matrix<sf::Sprite, lif::MAX_PLAYERS, lif::Conf::Bonus::N_PERMANENT_BONUS_TYPES> bonusesSprite;
 
 	void _drawHealthSprites(sf::RenderTarget& window, sf::RenderStates states, 
-			const Game::Player& player) const;
+			const lif::Player& player) const;
 	void _drawExtraLetters(sf::RenderTarget& window, sf::RenderStates states, 
-			const Game::Player& player) const;
+			const lif::Player& player) const;
 	/** Draws the time remaining in format MM:SS */
 	void _drawTime(sf::RenderTarget& window, sf::RenderStates states) const;
 public:
-	explicit SidePanel(const Game::LevelManager& lm);
+	explicit SidePanel(const lif::LevelManager& lm);
 
 	void update();
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;

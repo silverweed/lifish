@@ -2,10 +2,10 @@
 #include "LoopingMusic.hpp"
 #include <iostream>
 
-using Game::Music;
+using lif::Music;
 
-Music::Music(Game::Entity& owner, const Game::Track& track)
-	: Game::Component(owner)
+Music::Music(lif::Entity& owner, const lif::Track& track)
+	: lif::Component(owner)
 	, track(track)
 {
 	if (!musicInput.openFromFile(track.name)) {

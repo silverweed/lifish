@@ -3,9 +3,9 @@
 #include <functional>
 #include "Component.hpp"
 
-namespace Game {
+namespace lif {
 
-class Killable : public Game::Component {
+class Killable : public lif::Component {
 protected:
 	using OnKillCallback = std::function<void()>;
 	using CheckKillCallback = std::function<bool()>;
@@ -18,9 +18,9 @@ protected:
 	CheckKillCallback checkKillProgress;
 
 public:
-	explicit Killable(Game::Entity& owner); 
-	explicit Killable(Game::Entity& owner, OnKillCallback callback); 
-	explicit Killable(Game::Entity& owner, OnKillCallback callback, CheckKillCallback checkKill); 
+	explicit Killable(lif::Entity& owner); 
+	explicit Killable(lif::Entity& owner, OnKillCallback callback); 
+	explicit Killable(lif::Entity& owner, OnKillCallback callback, CheckKillCallback checkKill); 
 
 	void kill();
 	void resurrect() { killed = false; }

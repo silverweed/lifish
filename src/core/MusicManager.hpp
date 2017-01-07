@@ -4,7 +4,7 @@
 
 class LoopingMusic;
 
-namespace Game {
+namespace lif {
 
 class MusicManager final {
 	std::weak_ptr<LoopingMusic> music;

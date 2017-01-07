@@ -7,18 +7,18 @@
 #include "conf/zindex.hpp"
 #include "utils.hpp"
 
-using Game::BossExplosion;
-using Game::TILE_SIZE;
+using lif::BossExplosion;
+using lif::TILE_SIZE;
 
 BossExplosion::BossExplosion(const sf::Vector2f& pos) 
-	: Game::Entity(pos)
+	: lif::Entity(pos)
 {
-	animated = addComponent(new Game::Animated(*this, Game::getAsset("test", "bossbullet.png")));
-	addComponent(new Game::Drawable(*this, *animated));
-	addComponent(new Game::Sounded(*this, { 
-		std::make_pair("explode", Game::getAsset("test", "bossbullet_hit.ogg")) 
+	animated = addComponent(new lif::Animated(*this, lif::getAsset("test", "bossbullet.png")));
+	addComponent(new lif::Drawable(*this, *animated));
+	addComponent(new lif::Sounded(*this, { 
+		std::make_pair("explode", lif::getAsset("test", "bossbullet_hit.ogg")) 
 	}));
-	addComponent(new Game::ZIndexed(*this, Game::Conf::ZIndex::BOSS_EXPLOSIONS));
+	addComponent(new lif::ZIndexed(*this, lif::Conf::ZIndex::BOSS_EXPLOSIONS));
 
 	animated->addAnimation("explosion", {
 		sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
@@ -33,7 +33,7 @@ BossExplosion::BossExplosion(const sf::Vector2f& pos)
 	animatedSprite.setFrameTime(sf::seconds(0.10));
 	animatedSprite.play();
 
-	addComponent(new Game::Temporary(*this, [&animatedSprite] () {
+	addComponent(new lif::Temporary(*this, [&animatedSprite] () {
 		return !animatedSprite.isPlaying();
 	}));
 }

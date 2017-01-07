@@ -3,11 +3,11 @@
 #include "GameCache.hpp"
 #include "Drawable.hpp"
 
-using Game::ShadedText;
+using lif::ShadedText;
 
 ShadedText::ShadedText(const std::string& fontname, const std::string& str, 
 		sf::Vector2f pos, sf::Color fg, sf::Color bg)
-	: Game::Entity(pos)
+	: lif::Entity(pos)
 	, shadowSpacing(3.5, 3)
 {
 	setFont(fontname);
@@ -17,11 +17,11 @@ ShadedText::ShadedText(const std::string& fontname, const std::string& str,
 	fgtext.setFillColor(fg);
 	bgtext.setFillColor(bg);
 
-	addComponent(new Game::Drawable(*this, *this));
+	addComponent(new lif::Drawable(*this, *this));
 }
 
 void ShadedText::setFont(const std::string& fontname) {
-	auto font = Game::cache.loadFont(fontname);
+	auto font = lif::cache.loadFont(fontname);
 	fgtext.setFont(*font);
 	bgtext.setFont(*font);
 }
@@ -37,7 +37,7 @@ void ShadedText::setString(const std::string& str) {
 }
 
 void ShadedText::setOrigin(const sf::Vector2f& origin) {
-	Game::Entity::setOrigin(origin);
+	lif::Entity::setOrigin(origin);
 	bgtext.setOrigin(origin);
 	fgtext.setOrigin(origin);
 }
@@ -48,7 +48,7 @@ void ShadedText::setCharacterSize(unsigned int size) {
 }
 
 void ShadedText::setPosition(const sf::Vector2f& _pos) {
-	Game::Entity::setPosition(_pos);
+	lif::Entity::setPosition(_pos);
 	fgtext.setPosition(_pos);
 	bgtext.setPosition(_pos + shadowSpacing);
 }
