@@ -95,6 +95,6 @@ public:
 	lif::Entity& getOwnerRW() const { return owner; }
 };
 
-#include "Entity.impl.hpp"
+#include "Entity.inl"
 
 }
