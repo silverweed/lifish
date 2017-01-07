@@ -1,7 +1,8 @@
 #include "collision_utils.hpp"
 #include "AxisMoving.hpp"
-#include "game.hpp"
 #include "Collider.hpp"
+
+using Game::TILE_SIZE;
 
 // Checks if `cld1` and `cld2` collide, given that the owner of `cld1` has direction `dir`.
 bool Game::CollisionUtils::collide(const Game::Collider& cld1, const Game::Collider& cld2, const Game::Direction dir) {
@@ -9,16 +10,16 @@ bool Game::CollisionUtils::collide(const Game::Collider& cld1, const Game::Colli
 		    orect = cld2.getRect();
 
 	switch (dir) {
-	case Direction::UP: 
+	case Direction::UP:
 		--rect.top;
 		break;
 	case Direction::DOWN:
 		++rect.top;
 		break;
-	case Direction::LEFT:  
+	case Direction::LEFT:
 		--rect.left;
 		break;
-	case Direction::RIGHT: 
+	case Direction::RIGHT:
 		++rect.left;
 		break;
 	default:
@@ -30,27 +31,29 @@ bool Game::CollisionUtils::collide(const Game::Collider& cld1, const Game::Colli
 
 // Checks if `cld` is at the level limit. Algorithm used depends on whether
 // that Entity is AxisMoving or not.
-bool Game::CollisionUtils::is_at_boundaries(const Game::Collider& cld, const Game::AxisMoving *const am) {
+bool Game::CollisionUtils::is_at_boundaries(const Game::Collider& cld,
+		const Game::AxisMoving *const am, const sf::FloatRect& limits)
+{
 	const auto pos = cld.getPosition();
 	const auto rect = cld.getRect();
 	if (am != nullptr) {
 		auto dir = am->getDirection();
 		switch (dir) {
 		case Direction::UP:
-			return pos.y <= TILE_SIZE;
+			return pos.y <= limits.top;
 		case Direction::LEFT:
-			return pos.x <= TILE_SIZE;
+			return pos.x <= limits.left;
 		case Direction::DOWN:
-			return pos.y + rect.height >= TILE_SIZE * (Game::LEVEL_HEIGHT + 1);
+			return pos.y + rect.height >= limits.height;
 		case Direction::RIGHT:
-			return pos.x + rect.width >= TILE_SIZE * (Game::LEVEL_WIDTH + 1);
+			return pos.x + rect.width >= limits.width;
 		default:
 			return false;
 		}
 	} else {
-		return pos.y <= TILE_SIZE || pos.x <= TILE_SIZE 
-			|| pos.x + rect.width >= TILE_SIZE * (Game::LEVEL_WIDTH + 1)
-			|| pos.y + rect.height >= TILE_SIZE * (Game::LEVEL_HEIGHT + 1);
+		return pos.y <= limits.top || pos.x <= limits.left
+			|| pos.x + rect.width >= limits.width
+			|| pos.y + rect.height >= limits.height;
 	}
 }
 

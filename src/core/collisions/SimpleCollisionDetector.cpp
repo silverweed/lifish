@@ -13,8 +13,8 @@ using Game::TILE_SIZE;
 
 //////// SimpleCollisionDetector methods ////////
 
-SimpleCollisionDetector::SimpleCollisionDetector(Game::EntityGroup& group)
-	: Game::CollisionDetector(group)
+SimpleCollisionDetector::SimpleCollisionDetector(Game::EntityGroup& group, const sf::FloatRect& limit)
+	: Game::CollisionDetector(group, limit)
 {}
 
 void SimpleCollisionDetector::update() {
@@ -50,7 +50,7 @@ void SimpleCollisionDetector::update() {
 
 		const auto moving = collider->getOwner().get<Game::Moving>();
 		const auto axismoving = moving ? dynamic_cast<Game::AxisMoving*>(moving) : nullptr; 
-		if (moving && is_at_boundaries(*collider, axismoving)) {
+		if (moving && is_at_boundaries(*collider, axismoving, levelLimit)) {
 			collider->setAtLimit(true);	
 			continue;
 		}

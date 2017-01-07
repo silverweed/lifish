@@ -52,7 +52,7 @@ class SHCollisionDetector : public Game::CollisionDetector {
 	SHContainer container;
 
 public:
-	explicit SHCollisionDetector(Game::EntityGroup& group, const sf::Vector2f& levelSize, unsigned subdivisions);
+	explicit SHCollisionDetector(Game::EntityGroup& group, const sf::FloatRect& levelLimit, unsigned subdivisions);
 
 	void update() override;
 

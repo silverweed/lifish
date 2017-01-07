@@ -81,10 +81,10 @@ auto SHContainer::getNearby(const Game::Collider& obj) const -> std::list<std::w
 }
 
 ////// SHCollisionDetector ///////
-SHCollisionDetector::SHCollisionDetector(Game::EntityGroup& group, 
-		const sf::Vector2f& levelSize, unsigned subdivisions)
-	: Game::CollisionDetector(group)
-	, container(levelSize, subdivisions) 
+SHCollisionDetector::SHCollisionDetector(Game::EntityGroup& group,
+		const sf::FloatRect& limit, unsigned subdivisions)
+	: Game::CollisionDetector(group, limit)
+	, container(sf::Vector2f(limit.width - limit.left, limit.height - limit.top), subdivisions)
 {
 #ifndef RELEASE
 	dbgStats.counter.set("subdivisions", subdivisions);
@@ -132,8 +132,8 @@ void SHCollisionDetector::update() {
 
 		const auto moving = collider->getOwner().get<Game::Moving>();
 		const auto axismoving = moving ? dynamic_cast<Game::AxisMoving*>(moving) : nullptr;
-		if (moving && is_at_boundaries(*collider, axismoving)) {
-			collider->setAtLimit(true);	
+		if (moving && is_at_boundaries(*collider, axismoving, levelLimit)) {
+			collider->setAtLimit(true);
 			continue;
 		}
 	

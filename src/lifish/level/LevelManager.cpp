@@ -37,7 +37,12 @@ using Game::LevelManager;
 LevelManager::LevelManager()
 	: renderer(*this)
 	, cd(entities,
-		sf::Vector2f(Game::LEVEL_WIDTH * Game::TILE_SIZE, Game::LEVEL_HEIGHT * Game::TILE_SIZE), 
+		// level boundaries
+		sf::FloatRect(
+			Game::TILE_SIZE,
+			Game::TILE_SIZE,
+			(Game::LEVEL_WIDTH + 1) * Game::TILE_SIZE,
+			(Game::LEVEL_HEIGHT + 1) * Game::TILE_SIZE),
 		Game::SHCD_SUBDIVISIONS)
 {
 	levelTime.init();

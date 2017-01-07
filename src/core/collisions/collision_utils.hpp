@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
 #include "Direction.hpp"
 
 namespace Game {
@@ -13,7 +14,7 @@ namespace CollisionUtils {
 bool collide(const Game::Collider& cld1, const Game::Collider& cld2, const Game::Direction dir);
 
 /** Checks if `cld` is at the level limit. */
-bool is_at_boundaries(const Game::Collider& cld, const Game::AxisMoving *const am);
+bool is_at_boundaries(const Game::Collider& cld, const Game::AxisMoving *const am, const sf::FloatRect& limits);
 
 /** Checks if `ocld` is along the forward direction of `cld` */
 bool direction_is_viable(const Game::Collider& cld, 
