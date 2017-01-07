@@ -32,7 +32,7 @@ void ScatterVsPlayerPattern::update() {
 			setActive(false);
 			return;
 		}
-		playerAngle = _calcAngle(player->getPosition() 
+		playerAngle = _calcAngle(player->getPosition()
 				+ sf::Vector2f(lif::TILE_SIZE / 2, lif::TILE_SIZE / 2));
 		positionLocked = true;
 	}

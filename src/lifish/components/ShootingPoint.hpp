@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Component.hpp"
+#include "Spawning.hpp"
 
 namespace lif {
 
@@ -12,10 +12,9 @@ class Shooting;
 /** A ShootingPoint is a component with a sight and an AutoShooting.
  *  Can be used to give an entity multiple "weapons".
  */
-class ShootingPoint : public lif::Component {
+class ShootingPoint : public lif::Spawning {
 	sf::Vector2f offset;
-	lif::FreeSighted *sighted = nullptr;
-	lif::Shooting *shooting = nullptr;
+	lif::AutoShooting *autoShooting = nullptr;
 
 public:
 	COMP_NOT_UNIQUE
@@ -28,6 +27,9 @@ public:
 	sf::Vector2f getPosition() const override {
 		return owner.getPosition() + offset;
 	}
+
+	bool shouldSpawn() const override;
+	std::unique_ptr<lif::Entity> spawn() override;
 };
 
 }

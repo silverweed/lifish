@@ -48,8 +48,6 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	eyes[0]->setOffset(sf::Vector2f(17, 18));
 	eyes[1] = addComponent(new lif::ShootingPoint(*this, attack, SIGHT_RADIUS));
 	eyes[1]->setOffset(sf::Vector2f(50, 18));
-	addComponent(new lif::AutoShooting(*eyes[0]));
-	addComponent(new lif::AutoShooting(*eyes[1]));
 }
 
 void AlienBoss::update() {
