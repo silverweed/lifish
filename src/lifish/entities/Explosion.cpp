@@ -14,6 +14,7 @@
 #include "Temporary.hpp"
 #include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
+#include "conf/bonus.hpp"
 #include "Sounded.hpp"
 #include "BufferedSpawner.hpp"
 #include <list>
@@ -62,9 +63,9 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 		// on kill: spawn fire if incendiary
 		if (spawner == nullptr) return;
 		spawner->addSpawned(new Game::Fire(explColliderH->getPosition(),
-					explColliderH->getSize(), sf::seconds(4)));
+					explColliderH->getSize(), Game::Conf::Bonus::FIRE_DURATION));
 		spawner->addSpawned(new Game::Fire(explColliderV->getPosition(), 
-					explColliderV->getSize(), sf::seconds(4)));
+					explColliderV->getSize(), Game::Conf::Bonus::FIRE_DURATION));
 	}));
 
 	if (isIncendiary)
