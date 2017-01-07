@@ -1,12 +1,13 @@
 #pragma once
 
 #include <memory>
+#include <SFML/System/NonCopyable.hpp>
 
 class LoopingMusic;
 
 namespace lif {
 
-class MusicManager final {
+class MusicManager final : private sf::NonCopyable {
 	std::weak_ptr<LoopingMusic> music;
 
 public:

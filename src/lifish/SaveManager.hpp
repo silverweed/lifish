@@ -30,6 +30,8 @@ class LevelManager;
  */
 class SaveManager {
 public:
+	SaveManager() = delete;
+
 	/** Saves the game state into `filename` */
 	static bool saveGame(const std::string& filename, const lif::LevelManager& lr);
 

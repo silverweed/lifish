@@ -2,6 +2,7 @@
 
 #include <deque>
 #include <memory>
+#include <SFML/System/NonCopyable.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Window/Window.hpp>
 #include "EventHandler.hpp"
@@ -20,6 +21,7 @@ class WindowContext
 	, public lif::WithOrigin
 	, public lif::Activable
 	, public lif::EventHandler
+	, private sf::NonCopyable
 {
 protected:
 	/** The chain of fallback handlers.
