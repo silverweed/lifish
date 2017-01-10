@@ -29,11 +29,11 @@ class ScatterVsPlayerPattern : public lif::ShootingPattern {
 public:
 	sf::Time timeBetweenShots = sf::seconds(0.5);
 	/** Self-deactivate after shooting this number of attacks. Negative means 'infinite'. */
-	short consecutiveShots;
+	short consecutiveShots = -1;
 	/** Number of bullets per shot */
-	short bulletsPerShot;
+	short bulletsPerShot = 1;
 	/** Amplitude of the scatter cone. */
-	lif::Angle scatterAngle;
+	lif::Angle scatterAngle = lif::radians(1);
 
 	/** `owner` MUST have a FreeSighted component */
 	explicit ScatterVsPlayerPattern(lif::Entity& owner, const lif::BulletInfo& bullet);
