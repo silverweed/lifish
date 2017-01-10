@@ -39,9 +39,9 @@ class InterlevelContext : public lif::WindowContext {
 	int bonusPoints = 0;
 	/** Whether player (i+1) needs to be prompted for continue or not */
 	std::array<bool, lif::MAX_PLAYERS> mustPromptPlayer;
-	unsigned short curPromptedPlayer;
+	unsigned short curPromptedPlayer = 0;
 	/** Whether player is selecting 'yes' or 'no' during PROMPT_CONTINUE */
-	bool yesSelected;
+	bool yesSelected = true;
 
 	/** @return true if player chose to continue, else false */
 	//bool _displayContinue(sf::RenderWindow& target, const lif::SidePanel& panel, short playerId);

@@ -29,6 +29,7 @@ Collider::Collider(const lif::Collider& other)
 	, phantom(other.phantom)
 	, offset(other.offset)
 	, size(other.size)
+	, layer(other.layer)
 {}
 
 void Collider::update() {
