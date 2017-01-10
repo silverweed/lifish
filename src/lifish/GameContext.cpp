@@ -41,7 +41,7 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, sh
 
 	// Create the players
 	lm.createNewPlayers();
-	for (unsigned short i = 0; i < lif::MAX_PLAYERS; ++i) {
+	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		auto p = lm.getPlayer(i + 1);
 		if (p != nullptr)
 			p->get<lif::Controllable>()->setWindow(window);
@@ -121,7 +121,7 @@ bool GameContext::handleEvent(sf::Window&, sf::Event event) {
 			pause_game();
 			return true;
 		case sf::Keyboard::Escape:
-			for (unsigned short i = 0; i < lif::MAX_PLAYERS; ++i) {
+			for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 				auto player = lm.getPlayer(i + 1);
 				if (player != nullptr) {
 					player->setRemainingLives(0);
@@ -190,7 +190,7 @@ static float get_percentage(const lif::debug::Stats& stats, const char *totn, co
 	if (tot < 0) return -1;
 	const float ratio = stats.timer.safeGet(name) / tot;
 	if (ratio < 0) return -1;
-	for (unsigned short i = 0; i < 20; ++i) {
+	for (unsigned i = 0; i < 20; ++i) {
 		if (ratio < i/20.) break;
 		percentage[i] = '|';
 	}
@@ -211,7 +211,7 @@ void GameContext::_printGameStats() const {
 			<< (ratio >= 0 ? " " + lif::to_string(int(ratio*100)) + "%" : "");
 	}
 	std::cerr << "\r\n -- logic: --";
-	for (unsigned short i = 0; i < lif::game_logic::functions.size(); ++i) {
+	for (unsigned i = 0; i < lif::game_logic::functions.size(); ++i) {
 		std::stringstream t;
 		t << "logic_" << i;
 		char percentage[21] = {0};
@@ -238,7 +238,7 @@ void GameContext::_advanceLevel() {
 
 	// Resurrect any dead player which has a 'continue' left and
 	// remove temporary effects
-	for (unsigned short i = 0; i < lif::MAX_PLAYERS; ++i) {
+	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		auto player = lm.getPlayer(i + 1);
 		if ((player == nullptr || player->get<lif::Killable>()->isKilled())) {
 			if (lif::playerContinues[i] > 0) {

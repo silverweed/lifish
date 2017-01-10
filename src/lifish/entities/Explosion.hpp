@@ -37,7 +37,7 @@ class Explosion : public lif::Entity, public sf::Drawable {
 	/** The radius of this explosion */
 	unsigned short radius;
 	/** The damage caused by this explosion per tick */
-	unsigned short damage;
+	int damage;
 
 	/** The tiles involved in this explosion (valid after calling propagate());
 	 *  more specifically, this is a 4-element array containing the propagation
@@ -65,10 +65,10 @@ public:
 	 *  In this case, whenever points should be given to a player, no points
 	 *  are given at all.
 	 */
-	explicit Explosion(const sf::Vector2f& pos, unsigned short radius, 
+	explicit Explosion(const sf::Vector2f& pos, unsigned short radius,
 			const lif::Entity *const sourceEntity = nullptr,
 			bool isIncendiary = false,
-			unsigned short damage = 1);
+			int damage = 1);
 
 	/** Calculate the tiles this explosion propagates to and fill `propagation`
 	 *  (fixed walls and borders stop the explosion). Also kills enemies and

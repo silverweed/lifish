@@ -4,13 +4,13 @@
 
 namespace lif {
 
-// Don't change values of these, as they're used to index arrays
+// Don't change values of these, as they may be used to index arrays
 enum Direction {
-	UP    = 0,
-	LEFT  = 1,
-	DOWN  = 2, 
-	RIGHT = 3,
-	NONE  = 4
+	UP,
+	LEFT,
+	DOWN,
+	RIGHT,
+	NONE
 };
 
 inline std::string directionToString(const Direction& dir) {

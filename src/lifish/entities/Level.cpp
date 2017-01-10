@@ -109,8 +109,8 @@ std::string Level::getTilemap() const {
 	if (called)
 		return ss.str();
 
-	for (unsigned short i = 0; i < LEVEL_HEIGHT; ++i) {
-		for (unsigned short j = 0; j < LEVEL_WIDTH; ++j) {
+	for (unsigned i = 0; i < LEVEL_HEIGHT; ++i) {
+		for (unsigned j = 0; j < LEVEL_WIDTH; ++j) {
 			ss << tiles[i][j] << " ";
 		}
 		ss << std::endl;

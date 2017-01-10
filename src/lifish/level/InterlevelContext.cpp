@@ -84,13 +84,13 @@ void InterlevelContext::setGettingReady(unsigned short lvnum) {
 void InterlevelContext::_setPromptContinue() {
 	// Check if there are dead players with continues left
 	mustPromptPlayer.fill(false);
-	for (unsigned short i = 0; i < lif::MAX_PLAYERS; ++i) {
+	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		const auto player = lm.getPlayer(i + 1);
 		if ((player == nullptr || player->get<lif::Killable>()->isKilled()) && lif::playerContinues[i] > 0) {
 			mustPromptPlayer[i] = true;	
 		}
 	}
-	unsigned short idx = 0;
+	unsigned idx = 0;
 	while  (!mustPromptPlayer[idx] && idx < mustPromptPlayer.size()) ++idx;
 	if (idx == mustPromptPlayer.size()) {
 		// all players alive or without continues: skip this phase
@@ -256,7 +256,7 @@ void InterlevelContext::draw(sf::RenderTarget& window, sf::RenderStates states) 
 }
 
 void InterlevelContext::_givePoints(int amount) {
-	for (unsigned short i = 0; i < lif::MAX_PLAYERS; ++i) {
+	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		auto player = lm.getPlayer(i + 1);
 		if (player != nullptr)
 			lif::score[i] += amount;

@@ -12,7 +12,9 @@ class AxisSighted : public lif::Sighted {
 		PartSeenEntitiesList,
 		static_cast<unsigned short>(lif::Direction::NONE)>;
 
-	/** all entities seen in each direction, and their distance (nearest first) */
+	/** All entities seen in each direction, and their distance (nearest first).
+	 *  This array is indexed by Directions, treated as unsigned.
+	 */
 	TotSeenEntitiesList seen;
 
 	/** Fills seen[dir] with entities seen in that direction */

@@ -25,7 +25,7 @@ using lif::TILE_SIZE;
 using lif::Direction;
 
 Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, 
-		const lif::Entity *const source, bool isIncendiary, unsigned short damage)
+		const lif::Entity *const source, bool isIncendiary, int damage)
 	: lif::Entity(pos)
 	, radius(_radius)
 	, damage(damage)
@@ -80,8 +80,8 @@ lif::Explosion* Explosion::propagate(lif::LevelManager& lm) {
 	bool blocked[] = { false, false, false, false };
 	auto& entities = lm.getEntities();
 	
-	for (unsigned short dir = 0; dir < 4; ++dir) {	
-		for (unsigned short r = 1; r <= radius; ++r) {
+	for (unsigned dir = 0; dir < 4; ++dir) {	
+		for (unsigned r = 1; r <= radius; ++r) {
 			if (!propagating[dir]) continue;
 
 			sf::Vector2i new_tile = m_tile;
@@ -153,7 +153,7 @@ lif::Explosion* Explosion::propagate(lif::LevelManager& lm) {
 			sf::Vector2f(1, -TILE_SIZE * propagation[Direction::UP]
 				+ (TILE_SIZE - 1) * blocked[Direction::UP])));
 
-	for (unsigned short i = 0; i < 4; ++i)
+	for (unsigned i = 0; i < 4; ++i)
 		if (blocked[i]) --propagation[i];
 	_setPropagatedAnims();
 

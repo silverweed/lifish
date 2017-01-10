@@ -20,7 +20,7 @@ SidePanel::SidePanel(const lif::LevelManager& lm)
 
 	// Load player heads
 	playerHeadsTexture = lif::cache.loadTexture(lif::getAsset("graphics", "playerheads.png"));
-	for (unsigned short i = 0; i < playerHeadsSprite.size(); ++i) {
+	for (unsigned i = 0; i < playerHeadsSprite.size(); ++i) {
 		playerHeadsSprite[i].setTexture(*playerHeadsTexture);
 		playerHeadsSprite[i].setTextureRect(sf::IntRect(PLAYER_HEAD_WIDTH * i, 0,
 					PLAYER_HEAD_WIDTH, PLAYER_HEAD_HEIGHT));
@@ -31,7 +31,7 @@ SidePanel::SidePanel(const lif::LevelManager& lm)
 	// Load health symbols
 	healthTexture = lif::cache.loadTexture(lif::getAsset("graphics", "health.png"));
 	healthTexture->setSmooth(true);
-	for (unsigned short i = 0; i < healthSprite.size(); ++i) {
+	for (unsigned i = 0; i < healthSprite.size(); ++i) {
 		healthSprite[i].setTexture(*healthTexture);
 		healthSprite[i].setTextureRect(sf::IntRect(HEALTH_SYM_WIDTH * i, 0,
 					HEALTH_SYM_WIDTH, HEALTH_SYM_HEIGHT));
@@ -40,7 +40,7 @@ SidePanel::SidePanel(const lif::LevelManager& lm)
 	// Load EXTRA letters
 	extraLettersTexture = lif::cache.loadTexture(lif::getAsset("test", "extra_icons.png"));
 	extraLettersTexture->setSmooth(true);
-	for (unsigned short i = 0; i < extraLettersSprite.size(); ++i) {
+	for (unsigned i = 0; i < extraLettersSprite.size(); ++i) {
 		extraLettersSprite[i].setTexture(*extraLettersTexture);
 		extraLettersSprite[i].setTextureRect(sf::IntRect(EXTRA_LETTERS_WIDTH * i, 0,
 					EXTRA_LETTERS_WIDTH, EXTRA_LETTERS_HEIGHT));
@@ -48,9 +48,9 @@ SidePanel::SidePanel(const lif::LevelManager& lm)
 
 	// Load bonuses
 	const auto bonusesTexture = lif::cache.loadTexture(lif::getAsset("graphics", "bonuses.png"));
-	for (unsigned short i = 0; i < bonusesSprite.size(); ++i) {
+	for (unsigned i = 0; i < bonusesSprite.size(); ++i) {
 		sf::Vector2f pos(BONUS_ICON_POS_X, i == 0 ? BONUS_ICON_POS_Y_1 : BONUS_ICON_POS_Y_2);
-		for (unsigned short j = 0; j < bonusesSprite[i].size(); ++j) {
+		for (unsigned j = 0; j < bonusesSprite[i].size(); ++j) {
 			bonusesSprite[i][j].setTexture(*bonusesTexture);
 			bonusesSprite[i][j].setTextureRect(sf::IntRect(
 						j * TILE_SIZE,
@@ -87,7 +87,7 @@ void SidePanel::_drawHealthSprites(sf::RenderTarget& window, sf::RenderStates st
 	const unsigned short n_half = lifed->getLife() % 2;
 
 	sf::Vector2f pos(HEALTH_SYM_POS_X, player.getInfo().id == 1 ? HEALTH_SYM_POS_Y_1 : HEALTH_SYM_POS_Y_2);
-	for (unsigned short j = 0; j < n_tot; ++j) {
+	for (unsigned j = 0; j < n_tot; ++j) {
 		const auto& hs = healthSprite[j < n_full 
 						? HEALTH_FULL : j < n_full + n_half
 						? HEALTH_HALF : HEALTH_EMPTY];
@@ -105,7 +105,7 @@ void SidePanel::_drawExtraLetters(sf::RenderTarget& window, sf::RenderStates sta
 		const lif::Player& player) const
 {
 	sf::Vector2f pos(EXTRA_LETTERS_POS_X, player.getInfo().id == 1 ? EXTRA_LETTERS_POS_Y_1 : EXTRA_LETTERS_POS_Y_2);
-	for (unsigned short j = 0; j < player.getInfo().extra.size(); ++j) {
+	for (unsigned j = 0; j < player.getInfo().extra.size(); ++j) {
 		const unsigned short i = player.getInfo().extra[j] ? j + 1 : 0;
 		sf::Sprite sprite(extraLettersTexture[i], extraLettersSprite[i].getTextureRect());
 		sprite.setPosition(pos + sf::Vector2f(j * EXTRA_LETTERS_WIDTH, 0));
@@ -145,7 +145,7 @@ void SidePanel::_drawTime(sf::RenderTarget& window, sf::RenderStates states) con
 
 void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	window.draw(backgroundSprite, states);
-	for (unsigned short i = 0; i < playerHeadsSprite.size(); ++i) {
+	for (unsigned i = 0; i < playerHeadsSprite.size(); ++i) {
 		_drawWithShadow(window, states, playerHeadsSprite[i]);
 		
 		// Draw remaining lives
@@ -215,14 +215,14 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 
 void SidePanel::update() {
 	std::stringstream ss;
-	for (unsigned short i = 0; i < playerHeadsSprite.size(); ++i) {
+	for (unsigned i = 0; i < playerHeadsSprite.size(); ++i) {
 		const auto player = lm.getPlayer(i + 1);
 
 		if (player != nullptr) {
 			// Update bonuses
 			const auto powers = player->getInfo().powers;
 			const auto bonusable = player->get<lif::Bonusable>();
-			for (unsigned short j = 0; j < bonusesSprite[i].size(); ++j) {
+			for (unsigned j = 0; j < bonusesSprite[i].size(); ++j) {
 				switch (lif::BonusType(j)) {
 					using B = lif::BonusType;
 				case B::QUICK_FUSE:

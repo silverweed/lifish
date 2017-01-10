@@ -83,7 +83,7 @@ void Player::_init() {
 	auto& a_right = animated->addAnimation("walk_right");
 	auto& a_left = animated->addAnimation("walk_left");
 
-	for (unsigned short i = 0; i < WALK_N_FRAMES; ++i) {
+	for (unsigned i = 0; i < WALK_N_FRAMES; ++i) {
 		a_down.addFrame(sf::IntRect(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 		a_up.addFrame(sf::IntRect(i * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE));
 		a_right.addFrame(sf::IntRect(i * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
@@ -94,13 +94,13 @@ void Player::_init() {
 	auto& a_win = animated->addAnimation("win");
 	auto& a_hurt = animated->addAnimation("hurt");
 
-	for (unsigned short i = 0; i < DEATH_N_FRAMES; ++i)
+	for (unsigned i = 0; i < DEATH_N_FRAMES; ++i)
 		a_death.addFrame(sf::IntRect(i * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 	a_win.addFrame(sf::IntRect(DEATH_N_FRAMES * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 	a_hurt.addFrame(sf::IntRect((DEATH_N_FRAMES + 1) * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
 	auto& a_idle = animated->addAnimation("idle");
-	for (unsigned short i = 0; i < IDLE_N_FRAMES; ++i)
+	for (unsigned i = 0; i < IDLE_N_FRAMES; ++i)
 		a_idle.addFrame(sf::IntRect((DEATH_N_FRAMES + 2) * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 	a_idle.addFrame(sf::IntRect((DEATH_N_FRAMES + 3) * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 

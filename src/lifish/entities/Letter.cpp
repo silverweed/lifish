@@ -57,7 +57,7 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 
 	auto& animatedSprite = animated->getSprite();
 
-	for (unsigned short i = 0; i < N_EXTRA_LETTERS; ++i) {	
+	for (unsigned i = 0; i < N_EXTRA_LETTERS; ++i) {	
 		auto& anim = animated->addAnimation(lif::to_string(i));
 		// Total different frames are 4 * N_EXTRA_LETTERS
 		// (full letter + 3 transitions to next, cyclic).
@@ -66,7 +66,7 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 		// where (i-th final letter) and ((i+1)-th initial letter) are the same
 		// frame. This way we can tell when the letter has ended its transition:
 		// that is when animations[i].isPlaying() == false.
-		for (unsigned short j = 0; j < 5; ++j) {
+		for (unsigned j = 0; j < 5; ++j) {
 			const unsigned short idx = i * 4 + j;
 			anim.addFrame(sf::IntRect(
 					(idx % 10) * TILE_SIZE,

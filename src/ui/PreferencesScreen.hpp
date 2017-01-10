@@ -13,8 +13,8 @@ class PreferencesScreen : public lif::ui::Screen {
 	enum class VolumeType { MUSIC, SOUND };
 	enum class VolumeAction { RAISE, LOWER, MUTE_TOGGLE };
 
-	constexpr static unsigned short MAX_VOLUME = 15;
-	constexpr static unsigned short SPEAKER_SPRITE_SIZE = 25;
+	constexpr static unsigned MAX_VOLUME = 15;
+	constexpr static unsigned SPEAKER_SPRITE_SIZE = 25;
 
 	/** Hook for the music volume bar (used in draw()) */
 	lif::ShadedText *musicVolumeBar = nullptr;

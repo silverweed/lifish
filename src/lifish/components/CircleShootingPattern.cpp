@@ -38,7 +38,7 @@ void CircleShootingPattern::_shoot() {
 	const auto delta = lif::radians(2 * lif::PI / bulletsPerShot);
 	// Shoot first bullet towards `shootAxis`'s direction
 	auto angle = shootAngle;
-	for (unsigned short i = 0; i < bulletsPerShot; ++i) {
+	for (int i = 0; i < bulletsPerShot; ++i) {
 		addSpawned(new lif::FreeBullet(owner.getPosition(), angle, bullet, &owner));
 		angle += delta;
 	}

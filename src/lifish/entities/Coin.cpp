@@ -48,7 +48,7 @@ Coin::Coin(const sf::Vector2f& pos)
 	auto& anim = animated->addAnimation("spin");
 
 	// Coins have 10 sprites
-	for (unsigned short i = 0; i < 10; ++i)
+	for (unsigned i = 0; i < 10; ++i)
 		anim.addFrame(sf::IntRect(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
 
 	auto& animatedSprite = animated->getSprite();

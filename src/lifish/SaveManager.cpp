@@ -17,7 +17,7 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 	save["level"] = lr.getLevel()->getInfo().levelnum;
 	
 	const auto& players = lr.players;
-	for (unsigned short i = 0; i < players.size(); ++i) {
+	for (unsigned i = 0; i < players.size(); ++i) {
 		const auto& player = players[i];
 		if (player == nullptr) {
 			// Only save the score
@@ -45,7 +45,7 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 		};
 
 		// Letters
-		for (unsigned short j = 0; j < lif::conf::player::N_EXTRA_LETTERS; ++j)
+		for (unsigned j = 0; j < lif::conf::player::N_EXTRA_LETTERS; ++j)
 			save["players"][i]["extra"][j] = info.extra[j];
 	}
 
@@ -65,7 +65,7 @@ bool SaveManager::loadGame(const std::string& filename,
 		start_level = load["level"];
 		
 		const auto& players = lr.players;
-		for (unsigned short i = 0; i < players.size(); ++i) {
+		for (unsigned i = 0; i < players.size(); ++i) {
 			const auto& player = players[i];
 			const auto pldata = load["players"][i];
 			// Continues
@@ -90,7 +90,7 @@ bool SaveManager::loadGame(const std::string& filename,
 
 			// Letters
 			const auto exdata = pldata["extra"];
-			for (unsigned short j = 0; j < lif::conf::player::N_EXTRA_LETTERS; ++j)
+			for (unsigned j = 0; j < lif::conf::player::N_EXTRA_LETTERS; ++j)
 				player->setExtra(j, pldata["extra"]);
 
 			// Score

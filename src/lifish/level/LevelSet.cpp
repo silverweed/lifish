@@ -81,7 +81,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 		auto atktype = atk["type"];
 		
 		enemies[enemynum].attack.type = lif::AttackType::AXIS_BOUND;
-		for (unsigned short i = 0; i < atktype.size(); ++i) {
+		for (unsigned i = 0; i < atktype.size(); ++i) {
 			AttackType type;
 			const auto at = atktype[i].get<std::string>();
 			if (!lif::stringToAttackType(at, type))

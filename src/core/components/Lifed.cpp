@@ -1,19 +1,15 @@
 #include "Lifed.hpp"
-#include <exception>
 #include <sstream>
 
 using lif::Lifed;
 
-Lifed::Lifed(lif::Entity& owner, const int life)
+Lifed::Lifed(lif::Entity& owner, const unsigned int life)
 	: lif::Component(owner)
 	, life(life) 
-	, maxLife(life) 
-{
-	if (life < 0)
-		throw std::invalid_argument("Lifed: maxLife cannot be smaller than 0!");
-}
+	, maxLife(life)
+{}
 
-Lifed::Lifed(lif::Entity& owner, const int life, OnHurtCallback _onHurt)
+Lifed::Lifed(lif::Entity& owner, const unsigned int life, OnHurtCallback _onHurt)
 	: lif::Lifed(owner, life)
 {
 	onHurt = _onHurt;

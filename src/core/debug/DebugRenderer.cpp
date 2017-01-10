@@ -41,8 +41,8 @@ void DebugRenderer::drawSHCells(sf::RenderTarget& target, const lif::SHCollision
 	rect.setFillColor(sf::Color(72, 209, 204, 60));
 	rect.setOutlineColor(sf::Color(0, 139, 139, 255));
 
-	for (unsigned short i = 0; i < s; ++i)
-		for (unsigned short j = 0; j < s; ++j) {
+	for (unsigned i = 0; i < s; ++i)
+		for (unsigned j = 0; j < s; ++j) {
 			rect.setPosition(sf::Vector2f(i * w + lif::TILE_SIZE,
 						j * h + lif::TILE_SIZE));
 			target.draw(rect);

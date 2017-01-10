@@ -69,7 +69,7 @@ static lif::Direction seeing_player(const lif::LevelManager& lm, const lif::Axis
 	const auto& seen = sighted.entitiesSeen();
 	lif::Direction dir = lif::Direction::NONE;
 	unsigned short dist = lif::LEVEL_WIDTH + 1;
-	for (unsigned short i = 0; i < 4; ++i) {
+	for (unsigned i = 0; i < 4; ++i) {
 		for (const auto& pair : seen[i]) {
 			if (lm.isPlayer(*pair.first.lock()) && pair.second < dist) {
 				dir = static_cast<lif::Direction>(i);

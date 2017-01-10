@@ -167,7 +167,7 @@ Action ControlsScreen::_selectPlayer(unsigned short id) {
 
 void ControlsScreen::update() {
 	lif::ui::Screen::update();
-	for (unsigned short i = 0; i < lif::MAX_PLAYERS; ++i) {
+	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		auto& text = interactables["p" + lif::to_string(i+1)];
 		if (selectedPlayer == i + 1) 
 			text->setColor(sf::Color::Yellow);

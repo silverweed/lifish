@@ -49,7 +49,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	// Draw the full volume bar to get the measure of this element's max width
 	// (also, the volume is maxed by default, so we don't need to do any further checks here)
 	std::stringstream ss;
-	for (unsigned short i = 0; i < MAX_VOLUME; ++i) {
+	for (unsigned i = 0; i < MAX_VOLUME; ++i) {
 		ss << "|";	
 	}
 	text->setCharacterSize(20);
@@ -159,7 +159,7 @@ Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {
 	vol += (raise ? 1 : -1);
 
 	std::stringstream ss;
-	for (unsigned short i = 0; i < vol; ++i) {
+	for (int i = 0; i < vol; ++i) {
 		ss << "|";	
 	}
 

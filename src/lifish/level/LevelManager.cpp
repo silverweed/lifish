@@ -219,7 +219,7 @@ bool LevelManager::canDeployBombAt(const sf::Vector2i& tile) const {
 }
 
 bool LevelManager::_isBombAt(const sf::Vector2i& tile) const {
-	for (unsigned short i = 0; i < bombs.size(); ++i)
+	for (unsigned i = 0; i < bombs.size(); ++i)
 		for (auto bomb : bombs[i])
 			if (!bomb.expired() && lif::tile(bomb.lock()->getPosition()) == tile)
 				return true;
@@ -251,7 +251,7 @@ void LevelManager::_spawn(lif::Entity *e) {
 void LevelManager::_spawnBomb(lif::Bomb *b) {
 	const auto id = b->getSourcePlayer().getInfo().id - 1;
 	// Spawn bomb only if player has not deployed all the available ones already
-	for (unsigned short i = 0; i < bombs[id].size(); ++i) {
+	for (unsigned i = 0; i < bombs[id].size(); ++i) {
 		if (bombs[id][i].expired()) {
 			std::shared_ptr<lif::Bomb> bomb(b);
 			entities.add(bomb);
@@ -337,9 +337,9 @@ void LevelManager::_checkSpecialConditions() {
 }
 
 void LevelManager::_checkResurrect() {
-	unsigned short living_players = 0;
+	unsigned living_players = 0;
 
-	for (unsigned short i = 0; i < players.size(); ++i) {
+	for (unsigned i = 0; i < players.size(); ++i) {
 		auto player = players[i];
 		if (player == nullptr)
 			continue;

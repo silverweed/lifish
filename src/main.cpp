@@ -188,6 +188,7 @@ int main(int argc, char **argv) {
 	args.levelset_name = "";
 	args.mute_music = true; // FIXME
 	args.mute_sounds = true; // FIXME
+	args.start_from_home = false; // FIXME
 	parse_args(argc, argv, args);
 	
 	// Create the MusicManager (in a local scope)

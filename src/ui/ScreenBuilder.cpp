@@ -207,7 +207,7 @@ void ScreenBuilder::_fixAlign(lif::ui::Screen& screen) {
 
 	for (auto& pair : toBeAligned) {
 		auto& e = pair.first;
-		unsigned short row = pair.second;
+		unsigned row = pair.second;
 		const float xOffset = rowAligns[row] == "left" ? H_PADDING
 					: rowAligns[row] == "right" ? (screen.size.x - rowWidths[row] - H_PADDING)
 					: (screen.size.x - rowWidths[row]) / 2;

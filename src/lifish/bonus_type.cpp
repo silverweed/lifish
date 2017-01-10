@@ -75,7 +75,7 @@ void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& 
 
 			const auto score = brk->get<lif::Scored>()->getPointsGiven();
 			klb->kill();
-			for (unsigned short i = 0; i < lif::score.size(); ++i)
+			for (unsigned i = 0; i < lif::score.size(); ++i)
 				lif::score[i] += score;
 		});
 		break;
@@ -89,7 +89,7 @@ void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& 
 
 			const auto score = enemy->get<lif::Scored>()->getPointsGiven();
 			klb->kill();
-			for (unsigned short i = 0; i < lif::score.size(); ++i)
+			for (unsigned i = 0; i < lif::score.size(); ++i)
 				lif::score[i] += score;
 		});
 		break;

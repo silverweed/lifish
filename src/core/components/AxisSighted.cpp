@@ -32,7 +32,7 @@ void AxisSighted::update() {
 	lif::Component::update();
 	if (entities == nullptr) return;
 
-	for (unsigned short i = 0; i < (unsigned short)lif::Direction::NONE; ++i) {
+	for (unsigned i = 0; i < static_cast<unsigned>(lif::Direction::NONE); ++i) {
 		_fillLine(static_cast<lif::Direction>(i));	
 	}
 }

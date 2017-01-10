@@ -38,7 +38,7 @@ AlienPredator::AlienPredator(const sf::Vector2f& pos, const lif::EnemyInfo& info
 	tunnelAnimClock = addComponent(new lif::Clock(*this));
 	// Add the tunneling animation
 	auto& a_tunnel = animated->addAnimation("tunnel");
-	for (unsigned short i = 0; i < TUNNEL_N_FRAMES; ++i) {
+	for (unsigned i = 0; i < TUNNEL_N_FRAMES; ++i) {
 		a_tunnel.addFrame(sf::IntRect(
 					(6 + i) * TILE_SIZE,
 					2 * TILE_SIZE,
@@ -84,12 +84,12 @@ sf::Vector2f AlienPredator::_findTunneledPosition(const lif::LevelManager& lm) c
 	 */
 	// First, construct the list of possible tiles.
 	std::list<sf::Vector2i> tiles;
-	for (unsigned short i = 1; i <= lif::LEVEL_WIDTH; ++i)
-		for (unsigned short j = 1; j <= lif::LEVEL_HEIGHT; ++j)
+	for (unsigned i = 1; i <= lif::LEVEL_WIDTH; ++i)
+		for (unsigned j = 1; j <= lif::LEVEL_HEIGHT; ++j)
 			tiles.push_back(sf::Vector2i(i, j));
 
 	// Remove all tiles which are too close to a player
-	for (unsigned short i = 0; i < lif::MAX_PLAYERS; ++i) {
+	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		const auto player = lm.getPlayer(i + 1);
 		if (player != nullptr) {
 			const auto ptile = lif::tile(player->getPosition());
@@ -116,7 +116,7 @@ sf::Vector2f AlienPredator::_findTunneledPosition(const lif::LevelManager& lm) c
 		if (mv == nullptr)
 			return;
 
-		for (unsigned short i = 0; i < 3; ++i) {
+		for (unsigned i = 0; i < 3; ++i) {
 			switch (mv->getDirection()) {
 			case lif::Direction::UP:
 				--etile.y;

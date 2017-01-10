@@ -40,7 +40,7 @@ void Bonusable::reset() {
 }
 
 void Bonusable::expireTemporaryBonuses() {
-	for (unsigned short i = 0; i < bonusTime.size(); ++i) {
+	for (unsigned i = 0; i < bonusTime.size(); ++i) {
 		if (bonusTime[i] > sf::Time::Zero)
 			bonusTime[i] = sf::Time::Zero;
 	}

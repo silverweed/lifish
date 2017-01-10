@@ -37,8 +37,8 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 	lm.reset();
 	auto& entities = lm.getEntities();
 
-	for (unsigned short top = 0; top < lif::LEVEL_HEIGHT; ++top) {
-		for (unsigned short left = 0; left < lif::LEVEL_WIDTH; ++left) {
+	for (unsigned top = 0; top < lif::LEVEL_HEIGHT; ++top) {
+		for (unsigned left = 0; left < lif::LEVEL_WIDTH; ++left) {
 
 			const sf::Vector2f curPos((left + 1) * TILE_SIZE, (top + 1) * TILE_SIZE);
 			unsigned short enemy_id = 0;
@@ -186,7 +186,7 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 
 	auto hboss = new lif::HauntingSpiritBoss(sf::Vector2f(272, 240));
 	for (auto s : hboss->getAllRecursive<lif::Sighted>()) s->setEntityGroup(&lm.entities);
-	//entities.add(hboss);
+	entities.add(hboss);
 
 	const auto& effects = level.getInfo().effects;
 	if (effects.find("fog") != effects.end()) {

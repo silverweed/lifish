@@ -20,7 +20,7 @@ class ScreenBuilder final : private sf::NonCopyable {
 	sf::Vector2f pos;
 	sf::FloatRect prevElemBounds;
 	// pair (element, row)
-	std::vector<std::pair<sf::Drawable*, unsigned short>> toBeAligned;
+	std::vector<std::pair<sf::Drawable*, unsigned>> toBeAligned;
 	std::vector<std::string> rowAligns;
 	std::vector<float> rowWidths; 
 	std::string vAlign;

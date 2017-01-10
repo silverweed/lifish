@@ -57,7 +57,7 @@ void WinLoseHandler::_handleWin() {
 		state = State::ADVANCING_LEVEL;
 
 	} else if (time >= sf::seconds(1.8) && !playerWinSoundPlayed) {
-		for (unsigned short id = 1; id <= lif::MAX_PLAYERS; ++id) {
+		for (unsigned id = 1; id <= lif::MAX_PLAYERS; ++id) {
 			auto player = lm.getPlayer(id);
 			if (player != nullptr && !player->get<lif::Killable>()->isKillInProgress()) {
 				lif::cache.playSound(player->get<lif::Sounded>()->getSoundFile("win"));
