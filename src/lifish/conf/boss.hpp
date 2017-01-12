@@ -20,6 +20,8 @@ namespace conf {
 		namespace haunting_spirit_boss {
 			constexpr unsigned int VALUE = 10000;
 			constexpr unsigned int HAUNTED_STATUE_LIFE = 4;
+			const sf::Time CHANGE_STATUE_DELAY = sf::seconds(25);
+			const sf::Time PATTERN_SHOOT_DELAY = sf::seconds(3.5);
 		}
 
 		namespace big_alien_boss {

@@ -54,15 +54,19 @@ HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : lif::Entity(pos) {
 		get<lif::HurtDrawProxy>()->hurt();
 	}));
 	addComponent(new lif::Drawable(*this, *this));
-	auto hurt_by_explosion = lif::hurtByExplosions(*this, lif::CFO_TAKE_SINGLE_HIT | lif::CFO_ONLY_ADJACENT);
-	addComponent(new lif::Collider(*this, [this, hurt_by_explosion] (lif::Collider& cld) {
+	auto hurt_by_explosions = lif::hurtByExplosions(*this, lif::CFO_TAKE_SINGLE_HIT | lif::CFO_ONLY_ADJACENT);
+	addComponent(new lif::Collider(*this, [this, hurt_by_explosions] (lif::Collider& cld) {
 		// on collision
 		if (!possessed) return;
-		hurt_by_explosion(cld);
+		hurt_by_explosions(cld);
 	}, lif::c_layers::BREAKABLES, sf::Vector2f(TILE_SIZE, TILE_SIZE)));
 	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::TALL_ENTITIES));
 	addComponent(new lif::Fixed(*this));
 	hurtProxy = addComponent(new lif::HurtDrawProxy(*this));
+}
+
+void HauntedStatue::setSpiritColor(sf::Color c) {
+	spirit->getSprite().setColor(c);
 }
 
 void HauntedStatue::draw(sf::RenderTarget& window, sf::RenderStates states) const {

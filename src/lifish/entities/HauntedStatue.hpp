@@ -21,6 +21,8 @@ public:
 	void setPossessed(bool b) { possessed = b; }
 	bool isPossessed() const { return possessed; }
 
+	void setSpiritColor(sf::Color c);
+
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 };
 

@@ -24,14 +24,21 @@ class HauntingSpiritBoss : public lif::Boss {
 		DYING
 	} state;
 
+	bool selectedNewPattern = false;
 	std::vector<std::weak_ptr<lif::HauntedStatue>> statues;
 	std::weak_ptr<lif::HauntedStatue> targetStatue;
+	/**
+	 * 0. circle
+	 * 1. spiral
+	 * 2. scatter
+	 */
 	std::array<lif::ShootingPattern*, 3> shootPatterns;
-	lif::ShootingPattern *curShootPattern = nullptr;
+	std::array<sf::Color, 3> shootColors;
 
+	lif::ShootingPattern *curShootPattern = nullptr;
 	lif::Clock *animClock = nullptr,
-	            *atkClock = nullptr,   // used for shooting
-		    *hauntClock = nullptr; // used for changing haunted statue after delay
+	           *atkClock = nullptr,   // used for shooting
+	           *hauntClock = nullptr; // used for changing haunted statue after delay
 
 	void _updateStart();
 	void _updateSearching();

@@ -9,6 +9,7 @@
 #include "ScatterVsPlayerPattern.hpp"
 #include "Killable.hpp"
 #include "Angle.hpp"
+#include "conf/boss.hpp"
 #include "core.hpp"
 #include <algorithm>
 
@@ -71,6 +72,7 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	circle->bulletsPerShot = 6;
 	circle->rotationPerShot = lif::radians(lif::PI / 5.);
 	shootPatterns[0] = circle;
+	shootColors[0] = sf::Color::White;
 	auto spiral = addComponent(new lif::CircleShootingPattern(*this, bullet));
 	spiral->consecutiveShots = 50;
 	spiral->timeBetweenShots = sf::seconds(0.1);
@@ -78,11 +80,13 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	spiral->rotationPerShot = lif::radians(0.4);
 	spiral->randomizeShootAngle = true;
 	shootPatterns[1] = spiral;
+	shootColors[1] = sf::Color::Blue;
 	auto scatter = addComponent(new lif::ScatterVsPlayerPattern(*this, bullet));
 	scatter->consecutiveShots = 18;
 	scatter->timeBetweenShots = sf::seconds(0.1);
 	scatter->scatterAngle = lif::degrees(30);
 	shootPatterns[2] = scatter;
+	shootColors[2] = sf::Color::Red;
 }
 
 void HauntingSpiritBoss::update() {
@@ -197,6 +201,7 @@ void HauntingSpiritBoss::_updateTransitioningEnd() {
 		atkClock->restart();
 		targetStatue.lock()->setPossessed(true);
 		get<lif::Drawable>()->setActive(false);
+		selectedNewPattern = false;
 		state = State::HAUNTING;
 		return;
 	}
@@ -215,17 +220,26 @@ void HauntingSpiritBoss::_updateHaunting() {
 	if (_isShooting()) {
 		atkClock->restart();
 		return;
+	} else if (!selectedNewPattern) {
+		// Select the next pattern as soon as we stop shooting;
+		// actually start shooting only after PATTERN_SHOOT_DELAY
+		// (the pattern is selected now so we can change the spirit's color)
+		selectedNewPattern = true;
+		std::uniform_int_distribution<unsigned> dist(0, shootPatterns.size() - 1);
+		const auto idx = dist(lif::rng);
+		curShootPattern = shootPatterns[idx];
+		targetStatue.lock()->setSpiritColor(shootColors[idx]);
 	}
-	if (hauntClock->getElapsedTime() > sf::seconds(25)) {
+	// We haunted this statue long enough: select a new one
+	if (hauntClock->getElapsedTime() > lif::conf::boss::haunting_spirit_boss::CHANGE_STATUE_DELAY) {
 		get<lif::Drawable>()->setActive(true);
 		targetStatue.lock()->setPossessed(false);
 		state = State::SELECT_NEW_STATUE;
 		return;
 	}
-	if (atkClock->getElapsedTime() > sf::seconds(3)) {
-		std::uniform_int_distribution<unsigned short> dist(0, shootPatterns.size() - 1);
-		curShootPattern = shootPatterns[dist(lif::rng)];
+	if (atkClock->getElapsedTime() > lif::conf::boss::haunting_spirit_boss::PATTERN_SHOOT_DELAY) {
 		curShootPattern->resetAndPlay();
+		selectedNewPattern = false;
 	}
 }
 
