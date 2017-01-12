@@ -21,5 +21,7 @@ std::map<unsigned short, const lif::BulletData> lif::conf::bullet::data = {
 	{ 7, lif::BulletData(26, 1, 4, 4) },
 	//// FreeBullets ////
 	// star
-	{ 101, lif::BulletData(20, 2, 5) }
+	{ 101, lif::BulletData(20, 2, 5) },
+	// spirit bullets
+	{ 102, lif::BulletData(16, 2, 3) }
 };

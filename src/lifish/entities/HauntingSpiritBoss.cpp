@@ -62,7 +62,7 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	atkClock = addComponent(new lif::Clock(*this));
 
 	lif::BulletInfo bullet;
-	bullet.id = 101;
+	bullet.id = 102;
 	bullet.speed = 1;
 	bullet.damage = 4;
 	auto circle = addComponent(new lif::CircleShootingPattern(*this, bullet));

@@ -7,7 +7,6 @@ namespace lif {
 namespace conf {
 	namespace boss {
 		const sf::Time DEATH_TIME = sf::seconds(4);
-		const sf::Time HURT_TIME = sf::seconds(0.40);
 
 		namespace alien_boss {
 			constexpr unsigned int VALUE = 5000;

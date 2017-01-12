@@ -3,6 +3,7 @@
 #include "Drawable.hpp"
 #include "Collider.hpp"
 #include "core.hpp"
+#include "HurtDrawProxy.hpp"
 #include "ZIndexed.hpp"
 #include "Fixed.hpp"
 #include "Killable.hpp"
@@ -48,7 +49,10 @@ HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : lif::Entity(pos) {
 		// is kill in progress
 		return animated->getSprite().isPlaying();
 	}));
-	addComponent(new lif::Lifed(*this, lif::conf::boss::haunting_spirit_boss::HAUNTED_STATUE_LIFE));
+	addComponent(new lif::Lifed(*this, lif::conf::boss::haunting_spirit_boss::HAUNTED_STATUE_LIFE, [this] (int) {
+		// on hurt
+		get<lif::HurtDrawProxy>()->hurt();
+	}));
 	addComponent(new lif::Drawable(*this, *this));
 	auto hurt_by_explosion = lif::hurtByExplosions(*this, lif::CFO_TAKE_SINGLE_HIT | lif::CFO_ONLY_ADJACENT);
 	addComponent(new lif::Collider(*this, [this, hurt_by_explosion] (lif::Collider& cld) {
@@ -58,10 +62,11 @@ HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : lif::Entity(pos) {
 	}, lif::c_layers::BREAKABLES, sf::Vector2f(TILE_SIZE, TILE_SIZE)));
 	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::TALL_ENTITIES));
 	addComponent(new lif::Fixed(*this));
+	hurtProxy = addComponent(new lif::HurtDrawProxy(*this));
 }
 
 void HauntedStatue::draw(sf::RenderTarget& window, sf::RenderStates states) const {
-	window.draw(*animated, states);
+	window.draw(*hurtProxy, states);
 	if (possessed)
 		window.draw(*spirit, states);
 }

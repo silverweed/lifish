@@ -11,6 +11,7 @@
 #include "GameCache.hpp"
 #include "Sounded.hpp"
 #include "Explosion.hpp"
+#include "HurtDrawProxy.hpp"
 #include "Lifed.hpp"
 #include "conf/zindex.hpp"
 #include "conf/boss.hpp"
@@ -22,13 +23,10 @@ using lif::TILE_SIZE;
 
 Boss::Boss(const sf::Vector2f& pos)
 	: lif::Entity(pos)
-	, drawProxy(*this)
 {
 	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::BOSSES));
 	addComponent(new lif::Foe(*this));
 	explClock = addComponent(new lif::Clock(*this));
-	hurtClock = addComponent(new lif::Clock(*this));
-	hurtClock->add(lif::conf::boss::HURT_TIME);
 	deathClock = addComponent(new lif::Clock(*this));
 	killable = addComponent(new lif::Killable(*this, [this] () {
 		// on kill
@@ -54,7 +52,7 @@ Boss::Boss(const sf::Vector2f& pos)
 		lif::cache.playSound(expl->get<lif::Sounded>()->getSoundFile("explode"));
 		return expl;
 	}));
-	addComponent(new lif::Drawable(*this, drawProxy));
+	addComponent(new lif::Drawable(*this, *addComponent(new lif::HurtDrawProxy(*this))));
 }
 
 lif::Entity* Boss::init() {
@@ -66,10 +64,6 @@ lif::Entity* Boss::init() {
 	if (killable == nullptr)
 		throw std::logic_error("Killable is null for " + toString() + "!");
 	return this;
-}
-
-void Boss::_hurt() {
-	hurtClock->restart();
 }
 
 void Boss::_kill() {
@@ -101,31 +95,9 @@ void Boss::_checkCollision(lif::Collider& coll) {
 					* std::round(float(wy - y) / lif::TILE_SIZE) * expl.getDamage();
 	
 	if (get<lif::Lifed>()->decLife(damage) > 0)
-		_hurt();
+		get<lif::HurtDrawProxy>()->hurt();
 	else
 		killable->kill();
 	expl.dealDamageTo(*this);
 	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("hurt"));
-}
-
-
-///////// BossDrawableProxy /////////
-lif::BossDrawableProxy::BossDrawableProxy(const lif::Boss& b)
-	: boss(b)
-{}
-
-void lif::BossDrawableProxy::draw(sf::RenderTarget& window, sf::RenderStates states) const {
-	// Assume `boss.animated` is non-null for convenience
-	window.draw(*boss.animated, states);
-	if (boss.hurtClock->getElapsedTime() < lif::conf::boss::HURT_TIME) {
-		const auto& sprite = boss.animated->getSprite();
-		sf::Sprite hurtSprite(*boss.animated->getTexture(), 
-				sprite.getAnimation()->getFrame(sprite.getCurrentFrame()));
-		hurtSprite.setOrigin(sprite.getOrigin());
-		hurtSprite.setPosition(sprite.getPosition());
-		hurtSprite.setRotation(sprite.getRotation());
-		hurtSprite.setScale(sprite.getScale());
-		hurtSprite.setColor(sf::Color(255, 0, 0, 180));
-		window.draw(hurtSprite, states);
-	}
 }
