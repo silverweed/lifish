@@ -7,10 +7,11 @@ using lif::LightSource;
 LightSource::LightSource(lif::Entity& owner, float radius, sf::Color color, float flickerIntensity,
 		unsigned short flickerLen)
 	: lif::Component(owner)
+	, smoothing(flickerLen)
+	, origRadius(radius)
 	, radius(radius)
 	, color(color)
 	, flickerLen(flickerLen)
-	, smoothing(flickerLen)
 {
 	if (flickerIntensity > 0) {
 		_fillRandomPool(flickerIntensity);
@@ -22,8 +23,11 @@ LightSource::LightSource(lif::Entity& owner, float radius, sf::Color color, floa
 void LightSource::update() {
 	lif::Component::update();
 
-	if (flickerLen > 0)
-		color.a = 256 * _flickerStep();
+	if (flickerLen > 0) {
+		const float f = _flickerStep();
+		color.a = 256 * f;
+		radius = origRadius * f;
+	}
 }
 
 void LightSource::_fillRandomPool(float flickerAmount) {

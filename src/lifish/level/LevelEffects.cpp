@@ -78,9 +78,10 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 	lm.getEntities().apply([this, dy, origin] (const lif::Entity *e) {
 		const auto source = e->get<lif::LightSource>();
 		if (source == nullptr) return;
-		sf::CircleShape light(source->getRadius());
+		const float radius = source->getRadius();
+		sf::CircleShape light(radius);
 		const auto pos = e->getPosition();
-		light.setPosition(pos.x - 1.5 * TILE_SIZE, dy - pos.y - 0.5 * TILE_SIZE);
+		light.setPosition(pos.x - TILE_SIZE - 0.5 * radius, dy - pos.y - 0.5 * radius);
 		light.setFillColor(source->getColor());
 		darknessRenderTex.draw(light);
 	});
