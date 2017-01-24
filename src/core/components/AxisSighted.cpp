@@ -3,8 +3,6 @@
 #include "Collider.hpp"
 #include "EntityGroup.hpp"
 
-#include <iostream>
-
 using lif::AxisSighted;
 
 // Helper functions for _fillLine
@@ -36,6 +34,7 @@ void AxisSighted::update() {
 	lif::Component::update();
 	if (entities == nullptr) return;
 
+	vision.fill(-1);
 	for (unsigned i = 0; i < static_cast<unsigned>(lif::Direction::NONE); ++i) {
 		_fillLine(static_cast<lif::Direction>(i));	
 	}
@@ -76,17 +75,21 @@ void AxisSighted::_fillLine(const lif::Direction dir) {
 		// NOTE THAT at the moment only the first collider of the entity is used
 		// to determine opaqueness; this assumes that we only see entities whose
 		// first collider determines their bounding box.
-		vision.fill(-1);
 		for (auto it = seen[dir].begin(); it != seen[dir].end(); ++it) {
 			const auto cld = it->first.lock()->get<lif::Collider>();
 			if (cld != nullptr) {
 				const auto layer = cld->getLayer();
 				if (_isOpaque(layer)) {
-					vision[dir] = it->second - static_cast<int>(
-						dir == lif::Direction::UP || dir == lif::Direction::DOWN
-							? cld->getSize().y / TILE_SIZE
-							: cld->getSize().x / TILE_SIZE);
-					std::cerr << this << ": _vision[" << dir << "] = " << vision[dir] << std::endl;
+					switch (dir) {
+					case lif::Direction::DOWN:
+					case lif::Direction::UP:
+						vision[dir] = lif::abs(owner.getPosition().y - cld->getPosition().y);
+						break;
+					case lif::Direction::LEFT:
+					case lif::Direction::RIGHT:
+						vision[dir] = lif::abs(owner.getPosition().x - cld->getPosition().x);
+						break;
+					}
 					seen[dir].erase(it, seen[dir].end());
 					break;
 				}

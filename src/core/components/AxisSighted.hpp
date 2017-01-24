@@ -18,7 +18,7 @@ class AxisSighted : public lif::Sighted {
 	 *  This array is indexed by Directions, treated as unsigned.
 	 */
 	TotSeenEntitiesList seen;
-	std::array<int, static_cast<unsigned short>(lif::Direction::NONE)> vision;
+	std::array<float, static_cast<unsigned short>(lif::Direction::NONE)> vision;
 
 	/** Fills seen[dir] with entities seen in that direction */
 	void _fillLine(const lif::Direction dir);
@@ -34,10 +34,10 @@ public:
 		return seen[static_cast<std::size_t>(dir)];
 	}
 	
-	/** @return The number of tiles seen by entity before first opaque entity along `dir`;
+	/** @return The number of pixels seen by entity before first opaque entity along `dir`;
 	 *  if none, return -1.
 	 */
-	int getVision(lif::Direction dir) const {
+	float getVision(lif::Direction dir) const {
 		return vision[static_cast<std::size_t>(dir)];
 	}
 

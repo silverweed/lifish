@@ -14,6 +14,8 @@ class LevelEffects : private sf::NonCopyable {
 	bool darknessOn;
 	mutable sf::RenderTexture darknessRenderTex;
 
+
+	void _blendDarkness(const lif::LevelManager& lm, sf::RenderTarget& window, const sf::Vector2f& origin) const;
 public:
 	explicit LevelEffects();
 
