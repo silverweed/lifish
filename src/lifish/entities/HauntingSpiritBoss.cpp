@@ -21,7 +21,7 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 {
 	// This boss has no Lifed component: it dies when there are no HauntedStatues left in the level.
 	addComponent(new lif::FreeSighted(*this))->setActive(false);
-	animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "haunting_spirit.png")));
+	animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "haunting_spirit_boss.png")));
 	const auto size = 4 * lif::TILE_SIZE;
 	// This is needed by parent class
 	collider = addComponent(new lif::Collider(*this, lif::c_layers::DEFAULT,

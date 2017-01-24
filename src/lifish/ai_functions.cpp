@@ -151,7 +151,7 @@ AIBoundFunction lif::ai_random_forward(lif::Entity& entity) {
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving"
 				" or Collider component!");
 	moving->setAutoRealign(false);
-	moving->setDistTravelled(3);
+	moving->setDistTravelled(4);
 
 	return [&entity, moving, collider] (const lif::LevelManager& lm) { 
 		HANDLE_NOT_MOVING;
@@ -166,7 +166,7 @@ AIBoundFunction lif::ai_random_forward(lif::Entity& entity) {
 		// Note: this `if` prevents the entity to change direction twice in a row even
 		// when it shouldn't (due to the fact that, if its movement is less than 1px/frame,
 		// it may be considered "aligned" again after changing direction.)
-		if (moving->getDistTravelled() > 1 || moving->getDistTravelled() == 0) {
+		if (moving->getDistTravelled() > 3 || moving->getDistTravelled() == 0) {
 			collider->reset();
 			NEW_DIRECTION(select_random_viable(*moving, lm, opp))
 		} else {

@@ -115,9 +115,17 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 					entities.add(teleport);
 					break;
 				}
-			case EntityType::BOSS:
+			case EntityType::ALIEN_BOSS:
 				{
 					auto boss = new lif::AlienBoss(curPos);
+					for (auto s : boss->getAllRecursive<lif::Sighted>())
+						s->setEntityGroup(&lm.entities);
+					entities.add(boss);
+				}
+				break;
+			case EntityType::HAUNTING_SPIRIT_BOSS:
+				{
+					auto boss = new lif::HauntingSpiritBoss(curPos);
 					for (auto s : boss->getAllRecursive<lif::Sighted>())
 						s->setEntityGroup(&lm.entities);
 					entities.add(boss);
@@ -183,10 +191,6 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 			}
 		}
 	}
-
-	auto hboss = new lif::HauntingSpiritBoss(sf::Vector2f(272, 240));
-	for (auto s : hboss->getAllRecursive<lif::Sighted>()) s->setEntityGroup(&lm.entities);
-	entities.add(hboss);
 
 	const auto& effects = level.getInfo().effects;
 	if (effects.find("fog") != effects.end()) {

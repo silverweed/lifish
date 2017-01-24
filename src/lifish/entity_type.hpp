@@ -23,10 +23,11 @@ enum class EntityType {
 	ENEMY8,
 	ENEMY9,
 	ENEMY10,
-	BOSS,
+	ALIEN_BOSS,
 	TRANSPARENT_WALL,
 	ACID_POND,
-	HAUNTED_STATUE
+	HAUNTED_STATUE,
+	HAUNTING_SPIRIT_BOSS
 };
 
 EntityType entityFromLetter(const char c);
