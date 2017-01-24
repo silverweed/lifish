@@ -17,7 +17,7 @@ inline std::string directionToString(const Direction& dir) {
 	switch (dir) {
 	case Direction::UP:    return "up";
 	case Direction::LEFT:  return "left";
-	case Direction::DOWN:  return "down"; 
+	case Direction::DOWN:  return "down";
 	case Direction::RIGHT: return "right";
 	default:               return "none";
 	}
@@ -25,20 +25,20 @@ inline std::string directionToString(const Direction& dir) {
 
 inline std::ostream& operator<<(std::ostream& stream, const Direction& dir) {
 	switch (dir) {
-	case Direction::UP:    
+	case Direction::UP:
 		stream << "UP";
 		break;
 	case Direction::LEFT:
-		stream << "LEFT"; 
+		stream << "LEFT";
 		break;
-	case Direction::DOWN:  
+	case Direction::DOWN:
 		stream << "DOWN";
 		break;
-	case Direction::RIGHT: 
-		stream << "RIGHT"; 
+	case Direction::RIGHT:
+		stream << "RIGHT";
 		break;
-	default: 
-		stream << "NONE"; 
+	default:
+		stream << "NONE";
 		break;
 	}
 	return stream;

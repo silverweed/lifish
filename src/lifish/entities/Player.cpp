@@ -13,6 +13,7 @@
 #include "Bullet.hpp"
 #include "Explosion.hpp"
 #include "Killable.hpp"
+#include "AxisSighted.hpp"
 #include "Controllable.hpp"
 #include "GameCache.hpp"
 #include "ZIndexed.hpp"
@@ -71,9 +72,12 @@ void Player::_init() {
 	}, [this] () {
 		return death->isKillInProgress();
 	}));
+	addComponent(new lif::AxisSighted(*this));
 	bonusable = addComponent(new lif::Bonusable(*this));
 	movingAnimator = addComponent(new lif::MovingAnimator(*this));
-	addComponent(new lif::Controllable(*this, lif::controls::players[info.id-1], lif::controls::useJoystick[info.id-1]));
+	addComponent(new lif::Controllable(*this,
+				lif::controls::players[info.id-1],
+				lif::controls::useJoystick[info.id-1]));
 	hurtClock = addComponent(new lif::Clock(*this));
 	death = addComponent(new lif::RegularEntityDeath(*this, lif::conf::player::DEATH_TIME));
 

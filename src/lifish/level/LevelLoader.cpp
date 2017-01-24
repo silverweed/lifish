@@ -19,7 +19,7 @@
 #include "Wisp.hpp"
 #include "AlienPredator.hpp"
 #include "AcidPond.hpp"
-#include "Fog.hpp"
+#include "LevelEffects.hpp"
 #include "HauntedStatue.hpp"
 #include "HauntingSpiritBoss.hpp"
 #include "Sprite.hpp"
@@ -52,8 +52,19 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 					);
 			};
 
+			auto add_player = [&lm, &entities, is_game_over] (unsigned short id, const sf::Vector2f& pos) {
+				if (!is_game_over(id)) {
+					lm.players[id]->setWinning(false);
+					lm.players[id]->setPosition(pos);
+					lm.players[id]->get<lif::Animated>()->setAnimation("idle");
+					lm.players[id]->get<lif::Moving>()->stop();
+					entities.add(lm.players[id]);
+					entities.add(new lif::Flash(pos));
+				}
+			};
+
 			switch (level.getTile(left, top)) {
-			case EntityType::FIXED: 
+			case EntityType::FIXED:
 				entities.add(new lif::FixedWall(curPos, level.getInfo().tileIDs.fixed));
 				break;
 
@@ -77,26 +88,14 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				entities.add(new lif::HauntedStatue(curPos));
 				break;
 
-			case EntityType::PLAYER1: 
-				if (!is_game_over(0)) {
-					lm.players[0]->setWinning(false);
-					lm.players[0]->setPosition(curPos);
-					lm.players[0]->get<lif::Animated>()->setAnimation("idle");
-					lm.players[0]->get<lif::Moving>()->stop();
-					entities.add(lm.players[0]);
-					entities.add(new lif::Flash(curPos));
-				}
+			case EntityType::PLAYER1:
+				add_player(0, curPos);
 				break;
-			case EntityType::PLAYER2: 
-				if (!is_game_over(1)) {
-					lm.players[1]->setWinning(false);
-					lm.players[1]->setPosition(curPos);
-					lm.players[1]->get<lif::Animated>()->setAnimation("idle");
-					lm.players[1]->get<lif::Moving>()->stop();
-					entities.add(lm.players[1]);
-					entities.add(new lif::Flash(curPos));
-				}
+
+			case EntityType::PLAYER2:
+				add_player(1, curPos);
 				break;
+
 			case EntityType::TELEPORT:
 				{
 					auto teleport = new lif::Teleport(curPos);
@@ -113,8 +112,9 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 					latest_teleport = teleport;
 
 					entities.add(teleport);
-					break;
 				}
+				break;
+
 			case EntityType::ALIEN_BOSS:
 				{
 					auto boss = new lif::AlienBoss(curPos);
@@ -123,6 +123,7 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 					entities.add(boss);
 				}
 				break;
+
 			case EntityType::HAUNTING_SPIRIT_BOSS:
 				{
 					auto boss = new lif::HauntingSpiritBoss(curPos);
@@ -131,43 +132,56 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 					entities.add(boss);
 				}
 				break;
-			case EntityType::ENEMY1: 
+
+			case EntityType::ENEMY1:
 				enemy_id = 1;
 				break;
-			case EntityType::ENEMY2: 
+
+			case EntityType::ENEMY2:
 				enemy_id = 2;
 				break;
-			case EntityType::ENEMY3: 
+
+			case EntityType::ENEMY3:
 				enemy_id = 3;
 				break;
+
 			case EntityType::ENEMY4:
 				enemy_id = 4;
 				break;
-			case EntityType::ENEMY5: 
+
+			case EntityType::ENEMY5:
 				enemy_id = 5;
 				break;
-			case EntityType::ENEMY6: 
+
+			case EntityType::ENEMY6:
 				enemy_id = 6;
 				break;
-			case EntityType::ENEMY7: 
+
+			case EntityType::ENEMY7:
 				enemy_id = 7;
 				break;
-			case EntityType::ENEMY8: 
+
+			case EntityType::ENEMY8:
 				enemy_id = 8;
 				break;
-			case EntityType::ENEMY9: 
+
+			case EntityType::ENEMY9:
 				enemy_id = 9;
 				break;
-			case EntityType::ENEMY10: 
+
+			case EntityType::ENEMY10:
 				enemy_id = 10;
 				break;
+
 			case EntityType::EMPTY:
 				break;
+
 			default:
 				std::cerr << "Invalid tile at (" << left << ", " << top << "): "
 					<< level.getTile(left, top) << std::endl;
 				break;
 			}
+
 			if (enemy_id > 0) {
 				lif::Enemy *enemy = nullptr;
 				const auto& info = ls.getEnemyInfo(enemy_id);
@@ -187,15 +201,25 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				auto sighted = enemy->get<lif::Sighted>();
 				sighted->setEntityGroup(&lm.entities);
 				sighted->setOpaque({ lif::c_layers::BREAKABLES, lif::c_layers::UNBREAKABLES });
+				sighted->setActive(false);
 				entities.add(enemy);
 			}
 		}
 	}
 
-	const auto& effects = level.getInfo().effects;
-	if (effects.find("fog") != effects.end()) {
-		entities.add(new lif::Fog);	
+	for (auto e : LevelEffects::getEffectEntities(level))
+		entities.add(e);
+	
+	for (unsigned short i = 0; i < lm.players.size(); ++i) {
+		if (lm.players[i] == nullptr) continue;
+		auto sighted = lm.players[i]->get<lif::Sighted>();
+		sighted->setEntityGroup(&lm.entities);
+		sighted->setOpaque({
+			lif::c_layers::BREAKABLES,
+			lif::c_layers::UNBREAKABLES
+		});
 	}
+
 	lm.levelTime.resume();
 
 	return true;

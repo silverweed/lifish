@@ -61,7 +61,7 @@ end
 
 TEMPLATE_HPP = "#pragma once
 #{includes}
-namespace Game {
+namespace lif {
 
 class #{clsname} #{derived}{
 public:

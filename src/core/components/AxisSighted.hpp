@@ -7,7 +7,9 @@ namespace lif {
 
 /** An AxisSighted entity has knowledge of entities around it along axis directions. */
 class AxisSighted : public lif::Sighted {
-	using PartSeenEntitiesList = std::vector<std::pair<std::weak_ptr<lif::Entity>, unsigned short>>;
+	/** Pair <entity, distance in tiles> */
+	using SeenPair = std::pair<std::weak_ptr<lif::Entity>, unsigned>;
+	using PartSeenEntitiesList = std::vector<SeenPair>;
 	using TotSeenEntitiesList = std::array<
 		PartSeenEntitiesList,
 		static_cast<unsigned short>(lif::Direction::NONE)>;
@@ -16,6 +18,7 @@ class AxisSighted : public lif::Sighted {
 	 *  This array is indexed by Directions, treated as unsigned.
 	 */
 	TotSeenEntitiesList seen;
+	std::array<int, static_cast<unsigned short>(lif::Direction::NONE)> vision;
 
 	/** Fills seen[dir] with entities seen in that direction */
 	void _fillLine(const lif::Direction dir);
@@ -27,10 +30,17 @@ public:
 	const TotSeenEntitiesList& entitiesSeen() const { return seen; }
 
 	/** @return A list of pair {entity, distance_in_tiles (discrete)} as seen along direction `dir` */
-	const PartSeenEntitiesList& entitiesSeen(lif::Direction dir) const { 
-		return seen[static_cast<size_t>(dir)];
+	const PartSeenEntitiesList& entitiesSeen(lif::Direction dir) const {
+		return seen[static_cast<std::size_t>(dir)];
 	}
 	
+	/** @return The number of tiles seen by entity before first opaque entity along `dir`;
+	 *  if none, return -1.
+	 */
+	int getVision(lif::Direction dir) const {
+		return vision[static_cast<std::size_t>(dir)];
+	}
+
 	void update() override;
 };
 

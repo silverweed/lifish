@@ -3,6 +3,8 @@
 #include "Collider.hpp"
 #include "EntityGroup.hpp"
 
+#include <iostream>
+
 using lif::AxisSighted;
 
 // Helper functions for _fillLine
@@ -26,7 +28,9 @@ static bool check_right(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
 
 AxisSighted::AxisSighted(lif::Entity& owner, float visionRadius)
 	: lif::Sighted(owner, visionRadius)
-{}
+{
+	vision.fill(-1);
+}
 
 void AxisSighted::update() {
 	lif::Component::update();
@@ -42,8 +46,8 @@ void AxisSighted::_fillLine(const lif::Direction dir) {
 
 	const auto mtile = lif::tile2(owner.getPosition());
 	auto same_line = dir == lif::Direction::UP ? check_up :
-			dir == lif::Direction::DOWN ? check_down :
-			dir == lif::Direction::LEFT ? check_left : check_right;
+	                 dir == lif::Direction::DOWN ? check_down :
+	                 dir == lif::Direction::LEFT ? check_left : check_right;
 
 	seen[dir].clear();
 
@@ -64,10 +68,7 @@ void AxisSighted::_fillLine(const lif::Direction dir) {
 		}
 	});
 
-	std::sort(seen[dir].begin(), seen[dir].end(), [] (
-				const std::pair<std::weak_ptr<lif::Entity>, unsigned short> a,
-				const std::pair<std::weak_ptr<lif::Entity>, unsigned short> b)
-	{
+	std::sort(seen[dir].begin(), seen[dir].end(), [] (const SeenPair& a, const SeenPair& b) {
 		return a.second < b.second;
 	});
 	if (opaqueMask != 0) {
@@ -75,11 +76,17 @@ void AxisSighted::_fillLine(const lif::Direction dir) {
 		// NOTE THAT at the moment only the first collider of the entity is used
 		// to determine opaqueness; this assumes that we only see entities whose
 		// first collider determines their bounding box.
+		vision.fill(-1);
 		for (auto it = seen[dir].begin(); it != seen[dir].end(); ++it) {
 			const auto cld = it->first.lock()->get<lif::Collider>();
 			if (cld != nullptr) {
 				const auto layer = cld->getLayer();
 				if (_isOpaque(layer)) {
+					vision[dir] = it->second - static_cast<int>(
+						dir == lif::Direction::UP || dir == lif::Direction::DOWN
+							? cld->getSize().y / TILE_SIZE
+							: cld->getSize().x / TILE_SIZE);
+					std::cerr << this << ": _vision[" << dir << "] = " << vision[dir] << std::endl;
 					seen[dir].erase(it, seen[dir].end());
 					break;
 				}

@@ -7,6 +7,7 @@
 #include "SHCollisionDetector.hpp"
 #include "DroppingTextManager.hpp"
 #include "LevelRenderer.hpp"
+#include "LevelEffects.hpp"
 #include "LevelTime.hpp"
 #include "conf/player.hpp"
 #include "Direction.hpp"
@@ -61,6 +62,7 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable {
 	/** The currently managed level */
 	std::unique_ptr<lif::Level> level;
 	lif::LevelRenderer renderer;
+	lif::LevelEffects effects;
 	lif::LevelTime levelTime;
 
 	/** Whether hurry up has already been triggered or not */
@@ -133,6 +135,8 @@ public:
 
 	const lif::LevelTime& getLevelTime() const { return levelTime; }
 	const lif::CollisionDetector& getCollisionDetector() const { return cd; }
+	const lif::LevelEffects& getLevelEffects() const { return effects; }
+	lif::LevelEffects& getLevelEffects() { return effects; }
 
 	bool isGameOver() const { return gameOver; }
 	bool isLevelClear() const;

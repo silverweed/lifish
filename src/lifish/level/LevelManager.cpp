@@ -168,6 +168,7 @@ void LevelManager::setNextLevel() {
 void LevelManager::setLevel(const lif::LevelSet& ls, unsigned short lvnum) {
 	_mtxLock();
 	level = ls.getLevel(lvnum);
+	effects.setEffects(level->getInfo().effects);
 	lif::LevelLoader::load(*level, *this);
 	_mtxUnlock();
 	// Don't trigger EXTRA game if there were no coins in the level

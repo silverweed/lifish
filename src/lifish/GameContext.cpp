@@ -162,6 +162,8 @@ void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const 
 	gameSprite.setOrigin(origin);
 	window.draw(gameSprite, states);
 
+	lm.getLevelEffects().blendEffects(lm, window, origin);
+
 	sf::Sprite sidePanelSprite(sidePanelRenderTex.getTexture());
 	window.draw(sidePanelSprite, states);
 }
