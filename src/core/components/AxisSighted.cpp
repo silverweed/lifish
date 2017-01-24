@@ -89,6 +89,8 @@ void AxisSighted::_fillLine(const lif::Direction dir) {
 					case lif::Direction::RIGHT:
 						vision[dir] = lif::abs(owner.getPosition().x - cld->getPosition().x);
 						break;
+					default:
+						break;
 					}
 					seen[dir].erase(it, seen[dir].end());
 					break;

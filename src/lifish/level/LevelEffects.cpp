@@ -48,12 +48,12 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 		const auto pos = player->getPosition();
 		const auto sighted = player->get<lif::AxisSighted>();
 		// distance with nearest opaque entity
-		std::array<float, static_cast<std::size_t>(lif::Direction::NONE)> nearest = {
+		std::array<float, static_cast<std::size_t>(lif::Direction::NONE)> nearest = {{
 			pos.y - TILE_SIZE, // up
 			pos.x - TILE_SIZE, // left
-			LEVEL_HEIGHT * TILE_SIZE - nearest[0] - TILE_SIZE, // down
-			LEVEL_WIDTH * TILE_SIZE - nearest[1] - TILE_SIZE,  // right
-		};
+			(LEVEL_HEIGHT - 2) * TILE_SIZE - pos.y, // down
+			(LEVEL_WIDTH - 2) * TILE_SIZE - pos.x,  // right
+		}};
 		// calculate vision in all directions
 		for (unsigned i = 0; i < nearest.size(); ++i) {
 			const float vision = sighted->getVision(static_cast<lif::Direction>(i));
