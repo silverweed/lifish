@@ -51,8 +51,8 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 		std::array<float, static_cast<std::size_t>(lif::Direction::NONE)> nearest = {{
 			pos.y - TILE_SIZE, // up
 			pos.x - TILE_SIZE, // left
-			(LEVEL_HEIGHT - 2) * TILE_SIZE - pos.y, // down
-			(LEVEL_WIDTH - 2) * TILE_SIZE - pos.x,  // right
+			LEVEL_HEIGHT * TILE_SIZE - pos.y, // down
+			LEVEL_WIDTH * TILE_SIZE - pos.x,  // right
 		}};
 		// calculate vision in all directions
 		for (unsigned i = 0; i < nearest.size(); ++i) {
@@ -81,7 +81,7 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 		const float radius = source->getRadius();
 		sf::CircleShape light(radius);
 		const auto pos = e->getPosition();
-		light.setPosition(pos.x - TILE_SIZE - 0.5 * radius, dy - pos.y - 0.5 * radius);
+		light.setPosition(pos.x - 0.5 * TILE_SIZE - radius, dy - pos.y + 0.5 * TILE_SIZE - radius);
 		light.setFillColor(source->getColor());
 		darknessRenderTex.draw(light);
 	});

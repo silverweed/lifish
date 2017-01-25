@@ -17,6 +17,7 @@
 #include "conf/bonus.hpp"
 #include "Sounded.hpp"
 #include "BufferedSpawner.hpp"
+#include "LightSource.hpp"
 #include <list>
 #include <algorithm>
 
@@ -24,7 +25,7 @@ using lif::Explosion;
 using lif::TILE_SIZE;
 using lif::Direction;
 
-Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius, 
+Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 		const lif::Entity *const source, bool isIncendiary, int damage)
 	: lif::Entity(pos)
 	, radius(_radius)
@@ -32,6 +33,7 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 	, sourceEntity(source)
 {
 	explosionC = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "explosionC.png")));
+	lightSource = addComponent(new lif::LightSource(*this, (radius + 0.5) * TILE_SIZE));
 	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::EXPLOSIONS));
 	explosionC->addAnimation("explode", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),
@@ -74,7 +76,13 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 	propagation.fill(0);
 }
 
-lif::Explosion* Explosion::propagate(lif::LevelManager& lm) {
+void Explosion::update() {
+	lif::Entity::update();
+	lightSource->setColor(sf::Color(255, 255, 255,
+		(4 - lif::abs(static_cast<signed>(explosionC->getSprite().getCurrentFrame()) - 3)) * 255 / 4.0));
+}
+
+Explosion* Explosion::propagate(lif::LevelManager& lm) {
 	const sf::Vector2i m_tile = lif::tile(position);
 	bool propagating[] = { true, true, true, true };
 	bool blocked[] = { false, false, false, false };

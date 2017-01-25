@@ -11,6 +11,7 @@
 #include "Collider.hpp"
 #include "game.hpp"
 #include "Fixed.hpp"
+#include "LightSource.hpp"
 
 using lif::Bomb;
 using lif::TILE_SIZE;
@@ -49,6 +50,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Player& source,
 	addComponent(new lif::Spawning(*this, [this] () {
 		return new lif::Explosion(position, radius, &sourcePlayer, incendiary);
 	}));
+	addComponent(new lif::LightSource(*this, TILE_SIZE * 0.5));
 
 	auto& a_normal_idle = animated->addAnimation("normal_idle", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),

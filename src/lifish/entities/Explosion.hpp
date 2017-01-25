@@ -13,6 +13,7 @@ class Player;
 class Animated;
 class Explosion;
 class BufferedSpawner;
+class LightSource;
 
 /**
  * A bomb's explosion; like in original BOOM, the explosion
@@ -29,6 +30,7 @@ class Explosion : public lif::Entity, public sf::Drawable {
 
 	/** This is only non-null if explosion is incendiary */
 	lif::BufferedSpawner *spawner = nullptr;
+	lif::LightSource *lightSource = nullptr;
 
 	/** Colliders used to check explosion's hits */
 	lif::Collider *explColliderH = nullptr,
@@ -90,6 +92,8 @@ public:
 	 */
 	void dealDamageTo(const lif::Entity& entity);
 	bool hasDamaged(const lif::Entity& entity) const;
+
+	void update() override;
 };
 
 }
