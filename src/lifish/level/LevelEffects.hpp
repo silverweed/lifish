@@ -11,7 +11,7 @@ class Level;
 class LevelManager;
 
 class LevelEffects : private sf::NonCopyable {
-	bool darknessOn;
+	bool darknessOn = false;
 	mutable sf::RenderTexture darknessRenderTex;
 
 
