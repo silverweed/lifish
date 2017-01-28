@@ -201,7 +201,6 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				auto sighted = enemy->get<lif::Sighted>();
 				sighted->setEntityGroup(&lm.entities);
 				sighted->setOpaque({ lif::c_layers::BREAKABLES, lif::c_layers::UNBREAKABLES });
-				sighted->setActive(false);
 				entities.add(enemy);
 			}
 		}
