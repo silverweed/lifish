@@ -55,11 +55,21 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 		const auto source = e->get<lif::LightSource>();
 		if (source == nullptr) return;
 		const float radius = source->getRadius();
-		sf::CircleShape light(radius);
-		const auto pos = e->getPosition();
-		light.setPosition(pos.x - 0.5 * TILE_SIZE - radius, dy - pos.y + 0.5 * TILE_SIZE - radius);
-		light.setFillColor(source->getColor());
-		darknessRenderTex.draw(light);
+		auto rects = _getRadialRectangles(e->getPosition(), radius/TILE_SIZE);
+
+		auto h = std::get<0>(rects);
+		h.setFillColor(source->getColor());
+		darknessRenderTex.draw(h);
+
+		auto v = std::get<1>(rects);
+		v.setFillColor(source->getColor());
+		darknessRenderTex.draw(v);
+
+		if (radius > TILE_SIZE) {
+			auto c = std::get<2>(rects);
+			c.setFillColor(source->getColor());
+			darknessRenderTex.draw(c);
+		}
 	});
 
 	sf::Sprite darkSprite(darknessRenderTex.getTexture());
@@ -107,13 +117,14 @@ auto LevelEffects::_getVisionRectangles(const lif::Entity& e) const
 auto LevelEffects::_getRadialRectangles(const sf::Vector2f& center, unsigned radius) const
 		-> std::tuple<sf::RectangleShape, sf::RectangleShape, sf::RectangleShape>
 {
+	const auto dy = darknessRenderTex.getSize().y;
 	sf::RectangleShape v(static_cast<float>(TILE_SIZE) * sf::Vector2f(1, 2 * radius + 1)),
 	                   h(static_cast<float>(TILE_SIZE) * sf::Vector2f(2 * radius + 1, 1)),
 	                   c(static_cast<float>(TILE_SIZE) * sf::Vector2f(2 * radius - 1, 2 * radius - 1));
 
-	v.setPosition(center.x, center.y - radius * TILE_SIZE);
-	h.setPosition(center.x - radius * TILE_SIZE, center.y);
-	c.setPosition(center.x - (radius + 1) * TILE_SIZE, center.y - (radius + 1) * TILE_SIZE);
+	v.setPosition(center.x - TILE_SIZE, dy - center.y - radius * TILE_SIZE);
+	h.setPosition(center.x - (radius + 1) * TILE_SIZE, dy - center.y);
+	c.setPosition(center.x - radius * TILE_SIZE, dy - center.y - (radius - 1) * TILE_SIZE);
 
 	return std::make_tuple(h, v, c);
 }

@@ -66,6 +66,12 @@ constexpr std::ostream& operator<<(std::ostream& stream, const sf::Rect<T>& rect
 		<< " x " << rect.width << ", " << rect.height << ")";
 }
 
+inline std::ostream& operator<<(std::ostream& stream, const sf::RectangleShape& rect) {
+	const auto p = rect.getPosition();
+	const auto s = rect.getSize();
+	return stream << "(" << p.x << ", " << p.y << " x " << s.x << ", " << s.y << ")";
+}
+
 template<typename T, typename R>
 constexpr double sqrDistance(const sf::Vector2<T>& a, const sf::Vector2<R>& b) {
 	return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);

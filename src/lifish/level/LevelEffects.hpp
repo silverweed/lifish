@@ -23,7 +23,10 @@ class LevelEffects : private sf::NonCopyable {
 	 */
 	auto _getVisionRectangles(const lif::Entity& e) const
 		-> std::pair<sf::RectangleShape, sf::RectangleShape>;
-	/** Returns a 3-ple of rectangleshapes that form a "tiled circle" around the given point `center`. */
+	/** Returns a 3-ple of rectangleshapes that form a "tiled circle" around the given point `center`.
+	 *  NOTE: the third rectangle will be undefined if `radius` is 0; it is the caller's responsibility
+	 *  to ensure it's not used improperly in that case.
+	 */
 	auto _getRadialRectangles(const sf::Vector2f& center, unsigned radius) const
 		-> std::tuple<sf::RectangleShape, sf::RectangleShape, sf::RectangleShape>;
 public:
