@@ -169,7 +169,7 @@ void lif::maybeShowFPS(sf::RenderWindow& window) {
 		cur_time += t;
 		++n_updates;
 		if (fps_update_clock.getElapsedTime().asSeconds() >= 1) {
-			int fps = (int)(n_updates / cur_time);
+			int fps = static_cast<int>(n_updates / cur_time);
 			std::stringstream ss;
 			ss << fps << " fps (vsync " << (lif::options.vsync ? "ON" : "OFF") << ")";
 			fps_text.setString(ss.str());
@@ -199,7 +199,7 @@ short lif::joystick_utils::getPauseButton(unsigned int id) {
 	// Xbox 360 controller has 10 buttons
 	// PS3 controller has 12 buttons
 	switch (sf::Joystick::getButtonCount(id)) {
-	case 10: 
+	case 10:
 		// XBox 360
 		return 7;
 	case 12:	

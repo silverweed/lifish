@@ -25,7 +25,7 @@ int Lifed::decLife(int dam, bool triggerCallback) {
 	life -= dam > life ? life : dam;
 
 	if (triggerCallback && onHurt)
-		onHurt(life);
+		onHurt(dam, life);
 
 	return life;
 }

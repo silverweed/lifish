@@ -57,8 +57,8 @@ SidePanel::SidePanel(const lif::LevelManager& lm)
 						(j / 10) * TILE_SIZE,
 						TILE_SIZE, TILE_SIZE));
 			bonusesSprite[i][j].setScale(
-					float(BONUS_ICON_WIDTH) / TILE_SIZE,
-					float(BONUS_ICON_HEIGHT) / TILE_SIZE);
+					static_cast<float>(BONUS_ICON_WIDTH) / TILE_SIZE,
+					static_cast<float>(BONUS_ICON_HEIGHT) / TILE_SIZE);
 			bonusesSprite[i][j].setPosition(pos);
 			bonusesSprite[i][j].setColor(DISABLED_COLOR);
 			pos.x += BONUS_ICON_WIDTH;
@@ -104,7 +104,8 @@ void SidePanel::_drawHealthSprites(sf::RenderTarget& window, sf::RenderStates st
 void SidePanel::_drawExtraLetters(sf::RenderTarget& window, sf::RenderStates states,
 		const lif::Player& player) const
 {
-	sf::Vector2f pos(EXTRA_LETTERS_POS_X, player.getInfo().id == 1 ? EXTRA_LETTERS_POS_Y_1 : EXTRA_LETTERS_POS_Y_2);
+	sf::Vector2f pos(EXTRA_LETTERS_POS_X, player.getInfo().id == 1
+			? EXTRA_LETTERS_POS_Y_1 : EXTRA_LETTERS_POS_Y_2);
 	for (unsigned j = 0; j < player.getInfo().extra.size(); ++j) {
 		const unsigned short i = player.getInfo().extra[j] ? j + 1 : 0;
 		sf::Sprite sprite(extraLettersTexture[i], extraLettersSprite[i].getTextureRect());
@@ -114,7 +115,7 @@ void SidePanel::_drawExtraLetters(sf::RenderTarget& window, sf::RenderStates sta
 }
 
 void SidePanel::_drawTime(sf::RenderTarget& window, sf::RenderStates states) const {
-	short seconds = short(lm.getLevelTime().getRemainingTime().asSeconds());
+	short seconds = static_cast<short>(lm.getLevelTime().getRemainingTime().asSeconds());
 	const short minutes = seconds < 0 ? 0 : seconds / 60;
 	std::stringstream ss;
 	if (minutes < 10)

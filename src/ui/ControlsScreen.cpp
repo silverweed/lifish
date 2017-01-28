@@ -194,7 +194,7 @@ bool ControlsScreen::handleEvent(sf::Window&, sf::Event event) {
 		{
 			// Only meaningful if we're using a joystick (and the correct one)
 			if (lif::controls::useJoystick[selectedPlayer-1] < 0 ||
-				short(event.joystickButton.joystickId) !=
+				static_cast<short>(event.joystickButton.joystickId) !=
 					lif::controls::useJoystick[selectedPlayer-1])
 			{
 				break;

@@ -369,8 +369,8 @@ void LevelManager::_checkResurrect() {
 
 bool LevelManager::canGo(const lif::AxisMoving& am, const lif::Direction dir) const {
 	auto pos = am.getOwner().getPosition();
-	int iposx = int(pos.x / TILE_SIZE),
-	    iposy = int(pos.y / TILE_SIZE);
+	int iposx = static_cast<int>(pos.x / TILE_SIZE),
+	    iposy = static_cast<int>(pos.y / TILE_SIZE);
 	
 	switch (dir) {
 	case Direction::UP:

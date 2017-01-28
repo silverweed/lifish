@@ -27,14 +27,14 @@ static bool check_right(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
 AxisSighted::AxisSighted(lif::Entity& owner, float visionRadius)
 	: lif::Sighted(owner, visionRadius)
 {
-	vision.fill(-1);
+	vision.fill(visionRadius * lif::TILE_SIZE);
 }
 
 void AxisSighted::update() {
 	lif::Component::update();
 	if (entities == nullptr) return;
 
-	vision.fill(-1);
+	vision.fill(visionRadius * lif::TILE_SIZE);
 	for (unsigned i = 0; i < static_cast<unsigned>(lif::Direction::NONE); ++i) {
 		_fillLine(static_cast<lif::Direction>(i));	
 	}

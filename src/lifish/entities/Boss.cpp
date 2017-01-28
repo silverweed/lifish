@@ -91,8 +91,8 @@ void Boss::_checkCollision(lif::Collider& coll) {
 	
 	assert(x > 0 && wx > 0 && y > 0 && wy > 0);
 
-	const unsigned damage = std::round(float(wx - x) / lif::TILE_SIZE) 
-					* std::round(float(wy - y) / lif::TILE_SIZE) * expl.getDamage();
+	const unsigned damage = std::round(static_cast<float>(wx - x) / lif::TILE_SIZE)
+				* std::round(static_cast<float>(wy - y) / lif::TILE_SIZE) * expl.getDamage();
 	
 	if (get<lif::Lifed>()->decLife(damage) > 0)
 		get<lif::HurtDrawProxy>()->hurt();

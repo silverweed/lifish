@@ -152,7 +152,7 @@ void InterlevelContext::_tickDistributePoints() {
 	if (bonusTime == sf::Time::Zero) {
 		if (bonusPoints == 0) {
 			// First assignment of bonusTime: truncate decimals of remaining time
-			bonusTime = sf::seconds(int(lm.getLevelTime().getRemainingTime().asSeconds()));
+			bonusTime = sf::seconds(static_cast<int>(lm.getLevelTime().getRemainingTime().asSeconds()));
 		} else {
 			// Pass to next phase
 			clock.restart();

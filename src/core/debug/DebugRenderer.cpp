@@ -34,8 +34,8 @@ void DebugRenderer::drawColliders(sf::RenderTarget& target, const lif::EntityGro
 void DebugRenderer::drawSHCells(sf::RenderTarget& target, const lif::SHCollisionDetector& cd) {
 	const unsigned s = cd.getSubdivisions();
 	const auto limit = cd.getLevelLimit();
-	const float w = float(limit.width - limit.left) / s,
-	            h = float(limit.height - limit.top) / s;
+	const float w = static_cast<float>(limit.width - limit.left) / s,
+	            h = static_cast<float>(limit.height - limit.top) / s;
 	sf::RectangleShape rect(sf::Vector2f(w, h));
 	rect.setOutlineThickness(2);
 	rect.setFillColor(sf::Color(72, 209, 204, 60));

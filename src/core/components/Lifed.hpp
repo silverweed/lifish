@@ -10,7 +10,7 @@ namespace lif {
  * An object with a life. Life cannot be < 0.
  */
 class Lifed : public lif::Component {
-	using OnHurtCallback = std::function<void(int)>;
+	using OnHurtCallback = std::function<void(int damage, int newLife)>;
 
 	OnHurtCallback onHurt;
 

@@ -123,7 +123,8 @@ void LevelSet::loadFromFile(const std::string& path) {
 		if (!range_found) {
 			it = atk.find("tileRange");
 			if (it != atk.end()) {
-				enemies[enemynum].attack.bullet.range = float(it->get<short>() * lif::TILE_SIZE);
+				enemies[enemynum].attack.bullet.range =
+					static_cast<float>(it->get<short>() * lif::TILE_SIZE);
 			}
 		}
 		++enemynum;

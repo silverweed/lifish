@@ -50,11 +50,11 @@ void Entity::setOrigin(const sf::Vector2f& origin) {
 
 bool Entity::isAligned(const char axis) const {
 	switch (axis) {
-		case 'x': return int(position.x) % lif::TILE_SIZE == 0;
-		case 'y': return int(position.y) % lif::TILE_SIZE == 0;
+		case 'x': return static_cast<int>(position.x) % lif::TILE_SIZE == 0;
+		case 'y': return static_cast<int>(position.y) % lif::TILE_SIZE == 0;
 	}
-	return int(position.x) % lif::TILE_SIZE == 0 
-		&& int(position.y) % lif::TILE_SIZE == 0;
+	return static_cast<int>(position.x) % lif::TILE_SIZE == 0
+		&& static_cast<int>(position.y) % lif::TILE_SIZE == 0;
 }
 
 lif::Entity* Entity::init() {

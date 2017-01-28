@@ -68,16 +68,16 @@ void AxisMoving::realign() {
 
 	switch (direction) {
 	case lif::Direction::UP:
-		pos = sf::Vector2f(pos.x, (int(((pos.y-1) / TILE_SIZE) + 1)) * TILE_SIZE);
+		pos = sf::Vector2f(pos.x, (static_cast<int>(((pos.y-1) / TILE_SIZE) + 1)) * TILE_SIZE);
 		break;
 	case lif::Direction::LEFT:
-		pos = sf::Vector2f((int(((pos.x-1) / TILE_SIZE) + 1)) * TILE_SIZE, pos.y);
+		pos = sf::Vector2f((static_cast<int>(((pos.x-1) / TILE_SIZE) + 1)) * TILE_SIZE, pos.y);
 		break;
 	case lif::Direction::DOWN:
-		pos = sf::Vector2f(pos.x, int((pos.y / TILE_SIZE)) * TILE_SIZE);
+		pos = sf::Vector2f(pos.x, static_cast<int>((pos.y / TILE_SIZE)) * TILE_SIZE);
 		break;
 	case lif::Direction::RIGHT:
-		pos = sf::Vector2f(int((pos.x / TILE_SIZE)) * TILE_SIZE, pos.y);
+		pos = sf::Vector2f(static_cast<int>((pos.x / TILE_SIZE)) * TILE_SIZE, pos.y);
 		break;
 	default: 
 		pos = lif::aligned(pos);
@@ -100,11 +100,11 @@ void AxisMoving::setDirection(lif::Direction dir) {
 	switch (dir) {
 		case Direction::UP:
 		case Direction::DOWN:
-			owner.setPosition(sf::Vector2f(int(pos.x), pos.y));
+			owner.setPosition(sf::Vector2f(static_cast<int>(pos.x), pos.y));
 			break;
 		case Direction::LEFT: 
 		case Direction::RIGHT:
-			owner.setPosition(sf::Vector2f(pos.x, int(pos.y)));
+			owner.setPosition(sf::Vector2f(pos.x, static_cast<int>(pos.y)));
 			break;
 		default:
 			break;

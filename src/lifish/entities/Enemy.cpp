@@ -50,10 +50,10 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 		std::make_pair("attack", lif::getAsset("test", std::string("enemy")
 					+ lif::to_string(id) + std::string("_attack.ogg")))
 	}));
-	addComponent(new lif::Lifed(*this, 1, [this] (int newLife) {
+	addComponent(new lif::Lifed(*this, 1, [this] (int, int newLife) {
 		// on hurt
 		if (newLife <= 0)
-			killable->kill();	
+			killable->kill();
 	}));
 	addComponent(new lif::Foe(*this));
 	if (info.ai >= lif::ai_functions.size()) {

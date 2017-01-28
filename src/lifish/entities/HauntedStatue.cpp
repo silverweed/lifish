@@ -49,9 +49,12 @@ HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : lif::Entity(pos) {
 		// is kill in progress
 		return animated->getSprite().isPlaying();
 	}));
-	addComponent(new lif::Lifed(*this, lif::conf::boss::haunting_spirit_boss::HAUNTED_STATUE_LIFE, [this] (int) {
+	addComponent(new lif::Lifed(*this, lif::conf::boss::haunting_spirit_boss::HAUNTED_STATUE_LIFE,
+	[this] (int damage, int)
+	{
 		// on hurt
-		get<lif::HurtDrawProxy>()->hurt();
+		if (damage > 0)
+			get<lif::HurtDrawProxy>()->hurt();
 	}));
 	addComponent(new lif::Drawable(*this, *this));
 	auto hurt_by_explosions = lif::hurtByExplosions(*this, lif::CFO_TAKE_SINGLE_HIT | lif::CFO_ONLY_ADJACENT);

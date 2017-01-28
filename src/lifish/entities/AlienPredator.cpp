@@ -148,5 +148,5 @@ sf::Vector2f AlienPredator::_findTunneledPosition(const lif::LevelManager& lm) c
 	if (it->x < 1 || it->y < 1 || it->x > lif::LEVEL_WIDTH || it->y > lif::LEVEL_HEIGHT)
 		return newPos;
 
-	return sf::Vector2f(int(TILE_SIZE) * *it);
+	return sf::Vector2f(static_cast<int>(TILE_SIZE) * *it);
 }

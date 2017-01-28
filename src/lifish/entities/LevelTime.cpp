@@ -34,7 +34,7 @@ void LevelTime::update() {
 	lif::Entity::update();
 	if (isHurryUp) return;
 
-	int diff = int(getRemainingTime().asSeconds());
+	int diff = static_cast<int>(getRemainingTime().asSeconds());
 
 	if (diff <= 0) {
 		isHurryUp = true;

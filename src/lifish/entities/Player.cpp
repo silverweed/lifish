@@ -44,9 +44,10 @@ Player::Player(const sf::Vector2f& pos, const unsigned short id)
 
 void Player::_init() {
 	// Setup components
-	addComponent(new lif::Lifed(*this, lif::conf::player::MAX_LIFE, [this] (int) {
-		// on hurt			
-		_hurt();
+	addComponent(new lif::Lifed(*this, lif::conf::player::MAX_LIFE, [this] (int damage, int) {
+		// on hurt
+		if (damage > 0)
+			_hurt();
 	}));
 	addComponent(new lif::Collider(*this, [this] (lif::Collider& cld) {
 		// on collision

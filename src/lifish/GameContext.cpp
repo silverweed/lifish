@@ -210,7 +210,7 @@ void GameContext::_printGameStats() const {
 		const float ratio = get_percentage(dbgStats, "tot", t, percentage);
 		std::cerr << "\r\n | " << std::left << std::setw(12) << t << ": " 
 			<< std::setw(7) << dbgStats.timer.safeGet(t) << " " << percentage
-			<< (ratio >= 0 ? " " + lif::to_string(int(ratio*100)) + "%" : "");
+			<< (ratio >= 0 ? " " + lif::to_string(static_cast<int>(ratio*100)) + "%" : "");
 	}
 	std::cerr << "\r\n -- logic: --";
 	for (unsigned i = 0; i < lif::game_logic::functions.size(); ++i) {
@@ -219,7 +219,8 @@ void GameContext::_printGameStats() const {
 		char percentage[21] = {0};
 		const float ratio = get_percentage(dbgStats, "logic", t.str().c_str(), percentage);
 		std::cerr << "\r\n | " << i << ": " << std::setw(7) << dbgStats.timer.safeGet(t.str())
-			<< " " << percentage << (ratio >= 0 ? " " + lif::to_string(int(ratio*100)) + "%" : "");
+			<< " " << percentage
+			<< (ratio >= 0 ? " " + lif::to_string(static_cast<int>(ratio*100)) + "%" : "");
 	}
 	std::cerr << std::endl;
 	std::cerr.flags(flags);
