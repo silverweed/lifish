@@ -8,6 +8,7 @@
 #include "CircleShootingPattern.hpp"
 #include "ScatterVsPlayerPattern.hpp"
 #include "Killable.hpp"
+#include "Scored.hpp"
 #include "Angle.hpp"
 #include "conf/boss.hpp"
 #include "core.hpp"
@@ -21,6 +22,7 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 {
 	// This boss has no Lifed component: it dies when there are no HauntedStatues left in the level.
 	addComponent(new lif::FreeSighted(*this))->setActive(false);
+	addComponent(new lif::Scored(*this, lif::conf::boss::haunting_spirit_boss::VALUE));
 	animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "haunting_spirit_boss.png")));
 	const auto size = 4 * lif::TILE_SIZE;
 	// This is needed by parent class
