@@ -45,9 +45,15 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		const auto player = lm.getPlayer(i + 1);
 		if (player == nullptr) continue;
-		const auto rects = _getVisionRectangles(*player);
+		auto rects = _getVisionRectangles(*player);
+		rects.first.setFillColor(sf::Color(255, 255, 255, 120));
+		rects.second.setFillColor(sf::Color(255, 255, 255, 120));
 		darknessRenderTex.draw(rects.first);
 		darknessRenderTex.draw(rects.second);
+		auto halo = _getRadialRectangles(player->getPosition(), 2);
+		std::get<2>(halo).setFillColor(sf::Color(255, 255, 255, 200));
+		darknessRenderTex.draw(std::get<2>(halo));
+
 	}
 	
 	// Calculate visibility circles for light sources
