@@ -20,6 +20,9 @@ bool BaseEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 			window.setFramerateLimit(lif::options.vsync ? lif::options.framerateLimit : 0);
 			return true;
 #ifndef RELEASE
+		case sf::Keyboard::Q:
+			lif::terminated = true;
+			return true;
 		case sf::Keyboard::Num0:
 			lif::options.printDrawStats = !lif::options.printDrawStats;
 			return true;

@@ -65,6 +65,7 @@ namespace fonts {
 	constexpr auto POINTS          = "pf_tempesta_seven_bold.ttf";
 	constexpr auto INTERLEVEL      = "pf_tempesta_seven_bold.ttf";
 	constexpr auto LEVELNUM        = "pf_tempesta_seven.ttf";
+	constexpr auto CUTSCENES       = "pf_tempesta_seven.ttf";
 	constexpr auto DEBUG_INFO      = "pf_tempesta_seven_condensed.ttf";
 	constexpr auto SIDE_PANEL      = "pf_tempesta_seven_bold.ttf";
 	constexpr auto SIDE_PANEL_MONO = "Hack-Regular.ttf";

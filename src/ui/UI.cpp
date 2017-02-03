@@ -11,7 +11,7 @@
 using lif::ui::UI;
 
 UI::UI() : lif::WindowContext() {
-	handlers.push_back(std::unique_ptr<lif::EventHandler>(new lif::BaseEventHandler));
+	_addHandler<lif::BaseEventHandler>();
 }
 
 void UI::load(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames) {

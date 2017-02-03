@@ -5,6 +5,7 @@
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Window/Window.hpp>
+#include <SFML/Window/Event.hpp>
 #include "EventHandler.hpp"
 #include "WithOrigin.hpp"
 #include "Activable.hpp"
@@ -32,6 +33,11 @@ protected:
 	std::deque<std::unique_ptr<lif::EventHandler>> handlers;
 	int newContext = -1;
 
+
+	template<class T, class... Args>
+	void _addHandler(Args... args) {
+		handlers.push_back(std::unique_ptr<lif::EventHandler>(new T(args...)));
+	}
 public:
 	/** When this method returns a non-negative number, the current WindowContext
 	 *  should be switched with that indexed by the returned number.
@@ -42,8 +48,10 @@ public:
 	/** This must be called after switching context to reset the `newContext` variable. */
 	void resetNewContext() { newContext = -1; }
 
-	virtual void update() = 0;
 	void handleEvents(sf::Window& window);
+
+	virtual void update() = 0;
+	virtual bool handleEvent(sf::Window&, sf::Event) override { return false; }
 };
 
 }

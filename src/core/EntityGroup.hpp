@@ -48,7 +48,7 @@ class EntityGroup final : private sf::NonCopyable {
 	std::list<std::shared_ptr<lif::Entity>> entities;
 
 	/** The colliders of entities which have one */
-	std::vector<std::weak_ptr<lif::Collider>> collidingEntities;
+	std::list<std::weak_ptr<lif::Collider>> collidingEntities;
 
 	/** The list of the killable entities, which ought to be removed when
 	 *  their `isKilled()` method yields true.
@@ -130,7 +130,7 @@ public:
 	void validate();
 	void updateAll();
 
-	auto getColliding() -> std::vector<std::weak_ptr<lif::Collider>>& {
+	auto getColliding() -> std::list<std::weak_ptr<lif::Collider>>& {
 		return collidingEntities;
 	}
 

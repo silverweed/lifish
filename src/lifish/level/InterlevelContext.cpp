@@ -20,7 +20,7 @@ InterlevelContext::InterlevelContext(lif::LevelManager& lm, const lif::SidePanel
 	, lm(lm)
 	, sidePanel(sidePanel)
 {
-	handlers.push_back(std::unique_ptr<lif::EventHandler>(new lif::BaseEventHandler));
+	_addHandler<lif::BaseEventHandler>();
 
 	const std::string fontname = lif::getAsset("fonts", lif::fonts::INTERLEVEL);
 	if (!interlevelFont.loadFromFile(fontname)) {

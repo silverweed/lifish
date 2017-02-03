@@ -27,9 +27,9 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, sh
 	, sidePanel(lm)
 	, wlHandler(lm, sidePanel)
 {
-	handlers.push_back(std::unique_ptr<lif::EventHandler>(new lif::BaseEventHandler));
+	_addHandler<lif::BaseEventHandler>();
 #ifndef RELEASE
-	handlers.push_back(std::unique_ptr<lif::EventHandler>(new lif::debug::DebugEventHandler(*this)));
+	_addHandler<lif::debug::DebugEventHandler>(std::ref(*this));
 #endif
 
 	int lvnum = startLv;

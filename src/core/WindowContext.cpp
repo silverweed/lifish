@@ -6,7 +6,7 @@ using lif::WindowContext;
 void WindowContext::handleEvents(sf::Window& window) {
 	sf::Event event;
 	while (window.pollEvent(event)) {
-		if (handleEvent(window, event)) 
+		if (handleEvent(window, event))
 			return;
 
 		for (auto& handler : handlers)

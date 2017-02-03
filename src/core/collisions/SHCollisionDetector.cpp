@@ -4,16 +4,13 @@
 #include "AxisMoving.hpp"
 #include "Direction.hpp"
 
-#include "Explosion.hpp"
-#include <iostream>
-
 using namespace lif::collision_utils;
 using lif::SHContainer;
 using lif::SHCollisionDetector;
 
 ////// SHContainer ///////
 SHContainer::SHContainer(const sf::Vector2f& levelSize, unsigned subdivisions)
-	: levelSize(levelSize) 
+	: levelSize(levelSize)
 	, cellSize(levelSize.x / subdivisions, levelSize.y / subdivisions)
 	, subdivisions(subdivisions)
 	, buckets(subdivisions * subdivisions)

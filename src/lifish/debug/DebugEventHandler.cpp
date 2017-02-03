@@ -29,7 +29,6 @@ DebugEventHandler::DebugEventHandler(lif::GameContext& game)
  * L : step game simulation (pauses if needed)
  * M : morph all enemies
  * N : kill all enemies
- * Q : terminate game
  * . : give infinite shield to player
  * + : forward one level
  * - : back one level
@@ -92,9 +91,6 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 				//auto en = dynamic_cast<lif::BreakableWall*>(e);
 				if (en) en->get<lif::Killable>()->kill();
 			});
-			return true;
-		case sf::Keyboard::Q:
-			lif::terminated = true;
 			return true;
 		case sf::Keyboard::Period:
 			{

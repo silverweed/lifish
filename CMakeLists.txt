@@ -18,38 +18,41 @@ endif()
 set(MAIN_FILE src/main.cpp)
 # core/ contains the "game-independent" source
 include_directories(src/core)
-# core/components/ contains a collection of generic components
-include_directories(src/core/components)
-# core/entities/ contains a collection of generic entities
-include_directories(src/core/entities)
 # core/collisions contains the classes handling collisions
 include_directories(src/core/collisions)
-# ui/ contains the ui parts
-include_directories(src/ui)
-# third_party/ contains all external code
-include_directories(src/third_party)
+# core/components/ contains a collection of generic components
+include_directories(src/core/components)
+# core/cutscenes/ contains the cutscene subsystem
+include_directories(src/core/cutscenes)
+# core/entities/ contains a collection of generic entities
+include_directories(src/core/entities)
 # lifish/ contains Lifish-specific code
 include_directories(src/lifish)
 # lifish/components/ contains all the Lifish-specific Component classes
 include_directories(src/lifish/components)
+# lifish/conf/ contains the gameplay constants
+#include_directories(src/lifish/conf)
 # lifish/entities/ contains all the Lifish-specific Entity classes
 include_directories(src/lifish/entities)
 # lifish/level/ contains classes for managing game levels
 include_directories(src/lifish/level)
-# lifish/conf/ contains the gameplay constants
-#include_directories(src/lifish/conf)
+# third_party/ contains all external code
+include_directories(src/third_party)
+# ui/ contains the ui parts
+include_directories(src/ui)
 file(GLOB LIFISH_SRC ${MAIN_FILE}
 	src/core/*cpp
-	src/core/entities/*cpp
-	src/core/components/*cpp
 	src/core/collisions/*cpp
-	src/ui/*cpp
-	src/third_party/*cpp
+	src/core/components/*cpp
+	src/core/cutscenes/*cpp
+	src/core/entities/*cpp
 	src/lifish/*cpp
-	src/lifish/entities/*cpp
 	src/lifish/components/*cpp
-	src/lifish/level/*cpp
 	src/lifish/conf/*cpp
+	src/lifish/entities/*cpp
+	src/lifish/level/*cpp
+	src/third_party/*cpp
+	src/ui/*cpp
 )
 if(${RELEASE})
 else()
