@@ -56,31 +56,6 @@
 #	include "Stats.hpp"
 #endif
 
-using namespace lif;
-
-static void print_version() {
-	std::cout << "lifish v." VERSION " rev." COMMIT;
-#ifdef RELEASE
-	std::cout << " RELEASE";
-#endif
-#ifndef ARCH
-	std::cout << " (unknown arch)";
-#else
-	std::cout << " (" ARCH " bit)";
-#endif
-	std::cout << " by Giacomo Parolini" << std::endl;
-#ifdef HAVE_NFD
-	std::cout << "    | NFD support: yes" << std::endl;
-#elif !defined(SFML_SYSTEM_WINDOWS)
-	std::cout << "    | NFD support: no" << std::endl;
-#endif
-#ifdef MULTITHREADED 
-	std::cout << "    | Multithreaded: yes" << std::endl;
-#else
-	std::cout << "    | Multithreaded: no" << std::endl;
-#endif
-}
-
 struct MainArgs {
 	short start_level;
 	std::string levelset_name;
@@ -119,8 +94,8 @@ static void parse_args(int argc, char **argv, /* out */ MainArgs& args) {
 				break;
 #endif
 			case 'v':
-				print_version();
-				exit(0);
+				std::cout << lif::game_info();
+				std::exit(0);
 			case 'i':
 				print_level_info = true;
 				break;
@@ -188,7 +163,9 @@ int main(int argc, char **argv) {
 	args.levelset_name = "";
 	args.mute_music = true; // FIXME
 	args.mute_sounds = true; // FIXME
+#ifndef RELEASE
 	args.start_from_home = false; // FIXME
+#endif
 	parse_args(argc, argv, args);
 	
 	// Create the MusicManager (in a local scope)
@@ -235,7 +212,7 @@ int main(int argc, char **argv) {
 	ui.add(new lif::ui::PreferencesScreen(window, lif::options.windowSize));
 
 	// Create pointer to game context
-	std::unique_ptr<GameContext> game;
+	std::unique_ptr<lif::GameContext> game;
 
 	// Adjust the origin to make room for side panel
 	sf::Vector2f origin(-lif::SIDE_PANEL_WIDTH, 0);
@@ -345,7 +322,7 @@ int main(int argc, char **argv) {
 #endif
 	// Perform cleanup
 	mm.stop();
-	cache.finalize();
+	lif::cache.finalize();
 
 	return lif::exitCode;
 }

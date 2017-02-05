@@ -33,6 +33,14 @@ static void add_style_property(lif::ui::ScreenStyle& style, const std::string& k
 static std::string convert_special_string(const std::string& s) {
 	if (s == "{{FULL_VERSION}}") {
 		return "lifish v." VERSION " rev." COMMIT
+#ifdef RELEASE
+			" RELEASE"
+#endif
+#ifndef ARCH
+			" (unknown arch)"
+#else
+			" (" ARCH " bit)"
+#endif
 #ifdef MULTITHREADED
 			" (multithread)"
 #endif

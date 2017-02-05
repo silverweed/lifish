@@ -91,4 +91,6 @@ extern std::array<unsigned short, MAX_PLAYERS> playerContinues;
 
 bool init();
 
+std::string game_info();
+
 } // end namespace lif

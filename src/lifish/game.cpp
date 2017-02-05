@@ -2,8 +2,9 @@
 #include "LoopingMusic.hpp"
 #include "controls.hpp"
 #include "collision_layers.hpp"
+#include <string>
 #include <cstring>
-#include <iostream>
+#include <sstream>
 #include <array>
 #include "conf/player.hpp"
 
@@ -19,4 +20,29 @@ bool lif::init() {
 	lif::c_layers::init();
 
 	return true;
+}
+
+std::string lif::game_info() {
+	std::stringstream ss;
+	ss << "lifish v." VERSION " rev." COMMIT;
+#ifdef RELEASE
+	ss << " RELEASE";
+#endif
+#ifndef ARCH
+	ss << " (unknown arch)";
+#else
+	ss << " (" ARCH " bit)";
+#endif
+	ss << " by Giacomo Parolini\r\n";
+#ifdef HAVE_NFD
+	ss << "    | NFD support: yes\r\n";
+#elif !defined(SFML_SYSTEM_WINDOWS)
+	ss << "    | NFD support: no\r\n";
+#endif
+#ifdef MULTITHREADED 
+	ss << "    | Multithreaded: yes\r\n";
+#else
+	ss << "    | Multithreaded: no\r\n";
+#endif
+	return ss.str();
 }
