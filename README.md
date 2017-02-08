@@ -3,21 +3,7 @@
 	     src="https://scan.coverity.com/projects/5674/badge.svg"/>
 </a>
 ## ABOUT ##
-Lifish is an open source clone of the game [BOOM](http://www.factor-software.com/boom.php)
-by Federico Filipponi, originally available only on MacOS. It's an arcade game with similar
-mechanics as Bomberman, featuring 80 levels, 10 different enemies, bosses, powerups, 
-local multiplayer and a final boss fight.
-
-Lifish aims to be completely "backward compatible" with BOOM, while introducing new elements
-and different enemies and stages. In particular, these are the differences with the
-original BOOM:
-
-* all the game sprites are (going to be) totally remade from scratch;
-* the game code will be open source (the assets won't necessarily be);
-* several game features can be modded directly from the configuration files,
-  which are plain JSON; in particular the enemies' AI and stats, the levels'
-  tilesets, textures, configuration and music can be modded this way;
-* new powerups, entities and bosses are planned;
+Lifish is an arcade old-style game inspired by Factor Software's BOOM.
 
 Coded with [vim](http://www.vim.org/).
 
@@ -46,7 +32,7 @@ See later for instructions on how to build the game from the sources.
 The game can be compiled on *nix (tested on Linux, OSX and FreeBSD) via `cmake . && make`
 (you need to have SFML >=2.4 installed).
 
-On Windows, I'm able to compile the game via gcc under MinGW-w64 (I use the TDM-GCC compiler).
+On Windows, the game can be compiled using MinGW-w64 (I use the TDM-GCC compiler).
 Avoid the Visual Studio compiler, as it lacks decent C++11 support (it can't compile nlohmann/json).
 
 To get a working build environment, you can follow the steps on
@@ -54,96 +40,15 @@ To get a working build environment, you can follow the steps on
 chapter (included -- you can skip the *First steps* section, as all the listed dependencies like Python etc
 aren't required). Remember to `cmake -G "MSYS Makefiles" .`, otherwise cmake will probably
 generate a VS makefile.
-If you manage to build the game in some other way or on some other platform, let me know!
 
-**IMPORTANT**: currently, many sprites are missing. If you see white rectangles where
-sprites should be, it means that asset hasn't been created yet.
+**IMPORTANT**: the current game graphics is a placeholder. No graphic asset is even close to being final.
 
 #### Multithreaded mode ####
 The game can be compiled in multithreaded mode (separate logic and rendering), but
-at the moment it's not really a good idea to do so, as:  
-- the framerate won't improve (and it needs not, should be already smooth 60fps)  
-- the CPU usage will increase  
+at the moment it's not really a good idea to do so, as:
+- the framerate probably won't improve (and it needs not, should be already smooth 120fps)
 - odd behaviours and occasional crashes may occur.
 
-### Current Status ###
-
-**MASSIVE REFACTOR IN PROGRESS**, see tag `0.x` for a working build
-
-- [x] Levels BG / Borders display
-- [x] Levels music play
-- [x] Fixed Walls
-- [x] Breakable Walls  
-  - [x] Breakable Walls break on explosions
-  - [x] Breakable Walls drop powerups
-- [x] Collisions with walls
-- [x] Powerups can be taken by players
-- [x] Enemies  
-  - [x] Enemies move  
-    - [x] Soldier/Sgt.Cool AI
-    - [x] ThickLizzy/etc AI
-    - [x] Thing/etc AI
-  - [x] Enemies shoot
-  - [x] Enemies die when hit by explosions
-- [ ] Bosses   
-  - [x] Boss collisions
-  - [x] Bosses shoot
-  - [x] Bosses are hit by explosions
-  - [ ] Bosses die correctly
-  - [ ] Final Boss
-- [x] Players   
-  - [x] Players move
-  - [x] Players drop bombs
-  - [x] Players are hurt by explosions
-  - [x] Players die when they should
-- [x] Bombs
-- [x] Coins   
-  - [x] Coins can be taken
-  - [x] Taking all coins causes Extra Game
-- [x] Bullets
-  - [x] Directional bullets use correct sprites
-- [x] Hurry Up
-- [ ] Level-wise Victory
-  - [ ] FINAL VICTORY
-- [ ] Game Over
-- [x] Points
-- [x] Extra
-  - [x] Enemies become harmless in EXTRA
-  - [x] Enemies drop letters in EXTRA
-- [x] Side panel
-- [ ] Sounds
-- [ ] Music
-- [ ] Graphics
-  - [ ] Tilesets
-    - [x] #1
-    - [x] #2
-    - [x] #3
-    - [x] #4
-    - [ ] #5
-    - [ ] #6
-    - [ ] #7
-    - [ ] #8
-  - [ ] Enemies
-    - [x] #1
-    - [ ] #2
-    - [ ] #3
-    - [x] #4
-    - [ ] #5
-    - [ ] #6
-    - [ ] #7
-    - [ ] #8
-    - [ ] #9
-    - [ ] #10
-  - [x] Powerups
-  - [ ] Bosses
-  - [ ] Many other things
 
 ### LICENSE ###
-Lifish is free software and its source code is licensed under the GNU GPL v3,
-unless otherwise specified (in particular, the dependencies specified above
-are under different licenses).
-See [LICENSE.txt](https://github.com/silverweed/lifish/blob/master/LICENSE.txt)
-for more information.
-
-All the files in the `assets` directory, except those in `assets/sounds` and `assets/fonts`,
-are licensed under the [Creative Commons - Attribution / Non Commercial / Share Alike](http://creativecommons.org/licenses/by-nc-sa/4.0/) License.
+Copyright (c) Giacomo Parolini, 2017
