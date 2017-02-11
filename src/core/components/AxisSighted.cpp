@@ -27,6 +27,7 @@ static bool check_right(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
 AxisSighted::AxisSighted(lif::Entity& owner, float visionRadius)
 	: lif::Sighted(owner, visionRadius)
 {
+	keys.emplace_back(_getKey<AxisSighted>());
 	vision.fill(visionRadius * lif::TILE_SIZE);
 }
 

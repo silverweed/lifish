@@ -11,7 +11,10 @@ class Drawable : public lif::Component, public sf::Drawable {
 public:
 	explicit Drawable(lif::Entity& owner, const sf::Drawable& delegate)
 		: lif::Component(owner)
-		, delegate(delegate) {}
+		, delegate(delegate) 
+	{
+		keys.emplace_back(_getKey<Drawable>());
+	}
 
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override {
 		if (active)

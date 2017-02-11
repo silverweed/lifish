@@ -10,6 +10,10 @@
 
 using lif::Points;
 
+// Note: putting this in the class declaration causes some compilers
+// (notably: clang) to give 'undefined reference'
+constexpr static float SPEED = 30.f;
+
 Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color, unsigned short charSize) 
 	: lif::Entity(pos)
 	, initialPos(pos)
@@ -18,10 +22,10 @@ Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color,
 	text.setCharacterSize(charSize);
 	text.setShadowSpacing(1.5, 1);
 
-	addComponent(new lif::AxisMoving(*this, SPEED, lif::Direction::UP));
-	addComponent(new lif::Drawable(*this, text));
-	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::POINTS));
-	addComponent(new lif::Temporary(*this, [this] () {
+	addComponent(std::make_shared<lif::AxisMoving>(*this, SPEED, lif::Direction::UP));
+	addComponent(std::make_shared<lif::Drawable>(*this, text));
+	addComponent(std::make_shared<lif::ZIndexed>(*this, lif::conf::zindex::POINTS));
+	addComponent(std::make_shared<lif::Temporary>(*this, [this] () {
 		return (initialPos - position).y >= 20;
 	}));
 }

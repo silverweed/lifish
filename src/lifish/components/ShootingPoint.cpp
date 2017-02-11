@@ -8,9 +8,10 @@ using lif::ShootingPoint;
 ShootingPoint::ShootingPoint(lif::Entity& owner, const lif::Attack& attack, float visionRadius)
 	: lif::Spawning(owner)
 {
-	addComponent(new lif::FreeSighted(*this, visionRadius));
-	addComponent(new lif::Shooting(*this, attack));
-	autoShooting = addComponent(new lif::AutoShooting(*this));
+	keys.emplace_back(_getKey<ShootingPoint>());
+	addComponent(std::make_shared<lif::FreeSighted>(*this, visionRadius));
+	addComponent(std::make_shared<lif::Shooting>(*this, attack));
+	autoShooting = addComponent(std::make_shared<lif::AutoShooting>(*this));
 }
 
 bool ShootingPoint::shouldSpawn() const {

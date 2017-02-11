@@ -14,7 +14,6 @@ class Points : public lif::Entity {
 
 public:
 	constexpr static unsigned short CHARACTER_SIZE = 10;
-	constexpr static float SPEED = 30.f;
 
 	explicit Points(const sf::Vector2f& pos, const std::string& str, 
 		sf::Color color = sf::Color::Blue, 

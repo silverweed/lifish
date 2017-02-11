@@ -6,7 +6,8 @@ using lif::Bonusable;
 Bonusable::Bonusable(lif::Entity& owner)
 	: lif::Component(owner)
 {
-	bonusClock.fill(addComponent(new lif::Clock(*this)));
+	keys.emplace_back(_getKey<Bonusable>());
+	bonusClock.fill(addComponent(std::make_shared<lif::Clock>(*this)));
 	bonusTime.fill(sf::Time::Zero);
 }
 

@@ -8,7 +8,8 @@ using lif::CircleShootingPattern;
 CircleShootingPattern::CircleShootingPattern(lif::Entity& owner, const lif::BulletInfo& bullet)
 	: lif::ShootingPattern(owner, bullet)
 {
-	shootClock = addComponent(new lif::Clock(*this));
+	keys.emplace_back(_getKey<CircleShootingPattern>());
+	shootClock = addComponent(std::make_shared<lif::Clock>(*this));
 }
 
 void CircleShootingPattern::update() {

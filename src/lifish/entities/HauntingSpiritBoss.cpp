@@ -21,12 +21,12 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	, state(State::START)
 {
 	// This boss has no Lifed component: it dies when there are no HauntedStatues left in the level.
-	addComponent(new lif::FreeSighted(*this))->setActive(false);
-	addComponent(new lif::Scored(*this, lif::conf::boss::haunting_spirit_boss::VALUE));
-	animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "haunting_spirit_boss.png")));
+	addComponent(std::make_shared<lif::FreeSighted>(*this))->setActive(false);
+	addComponent(std::make_shared<lif::Scored>(*this, lif::conf::boss::haunting_spirit_boss::VALUE));
+	animated = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("graphics", "haunting_spirit_boss.png")));
 	const auto size = 4 * lif::TILE_SIZE;
 	// This is needed by parent class
-	collider = addComponent(new lif::Collider(*this, lif::c_layers::DEFAULT,
+	collider = addComponent(std::make_shared<lif::Collider>(*this, lif::c_layers::DEFAULT,
 				sf::Vector2f(size, size),
 				sf::Vector2f(-size/2, -size/2), true));
 	collider->setActive(false);
@@ -60,22 +60,22 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 		sf::IntRect(5 * size, 3 * size, size, size),
 	});
 	animated->getSprite().setOrigin(size/2, size/2);
-	animClock = addComponent(new lif::Clock(*this));
-	hauntClock = addComponent(new lif::Clock(*this));
-	atkClock = addComponent(new lif::Clock(*this));
+	animClock = addComponent(std::make_shared<lif::Clock>(*this));
+	hauntClock = addComponent(std::make_shared<lif::Clock>(*this));
+	atkClock = addComponent(std::make_shared<lif::Clock>(*this));
 
 	lif::BulletInfo bullet;
 	bullet.id = 102;
 	bullet.speed = 1;
 	bullet.damage = 4;
-	auto circle = addComponent(new lif::CircleShootingPattern(*this, bullet));
+	auto circle = addComponent(std::make_shared<lif::CircleShootingPattern>(*this, bullet));
 	circle->consecutiveShots = 6;
 	circle->timeBetweenShots = sf::seconds(0.5);
 	circle->bulletsPerShot = 6;
 	circle->rotationPerShot = lif::radians(lif::PI / 5.);
 	shootPatterns[0] = circle;
 	shootColors[0] = sf::Color::White;
-	auto spiral = addComponent(new lif::CircleShootingPattern(*this, bullet));
+	auto spiral = addComponent(std::make_shared<lif::CircleShootingPattern>(*this, bullet));
 	spiral->consecutiveShots = 50;
 	spiral->timeBetweenShots = sf::seconds(0.1);
 	spiral->bulletsPerShot = 1;
@@ -83,7 +83,7 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	spiral->randomizeShootAngle = true;
 	shootPatterns[1] = spiral;
 	shootColors[1] = sf::Color::Blue;
-	auto scatter = addComponent(new lif::ScatterVsPlayerPattern(*this, bullet));
+	auto scatter = addComponent(std::make_shared<lif::ScatterVsPlayerPattern>(*this, bullet));
 	scatter->consecutiveShots = 18;
 	scatter->timeBetweenShots = sf::seconds(0.1);
 	scatter->scatterAngle = lif::degrees(30);

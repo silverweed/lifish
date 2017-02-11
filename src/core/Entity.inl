@@ -1,12 +1,5 @@
 /// Entity template methods implementation
 
-namespace {
-	template<class T>
-	std::type_index get_key() {
-		return std::type_index(typeid(T));
-	}
-}
-
 template<class T>
 T* Entity::addComponent(const std::shared_ptr<T>& comp) {
 	if (T::requiredUnique() && get<T>() != nullptr)
@@ -18,7 +11,7 @@ T* Entity::addComponent(const std::shared_ptr<T>& comp) {
 
 template<class T>
 std::shared_ptr<T> Entity::getShared() const {
-	auto comp = components.find(get_key<T>());
+	auto comp = components.find(_getKey<T>());
 	if (comp == components.end() || comp->second.size() == 0)
 		return std::shared_ptr<T>();
 	return std::static_pointer_cast<T>(comp->second[0]);
@@ -32,7 +25,7 @@ T* Entity::get() const {
 template<class T>
 std::vector<std::shared_ptr<T>> Entity::getAllShared() const {
 	std::vector<std::shared_ptr<T>> comps;
-	auto pair = components.find(get_key<T>());
+	auto pair = components.find(_getKey<T>());
 	if (pair == components.end())
 		return comps;
 	auto& compVec = pair->second;
@@ -42,17 +35,18 @@ std::vector<std::shared_ptr<T>> Entity::getAllShared() const {
 	return comps;
 }
 
-//template<class T>
-//std::vector<T*> Entity::getAll() const {
-	//std::vector<T*> all;
-	//for (auto& comp : components) {
-		//Component *ptr = comp.get();
-		//T* derived = nullptr;
-		//if (ptr && (derived = dynamic_cast<T*>(ptr)))
-			//all.push_back(derived);
-	//}
-	//return all;
-//}
+template<class T>
+std::vector<T*> Entity::getAll() const {
+	std::vector<T*> comps;
+	auto pair = components.find(_getKey<T>());
+	if (pair == components.end())
+		return comps;
+	auto& compVec = pair->second;
+	std::for_each(compVec.begin(), compVec.end(), [&comps] (const std::shared_ptr<lif::Component>& c) {
+		comps.emplace_back(static_cast<T*>(c.get()));
+	});
+	return comps;
+}
 
 template<class T>
 std::vector<T*> Entity::getAllRecursive() const {

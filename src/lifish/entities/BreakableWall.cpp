@@ -56,14 +56,14 @@ BreakableWall::BreakableWall(const sf::Vector2f& pos,
 }
 
 void BreakableWall::_setupComponents(unsigned life, unsigned int score) {
-	addComponent(new lif::Fixed(*this));
-	addComponent(new lif::Scored(*this, score));
-	addComponent(new lif::Lifed(*this, life));
-	addComponent(new lif::Sounded(*this, { 
+	addComponent(std::make_shared<lif::Fixed>(*this));
+	addComponent(std::make_shared<lif::Scored>(*this, score));
+	addComponent(std::make_shared<lif::Lifed>(*this, life));
+	addComponent(std::make_shared<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("death", lif::getAsset("sounds", "wall_break.ogg"))
 	})); 
-	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::WALLS));
-	addComponent(new lif::Killable(*this, [this] () {
+	addComponent(std::make_shared<lif::ZIndexed>(*this, lif::conf::zindex::WALLS));
+	addComponent(std::make_shared<lif::Killable>(*this, [this] () {
 		// on kill
 		animated->getSprite().play();
 		lif::cache.playSound(get<lif::Sounded>()->getSoundFile("death"));
@@ -71,18 +71,18 @@ void BreakableWall::_setupComponents(unsigned life, unsigned int score) {
 		// is kill in progress
 		return animated->getSprite().isPlaying();
 	}));
-	addComponent(new lif::Collider(*this, lif::hurtByExplosions(*this, lif::CFO_ONLY_ADJACENT),
+	addComponent(std::make_shared<lif::Collider>(*this, lif::hurtByExplosions(*this, lif::CFO_ONLY_ADJACENT),
 				lif::c_layers::BREAKABLES));
 	// Spawn bonus on death
-	addComponent(new lif::Spawning(*this, [this] () {
+	addComponent(std::make_shared<lif::Spawning>(*this, [this] () {
 		// spawn function
 		return _spawnBonus();
 	}));
 }
 
 Animation& BreakableWall::_setupAnimations(const std::string& texture_name) {
-	animated = addComponent(new lif::Animated(*this, texture_name));
-	addComponent(new lif::Drawable(*this, *animated));
+	animated = addComponent(std::make_shared<lif::Animated>(*this, texture_name));
+	addComponent(std::make_shared<lif::Drawable>(*this, *animated));
 	auto& animation = animated->addAnimation("break");
 	auto& animatedSprite = animated->getSprite();
 

@@ -32,9 +32,9 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 	, damage(damage)
 	, sourceEntity(source)
 {
-	explosionC = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "explosionC.png")));
-	lightSource = addComponent(new lif::LightSource(*this, (radius + 0.5) * TILE_SIZE));
-	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::EXPLOSIONS));
+	explosionC = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("graphics", "explosionC.png")));
+	lightSource = addComponent(std::make_shared<lif::LightSource>(*this, (radius + 0.5) * TILE_SIZE));
+	addComponent(std::make_shared<lif::ZIndexed>(*this, lif::conf::zindex::EXPLOSIONS));
 	explosionC->addAnimation("explode", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),
 		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
@@ -44,12 +44,12 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE)
 	}, true);
-	explosionV = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "explosionV.png")));
+	explosionV = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("graphics", "explosionV.png")));
 	explosionV->getTexture()->setRepeated(true);
-	explosionH = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "explosionH.png")));
+	explosionH = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("graphics", "explosionH.png")));
 	explosionH->getTexture()->setRepeated(true);
 
-	addComponent(new lif::Drawable(*this, *this));
+	addComponent(std::make_shared<lif::Drawable>(*this, *this));
 
 	explosionC->getSprite().setFrameTime(sf::seconds(0.05));
 	explosionH->getSprite().setFrameTime(sf::seconds(0.05));
@@ -58,7 +58,7 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 	explosionH->getSprite().setLooped(false);
 	explosionV->getSprite().setLooped(false);
 
-	addComponent(new lif::Temporary(*this, [this] () {
+	addComponent(std::make_shared<lif::Temporary>(*this, [this] () {
 		// expire condition
 		return !explosionC->getSprite().isPlaying();
 	}, [this] () {
@@ -71,7 +71,7 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 	}));
 
 	if (isIncendiary)
-		spawner = addComponent(new lif::BufferedSpawner(*this));
+		spawner = addComponent(std::make_shared<lif::BufferedSpawner>(*this));
 
 	propagation.fill(0);
 }
@@ -140,7 +140,7 @@ Explosion* Explosion::propagate(lif::LevelManager& lm) {
 	 */
 	// Note: no cast required, as `true` is promoted to integral value "1" by C++ standard (§4.7 conv.integral)
 	short reduction = blocked[Direction::RIGHT] + blocked[Direction::LEFT];
-	explColliderH = addComponent(new lif::Collider(*this, lif::c_layers::EXPLOSIONS,
+	explColliderH = addComponent(std::make_shared<lif::Collider>(*this, lif::c_layers::EXPLOSIONS,
 			// size
 			sf::Vector2f(
 				TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT]
@@ -151,7 +151,7 @@ Explosion* Explosion::propagate(lif::LevelManager& lm) {
 				+ (TILE_SIZE - 1) * blocked[Direction::LEFT], 1)));
 
 	reduction = blocked[Direction::UP]  + blocked[Direction::DOWN];
-	explColliderV = addComponent(new lif::Collider(*this, lif::c_layers::EXPLOSIONS,
+	explColliderV = addComponent(std::make_shared<lif::Collider>(*this, lif::c_layers::EXPLOSIONS,
 			// size
 			sf::Vector2f(
 				TILE_SIZE - 2,

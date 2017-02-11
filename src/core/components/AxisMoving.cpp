@@ -14,6 +14,7 @@ AxisMoving::AxisMoving(lif::Entity& owner, float speed, lif::Direction dir)
 	, prevDirection(lif::Direction::NONE)
 	, prevAlign(-1.f, -1.f)
 {
+	keys.emplace_back(_getKey<AxisMoving>());
 	moving = dir != lif::Direction::NONE;
 }
 

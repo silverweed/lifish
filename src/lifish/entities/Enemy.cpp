@@ -39,8 +39,8 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	, info(info)
 	, originalSpeed(info.speed)
 {
-	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::ENEMIES));
-	addComponent(new lif::Sounded(*this, {
+	addComponent(std::make_shared<lif::ZIndexed>(*this, lif::conf::zindex::ENEMIES));
+	addComponent(std::make_shared<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("death", lif::getAsset("test", std::string("enemy")
 					+ lif::to_string(id) + std::string("_death.ogg"))),
 		std::make_pair("yell", lif::getAsset("test", std::string("enemy")
@@ -50,48 +50,48 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 		std::make_pair("attack", lif::getAsset("test", std::string("enemy")
 					+ lif::to_string(id) + std::string("_attack.ogg")))
 	}));
-	addComponent(new lif::Lifed(*this, 1, [this] (int, int newLife) {
+	addComponent(std::make_shared<lif::Lifed>(*this, 1, [this] (int, int newLife) {
 		// on hurt
 		if (newLife <= 0)
 			killable->kill();
 	}));
-	addComponent(new lif::Foe(*this));
+	addComponent(std::make_shared<lif::Foe>(*this));
 	if (info.ai >= lif::ai_functions.size()) {
 		std::stringstream ss;
 		ss << "invalid AI number for Enemy: " << lif::to_string(info.ai) << "/" << lif::ai_functions.size();
 		throw std::invalid_argument(ss.str());
 	}
-	ai = addComponent(new lif::AI(*this, lif::ai_functions[info.ai]));
-	moving = addComponent(new lif::AxisMoving(*this, BASE_SPEED * originalSpeed, lif::Direction::DOWN));
-	animated = addComponent(new lif::Animated(*this, 
+	ai = addComponent(std::make_shared<lif::AI>(*this, lif::ai_functions[info.ai]));
+	moving = addComponent(std::make_shared<lif::AxisMoving>(*this, BASE_SPEED * originalSpeed, lif::Direction::DOWN));
+	animated = addComponent(std::make_shared<lif::Animated>(*this, 
 		lif::getAsset("graphics", std::string("enemy") + lif::to_string(id) + std::string(".png"))));
-	yellClock = addComponent(new lif::Clock(*this));
-	dashClock = addComponent(new lif::Clock(*this));
-	alienSprite = addComponent(new lif::AlienSprite(*this));
-	addComponent(new lif::Scored(*this, id * 100));
-	movingAnimator = addComponent(new lif::MovingAnimator(*this));
-	killable = addComponent(new lif::Killable(*this, [this] () {
+	yellClock = addComponent(std::make_shared<lif::Clock>(*this));
+	dashClock = addComponent(std::make_shared<lif::Clock>(*this));
+	alienSprite = addComponent(std::make_shared<lif::AlienSprite>(*this));
+	addComponent(std::make_shared<lif::Scored>(*this, id * 100));
+	movingAnimator = addComponent(std::make_shared<lif::MovingAnimator>(*this));
+	killable = addComponent(std::make_shared<lif::Killable>(*this, [this] () {
 		// on kill
 		death->kill(); 
 	}, [this] () {
 		return death->isKillInProgress(); 
 	}));
 	// Spawn letter on death
-	addComponent(new lif::Spawning(*this, [this] (const lif::Spawning& spw) {
+	addComponent(std::make_shared<lif::Spawning>(*this, [this] (const lif::Spawning& spw) {
 		return morphed && spw.nSpawned() == 0 && killable->isKilled() && !killable->isKillInProgress();
 	}, [this] () {
 		return new lif::Letter(position, lif::Letter::randomId());
 	}));
-	death = addComponent(new lif::RegularEntityDeath(*this, lif::conf::enemy::DEATH_TIME));
-	shooting = addComponent(new lif::Shooting(*this, info.attack));
-	autoShooting = addComponent(new lif::AutoShooting(*this));
-	sighted = addComponent(new lif::AxisSighted(*this));
+	death = addComponent(std::make_shared<lif::RegularEntityDeath>(*this, lif::conf::enemy::DEATH_TIME));
+	shooting = addComponent(std::make_shared<lif::Shooting>(*this, info.attack));
+	autoShooting = addComponent(std::make_shared<lif::AutoShooting>(*this));
+	sighted = addComponent(std::make_shared<lif::AxisSighted>(*this));
 
 	drawProxy = std::unique_ptr<lif::EnemyDrawableProxy>(new lif::EnemyDrawableProxy(*this));
-	addComponent(new lif::Drawable(*this, *drawProxy));
+	addComponent(std::make_shared<lif::Drawable>(*this, *drawProxy));
 
 	auto hurt_by_explosion = lif::hurtByExplosions(*this, lif::CFO_TAKE_SINGLE_HIT);
-	collider = addComponent(new lif::Collider(*this, [this, hurt_by_explosion] (lif::Collider& coll) {
+	collider = addComponent(std::make_shared<lif::Collider>(*this, [this, hurt_by_explosion] (lif::Collider& coll) {
 		// on collision
 		if (!_checkCollision(coll))
 			hurt_by_explosion(coll);

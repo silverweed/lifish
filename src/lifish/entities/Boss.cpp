@@ -24,18 +24,18 @@ using lif::TILE_SIZE;
 Boss::Boss(const sf::Vector2f& pos)
 	: lif::Entity(pos)
 {
-	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::BOSSES));
-	addComponent(new lif::Foe(*this));
-	explClock = addComponent(new lif::Clock(*this));
-	deathClock = addComponent(new lif::Clock(*this));
-	killable = addComponent(new lif::Killable(*this, [this] () {
+	addComponent(std::make_shared<lif::ZIndexed>(*this, lif::conf::zindex::BOSSES));
+	addComponent(std::make_shared<lif::Foe>(*this));
+	explClock = addComponent(std::make_shared<lif::Clock>(*this));
+	deathClock = addComponent(std::make_shared<lif::Clock>(*this));
+	killable = addComponent(std::make_shared<lif::Killable>(*this, [this] () {
 		// on kill
 		_kill();
 	}, [this] () {
 		// kill in progress
 		return _killInProgress();
 	}));
-	addComponent(new lif::Spawning(*this, [this] (const lif::Spawning&) {
+	addComponent(std::make_shared<lif::Spawning>(*this, [this] (const lif::Spawning&) {
 		return killable && killable->isKilled() 
 			&& explClock->getElapsedTime() >= sf::milliseconds(100);
 	}, [this] () {
@@ -52,7 +52,7 @@ Boss::Boss(const sf::Vector2f& pos)
 		lif::cache.playSound(expl->get<lif::Sounded>()->getSoundFile("explode"));
 		return expl;
 	}));
-	addComponent(new lif::Drawable(*this, *addComponent(new lif::HurtDrawProxy(*this))));
+	addComponent(std::make_shared<lif::Drawable>(*this, *addComponent(std::make_shared<lif::HurtDrawProxy>(*this))));
 }
 
 lif::Entity* Boss::init() {

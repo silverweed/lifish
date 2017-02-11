@@ -21,20 +21,20 @@ using lif::AlienBoss;
 AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	: lif::Boss(pos)
 {
-	addComponent(new lif::Sounded(*this, {
+	addComponent(std::make_shared<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("death", lif::getAsset("test", std::string("alienboss_death.ogg"))),
 		std::make_pair("hurt", lif::getAsset("test", std::string("alienboss_hurt.ogg")))
 	}));
 	const sf::Vector2f size(3 * lif::TILE_SIZE, 3 * lif::TILE_SIZE);
-	collider = addComponent(new lif::Collider(*this, [this] (lif::Collider& coll) {
+	collider = addComponent(std::make_shared<lif::Collider>(*this, [this] (lif::Collider& coll) {
 		// on collision
 		_checkCollision(coll);
 	}, lif::c_layers::BOSSES, size));
-	addComponent(new lif::Scored(*this, VALUE));
-	animated = addComponent(new lif::Animated(*this, lif::getAsset("test", "alien_boss.png")));
+	addComponent(std::make_shared<lif::Scored>(*this, VALUE));
+	animated = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("test", "alien_boss.png")));
 	animated->addAnimation("idle", { sf::IntRect(0, 0, size.x, size.y) }, true);
-	addComponent(new lif::Lifed(*this, LIFE));
-	shootClock = addComponent(new lif::Clock(*this));
+	addComponent(std::make_shared<lif::Lifed>(*this, LIFE));
+	shootClock = addComponent(std::make_shared<lif::Clock>(*this));
 
 	lif::Attack attack;
 	attack.type = lif::AttackType::SIMPLE;
@@ -44,9 +44,9 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	attack.fireRate = 1. / SHOOT_SHORT_INTERVAL.asSeconds();
 
 	// Shooting points
-	eyes[0] = addComponent(new lif::ShootingPoint(*this, attack, SIGHT_RADIUS));
+	eyes[0] = addComponent(std::make_shared<lif::ShootingPoint>(*this, attack, SIGHT_RADIUS));
 	eyes[0]->setOffset(sf::Vector2f(17, 18));
-	eyes[1] = addComponent(new lif::ShootingPoint(*this, attack, SIGHT_RADIUS));
+	eyes[1] = addComponent(std::make_shared<lif::ShootingPoint>(*this, attack, SIGHT_RADIUS));
 	eyes[1]->setOffset(sf::Vector2f(50, 18));
 }
 

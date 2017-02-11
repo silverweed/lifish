@@ -13,7 +13,9 @@ class Fixed : public lif::Component {
 public:
 	explicit Fixed(lif::Entity& owner)
 		: lif::Component(owner)
-	{}
+	{
+		keys.emplace_back(_getKey<Fixed>());
+	}
 };
 
 }

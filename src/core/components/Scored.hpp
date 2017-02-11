@@ -16,13 +16,9 @@ protected:
 	short target = -1;
 
 public:
-	explicit Scored(lif::Entity& owner, const int points) 
-		: lif::Component(owner)
-		, pointsGiven(points)
-	{}
+	explicit Scored(lif::Entity& owner, const int points);
 
 	int getPointsGiven() const { return pointsGiven; }
-
 	/** @return whether this entity already gave points to the player or not */
 	bool hasGivenPoints() const { return givenPoints; }
 	/** Tell this component that it already gave points to someone, so it doesn't do that twice. */

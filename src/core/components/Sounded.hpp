@@ -12,9 +12,12 @@ namespace lif {
 class Sounded : public lif::Component {
 	std::unordered_map<std::string, std::string> soundFiles;
 public:
-	explicit Sounded(lif::Entity& owner, std::initializer_list<std::pair<std::string, std::string>> _soundFiles)
+	using SoundList = std::initializer_list<std::pair<std::string, std::string>>;
+
+	explicit Sounded(lif::Entity& owner, SoundList _soundFiles)
 		: lif::Component(owner)
 	{
+		keys.emplace_back(_getKey<Sounded>());
 		for (auto& s : _soundFiles)
 			soundFiles[s.first] = s.second;
 	}

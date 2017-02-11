@@ -14,8 +14,6 @@ class Animated;
  * EXTRA game, which morphs all enemies into harmless Aliens.
  */
 class Coin : public lif::Entity {
-	const static sf::Time GRAB_TIME; 
-	constexpr static unsigned int VALUE = 150;
 
 	lif::Clock *grabClock;
 	lif::Grabbable *grabbable = nullptr;

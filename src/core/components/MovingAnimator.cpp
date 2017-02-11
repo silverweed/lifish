@@ -6,7 +6,21 @@ using lif::MovingAnimator;
 
 MovingAnimator::MovingAnimator(lif::Entity& owner)
 	: lif::Component(owner)
-{}
+{
+	keys.emplace_back(_getKey<MovingAnimator>());
+}
+
+MovingAnimator::MovingAnimator(lif::Entity& owner, lif::AxisMoving *m, lif::Animated *a)
+	: lif::Component(owner)
+	, moving(m)
+	, animated(a)
+{
+	keys.emplace_back(_getKey<MovingAnimator>());
+	if (moving == nullptr)
+		throw std::invalid_argument("owner has no Moving!");
+	if (animated == nullptr)
+		throw std::invalid_argument("owner has no Animated!");
+}
 
 lif::Entity* MovingAnimator::init() {
 	moving = owner.get<lif::AxisMoving>();
@@ -18,17 +32,6 @@ lif::Entity* MovingAnimator::init() {
 		throw std::invalid_argument("owner has no Animated!");
 	
 	return this;
-}
-
-MovingAnimator::MovingAnimator(lif::Entity& owner, lif::AxisMoving *m, lif::Animated *a)
-	: lif::Component(owner)
-	, moving(m)
-	, animated(a)
-{
-	if (moving == nullptr)
-		throw std::invalid_argument("owner has no Moving!");
-	if (animated == nullptr)
-		throw std::invalid_argument("owner has no Animated!");
 }
 
 void MovingAnimator::update() {

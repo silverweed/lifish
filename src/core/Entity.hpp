@@ -33,6 +33,11 @@ private:
 protected:
 	sf::Vector2f position;
 
+	template<class T>
+	std::type_index _getKey() const {
+		return std::type_index(typeid(T));
+	}
+
 public:
 	explicit Entity();
 
@@ -50,8 +55,8 @@ public:
 	std::shared_ptr<T> getShared() const;
 
 	/** @return All components of type T whose owner is this entity */
-	//template<class T>
-	//std::vector<T*> getAll() const;
+	template<class T>
+	std::vector<T*> getAll() const;
 
 	template<class T>
 	std::vector<std::shared_ptr<T>> getAllShared() const;
@@ -89,11 +94,7 @@ public:
 /**
  * A generic component of a game entity. Inherit this to add behavior.
  */
-class Component
-	: public std::enable_shared_from_this<Component>
-	, public lif::Entity
-	, public lif::Activable
-{
+class Component : public lif::Entity, public lif::Activable {
 protected:
 	lif::Entity& owner;
 	std::list<CompKey> keys;

@@ -8,7 +8,8 @@ using lif::HurtDrawProxy;
 HurtDrawProxy::HurtDrawProxy(lif::Entity& owner)
 	: lif::Component(owner)
 {
-	hurtClock = addComponent(new lif::Clock(*this));
+	keys.emplace_back(_getKey<HurtDrawProxy>());
+	hurtClock = addComponent(std::make_shared<lif::Clock>(*this));
 	hurtClock->add(lif::conf::HURT_TIME);
 }
 

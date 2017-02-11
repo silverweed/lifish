@@ -7,6 +7,7 @@ using lif::FreeMoving;
 FreeMoving::FreeMoving(lif::Entity& owner, float speed, sf::Vector2f velocity)
 	: lif::Moving(owner, speed)
 {
+	keys.emplace_back(_getKey<FreeMoving>());
 	moving = true;
 	setVelocity(velocity);
 }

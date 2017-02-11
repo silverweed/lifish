@@ -20,27 +20,29 @@ Bonus::Bonus(const sf::Vector2f& pos, const lif::BonusType type)
 	: lif::Entity(pos)
 	, type(type)
 {
-	sprite = addComponent(new lif::Sprite(*this,
+	sprite = addComponent(std::make_shared<lif::Sprite>(*this,
 				lif::getAsset("graphics", "bonuses.png"), 
 				sf::IntRect(
 					static_cast<unsigned short>(type) * TILE_SIZE, 
 					static_cast<unsigned short>(type) / 10 * TILE_SIZE, 
 					TILE_SIZE,
 					TILE_SIZE)));
-	addComponent(new lif::Collider(*this, [this] (const lif::Collider& cld) {
+	addComponent(std::make_shared<lif::Collider>(*this, [this] (const lif::Collider& cld) {
 		if (cld.getLayer() != lif::c_layers::PLAYERS || grabbable->isGrabbed())
 			return;
 		_grab(static_cast<lif::Player&>(cld.getOwnerRW()));
 	}, lif::c_layers::GRABBABLE));
-	addComponent(new lif::Drawable(*this, *sprite));
-	addComponent(new lif::Scored(*this, lif::conf::bonus::VALUE));
-	expireClock = addComponent(new lif::Clock(*this));
-	addComponent(new lif::Sounded(*this, { std::make_pair("grab", lif::getAsset("test", "bonus_grab.ogg")) }));
-	addComponent(new lif::Temporary(*this, [this] () {
+	addComponent(std::make_shared<lif::Drawable>(*this, *sprite));
+	addComponent(std::make_shared<lif::Scored>(*this, lif::conf::bonus::VALUE));
+	expireClock = addComponent(std::make_shared<lif::Clock>(*this));
+	addComponent(std::make_shared<lif::Sounded>(*this, lif::Sounded::SoundList {
+		std::make_pair("grab", lif::getAsset("test", "bonus_grab.ogg")) 
+	}));
+	addComponent(std::make_shared<lif::Temporary>(*this, [this] () {
 		// expire condition
 		return grabbable->isGrabbed() || expireClock->getElapsedTime() > EXPIRE_TIME;
 	}));
-	grabbable = addComponent(new lif::Grabbable(*this));
+	grabbable = addComponent(std::make_shared<lif::Grabbable>(*this));
 }
 
 void Bonus::update() {

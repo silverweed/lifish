@@ -22,20 +22,20 @@ const sf::Time AlienPredator::TUNNEL_PERIOD = sf::seconds(20);
 const sf::Time AlienPredator::TUNNEL_TRANSITION_TIME = sf::seconds(1);
 
 AlienPredator::AlienPredator(const sf::Vector2f& pos, const lif::EnemyInfo& info) : lif::Enemy(pos, 10, info) {
-	addComponent(new lif::Spawning(*this, [this] () {
+	addComponent(std::make_shared<lif::Spawning>(*this, [this] () {
 		// Spawn Acid Pond on death, which persists for N seconds.
 		auto pond = new lif::AcidPond(position, sf::Vector2f(TILE_SIZE, TILE_SIZE));
 		sf::Clock clock;
-		pond->addComponent(new lif::Temporary(*pond, [clock] () {
+		pond->addComponent(std::make_shared<lif::Temporary>(*pond, [clock] () {
 			return clock.getElapsedTime() > POND_LIFETIME;
 		}));
 		return pond;
 	}));
-	tunnelClock = addComponent(new lif::Clock(*this));
+	tunnelClock = addComponent(std::make_shared<lif::Clock>(*this));
 	// Add an initial random time
 	std::uniform_real_distribution<float> dist(0, TUNNEL_PERIOD.asSeconds());
 	tunnelClock->add(sf::seconds(dist(lif::rng)));
-	tunnelAnimClock = addComponent(new lif::Clock(*this));
+	tunnelAnimClock = addComponent(std::make_shared<lif::Clock>(*this));
 	// Add the tunneling animation
 	auto& a_tunnel = animated->addAnimation("tunnel");
 	for (unsigned i = 0; i < TUNNEL_N_FRAMES; ++i) {
