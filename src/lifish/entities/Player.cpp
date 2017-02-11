@@ -13,7 +13,6 @@
 #include "Bullet.hpp"
 #include "Explosion.hpp"
 #include "Killable.hpp"
-#include "AxisSighted.hpp"
 #include "Controllable.hpp"
 #include "GameCache.hpp"
 #include "ZIndexed.hpp"
@@ -73,7 +72,6 @@ void Player::_init() {
 	}, [this] () {
 		return death->isKillInProgress();
 	}));
-	addComponent(new lif::AxisSighted(*this));
 	bonusable = addComponent(new lif::Bonusable(*this));
 	movingAnimator = addComponent(new lif::MovingAnimator(*this));
 	addComponent(new lif::Controllable(*this,

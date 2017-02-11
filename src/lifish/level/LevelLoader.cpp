@@ -6,7 +6,7 @@
 #include "Level.hpp"
 #include "LevelManager.hpp"
 #include "FixedWall.hpp"
-#include "Sighted.hpp"
+#include "AxisSighted.hpp"
 #include "Teleport.hpp"
 #include "BreakableWall.hpp"
 #include "AlienBoss.hpp"
@@ -209,14 +209,17 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 	for (auto e : LevelEffects::getEffectEntities(level))
 		entities.add(e);
 	
-	for (unsigned short i = 0; i < lm.players.size(); ++i) {
-		if (lm.players[i] == nullptr) continue;
-		auto sighted = lm.players[i]->get<lif::Sighted>();
-		sighted->setEntityGroup(&lm.entities);
-		sighted->setOpaque({
-			lif::c_layers::BREAKABLES,
-			lif::c_layers::UNBREAKABLES
-		});
+	if (level.getInfo().effects.find("darkness") != level.getInfo().effects.end()) {
+		// In case of darkness, we need the Players to have an AxisSighted component
+		for (unsigned short i = 0; i < lm.players.size(); ++i) {
+			if (lm.players[i] == nullptr) continue;
+			auto sighted = lm.players[i]->addComponent(new lif::AxisSighted(*lm.players[i]));
+			sighted->setEntityGroup(&lm.entities);
+			sighted->setOpaque({
+				lif::c_layers::BREAKABLES,
+				lif::c_layers::UNBREAKABLES
+			});
+		}
 	}
 
 	lm.levelTime.resume();
