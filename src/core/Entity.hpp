@@ -2,6 +2,11 @@
 
 #include <memory>
 #include <vector>
+#include <map>
+#include <typeinfo>
+#include <typeindex>
+#include <list>
+#include <algorithm>
 #include <SFML/System.hpp>
 #include "Activable.hpp"
 #include "WithOrigin.hpp"
@@ -15,12 +20,18 @@ class Component;
  * Base class for game entities (walls, enemies, players, ...)
  */
 class Entity : public lif::WithOrigin, public lif::Stringable {
+protected:
+	using CompKey = std::type_index;
+	using CompVec = std::vector<std::shared_ptr<lif::Component>>;
+
+private:
+	std::map<CompKey, CompVec> components;
 	bool _initialized = false;
 
-protected:
-	std::vector<std::shared_ptr<lif::Component>> components;
-	sf::Vector2f position;
 	std::string _toString(unsigned short indent) const;
+
+protected:
+	sf::Vector2f position;
 
 public:
 	explicit Entity();
@@ -29,31 +40,27 @@ public:
 	virtual ~Entity();
 
 	template<class T>
-	T* addComponent(T* comp);
+	T* addComponent(const std::shared_ptr<T>& comp);
 
+	/** @return The first component of type T added to this entity */
 	template<class T>
 	T* get() const;
 
 	template<class T>
-	std::vector<T*> getAll() const;
-
-	template<class T>
-	std::vector<T*> getAllRecursive() const;
-
-	template<class T>
 	std::shared_ptr<T> getShared() const;
+
+	/** @return All components of type T whose owner is this entity */
+	//template<class T>
+	//std::vector<T*> getAll() const;
 
 	template<class T>
 	std::vector<std::shared_ptr<T>> getAllShared() const;
 
 	template<class T>
+	std::vector<T*> getAllRecursive() const;
+
+	template<class T>
 	std::vector<std::shared_ptr<T>> getAllRecursiveShared() const;
-
-	virtual sf::Vector2f getPosition() const; 
-	virtual void setPosition(const sf::Vector2f& p); 
-	void translate(const sf::Vector2f& p);
-
-	bool isAligned(const char axis = 'b') const;
 
 	/** Called after the constructor; all components should have been already
 	 *  added at this time.
@@ -68,6 +75,12 @@ public:
 	
 	/** Implements Stringable */
 	virtual std::string toString() const override;
+
+	virtual sf::Vector2f getPosition() const;
+	virtual void setPosition(const sf::Vector2f& p);
+	void translate(const sf::Vector2f& p);
+
+	bool isAligned(const char axis = 'b') const;
 };
 
 #define COMP_NOT_UNIQUE \
@@ -76,9 +89,14 @@ public:
 /**
  * A generic component of a game entity. Inherit this to add behavior.
  */
-class Component : public lif::Entity, public lif::Activable {
+class Component
+	: public std::enable_shared_from_this<Component>
+	, public lif::Entity
+	, public lif::Activable
+{
 protected:
 	lif::Entity& owner;
+	std::list<CompKey> keys;
 
 public:
 	/** If true, adding more than a component of this type to an Entity
@@ -93,6 +111,8 @@ public:
 
 	/** Gets the owner of this component (non-const) */
 	lif::Entity& getOwnerRW() const { return owner; }
+
+	std::list<CompKey> getKeys() const { return keys; }
 };
 
 #include "Entity.inl"

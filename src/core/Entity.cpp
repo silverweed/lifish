@@ -6,6 +6,10 @@
 #include <sstream>
 #include <iostream>
 
+#define FOREACH_COMPONENT \
+	for (auto& pair : components) \
+		for (auto c : pair.second)
+
 // Note: in theory, this should check for HAVE_CXA_DEMANGLE.
 // The GCC version that I'm using, though, despite being pretty recent (6.2.1),
 // does not define that macro, so I just check that we're using GCC and hope
@@ -44,7 +48,7 @@ Entity::~Entity() {}
 
 void Entity::setOrigin(const sf::Vector2f& origin) {
 	WithOrigin::setOrigin(origin);
-	for (auto& c : components)
+	FOREACH_COMPONENT
 		c->setOrigin(origin);
 }
 
@@ -60,7 +64,7 @@ bool Entity::isAligned(const char axis) const {
 lif::Entity* Entity::init() {
 	if (_initialized) return this;
 
-	for (auto& c : components)
+	FOREACH_COMPONENT
 		c->init();
 	
 	_initialized = true;
@@ -68,7 +72,7 @@ lif::Entity* Entity::init() {
 }
 
 void Entity::update() {
-	for (auto& c : components)
+	FOREACH_COMPONENT
 		if (c->isActive())
 			c->update();
 }
@@ -86,9 +90,8 @@ std::string Entity::_toString(unsigned short indent) const {
 	if (components.size() > 0) {
 		ss << "\r\n";
 		put_indent(indent) << "{\r\n";
-		for (const auto& c : components) {
+		FOREACH_COMPONENT
 			ss << c->_toString(indent + 1) << "\r\n";
-		}
 		put_indent(indent) << "}";
 	}
 	return ss.str();
