@@ -28,3 +28,4 @@ clean.out
 .gdbhist
 *.old
 gmon.out*
+perf.data
