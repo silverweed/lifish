@@ -8,7 +8,7 @@ namespace lif {
 /** An AxisSighted entity has knowledge of entities around it along axis directions. */
 class AxisSighted : public lif::Sighted {
 	/** Pair <entity, distance in tiles> */
-	using SeenPair = std::pair<std::weak_ptr<lif::Entity>, unsigned>;
+	using SeenPair = std::pair<lif::Entity*, unsigned>;
 	using PartSeenEntitiesList = std::vector<SeenPair>;
 	using TotSeenEntitiesList = std::array<
 		PartSeenEntitiesList,

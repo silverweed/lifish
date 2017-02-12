@@ -51,11 +51,8 @@ void AxisSighted::_fillLine(const lif::Direction dir) {
 
 	seen[dir].clear();
 
-	entities->apply([=] (std::weak_ptr<lif::Entity> e) {
-		if (e.expired())
-			return;
-		auto ptr = e.lock();
-		if (ptr.get() == &owner)
+	entities->apply([=] (const lif::Entity *ptr) {
+		if (ptr == &owner)
 			return;
 		const auto etile = lif::tile2(ptr->getPosition());
 		if (!same_line(etile, mtile)) return;
@@ -64,7 +61,7 @@ void AxisSighted::_fillLine(const lif::Direction dir) {
 			// Only see living entities
 			const auto killable = ptr->get<lif::Killable>();
 			if (killable == nullptr || !killable->isKilled())
-				seen[dir].push_back(std::make_pair(ptr, dist));
+				seen[dir].push_back(std::make_pair(const_cast<lif::Entity*>(ptr), dist));
 		}
 	});
 
@@ -77,7 +74,7 @@ void AxisSighted::_fillLine(const lif::Direction dir) {
 		// to determine opaqueness; this assumes that we only see entities whose
 		// first collider determines their bounding box.
 		for (auto it = seen[dir].begin(); it != seen[dir].end(); ++it) {
-			const auto cld = it->first.lock()->get<lif::Collider>();
+			const auto cld = it->first->get<lif::Collider>();
 			if (cld != nullptr) {
 				const auto layer = cld->getLayer();
 				if (_isOpaque(layer)) {

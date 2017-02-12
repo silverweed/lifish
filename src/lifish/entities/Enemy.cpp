@@ -189,8 +189,8 @@ void Enemy::_checkShoot() {
 	
 	const auto& entitiesSeen = sighted->entitiesSeen(moving->getDirection());
 	for (const auto& pair : entitiesSeen) {
-		const auto entity = pair.first.lock();
-		if (_inRange(entity.get()) && std::dynamic_pointer_cast<const lif::Player>(entity) != nullptr) {
+		const auto entity = pair.first;
+		if (_inRange(entity) && dynamic_cast<const lif::Player*>(entity) != nullptr) {
 			autoShooting->shoot();
 			return;
 		}
