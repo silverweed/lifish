@@ -28,27 +28,25 @@ void Screen::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 }
 
 void Screen::update() {
-	// TODO support joystick selection
-	const auto mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-	if (selected.second != nullptr) {
-		if (selected.second->getGlobalBounds().contains(mousePos.x, mousePos.y))
-			return;
-		else {
-			selected.second->setColor(sf::Color::White);
-			selected.first = "";
-			selected.second = nullptr;
+	if (usingJoystick)
+		_updateSelectedJoystick();
+	else
+		_updateSelectedMouse();
+}
+
+bool Screen::handleEvent(sf::Window& window, sf::Event event) {
+	switch (event.type) {
+	case sf::Event::JoystickButtonPressed:
+		switch (event.joystickButton.button) {
+			// TODO
+			usingJoystick = true;
+			return true;
 		}
+	case sf::Event::MouseMoved:
+		usingJoystick = false;
+		return true;
 	}
-	for (auto& pair : interactables) {
-		auto& inter = pair.second;
-		if (inter->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-			selected = std::make_pair(pair.first, inter.get());
-			break;
-		}
-	}
-	if (selected.second != nullptr) {
-		selected.second->setColor(sf::Color::Red);
-	}
+	return false;
 }
 
 std::string Screen::getSelected() const {
@@ -82,4 +80,33 @@ void Screen::_loadBGSprite(const std::string& bgSpritePath) {
 	texture->setSmooth(true);
 	bgSprite.setTexture(*texture);
 	bgSprite.setTextureRect(sf::IntRect(0, 0, size.x, size.y));
+}
+
+void Screen::_updateSelectedMouse() {
+	const auto mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+	if (selected.second != nullptr) {
+		// Check if we're still selecting this element; in that case, don't bother
+		// looping through all others elements.
+		if (selected.second->getGlobalBounds().contains(mousePos.x, mousePos.y))
+			return;
+		else {
+			selected.second->setColor(sf::Color::White);
+			selected.first = "";
+			selected.second = nullptr;
+		}
+	}
+	// We may be selecting a new interactable: in that case, find out which.
+	for (auto& pair : interactables) {
+		auto& inter = pair.second;
+		if (inter->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+			selected = std::make_pair(pair.first, inter.get());
+			break;
+		}
+	}
+	if (selected.second != nullptr)
+		selected.second->setColor(sf::Color::Red);
+}
+
+void Screen::_updateSelectedJoystick() {
+	
 }

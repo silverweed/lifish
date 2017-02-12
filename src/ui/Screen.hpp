@@ -38,6 +38,8 @@ protected:
 
 	/** Whether this Screen was already built or not */
 	bool built = false;
+	/** If true, the elements' selection is being done via joystick, else via mouse */
+	bool usingJoystick = false;
 
 	/** The styles */
 	std::unordered_map<std::string, lif::ui::ScreenStyle> styles;
@@ -55,6 +57,8 @@ protected:
 
 	Screen(const sf::RenderWindow& window, const sf::Vector2u& size);
 	void _loadBGSprite(const std::string& bgSpritePath);
+	void _updateSelectedMouse();
+	void _updateSelectedJoystick();
 
 public:
 	explicit Screen(const std::string& layoutFileName, const sf::RenderWindow& window, const sf::Vector2u& size);
@@ -73,7 +77,7 @@ public:
 	/** This may be used by child classes to do specific logic;
 	 *  @return true if signal was caught and should be ignored by UI's event loop.
 	 */
-	virtual bool handleEvent(sf::Window&, sf::Event) override { return false; }
+	virtual bool handleEvent(sf::Window&, sf::Event) override;
 	virtual void update() override;
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void setOrigin(const sf::Vector2f& pos) override;
