@@ -214,6 +214,7 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 		for (unsigned short i = 0; i < lm.players.size(); ++i) {
 			if (lm.players[i] == nullptr) continue;
 			auto sighted = lm.players[i]->addComponent(std::make_shared<lif::AxisSighted>(*lm.players[i]));
+			sighted->init();
 			sighted->setEntityGroup(&lm.entities);
 			sighted->setOpaque({
 				lif::c_layers::BREAKABLES,

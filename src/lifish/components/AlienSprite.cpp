@@ -53,6 +53,7 @@ AlienSprite::AlienSprite(lif::Entity& owner)
 
 lif::Entity* AlienSprite::init() {
 	lif::Component::init();
-	movingAnimator = addComponent(std::make_shared<lif::MovingAnimator>(*this, owner.get<lif::AxisMoving>(), animated));
+	movingAnimator = addComponent(std::make_shared<lif::MovingAnimator>(*this,
+				owner.get<lif::AxisMoving>(), animated));
 	return this;
 }

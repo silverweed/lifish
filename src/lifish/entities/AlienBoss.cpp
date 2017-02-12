@@ -14,6 +14,7 @@
 #include "Shooting.hpp"
 #include "conf/boss.hpp"
 #include "shoot_utils.hpp"
+#include <iostream>
 
 using namespace lif::conf::boss::alien_boss;
 using lif::AlienBoss;

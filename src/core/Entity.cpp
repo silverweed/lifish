@@ -6,10 +6,6 @@
 #include <sstream>
 #include <iostream>
 
-#define FOREACH_COMPONENT \
-	for (auto& pair : components) \
-		for (auto c : pair.second)
-
 // Note: in theory, this should check for HAVE_CXA_DEMANGLE.
 // The GCC version that I'm using, though, despite being pretty recent (6.2.1),
 // does not define that macro, so I just check that we're using GCC and hope
@@ -46,9 +42,18 @@ Entity::Entity(const sf::Vector2f& pos)
 
 Entity::~Entity() {}
 
+void Entity::_addUnique(lif::Component *c) {
+	if (std::find_if(compSet.begin(), compSet.end(), [c] (const lif::Component *comp) {
+		return comp == c;
+	}) == compSet.end())
+	{
+		compSet.push_back(c);
+	}
+}
+
 void Entity::setOrigin(const sf::Vector2f& origin) {
 	WithOrigin::setOrigin(origin);
-	FOREACH_COMPONENT
+	for (auto c : compSet)
 		c->setOrigin(origin);
 }
 
@@ -64,15 +69,15 @@ bool Entity::isAligned(const char axis) const {
 lif::Entity* Entity::init() {
 	if (_initialized) return this;
 
-	FOREACH_COMPONENT
+	for (auto c : compSet)
 		c->init();
-	
+
 	_initialized = true;
 	return this;
 }
 
 void Entity::update() {
-	FOREACH_COMPONENT
+	for (auto c : compSet)
 		if (c->isActive())
 			c->update();
 }
@@ -90,7 +95,7 @@ std::string Entity::_toString(unsigned short indent) const {
 	if (components.size() > 0) {
 		ss << "\r\n";
 		put_indent(indent) << "{\r\n";
-		FOREACH_COMPONENT
+		for (auto c : compSet)
 			ss << c->_toString(indent + 1) << "\r\n";
 		put_indent(indent) << "}";
 	}
