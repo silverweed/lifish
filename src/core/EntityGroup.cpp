@@ -29,14 +29,16 @@ void EntityGroup::updateAll() {
 
 void EntityGroup::remove(const lif::Entity& entity) {
 	mtxLock();
-	entities.remove_if([entity] (std::shared_ptr<lif::Entity> e) { return e.get() == &entity; });
+	std::remove_if(entities.begin(), entities.end(), [entity] (std::shared_ptr<lif::Entity> e) {
+		return e.get() == &entity;
+	});
 	_pruneAll();
 	mtxUnlock();
 }
 
 void EntityGroup::remove(std::shared_ptr<lif::Entity> entity) {
 	mtxLock();
-	entities.remove(entity);
+	std::remove(entities.begin(), entities.end(), entity);
 	_pruneAll();
 	mtxUnlock();
 }

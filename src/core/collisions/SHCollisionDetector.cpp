@@ -3,6 +3,7 @@
 #include "collision_utils.hpp"
 #include "AxisMoving.hpp"
 #include "Direction.hpp"
+#include <iostream>
 
 using namespace lif::collision_utils;
 using lif::SHContainer;
@@ -58,8 +59,9 @@ std::unordered_set<unsigned> SHContainer::_getIdFor(const lif::Collider& obj) co
 	return ids;
 }
 
-auto SHContainer::getNearby(const lif::Collider& obj) const -> std::list<std::weak_ptr<lif::Collider>> {
-	std::list<std::weak_ptr<lif::Collider>> nearby;
+auto SHContainer::getNearby(const lif::Collider& obj) const -> std::vector<std::weak_ptr<lif::Collider>> {
+	std::vector<std::weak_ptr<lif::Collider>> nearby;
+	nearby.reserve(512);
 
 	auto ids = _getIdFor(obj);
 	for (auto id : ids) {

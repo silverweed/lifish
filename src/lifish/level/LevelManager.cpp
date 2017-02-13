@@ -70,8 +70,6 @@ void LevelManager::update() {
 	// Update level time
 	levelTime.update();
 
-	std::list<lif::Entity*> to_be_spawned, to_be_killed;
-
 	DBGSTART("tot");
 	DBGSTART("reset_align");
 
@@ -99,6 +97,7 @@ void LevelManager::update() {
 	DBGSTART("logic");
 
 	// Apply game logic rules
+	std::vector<lif::Entity*> to_be_spawned, to_be_killed;
 #ifndef RELEASE
 	int i = 0;
 #endif

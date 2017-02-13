@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <list>
+#include <vector>
 #include <array>
 #include <iterator>
 #include <unordered_set>
@@ -45,20 +45,20 @@ class EntityGroup final : private sf::NonCopyable {
 #endif
 
 	/** All the entities (owning references) */
-	std::list<std::shared_ptr<lif::Entity>> entities;
+	std::vector<std::shared_ptr<lif::Entity>> entities;
 
 	/** The colliders of entities which have one */
-	std::list<std::weak_ptr<lif::Collider>> collidingEntities;
+	std::vector<std::weak_ptr<lif::Collider>> collidingEntities;
 
-	/** The list of the killable entities, which ought to be removed when
+	/** The vector of the killable entities, which ought to be removed when
 	 *  their `isKilled()` method yields true.
 	 */
-	std::list<std::weak_ptr<lif::Killable>> killables;
+	std::vector<std::weak_ptr<lif::Killable>> killables;
 
-	/** The list of Killable entities who are being destroyed (those whose isKilled() is
+	/** The vector of Killable entities who are being destroyed (those whose isKilled() is
 	 *  true but isKillInProgress() is true as well).
 	 */
-	std::list<std::weak_ptr<lif::Killable>> dying;
+	std::vector<std::weak_ptr<lif::Killable>> dying;
 
 
 	/** Removes any killed entity from all internal collections (including the main one) and destroys them.
@@ -130,7 +130,7 @@ public:
 	void validate();
 	void updateAll();
 
-	auto getColliding() -> std::list<std::weak_ptr<lif::Collider>>& {
+	auto getColliding() -> std::vector<std::weak_ptr<lif::Collider>>& {
 		return collidingEntities;
 	}
 

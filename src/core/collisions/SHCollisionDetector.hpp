@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <list>
 #include <unordered_set>
 #include <memory>
 #include <SFML/System/Vector2.hpp>
@@ -24,7 +23,7 @@ class Collider;
  * Container for spatial hashing algorithm. Has `subdivision^2` buckets.
  */
 class SHContainer {
-	using Bucket = std::list<std::weak_ptr<lif::Collider>>;
+	using Bucket = std::vector<std::weak_ptr<lif::Collider>>;
 
 	const sf::Vector2f levelSize,
 	                   cellSize;
@@ -42,7 +41,7 @@ public:
 	void clear();
 	void insert(std::weak_ptr<lif::Collider> obj);
 	/** @return A set of all colliders in an adjacent cell to `obj`. */
-	auto getNearby(const lif::Collider& obj) const -> std::list<std::weak_ptr<lif::Collider>>;
+	auto getNearby(const lif::Collider& obj) const -> std::vector<std::weak_ptr<lif::Collider>>;
 };
 
 /**

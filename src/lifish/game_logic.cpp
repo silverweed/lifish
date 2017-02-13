@@ -24,7 +24,7 @@
 #include "BreakableWall.hpp"
 #include "ShootingPoint.hpp"
 
-using EntityList = std::list<lif::Entity*>;
+using EntityList = std::vector<lif::Entity*>;
 
 void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::LevelManager& lm,
 		EntityList& tbspawned, EntityList&)

@@ -1,12 +1,11 @@
 #pragma once
 
 #include <vector>
-#include <list>
 #include <functional>
 
 #define DEF_LOGIC(name) \
 	void name(lif::Entity *e, lif::LevelManager& lm, \
-			std::list<lif::Entity*>& tbspawned, std::list<lif::Entity*>& tbkilled)
+			std::vector<lif::Entity*>& tbspawned, std::vector<lif::Entity*>& tbkilled)
 
 namespace lif {
 
@@ -18,8 +17,8 @@ namespace game_logic {
 	using GameLogicFunc = std::function<void(
 			lif::Entity*,             // for-each loop variable 
 			lif::LevelManager&,       // LevelManager calling this function
-			std::list<lif::Entity*>&, // list of entities to be spawned after calling game logic
-			std::list<lif::Entity*>&  // list of entities to be removed after calling game logic
+			std::vector<lif::Entity*>&, // vector of entities to be spawned after calling game logic
+			std::vector<lif::Entity*>&  // vector of entities to be removed after calling game logic
 			)>;
 
 	/** Make players drop bombs */
