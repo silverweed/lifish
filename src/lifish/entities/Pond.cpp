@@ -14,7 +14,7 @@ Pond::Pond(const sf::Vector2f& pos, const sf::Vector2f& size, int dam,
 	for (auto layer : damaged)
 		damagedc_layers |= 1 << layer;
 
-	addComponent(new lif::Collider(*this, [this] (lif::Collider& cld) {
+	addComponent(std::make_shared<lif::Collider>(*this, [this] (lif::Collider& cld) {
 		// on collision
 		if (!((damagedc_layers >> cld.getLayer()) & 1)) return;
 

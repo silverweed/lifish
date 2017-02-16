@@ -42,9 +42,18 @@ Entity::Entity(const sf::Vector2f& pos)
 
 Entity::~Entity() {}
 
+void Entity::_addUnique(lif::Component *c) {
+	if (std::find_if(compSet.begin(), compSet.end(), [c] (const lif::Component *comp) {
+		return comp == c;
+	}) == compSet.end())
+	{
+		compSet.push_back(c);
+	}
+}
+
 void Entity::setOrigin(const sf::Vector2f& origin) {
 	WithOrigin::setOrigin(origin);
-	for (auto& c : components)
+	for (auto c : compSet)
 		c->setOrigin(origin);
 }
 
@@ -60,15 +69,15 @@ bool Entity::isAligned(const char axis) const {
 lif::Entity* Entity::init() {
 	if (_initialized) return this;
 
-	for (auto& c : components)
+	for (auto c : compSet)
 		c->init();
-	
+
 	_initialized = true;
 	return this;
 }
 
 void Entity::update() {
-	for (auto& c : components)
+	for (auto c : compSet)
 		if (c->isActive())
 			c->update();
 }
@@ -86,9 +95,8 @@ std::string Entity::_toString(unsigned short indent) const {
 	if (components.size() > 0) {
 		ss << "\r\n";
 		put_indent(indent) << "{\r\n";
-		for (const auto& c : components) {
+		for (auto c : compSet)
 			ss << c->_toString(indent + 1) << "\r\n";
-		}
 		put_indent(indent) << "}";
 	}
 	return ss.str();

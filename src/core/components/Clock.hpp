@@ -14,7 +14,9 @@ public:
 
 	explicit Clock(lif::Entity& owner)
 		: lif::Component(owner)
-	{}
+	{
+		keys.emplace_back(_getKey<Clock>());
+	}
 
 	sf::Time restart() {
 		return clock.restart();

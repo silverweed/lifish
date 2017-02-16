@@ -10,7 +10,9 @@ namespace lif {
  */
 class Foe : public lif::Component {
 public:
-	explicit Foe(lif::Entity& owner) : lif::Component(owner) {}
+	explicit Foe(lif::Entity& owner) : lif::Component(owner) {
+		keys.emplace_back(_getKey<Foe>());
+	}
 };
 
 }

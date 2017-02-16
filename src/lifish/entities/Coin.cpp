@@ -15,21 +15,24 @@
 using lif::Coin;
 using lif::TILE_SIZE;
 
-const sf::Time Coin::GRAB_TIME = sf::milliseconds(3000);
+const sf::Time GRAB_TIME = sf::milliseconds(3000);
+constexpr static unsigned int VALUE = 150;
 
 Coin::Coin(const sf::Vector2f& pos)
 	: lif::Entity(pos)
 {
-	addComponent(new lif::Fixed(*this));
-	addComponent(new lif::Scored(*this, VALUE));
-	addComponent(new lif::Sounded(*this, { std::make_pair("grab", lif::getAsset("sounds", "coin.ogg")) }));
-	grabClock = addComponent(new lif::Clock(*this));
+	addComponent(std::make_shared<lif::Fixed>(*this));
+	addComponent(std::make_shared<lif::Scored>(*this, VALUE));
+	addComponent(std::make_shared<lif::Sounded>(*this, lif::Sounded::SoundList { 
+		std::make_pair("grab", lif::getAsset("sounds", "coin.ogg")) 
+	}));
+	grabClock = addComponent(std::make_shared<lif::Clock>(*this));
 	std::string texname = lif::getAsset("graphics", "coin.png");
-	animated = addComponent(new lif::Animated(*this, texname));
+	animated = addComponent(std::make_shared<lif::Animated>(*this, texname));
 	lif::cache.loadTexture(texname)->setSmooth(true);
-	addComponent(new lif::Drawable(*this, *animated));
-	grabbable = addComponent(new lif::Grabbable(*this));
-	addComponent(new lif::Collider(*this, [this] (lif::Collider& coll) {
+	addComponent(std::make_shared<lif::Drawable>(*this, *animated));
+	grabbable = addComponent(std::make_shared<lif::Grabbable>(*this));
+	addComponent(std::make_shared<lif::Collider>(*this, [this] (lif::Collider& coll) {
 		if (coll.getLayer() != lif::c_layers::PLAYERS || grabbable->isGrabbed()) 
 			return;
 		// only collides with player, so no further check
@@ -37,7 +40,7 @@ Coin::Coin(const sf::Vector2f& pos)
 		get<lif::Scored>()->setTarget(static_cast<const lif::Player&>(coll.getOwner()).getInfo().id);
 		lif::cache.playSound(get<lif::Sounded>()->getSoundFile("grab"));
 	}, lif::c_layers::GRABBABLE));
-	addComponent(new lif::Killable(*this, [this] () {
+	addComponent(std::make_shared<lif::Killable>(*this, [this] () {
 		// on kill
 		_grab();
 	}, [this] () {

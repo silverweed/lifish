@@ -17,20 +17,20 @@ Fog::Fog(float speed, sf::Time alphaDt)
 	: lif::Entity(sf::Vector2f(0, 0)) 
 	, alphaDt(alphaDt)
 {
-	sprite = addComponent(new lif::Sprite(*this, lif::getAsset("graphics", "fog.png"), 
+	sprite = addComponent(std::make_shared<lif::Sprite>(*this, lif::getAsset("graphics", "fog.png"), 
 				sf::IntRect(0, 0, 
 					3 * lif::LEVEL_WIDTH * lif::TILE_SIZE, 
 					3 * lif::LEVEL_HEIGHT * lif::TILE_SIZE)));
 	sprite->getTexture()->setRepeated(true);
 	sprite->getTexture()->setSmooth(true);
-	addComponent(new lif::Drawable(*this, *sprite));
-	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::FOG));
+	addComponent(std::make_shared<lif::Drawable>(*this, *sprite));
+	addComponent(std::make_shared<lif::ZIndexed>(*this, lif::conf::zindex::FOG));
 
 	// Set a random velocity
 	std::uniform_real_distribution<float> dist(-1, 1);
 	const sf::Vector2f velocity(dist(lif::rng), dist(lif::rng));
-	moving = addComponent(new lif::FreeMoving(*this, speed, velocity));
-	clock = addComponent(new lif::Clock(*this));
+	moving = addComponent(std::make_shared<lif::FreeMoving>(*this, speed, velocity));
+	clock = addComponent(std::make_shared<lif::Clock>(*this));
 
 	// Set the initial position
 	position.x = (1 - lif::LEVEL_WIDTH) * lif::TILE_SIZE;

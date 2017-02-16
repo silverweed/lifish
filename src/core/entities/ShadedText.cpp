@@ -17,7 +17,7 @@ ShadedText::ShadedText(const std::string& fontname, const std::string& str,
 	fgtext.setFillColor(fg);
 	bgtext.setFillColor(bg);
 
-	addComponent(new lif::Drawable(*this, *this));
+	addComponent(std::make_shared<lif::Drawable>(*this, *this));
 }
 
 void ShadedText::setFont(const std::string& fontname) {

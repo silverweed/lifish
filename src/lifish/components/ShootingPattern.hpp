@@ -21,6 +21,7 @@ public:
 		: lif::BufferedSpawner(owner)
 		, bullet(bullet)
 	{
+		keys.emplace_back(_getKey<ShootingPattern>());
 		active = false;
 	}
 	virtual ~ShootingPattern() {}

@@ -6,7 +6,9 @@ using lif::FreeSighted;
 
 FreeSighted::FreeSighted(lif::Entity& owner, float visionRadius)
 	: lif::Sighted(owner, visionRadius)
-{}
+{
+	keys.emplace_back(_getKey<FreeSighted>());
+}
 
 void FreeSighted::update() {
 	lif::Component::update();

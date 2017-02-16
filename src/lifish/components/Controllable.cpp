@@ -10,7 +10,9 @@ Controllable::Controllable(lif::Entity& owner,
 	: lif::Component(owner)
 	, controls(controls)
 	, joystickUsed(joystickUsed)
-{}
+{
+	keys.emplace_back(_getKey<Controllable>());
+}
 
 lif::Entity* Controllable::init() {
 	moving = owner.get<lif::AxisMoving>();

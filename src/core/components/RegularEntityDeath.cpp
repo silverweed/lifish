@@ -15,7 +15,9 @@ using lif::RegularEntityDeath;
 RegularEntityDeath::RegularEntityDeath(lif::Entity& owner, sf::Time deathTime)
 	: lif::Component(owner)
 	, deathTime(deathTime)
-{}
+{
+	keys.emplace_back(_getKey<RegularEntityDeath>());
+}
 
 lif::Entity* RegularEntityDeath::init() {
 	killable = owner.get<lif::Killable>();

@@ -25,11 +25,11 @@ Cutscene::Cutscene(const sf::Vector2u& windowSize, std::initializer_list<Layer> 
 	const auto calc_speed = [] (unsigned distance) { return distance > 0 ? 200. / distance : 0; };
 	for (const auto& layer : layers) {
 		auto ent = new lif::Entity(sf::Vector2f(0, 0));
-		auto sprite = new lif::Sprite(*ent, std::get<0>(layer), sf::IntRect(
+		auto sprite = std::make_shared<lif::Sprite>(*ent, std::get<0>(layer), sf::IntRect(
 					0, 0, static_cast<unsigned>(windowSize.x * 100), windowSize.y));
 		sprite->getTexture()->setRepeated(true);
 		ent->addComponent(sprite);
-		ent->addComponent(new lif::FreeMoving(*ent, calc_speed(std::get<1>(layer)), left));
+		ent->addComponent(std::make_shared<lif::FreeMoving>(*ent, calc_speed(std::get<1>(layer)), left));
 		entities.add(ent);
 	}
 

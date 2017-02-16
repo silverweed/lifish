@@ -18,20 +18,22 @@ using lif::TILE_SIZE;
 Teleport::Teleport(const sf::Vector2f& pos) 
 	: lif::Entity(pos)
 {
-	addComponent(new lif::Fixed(*this));
-	animated = addComponent(new lif::Animated(*this, lif::getAsset("graphics", "teleport.png")));
-	disableClock = addComponent(new lif::Clock(*this));
-	addComponent(new lif::Drawable(*this, *animated));
-	collider = addComponent(new lif::Collider(*this, [this] (lif::Collider& c) {
+	addComponent(std::make_shared<lif::Fixed>(*this));
+	animated = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("graphics", "teleport.png")));
+	disableClock = addComponent(std::make_shared<lif::Clock>(*this));
+	addComponent(std::make_shared<lif::Drawable>(*this, *animated));
+	collider = addComponent(std::make_shared<lif::Collider>(*this, [this] (lif::Collider& c) {
 		warp(c);
 	}, lif::c_layers::TELEPORTS));
-	addComponent(new lif::Spawning(*this, [this] (const lif::Spawning&) {
+	addComponent(std::make_shared<lif::Spawning>(*this, [this] (const lif::Spawning&) {
 		return mustSpawnFlash;
 	}, [this] () {
 		mustSpawnFlash = false;
 		return new lif::Flash(position);
 	}));
-	addComponent(new lif::Sounded(*this, { std::make_pair("warp", lif::getAsset("test", "teleport.ogg")) }));
+	addComponent(std::make_shared<lif::Sounded>(*this, lif::Sounded::SoundList {
+		std::make_pair("warp", lif::getAsset("test", "teleport.ogg")) 
+	}));
 
 	auto& anim = animated->addAnimation("teleport");
 	for (unsigned i = 0; i < N_ANIM_FRAMES; ++i)

@@ -4,7 +4,9 @@ using lif::BufferedSpawner;
 
 BufferedSpawner::BufferedSpawner(lif::Entity& owner)
 	: lif::Spawning(owner)
-{}
+{
+	keys.emplace_back(_getKey<BufferedSpawner>());
+}
 
 std::unique_ptr<lif::Entity> BufferedSpawner::spawn() {
 	std::unique_ptr<lif::Entity> result;

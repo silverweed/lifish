@@ -6,7 +6,9 @@ using lif::Sighted;
 Sighted::Sighted(lif::Entity& owner, float visionRadius)
 	: lif::Component(owner)
 	, visionRadius(visionRadius)
-{}
+{
+	keys.emplace_back(_getKey<Sighted>());
+}
 
 void Sighted::setOpaque(std::initializer_list<lif::c_layers::Layer> layers, bool opaque) {
 	for (auto layer : layers) {

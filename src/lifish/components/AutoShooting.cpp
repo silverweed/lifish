@@ -8,7 +8,9 @@ using lif::AutoShooting;
 
 AutoShooting::AutoShooting(lif::Entity& owner)
 	: lif::BufferedSpawner(owner)
-{}
+{
+	keys.emplace_back(_getKey<AutoShooting>());
+}
 
 lif::Entity* AutoShooting::init() {
 	lif::BufferedSpawner::init();

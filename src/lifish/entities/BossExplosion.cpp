@@ -13,12 +13,12 @@ using lif::TILE_SIZE;
 BossExplosion::BossExplosion(const sf::Vector2f& pos) 
 	: lif::Entity(pos)
 {
-	animated = addComponent(new lif::Animated(*this, lif::getAsset("test", "bossbullet.png")));
-	addComponent(new lif::Drawable(*this, *animated));
-	addComponent(new lif::Sounded(*this, { 
+	animated = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("test", "bossbullet.png")));
+	addComponent(std::make_shared<lif::Drawable>(*this, *animated));
+	addComponent(std::make_shared<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("explode", lif::getAsset("test", "bossbullet_hit.ogg")) 
 	}));
-	addComponent(new lif::ZIndexed(*this, lif::conf::zindex::BOSS_EXPLOSIONS));
+	addComponent(std::make_shared<lif::ZIndexed>(*this, lif::conf::zindex::BOSS_EXPLOSIONS));
 
 	animated->addAnimation("explosion", {
 		sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
@@ -33,7 +33,7 @@ BossExplosion::BossExplosion(const sf::Vector2f& pos)
 	animatedSprite.setFrameTime(sf::seconds(0.10));
 	animatedSprite.play();
 
-	addComponent(new lif::Temporary(*this, [&animatedSprite] () {
+	addComponent(std::make_shared<lif::Temporary>(*this, [&animatedSprite] () {
 		return !animatedSprite.isPlaying();
 	}));
 }
