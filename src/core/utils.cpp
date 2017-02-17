@@ -4,25 +4,6 @@
 #include "ShadedText.hpp"
 #include <random>
 
-//static lif::Direction directions[] = { 
-	//lif::Direction::UP,
-	//lif::Direction::RIGHT,
-	//lif::Direction::DOWN, 
-	//lif::Direction::LEFT 
-//};
-
-//lif::Direction lif::selectRandomViable(const lif::MovingEntity *const entity,
-		//const lif::LevelManager *const lr, const lif::Direction opp) {
-	//lif::Direction dirs[4];
-	//unsigned short n = 0;
-	//for (const auto& d : directions)
-		//if (entity->canGo(d, lr) && d != opp) dirs[n++] = d;
-	//if (n == 0)
-		//dirs[n++] = opp;
-	//std::uniform_int_distribution<int> dist(0, n - 1);
-	//return dirs[dist(lif::rng)];
-//}
-
 short lif::key_utils::keyToNumber(sf::Keyboard::Key key) {
 	switch (key) {
 		using K = sf::Keyboard::Key;
@@ -148,13 +129,11 @@ std::string lif::key_utils::keyToString(sf::Keyboard::Key key) {
 	}
 }
 
-void lif::maybeShowFPS(sf::RenderWindow& window) {
+void lif::maybeShowFPS(sf::RenderWindow& window, const sf::Vector2f& pos) {
 	static double cur_time;
 	static int n_updates = 0;
 	static sf::Clock fps_clock, fps_update_clock;
-	static lif::ShadedText fps_text(lif::getAsset("fonts", lif::fonts::DEBUG_INFO), "-", sf::Vector2f(
-				lif::SIDE_PANEL_WIDTH + (lif::LEVEL_WIDTH - 5.5) * lif::TILE_SIZE, 
-				lif::WINDOW_HEIGHT - lif::TILE_SIZE));
+	static lif::ShadedText fps_text(lif::getAsset("fonts", lif::fonts::DEBUG_INFO), "-", pos);
 	static bool textSetUp = false;
 
 	// Setup text once

@@ -123,7 +123,7 @@ inline bool startsWith(const std::string& haystack, const std::string& needle) {
 void testMusic();
 
 /** If lif::options.showFPS == true, then display FPS on screen */
-void maybeShowFPS(sf::RenderWindow& window);
+void maybeShowFPS(sf::RenderWindow& window, const sf::Vector2f& pos);
 
 namespace key_utils {
 	short keyToNumber(sf::Keyboard::Key key);

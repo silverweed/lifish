@@ -142,10 +142,13 @@ static void load_icon(sf::Window& window) {
 
 #ifdef MULTITHREADED
 static void rendering_loop(sf::RenderWindow& window) {
+	static const sf::Vector2f fps_pos(
+			lif::SIDE_PANEL_WIDTH + (lif::LEVEL_WIDTH - 5.5) * lif::TILE_SIZE,
+			lif::WINDOW_HEIGHT - lif::TILE_SIZE);
 	while (window.isOpen() && !lif::terminated) {
 		window.clear();
 		window.draw(*lif::curContext);
-		lif::maybeShowFPS(window);
+		lif::maybeShowFPS(window, fps_pos);
 		window.display();
 	}
 	if (window.isOpen())
@@ -242,6 +245,10 @@ int main(int argc, char **argv) {
 	const sf::Time frame_time_limit = sf::seconds(1 / 60.);
 	sf::Clock frame_clock;
 	std::thread rendering_thread(rendering_loop, std::ref(window));
+#else
+	const sf::Vector2f fps_pos(
+			lif::SIDE_PANEL_WIDTH + (lif::LEVEL_WIDTH - 5.5) * lif::TILE_SIZE,
+			lif::WINDOW_HEIGHT - lif::TILE_SIZE);
 #endif
 
 	while (window.isOpen() && !lif::terminated) {
@@ -297,7 +304,7 @@ int main(int argc, char **argv) {
 		window.clear();
 		window.draw(*cur_context);
 		
-		lif::maybeShowFPS(window);
+		lif::maybeShowFPS(window, fps_pos);
 		window.display();
 #	ifndef RELEASE
 		++cycle;
