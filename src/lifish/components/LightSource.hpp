@@ -15,7 +15,6 @@ class LightSource : public lif::Component {
 	std::array<float, 256> randomPool;
 	std::vector<float> smoothing;
 
-	float origRadius;
 	float radius;
 	sf::Color color;
 	unsigned short flickerLen = 0;

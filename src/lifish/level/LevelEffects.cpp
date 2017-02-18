@@ -8,6 +8,8 @@
 #include "game.hpp"
 #include "LightSource.hpp"
 
+#include <iostream>
+
 using lif::LevelEffects;
 using lif::TILE_SIZE;
 using lif::LEVEL_WIDTH;

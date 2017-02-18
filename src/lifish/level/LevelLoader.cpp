@@ -22,6 +22,7 @@
 #include "LevelEffects.hpp"
 #include "HauntedStatue.hpp"
 #include "HauntingSpiritBoss.hpp"
+#include "Torch.hpp"
 #include "Sprite.hpp"
 #include <iostream>
 

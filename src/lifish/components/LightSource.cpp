@@ -8,7 +8,6 @@ LightSource::LightSource(lif::Entity& owner, float radius, sf::Color color, floa
 		unsigned short flickerLen)
 	: lif::Component(owner)
 	, smoothing(flickerLen)
-	, origRadius(radius)
 	, radius(radius)
 	, color(color)
 	, flickerLen(flickerLen)
@@ -27,7 +26,6 @@ void LightSource::update() {
 	if (flickerLen > 0) {
 		const float f = _flickerStep();
 		color.a = 256 * f;
-		radius = origRadius * f;
 	}
 }
 
