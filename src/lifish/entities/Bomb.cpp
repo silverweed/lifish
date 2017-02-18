@@ -17,7 +17,7 @@ using lif::Bomb;
 using lif::TILE_SIZE;
 using namespace lif::conf::bomb;
 
-Bomb::Bomb(const sf::Vector2f& pos, const lif::Player& source, 
+Bomb::Bomb(const sf::Vector2f& pos, const lif::Player& source,
 		const sf::Time& _fuseTime, const unsigned short _radius,
 		bool isIncendiary)
 	: lif::Entity(pos)
@@ -50,7 +50,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Player& source,
 	addComponent(std::make_shared<lif::Spawning>(*this, [this] () {
 		return new lif::Explosion(position, radius, &sourcePlayer, incendiary);
 	}));
-	addComponent(std::make_shared<lif::LightSource>(*this, TILE_SIZE * 0.5));
+	addComponent(std::make_shared<lif::LightSource>(*this, 0));
 
 	auto& a_normal_idle = animated->addAnimation("normal_idle", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),

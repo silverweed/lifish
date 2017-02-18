@@ -13,7 +13,7 @@ using lif::TILE_SIZE;
 using lif::LEVEL_WIDTH;
 using lif::LEVEL_HEIGHT;
 
-LevelEffects::LevelEffects(const sf::Vector2u& windowSize) : dy(windowSize.y) {
+LevelEffects::LevelEffects(const sf::Vector2u& windowSize) {
 	darknessRenderTex.create(windowSize.x, windowSize.y);
 }
 
@@ -51,7 +51,7 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 		darknessRenderTex.draw(rects.second);
 		sf::RectangleShape halo(sf::Vector2f(3 * TILE_SIZE, 3 * TILE_SIZE));
 		const auto ppos = player->getPosition();
-		halo.setPosition(ppos.x - 2 * TILE_SIZE, _yw2s(ppos.y + TILE_SIZE));
+		halo.setPosition(ppos.x - TILE_SIZE, ppos.y - TILE_SIZE);
 		halo.setFillColor(sf::Color(255, 255, 255, 200));
 		darknessRenderTex.draw(halo);
 	}
@@ -71,6 +71,13 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 		}
 	});
 
+	// Flip the view to adjust coordinates
+	sf::View view(sf::FloatRect(
+			TILE_SIZE,
+			(lif::LEVEL_HEIGHT + 1) * TILE_SIZE,
+			lif::LEVEL_WIDTH * TILE_SIZE,
+			-lif::LEVEL_HEIGHT * TILE_SIZE));
+	darknessRenderTex.setView(view);
 	sf::Sprite darkSprite(darknessRenderTex.getTexture());
 	darkSprite.setPosition(lif::TILE_SIZE, lif::TILE_SIZE);
 	darkSprite.setOrigin(origin);
@@ -102,26 +109,26 @@ auto LevelEffects::_getVisionRectangles(const lif::Entity& e) const
 	sf::RectangleShape vrect(sf::Vector2f(
 				TILE_SIZE,
 				TILE_SIZE + nearest[lif::UP] + nearest[lif::DOWN]));
-	vrect.setPosition(pos.x - TILE_SIZE, _yw2s(pos.y + nearest[lif::DOWN]));
+	vrect.setPosition(pos.x, pos.y - nearest[lif::UP]);
 	// horizontal rectangle
 	sf::RectangleShape hrect(sf::Vector2f(
 				TILE_SIZE + nearest[lif::LEFT] + nearest[lif::RIGHT],
 				TILE_SIZE));
-	hrect.setPosition(pos.x - TILE_SIZE - nearest[lif::LEFT], _yw2s(pos.y));
+	hrect.setPosition(pos.x - nearest[lif::LEFT], pos.y);
 
 	return std::make_pair(hrect, vrect);
 }
 
 std::vector<sf::FloatRect> LevelEffects::_getRadialRectangles(const sf::Vector2f& center, unsigned radius) const {
 	std::vector<sf::FloatRect> rects;
-	float px = center.x - TILE_SIZE,
-	      py = _yw2s(center.y - TILE_SIZE),
+	float px = center.x,
+	      py = center.y - radius * TILE_SIZE,
 	      width = 1,
 	      height = 2 * radius + 1;
 	do {
 		rects.push_back(sf::FloatRect(px, py, TILE_SIZE * width, TILE_SIZE * height));
-		height += 2;
-		width -= 2;
+		height -= 2;
+		width += 2;
 		px -= TILE_SIZE;
 		py += TILE_SIZE;
 	} while (height >= 1);

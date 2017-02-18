@@ -2,6 +2,7 @@
 #include "Animated.hpp"
 #include "Temporary.hpp"
 #include "Drawable.hpp"
+#include "LightSource.hpp"
 #include "core.hpp"
 
 using lif::Fire;
@@ -16,6 +17,7 @@ Fire::Fire(const sf::Vector2f& pos, const sf::Vector2f& size, sf::Time duration)
 		sf::IntRect(TILE_SIZE, 0, size.x, size.y)
 	}, true);
 	animated->getTexture()->setRepeated(true);
+	addComponent(std::make_shared<lif::LightSource>(*this, 20, sf::Color(244, 152, 56), 0.7, 15));
 	addComponent(std::make_shared<lif::Drawable>(*this, *animated));
 	if (duration > sf::Time::Zero) {
 		sf::Clock clock;

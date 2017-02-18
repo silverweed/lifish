@@ -25,7 +25,7 @@ class LightSource : public lif::Component {
 public:
 	explicit LightSource(lif::Entity& owner, float radius,
 			sf::Color color = sf::Color::White,
-			float flickerIntensity = 0,
+			float flickerIntensity = 0, // range [0, 1]
 			unsigned short flickerLen = 0);
 
 	float getRadius() const { return radius; }
