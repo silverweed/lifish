@@ -36,6 +36,7 @@ using lif::LevelManager;
 
 LevelManager::LevelManager()
 	: renderer(*this)
+	, effects(sf::Vector2u(lif::LEVEL_WIDTH * lif::TILE_SIZE, lif::LEVEL_HEIGHT * lif::TILE_SIZE))
 	, cd(entities,
 		// level boundaries
 		sf::FloatRect(

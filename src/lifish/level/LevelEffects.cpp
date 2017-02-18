@@ -13,8 +13,8 @@ using lif::TILE_SIZE;
 using lif::LEVEL_WIDTH;
 using lif::LEVEL_HEIGHT;
 
-LevelEffects::LevelEffects() {
-	darknessRenderTex.create(LEVEL_WIDTH * TILE_SIZE, LEVEL_HEIGHT * TILE_SIZE);
+LevelEffects::LevelEffects(const sf::Vector2u& windowSize) : dy(windowSize.y) {
+	darknessRenderTex.create(windowSize.x, windowSize.y);
 }
 
 std::set<lif::Entity*> LevelEffects::getEffectEntities(const lif::Level& level) {
@@ -40,7 +40,6 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 		const sf::Vector2f& origin) const
 {
 	darknessRenderTex.clear(sf::Color::Black);
-	const auto dy = darknessRenderTex.getSize().y;
 	// Calculate visibility rectangles for players
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		const auto player = lm.getPlayer(i + 1);
@@ -50,31 +49,25 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 		rects.second.setFillColor(sf::Color(255, 255, 255, 120));
 		darknessRenderTex.draw(rects.first);
 		darknessRenderTex.draw(rects.second);
-		auto halo = _getRadialRectangles(player->getPosition(), 2);
-		std::get<2>(halo).setFillColor(sf::Color(255, 255, 255, 200));
-		darknessRenderTex.draw(std::get<2>(halo));
-
+		sf::RectangleShape halo(sf::Vector2f(3 * TILE_SIZE, 3 * TILE_SIZE));
+		const auto ppos = player->getPosition();
+		halo.setPosition(ppos.x - 2 * TILE_SIZE, _yw2s(ppos.y + TILE_SIZE));
+		halo.setFillColor(sf::Color(255, 255, 255, 200));
+		darknessRenderTex.draw(halo);
 	}
 	
 	// Calculate visibility circles for light sources
-	lm.getEntities().apply([this, dy, origin] (const lif::Entity *e) {
+	lm.getEntities().apply([this, origin] (const lif::Entity *e) {
 		const auto source = e->get<lif::LightSource>();
 		if (source == nullptr) return;
 		const float radius = source->getRadius();
 		auto rects = _getRadialRectangles(e->getPosition(), radius/TILE_SIZE);
-
-		auto h = std::get<0>(rects);
-		h.setFillColor(source->getColor());
-		darknessRenderTex.draw(h);
-
-		auto v = std::get<1>(rects);
-		v.setFillColor(source->getColor());
-		darknessRenderTex.draw(v);
-
-		if (radius > TILE_SIZE) {
-			auto c = std::get<2>(rects);
-			c.setFillColor(source->getColor());
-			darknessRenderTex.draw(c);
+		
+		for (const auto& fr : rects) {
+			sf::RectangleShape rect(sf::Vector2f(fr.width, fr.height));
+			rect.setPosition(fr.left, fr.top);
+			rect.setFillColor(source->getColor());
+			darknessRenderTex.draw(rect);
 		}
 	});
 
@@ -92,11 +85,10 @@ auto LevelEffects::_getVisionRectangles(const lif::Entity& e) const
 		throw std::invalid_argument("Entity given to _getVisionRectangles() has no AxisSighted!");
 
 	const auto pos = e.getPosition();
-	const auto dy = darknessRenderTex.getSize().y;
 
 	std::array<float, static_cast<std::size_t>(lif::Direction::NONE)> nearest = {{
 		pos.y - TILE_SIZE, // up
-		pos.x - TILE_SIZE, // left
+		pos.x - TILE_SIZE,             // left
 		LEVEL_HEIGHT * TILE_SIZE - pos.y, // down
 		LEVEL_WIDTH * TILE_SIZE - pos.x,  // right
 	}};
@@ -110,27 +102,29 @@ auto LevelEffects::_getVisionRectangles(const lif::Entity& e) const
 	sf::RectangleShape vrect(sf::Vector2f(
 				TILE_SIZE,
 				TILE_SIZE + nearest[lif::UP] + nearest[lif::DOWN]));
-	vrect.setPosition(pos.x - TILE_SIZE, dy - pos.y - nearest[lif::DOWN]);
+	vrect.setPosition(pos.x - TILE_SIZE, _yw2s(pos.y + nearest[lif::DOWN]));
 	// horizontal rectangle
 	sf::RectangleShape hrect(sf::Vector2f(
 				TILE_SIZE + nearest[lif::LEFT] + nearest[lif::RIGHT],
 				TILE_SIZE));
-	hrect.setPosition(pos.x - (TILE_SIZE + nearest[lif::LEFT]), dy - pos.y);
+	hrect.setPosition(pos.x - TILE_SIZE - nearest[lif::LEFT], _yw2s(pos.y));
 
 	return std::make_pair(hrect, vrect);
 }
 
-auto LevelEffects::_getRadialRectangles(const sf::Vector2f& center, unsigned radius) const
-		-> std::tuple<sf::RectangleShape, sf::RectangleShape, sf::RectangleShape>
-{
-	const auto dy = darknessRenderTex.getSize().y;
-	sf::RectangleShape v(static_cast<float>(TILE_SIZE) * sf::Vector2f(1, 2 * radius + 1)),
-	                   h(static_cast<float>(TILE_SIZE) * sf::Vector2f(2 * radius + 1, 1)),
-	                   c(static_cast<float>(TILE_SIZE) * sf::Vector2f(2 * radius - 1, 2 * radius - 1));
+std::vector<sf::FloatRect> LevelEffects::_getRadialRectangles(const sf::Vector2f& center, unsigned radius) const {
+	std::vector<sf::FloatRect> rects;
+	float px = center.x - TILE_SIZE,
+	      py = _yw2s(center.y - TILE_SIZE),
+	      width = 1,
+	      height = 2 * radius + 1;
+	do {
+		rects.push_back(sf::FloatRect(px, py, TILE_SIZE * width, TILE_SIZE * height));
+		height += 2;
+		width -= 2;
+		px -= TILE_SIZE;
+		py += TILE_SIZE;
+	} while (height >= 1);
 
-	v.setPosition(center.x - TILE_SIZE, dy - center.y - radius * TILE_SIZE);
-	h.setPosition(center.x - (radius + 1) * TILE_SIZE, dy - center.y);
-	c.setPosition(center.x - radius * TILE_SIZE, dy - center.y - (radius - 1) * TILE_SIZE);
-
-	return std::make_tuple(h, v, c);
+	return rects;
 }
