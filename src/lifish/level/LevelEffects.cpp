@@ -8,8 +8,6 @@
 #include "game.hpp"
 #include "LightSource.hpp"
 
-#include <iostream>
-
 using lif::LevelEffects;
 using lif::TILE_SIZE;
 using lif::LEVEL_WIDTH;
@@ -42,6 +40,7 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 		const sf::Vector2f& origin) const
 {
 	darknessRenderTex.clear(sf::Color::Black);
+
 	// Calculate visibility rectangles for players
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		const auto player = lm.getPlayer(i + 1);
@@ -53,7 +52,7 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 		darknessRenderTex.draw(rects.second);
 		sf::RectangleShape halo(sf::Vector2f(3 * TILE_SIZE, 3 * TILE_SIZE));
 		const auto ppos = player->getPosition();
-		halo.setPosition(ppos.x - TILE_SIZE, ppos.y - TILE_SIZE);
+		halo.setPosition(ppos.x - 2 * TILE_SIZE, ppos.y - 2 * TILE_SIZE);
 		halo.setFillColor(sf::Color(255, 255, 255, 200));
 		darknessRenderTex.draw(halo);
 	}
@@ -73,15 +72,10 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 		}
 	});
 
-	// Flip the view to adjust coordinates
-	sf::View view(sf::FloatRect(
-			TILE_SIZE,
-			(lif::LEVEL_HEIGHT + 1) * TILE_SIZE,
-			lif::LEVEL_WIDTH * TILE_SIZE,
-			-lif::LEVEL_HEIGHT * TILE_SIZE));
-	darknessRenderTex.setView(view);
+	darknessRenderTex.display();
+
 	sf::Sprite darkSprite(darknessRenderTex.getTexture());
-	darkSprite.setPosition(lif::TILE_SIZE, lif::TILE_SIZE);
+	darkSprite.setPosition(TILE_SIZE, TILE_SIZE);
 	darkSprite.setOrigin(origin);
 	window.draw(darkSprite, sf::BlendMultiply);
 }
@@ -97,7 +91,7 @@ auto LevelEffects::_getVisionRectangles(const lif::Entity& e) const
 
 	std::array<float, static_cast<std::size_t>(lif::Direction::NONE)> nearest = {{
 		pos.y - TILE_SIZE, // up
-		pos.x - TILE_SIZE,             // left
+		pos.x - TILE_SIZE, // left
 		LEVEL_HEIGHT * TILE_SIZE - pos.y, // down
 		LEVEL_WIDTH * TILE_SIZE - pos.x,  // right
 	}};
@@ -111,20 +105,20 @@ auto LevelEffects::_getVisionRectangles(const lif::Entity& e) const
 	sf::RectangleShape vrect(sf::Vector2f(
 				TILE_SIZE,
 				TILE_SIZE + nearest[lif::UP] + nearest[lif::DOWN]));
-	vrect.setPosition(pos.x, pos.y - nearest[lif::UP]);
+	vrect.setPosition(pos.x - TILE_SIZE, pos.y - nearest[lif::UP] - TILE_SIZE);
 	// horizontal rectangle
 	sf::RectangleShape hrect(sf::Vector2f(
 				TILE_SIZE + nearest[lif::LEFT] + nearest[lif::RIGHT],
 				TILE_SIZE));
-	hrect.setPosition(pos.x - nearest[lif::LEFT], pos.y);
+	hrect.setPosition(pos.x - TILE_SIZE - nearest[lif::LEFT], pos.y - TILE_SIZE);
 
 	return std::make_pair(hrect, vrect);
 }
 
 std::vector<sf::FloatRect> LevelEffects::_getRadialRectangles(const sf::Vector2f& center, unsigned radius) const {
 	std::vector<sf::FloatRect> rects;
-	float px = center.x,
-	      py = center.y - radius * TILE_SIZE,
+	float px = center.x - TILE_SIZE,
+	      py = center.y - (radius + 1) * TILE_SIZE,
 	      width = 1,
 	      height = 2 * radius + 1;
 	do {
