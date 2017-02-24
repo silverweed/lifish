@@ -2,6 +2,7 @@
 #include "LevelManager.hpp"
 #include "Player.hpp"
 #include "Level.hpp"
+#include "LevelSet.hpp"
 #include "json.hpp"
 #include "Lifed.hpp"
 #include <iostream>
@@ -13,6 +14,8 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 
 	nlohmann::json save;
 
+	// Current levelset
+	save["levelSet"] = lr.getLevel()->getLevelSet().getMeta("name");
 	// Current level
 	save["level"] = lr.getLevel()->getInfo().levelnum;
 	
@@ -62,6 +65,7 @@ bool SaveManager::loadGame(const std::string& filename,
 	try {
 		nlohmann::json load = nlohmann::json::parse(saveFile);
 		
+		// TODO: levelset name
 		start_level = load["level"];
 		
 		const auto& players = lr.players;

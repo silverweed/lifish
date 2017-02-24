@@ -44,7 +44,9 @@ bool Screen::handleEvent(sf::Window& window, sf::Event event) {
 		}
 	case sf::Event::MouseMoved:
 		usingJoystick = false;
-		return true;
+		return false;
+	default:
+		break;
 	}
 	return false;
 }

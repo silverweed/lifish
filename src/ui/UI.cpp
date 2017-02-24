@@ -64,7 +64,7 @@ bool UI::handleEvent(sf::Window& window, sf::Event event) {
 }
 
 void UI::add(lif::ui::Screen *screen) {
-	screens[screen->getName()] = std::unique_ptr<lif::ui::Screen>(screen); 
+	screens[screen->getName()] = std::unique_ptr<lif::ui::Screen>(screen);
 }
 
 void UI::setOrigin(const sf::Vector2f& pos) {
@@ -136,6 +136,7 @@ void UI::setCurrent(const std::string& name, bool overrideParent) {
 	curScreen->setOrigin(origin);
 	if (overrideParent)
 		curScreen->setParent(oldScreen);
+	curScreen->onLoad();
 }
 
 void UI::setCurrentToParent() {

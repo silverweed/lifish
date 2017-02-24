@@ -49,6 +49,7 @@ private:
 	lif::SidePanel sidePanel;
 	lif::WinLoseHandler wlHandler;
 
+	void _initLM(sf::Window& window, short lvnum);
 #ifndef RELEASE
 	void _printCDStats() const;
 	void _printGameStats() const;

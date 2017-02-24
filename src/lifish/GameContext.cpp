@@ -31,9 +31,14 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, sh
 #ifndef RELEASE
 	_addHandler<lif::debug::DebugEventHandler>(std::ref(*this));
 #endif
+	gameRenderTex.create((lif::LEVEL_WIDTH + 2) * lif::TILE_SIZE, (lif::LEVEL_HEIGHT + 2) * lif::TILE_SIZE);
+	sidePanelRenderTex.create(lif::SIDE_PANEL_WIDTH, (lif::LEVEL_HEIGHT + 2) * lif::TILE_SIZE);
 
-	int lvnum = startLv;
 	ls.loadFromFile(levelsetName);
+	_initLM(window, startLv);
+}
+
+void GameContext::_initLM(sf::Window& window, short lvnum) {
 	if (lvnum > ls.getLevelsNum())
 		lvnum %= ls.getLevelsNum();
 	else while (lvnum <= 0)
@@ -59,8 +64,6 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, sh
 
 	// Ensure lm is not paused
 	lm.resume();
-	gameRenderTex.create((lif::LEVEL_WIDTH + 2) * lif::TILE_SIZE, (lif::LEVEL_HEIGHT + 2) * lif::TILE_SIZE);
-	sidePanelRenderTex.create(lif::SIDE_PANEL_WIDTH, (lif::LEVEL_HEIGHT + 2) * lif::TILE_SIZE);
 }
 
 void GameContext::setActive(bool b) {
@@ -73,13 +76,14 @@ void GameContext::update() {
 	// Handle win / loss cases
 	wlHandler.handleWinLose();
 	switch (wlHandler.getState()) {
-	case lif::WinLoseHandler::State::ADVANCING_LEVEL:
+		using S = lif::WinLoseHandler::State;
+	case S::ADVANCING_LEVEL:
 		newContext = lif::CTX_INTERLEVEL;
 		return;
-	case lif::WinLoseHandler::State::ADVANCED_LEVEL:
-		_advanceLevel();	
+	case S::ADVANCED_LEVEL:
+		_advanceLevel();
 		break;
-	case lif::WinLoseHandler::State::EXIT_GAME:
+	case S::EXIT_GAME:
 		newContext = lif::CTX_UI;
 		break;
 	default: 

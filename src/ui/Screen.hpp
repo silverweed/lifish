@@ -79,6 +79,8 @@ public:
 	 */
 	virtual bool handleEvent(sf::Window&, sf::Event) override;
 	virtual void update() override;
+	/** Called whenever the screen is displayed */
+	virtual void onLoad() {}
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void setOrigin(const sf::Vector2f& pos) override;
 };

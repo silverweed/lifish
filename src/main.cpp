@@ -276,15 +276,16 @@ int main(int argc, char **argv) {
 			case lif::CTX_INTERLEVEL:
 				if (cur_context == &ui && ui.getCurrent() == "home") {
 					// Game started: create a new GameContext
+					// TODO: support loading game
 					game.reset(new lif::GameContext(window,
 							args.levelset_name, args.start_level));
 					game->setOrigin(origin);
 					contexts[lif::CTX_GAME] = game.get();
 					contexts[lif::CTX_INTERLEVEL] = &game->getWLHandler()
-									.getInterlevelContext();
+						.getInterlevelContext();
 					game->getLM().pause();
 					static_cast<lif::InterlevelContext*>(contexts[lif::CTX_INTERLEVEL])
-										->setGettingReady(args.start_level);
+						->setGettingReady(args.start_level);
 				}
 				break;
 			}

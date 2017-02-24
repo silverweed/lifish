@@ -11,6 +11,7 @@ class LevelManager;
  * Serializes the game state into JSON data or
  * deserializes those data from a file.
  * Save file format: {
+ *     levelSet: string,
  *     level: int,
  *     players: [
  *        {
@@ -18,9 +19,9 @@ class LevelManager;
  *            remainingLives: int,
  *            life: int,
  *            powers: {
- *                bombfusetime: int,
- *                bombradius: int,
- *                maxbombs: int
+ *                bombFuseTime: int,
+ *                bombRadius: int,
+ *                maxBombs: int
  *            },
  *            letters: [ bool ],
  *            score: int
@@ -33,11 +34,12 @@ public:
 	SaveManager() = delete;
 
 	/** Saves the game state into `filename` */
-	static bool saveGame(const std::string& filename, const lif::LevelManager& lr);
+	static bool saveGame(const std::string& filename, const lif::LevelManager& lm);
 
-	/** Loads a game state saved in `filename` into `lr` and `start_level` */
+	/** Loads a game state saved in `filename` into `lm` and `start_level` */
+	// TODO: change this to return something more generic than modifying lm directly
 	static bool loadGame(const std::string& filename,
-			lif::LevelManager& lr, unsigned short& start_level);
+			lif::LevelManager& lm, unsigned short& start_level);
 };
 
 }

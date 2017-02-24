@@ -191,3 +191,9 @@ std::string LevelSet::toString() const {
 	}
 	return ss.str();
 }
+
+std::string LevelSet::getMeta(const std::string& key) const {
+	auto val = metadata.find(key);
+	if (val == metadata.end()) return "";
+	return val->second;
+}

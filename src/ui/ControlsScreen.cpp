@@ -124,7 +124,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	text->setCharacterSize(fontSize);
 	bounds = text->getGlobalBounds();
 	sf::FloatRect win_bounds(0, 0, size.x, size.y);
-	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 2 * bounds.height));
+	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 3 * bounds.height));
 	interactables["back"] = std::unique_ptr<Interactable>(new Interactable(text));
 
 	// Setup internal callbacks
