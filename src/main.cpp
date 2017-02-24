@@ -40,6 +40,8 @@
 #include "Controllable.hpp"
 #include "ControlsScreen.hpp"
 #include "PreferencesScreen.hpp"
+#include "LoadScreen.hpp"
+#include "SaveScreen.hpp"
 #include "MusicManager.hpp"
 #include "GameCache.hpp"
 #include "GameContext.hpp"
@@ -213,6 +215,8 @@ int main(int argc, char **argv) {
 	// load dynamic screens
 	ui.add(new lif::ui::ControlsScreen(window, lif::options.windowSize));
 	ui.add(new lif::ui::PreferencesScreen(window, lif::options.windowSize));
+	ui.add(new lif::ui::LoadScreen(window, lif::options.windowSize));
+	ui.add(new lif::ui::SaveScreen(window, lif::options.windowSize));
 
 	// Create pointer to game context
 	std::unique_ptr<lif::GameContext> game;

@@ -13,8 +13,8 @@ using lif::ui::PreferencesScreen;
 using lif::ui::Interactable;
 using Action = lif::ui::Action;
 
-PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& sz) 
-	: lif::ui::Screen(window, sz) 
+PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
+	: lif::ui::Screen(window, sz)
 {
 	name = "preferences";
 	parent = "home";
@@ -29,11 +29,11 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	 * Exit
 	 */
 	const auto font = lif::getAsset("fonts", lif::fonts::SCREEN);
-	const auto win_bounds = sf::FloatRect(0, 0, lif::WINDOW_WIDTH, lif::WINDOW_HEIGHT);
-
+	const auto win_bounds = sf::FloatRect(0, 0, sz.x, sz.y);
 	const auto size = 24;
 	const float ipadx = 25,
 		    ipady = 15;
+
 	auto text = new lif::ShadedText(font, "Music:", sf::Vector2f(ipadx, ipady));
 	text->setCharacterSize(size);
 	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
@@ -50,7 +50,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	// (also, the volume is maxed by default, so we don't need to do any further checks here)
 	std::stringstream ss;
 	for (unsigned i = 0; i < MAX_VOLUME; ++i) {
-		ss << "|";	
+		ss << "|";
 	}
 	text->setCharacterSize(20);
 	text->setString(ss.str());
@@ -110,12 +110,24 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	interactables["back"] = std::unique_ptr<Interactable>(new Interactable(text));
 
 	// Setup internal callbacks
-	callbacks["music_volume_up"] = [this] () { return _changeVolume(VolumeType::MUSIC, VolumeAction::RAISE); };
-	callbacks["music_volume_down"] = [this] () { return _changeVolume(VolumeType::MUSIC, VolumeAction::LOWER); };
-	callbacks["music_mute_toggle"] = [this] () { return _changeVolume(VolumeType::MUSIC, VolumeAction::MUTE_TOGGLE); };
-	callbacks["sounds_volume_up"] = [this] () { return _changeVolume(VolumeType::SOUND, VolumeAction::RAISE); };
-	callbacks["sounds_volume_down"] = [this] () { return _changeVolume(VolumeType::SOUND, VolumeAction::LOWER); };
-	callbacks["sounds_mute_toggle"] = [this] () { return _changeVolume(VolumeType::SOUND, VolumeAction::MUTE_TOGGLE); };
+	callbacks["music_volume_up"] = [this] () {
+		return _changeVolume(VolumeType::MUSIC, VolumeAction::RAISE);
+	};
+	callbacks["music_volume_down"] = [this] () {
+		return _changeVolume(VolumeType::MUSIC, VolumeAction::LOWER);
+	};
+	callbacks["music_mute_toggle"] = [this] () {
+		return _changeVolume(VolumeType::MUSIC, VolumeAction::MUTE_TOGGLE);
+	};
+	callbacks["sounds_volume_up"] = [this] () {
+		return _changeVolume(VolumeType::SOUND, VolumeAction::RAISE);
+	};
+	callbacks["sounds_volume_down"] = [this] () {
+		return _changeVolume(VolumeType::SOUND, VolumeAction::LOWER);
+	};
+	callbacks["sounds_mute_toggle"] = [this] () {
+		return _changeVolume(VolumeType::SOUND, VolumeAction::MUTE_TOGGLE);
+	};
 }
 
 Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {

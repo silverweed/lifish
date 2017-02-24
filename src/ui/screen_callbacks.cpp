@@ -39,7 +39,7 @@ std::unordered_map<std::string, ScreenCallback> lif::ui::screenCallbacks = {
 	{ "back", cb_back },
 	{ "start", cb_start },
 	{ "about", cb_switchTo("about") },
-	{ "load", cb_load },
+	{ "load", cb_switchTo("load") },
 	{ "home", cb_switchTo("home") },
 	{ "preferences", cb_switchTo("preferences") },
 	{ "controls", cb_switchTo("controls") },
