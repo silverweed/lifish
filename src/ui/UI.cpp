@@ -42,9 +42,20 @@ bool UI::handleEvent(sf::Window& window, sf::Event event) {
 	case sf::Event::JoystickButtonPressed:
 		{
 			const auto btn = event.joystickButton;
-			const short pb = lif::joystick::getButton(lif::joystick::ButtonType::START, btn.joystickId);
-			if (pb >= 0 && btn.button == static_cast<unsigned int>(pb))
-				active = !active;
+			if (lif::joystick::isButton(lif::joystick::ButtonType::START, btn.joystickId, btn.button)) {
+				if (getCurrent() == "pause")
+					newContext = lif::CTX_GAME;
+			} else if (curScreen->isUsingJoystick()) {
+				if (lif::joystick::isButton(
+						lif::joystick::ButtonType::BTN_DOWN, btn.joystickId, btn.button)) 
+				{
+					fireClick();
+				} else if (lif::joystick::isButton(
+						lif::joystick::ButtonType::BTN_RIGHT, btn.joystickId, btn.button))
+				{
+					setCurrentToParent();
+				}
+			}
 			return true;
 		}
 	case sf::Event::KeyPressed:

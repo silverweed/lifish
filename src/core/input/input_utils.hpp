@@ -16,9 +16,12 @@ namespace kb {
 namespace joystick {
 	enum class ButtonType {
 		START,
-		SELECT
+		SELECT,
+		BTN_DOWN,
+		BTN_RIGHT
 	};
 	short getButton(ButtonType type, unsigned joystickId);
+	bool isButton(ButtonType type, unsigned joystickId, short btn);
 }
 
 }

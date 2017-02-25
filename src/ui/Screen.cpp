@@ -17,7 +17,7 @@ Screen::Screen(const std::string& layoutFileName, const sf::RenderWindow& window
 	, size(size)
 {
 	lif::ui::ScreenBuilder builder;
-	builder.build(*this, layoutFileName);	
+	builder.build(*this, layoutFileName);
 }
 
 void Screen::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -43,7 +43,7 @@ bool Screen::handleEvent(sf::Window&, sf::Event event) {
 	case sf::Event::JoystickButtonPressed:
 	case sf::Event::JoystickButtonReleased:
 		usingJoystick = true;
-		return true;
+		return false;
 	case sf::Event::MouseMoved:
 		if (_getMouseShift(event.mouseMove.x, event.mouseMove.y) > 300) {
 			_saveMousePos(event.mouseMove.x, event.mouseMove.y);
@@ -116,8 +116,30 @@ void Screen::_updateSelectedMouse() {
 }
 
 void Screen::_updateSelectedJoystick() {
-	//for (auto it = interactables.begin(); it != interactables.end(); ++it) {
-	//}
+	// FIXME! should iterate in order
+	if (lif::joystick::JoystickManager::getInstance().isAnyEvtMoved()) {
+		if (selected.second == nullptr) {
+select_begin:
+			const auto& pair = *(interactables.begin());
+			selected = std::make_pair(pair.first, pair.second.get());
+		} else {
+			selected.second->setColor(sf::Color::White);
+			for (auto it = interactables.begin(); it != interactables.end(); ++it) {
+				if (it->second.get() == selected.second) {
+					auto nxt = it;
+					++nxt;
+					if (nxt == interactables.end())
+						goto select_begin;
+					else {
+						selected = std::make_pair(nxt->first, nxt->second.get());
+						break;
+					}
+				}
+			}
+		}
+	}
+	if (selected.second != nullptr)
+		selected.second->setColor(sf::Color::Red);
 }
 
 int Screen::_getMouseShift(int x, int y) const {

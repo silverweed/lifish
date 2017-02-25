@@ -77,6 +77,8 @@ public:
 	/** @return The name of the selected element, if any (else "") */
 	std::string getSelected() const;
 
+	bool isUsingJoystick() const { return usingJoystick; }
+
 	bool hasCallback(const std::string& name) const;
 	lif::ui::Action fireCallback(const std::string& name);
 

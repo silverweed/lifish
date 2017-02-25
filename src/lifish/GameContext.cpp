@@ -115,8 +115,7 @@ bool GameContext::handleEvent(sf::Window&, sf::Event event) {
 	case sf::Event::JoystickButtonPressed:
 		{
 			const auto btn = event.joystickButton;
-			const short pb = lif::joystick::getButton(lif::joystick::ButtonType::START, btn.joystickId);
-			if (pb >= 0 && btn.button == static_cast<unsigned int>(pb))
+			if (lif::joystick::isButton(lif::joystick::ButtonType::START, btn.joystickId, btn.button))
 				pause_game();
 			return true;
 		}

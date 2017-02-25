@@ -1,4 +1,8 @@
 #include "input_utils.hpp"
+#include <iostream>
+
+constexpr unsigned XBOX = 11;
+constexpr unsigned PS3 = 12;
 
 short lif::joystick::getButton(lif::joystick::ButtonType type, unsigned id) {
 	if (!sf::Joystick::isConnected(id)) return -1;
@@ -12,16 +16,25 @@ short lif::joystick::getButton(lif::joystick::ButtonType type, unsigned id) {
 	switch (type) {
 		using BT = lif::joystick::ButtonType;
 	case BT::START:
-		return bc == 10 ? 7 : // XBox 360
-		       bc == 12 ? 9 : // PS3
+		return bc == XBOX ? 7 :
+		       bc == PS3 ? 9 :
 		       -1;
 	case BT::SELECT:
-		return bc == 10 ? 6 : // XBox 360
+		return bc == XBOX ? 6 : // XBox 360
 		       -1;
+	case BT::BTN_DOWN:
+		return 0;
+	case BT::BTN_RIGHT:
+		return 1;
 	default:
 		break;
 	}
 	return -1;
+}
+
+bool lif::joystick::isButton(lif::joystick::ButtonType type, unsigned id, short btn) {
+	const short b = lif::joystick::getButton(type, id);
+	return b >= 0 && btn == b;
 }
 
 short lif::kb::keyToNumber(sf::Keyboard::Key key) {

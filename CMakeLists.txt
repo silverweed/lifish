@@ -26,6 +26,8 @@ include_directories(src/core/components)
 include_directories(src/core/cutscenes)
 # core/entities/ contains a collection of generic entities
 include_directories(src/core/entities)
+# core/input/ contains classes handling events and player input
+include_directories(src/core/input)
 # lifish/ contains Lifish-specific code
 include_directories(src/lifish)
 # lifish/components/ contains all the Lifish-specific Component classes
@@ -46,6 +48,7 @@ file(GLOB LIFISH_SRC ${MAIN_FILE}
 	src/core/components/*cpp
 	src/core/cutscenes/*cpp
 	src/core/entities/*cpp
+	src/core/input/*cpp
 	src/lifish/*cpp
 	src/lifish/components/*cpp
 	src/lifish/conf/*cpp
