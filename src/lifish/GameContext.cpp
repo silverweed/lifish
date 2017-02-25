@@ -5,6 +5,7 @@
 #include "Options.hpp"
 #include "core.hpp"
 #include "contexts.hpp"
+#include "input_utils.hpp"
 #include "MusicManager.hpp"
 #include "Bonusable.hpp"
 #include "bonus_type.hpp"
@@ -114,7 +115,7 @@ bool GameContext::handleEvent(sf::Window&, sf::Event event) {
 	case sf::Event::JoystickButtonPressed:
 		{
 			const auto btn = event.joystickButton;
-			const short pb = joystick_utils::getPauseButton(btn.joystickId);
+			const short pb = lif::joystick::getButton(lif::joystick::ButtonType::START, btn.joystickId);
 			if (pb >= 0 && btn.button == static_cast<unsigned int>(pb))
 				pause_game();
 			return true;

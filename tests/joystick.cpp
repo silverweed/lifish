@@ -48,6 +48,6 @@ int main(int argc, char **argv) {
 		std::cout << "R:" << J::getAxisPosition(N, J::R) << ", ";
 		std::cout << "U:" << J::getAxisPosition(N, J::U) << ", ";
 		std::cout << "V:" << J::getAxisPosition(N, J::V);
-		std::cout << "\r";	
+		std::cout << "            \r";	
 	}
 }

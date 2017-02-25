@@ -1,5 +1,7 @@
 #pragma once
 
+#if 0
+
 /** Provides glue code for dialogs, using WINAPI on Windows
  *  and NFD wherever possible.
  */
@@ -76,3 +78,5 @@ std::string display_save_dialog() {
 }
 
 }
+
+#endif

@@ -1,5 +1,6 @@
 #include "Interactable.hpp"
 #include "utils.hpp"
+#include "input_utils.hpp"
 #include "UI.hpp"
 #include "contexts.hpp"
 #include "Screen.hpp"
@@ -41,7 +42,7 @@ bool UI::handleEvent(sf::Window& window, sf::Event event) {
 	case sf::Event::JoystickButtonPressed:
 		{
 			const auto btn = event.joystickButton;
-			const short pb = lif::joystick_utils::getPauseButton(btn.joystickId);
+			const short pb = lif::joystick::getButton(lif::joystick::ButtonType::START, btn.joystickId);
 			if (pb >= 0 && btn.button == static_cast<unsigned int>(pb))
 				active = !active;
 			return true;

@@ -4,6 +4,7 @@
 #include "Interactable.hpp"
 #include "Options.hpp"
 #include "utils.hpp"
+#include "input_utils.hpp"
 #include <memory>
 #include <iostream>
 
@@ -61,7 +62,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 
 	bounds = text->getGlobalBounds();
 	text = new lif::ShadedText(font,
-			lif::key_utils::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_UP]),
+			lif::kb::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_UP]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	interactables["change_up"] = std::unique_ptr<Interactable>(new Interactable(text));
@@ -72,7 +73,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	text = new lif::ShadedText(font,
-			lif::key_utils::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_DOWN]),
+			lif::kb::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_DOWN]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	interactables["change_down"] = std::unique_ptr<Interactable>(new Interactable(text));
@@ -83,7 +84,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	text = new lif::ShadedText(font,
-			lif::key_utils::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_LEFT]),
+			lif::kb::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_LEFT]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	interactables["change_left"] = std::unique_ptr<Interactable>(new Interactable(text));
@@ -94,7 +95,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	text = new lif::ShadedText(font,
-			lif::key_utils::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_RIGHT]),
+			lif::kb::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_RIGHT]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	interactables["change_right"] = std::unique_ptr<Interactable>(new Interactable(text));
@@ -105,7 +106,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
 
 	text = new lif::ShadedText(font,
-			lif::key_utils::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_BOMB]),
+			lif::kb::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_BOMB]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
 	interactables["change_bomb"] = std::unique_ptr<Interactable>(new Interactable(text));
@@ -154,7 +155,7 @@ Action ControlsScreen::_selectPlayer(unsigned short id) {
 	for (auto it = pairs.begin(); it != pairs.end(); ++it) {
 		std::stringstream ss;
 		ss << "change_" << it->first;
-		interactables[ss.str()]->getText()->setString(lif::key_utils::keyToString(
+		interactables[ss.str()]->getText()->setString(lif::kb::keyToString(
 				lif::controls::players[selectedPlayer-1][it->second]));
 	}
 
@@ -219,7 +220,7 @@ bool ControlsScreen::handleEvent(sf::Window&, sf::Event event) {
 				break;
 
 			lif::controls::players[selectedPlayer-1][get_control(changingCtrlText)] = event.key.code;
-			changingCtrlText->setString(lif::key_utils::keyToString(event.key.code));
+			changingCtrlText->setString(lif::kb::keyToString(event.key.code));
 			changingCtrlText->setFGColor(sf::Color::White);
 			changingCtrlText = nullptr;
 			break;
@@ -233,17 +234,17 @@ bool ControlsScreen::handleEvent(sf::Window&, sf::Event event) {
 }
 
 void ControlsScreen::_resyncCommandStrings() {
-	interactables["change_up"]->getText()->setString(lif::key_utils::keyToString(
+	interactables["change_up"]->getText()->setString(lif::kb::keyToString(
 				lif::controls::players[selectedPlayer-1][lif::controls::CTRL_UP]));
-	interactables["change_down"]->getText()->setString(lif::key_utils::keyToString(
+	interactables["change_down"]->getText()->setString(lif::kb::keyToString(
 				lif::controls::players[selectedPlayer-1][lif::controls::CTRL_DOWN]));
-	interactables["change_right"]->getText()->setString(lif::key_utils::keyToString(
+	interactables["change_right"]->getText()->setString(lif::kb::keyToString(
 				lif::controls::players[selectedPlayer-1][lif::controls::CTRL_RIGHT]));
-	interactables["change_left"]->getText()->setString(lif::key_utils::keyToString(
+	interactables["change_left"]->getText()->setString(lif::kb::keyToString(
 				lif::controls::players[selectedPlayer-1][lif::controls::CTRL_LEFT]));
 	interactables["change_bomb"]->getText()->setString(lif::controls::useJoystick[selectedPlayer-1] >= 0
 				? "Button" + lif::to_string(lif::controls::joystickBombKey[selectedPlayer-1])
-				: lif::key_utils::keyToString(
+				: lif::kb::keyToString(
 					lif::controls::players[selectedPlayer-1][lif::controls::CTRL_BOMB]));
 }
 
@@ -286,15 +287,15 @@ Action ControlsScreen::_toggleJoystick() {
 	lif::controls::useJoystick[selectedPlayer-1] = current;
 	if (current == -1) {
 		interactables["joystick_toggle"]->getText()->setString("NO");
-		interactables["change_up"]->getText()->setString(lif::key_utils::keyToString(
+		interactables["change_up"]->getText()->setString(lif::kb::keyToString(
 				lif::controls::players[selectedPlayer-1][controls::CTRL_UP]));
-		interactables["change_down"]->getText()->setString(lif::key_utils::keyToString(
+		interactables["change_down"]->getText()->setString(lif::kb::keyToString(
 				lif::controls::players[selectedPlayer-1][controls::CTRL_DOWN]));
-		interactables["change_left"]->getText()->setString(lif::key_utils::keyToString(
+		interactables["change_left"]->getText()->setString(lif::kb::keyToString(
 				lif::controls::players[selectedPlayer-1][controls::CTRL_LEFT]));
-		interactables["change_right"]->getText()->setString(lif::key_utils::keyToString(
+		interactables["change_right"]->getText()->setString(lif::kb::keyToString(
 				lif::controls::players[selectedPlayer-1][controls::CTRL_RIGHT]));
-		interactables["change_bomb"]->getText()->setString(lif::key_utils::keyToString(
+		interactables["change_bomb"]->getText()->setString(lif::kb::keyToString(
 				lif::controls::players[selectedPlayer-1][controls::CTRL_BOMB]));
 	} else {
 		std::stringstream ss;

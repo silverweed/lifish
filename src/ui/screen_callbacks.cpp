@@ -16,23 +16,23 @@ static ScreenCallback cb_switchTo(const std::string& screen) {
 		return Action::SWITCH_SCREEN_OVERRIDE_PARENT;
 	};
 }
-static Action cb_load() { 
-	const auto fname = lif::display_load_dialog();
-	if (fname.length() > 0) {
-		// TODO
-		//lif::LevelManager lr {
-			//new lif::Player(sf::Vector2f(0, 0), 1),
-			//new lif::Player(sf::Vector2f(0, 0), 2)
-		//};
+//static Action cb_load() { 
+	//const auto fname = lif::display_load_dialog();
+	//if (fname.length() > 0) {
+		//// TODO
+		////lif::LevelManager lr {
+			////new lif::Player(sf::Vector2f(0, 0), 1),
+			////new lif::Player(sf::Vector2f(0, 0), 2)
+		////};
 
-		//if (lif::SaveManager::loadGame(fname, lr, start_level))
-			//play_game(window, levelSetName, lr, start_level);
-		//else
-			//std::cerr << "Couldn't load game from " << fname 
-				  //<< ": the save file is probably corrupt." << std::endl;
-	}
-	return Action::DO_NOTHING;
-}
+		////if (lif::SaveManager::loadGame(fname, lr, start_level))
+			////play_game(window, levelSetName, lr, start_level);
+		////else
+			////std::cerr << "Couldn't load game from " << fname 
+				  ////<< ": the save file is probably corrupt." << std::endl;
+	//}
+	//return Action::DO_NOTHING;
+//}
 
 std::unordered_map<std::string, ScreenCallback> lif::ui::screenCallbacks = {
 	{ "exit", cb_exit },
