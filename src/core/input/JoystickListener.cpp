@@ -13,7 +13,7 @@ void JoystickListener::update() {
 	if (!sf::Joystick::isConnected(id))
 		return;
 
-	evtRegistered.clear();
+	evtRegistered.fill(false);
 	
 	_listen(sf::Joystick::X);
 	_listen(sf::Joystick::Y);
@@ -49,8 +49,8 @@ void JoystickListener::_listen(sf::Joystick::Axis ax) {
 	const float aval = lif::abs(val);
 	const auto pair = _getPair(ax);
 	const auto axis = val < 0 ? pair.first : pair.second;
-	auto& started = evtStarted[axis];
-	auto& ascending = evtAscending[axis];
+	auto& started = evtStarted[static_cast<int>(axis)];
+	auto& ascending = evtAscending[static_cast<int>(axis)];
 
 	if (!started) {
 		if (aval > lif::JOYSTICK_INPUT_THRESHOLD) {
@@ -61,21 +61,16 @@ void JoystickListener::_listen(sf::Joystick::Axis ax) {
 		if (ascending && aval > JOYSTICK_EVT_ACCEPTANCE_VALUE) {
 			ascending = false;
 		} else if (!ascending && aval < lif::JOYSTICK_INPUT_THRESHOLD) {
-			evtRegistered[axis] = true;
+			evtRegistered[static_cast<int>(axis)] = true;
 			started = false;
 		}
 	}
 }
 
 bool JoystickListener::evtMoved(JoystickListener::Axis a) const {
-	const auto moved = evtRegistered.find(a);
-	if (moved == evtRegistered.end())
-		return false;
-	return moved->second;
+	return evtRegistered[static_cast<int>(a)];
 }
 
 bool JoystickListener::isAnyEvtMoved() const {
-	for (auto it = evtRegistered.begin(); it != evtRegistered.end(); ++it)
-		if (it->second) return true;
-	return false;
+	return std::find(evtRegistered.begin(), evtRegistered.end(), false);
 }

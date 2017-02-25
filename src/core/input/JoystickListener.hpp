@@ -1,6 +1,6 @@
 #pragma once
 
-#include <unordered_map>
+#include <array>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 
@@ -26,14 +26,14 @@ private:
 	const unsigned id;
 
 	/** Whether the event associated with each axis was started or not */
-	std::unordered_map<Axis, bool> evtStarted;
+	std::array<bool, static_cast<int>(Axis::RTRIGGER) + 1> evtStarted;
 	/** Map { axis => b }, where `b` is true if the event associated with `axis` is currently in the "ascending"
 	 *  phase (i.e. we have yet to register a |value| >= JOYSTICK_EVT_ACCEPTANCE_VALUE) for that possible event)
 	 *  or false if descending.
 	 *  Both these values are meaningless if `evtStarted[axis] == false`.
 	 */
-	std::unordered_map<Axis, bool> evtAscending;
-	std::unordered_map<Axis, bool> evtRegistered;
+	std::array<bool, static_cast<int>(Axis::RTRIGGER) + 1> evtAscending;
+	std::array<bool, static_cast<int>(Axis::RTRIGGER) + 1> evtRegistered;
 
 	void _listen(sf::Joystick::Axis axis);
 	/** @return a pair of axes which are the "negative" and "positive" halves of the SFML Axis passed */
