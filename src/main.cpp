@@ -29,6 +29,7 @@
 #include "WinLoseHandler.hpp"
 #include "Interactable.hpp"
 #include "Player.hpp"
+#include "JoystickManager.hpp"
 #include "Music.hpp"
 #include "SidePanel.hpp"
 #include "LevelSet.hpp"
@@ -298,6 +299,7 @@ int main(int argc, char **argv) {
 
 		///// LOGIC LOOP /////
 
+		lif::joystick::JoystickManager::getInstance().update();
 		cur_context->update();
 
 		///// RENDERING LOOP //////

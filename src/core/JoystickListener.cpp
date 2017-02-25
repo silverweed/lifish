@@ -13,7 +13,6 @@ void JoystickListener::update() {
 	if (!sf::Joystick::isConnected(id))
 		return;
 
-	sf::Joystick::update();
 	evtRegistered.clear();
 	
 	_listen(sf::Joystick::X);
@@ -73,4 +72,10 @@ bool JoystickListener::evtMoved(JoystickListener::Axis a) const {
 	if (moved == evtRegistered.end())
 		return false;
 	return moved->second;
+}
+
+bool JoystickListener::isAnyEvtMoved() const {
+	for (auto it = evtRegistered.begin(); it != evtRegistered.end(); ++it)
+		if (it->second) return true;
+	return false;
 }

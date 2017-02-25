@@ -50,6 +50,8 @@ public:
 	 *  The event remains `true` for a brief time after being registered.
 	 */
 	bool evtMoved(Axis a) const;
+	/** @return true if any axis has event == true */
+	bool isAnyEvtMoved() const;
 
 	void update();
 };

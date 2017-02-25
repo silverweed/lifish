@@ -1,9 +1,9 @@
-#include "WindowContext.hpp"
+#include "MultiEventHandler.hpp"
 #include <SFML/Window.hpp>
+#include <iostream>
+using lif::MultiEventHandler;
 
-using lif::WindowContext;
-
-void WindowContext::handleEvents(sf::Window& window) {
+void MultiEventHandler::handleEvents(sf::Window& window) {
 	sf::Event event;
 	while (window.pollEvent(event)) {
 		if (handleEvent(window, event))

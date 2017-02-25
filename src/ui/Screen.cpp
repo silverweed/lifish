@@ -1,6 +1,7 @@
 #include "Screen.hpp"
 #include "ScreenBuilder.hpp"
 #include "Interactable.hpp"
+#include "JoystickManager.hpp"
 #include "core.hpp"
 #include "GameCache.hpp"
 
@@ -28,23 +29,28 @@ void Screen::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 }
 
 void Screen::update() {
+	if (lif::joystick::JoystickManager::getInstance().isAnyEvtMoved())
+		usingJoystick = true;
+
 	if (usingJoystick)
 		_updateSelectedJoystick();
 	else
 		_updateSelectedMouse();
 }
 
-bool Screen::handleEvent(sf::Window& window, sf::Event event) {
+bool Screen::handleEvent(sf::Window&, sf::Event event) {
 	switch (event.type) {
 	case sf::Event::JoystickButtonPressed:
-		switch (event.joystickButton.button) {
-			// TODO
-			usingJoystick = true;
-			return true;
-		}
+	case sf::Event::JoystickButtonReleased:
+		usingJoystick = true;
+		return true;
 	case sf::Event::MouseMoved:
-		usingJoystick = false;
-		return false;
+		if (_getMouseShift(event.mouseMove.x, event.mouseMove.y) > 300) {
+			_saveMousePos(event.mouseMove.x, event.mouseMove.y);
+			usingJoystick = false;
+			return false;
+		}
+		break;
 	default:
 		break;
 	}
@@ -112,4 +118,13 @@ void Screen::_updateSelectedMouse() {
 void Screen::_updateSelectedJoystick() {
 	//for (auto it = interactables.begin(); it != interactables.end(); ++it) {
 	//}
+}
+
+int Screen::_getMouseShift(int x, int y) const {
+	return (latestMouseX - x) * (latestMouseX - x) + (latestMouseY - y) * (latestMouseY - y);
+}
+
+void Screen::_saveMousePos(int x, int y) {
+	latestMouseX = x;
+	latestMouseY = y;
 }

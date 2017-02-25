@@ -19,7 +19,6 @@ class UI final : public lif::WindowContext {
 
 	UI();
 public:
-	UI(const UI&) = delete;
 
 	static UI& getInstance() {
 		static UI instance;

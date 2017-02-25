@@ -24,6 +24,12 @@ public:
 private:
 	friend class lif::ui::ScreenBuilder;
 
+	int latestMouseX = 0,
+	    latestMouseY = 0;
+
+	int _getMouseShift(int x, int y) const;
+	void _saveMousePos(int x, int y);
+
 protected:
 	/** The window this screen is rendered in */
 	const sf::RenderWindow& window;
