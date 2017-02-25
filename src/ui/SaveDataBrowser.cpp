@@ -1,9 +1,9 @@
 #include "SaveDataBrowser.hpp"
 #include "core.hpp"
+#include "utils.hpp"
 #include <dirent.h>
 #include <cstdlib>
 #include <cstring>
-#include <cstdio>
 
 using lif::SaveDataBrowser;
 
@@ -34,14 +34,12 @@ std::vector<SaveDataBrowser::SaveFile> SaveDataBrowser::browseSaveData(std::stri
 }
 
 std::string SaveDataBrowser::_newUniqueId() {
-	std::array<char, 8> idbuf;
-	snprintf(idbuf.data(), idbuf.size(), "%.8d", idnum);
-	++idnum;
-	return std::string(idbuf.data());
+	return lif::to_string(idnum++);
 }
 
 lif::ui::Screen::Callback SaveDataBrowser::_createDeleteCallback(const std::string& path) const {
 	return [path] () {
+		// TODO: ask for confirmation
 		if (remove(path.c_str()) != 0) {
 			perror("Error deleting file");
 		}

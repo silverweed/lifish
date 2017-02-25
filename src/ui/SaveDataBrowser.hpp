@@ -7,7 +7,7 @@
 namespace lif {
 
 class SaveDataBrowser {
-	int idnum = 0;
+	long idnum = 0;
 
 protected:
 	struct SaveFile {

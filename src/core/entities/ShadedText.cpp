@@ -75,3 +75,7 @@ sf::FloatRect ShadedText::getGlobalBounds() const {
 	bounds.height += shadowSpacing.y;
 	return bounds;
 }
+
+std::string ShadedText::getString() const {
+	return fgtext.getString();
+}

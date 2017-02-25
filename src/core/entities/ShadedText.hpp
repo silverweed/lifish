@@ -22,6 +22,7 @@ public:
 		sf::Color bgcol = sf::Color::Black);
 
 	sf::FloatRect getGlobalBounds() const; 
+	std::string getString() const;
 
 	void setStyle(sf::Text::Style style);
 	void setString(const std::string& str);
