@@ -31,7 +31,10 @@ void UI::load(const sf::RenderWindow& window, std::initializer_list<std::string>
 }
 
 bool UI::handleEvent(sf::Window& window, sf::Event event) {
-	if (curScreen != nullptr && curScreen->handleEvent(window, event))
+	if (curScreen == nullptr)
+		return false;
+
+	if (curScreen->handleEvent(window, event))
 		return true;
 
 	// In case the current screen is expecting an event, tell it.
