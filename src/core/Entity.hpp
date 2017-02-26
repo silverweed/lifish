@@ -105,6 +105,8 @@ protected:
 	lif::Entity& owner;
 	std::list<CompKey> keys;
 
+	template<class T>
+	void _declComponent() { keys.emplace_back(_getKey<T>()); }
 public:
 	/** If true, adding more than a component of this type to an Entity
 	 *  will raise a logic_error.

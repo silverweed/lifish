@@ -22,32 +22,21 @@
 #include "core.hpp"
 #include <memory>
 
-#ifndef RELEASE
-#	define DBGSTART(name) \
-		dbgStats.timer.start(name)
-#	define DBGEND(name) \
-		dbgStats.timer.end(name)
-#else
-#	define DBGSTART(name)
-#	define DBGEND(name)
-#endif
-
 using lif::LevelManager;
 
 LevelManager::LevelManager()
-	: renderer(*this)
+	: lif::BaseLevelManager(sf::FloatRect(
+		lif::TILE_SIZE,
+		lif::TILE_SIZE,
+		(lif::LEVEL_WIDTH + 1) * lif::TILE_SIZE,
+		(lif::LEVEL_HEIGHT + 1) * lif::TILE_SIZE))
+	, renderer(*this)
 	, effects(sf::Vector2u(lif::LEVEL_WIDTH * lif::TILE_SIZE, lif::LEVEL_HEIGHT * lif::TILE_SIZE))
-	, cd(entities,
-		// level boundaries
-		sf::FloatRect(
-			lif::TILE_SIZE,
-			lif::TILE_SIZE,
-			(lif::LEVEL_WIDTH + 1) * lif::TILE_SIZE,
-			(lif::LEVEL_HEIGHT + 1) * lif::TILE_SIZE),
-		lif::SHCD_SUBDIVISIONS)
+	, levelTime(new lif::LevelTime)
 {
-	levelTime.init();
-	dropTextManager.subscribe(entities);
+	reset();
+	for (auto logic : lif::game_logic::functions)
+		logicFunctions.push_back(logic);
 }
 
 void LevelManager::createNewPlayers(unsigned short n) {
@@ -68,64 +57,9 @@ void LevelManager::removePlayer(unsigned short id) {
 }
 
 void LevelManager::update() {
-	// Update level time
-	levelTime.update();
+	DBGSTART("lmtot");
+	BaseLevelManager::update();
 
-	DBGSTART("tot");
-	DBGSTART("reset_align");
-
-	// Set prevAligns for aligned entities
-	entities.apply([] (lif::Entity *e) {
-		if (!e->isAligned()) return;
-		auto moving = e->get<lif::AxisMoving>();
-		if (moving == nullptr) return;
-		moving->setPrevAlign(lif::tile(e->getPosition()));
-	});
-
-	DBGEND("reset_align");
-	DBGSTART("validate");
-
-	// Force pruning of all expired pointers
-	entities.validate();
-
-	DBGEND("validate");
-	DBGSTART("cd");
-
-	// Calculate collisions
-	cd.update();
-
-	DBGEND("cd");
-	DBGSTART("logic");
-
-	// Apply game logic rules
-	std::vector<lif::Entity*> to_be_spawned;
-#ifndef RELEASE
-	int i = 0;
-#endif
-	for (auto logic : lif::game_logic::functions) {
-#ifndef RELEASE
-		std::stringstream n;
-		n << "logic_" << i;
-		dbgStats.timer.start(n.str());
-#endif
-		entities.apply(logic, *this, to_be_spawned);
-#ifndef RELEASE
-		dbgStats.timer.end(n.str());
-		++i;
-#endif
-	}
-
-	DBGEND("logic");
-
-	for (auto e : to_be_spawned)
-		_spawn(e);
-
-	DBGSTART("ent_update");
-
-	// Update entities and their components
-	entities.updateAll();
-
-	DBGEND("ent_update");
 	DBGSTART("checks");
 
 	// Check if should resurrect players
@@ -136,7 +70,7 @@ void LevelManager::update() {
 	_checkSpecialConditions();
 
 	DBGEND("checks");
-	DBGEND("tot");
+	DBGEND("lmtot");
 }
 
 bool LevelManager::isPlayer(const lif::Entity& e) const {
@@ -173,32 +107,14 @@ void LevelManager::setLevel(const lif::LevelSet& ls, unsigned short lvnum) {
 		extraGameTriggered = true;
 }
 
-void LevelManager::pause() {
-	levelTime.pause();
-	entities.apply([] (lif::Entity *e) {
-		auto clocks = e->getAllRecursive<lif::Clock>();
-		for (auto clock : clocks)
-			clock->pause();
-	});
-	paused = true;
-}
-
-void LevelManager::resume() {
-	levelTime.resume();
-	entities.apply([] (lif::Entity *e) {
-		auto clocks = e->getAllRecursive<lif::Clock>();
-		for (auto clock : clocks)
-			clock->resume();
-	});
-	paused = false;
-}
-
 void LevelManager::reset() {
-	entities.clear();
+	BaseLevelManager::reset();
 
 	dropTextManager.reset();
 	// Re-add the dropping texts
 	dropTextManager.subscribe(entities);
+	// Re-add the level time
+	entities.add(levelTime);
 
 	hurryUp = hurryUpWarningGiven = false;
 	extraGameTriggered = extraGame = false;
@@ -284,7 +200,7 @@ void LevelManager::_triggerExtraGame() {
 		enemy->setMorphed(true);
 	});
 	dropTextManager.trigger(lif::DroppingTextManager::Text::EXTRA_GAME);
-	levelTime.startExtraGame();
+	levelTime->startExtraGame();
 	extraGameTriggered = extraGame = true;
 }
 
@@ -323,14 +239,14 @@ bool LevelManager::_shouldTriggerExtraGame() const {
 }
 
 void LevelManager::_checkSpecialConditions() {
-	if (!hurryUpWarningGiven && levelTime.checkHurryUp() == lif::LevelTime::HurryUpResponse::HURRY_UP_NEAR)
+	if (!hurryUpWarningGiven && levelTime->checkHurryUp() == lif::LevelTime::HurryUpResponse::HURRY_UP_NEAR)
 		_triggerHurryUpWarning();
-	else if (!hurryUp && levelTime.checkHurryUp() == lif::LevelTime::HurryUpResponse::HURRY_UP_ON)
+	else if (!hurryUp && levelTime->checkHurryUp() == lif::LevelTime::HurryUpResponse::HURRY_UP_ON)
 		_triggerHurryUp();
 
 	if (!extraGameTriggered && _shouldTriggerExtraGame())
 		_triggerExtraGame();
-	else if (extraGame && levelTime.getRemainingExtraGameTime() <= sf::Time::Zero)
+	else if (extraGame && levelTime->getRemainingExtraGameTime() <= sf::Time::Zero)
 		_endExtraGame();
 }
 

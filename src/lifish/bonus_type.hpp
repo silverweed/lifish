@@ -4,7 +4,7 @@
 
 namespace lif {
 
-class LevelManager;
+class BaseLevelManager;
 class Player;
 
 enum class BonusType {
@@ -22,7 +22,7 @@ enum class BonusType {
 	HEALTH_FULL  
 };
 
-std::string bonusToString(BonusType type);
-void triggerBonus(lif::LevelManager& lm, BonusType type, lif::Player& player);
+std::string bonusToString(lif::BonusType type);
+void triggerBonus(lif::BaseLevelManager& lm, lif::BonusType type, lif::Player& player);
 
 }

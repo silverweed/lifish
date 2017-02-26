@@ -1,5 +1,5 @@
 #include "bonus_type.hpp"
-#include "LevelManager.hpp"
+#include "BaseLevelManager.hpp"
 #include "Player.hpp"
 #include "Lifed.hpp"
 #include "BreakableWall.hpp"
@@ -40,7 +40,7 @@ std::string lif::bonusToString(lif::BonusType type) {
 	return "Unknown Bonus";
 }
 
-void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& player) {
+void lif::triggerBonus(lif::BaseLevelManager& lm, lif::BonusType type, lif::Player& player) {
 	const auto powers = player.getInfo().powers;
 
 	switch (type) {

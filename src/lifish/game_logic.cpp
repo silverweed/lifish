@@ -26,8 +26,8 @@
 
 using EntityList = std::vector<lif::Entity*>;
 
-void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::LevelManager& lm, EntityList& tbspawned)
-{
+void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm, EntityList& tbspawned) {
+	auto& lm = static_cast<lif::LevelManager&>(blm);
 	if (!lm.isPlayer(*e)) return;
 	auto player = static_cast<lif::Player*>(e);
 
@@ -51,8 +51,8 @@ void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::LevelManager& lm, Ent
 	}
 }
 
-void lif::game_logic::spawningLogic(lif::Entity *e, lif::LevelManager& lm, EntityList& tbspawned)
-{
+void lif::game_logic::spawningLogic(lif::Entity *e, lif::BaseLevelManager& blm, EntityList& tbspawned) {
+	auto& lm = static_cast<lif::LevelManager&>(blm);
 	for (auto spawning : e->getAll<lif::Spawning>()) {
 		while (spawning->shouldSpawn()) {
 			auto spawned = spawning->spawn().release();
@@ -65,8 +65,7 @@ void lif::game_logic::spawningLogic(lif::Entity *e, lif::LevelManager& lm, Entit
 	}
 }
 
-void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::LevelManager&, EntityList& tbspawned)
-{
+void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::BaseLevelManager&, EntityList& tbspawned) {
 	auto scored = e->get<lif::Scored>();
 	if (scored == nullptr || scored->hasGivenPoints()) return;
 	
@@ -100,7 +99,7 @@ void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::LevelManager&, E
 	}
 }
 
-void lif::game_logic::bonusGrabLogic(lif::Entity *e, lif::LevelManager &lm, EntityList&) {
+void lif::game_logic::bonusGrabLogic(lif::Entity *e, lif::BaseLevelManager& blm, EntityList&) {
 	auto bonus = dynamic_cast<lif::Bonus*>(e);
 	if (bonus == nullptr) return;
 	
@@ -110,11 +109,11 @@ void lif::game_logic::bonusGrabLogic(lif::Entity *e, lif::LevelManager &lm, Enti
 	auto player = grb->getGrabbingEntity();
 	if (player == nullptr) return;
 	
-	lif::triggerBonus(lm, bonus->getType(), *static_cast<lif::Player*>(player));
+	lif::triggerBonus(blm, bonus->getType(), *static_cast<lif::Player*>(player));
 	grb->grab();
 }
 
-std::vector<lif::game_logic::GameLogicFunc> lif::game_logic::functions = {
+std::vector<lif::BaseLevelManager::GameLogicFunc> lif::game_logic::functions = {
 	bombDeployLogic,
 	bonusGrabLogic,
 	scoredKillablesLogic,

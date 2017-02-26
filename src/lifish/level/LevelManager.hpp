@@ -1,22 +1,14 @@
 #pragma once
 
 #include <array>
-#include <SFML/System/NonCopyable.hpp>
 #include <SFML/Graphics.hpp>
-#include "EntityGroup.hpp"
-#include "SHCollisionDetector.hpp"
+#include "BaseLevelManager.hpp"
 #include "DroppingTextManager.hpp"
 #include "LevelRenderer.hpp"
 #include "LevelEffects.hpp"
 #include "LevelTime.hpp"
 #include "conf/player.hpp"
 #include "Direction.hpp"
-#ifdef MULTITHREADED
-#	include <mutex>
-#endif
-#ifndef RELEASE
-#	include "Stats.hpp"
-#endif
 
 namespace lif {
 
@@ -33,37 +25,18 @@ class AxisMoving;
  *  In particular, its update() method updates all entities,
  *  the collisions and the game logic.
  */
-class LevelManager final : private sf::NonCopyable, public sf::Drawable {
+class LevelManager final : public lif::BaseLevelManager, public sf::Drawable {
 
 	friend class lif::LevelLoader;
 	friend class lif::LevelRenderer;
 	friend class lif::SaveManager;
 	friend class lif::WinLoseHandler;
 
-#ifdef MULTITHREADED
-	mutable std::mutex lvMutex;
-#endif
-	inline void _mtxLock() const {
-#ifdef MULTITHREADED
-		lvMutex.lock();
-#endif
-	}
-
-	inline void _mtxUnlock() const {
-#ifdef MULTITHREADED
-		lvMutex.unlock();
-#endif
-	}
-
-#ifndef RELEASE
-	lif::debug::Stats dbgStats;
-#endif
-
 	/** The currently managed level */
 	std::unique_ptr<lif::Level> level;
 	lif::LevelRenderer renderer;
 	lif::LevelEffects effects;
-	lif::LevelTime levelTime;
+	std::shared_ptr<lif::LevelTime> levelTime;
 
 	/** Whether hurry up has already been triggered or not */
 	bool hurryUp = false;
@@ -72,14 +45,11 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable {
 	bool extraGameTriggered = false;
 	/** Whether we're currently in EXTRA game or not */
 	bool extraGame = false;
-	bool paused = false;
 	/** This is set to `true` as soon as no players are found alive. */
 	bool gameOver = false;
 	/** This is set to `true` when the last level is completed */
 	bool gameWon = false;
 
-	lif::EntityGroup entities;
-	lif::SHCollisionDetector cd;
 	lif::DroppingTextManager dropTextManager;
 
 	/** "Owned" pointers to players.
@@ -98,7 +68,7 @@ class LevelManager final : private sf::NonCopyable, public sf::Drawable {
 
 
 	/** Adds the given entity to `entities` */
-	void _spawn(lif::Entity *e);
+	void _spawn(lif::Entity *e) override;
 	void _spawnBomb(lif::Bomb *b);
 	/** Checks if there are any player to resurrect. If no players are found alive,
 	 *  sets the `gameOver` flag to `true`.
@@ -124,17 +94,13 @@ public:
 	void setPlayer(unsigned short id, std::shared_ptr<lif::Player> player);
 	void removePlayer(unsigned short id);
 
-	const lif::EntityGroup& getEntities() const { return entities; }
-	lif::EntityGroup& getEntities() { return entities; }
-
 	const lif::Level* getLevel() const { return level != nullptr ? level.get() : nullptr; }
 	/** Loads `lvnum`-th level from `ls` into this LevelManager. Destroys previous level if any */
 	void setLevel(const lif::LevelSet& ls, unsigned short lvnum);
 	/** Loads next level from `level->getLevelSet()`. Throws if `level` is currently null */
 	void setNextLevel();
 
-	const lif::LevelTime& getLevelTime() const { return levelTime; }
-	const lif::CollisionDetector& getCollisionDetector() const { return cd; }
+	const lif::LevelTime& getLevelTime() const { return *levelTime; }
 	const lif::LevelEffects& getLevelEffects() const { return effects; }
 	lif::LevelEffects& getLevelEffects() { return effects; }
 
@@ -149,23 +115,9 @@ public:
 	/** Returns the number of bombs currently deployed by id-th player */
 	unsigned short bombsDeployedBy(unsigned short id) const;
 
-	/** Pauses all Clock components of all entities */
-	void pause();
-	/** Resumes all Clock components of all entities */
-	void resume();
-	bool isPaused() const { return paused; }
-
-	/** Updates all entities and collisions */
-	void update();
-
-	/** Clears `entities` and resets internal variables */
-	void reset();
-
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
-#ifndef RELEASE
-	const lif::debug::Stats& getStats() const { return dbgStats; }
-#endif
+	void update() override;
+	void reset() override;
 };
 
 }

@@ -30,7 +30,7 @@ using lif::TILE_SIZE;
 
 bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 
-	lm.levelTime.setTime(sf::seconds(level.getInfo().time));
+	lm.levelTime->setTime(sf::seconds(level.getInfo().time));
 
 	lif::Teleport *first_teleport = nullptr,
 		       *latest_teleport = nullptr;
@@ -224,7 +224,7 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 		}
 	}
 
-	lm.levelTime.resume();
+	lm.levelTime->resume();
 
 	return true;
 }
