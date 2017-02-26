@@ -26,8 +26,7 @@
 
 using EntityList = std::vector<lif::Entity*>;
 
-void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::LevelManager& lm,
-		EntityList& tbspawned, EntityList&)
+void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::LevelManager& lm, EntityList& tbspawned)
 {
 	if (!lm.isPlayer(*e)) return;
 	auto player = static_cast<lif::Player*>(e);
@@ -52,8 +51,7 @@ void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::LevelManager& lm,
 	}
 }
 
-void lif::game_logic::spawningLogic(lif::Entity *e, lif::LevelManager& lm,
-		EntityList& tbspawned, EntityList&)
+void lif::game_logic::spawningLogic(lif::Entity *e, lif::LevelManager& lm, EntityList& tbspawned)
 {
 	for (auto spawning : e->getAll<lif::Spawning>()) {
 		while (spawning->shouldSpawn()) {
@@ -67,8 +65,7 @@ void lif::game_logic::spawningLogic(lif::Entity *e, lif::LevelManager& lm,
 	}
 }
 
-void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::LevelManager&,
-		EntityList& tbspawned, EntityList&)
+void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::LevelManager&, EntityList& tbspawned)
 {
 	auto scored = e->get<lif::Scored>();
 	if (scored == nullptr || scored->hasGivenPoints()) return;
@@ -103,7 +100,7 @@ void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::LevelManager&,
 	}
 }
 
-void lif::game_logic::bonusGrabLogic(lif::Entity *e, lif::LevelManager &lm, EntityList&, EntityList&) {
+void lif::game_logic::bonusGrabLogic(lif::Entity *e, lif::LevelManager &lm, EntityList&) {
 	auto bonus = dynamic_cast<lif::Bonus*>(e);
 	if (bonus == nullptr) return;
 	

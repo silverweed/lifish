@@ -4,8 +4,7 @@
 #include <functional>
 
 #define DEF_LOGIC(name) \
-	void name(lif::Entity *e, lif::LevelManager& lm, \
-			std::vector<lif::Entity*>& tbspawned, std::vector<lif::Entity*>& tbkilled)
+	void name(lif::Entity *e, lif::LevelManager& lm, std::vector<lif::Entity*>& tbspawned)
 
 namespace lif {
 
@@ -15,10 +14,9 @@ class LevelManager;
 /** Namespace containing game logic rules */
 namespace game_logic {
 	using GameLogicFunc = std::function<void(
-			lif::Entity*,             // for-each loop variable 
-			lif::LevelManager&,       // LevelManager calling this function
-			std::vector<lif::Entity*>&, // vector of entities to be spawned after calling game logic
-			std::vector<lif::Entity*>&  // vector of entities to be removed after calling game logic
+			lif::Entity*,              // for-each loop variable
+			lif::LevelManager&,        // LevelManager calling this function
+			std::vector<lif::Entity*>& // vector of entities to be spawned after calling game logic
 			)>;
 
 	/** Make players drop bombs */

@@ -98,7 +98,7 @@ void LevelManager::update() {
 	DBGSTART("logic");
 
 	// Apply game logic rules
-	std::vector<lif::Entity*> to_be_spawned, to_be_killed;
+	std::vector<lif::Entity*> to_be_spawned;
 #ifndef RELEASE
 	int i = 0;
 #endif
@@ -108,7 +108,7 @@ void LevelManager::update() {
 		n << "logic_" << i;
 		dbgStats.timer.start(n.str());
 #endif
-		entities.apply(logic, *this, to_be_spawned, to_be_killed);
+		entities.apply(logic, *this, to_be_spawned);
 #ifndef RELEASE
 		dbgStats.timer.end(n.str());
 		++i;
@@ -119,9 +119,6 @@ void LevelManager::update() {
 
 	for (auto e : to_be_spawned)
 		_spawn(e);
-
-	for (auto e : to_be_killed)
-		entities.remove(*e);
 
 	DBGSTART("ent_update");
 
