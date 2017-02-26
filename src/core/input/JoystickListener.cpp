@@ -67,5 +67,5 @@ bool JoystickListener::evtMoved(JoystickListener::Axis a) const {
 }
 
 bool JoystickListener::isAnyEvtMoved() const {
-	return std::find(evtRegistered.begin(), evtRegistered.end(), false);
+	return std::find(evtRegistered.begin(), evtRegistered.end(), true) != evtRegistered.end();
 }
