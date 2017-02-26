@@ -3,9 +3,8 @@
 using lif::joystick::JoystickListener;
 using JAxis = JoystickListener::Axis;
 
-constexpr float JOYSTICK_EVT_ACCEPTANCE_VALUE = 80;
-constexpr float JOYSTICK_INPUT_THRESHOLD = 50;
-const sf::Time MAX_EVT_TIME = sf::seconds(0.5);
+constexpr short JOYSTICK_EVT_ACCEPTANCE_VALUE = 80;
+constexpr short JOYSTICK_INPUT_THRESHOLD = 50;
 
 JoystickListener::JoystickListener(unsigned jid) : id(jid) {}
 
