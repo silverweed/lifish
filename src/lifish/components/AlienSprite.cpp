@@ -14,7 +14,7 @@ using lif::TILE_SIZE;
 AlienSprite::AlienSprite(lif::Entity& owner)
 	: lif::Component(owner)
 {
-	keys.emplace_back(_getKey<AlienSprite>());
+	_declComponent<AlienSprite>();
 	animated = addComponent(std::make_shared<lif::Animated>(owner, lif::getAsset("test", "aliensprite.png")));
 	addComponent(std::make_shared<lif::Drawable>(*this, *animated));
 

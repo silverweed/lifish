@@ -8,7 +8,7 @@ AI::AI(lif::Entity& owner, AIFunction ai)
 	: lif::Component(owner) 
 	, ai(ai)
 {
-	keys.emplace_back(_getKey<AI>());
+	_declComponent<AI>();
 }
 
 lif::Entity* AI::init() {

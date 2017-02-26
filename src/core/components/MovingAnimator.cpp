@@ -7,7 +7,7 @@ using lif::MovingAnimator;
 MovingAnimator::MovingAnimator(lif::Entity& owner)
 	: lif::Component(owner)
 {
-	keys.emplace_back(_getKey<MovingAnimator>());
+	_declComponent<MovingAnimator>();
 }
 
 MovingAnimator::MovingAnimator(lif::Entity& owner, lif::AxisMoving *m, lif::Animated *a)
@@ -15,7 +15,7 @@ MovingAnimator::MovingAnimator(lif::Entity& owner, lif::AxisMoving *m, lif::Anim
 	, moving(m)
 	, animated(a)
 {
-	keys.emplace_back(_getKey<MovingAnimator>());
+	_declComponent<MovingAnimator>();
 	if (moving == nullptr)
 		throw std::invalid_argument("owner has no Moving!");
 	if (animated == nullptr)

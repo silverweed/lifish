@@ -8,7 +8,7 @@ Lifed::Lifed(lif::Entity& owner, const unsigned int life)
 	, life(life) 
 	, maxLife(life)
 {
-	keys.emplace_back(_getKey<Lifed>());
+	_declComponent<Lifed>();
 }
 
 Lifed::Lifed(lif::Entity& owner, const unsigned int life, OnHurtCallback _onHurt)

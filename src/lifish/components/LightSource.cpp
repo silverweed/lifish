@@ -12,7 +12,7 @@ LightSource::LightSource(lif::Entity& owner, float radius, sf::Color color, floa
 	, color(color)
 	, flickerLen(flickerLen)
 {
-	keys.emplace_back(_getKey<LightSource>());
+	_declComponent<LightSource>();
 	if (flickerIntensity > 0) {
 		_fillRandomPool(flickerIntensity);
 		for (unsigned i = 0; i < flickerLen; ++i) 

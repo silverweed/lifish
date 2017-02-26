@@ -7,7 +7,7 @@ Scored::Scored(lif::Entity& owner, const int points)
 	: lif::Component(owner)
 	, pointsGiven(points)
 {
-	keys.emplace_back(_getKey<Scored>());
+	_declComponent<Scored>();
 }
 
 void Scored::setTarget(unsigned short t) {

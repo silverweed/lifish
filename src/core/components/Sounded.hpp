@@ -17,7 +17,7 @@ public:
 	explicit Sounded(lif::Entity& owner, SoundList _soundFiles)
 		: lif::Component(owner)
 	{
-		keys.emplace_back(_getKey<Sounded>());
+		_declComponent<Sounded>();
 		for (auto& s : _soundFiles)
 			soundFiles[s.first] = s.second;
 	}

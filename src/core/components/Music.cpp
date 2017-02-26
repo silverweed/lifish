@@ -8,7 +8,7 @@ Music::Music(lif::Entity& owner, const lif::Track& track)
 	: lif::Component(owner)
 	, track(track)
 {
-	keys.emplace_back(_getKey<Music>());
+	_declComponent<Music>();
 	if (!musicInput.openFromFile(track.name)) {
 		std::cerr << "Error: couldn't load music " << track.name << " from file!" << std::endl;
 	} else {

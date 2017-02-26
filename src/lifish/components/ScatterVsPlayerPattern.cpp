@@ -10,7 +10,7 @@ using lif::ScatterVsPlayerPattern;
 ScatterVsPlayerPattern::ScatterVsPlayerPattern(lif::Entity& owner, const lif::BulletInfo& bullet)
 	: lif::ShootingPattern(owner, bullet)
 {
-	keys.emplace_back(_getKey<ScatterVsPlayerPattern>());
+	_declComponent<ScatterVsPlayerPattern>();
 	shootClock = addComponent(std::make_shared<lif::Clock>(*this));
 }
 

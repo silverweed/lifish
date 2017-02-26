@@ -13,7 +13,7 @@ public:
 		: lif::Component(owner)
 		, delegate(delegate) 
 	{
-		keys.emplace_back(_getKey<Drawable>());
+		_declComponent<Drawable>();
 	}
 
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override {

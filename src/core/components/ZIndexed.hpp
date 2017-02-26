@@ -11,7 +11,7 @@ public:
 		: lif::Component(owner)
 		, zIndex(z) 
 	{
-		keys.emplace_back(_getKey<ZIndexed>());
+		_declComponent<ZIndexed>();
 	}
 
 	virtual int getZIndex() const { return zIndex; }

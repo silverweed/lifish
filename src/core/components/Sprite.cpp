@@ -7,7 +7,7 @@ using lif::Sprite;
 Sprite::Sprite(lif::Entity& owner, const std::string& texture_name) 
 	: lif::Component(owner)
 {
-	keys.emplace_back(_getKey<Sprite>());
+	_declComponent<Sprite>();
 	texture = lif::cache.loadTexture(texture_name);
 	sprite.setTexture(*texture);
 }

@@ -11,7 +11,7 @@ Moving::Moving(lif::Entity& owner, float speed)
 	, originalSpeed(speed)
 	, speed(speed)
 {
-	keys.emplace_back(_getKey<Moving>());
+	_declComponent<Moving>();
 	frameClock = addComponent(std::make_shared<lif::Clock>(*this));
 	blockClock = addComponent(std::make_shared<lif::Clock>(*this));
 }

@@ -12,7 +12,7 @@ public:
 	explicit Grabbable(lif::Entity& owner)
 		: lif::Component(owner) 
 	{
-		keys.emplace_back(_getKey<Grabbable>());
+		_declComponent<Grabbable>();
 	}
 
 	/** `grab` shall be called when the Grabbable is grabbed to avoid reprocess it */

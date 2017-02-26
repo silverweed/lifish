@@ -7,7 +7,7 @@ Sighted::Sighted(lif::Entity& owner, float visionRadius)
 	: lif::Component(owner)
 	, visionRadius(visionRadius)
 {
-	keys.emplace_back(_getKey<Sighted>());
+	_declComponent<Sighted>();
 }
 
 void Sighted::setOpaque(std::initializer_list<lif::c_layers::Layer> layers, bool opaque) {

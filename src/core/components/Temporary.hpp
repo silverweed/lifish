@@ -16,7 +16,7 @@ public:
 		: lif::Killable(owner)
 		, expireCondition(expireCondition)
 	{
-		keys.emplace_back(_getKey<Temporary>());
+		_declComponent<Temporary>();
 	}
 
 	explicit Temporary(lif::Entity& owner,
@@ -25,7 +25,7 @@ public:
 		: lif::Killable(owner, onKill)
 		, expireCondition(expireCondition)
 	{
-		keys.emplace_back(_getKey<Temporary>());
+		_declComponent<Temporary>();
 	}
 
 	explicit Temporary(lif::Entity& owner, 
@@ -35,7 +35,7 @@ public:
 		: lif::Killable(owner, onKill, checkKill)
 		, expireCondition(expireCondition)
 	{
-		keys.emplace_back(_getKey<Temporary>());
+		_declComponent<Temporary>();
 	}
 
 	void update() override {

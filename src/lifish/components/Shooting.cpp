@@ -18,7 +18,7 @@ Shooting::Shooting(lif::Entity& owner, const Attack& attack)
 	, attackAlign(-1.f, -1.f)
 	, attack(attack) 
 {
-	keys.emplace_back(_getKey<Shooting>());
+	_declComponent<Shooting>();
 	position = owner.getPosition();
 	rechargeClock = addComponent(std::make_shared<lif::Clock>(*this));
 }

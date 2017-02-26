@@ -16,7 +16,7 @@ RegularEntityDeath::RegularEntityDeath(lif::Entity& owner, sf::Time deathTime)
 	: lif::Component(owner)
 	, deathTime(deathTime)
 {
-	keys.emplace_back(_getKey<RegularEntityDeath>());
+	_declComponent<RegularEntityDeath>();
 }
 
 lif::Entity* RegularEntityDeath::init() {

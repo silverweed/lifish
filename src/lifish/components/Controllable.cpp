@@ -11,7 +11,7 @@ Controllable::Controllable(lif::Entity& owner,
 	, controls(controls)
 	, joystickUsed(joystickUsed)
 {
-	keys.emplace_back(_getKey<Controllable>());
+	_declComponent<Controllable>();
 }
 
 lif::Entity* Controllable::init() {

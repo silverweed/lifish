@@ -10,7 +10,7 @@ LevelNumText::LevelNumText(lif::Entity& owner, const unsigned short levelnum)
 		lif::to_string(levelnum),
 		sf::Vector2f(lif::TILE_SIZE * (lif::LEVEL_WIDTH+1), 0))
 {
-	keys.emplace_back(_getKey<LevelNumText>());
+	_declComponent<LevelNumText>();
 	text.setStyle(sf::Text::Bold);
 	text.setCharacterSize(20);
 }

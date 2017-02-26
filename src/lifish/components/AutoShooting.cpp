@@ -9,7 +9,7 @@ using lif::AutoShooting;
 AutoShooting::AutoShooting(lif::Entity& owner)
 	: lif::BufferedSpawner(owner)
 {
-	keys.emplace_back(_getKey<AutoShooting>());
+	_declComponent<AutoShooting>();
 }
 
 lif::Entity* AutoShooting::init() {

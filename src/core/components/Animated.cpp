@@ -9,7 +9,7 @@ using lif::Animated;
 Animated::Animated(lif::Entity& owner, const std::string& texture_name) 
 	: lif::Component(owner)
 {
-	keys.emplace_back(_getKey<Animated>());
+	_declComponent<Animated>();
 	texture = lif::cache.loadTexture(texture_name);
 	frameClock = addComponent(std::make_shared<lif::Clock>(*this));
 }

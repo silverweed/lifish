@@ -12,7 +12,7 @@ Collider::Collider(lif::Entity& owner, lif::c_layers::Layer layer, const sf::Vec
 	, size(size)
 	, layer(layer)
 {
-	keys.emplace_back(_getKey<Collider>());
+	_declComponent<Collider>();
 }
 
 Collider::Collider(lif::Entity& owner, CollisionFunc onCollision,
@@ -25,7 +25,7 @@ Collider::Collider(lif::Entity& owner, CollisionFunc onCollision,
 	, layer(layer)
 	, onCollision(onCollision)
 {
-	keys.emplace_back(_getKey<Collider>());
+	_declComponent<Collider>();
 }
 
 Collider::Collider(const lif::Collider& other)
@@ -35,7 +35,7 @@ Collider::Collider(const lif::Collider& other)
 	, size(other.size)
 	, layer(other.layer)
 {
-	keys.emplace_back(_getKey<Collider>());
+	_declComponent<Collider>();
 }
 
 

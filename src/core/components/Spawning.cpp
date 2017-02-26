@@ -5,14 +5,14 @@
 using lif::Spawning;
 
 Spawning::Spawning(lif::Entity& owner) : lif::Component(owner) {
-	keys.emplace_back(_getKey<Spawning>());
+	_declComponent<Spawning>();
 }
 
 Spawning::Spawning(lif::Entity& owner, SpawnFunction spawnFunction)
 	: lif::Component(owner)
 	, spawnFunction(spawnFunction)
 {
-	keys.emplace_back(_getKey<Spawning>());
+	_declComponent<Spawning>();
 	const auto klb = owner.get<lif::Killable>();
 	if (klb == nullptr)
 		throw std::invalid_argument("Default spawn function of Spawning is `spawn on death`, but "
@@ -25,7 +25,7 @@ Spawning::Spawning(lif::Entity& owner, SpawnCondition spawnCondition, SpawnFunct
 	, spawnCondition(spawnCondition)
 	, spawnFunction(spawnFunction)
 {
-	keys.emplace_back(_getKey<Spawning>());
+	_declComponent<Spawning>();
 }
 
 std::unique_ptr<lif::Entity> Spawning::spawn() {
