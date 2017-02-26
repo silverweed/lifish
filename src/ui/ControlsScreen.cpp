@@ -206,7 +206,7 @@ bool ControlsScreen::handleEvent(sf::Window&, sf::Event event) {
 			changingCtrlText->setString(ss.str());
 			changingCtrlText->setFGColor(sf::Color::White);
 			changingCtrlText = nullptr;
-			break;
+			return true;
 		}
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {

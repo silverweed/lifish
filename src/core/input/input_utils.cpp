@@ -10,20 +10,18 @@ short lif::joystick::getButton(lif::joystick::ButtonType type, unsigned id) {
 	// button count and hope they're really that type of joystick.
 	// We could use vendor / product ID, but maybe this method is more resilient
 	// to slightly different models (or maybe not).
-	// Xbox 360 controller has 10 buttons
+	// Xbox 360 controller has 11 buttons
 	// PS3 controller has 12 buttons
+	// Note: for now, we always fallback to Xbox if controller is not PS3.
 	const auto bc = sf::Joystick::getButtonCount(id);
 	switch (type) {
 		using BT = lif::joystick::ButtonType;
 	case BT::START:
-		return bc == XBOX ? 7 :
-		       bc == PS3 ? 9 :
-		       -1;
+		return bc == PS3 ? 9 : 7;
 	case BT::SELECT:
-		return bc == XBOX ? 6 : // XBox 360
-		       -1;
+		return bc == PS3 ? 8 : 6;
 	case BT::BTN_DOWN:
-		return 0;
+		return bc == PS3 ? 2 : 0;
 	case BT::BTN_RIGHT:
 		return 1;
 	default:
