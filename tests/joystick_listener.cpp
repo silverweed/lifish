@@ -10,6 +10,7 @@ int main() {
 	std::cout << "connected? " << sf::Joystick::isConnected(0) << std::endl;
 
 	while (true) {
+		sf::Joystick::update();
 		jl.update();
 		if (jl.evtMoved(JoystickListener::Axis::L_UP)) std::cout << "L_UP" << std::endl;
 		if (jl.evtMoved(JoystickListener::Axis::L_DOWN)) std::cout << "L_DOWN" << std::endl;
