@@ -9,6 +9,7 @@
 #include "MusicManager.hpp"
 #include "Bonusable.hpp"
 #include "bonus_type.hpp"
+#include "SaveManager.hpp"
 #include "Player.hpp"
 #include "Controllable.hpp"
 #ifndef RELEASE
@@ -39,13 +40,14 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, sh
 	_initLM(window, startLv);
 }
 
-void GameContext::_initLM(sf::Window& window, short lvnum) {
+void GameContext::_initLM(const sf::Window& window, short lvnum) {
 	if (lvnum > ls.getLevelsNum())
 		lvnum %= ls.getLevelsNum();
 	else while (lvnum <= 0)
 		lvnum += ls.getLevelsNum();
 
 	// Create the players
+	lm.reset();
 	lm.createNewPlayers();
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		auto p = lm.getPlayer(i + 1);
@@ -65,6 +67,12 @@ void GameContext::_initLM(sf::Window& window, short lvnum) {
 
 	// Ensure lm is not paused
 	lm.resume();
+}
+
+void GameContext::loadGame(const lif::SaveData& saveData) {
+	ls.loadFromFile(saveData.levelSet);
+	_initLM(window, saveData.level);
+	lm.loadGame(saveData);
 }
 
 void GameContext::setActive(bool b) {

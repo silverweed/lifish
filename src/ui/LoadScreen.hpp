@@ -7,7 +7,7 @@ namespace lif {
 
 namespace ui {
 
-class LoadScreen : public lif::ui::Screen, protected lif::SaveDataBrowser {
+class LoadScreen : public lif::ui::Screen, public lif::SaveDataBrowser {
 public:
 	explicit LoadScreen(const sf::RenderWindow& window, const sf::Vector2u& size);
 

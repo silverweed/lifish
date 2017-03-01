@@ -50,7 +50,7 @@ bool UI::handleEvent(sf::Window& window, sf::Event event) {
 					newContext = lif::CTX_GAME;
 			} else if (curScreen->isUsingJoystick()) {
 				if (lif::joystick::isButton(
-						lif::joystick::ButtonType::BTN_DOWN, btn.joystickId, btn.button)) 
+						lif::joystick::ButtonType::BTN_DOWN, btn.joystickId, btn.button))
 				{
 					fireClick();
 				} else if (lif::joystick::isButton(
@@ -120,6 +120,10 @@ void UI::fireClick() {
 	case Action::SAVE_GAME:
 		// TODO
 		break;
+	case Action::LOAD_GAME:
+		loadGame = true;
+		newContext = lif::CTX_INTERLEVEL;
+		break;
 	case Action::SWITCH_SCREEN:
 		setCurrent(lif::ui::screenCallbackArg);
 		break;
@@ -143,8 +147,8 @@ void UI::fireClick() {
 void UI::setCurrent(const std::string& name, bool overrideParent) {
 	if (name.length() == 0) return;
 
-	auto oldScreen = curScreen->getName();
-	auto it = screens.find(name);
+	const auto oldScreen = curScreen->getName();
+	const auto it = screens.find(name);
 	if (it == screens.end())
 		throw std::invalid_argument("Screen " + name + " was not loaded!");
 	curScreen = it->second.get();

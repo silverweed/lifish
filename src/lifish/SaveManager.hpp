@@ -2,10 +2,31 @@
 
 #include <string>
 #include <fstream>
+#include "game.hpp"
+#include "conf/player.hpp"
 
 namespace lif {
 
 class LevelManager;
+
+struct PlayerSaveData {
+	int continues;
+	int remainingLives;
+	int life;
+	struct {
+		int bombFuseTime;
+		int bombRadius;
+		int maxBombs;
+	} powers;
+	std::array<bool, lif::conf::player::N_EXTRA_LETTERS> letters;
+	unsigned score;
+};
+
+struct SaveData {
+	std::string levelSet;
+	unsigned short level;
+	std::array<PlayerSaveData, lif::MAX_PLAYERS> players;
+};
 
 /**
  * Serializes the game state into JSON data or
@@ -38,8 +59,7 @@ public:
 
 	/** Loads a game state saved in `filename` into `lm` and `start_level` */
 	// TODO: change this to return something more generic than modifying lm directly
-	static bool loadGame(const std::string& filename,
-			lif::LevelManager& lm, unsigned short& start_level);
+	static lif::SaveData loadGame(const std::string& filename);
 };
 
 }

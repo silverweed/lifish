@@ -12,6 +12,7 @@
 namespace lif {
 
 class Player;
+struct SaveData;
 
 #ifndef RELEASE
 namespace debug {
@@ -49,7 +50,7 @@ private:
 	lif::SidePanel sidePanel;
 	lif::WinLoseHandler wlHandler;
 
-	void _initLM(sf::Window& window, short lvnum);
+	void _initLM(const sf::Window& window, short lvnum);
 #ifndef RELEASE
 	void _printCDStats() const;
 	void _printGameStats() const;
@@ -65,6 +66,8 @@ public:
 	const lif::LevelManager& getLM() const { return lm; }
 	lif::SidePanel& getSidePanel() { return sidePanel; }
 	const lif::SidePanel& getSidePanel() const { return sidePanel; }
+
+	void loadGame(const lif::SaveData& saveData);
 
 	void update() override;
 	bool handleEvent(sf::Window& window, sf::Event evt) override;

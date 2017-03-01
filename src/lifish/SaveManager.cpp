@@ -57,53 +57,34 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 	return true;
 }
 
-bool SaveManager::loadGame(const std::string& filename, 
-		lif::LevelManager& lr, unsigned short& start_level)
-{
+lif::SaveData SaveManager::loadGame(const std::string& filename) {
+	SaveData data;
 	std::ifstream saveFile(filename);
 
 	try {
 		nlohmann::json load = nlohmann::json::parse(saveFile);
 		
-		// TODO: levelset name
-		start_level = load["level"];
-		
-		const auto& players = lr.players;
-		for (unsigned i = 0; i < players.size(); ++i) {
-			const auto& player = players[i];
-			const auto pldata = load["players"][i];
-			// Continues
-			lif::playerContinues[i] = pldata["continues"];
-
-			// Remaining Lives
-			player->setRemainingLives(pldata["remainingLives"]);
-
-			// Current health
-			player->get<lif::Lifed>()->setLife(pldata["life"]);
-
-			// Powers
-			const auto powdata = pldata["powers"];
-			/// Bomb fuse time (in ms)
-			player->setBombFuseTime(sf::milliseconds(powdata["bombFuseTime"]));
-
-			/// Bomb radius
-			player->setBombRadius(powdata["bombRadius"]);
-
-			/// Max bombs
-			player->setMaxBombs(powdata["maxBombs"]);
-
-			// Letters
-			const auto exdata = pldata["extra"];
-			for (unsigned j = 0; j < lif::conf::player::N_EXTRA_LETTERS; ++j)
-				player->setExtra(j, pldata["extra"]);
-
-			// Score
-			lif::score[i] = pldata["score"];
+		data.levelSet = load["levelSet"];
+		data.level = load["level"];
+		for (unsigned i = 0; i < data.players.size(); ++i) {
+			auto& player = data.players[i];
+			const auto& pldata = load["players"][i];
+			player.continues = pldata["continues"];
+			player.remainingLives = pldata["remainingLives"];
+			player.life = pldata["life"];
+			player.score = pldata["score"];
+			const auto& powdata = pldata["powers"];
+			player.powers.bombRadius = powdata["bombRadius"];
+			player.powers.bombFuseTime = powdata["bombFuseTime"];
+			player.powers.maxBombs = powdata["maxBombs"];
+			const auto& exdata = pldata["extra"];
+			for (unsigned j = 0; j < player.letters.size(); ++j)
+				player.letters[j] = exdata[j];
 		}
+		// TODO add validation
 	} catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
-		return false;
 	}
 
-	return true;
+	return data;
 }

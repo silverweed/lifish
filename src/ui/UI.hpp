@@ -4,8 +4,11 @@
 #include <unordered_map>
 #include <SFML/Graphics.hpp>
 #include "WindowContext.hpp"
+#include "LoadScreen.hpp"
 
 namespace lif {
+
+struct SaveData;
 
 namespace ui {
 
@@ -16,6 +19,7 @@ class UI final : public lif::WindowContext {
 	std::unordered_map<std::string, std::unique_ptr<lif::ui::Screen>> screens;
 	lif::ui::Screen *curScreen = nullptr;
 	sf::Vector2u size;
+	bool loadGame = false;
 
 	UI();
 public:
@@ -40,6 +44,12 @@ public:
 	void setCurrent(const std::string& name, bool overrideParent = false);
 	void setCurrentToParent();
 	void fireClick();
+
+	bool mustLoadGame() const { return loadGame; }
+	/** This method can only be safely called after a check that `mustLoadGame() == true`. */
+	const lif::SaveData& getLoadedData() const {
+		return static_cast<lif::ui::LoadScreen*>(curScreen)->getLoadedData();
+	}
 
 	/** UI-specific event loop, to be called when UI is active (instead of the main event loop) */
 	bool handleEvent(sf::Window& window, sf::Event evt) override;

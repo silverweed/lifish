@@ -12,6 +12,7 @@
 
 namespace lif {
 
+struct SaveData;
 class LevelLoader;
 class LevelSet;
 class SaveManager;
@@ -93,6 +94,8 @@ public:
 	const std::shared_ptr<lif::Player> getPlayer(unsigned short id) const;
 	void setPlayer(unsigned short id, std::shared_ptr<lif::Player> player);
 	void removePlayer(unsigned short id);
+
+	void loadGame(const lif::SaveData& saveData);
 
 	const lif::Level* getLevel() const { return level != nullptr ? level.get() : nullptr; }
 	/** Loads `lvnum`-th level from `ls` into this LevelManager. Destroys previous level if any */

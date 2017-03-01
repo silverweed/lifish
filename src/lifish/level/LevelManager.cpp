@@ -13,6 +13,8 @@
 #include "Bomb.hpp"
 #include "Level.hpp"
 #include "Shooting.hpp"
+#include "Lifed.hpp"
+#include "SaveManager.hpp"
 #include "Letter.hpp"
 #include "LevelLoader.hpp"
 #include "Coin.hpp"
@@ -45,6 +47,31 @@ void LevelManager::createNewPlayers(unsigned short n) {
 		players[i] = std::make_shared<lif::Player>(sf::Vector2f(0, 0), i + 1);
 		// Pointers owned by EntityGroup
 		entities.add(players[i]);
+	}
+}
+
+void LevelManager::loadGame(const lif::SaveData& saveData) {
+	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
+		const auto& pdata = saveData.players[i];
+		auto& player = players[i];
+		// Continues
+		lif::playerContinues[i] = pdata.continues;
+		// Remaining Lives
+		player->setRemainingLives(pdata.remainingLives);
+		// Current health
+		player->get<lif::Lifed>()->setLife(pdata.life);
+		// Powers
+		/// Bomb fuse time (in ms)
+		player->setBombFuseTime(sf::milliseconds(pdata.powers.bombFuseTime));
+		/// Bomb radius
+		player->setBombRadius(pdata.powers.bombRadius);
+		/// Max bombs
+		player->setMaxBombs(pdata.powers.maxBombs);
+		// Letters
+		for (unsigned j = 0; j < lif::conf::player::N_EXTRA_LETTERS; ++j)
+			player->setExtra(j, pdata.letters[j]);
+		// Score
+		lif::score[i] = pdata.score;
 	}
 }
 
