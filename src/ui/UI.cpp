@@ -87,6 +87,8 @@ void UI::setOrigin(const sf::Vector2f& pos) {
 }
 
 void UI::update() {
+	quitGame = false;
+	loadGame = false;
 	if (curScreen != nullptr)
 		curScreen->update();
 }
@@ -123,6 +125,10 @@ void UI::fireClick() {
 	case Action::LOAD_GAME:
 		loadGame = true;
 		newContext = lif::CTX_INTERLEVEL;
+		break;
+	case Action::QUIT_TO_HOME:
+		quitGame = true;
+		setCurrent("home");
 		break;
 	case Action::SWITCH_SCREEN:
 		setCurrent(lif::ui::screenCallbackArg);

@@ -256,8 +256,8 @@ void GameContext::_advanceLevel() {
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		auto player = lm.getPlayer(i + 1);
 		if ((player == nullptr || player->get<lif::Killable>()->isKilled())) {
-			if (lif::playerContinues[i] > 0) {
-				--lif::playerContinues[i];
+			if (lm.getPlayerContinues(i + 1) > 0) {
+				lm.decPlayerContinues(i + 1);
 				auto player = std::make_shared<Player>(sf::Vector2f(0, 0), i + 1);
 				player->get<lif::Controllable>()->setWindow(window); 
 				lm.setPlayer(i + 1, player);

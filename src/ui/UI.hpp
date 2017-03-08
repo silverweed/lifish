@@ -19,6 +19,7 @@ class UI final : public lif::WindowContext {
 	std::unordered_map<std::string, std::unique_ptr<lif::ui::Screen>> screens;
 	lif::ui::Screen *curScreen = nullptr;
 	sf::Vector2u size;
+	bool quitGame = false;
 	bool loadGame = false;
 
 	UI();
@@ -45,6 +46,7 @@ public:
 	void setCurrentToParent();
 	void fireClick();
 
+	bool mustQuitGame() const { return quitGame; }
 	bool mustLoadGame() const { return loadGame; }
 	/** This method can only be safely called after a check that `mustLoadGame() == true`. */
 	const lif::SaveData& getLoadedData() const {

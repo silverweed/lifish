@@ -77,5 +77,5 @@ sf::FloatRect ShadedText::getGlobalBounds() const {
 }
 
 std::string ShadedText::getString() const {
-	return fgtext.getString();
+	return fgtext.getString().toAnsiString();
 }

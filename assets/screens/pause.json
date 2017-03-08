@@ -37,7 +37,7 @@
 			},
 			{
 				"type": "text",
-				"name": "home",
+				"name": "quit",
 				"string": "Quit to Menu",
 				"interactable": true
 			},

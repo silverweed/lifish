@@ -57,8 +57,9 @@ public:
 	/** Saves the game state into `filename` */
 	static bool saveGame(const std::string& filename, const lif::LevelManager& lm);
 
-	/** Loads a game state saved in `filename` into `lm` and `start_level` */
-	// TODO: change this to return something more generic than modifying lm directly
+	/** Loads a game state saved in `filename` into `lm` and `start_level`.
+	 *  Save data validation is NOT performed by this method.
+	 */
 	static lif::SaveData loadGame(const std::string& filename);
 };
 

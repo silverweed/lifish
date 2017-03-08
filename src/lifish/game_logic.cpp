@@ -65,9 +65,11 @@ void lif::game_logic::spawningLogic(lif::Entity *e, lif::BaseLevelManager& blm, 
 	}
 }
 
-void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::BaseLevelManager&, EntityList& tbspawned) {
+void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::BaseLevelManager& blm, EntityList& tbspawned) {
 	auto scored = e->get<lif::Scored>();
 	if (scored == nullptr || scored->hasGivenPoints()) return;
+
+	auto& lm = static_cast<lif::LevelManager&>(blm);
 	
 	auto klb = e->get<lif::Killable>();
 	if (klb != nullptr && klb->isKilled()) {
@@ -78,12 +80,10 @@ void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::BaseLevelManager
 		// Give and spawn points
 		auto target = scored->getTarget();
 		if (target < 0) {
-			// give points to all players
-			for (auto& s : lif::score)
-				s += scored->getPointsGiven();
+			lm.addScoreToAll(scored->getPointsGiven());
 			scored->givePoints();
 		} else {
-			lif::score[target - 1] += scored->givePoints();
+			lm.addScore(target, scored->givePoints());
 		}
 		auto points = is_boss
 			? new lif::Points(e->getPosition(), scored->getPointsGiven(), sf::Color::Magenta, 30)
@@ -109,7 +109,7 @@ void lif::game_logic::bonusGrabLogic(lif::Entity *e, lif::BaseLevelManager& blm,
 	auto player = grb->getGrabbingEntity();
 	if (player == nullptr) return;
 	
-	lif::triggerBonus(blm, bonus->getType(), *static_cast<lif::Player*>(player));
+	lif::triggerBonus(static_cast<lif::LevelManager&>(blm), bonus->getType(), *static_cast<lif::Player*>(player));
 	grb->grab();
 }
 

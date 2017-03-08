@@ -12,7 +12,8 @@ enum class Action {
 	SWITCH_SCREEN_OVERRIDE_PARENT,
 	SWITCH_TO_PARENT,
 	DEACTIVATE_UI,
-	EXIT,
+	QUIT_TO_HOME, // terminate game, switch to main menu
+	EXIT, // terminate game and exit
 	DO_NOTHING
 };
 

@@ -63,6 +63,11 @@ class LevelManager final : public lif::BaseLevelManager, public sf::Drawable {
 	 *  5) the players are then readded to the EntityGroup.
 	 */
 	std::array<std::shared_ptr<lif::Player>, lif::MAX_PLAYERS> players;
+	/** The players' score */
+	std::array<int, MAX_PLAYERS> score;
+	/** The remaining 'continues' per player */
+	std::array<short, MAX_PLAYERS> playerContinues;
+
 
 	/** Unowned references to bombs currently deployed by players */
 	Matrix<std::weak_ptr<lif::Bomb>, lif::MAX_PLAYERS, lif::conf::player::MAX_MAX_BOMBS> bombs;
@@ -95,6 +100,15 @@ public:
 	void setPlayer(unsigned short id, std::shared_ptr<lif::Player> player);
 	void removePlayer(unsigned short id);
 
+	/** Adds `amt` points to player `id`'s score and returns new score (id starts from 1) */
+	int addScore(unsigned short id, int amt);
+	void addScoreToAll(int amt);
+	int getScore(unsigned short id) const;
+
+	short getPlayerContinues(unsigned short id) const;
+	void setPlayerContinues(unsigned short id, short amt);
+	void decPlayerContinues(unsigned short id);
+
 	void loadGame(const lif::SaveData& saveData);
 
 	const lif::Level* getLevel() const { return level != nullptr ? level.get() : nullptr; }
@@ -121,6 +135,8 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void update() override;
 	void reset() override;
+	/** Resets player continues and score */
+	void resetPlayerPersistentData();
 };
 
 }

@@ -1,5 +1,5 @@
 #include "bonus_type.hpp"
-#include "BaseLevelManager.hpp"
+#include "LevelManager.hpp"
 #include "Player.hpp"
 #include "Lifed.hpp"
 #include "BreakableWall.hpp"
@@ -40,7 +40,7 @@ std::string lif::bonusToString(lif::BonusType type) {
 	return "Unknown Bonus";
 }
 
-void lif::triggerBonus(lif::BaseLevelManager& lm, lif::BonusType type, lif::Player& player) {
+void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& player) {
 	const auto powers = player.getInfo().powers;
 
 	switch (type) {
@@ -66,7 +66,7 @@ void lif::triggerBonus(lif::BaseLevelManager& lm, lif::BonusType type, lif::Play
 		player.setIncendiaryBomb(true);
 		break;
 	case B::ZAPPER:
-		lm.getEntities().apply([] (lif::Entity *e) {
+		lm.getEntities().apply([&lm] (lif::Entity *e) {
 			auto brk = dynamic_cast<lif::BreakableWall*>(e);
 			if (brk == nullptr) return;
 
@@ -75,12 +75,12 @@ void lif::triggerBonus(lif::BaseLevelManager& lm, lif::BonusType type, lif::Play
 
 			const auto score = brk->get<lif::Scored>()->getPointsGiven();
 			klb->kill();
-			for (unsigned i = 0; i < lif::score.size(); ++i)
-				lif::score[i] += score;
+			for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i)
+				lm.addScore(i + 1, score);
 		});
 		break;
 	case B::SUDDEN_DEATH:
-		lm.getEntities().apply([] (lif::Entity *e) {
+		lm.getEntities().apply([&lm] (lif::Entity *e) {
 			auto enemy = dynamic_cast<lif::Enemy*>(e);
 			if (enemy == nullptr) return;
 
@@ -89,8 +89,8 @@ void lif::triggerBonus(lif::BaseLevelManager& lm, lif::BonusType type, lif::Play
 
 			const auto score = enemy->get<lif::Scored>()->getPointsGiven();
 			klb->kill();
-			for (unsigned i = 0; i < lif::score.size(); ++i)
-				lif::score[i] += score;
+			for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i)
+				lm.addScore(i + 1, score);
 		});
 		break;
 	case B::HEALTH_FULL:

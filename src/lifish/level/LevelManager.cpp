@@ -23,6 +23,7 @@
 #include "LevelSet.hpp"
 #include "core.hpp"
 #include <memory>
+#include <cassert>
 
 using lif::LevelManager;
 
@@ -37,6 +38,7 @@ LevelManager::LevelManager()
 	, levelTime(new lif::LevelTime)
 {
 	reset();
+	resetPlayerPersistentData();
 	for (auto logic : lif::game_logic::functions)
 		logicFunctions.push_back(logic);
 }
@@ -51,11 +53,12 @@ void LevelManager::createNewPlayers(unsigned short n) {
 }
 
 void LevelManager::loadGame(const lif::SaveData& saveData) {
+	// TODO validate saveData
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		const auto& pdata = saveData.players[i];
 		auto& player = players[i];
 		// Continues
-		lif::playerContinues[i] = pdata.continues;
+		playerContinues[i] = pdata.continues;
 		// Remaining Lives
 		player->setRemainingLives(pdata.remainingLives);
 		// Current health
@@ -71,7 +74,7 @@ void LevelManager::loadGame(const lif::SaveData& saveData) {
 		for (unsigned j = 0; j < lif::conf::player::N_EXTRA_LETTERS; ++j)
 			player->setExtra(j, pdata.letters[j]);
 		// Score
-		lif::score[i] = pdata.score;
+		score[i] = pdata.score;
 	}
 }
 
@@ -146,6 +149,11 @@ void LevelManager::reset() {
 	hurryUp = hurryUpWarningGiven = false;
 	extraGameTriggered = extraGame = false;
 	gameOver = false;
+}
+
+void LevelManager::resetPlayerPersistentData() {
+	score.fill(0);
+	playerContinues.fill(lif::conf::player::INITIAL_CONTINUES);
 }
 
 bool LevelManager::canDeployBombAt(const sf::Vector2i& tile) const {
@@ -347,3 +355,33 @@ bool LevelManager::canGo(const lif::AxisMoving& am, const lif::Direction dir) co
 	return true;
 }
 
+
+int LevelManager::addScore(unsigned short id, int amt) {
+	assert(0 < id && id <= lif::MAX_PLAYERS);
+	return score[id - 1] = std::max(0, score[id - 1] + amt);
+}
+
+void LevelManager::addScoreToAll(int amt) {
+	for (auto& s : score)
+		s = std::max(0, s + amt);
+}
+
+int LevelManager::getScore(unsigned short id) const {
+	assert(0 < id && id <= lif::MAX_PLAYERS);
+	return score[id - 1];
+}
+
+short LevelManager::getPlayerContinues(unsigned short id) const {
+	assert(0 < id && id <= lif::MAX_PLAYERS);
+	return playerContinues[id - 1];
+}
+
+void LevelManager::decPlayerContinues(unsigned short id) {
+	assert(0 < id && id <= lif::MAX_PLAYERS);
+	--playerContinues[id - 1];
+}
+
+void LevelManager::setPlayerContinues(unsigned short id, short amt) {
+	assert(0 < id && id <= lif::MAX_PLAYERS);
+	playerContinues[id - 1] = amt;
+}

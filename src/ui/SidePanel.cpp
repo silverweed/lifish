@@ -199,7 +199,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 
 			// Draw score
 			ss.str("");
-			ss << std::setfill('0') << std::setw(7) << lif::score[i];
+			ss << std::setfill('0') << std::setw(7) << lm.getScore(i + 1);
 			pos.x = SCORE_POS_X;
 			pos.y = i == 0 ? SCORE_POS_Y_1 : SCORE_POS_Y_2;
 			lif::ShadedText scoreText(

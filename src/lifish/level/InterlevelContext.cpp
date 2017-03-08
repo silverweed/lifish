@@ -86,7 +86,8 @@ void InterlevelContext::_setPromptContinue() {
 	mustPromptPlayer.fill(false);
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		const auto player = lm.getPlayer(i + 1);
-		if ((player == nullptr || player->get<lif::Killable>()->isKilled()) && lif::playerContinues[i] > 0) {
+		if ((player == nullptr || player->get<lif::Killable>()->isKilled())
+				&& lm.getPlayerContinues(i + 1) > 0) {
 			mustPromptPlayer[i] = true;	
 		}
 	}
@@ -105,7 +106,7 @@ void InterlevelContext::_setPromptContinue() {
 void InterlevelContext::_preparePromptContinue(unsigned short idx) {
 	curPromptedPlayer = idx;
 	centralText.setString("P" + lif::to_string(idx+1) + " CONTINUE? (" 
-			+ lif::to_string(lif::playerContinues[idx]) + " left)");
+			+ lif::to_string(lm.getPlayerContinues(idx + 1)) + " left)");
 	auto bounds = centralText.getGlobalBounds();
 	centralText.setPosition(lif::center(bounds, WIN_BOUNDS));
 	subtitleText.setString("/");
@@ -196,7 +197,7 @@ void InterlevelContext::_ackPromptResponse() {
 	// to check if the player has spare continues, and will resurrect it if so.
 	// Otherwise, zero its continues so it won't be resurrected.
 	if (!yesSelected)
-		lif::playerContinues[curPromptedPlayer] = 0;
+		lm.setPlayerContinues(curPromptedPlayer + 1, 0);
 	do {
 		++curPromptedPlayer;
 	} while (!mustPromptPlayer[curPromptedPlayer] && curPromptedPlayer < mustPromptPlayer.size());
@@ -259,6 +260,6 @@ void InterlevelContext::_givePoints(int amount) {
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		auto player = lm.getPlayer(i + 1);
 		if (player != nullptr)
-			lif::score[i] += amount;
+			lm.addScore(i + 1, amount);
 	}
 }

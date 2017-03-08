@@ -3,7 +3,7 @@
 using lif::joystick::JoystickManager;
 
 JoystickManager::JoystickManager()
-	: listeners({
+	: listeners({{
 		JoystickListener(0),
 		JoystickListener(1),
 		JoystickListener(2),
@@ -12,7 +12,7 @@ JoystickManager::JoystickManager()
 		JoystickListener(5),
 		JoystickListener(6),
 		JoystickListener(7)
-	})
+	}})
 {}
 
 void JoystickManager::update() {

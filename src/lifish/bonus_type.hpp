@@ -4,7 +4,7 @@
 
 namespace lif {
 
-class BaseLevelManager;
+class LevelManager;
 class Player;
 
 enum class BonusType {
@@ -23,6 +23,6 @@ enum class BonusType {
 };
 
 std::string bonusToString(lif::BonusType type);
-void triggerBonus(lif::BaseLevelManager& lm, lif::BonusType type, lif::Player& player);
+void triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& player);
 
 }

@@ -83,12 +83,6 @@ constexpr auto TIME_BONUS_SOUND  = "timebonus.ogg";
 /*                         GLOBAL VARIABLES                                 */
 /****************************************************************************/
 
-/** The players' score */
-extern std::array<unsigned int, MAX_PLAYERS> score;
-
-/** The remaining of 'continues' per player */
-extern std::array<unsigned short, MAX_PLAYERS> playerContinues;
-
 bool init();
 
 std::string game_info();

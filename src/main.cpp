@@ -262,6 +262,9 @@ int main(int argc, char **argv) {
 		
 		cur_context->handleEvents(window);
 
+		if (cur_context == &ui && ui.mustQuitGame())
+			game.reset();
+
 		// Check context switch
 		const int nc = cur_context->getNewContext();
 		if (nc >= 0) {

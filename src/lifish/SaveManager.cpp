@@ -9,24 +9,24 @@
 
 using lif::SaveManager;
 
-bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager& lr) {
+bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager& lm) {
 	std::ofstream saveFile(filename);
 
 	nlohmann::json save;
 
 	// Current levelset
-	save["levelSet"] = lr.getLevel()->getLevelSet().getMeta("name");
+	save["levelSet"] = lm.getLevel()->getLevelSet().getMeta("name");
 	// Current level
-	save["level"] = lr.getLevel()->getInfo().levelnum;
+	save["level"] = lm.getLevel()->getInfo().levelnum;
 	
-	const auto& players = lr.players;
+	const auto& players = lm.players;
 	for (unsigned i = 0; i < players.size(); ++i) {
 		const auto& player = players[i];
 		if (player == nullptr) {
 			// Only save the score
 			save["players"][i] = {
 				{ "continues", 0 },
-				{ "score", lif::score[i] }
+				{ "score", lm.getScore(i + 1) }
 			};
 			continue;
 		}
@@ -34,7 +34,7 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 		const auto powers = player->getInfo().powers;
 		const auto info = player->getInfo();
 		save["players"][i] = {
-			{ "continues", lif::playerContinues[i] },
+			{ "continues", lm.getPlayerContinues(i + 1) },
 			{ "remainingLives", info.remainingLives },
 			{ "life", player->get<lif::Lifed>()->getLife() },
 			{ "powers",
@@ -44,7 +44,7 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 					{ "maxBombs",     powers.maxBombs }
 				}
 			},
-			{ "score", lif::score[i] }
+			{ "score", lm.getScore(i + 1) }
 		};
 
 		// Letters
@@ -81,7 +81,6 @@ lif::SaveData SaveManager::loadGame(const std::string& filename) {
 			for (unsigned j = 0; j < player.letters.size(); ++j)
 				player.letters[j] = exdata[j];
 		}
-		// TODO add validation
 	} catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
 	}
