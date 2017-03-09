@@ -28,17 +28,13 @@ std::set<lif::Entity*> LevelEffects::getEffectEntities(const lif::Level& level) 
 	return entities;
 }
 
-void LevelEffects::blendEffects(const lif::LevelManager& lm, sf::RenderTarget& window,
-		const sf::Vector2f& origin) const
-{
+void LevelEffects::blendEffects(const lif::LevelManager& lm, sf::RenderTarget& window) const {
 	if (darknessOn) {
-		_blendDarkness(lm, window, origin);
+		_blendDarkness(lm, window);
 	}
 }
 
-void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget& window,
-		const sf::Vector2f& origin) const
-{
+void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget& window) const {
 	darknessRenderTex.clear(sf::Color::Black);
 
 	// Calculate visibility rectangles for players
@@ -58,7 +54,7 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 	}
 	
 	// Calculate visibility circles for light sources
-	lm.getEntities().apply([this, origin] (const lif::Entity *e) {
+	lm.getEntities().apply([this] (const lif::Entity *e) {
 		const auto source = e->get<lif::LightSource>();
 		if (source == nullptr) return;
 		const float radius = source->getRadius();
@@ -76,7 +72,6 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 
 	sf::Sprite darkSprite(darknessRenderTex.getTexture());
 	darkSprite.setPosition(TILE_SIZE, TILE_SIZE);
-	darkSprite.setOrigin(origin);
 	window.draw(darkSprite, sf::BlendMultiply);
 }
 

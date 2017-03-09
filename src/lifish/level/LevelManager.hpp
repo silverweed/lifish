@@ -118,8 +118,6 @@ public:
 	void setNextLevel();
 
 	const lif::LevelTime& getLevelTime() const { return *levelTime; }
-	const lif::LevelEffects& getLevelEffects() const { return effects; }
-	lif::LevelEffects& getLevelEffects() { return effects; }
 
 	bool isGameOver() const { return gameOver; }
 	bool isLevelClear() const;

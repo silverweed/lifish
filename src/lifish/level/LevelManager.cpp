@@ -115,6 +115,7 @@ const std::shared_ptr<lif::Player> LevelManager::getPlayer(unsigned short id) co
 
 void LevelManager::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	renderer.draw(target, states);
+	effects.blendEffects(*this, target);
 }
 
 void LevelManager::setNextLevel() {
