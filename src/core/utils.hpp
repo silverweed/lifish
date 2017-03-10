@@ -56,12 +56,12 @@ inline sf::Vector2f aligned(const sf::Vector2f& pos) {
 }
 
 template<typename T>
-constexpr std::ostream& operator<<(std::ostream& stream, const sf::Vector2<T>& vec) {
+constexpr std::ostream& operator<<(std::ostream& stream, sf::Vector2<T> vec) {
 	return stream << "(" << vec.x << ", " << vec.y << ")";
 }
 
 template<typename T>
-constexpr std::ostream& operator<<(std::ostream& stream, const sf::Rect<T>& rect) {
+constexpr std::ostream& operator<<(std::ostream& stream, sf::Rect<T> rect) {
 	return stream << "(" << rect.left << ", " << rect.top 
 		<< " x " << rect.width << ", " << rect.height << ")";
 }
@@ -73,12 +73,12 @@ inline std::ostream& operator<<(std::ostream& stream, const sf::RectangleShape& 
 }
 
 template<typename T, typename R>
-constexpr double sqrDistance(const sf::Vector2<T>& a, const sf::Vector2<R>& b) {
+constexpr double sqrDistance(sf::Vector2<T> a, sf::Vector2<R> b) {
 	return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
 }
 
 template<typename T, typename R>
-constexpr T manhattanDistance(const sf::Vector2<T>& tileA, const sf::Vector2<R>& tileB) {
+constexpr T manhattanDistance(sf::Vector2<T> tileA, sf::Vector2<R> tileB) {
 	return lif::abs(tileA.x - tileB.x) + lif::abs(tileA.y - tileB.y);
 }
 
@@ -86,7 +86,7 @@ constexpr T manhattanDistance(const sf::Vector2<T>& tileA, const sf::Vector2<R>&
  *  order to be horizontally centered relatively to `outerBounds`.
  */
 template<typename T, typename R>
-constexpr float centerX(const sf::Rect<T>& innerBounds, const sf::Rect<R>& outerBounds) {
+constexpr float centerX(sf::Rect<T> innerBounds, sf::Rect<R> outerBounds) {
 	return outerBounds.left + (outerBounds.width - innerBounds.width) / 2.;
 }
 
@@ -94,7 +94,7 @@ constexpr float centerX(const sf::Rect<T>& innerBounds, const sf::Rect<R>& outer
  *  order to be vertically centered relatively to `outerBounds`.
  */
 template<typename T, typename R>
-constexpr float centerY(const sf::Rect<T>& innerBounds, const sf::Rect<R>& outerBounds) {
+constexpr float centerY(sf::Rect<T> innerBounds, sf::Rect<R> outerBounds) {
 	return outerBounds.top + (outerBounds.height - innerBounds.height) / 2.;
 }
 

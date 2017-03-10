@@ -3,6 +3,7 @@
 #include "Interactable.hpp"
 #include "JoystickManager.hpp"
 #include "core.hpp"
+#include "utils.hpp"
 #include "GameCache.hpp"
 
 using lif::ui::Screen;
@@ -45,7 +46,7 @@ bool Screen::handleEvent(sf::Window&, sf::Event event) {
 		usingJoystick = true;
 		return false;
 	case sf::Event::MouseMoved:
-		if (_getMouseShift(event.mouseMove.x, event.mouseMove.y) > 300) {
+		if (lif::sqrDistance(sf::Vector2i(event.mouseMove.x, event.mouseMove.y), latestMousePos) > 300) {
 			_saveMousePos(event.mouseMove.x, event.mouseMove.y);
 			usingJoystick = false;
 			return false;
@@ -142,11 +143,7 @@ select_begin:
 		selected.second->setColor(sf::Color::Red);
 }
 
-int Screen::_getMouseShift(int x, int y) const {
-	return (latestMouseX - x) * (latestMouseX - x) + (latestMouseY - y) * (latestMouseY - y);
-}
-
 void Screen::_saveMousePos(int x, int y) {
-	latestMouseX = x;
-	latestMouseY = y;
+	latestMousePos.x = x;
+	latestMousePos.y = y;
 }

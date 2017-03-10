@@ -24,10 +24,8 @@ public:
 private:
 	friend class lif::ui::ScreenBuilder;
 
-	int latestMouseX = 0,
-	    latestMouseY = 0;
+	sf::Vector2i latestMousePos;
 
-	int _getMouseShift(int x, int y) const;
 	void _saveMousePos(int x, int y);
 
 protected:

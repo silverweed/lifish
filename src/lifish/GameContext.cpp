@@ -178,6 +178,49 @@ void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const 
 	window.draw(sidePanelSprite, states);
 }
 
+void GameContext::_advanceLevel() {
+	const auto level = lm.getLevel();
+	if (level == nullptr)
+		throw std::logic_error("Called _advanceLevel on null level!");
+	short lvnum = level->getInfo().levelnum;
+	const auto& ls = level->getLevelSet();
+
+	if (lvnum == ls.getLevelsNum()) {
+		// TODO game won
+		//return;
+	}
+
+	// Resurrect any dead player which has a 'continue' left and
+	// remove temporary effects
+	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
+		auto player = lm.getPlayer(i + 1);
+		if ((player == nullptr || player->get<lif::Killable>()->isKilled())) {
+			if (lm.getPlayerContinues(i + 1) > 0) {
+				lm.decPlayerContinues(i + 1);
+				auto player = std::make_shared<Player>(sf::Vector2f(0, 0), i + 1);
+				player->get<lif::Controllable>()->setWindow(window); 
+				lm.setPlayer(i + 1, player);
+			} else {
+				lm.removePlayer(i + 1);
+			}
+		} else if (player != nullptr) {
+			auto bns = player->get<lif::Bonusable>();
+			bns->expireTemporaryBonuses();
+		}
+	}
+
+	lm.setNextLevel();
+	{
+		const auto level = lm.getLevel();
+		if (level == nullptr)
+			throw std::logic_error("No levels found after " + lif::to_string(lvnum) 
+					+ " but end game not triggered!");
+		lif::musicManager->set(level->get<lif::Music>()->getMusic())
+			.setVolume(lif::options.musicVolume)
+			.play();
+	}
+}
+
 #ifndef RELEASE
 void GameContext::toggleDebug(unsigned int flag) {
 	debug ^= 1 << flag;
@@ -236,46 +279,3 @@ void GameContext::_printGameStats() const {
 	std::cerr.flags(flags);
 }
 #endif
-
-void GameContext::_advanceLevel() {
-	const auto level = lm.getLevel();
-	if (level == nullptr)
-		throw std::logic_error("Called _advanceLevel on null level!");
-	short lvnum = level->getInfo().levelnum;
-	const auto& ls = level->getLevelSet();
-
-	if (lvnum == ls.getLevelsNum()) {
-		// TODO game won
-		//return;
-	}
-
-	// Resurrect any dead player which has a 'continue' left and
-	// remove temporary effects
-	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
-		auto player = lm.getPlayer(i + 1);
-		if ((player == nullptr || player->get<lif::Killable>()->isKilled())) {
-			if (lm.getPlayerContinues(i + 1) > 0) {
-				lm.decPlayerContinues(i + 1);
-				auto player = std::make_shared<Player>(sf::Vector2f(0, 0), i + 1);
-				player->get<lif::Controllable>()->setWindow(window); 
-				lm.setPlayer(i + 1, player);
-			} else {
-				lm.removePlayer(i + 1);
-			}
-		} else if (player != nullptr) {
-			auto bns = player->get<lif::Bonusable>();
-			bns->expireTemporaryBonuses();
-		}
-	}
-
-	lm.setNextLevel();
-	{
-		const auto level = lm.getLevel();
-		if (level == nullptr)
-			throw std::logic_error("No levels found after " + lif::to_string(lvnum) 
-					+ " but end game not triggered!");
-		lif::musicManager->set(level->get<lif::Music>()->getMusic())
-			.setVolume(lif::options.musicVolume)
-			.play();
-	}
-}
