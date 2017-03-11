@@ -7,7 +7,7 @@ APPNAME=Lifish
 MACOS=(lifish)
 RESOURCES=(assets levels.json)
 FRAMEWORK_PATH=/Library/Frameworks
-FRAMEWORKS=(SFML.framework)
+FRAMEWORKS=({FLAC,ogg,freetype,OpenAL,vorbis{,enc,file},sfml-{window,graphics,system}}.framework)
 
 for i in ${MACOS[@]} ${RESOURCES[@]}; do
 	[[ -e $i ]] || {
@@ -61,3 +61,6 @@ cp osx/Lifish.icns Lifish.app/Contents/Resources/.
 pushd "$APPNAME.app"/Contents/MacOS
 ln -s ../Resources/assets
 ln -s ../Resources/levels.json
+
+popd
+find "$APPNAME.app" -type f -exec install_name_tool -add_rpath "@executable_path/../Frameworks" {} \; 2>&1 | grep -v "not a Mach-O"
