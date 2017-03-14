@@ -31,15 +31,15 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	: lif::Entity(pos)
 	, id(_id)
 {
-	addComponent(std::make_shared<lif::Scored>(*this, 100));
-	addComponent(std::make_shared<lif::Sounded>(*this, lif::Sounded::SoundList { 
+	addComponent<lif::Scored>(*this, 100);
+	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList { 
 		std::make_pair("grab", lif::getAsset("test", "letter_grab.ogg")) 
-	}));
-	transitionClock = addComponent(std::make_shared<lif::Clock>(*this));
-	animated = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("test", "extra_letters.png")));
-	addComponent(std::make_shared<lif::Drawable>(*this, *animated));
-	addComponent(std::make_shared<lif::Killable>(*this));
-	addComponent(std::make_shared<lif::Collider>(*this, [this] (lif::Collider& coll) {
+	});
+	transitionClock = addComponent<lif::Clock>(*this);
+	animated = addComponent<lif::Animated>(*this, lif::getAsset("test", "extra_letters.png"));
+	addComponent<lif::Drawable>(*this, *animated);
+	addComponent<lif::Killable>(*this);
+	addComponent<lif::Collider>(*this, [this] (lif::Collider& coll) {
 		if (coll.getLayer() != lif::c_layers::PLAYERS || grabbable->isGrabbed())
 			return;
 		get<lif::Killable>()->kill();			
@@ -50,8 +50,8 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 		// Give letter to player
 		auto& player = static_cast<lif::Player&>(coll.getOwnerRW());
 		player.setExtra(id, true);
-	}));
-	grabbable = addComponent(std::make_shared<lif::Grabbable>(*this));
+	});
+	grabbable = addComponent<lif::Grabbable>(*this);
 
 	// Letters are indexed 0 to N_EXTRA_LETTERS - 1.
 	if (id > N_EXTRA_LETTERS - 1) 

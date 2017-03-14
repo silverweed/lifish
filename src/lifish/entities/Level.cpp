@@ -29,10 +29,10 @@ lif::Entity* Level::init() {
 	if (!_setTilemap(levelInfo.tilemap))
 		return nullptr;
 
-	addComponent(std::make_shared<lif::Music>(*this, levelInfo.track));
+	addComponent<lif::Music>(*this, levelInfo.track);
 	_loadTextures();
 
-	levelnumtext = addComponent(std::make_shared<lif::LevelNumText>(*this, levelInfo.levelnum));
+	levelnumtext = addComponent<lif::LevelNumText>(*this, levelInfo.levelnum);
 
 	initialized = true;
 

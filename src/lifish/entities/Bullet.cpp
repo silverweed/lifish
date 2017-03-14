@@ -21,15 +21,15 @@ Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif:
 	, data(lif::conf::bullet::data[info.id])
 	, source(source)
 {
-	addComponent(std::make_shared<lif::Sounded>(*this, lif::Sounded::SoundList {
+	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("hit", lif::getAsset("test", std::string("bullet")
 					+ lif::to_string(info.id) + std::string("_hit.ogg"))),
 		std::make_pair("shot", lif::getAsset("test", std::string("bullet")
 					+ lif::to_string(info.id) + std::string("_shot.ogg")))
-	}));
-	addComponent(std::make_shared<lif::ZIndexed>(*this, lif::conf::zindex::BULLETS));
+	});
+	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::BULLETS);
 
-	addComponent(std::make_shared<lif::Temporary>(*this, [this] () {
+	addComponent<lif::Temporary>(*this, [this] () {
 		// expire condition
 		return dealtDamage
 			|| (info.range > 0 && get<lif::Moving>()->getDistTravelled() > info.range)
@@ -42,7 +42,7 @@ Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif:
 		// is kill in progress
 		const auto& animatedSprite = get<lif::Animated>()->getSprite();
 		return animatedSprite.isPlaying();
-	}));
+	});
 }
 
 lif::Entity* Bullet::init() {

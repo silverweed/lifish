@@ -20,7 +20,7 @@ Shooting::Shooting(lif::Entity& owner, const Attack& attack)
 {
 	_declComponent<Shooting>();
 	position = owner.getPosition();
-	rechargeClock = addComponent(std::make_shared<lif::Clock>(*this));
+	rechargeClock = addComponent<lif::Clock>(*this);
 }
 
 lif::Entity* Shooting::init() {

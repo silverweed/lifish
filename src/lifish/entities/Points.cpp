@@ -22,12 +22,12 @@ Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color,
 	text.setCharacterSize(charSize);
 	text.setShadowSpacing(1.5, 1);
 
-	addComponent(std::make_shared<lif::AxisMoving>(*this, SPEED, lif::Direction::UP));
-	addComponent(std::make_shared<lif::Drawable>(*this, text));
-	addComponent(std::make_shared<lif::ZIndexed>(*this, lif::conf::zindex::POINTS));
-	addComponent(std::make_shared<lif::Temporary>(*this, [this] () {
+	addComponent<lif::AxisMoving>(*this, SPEED, lif::Direction::UP);
+	addComponent<lif::Drawable>(*this, text);
+	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::POINTS);
+	addComponent<lif::Temporary>(*this, [this] () {
 		return (initialPos - position).y >= 20;
-	}));
+	});
 }
 
 Points::Points(const sf::Vector2f& pos, int pts, sf::Color color, unsigned short charSize) 

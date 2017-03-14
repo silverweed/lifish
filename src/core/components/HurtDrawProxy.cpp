@@ -9,7 +9,7 @@ HurtDrawProxy::HurtDrawProxy(lif::Entity& owner)
 	: lif::Component(owner)
 {
 	_declComponent<HurtDrawProxy>();
-	hurtClock = addComponent(std::make_shared<lif::Clock>(*this));
+	hurtClock = addComponent<lif::Clock>(*this);
 	hurtClock->add(lif::conf::HURT_TIME);
 }
 

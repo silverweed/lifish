@@ -11,7 +11,7 @@ Animated::Animated(lif::Entity& owner, const std::string& texture_name)
 {
 	_declComponent<Animated>();
 	texture = lif::cache.loadTexture(texture_name);
-	frameClock = addComponent(std::make_shared<lif::Clock>(*this));
+	frameClock = addComponent<lif::Clock>(*this);
 }
 
 Animation& Animated::addAnimation(const std::string& name) {

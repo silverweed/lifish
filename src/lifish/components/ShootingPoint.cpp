@@ -9,9 +9,9 @@ ShootingPoint::ShootingPoint(lif::Entity& owner, const lif::Attack& attack, floa
 	: lif::Spawning(owner)
 {
 	_declComponent<ShootingPoint>();
-	addComponent(std::make_shared<lif::FreeSighted>(*this, visionRadius));
-	addComponent(std::make_shared<lif::Shooting>(*this, attack));
-	autoShooting = addComponent(std::make_shared<lif::AutoShooting>(*this));
+	addComponent<lif::FreeSighted>(*this, visionRadius);
+	addComponent<lif::Shooting>(*this, attack);
+	autoShooting = addComponent<lif::AutoShooting>(*this);
 }
 
 bool ShootingPoint::shouldSpawn() const {

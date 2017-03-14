@@ -8,8 +8,8 @@ LevelTime::LevelTime(sf::Time time)
 	: lif::Entity()
 	, initialTime(time)
 {
-	clock = addComponent(std::make_shared<lif::Clock>(*this)); 
-	extraGameClock = addComponent(std::make_shared<lif::Clock>(*this)); 
+	clock = addComponent<lif::Clock>(*this); 
+	extraGameClock = addComponent<lif::Clock>(*this); 
 }
 
 sf::Time LevelTime::getRemainingTime() const {

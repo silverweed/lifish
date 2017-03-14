@@ -15,8 +15,8 @@ AlienSprite::AlienSprite(lif::Entity& owner)
 	: lif::Component(owner)
 {
 	_declComponent<AlienSprite>();
-	animated = addComponent(std::make_shared<lif::Animated>(owner, lif::getAsset("test", "aliensprite.png")));
-	addComponent(std::make_shared<lif::Drawable>(*this, *animated));
+	animated = addComponent<lif::Animated>(owner, lif::getAsset("test", "aliensprite.png"));
+	addComponent<lif::Drawable>(*this, *animated);
 
 	auto& a_down = animated->addAnimation("walk_down");
 	auto& a_up = animated->addAnimation("walk_up");
@@ -53,7 +53,6 @@ AlienSprite::AlienSprite(lif::Entity& owner)
 
 lif::Entity* AlienSprite::init() {
 	lif::Component::init();
-	movingAnimator = addComponent(std::make_shared<lif::MovingAnimator>(*this,
-				owner.get<lif::AxisMoving>(), animated));
+	movingAnimator = addComponent<lif::MovingAnimator>(*this, owner.get<lif::AxisMoving>(), animated);
 	return this;
 }

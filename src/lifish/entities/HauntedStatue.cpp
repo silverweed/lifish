@@ -17,7 +17,7 @@ using lif::HauntedStatue;
 using lif::TILE_SIZE;
 
 HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : lif::Entity(pos) {
-	animated = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("graphics", "haunted_statue.png")));
+	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "haunted_statue.png"));
 	animated->addAnimation("death", {
 		sf::IntRect(0 * TILE_SIZE, 0, TILE_SIZE, 2 * TILE_SIZE),
 		sf::IntRect(1 * TILE_SIZE, 0, TILE_SIZE, 2 * TILE_SIZE),
@@ -30,7 +30,7 @@ HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : lif::Entity(pos) {
 	animatedSprite.setFrameTime(sf::seconds(0.2));
 	animatedSprite.pause();
 
-	spirit = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("graphics", "haunted_statue_spirit.png")));
+	spirit = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "haunted_statue_spirit.png"));
 	spirit->addAnimation("wave", {
 		sf::IntRect(0 * TILE_SIZE, 0, TILE_SIZE, 2 * TILE_SIZE),
 		sf::IntRect(1 * TILE_SIZE, 0, TILE_SIZE, 2 * TILE_SIZE),
@@ -42,30 +42,29 @@ HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : lif::Entity(pos) {
 	spiritSprite.setFrameTime(sf::seconds(0.1));
 	spiritSprite.play();
 
-	addComponent(std::make_shared<lif::Killable>(*this, [this] () {
+	addComponent<lif::Killable>(*this, [this] () {
 		// on kill
 		animated->getSprite().play();
 	}, [this] () {
 		// is kill in progress
 		return animated->getSprite().isPlaying();
-	}));
-	addComponent(std::make_shared<lif::Lifed>(*this, lif::conf::boss::haunting_spirit_boss::HAUNTED_STATUE_LIFE,
-	[this] (int damage, int)
-	{
+	});
+	addComponent<lif::Lifed>(*this, lif::conf::boss::haunting_spirit_boss::HAUNTED_STATUE_LIFE,
+	[this] (int damage, int) {
 		// on hurt
 		if (damage > 0)
 			get<lif::HurtDrawProxy>()->hurt();
-	}));
-	addComponent(std::make_shared<lif::Drawable>(*this, *this));
+	});
+	addComponent<lif::Drawable>(*this, *this);
 	auto hurt_by_explosions = lif::hurtByExplosions(*this, lif::CFO_TAKE_SINGLE_HIT | lif::CFO_ONLY_ADJACENT);
-	addComponent(std::make_shared<lif::Collider>(*this, [this, hurt_by_explosions] (lif::Collider& cld) {
+	addComponent<lif::Collider>(*this, [this, hurt_by_explosions] (lif::Collider& cld) {
 		// on collision
 		if (!possessed) return;
 		hurt_by_explosions(cld);
-	}, lif::c_layers::BREAKABLES, sf::Vector2f(TILE_SIZE, TILE_SIZE)));
-	addComponent(std::make_shared<lif::ZIndexed>(*this, lif::conf::zindex::TALL_ENTITIES));
-	addComponent(std::make_shared<lif::Fixed>(*this));
-	hurtProxy = addComponent(std::make_shared<lif::HurtDrawProxy>(*this));
+	}, lif::c_layers::BREAKABLES, sf::Vector2f(TILE_SIZE, TILE_SIZE));
+	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::TALL_ENTITIES);
+	addComponent<lif::Fixed>(*this);
+	hurtProxy = addComponent<lif::HurtDrawProxy>(*this);
 }
 
 void HauntedStatue::setSpiritColor(sf::Color c) {

@@ -16,21 +16,21 @@ FreeBullet::FreeBullet(const sf::Vector2f& pos, lif::Angle angle,
 		const lif::BulletInfo& info, const lif::Entity *const source)
 	: lif::Bullet(pos, info, source)
 {
-	addComponent(std::make_shared<lif::FreeMoving>(*this, lif::conf::bullet::BASE_SPEED * info.speed,
-				sf::Vector2f(std::sin(angle.asRadians()), -std::cos(angle.asRadians()))));
-	collider = addComponent(std::make_shared<lif::Collider>(*this, [this] (lif::Collider&) {
+	addComponent<lif::FreeMoving>(*this, lif::conf::bullet::BASE_SPEED * info.speed,
+				sf::Vector2f(std::sin(angle.asRadians()), -std::cos(angle.asRadians())));
+	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider&) {
 		// on collision
 		auto klb = get<lif::Killable>();
 		if (!klb->isKilled()) {
 			klb->kill();
 		}
-	}, lif::c_layers::BOSS_BULLETS, sf::Vector2f(data.size, data.size)));
+	}, lif::c_layers::BOSS_BULLETS, sf::Vector2f(data.size, data.size));
 
 	position.x += (TILE_SIZE - data.size) / 2;
 	position.y += (TILE_SIZE - data.size) / 2;
 
-	auto animated = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("test", "freebullets.png")));
-	addComponent(std::make_shared<lif::Drawable>(*this, *animated));
+	auto animated = addComponent<lif::Animated>(*this, lif::getAsset("test", "freebullets.png"));
+	addComponent<lif::Drawable>(*this, *animated);
 	auto& a_move = animated->addAnimation("move");
 	auto& a_destroy = animated->addAnimation("destroy");
 	for (unsigned i = 0; i < data.nMotionFrames; ++i) 

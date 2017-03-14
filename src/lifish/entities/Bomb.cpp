@@ -26,31 +26,31 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Player& source,
 	, incendiary(isIncendiary)
 	, sourcePlayer(source)
 {
-	addComponent(std::make_shared<lif::Fixed>(*this));
-	fuseClock = addComponent(std::make_shared<lif::Clock>(*this));
-	addComponent(std::make_shared<lif::Sounded>(*this, lif::Sounded::SoundList {
+	addComponent<lif::Fixed>(*this);
+	fuseClock = addComponent<lif::Clock>(*this);
+	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("explosion", lif::getAsset("sounds", "explosion.ogg")),
 		std::make_pair("fuse", lif::getAsset("sounds", "fuse.ogg"))
-	})); 
-	killable = addComponent(std::make_shared<lif::Temporary>(*this, [this] () {
+	}); 
+	killable = addComponent<lif::Temporary>(*this, [this] () {
 		// Expire condition
 		return fuseClock->getElapsedTime() >= fuseTime;
 	}, [this] () {
 		// On kill
 		exploded = true;
 		lif::cache.playSound(get<lif::Sounded>()->getSoundFile("explosion"));
-	}));
-	animated = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("graphics", "bomb.png")));
-	addComponent(std::make_shared<lif::Collider>(*this, [this] (lif::Collider& cld) {
+	});
+	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "bomb.png"));
+	addComponent<lif::Collider>(*this, [this] (lif::Collider& cld) {
 		// On collide
 		if (cld.getLayer() == lif::c_layers::EXPLOSIONS && !ignited)
 			ignite();
-	}, lif::c_layers::BOMBS));
-	addComponent(std::make_shared<lif::Drawable>(*this, *animated));
-	addComponent(std::make_shared<lif::Spawning>(*this, [this] () {
+	}, lif::c_layers::BOMBS);
+	addComponent<lif::Drawable>(*this, *animated);
+	addComponent<lif::Spawning>(*this, [this] () {
 		return new lif::Explosion(position, radius, &sourcePlayer, incendiary);
-	}));
-	addComponent(std::make_shared<lif::LightSource>(*this, 0));
+	});
+	addComponent<lif::LightSource>(*this, 0);
 
 	auto& a_normal_idle = animated->addAnimation("normal_idle", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),

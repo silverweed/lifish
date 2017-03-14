@@ -9,7 +9,7 @@ CircleShootingPattern::CircleShootingPattern(lif::Entity& owner, const lif::Bull
 	: lif::ShootingPattern(owner, bullet)
 {
 	_declComponent<CircleShootingPattern>();
-	shootClock = addComponent(std::make_shared<lif::Clock>(*this));
+	shootClock = addComponent<lif::Clock>(*this);
 }
 
 void CircleShootingPattern::update() {

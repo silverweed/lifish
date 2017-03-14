@@ -14,7 +14,7 @@ Pond::Pond(const sf::Vector2f& pos, const sf::Vector2f& size, int dam,
 	for (auto layer : damaged)
 		damagedc_layers |= 1 << layer;
 
-	addComponent(std::make_shared<lif::Collider>(*this, [this] (lif::Collider& cld) {
+	addComponent<lif::Collider>(*this, [this] (lif::Collider& cld) {
 		// on collision
 		if (!((damagedc_layers >> cld.getLayer()) & 1)) return;
 
@@ -24,5 +24,5 @@ Pond::Pond(const sf::Vector2f& pos, const sf::Vector2f& size, int dam,
 		auto bonusable = cld.getOwner().get<lif::Bonusable>();
 		if (bonusable == nullptr || !bonusable->hasBonus(lif::BonusType::SHIELD))
 			lifed->decLife(damage);
-	}, lif::c_layers::DEFAULT, size));
+	}, lif::c_layers::DEFAULT, size);
 }

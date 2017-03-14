@@ -29,7 +29,7 @@ Cutscene::Cutscene(const sf::Vector2u& windowSize, std::initializer_list<Layer> 
 					0, 0, static_cast<unsigned>(windowSize.x * 100), windowSize.y));
 		sprite->getTexture()->setRepeated(true);
 		ent->addComponent(sprite);
-		ent->addComponent(std::make_shared<lif::FreeMoving>(*ent, calc_speed(std::get<1>(layer)), left));
+		ent->addComponent<lif::FreeMoving>(*ent, calc_speed(std::get<1>(layer)), left);
 		entities.add(ent);
 	}
 

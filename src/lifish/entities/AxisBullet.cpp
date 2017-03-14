@@ -40,7 +40,7 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, lif::Direction dir,
 		break;
 	}
 
-	collider = addComponent(std::make_shared<lif::Collider>(*this, [this] (lif::Collider& e) {
+	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& e) {
 		// on collision
 		// Note: the default layer doesn't automatically destroy a Bullet for
 		// practical reasons: it is typically used as a "catch-all" layer, but
@@ -52,12 +52,12 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, lif::Direction dir,
 		if (!klb->isKilled()) {
 			klb->kill();
 		}
-	}, lif::c_layers::ENEMY_BULLETS, sf::Vector2f(data.size, data.size)));
-	auto moving = addComponent(std::make_shared<lif::AxisMoving>(*this, lif::conf::bullet::BASE_SPEED * info.speed, dir));
+	}, lif::c_layers::ENEMY_BULLETS, sf::Vector2f(data.size, data.size));
+	auto moving = addComponent<lif::AxisMoving>(*this, lif::conf::bullet::BASE_SPEED * info.speed, dir);
 	moving->setEnsureAlign(false);
 	moving->setAutoRealign(false);
-	auto animated = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("test", "axisbullets.png")));
-	addComponent(std::make_shared<lif::Drawable>(*this, *animated));
+	auto animated = addComponent<lif::Animated>(*this, lif::getAsset("test", "axisbullets.png"));
+	addComponent<lif::Drawable>(*this, *animated);
 
 	auto& a_move = animated->addAnimation("move");
 	auto& a_destroy = animated->addAnimation("destroy");

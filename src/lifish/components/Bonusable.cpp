@@ -7,7 +7,7 @@ Bonusable::Bonusable(lif::Entity& owner)
 	: lif::Component(owner)
 {
 	_declComponent<Bonusable>();
-	bonusClock.fill(addComponent(std::make_shared<lif::Clock>(*this)));
+	bonusClock.fill(addComponent<lif::Clock>(*this));
 	bonusTime.fill(sf::Time::Zero);
 }
 

@@ -12,9 +12,9 @@ using lif::TILE_SIZE;
 Flash::Flash(const sf::Vector2f& pos) 
 	: lif::Entity(pos)
 {
-	animated = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("test", "flash.png")));
-	addComponent(std::make_shared<lif::Drawable>(*this, *animated));
-	addComponent(std::make_shared<lif::ZIndexed>(*this, lif::conf::zindex::FLASHES));
+	animated = addComponent<lif::Animated>(*this, lif::getAsset("test", "flash.png"));
+	addComponent<lif::Drawable>(*this, *animated);
+	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::FLASHES);
 
 	animated->addAnimation("flash", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),
@@ -31,7 +31,7 @@ Flash::Flash(const sf::Vector2f& pos)
 	animatedSprite.setFrameTime(sf::seconds(0.10));
 	animatedSprite.play();
 
-	addComponent(std::make_shared<lif::Temporary>(*this, [&animatedSprite] () {
+	addComponent<lif::Temporary>(*this, [&animatedSprite] () {
 		return !animatedSprite.isPlaying();
-	}));
+	});
 }

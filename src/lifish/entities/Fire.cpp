@@ -11,18 +11,18 @@ using lif::TILE_SIZE;
 Fire::Fire(const sf::Vector2f& pos, const sf::Vector2f& size, sf::Time duration)
 	: lif::Pond(pos, size, 1, { lif::c_layers::ENEMIES, lif::c_layers::ENEMIES_IGNORE_BREAKABLES })
 {
-	auto animated = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("graphics", "fire.png")));
+	auto animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "fire.png"));
 	animated->addAnimation("burn", {
 		sf::IntRect(0, 0, size.x, size.y),
 		sf::IntRect(TILE_SIZE, 0, size.x, size.y)
 	}, true);
 	animated->getTexture()->setRepeated(true);
-	addComponent(std::make_shared<lif::LightSource>(*this, 20, sf::Color(244, 152, 56), 0.7, 15));
-	addComponent(std::make_shared<lif::Drawable>(*this, *animated));
+	addComponent<lif::LightSource>(*this, 20, sf::Color(244, 152, 56), 0.7, 15);
+	addComponent<lif::Drawable>(*this, *animated);
 	if (duration > sf::Time::Zero) {
 		sf::Clock clock;
-		addComponent(std::make_shared<lif::Temporary>(*this, [clock, duration] () {
+		addComponent<lif::Temporary>(*this, [clock, duration] () {
 			return clock.getElapsedTime() > duration;
-		}));
+		});
 	}
 }

@@ -43,42 +43,42 @@ Player::Player(const sf::Vector2f& pos, const unsigned short id)
 
 void Player::_init() {
 	// Setup components
-	addComponent(std::make_shared<lif::Lifed>(*this, lif::conf::player::MAX_LIFE, [this] (int damage, int) {
+	addComponent<lif::Lifed>(*this, lif::conf::player::MAX_LIFE, [this] (int damage, int) {
 		// on hurt
 		if (damage > 0)
 			_hurt();
-	}));
-	addComponent(std::make_shared<lif::Collider>(*this, [this] (lif::Collider& cld) {
+	});
+	addComponent<lif::Collider>(*this, [this] (lif::Collider& cld) {
 		// on collision
 		if (!killable->isKilled())
 			_checkCollision(cld);
-	}, lif::c_layers::PLAYERS));
-	moving = addComponent(std::make_shared<lif::AxisMoving>(*this, lif::conf::player::DEFAULT_SPEED));
-	animated = addComponent(std::make_shared<lif::Animated>(*this, lif::getAsset("graphics", std::string("player") +
-				lif::to_string(info.id) + std::string(".png"))));
-	addComponent(std::make_shared<lif::ZIndexed>(*this, lif::conf::zindex::PLAYERS));
-	addComponent(std::make_shared<lif::Drawable>(*this, drawProxy));
-	addComponent(std::make_shared<lif::Sounded>(*this, lif::Sounded::SoundList {
+	}, lif::c_layers::PLAYERS);
+	moving = addComponent<lif::AxisMoving>(*this, lif::conf::player::DEFAULT_SPEED);
+	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", std::string("player") +
+				lif::to_string(info.id) + std::string(".png")));
+	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::PLAYERS);
+	addComponent<lif::Drawable>(*this, drawProxy);
+	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("death", lif::getAsset("test", std::string("player")
 					+ lif::to_string(info.id) + std::string("_death.ogg"))),
 		std::make_pair("hurt", lif::getAsset("test", std::string("player")
 					+ lif::to_string(info.id) + std::string("_hurt.ogg"))),
 		std::make_pair("win", lif::getAsset("test", std::string("player")
 				+ lif::to_string(info.id) + std::string("_win.ogg"))),
-	}));
-	killable = addComponent(std::make_shared<lif::Killable>(*this, [this] () {
+	});
+	killable = addComponent<lif::Killable>(*this, [this] () {
 		// on kill
 		_kill(); 
 	}, [this] () {
 		return death->isKillInProgress();
-	}));
-	bonusable = addComponent(std::make_shared<lif::Bonusable>(*this));
-	movingAnimator = addComponent(std::make_shared<lif::MovingAnimator>(*this));
-	addComponent(std::make_shared<lif::Controllable>(*this,
+	});
+	bonusable = addComponent<lif::Bonusable>(*this);
+	movingAnimator = addComponent<lif::MovingAnimator>(*this);
+	addComponent<lif::Controllable>(*this,
 				lif::controls::players[info.id-1],
-				lif::controls::useJoystick[info.id-1]));
-	hurtClock = addComponent(std::make_shared<lif::Clock>(*this));
-	death = addComponent(std::make_shared<lif::RegularEntityDeath>(*this, lif::conf::player::DEATH_TIME));
+				lif::controls::useJoystick[info.id-1]);
+	hurtClock = addComponent<lif::Clock>(*this);
+	death = addComponent<lif::RegularEntityDeath>(*this, lif::conf::player::DEATH_TIME);
 
 	// Setup animations
 	auto& a_down = animated->addAnimation("walk_down");

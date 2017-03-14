@@ -11,7 +11,7 @@ ScatterVsPlayerPattern::ScatterVsPlayerPattern(lif::Entity& owner, const lif::Bu
 	: lif::ShootingPattern(owner, bullet)
 {
 	_declComponent<ScatterVsPlayerPattern>();
-	shootClock = addComponent(std::make_shared<lif::Clock>(*this));
+	shootClock = addComponent<lif::Clock>(*this);
 }
 
 lif::Entity* ScatterVsPlayerPattern::init() {
