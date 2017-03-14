@@ -10,6 +10,17 @@ T* Entity::addComponent(const std::shared_ptr<T>& comp) {
 	return comp.get();
 }
 
+template<class T, class... Args>
+T* Entity::addComponent(Args&&... args) {
+	if (T::requiredUnique() && get<T>() != nullptr)
+		throw std::logic_error("Two components of the same type were added to this Entity!");
+	auto comp = std::make_shared<T>(std::forward<Args>(args)...);
+	_addUnique(comp.get());
+	for (const auto& t : comp->getKeys())
+		components[t].emplace_back(comp);
+	return comp.get();
+}
+
 template<class T>
 std::shared_ptr<T> Entity::getShared() const {
 	auto comp = components.find(_getKey<T>());

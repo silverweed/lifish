@@ -7,6 +7,7 @@
 #include <typeindex>
 #include <list>
 #include <algorithm>
+#include <utility>
 #include <SFML/System.hpp>
 #include "Activable.hpp"
 #include "WithOrigin.hpp"
@@ -49,6 +50,9 @@ public:
 
 	template<class T>
 	T* addComponent(const std::shared_ptr<T>& comp);
+
+	template<class T, class... Args>
+	T* addComponent(Args&&... args);
 
 	/** @return The first component of type T added to this entity */
 	template<class T>

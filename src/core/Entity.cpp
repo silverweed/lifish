@@ -43,10 +43,7 @@ Entity::Entity(const sf::Vector2f& pos)
 Entity::~Entity() {}
 
 void Entity::_addUnique(lif::Component *c) {
-	if (std::find_if(compSet.begin(), compSet.end(), [c] (const lif::Component *comp) {
-		return comp == c;
-	}) == compSet.end())
-	{
+	if (std::find(compSet.begin(), compSet.end(), c) == compSet.end()) {
 		compSet.push_back(c);
 	}
 }
