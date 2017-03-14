@@ -30,6 +30,8 @@ flags = [
 '-Isrc/core/entities',
 '-Isrc/core/components',
 '-Isrc/core/collisions',
+'-Isrc/core/cutscenes',
+'-Isrc/core/input',
 '-Isrc/core/debug',
 '-Isrc/lifish',
 '-Isrc/lifish/entities',
