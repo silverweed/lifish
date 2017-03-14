@@ -78,13 +78,7 @@ class EntityGroup final : private sf::NonCopyable {
 	void _pruneAll();
 	void _pruneColliding();
 
-	lif::Entity* _putInAux(std::shared_ptr<lif::Entity> entity);
-
-	/** @return whether a Killable in this group's `killables` refers to `entity` */
-	bool _isManagedKillable(std::shared_ptr<lif::Entity> entity) const;
-	/** @return whether a Collider in this group's `collidingEntities` refers to `entity` */
-	bool _isManagedCollider(std::shared_ptr<lif::Entity> entity) const;
-
+	lif::Entity* _putInAux(lif::Entity *entity);
 public:
 	/**
 	 * Constructs the EntityGroup as the owner of its entities.
@@ -107,11 +101,11 @@ public:
 	lif::Entity* add(T *entity);
 
 	template<class T>
-	lif::Entity* add(std::shared_ptr<T>& entity);
+	lif::Entity* add(std::shared_ptr<T> entity);
 
 	/** Removes an entity from all internal collections. */
 	void remove(const lif::Entity& entity);
-	void remove(std::shared_ptr<lif::Entity> entity);
+	void remove(const std::shared_ptr<lif::Entity>& entity);
 
 	/** Removes all entities from this EntityGroup. */
 	void clear();
@@ -173,14 +167,14 @@ template<class T>
 lif::Entity* EntityGroup::add(T *entity) {
 	entity->init();
 	entities.push_back(std::shared_ptr<lif::Entity>(entity));
-	return _putInAux(entities.back());
+	return _putInAux(entities.back().get());
 }
 
 template<class T>
-lif::Entity* EntityGroup::add(std::shared_ptr<T>& entity) {
+lif::Entity* EntityGroup::add(std::shared_ptr<T> entity) {
 	entity->init();
 	entities.push_back(entity);
-	return _putInAux(entities.back());
+	return _putInAux(entities.back().get());
 }
 
 template<class T>

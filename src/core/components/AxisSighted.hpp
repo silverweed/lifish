@@ -5,7 +5,10 @@
 
 namespace lif {
 
-/** An AxisSighted entity has knowledge of entities around it along axis directions. */
+/** An AxisSighted entity has knowledge of entities around it along axis directions.
+ *  IMPORTANT: all returned pointers are guaranteed valid only until the next call to
+ *  `entities->updateAll()`, which may destroy the pointed objects.
+ */
 class AxisSighted : public lif::Sighted {
 	/** Pair <entity, distance in tiles> */
 	using SeenPair = std::pair<lif::Entity*, unsigned>;

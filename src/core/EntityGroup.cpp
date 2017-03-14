@@ -36,7 +36,7 @@ void EntityGroup::remove(const lif::Entity& entity) {
 	mtxUnlock();
 }
 
-void EntityGroup::remove(std::shared_ptr<lif::Entity> entity) {
+void EntityGroup::remove(const std::shared_ptr<lif::Entity>& entity) {
 	mtxLock();
 	std::remove(entities.begin(), entities.end(), entity);
 	_pruneAll();
@@ -59,7 +59,7 @@ void EntityGroup::clear() {
 	collidingEntities.clear();
 }
 
-lif::Entity* EntityGroup::_putInAux(std::shared_ptr<lif::Entity> entity) {
+lif::Entity* EntityGroup::_putInAux(lif::Entity *entity) {
 	// Put in aux collections, if not already managed
 	auto klb = entity->getShared<lif::Killable>();
 	if (klb != nullptr) {
@@ -72,7 +72,7 @@ lif::Entity* EntityGroup::_putInAux(std::shared_ptr<lif::Entity> entity) {
 		}
 	}
 
-	return entity.get();
+	return entity;
 }
 
 void EntityGroup::_pruneAll() {
@@ -146,18 +146,4 @@ void EntityGroup::_checkDead() {
 			++it;
 		}
 	}
-}
-
-bool EntityGroup::_isManagedKillable(std::shared_ptr<lif::Entity> entity) const {
-	return std::find_if(killables.begin(), killables.end(), 
-		[&entity] (std::weak_ptr<lif::Killable> p) {
-			return !p.expired() && &p.lock().get()->getOwner() == entity.get();
-		}) != killables.end();
-}
-
-bool EntityGroup::_isManagedCollider(std::shared_ptr<lif::Entity> entity) const {
-	return std::find_if(collidingEntities.begin(), collidingEntities.end(), 
-		[&entity] (std::weak_ptr<lif::Collider> p) {
-			return !p.expired() && &p.lock().get()->getOwner() == entity.get();
-		}) != collidingEntities.end();
 }
