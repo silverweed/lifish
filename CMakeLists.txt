@@ -2,10 +2,8 @@ cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(lifish)
 set(PROJECT_NAME lifish)
 set(MAJOR 1)
-set(MINOR 0)
+set(MINOR 1)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
-
-include(CheckCXXCompilerFlag OPTIONAL RESULT_VARIABLE HAS_CHECK_CXX)
 
 # detect architecture
 if(CMAKE_SIZEOF_VOID_P MATCHES 8)
@@ -77,8 +75,14 @@ if(MSYS)
 	add_definitions(-D_WIN32_WINNT=_WIN32_WINNT_VISTA)
 	set(LIFISH_SRC ${LIFISH_SRC} ${WIN_LIFISH_SRC})
 endif()
+
 add_executable(${PROJECT_NAME} ${LIFISH_SRC})
-set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    CXX_STANDARD 14
+    CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO
+    LINKER_LANGUAGE CXX
+)
 
 # Add git commit information (thanks, hamcha)
 include(FindGit OPTIONAL)
@@ -100,7 +104,7 @@ if(CCACHE_FOUND)
 	message(STATUS "Found ccache: compilation will use it.")
 	set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
 	set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-endif(CCACHE_FOUND)
+endif()
 
 # SFML
 if(MSYS)
@@ -132,6 +136,7 @@ if(${MULTITHREADED})
 endif()
 
 # Check if we have support for PIE
+include(CheckCXXCompilerFlag OPTIONAL RESULT_VARIABLE HAS_CHECK_CXX)
 if(NOT ${HAS_CHECK_CXX} STREQUAL "")
 	check_cxx_compiler_flag("-pie -fPIE -Wl,-fPIE" SUPPORTS_PIE)
 	if(${SUPPORTS_PIE})
@@ -174,12 +179,6 @@ endif()
 #	target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/lib/libnfd-mac.a)
 #	target_link_libraries(${PROJECT_NAME} ${APPKIT})
 #endif()
-
-if(CMAKE_VERSION VERSION_LESS 3.0.2)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-else()
-	target_compile_features(lifish PRIVATE cxx_range_for)
-endif()
 
 # Debug flags
 if(${RELEASE})

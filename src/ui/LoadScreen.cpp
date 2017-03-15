@@ -35,7 +35,7 @@ LoadScreen::LoadScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	auto text = new lif::ShadedText(font, "LOAD GAME", sf::Vector2f(ipadx, ipady));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(size);
-	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
+	nonInteractables.emplace_back(text);
 
 
 	// Back
@@ -43,7 +43,7 @@ LoadScreen::LoadScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	text->setCharacterSize(size);
 	auto bounds = text->getGlobalBounds();
 	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 3 * bounds.height));
-	interactables["back"] = std::unique_ptr<lif::ui::Interactable>(new lif::ui::Interactable(text));
+	interactables["back"] = std::make_unique<lif::ui::Interactable>(text);
 }
 
 void LoadScreen::onLoad() {
@@ -74,7 +74,7 @@ void LoadScreen::onLoad() {
 		text->setCharacterSize(size);
 		text->setShadowSpacing(2, 2);
 		text->setStyle(sf::Text::Italic);
-		nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
+		nonInteractables.emplace_back(text);
 		return;
 	}
 
@@ -85,13 +85,13 @@ void LoadScreen::onLoad() {
 		auto text = new lif::ShadedText(font, "[x]", pos);
 		text->setCharacterSize(size);
 		const auto dcbname = _newUniqueId();
-		interactables[dcbname] = std::unique_ptr<lif::ui::Interactable>(new lif::ui::Interactable(text));
+		interactables[dcbname] = std::make_unique<lif::ui::Interactable>(text);
 		callbacks[dcbname] = _createDeleteCallback(save.path);
 
 		text = new lif::ShadedText(font, save.displayName.substr(0, 10), pos + sf::Vector2f(35, 0));
 		text->setCharacterSize(size);
 		const auto lcbname = _newUniqueId();
-		interactables[lcbname] = std::unique_ptr<lif::ui::Interactable>(new lif::ui::Interactable(text));
+		interactables[lcbname] = std::make_unique<lif::ui::Interactable>(text);
 		callbacks[lcbname] = _createLoadCallback(save.path);
 		if (++col == 10) {
 			col = 0;

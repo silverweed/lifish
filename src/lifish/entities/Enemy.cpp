@@ -87,7 +87,7 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	autoShooting = addComponent<lif::AutoShooting>(*this);
 	sighted = addComponent<lif::AxisSighted>(*this);
 
-	drawProxy = std::unique_ptr<lif::EnemyDrawableProxy>(new lif::EnemyDrawableProxy(*this));
+	drawProxy = std::make_unique<lif::EnemyDrawableProxy>(*this);
 	addComponent<lif::Drawable>(*this, *drawProxy);
 
 	auto hurt_by_explosion = lif::hurtByExplosions(*this, lif::CFO_TAKE_SINGLE_HIT);

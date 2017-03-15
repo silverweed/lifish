@@ -37,14 +37,14 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	auto text = new lif::ShadedText(font, "Music:", sf::Vector2f(ipadx, ipady));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(size);
-	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
+	nonInteractables.emplace_back(text);
 
 	// Music volume
 	auto pos = text->getPosition();
 
 	text = new lif::ShadedText(font, "-", sf::Vector2f(ipadx + 150, ipady - 8));
 	text->setCharacterSize(34);
-	interactables["music_volume_down"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["music_volume_down"] = std::make_unique<Interactable>(text);
 
 	text = new lif::ShadedText(font, "placeholder", sf::Vector2f(ipadx + 200, ipady));
 	// Draw the full volume bar to get the measure of this element's max width
@@ -57,12 +57,12 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	text->setCharacterSize(20);
 	text->setString(ss.str());
 	musicVolumeBar = text;
-	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
+	nonInteractables.emplace_back(text);
 
 	auto bounds = text->getGlobalBounds();
 	text = new lif::ShadedText(font, "+", sf::Vector2f(ipadx + 200 + bounds.width + 40, ipady - 6));
 	text->setCharacterSize(30);
-	interactables["music_volume_up"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["music_volume_up"] = std::make_unique<Interactable>(text);
 
 	bounds = text->getGlobalBounds();
 	auto image = new sf::Sprite;
@@ -70,29 +70,29 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	image->setTexture(*speakerTexture);
 	image->setTextureRect(sf::IntRect(prevMusicVolume >= 0 ? 25 : 0, 0, 25, 25));
 	image->setPosition(sf::Vector2f(bounds.left + bounds.width + 20, ipady));
-	interactables["music_mute_toggle"] = std::unique_ptr<Interactable>(new Interactable(image));
+	interactables["music_mute_toggle"] = std::make_unique<Interactable>(image);
 
 	// FX Volume
 	text = new lif::ShadedText(font, "FX:", sf::Vector2f(ipadx, ipady + bounds.height + 20));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(size);
-	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
+	nonInteractables.emplace_back(text);
 
 	pos = text->getPosition();
 	text = new lif::ShadedText(font, "-", sf::Vector2f(ipadx + 150, pos.y - 8));
 	text->setCharacterSize(34);
-	interactables["sounds_volume_down"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["sounds_volume_down"] = std::make_unique<Interactable>(text);
 
 	text = new lif::ShadedText(font, ss.str(), sf::Vector2f(ipadx + 200, pos.y));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(20);
 	soundsVolumeBar = text;
-	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
+	nonInteractables.emplace_back(text);
 
 	bounds = text->getGlobalBounds();
 	text = new lif::ShadedText(font, "+", sf::Vector2f(ipadx + 200 + bounds.width + 40, pos.y - 6));
 	text->setCharacterSize(30);
-	interactables["sounds_volume_up"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["sounds_volume_up"] = std::make_unique<Interactable>(text);
 
 	bounds = text->getGlobalBounds();
 	image = new sf::Sprite;
@@ -101,17 +101,17 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	image->setTextureRect(sf::IntRect(lif::options.soundsMute ? SPEAKER_SPRITE_SIZE : 0,
 				0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
 	image->setPosition(sf::Vector2f(bounds.left + bounds.width + 20, bounds.top));
-	interactables["sounds_mute_toggle"] = std::unique_ptr<Interactable>(new Interactable(image));
+	interactables["sounds_mute_toggle"] = std::make_unique<Interactable>(image);
 
 	text = new lif::ShadedText(font, "Controls", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
 	text->setCharacterSize(size);
-	interactables["controls"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["controls"] = std::make_unique<Interactable>(text);
 	
 	text = new lif::ShadedText(font, "Back", pos);
 	text->setCharacterSize(size);
 	bounds = text->getGlobalBounds();
 	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 3 * bounds.height));
-	interactables["back"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["back"] = std::make_unique<Interactable>(text);
 
 	// Setup internal callbacks
 	callbacks["music_volume_up"] = [this] () {

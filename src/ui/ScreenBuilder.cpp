@@ -127,7 +127,7 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 				new lif::ui::Interactable(newtxt));
 	} else {
 		newtxt->setShadowSpacing(2, 2);
-		screen.nonInteractables.push_back(std::unique_ptr<sf::Drawable>(newtxt));
+		screen.nonInteractables.emplace_back(newtxt);
 	}
 }
 
@@ -194,7 +194,7 @@ void ScreenBuilder::_addImage(lif::ui::Screen& screen, const json& image) {
 		screen.interactables[name] = std::unique_ptr<lif::ui::Interactable>(
 				new lif::ui::Interactable(newimg));
 	} else
-		screen.nonInteractables.push_back(std::unique_ptr<sf::Drawable>(newimg));
+		screen.nonInteractables.emplace_back(newimg);
 }
 
 void ScreenBuilder::_addElement(lif::ui::Screen& screen, const json& element) {

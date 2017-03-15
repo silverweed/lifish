@@ -12,7 +12,7 @@ Music::Music(lif::Entity& owner, const lif::Track& track)
 	if (!musicInput.openFromFile(track.name)) {
 		std::cerr << "Error: couldn't load music " << track.name << " from file!" << std::endl;
 	} else {
-		music = std::unique_ptr<LoopingMusic>(new LoopingMusic(musicInput));
+		music = std::make_unique<LoopingMusic>(musicInput);
 		music->setLoopPoints(sf::seconds(track.loopstart), sf::seconds(track.loopend));
 		music->setLoop(true);
 	}

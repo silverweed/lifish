@@ -41,92 +41,92 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	auto text = new lif::ShadedText(font, "P1", sf::Vector2f(ipadx, ipady));
 	text->setCharacterSize(fontSize);
 	text->setFGColor(sf::Color::Red);
-	interactables["p1"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["p1"] = std::make_unique<Interactable>(text);
 
 	auto bounds = text->getGlobalBounds();
 	text = new lif::ShadedText(font, " / ", sf::Vector2f(bounds.left + bounds.width, ipady));
 	text->setCharacterSize(fontSize);
-	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
+	nonInteractables.emplace_back(text);
 
 	bounds = text->getGlobalBounds();
 	text = new lif::ShadedText(font, "P2", sf::Vector2f(bounds.left + bounds.width, ipady));
 	text->setCharacterSize(fontSize);
-	interactables["p2"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["p2"] = std::make_unique<Interactable>(text);
 
 	float y = bounds.top + 3 * bounds.height,
 	      x = 180;
 	const auto small_size = 20;
 	text = new lif::ShadedText(font, "UP: ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
-	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
+	nonInteractables.emplace_back(text);
 
 	bounds = text->getGlobalBounds();
 	text = new lif::ShadedText(font,
 			lif::kb::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_UP]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
-	interactables["change_up"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["change_up"] = std::make_unique<Interactable>(text);
 
 	y += 2 * bounds.height;
 	text = new lif::ShadedText(font, "DOWN: ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
-	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
+	nonInteractables.emplace_back(text);
 
 	text = new lif::ShadedText(font,
 			lif::kb::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_DOWN]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
-	interactables["change_down"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["change_down"] = std::make_unique<Interactable>(text);
 
 	y += 2 * bounds.height;
 	text = new lif::ShadedText(font, "LEFT: ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
-	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
+	nonInteractables.emplace_back(text);
 
 	text = new lif::ShadedText(font,
 			lif::kb::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_LEFT]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
-	interactables["change_left"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["change_left"] = std::make_unique<Interactable>(text);
 
 	y += 2 * bounds.height;
 	text = new lif::ShadedText(font, "RIGHT: ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
-	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
+	nonInteractables.emplace_back(text);
 
 	text = new lif::ShadedText(font,
 			lif::kb::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_RIGHT]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
-	interactables["change_right"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["change_right"] = std::make_unique<Interactable>(text);
 
 	y += 2 * bounds.height;
 	text = new lif::ShadedText(font, "BOMB: ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
-	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
+	nonInteractables.emplace_back(text);
 
 	text = new lif::ShadedText(font,
 			lif::kb::keyToString(lif::controls::players[selectedPlayer-1][controls::CTRL_BOMB]),
 			sf::Vector2f(x, y));
 	text->setCharacterSize(small_size);
-	interactables["change_bomb"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["change_bomb"] = std::make_unique<Interactable>(text);
 
 	y += 3 * bounds.height;
 	text = new lif::ShadedText(font, "Use Joystick?", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
-	nonInteractables.push_back(std::unique_ptr<sf::Drawable>(text));
+	nonInteractables.emplace_back(text);
 
 	bounds = text->getGlobalBounds();
 	text = new lif::ShadedText(font, "NO", sf::Vector2f(bounds.left + bounds.width + 20, y));
 	text->setCharacterSize(small_size);
-	interactables["joystick_toggle"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["joystick_toggle"] = std::make_unique<Interactable>(text);
 
 	text = new lif::ShadedText(font, "OK", sf::Vector2f(0, 0));
 	text->setCharacterSize(fontSize);
 	bounds = text->getGlobalBounds();
 	sf::FloatRect win_bounds(0, 0, size.x, size.y);
 	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 3 * bounds.height));
-	interactables["back"] = std::unique_ptr<Interactable>(new Interactable(text));
+	interactables["back"] = std::make_unique<Interactable>(text);
 
 	// Setup internal callbacks
 	callbacks["p1"] = [this] () { return _selectPlayer(1); };

@@ -171,7 +171,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 std::unique_ptr<Level> LevelSet::getLevel(unsigned short num) const {
 	std::unique_ptr<Level> level;
 	if (num > 0 && num <= levels.size()) {
-		level = std::unique_ptr<Level>(new Level(*this));
+		level = std::make_unique<Level>(*this);
 		level->levelInfo = levels[num - 1];
 		if (!level->init()) {
 			level.reset();
