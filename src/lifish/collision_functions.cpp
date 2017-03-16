@@ -6,8 +6,6 @@
 #include "Explosion.hpp"
 #include "Lifed.hpp"
 
-#include <iostream>
-
 using CollisionFunc = lif::Collider::CollisionFunc;
 
 CollisionFunc lif::hurtByExplosions(lif::Entity& e, unsigned opts) {

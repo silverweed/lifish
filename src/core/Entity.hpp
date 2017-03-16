@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include <typeinfo>
 #include <typeindex>
-#include <list>
 #include <algorithm>
 #include <utility>
 #include <SFML/System.hpp>
@@ -107,7 +106,7 @@ public:
 class Component : public lif::Entity, public lif::Activable {
 protected:
 	lif::Entity& owner;
-	std::list<CompKey> keys;
+	std::vector<CompKey> keys;
 
 	template<class T>
 	void _declComponent() { keys.emplace_back(_getKey<T>()); }
@@ -124,7 +123,7 @@ public:
 	/** Gets the owner of this component (non-const) */
 	lif::Entity& getOwnerRW() const { return owner; }
 
-	std::list<CompKey> getKeys() const { return keys; }
+	std::vector<CompKey> getKeys() const { return keys; }
 };
 
 #include "Entity.inl"

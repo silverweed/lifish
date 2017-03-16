@@ -209,7 +209,7 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 
 	for (auto e : LevelEffects::getEffectEntities(level))
 		entities.add(e);
-	
+
 	if (level.getInfo().effects.find("darkness") != level.getInfo().effects.end()) {
 		// In case of darkness, we need the Players to have an AxisSighted component
 		for (unsigned short i = 0; i < lm.players.size(); ++i) {

@@ -37,6 +37,7 @@ etc = ""
 args = ""
 constr = " "
 func_impl = ""
+constr_content = ""
 
 case subdir
 when 'entities'
@@ -51,6 +52,7 @@ when 'components'
 	derived = ': public lif::Component '
 	args = 'lif::Entity& owner'
 	constr = "\n\t: lif::Component(owner)\n"
+	constr_content = "\n\t_declComponent<#{clsname}>();\n"
 end
 
 if options[:parent]
@@ -74,7 +76,7 @@ TEMPLATE_CPP = "#include \"#{clsname}.hpp\"
 
 using lif::#{clsname};
 
-#{clsname}::#{clsname}(#{args})#{constr}{}#{func_impl}"
+#{clsname}::#{clsname}(#{args})#{constr}{#{constr_content}}#{func_impl}"
 
 
 hppfname = "#{ARGV[0]}.hpp"

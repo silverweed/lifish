@@ -28,7 +28,7 @@
 using L = lif::c_layers::Layer;
 
 lif::Matrix<bool, L::N_LAYERS, L::N_LAYERS> lif::c_layers::collide,
-	                                     lif::c_layers::solid;
+	                                    lif::c_layers::solid;
 
 void lif::c_layers::init() {
 	for (auto& l : collide)

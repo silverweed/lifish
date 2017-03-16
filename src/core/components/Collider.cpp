@@ -45,7 +45,7 @@ void Collider::update() {
 	if (onCollision)
 		for (auto cld : colliding)
 			if (!cld.expired())
-				onCollision(*cld.lock().get());
+				onCollision(*cld.lock());
 }
 
 bool Collider::collidesWithSolid() const {

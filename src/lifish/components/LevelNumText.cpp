@@ -4,7 +4,7 @@
 
 using lif::LevelNumText;
 
-LevelNumText::LevelNumText(lif::Entity& owner, const unsigned short levelnum)
+LevelNumText::LevelNumText(lif::Entity& owner, unsigned short levelnum)
 	: lif::Component(owner)
 	, text(lif::getAsset("fonts", lif::fonts::LEVELNUM),
 		lif::to_string(levelnum),

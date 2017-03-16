@@ -40,19 +40,6 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, lif::Direction dir,
 		break;
 	}
 
-	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& e) {
-		// on collision
-		// Note: the default layer doesn't automatically destroy a Bullet for
-		// practical reasons: it is typically used as a "catch-all" layer, but
-		// it should explicitly tell the bullet to selfdestroy if it's the intended
-		// behaviour. The bullet otherwise self-destructs as soon as it collides.
-		if (&e.getOwner() == this->source || e.getLayer() == lif::c_layers::DEFAULT)
-			return;
-		auto klb = get<lif::Killable>();
-		if (!klb->isKilled()) {
-			klb->kill();
-		}
-	}, lif::c_layers::ENEMY_BULLETS, sf::Vector2f(data.size, data.size));
 	auto moving = addComponent<lif::AxisMoving>(*this, lif::conf::bullet::BASE_SPEED * info.speed, dir);
 	moving->setEnsureAlign(false);
 	moving->setAutoRealign(false);

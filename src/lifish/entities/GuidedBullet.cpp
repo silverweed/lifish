@@ -1,23 +1,17 @@
-#include "FreeBullet.hpp"
-#include "FreeMoving.hpp"
-#include "Killable.hpp"
-#include "conf/bullet.hpp"
-#include "core.hpp"
-#include "collision_layers.hpp"
-#include "Collider.hpp"
-#include "Drawable.hpp"
+#include "GuidedBullet.hpp"
+#include "game.hpp"
 #include "Animated.hpp"
-#include <cmath>
+#include "Drawable.hpp"
 
-using lif::FreeBullet;
-using lif::TILE_SIZE;
+using lif::GuidedBullet;
 
-FreeBullet::FreeBullet(const sf::Vector2f& pos, lif::Angle angle,
-		const lif::BulletInfo& info, const lif::Entity *const source)
-	: lif::Bullet(pos, info, source)
+GuidedBullet::GuidedBullet(const sf::Vector2f& start, const sf::Vector2f& end, sf::Time timeTaken,
+			const lif::BulletInfo& info,
+			const lif::Entity *const source,
+			std::initializer_list<lif::GuidedMoving::ModFunc> modfuncs)
+	: lif::Bullet(start, info, source)
 {
-	addComponent<lif::FreeMoving>(*this, lif::conf::bullet::BASE_SPEED * info.speed,
-				sf::Vector2f(std::sin(angle.asRadians()), -std::cos(angle.asRadians())));
+	addComponent<lif::GuidedMoving>(*this, start, end, timeTaken, modfuncs);
 
 	position.x += (TILE_SIZE - data.size) / 2;
 	position.y += (TILE_SIZE - data.size) / 2;

@@ -28,6 +28,22 @@ Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif:
 					+ lif::to_string(info.id) + std::string("_shot.ogg")))
 	});
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::BULLETS);
+	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& e) {
+		// on collision
+		// Note: the default layer doesn't automatically destroy a Bullet for
+		// practical reasons: it is typically used as a "catch-all" layer, but
+		// it should explicitly tell the bullet to selfdestroy if it's the intended
+		// behaviour. The bullet otherwise self-destructs as soon as it collides.
+		if (&e.getOwner() == this->source || e.getLayer() == lif::c_layers::DEFAULT)
+			return;
+		auto klb = get<lif::Killable>();
+		if (!klb->isKilled()) {
+			klb->kill();
+		}
+	}, info.id > 100 // FIXME this is an ugly way to set the collision layer, change to something saner.
+			? lif::c_layers::BOSS_BULLETS
+			: lif::c_layers::ENEMY_BULLETS,
+		sf::Vector2f(data.size, data.size));
 
 	addComponent<lif::Temporary>(*this, [this] () {
 		// expire condition
