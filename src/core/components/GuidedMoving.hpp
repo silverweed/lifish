@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <initializer_list>
+#include <tuple>
 #include "Moving.hpp"
 
 namespace lif {
@@ -19,12 +20,14 @@ class Clock;
  * bullet of 1 unit _orthogonally_ to the line linking `start` to `end`.
  */
 class GuidedMoving : public lif::Moving {
+	using _ModFunc = std::function<sf::Vector2f(double)>;
 public:
-	using ModFunc = std::function<sf::Vector2f(double)>;
+	/** { function, whether to accept inputs > 1 or not } */
+	using ModFunc = std::pair<_ModFunc, bool>;
 
 private:
 	sf::Vector2f _calcPathPos(float perc) const;
-	sf::Vector2f _calcModFunc(const ModFunc& f, float perc) const;
+	sf::Vector2f _calcModFunc(const _ModFunc& f, float perc) const;
 
 protected:
 	const sf::Vector2f start;
