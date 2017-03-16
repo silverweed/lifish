@@ -1,6 +1,7 @@
 #include "GuidedMoving.hpp"
 #include "Clock.hpp"
 #include "utils.hpp"
+#include <algorithm>
 
 using lif::GuidedMoving;
 
@@ -27,7 +28,7 @@ void GuidedMoving::update() {
 	auto pos = _calcPathPos(tPerc);
 	
 	for (auto f : modfuncs) {
-		pos += _calcModFunc(f, tPerc);
+		pos += _calcModFunc(f, std::min(1.0f, tPerc));
 	}
 
 	owner.setPosition(pos);
