@@ -51,8 +51,8 @@ inline sf::Vector2i tile2(const sf::Vector2f& pos) {
 /** Returns the pixel position `pos` aligned to the nearest tile. */
 inline sf::Vector2f aligned(const sf::Vector2f& pos) {
 	return sf::Vector2f(
-		(static_cast<int>(pos.x)/TILE_SIZE) * TILE_SIZE,
-		(static_cast<int>(pos.y)/TILE_SIZE) * TILE_SIZE);
+		static_cast<int>(pos.x / TILE_SIZE) * TILE_SIZE,
+		static_cast<int>(pos.y / TILE_SIZE) * TILE_SIZE);
 }
 
 template<typename T>

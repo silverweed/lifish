@@ -24,6 +24,10 @@ namespace conf {
 			const sf::Time PATTERN_SHOOT_DELAY = sf::seconds(3.5);
 		}
 
+		namespace temple_boss {
+			constexpr unsigned int CAGE_LIFE = 10;
+		}
+
 		namespace big_alien_boss {
 			constexpr unsigned int VALUE = 50000;
 			constexpr unsigned short LIFE = 100;

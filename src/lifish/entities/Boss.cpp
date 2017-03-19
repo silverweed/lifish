@@ -36,7 +36,7 @@ Boss::Boss(const sf::Vector2f& pos)
 		return _killInProgress();
 	});
 	addComponent<lif::Spawning>(*this, [this] (const lif::Spawning&) {
-		return killable && killable->isKilled() 
+		return killable && killable->isKilled()
 			&& explClock->getElapsedTime() >= sf::milliseconds(100);
 	}, [this] () {
 		explClock->restart();

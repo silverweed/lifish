@@ -128,6 +128,10 @@ public:
 		return collidingEntities;
 	}
 
+	/** @return all colliders intersecting `rect` */
+	auto getCollidersIntersecting(const sf::FloatRect& rect) const
+		-> std::vector<std::weak_ptr<lif::Collider>>;
+
 	/** @return all entities whose tile is `tile` */
 	auto getEntitiesAtTile(const sf::Vector2i& tile) const -> std::vector<std::weak_ptr<lif::Entity>>;
 

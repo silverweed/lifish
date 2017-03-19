@@ -345,11 +345,12 @@ bool LevelManager::canGo(const lif::AxisMoving& am, const lif::Direction dir) co
 	if (collider == nullptr)
 		return true;
 
-	for (auto ptr : entities.getEntitiesAtTile(sf::Vector2i(iposx, iposy))) {
-		auto e = ptr.lock();
-		if (e->get<lif::Fixed>() == nullptr) continue;
-		const auto fcollider = e->get<lif::Collider>();
-		if (fcollider != nullptr && collider->isSolidFor(*fcollider))
+	for (auto ptr : entities.getCollidersIntersecting(sf::FloatRect(
+			iposx * TILE_SIZE, iposy * TILE_SIZE, TILE_SIZE, TILE_SIZE)))
+	{
+		auto cld = ptr.lock();
+		if (cld->getOwner().get<lif::Fixed>() == nullptr) continue;
+		if (cld != nullptr && collider->isSolidFor(*cld))
 			return false;
 	}
 

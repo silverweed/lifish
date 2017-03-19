@@ -23,7 +23,7 @@ CollisionFunc lif::hurtByExplosions(lif::Entity& e, unsigned opts) {
 			return;
 
 		auto& expl = static_cast<lif::Explosion&>(cld.getOwnerRW());
-		if ((opts & CFO_TAKE_SINGLE_HIT) && expl.hasDamaged(e))
+		if (expl.hasDamaged(e))
 			return;
 
 		// Check adjacent condition

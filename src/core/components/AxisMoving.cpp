@@ -54,7 +54,7 @@ void AxisMoving::update() {
 	if (!_collidesWithSolid()) {
 		owner.setPosition(owner.getPosition() + shift * frameTime.asSeconds());
 		if (delta > 1 && ensureAlign)
-			_ensureAlign(); 
+			_ensureAlign();
 	} else if (autoRealign) {
 		realign();
 	}
@@ -69,16 +69,16 @@ void AxisMoving::realign() {
 
 	switch (direction) {
 	case lif::Direction::UP:
-		pos = sf::Vector2f(pos.x, (static_cast<int>(((pos.y-1) / TILE_SIZE) + 1)) * TILE_SIZE);
+		pos.y = static_cast<int>((pos.y - 1) / TILE_SIZE + 1) * TILE_SIZE;
 		break;
 	case lif::Direction::LEFT:
-		pos = sf::Vector2f((static_cast<int>(((pos.x-1) / TILE_SIZE) + 1)) * TILE_SIZE, pos.y);
+		pos.x = static_cast<int>((pos.x - 1) / TILE_SIZE + 1) * TILE_SIZE;
 		break;
 	case lif::Direction::DOWN:
-		pos = sf::Vector2f(pos.x, static_cast<int>((pos.y / TILE_SIZE)) * TILE_SIZE);
+		pos.y = static_cast<int>(pos.y / TILE_SIZE) * TILE_SIZE;
 		break;
 	case lif::Direction::RIGHT:
-		pos = sf::Vector2f(static_cast<int>((pos.x / TILE_SIZE)) * TILE_SIZE, pos.y);
+		pos.x = static_cast<int>(pos.x / TILE_SIZE) * TILE_SIZE;
 		break;
 	default: 
 		pos = lif::aligned(pos);
@@ -103,7 +103,7 @@ void AxisMoving::setDirection(lif::Direction dir) {
 		case Direction::DOWN:
 			owner.setPosition(sf::Vector2f(static_cast<int>(pos.x), pos.y));
 			break;
-		case Direction::LEFT: 
+		case Direction::LEFT:
 		case Direction::RIGHT:
 			owner.setPosition(sf::Vector2f(pos.x, static_cast<int>(pos.y)));
 			break;
@@ -111,8 +111,10 @@ void AxisMoving::setDirection(lif::Direction dir) {
 			break;
 	}
 
-	direction = dir; 
+	direction = dir;
 	distTravelled = 0;
+	if (moving && dir == lif::Direction::NONE && autoRealign)
+		realign();
 	moving = dir != lif::Direction::NONE;
 }
 

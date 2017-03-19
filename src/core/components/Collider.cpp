@@ -56,9 +56,9 @@ bool Collider::collidesWithSolid() const {
 	return false;
 }
 
-sf::IntRect Collider::getRect() const {
+sf::FloatRect Collider::getRect() const {
 	const auto pos = owner.getPosition() + offset;
-	return sf::IntRect(pos.x, pos.y, size.x, size.y);
+	return sf::FloatRect(pos.x, pos.y, size.x, size.y);
 }
 
 bool Collider::collidesWith(const lif::Collider& other) const {

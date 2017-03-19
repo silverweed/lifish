@@ -5,10 +5,8 @@
 namespace lif {
 
 enum CollisionFuncOptions : unsigned {
-	/** Take only the first hit from any explosion */
-	CFO_TAKE_SINGLE_HIT = 1,
 	/** Only be hit by explosion originated at distance 1 from entity */
-	CFO_ONLY_ADJACENT   = 1 << 1,
+	CFO_ONLY_ADJACENT = 1,
 };
 
 /** Reusable callback for a Collider that gets hurt by an explosion.

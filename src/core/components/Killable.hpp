@@ -18,9 +18,9 @@ protected:
 	CheckKillCallback checkKillProgress;
 
 public:
-	explicit Killable(lif::Entity& owner); 
-	explicit Killable(lif::Entity& owner, OnKillCallback callback); 
-	explicit Killable(lif::Entity& owner, OnKillCallback callback, CheckKillCallback checkKill); 
+	explicit Killable(lif::Entity& owner);
+	explicit Killable(lif::Entity& owner, OnKillCallback callback);
+	explicit Killable(lif::Entity& owner, OnKillCallback callback, CheckKillCallback checkKill);
 
 	void kill();
 	void resurrect() { killed = false; }

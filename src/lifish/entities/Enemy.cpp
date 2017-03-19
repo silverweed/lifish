@@ -90,7 +90,7 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	drawProxy = std::make_unique<lif::EnemyDrawableProxy>(*this);
 	addComponent<lif::Drawable>(*this, *drawProxy);
 
-	auto hurt_by_explosion = lif::hurtByExplosions(*this, lif::CFO_TAKE_SINGLE_HIT);
+	auto hurt_by_explosion = lif::hurtByExplosions(*this);
 	collider = addComponent<lif::Collider>(*this, [this, hurt_by_explosion] (lif::Collider& coll) {
 		// on collision
 		if (!_checkCollision(coll))

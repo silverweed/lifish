@@ -7,7 +7,7 @@
 
 namespace lif {
 
-class LevelManager;
+class BaseLevelManager;
 class Collider;
 class Player;
 class Animated;
@@ -25,8 +25,8 @@ class Explosion : public lif::Entity, public sf::Drawable {
 		    explosionVTexture;
 
 	lif::Animated *explosionC = nullptr, // central explosion
-	               *explosionH = nullptr, // horizontal explosion
-		       *explosionV = nullptr; // vertical explosion
+	              *explosionH = nullptr, // horizontal explosion
+	              *explosionV = nullptr; // vertical explosion
 
 	/** This is only non-null if explosion is incendiary */
 	lif::BufferedSpawner *spawner = nullptr;
@@ -34,7 +34,7 @@ class Explosion : public lif::Entity, public sf::Drawable {
 
 	/** Colliders used to check explosion's hits */
 	lif::Collider *explColliderH = nullptr,
-	               *explColliderV = nullptr;
+	              *explColliderV = nullptr;
 
 	/** The radius of this explosion */
 	unsigned short radius;
@@ -77,7 +77,7 @@ public:
 	 *  walls within the explosion. (called once in the Explosion's lifetime).
 	 *  @return self
 	 */
-	lif::Explosion* propagate(lif::LevelManager& lm);
+	lif::Explosion* propagate(lif::BaseLevelManager& lm);
 
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 

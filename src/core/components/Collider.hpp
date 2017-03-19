@@ -105,7 +105,7 @@ public:
 	virtual bool collidesWithSolid() const;
 
 	/** @return the bounding box of this Collider */
-	virtual sf::IntRect getRect() const;
+	virtual sf::FloatRect getRect() const;
 
 	virtual void update() override;
 

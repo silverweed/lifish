@@ -56,7 +56,7 @@ HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : lif::Entity(pos) {
 			get<lif::HurtDrawProxy>()->hurt();
 	});
 	addComponent<lif::Drawable>(*this, *this);
-	auto hurt_by_explosions = lif::hurtByExplosions(*this, lif::CFO_TAKE_SINGLE_HIT | lif::CFO_ONLY_ADJACENT);
+	auto hurt_by_explosions = lif::hurtByExplosions(*this, lif::CFO_ONLY_ADJACENT);
 	addComponent<lif::Collider>(*this, [this, hurt_by_explosions] (lif::Collider& cld) {
 		// on collision
 		if (!possessed) return;

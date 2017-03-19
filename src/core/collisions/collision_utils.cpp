@@ -6,8 +6,8 @@ using lif::TILE_SIZE;
 
 // Checks if `cld1` and `cld2` collide, given that the owner of `cld1` has direction `dir`.
 bool lif::collision_utils::collide(const lif::Collider& cld1, const lif::Collider& cld2, const lif::Direction dir) {
-	sf::IntRect rect = cld1.getRect(),
-		    orect = cld2.getRect();
+	auto rect = static_cast<sf::IntRect>(cld1.getRect()),
+	     orect = static_cast<sf::IntRect>(cld2.getRect());
 
 	switch (dir) {
 	case Direction::UP:

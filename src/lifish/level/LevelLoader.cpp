@@ -24,6 +24,7 @@
 #include "HauntingSpiritBoss.hpp"
 #include "Torch.hpp"
 #include "Sprite.hpp"
+#include "Cage.hpp"
 #include <iostream>
 
 using lif::TILE_SIZE;

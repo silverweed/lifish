@@ -82,17 +82,19 @@ void Explosion::update() {
 		(4 - lif::abs(static_cast<signed>(explosionC->getSprite().getCurrentFrame()) - 3)) * 255 / 4.0));
 }
 
-Explosion* Explosion::propagate(lif::LevelManager& lm) {
+Explosion* Explosion::propagate(lif::BaseLevelManager& lm) {
 	const sf::Vector2i m_tile = lif::tile(position);
-	bool propagating[] = { true, true, true, true };
-	bool blocked[] = { false, false, false, false };
 	auto& entities = lm.getEntities();
+	std::array<bool, 4> propagating,
+	                    blocked;
+	propagating.fill(true);
+	blocked.fill(false);
 	
-	for (unsigned dir = 0; dir < 4; ++dir) {	
+	for (unsigned dir = 0; dir < propagating.size(); ++dir) {
 		for (unsigned r = 1; r <= radius; ++r) {
 			if (!propagating[dir]) continue;
 
-			sf::Vector2i new_tile = m_tile;
+			auto new_tile = m_tile;
 			switch (dir) {
 			case Direction::UP:
 				new_tile.y -= r;
@@ -108,8 +110,9 @@ Explosion* Explosion::propagate(lif::LevelManager& lm) {
 				break;
 			}
 			
-			if (new_tile.x < 1 || new_tile.x > lif::LEVEL_WIDTH 
-					|| new_tile.y < 1 || new_tile.y > lif::LEVEL_HEIGHT) {
+			if (new_tile.x < 1 || new_tile.x > lif::LEVEL_WIDTH
+				|| new_tile.y < 1 || new_tile.y > lif::LEVEL_HEIGHT)
+			{
 				propagating[dir] = false;
 				continue;
 			}
@@ -117,8 +120,10 @@ Explosion* Explosion::propagate(lif::LevelManager& lm) {
 			++propagation[dir];
 
 			// Check if a solid fixed entity blocks propagation in this direction
-			for (auto ent : entities.getEntitiesAtTile(new_tile)) {
-				const auto entcld = ent.lock()->get<lif::Collider>();
+			const auto rect = sf::FloatRect(new_tile.x * TILE_SIZE, new_tile.y * TILE_SIZE,
+					TILE_SIZE, TILE_SIZE);
+			for (auto ent : entities.getCollidersIntersecting(rect)) {
+				const auto entcld = ent.lock();
 				if (entcld != nullptr && lif::c_layers::solid[entcld->getLayer()][
 						lif::c_layers::EXPLOSIONS])
 				{
