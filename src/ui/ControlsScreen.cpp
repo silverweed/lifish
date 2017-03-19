@@ -128,7 +128,11 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 3 * bounds.height));
 	interactables["back"] = std::make_unique<Interactable>(text);
 
-	// Setup internal callbacks
+	_setupCallbacks();
+	_setupTransitions();
+}
+
+void ControlsScreen::_setupCallbacks() {
 	callbacks["p1"] = [this] () { return _selectPlayer(1); };
 	callbacks["p2"] = [this] () { return _selectPlayer(2); };
 	callbacks["joystick_toggle"] = [this] () { return _toggleJoystick(); };
@@ -137,6 +141,20 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	callbacks["change_right"] = [this] () { return _changeControl("change_right"); };
 	callbacks["change_left"] = [this] () { return _changeControl("change_left"); };
 	callbacks["change_bomb"] = [this] () { return _changeControl("change_bomb"); };
+}
+
+void ControlsScreen::_setupTransitions() {
+	using D = lif::Direction;
+	transitions.add("p1", std::make_pair(D::RIGHT, "p2"));
+	transitions.add("p1", std::make_pair(D::DOWN, "change_up"));
+	transitions.add("p2", std::make_pair(D::DOWN, "change_up"));
+	transitions.add("change_up", std::make_pair(D::DOWN, "change_down"));
+	transitions.add("change_down", std::make_pair(D::DOWN, "change_left"));
+	transitions.add("change_left", std::make_pair(D::DOWN, "change_right"));
+	transitions.add("change_right", std::make_pair(D::DOWN, "change_bomb"));
+	transitions.add("change_bomb", std::make_pair(D::DOWN, "joystick_toggle"));
+	transitions.add("joystick_toggle", std::make_pair(D::DOWN, "back"));
+	transitions.add("back", std::make_pair(D::DOWN, "p1"));
 }
 
 Action ControlsScreen::_selectPlayer(unsigned short id) {

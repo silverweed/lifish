@@ -29,6 +29,8 @@ class PreferencesScreen : public lif::ui::Screen {
 	sf::Texture *speakerTexture = nullptr;
 
 	lif::ui::Action _changeVolume(VolumeType which, VolumeAction what);
+	void _setupCallbacks();
+	void _setupTransitions();
 public:
 	explicit PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& size);
 };

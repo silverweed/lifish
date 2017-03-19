@@ -25,6 +25,8 @@ class ControlsScreen : public lif::ui::Screen {
 	/** Toggles the lif::useJoystick variable for the selected player */
 	lif::ui::Action _toggleJoystick();
 
+	void _setupCallbacks();
+	void _setupTransitions();
 public:
 	explicit ControlsScreen(const sf::RenderWindow& window, const sf::Vector2u& size);
 

@@ -57,6 +57,7 @@ void JoystickListener::_listen(sf::Joystick::Axis ax) {
 			ascending = false;
 		} else if (!ascending && aval < JOYSTICK_INPUT_THRESHOLD) {
 			evtRegistered[static_cast<int>(axis)] = true;
+			latestEvt = axis;
 			started = false;
 		}
 	}
@@ -68,4 +69,8 @@ bool JoystickListener::evtMoved(JoystickListener::Axis a) const {
 
 bool JoystickListener::isAnyEvtMoved() const {
 	return std::find(evtRegistered.begin(), evtRegistered.end(), true) != evtRegistered.end();
+}
+
+JoystickListener::Axis JoystickListener::getLatestEvt() const {
+	return latestEvt;
 }

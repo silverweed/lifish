@@ -22,12 +22,12 @@ void JoystickManager::update() {
 		l.update();
 }
 
-bool JoystickManager::isAnyEvtMoved() const {
+int JoystickManager::isAnyEvtMoved() const {
 	for (unsigned i = 0; i < listeners.size(); ++i) {
 		if (sf::Joystick::isConnected(i) && listeners[i].isAnyEvtMoved())
-			return true;
+			return i;
 	}
-	return false;
+	return -1;
 }
 
 bool JoystickManager::handleEvent(sf::Window&, sf::Event) {

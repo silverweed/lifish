@@ -113,7 +113,11 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 3 * bounds.height));
 	interactables["back"] = std::make_unique<Interactable>(text);
 
-	// Setup internal callbacks
+	_setupCallbacks();
+	_setupTransitions();
+}
+
+void PreferencesScreen::_setupCallbacks() {
 	callbacks["music_volume_up"] = [this] () {
 		return _changeVolume(VolumeType::MUSIC, VolumeAction::RAISE);
 	};
@@ -132,6 +136,24 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	callbacks["sounds_mute_toggle"] = [this] () {
 		return _changeVolume(VolumeType::SOUND, VolumeAction::MUTE_TOGGLE);
 	};
+}
+
+void PreferencesScreen::_setupTransitions() {
+	using D = lif::Direction;
+	transitions.add("music_volume_down",  std::make_pair(D::RIGHT, "music_volume_up"));
+	transitions.add("music_volume_down",  std::make_pair(D::DOWN,  "sounds_volume_down"));
+	transitions.add("music_volume_down",  std::make_pair(D::LEFT,  "music_mute_toggle"));
+	transitions.add("music_volume_up",    std::make_pair(D::RIGHT, "music_mute_toggle"));
+	transitions.add("sounds_volume_down", std::make_pair(D::RIGHT, "sounds_volume_up"));
+	transitions.add("sounds_volume_down", std::make_pair(D::LEFT,  "sounds_mute_toggle"));
+	transitions.add("sounds_volume_down", std::make_pair(D::DOWN,  "controls"));
+	transitions.add("sounds_volume_up",   std::make_pair(D::RIGHT, "sounds_mute_toggle"));
+	transitions.add("sounds_volume_up",   std::make_pair(D::DOWN,  "controls"));
+	transitions.add("sounds_mute_toggle", std::make_pair(D::DOWN,  "controls"));
+	transitions.add("music_volume_up",    std::make_pair(D::DOWN,  "sounds_volume_up"));
+	transitions.add("music_mute_toggle",  std::make_pair(D::DOWN,  "sounds_mute_toggle"));
+	transitions.add("controls",           std::make_pair(D::DOWN,  "back"));
+	transitions.add("back",               std::make_pair(D::DOWN,  "music_volume_down"));
 }
 
 Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {

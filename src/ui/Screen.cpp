@@ -30,7 +30,7 @@ void Screen::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 }
 
 void Screen::update() {
-	if (lif::joystick::JoystickManager::getInstance().isAnyEvtMoved())
+	if (lif::joystick::JoystickManager::getInstance().isAnyEvtMoved() >= 0)
 		usingJoystick = true;
 
 	if (usingJoystick)
@@ -116,31 +116,36 @@ void Screen::_updateSelectedMouse() {
 		selected.second->setColor(sf::Color::Red);
 }
 
+static lif::Direction axis2dir(const lif::joystick::JoystickListener::Axis axis) {
+	using A = lif::joystick::JoystickListener::Axis;
+	using D = lif::Direction;
+	switch (axis) {
+	case A::L_LEFT: return D::LEFT;
+	case A::L_RIGHT: return D::RIGHT;
+	case A::L_DOWN: return D::DOWN;
+	case A::L_UP: return D::UP;
+	default: break;
+	}
+	return D::NONE;
+}
+
 void Screen::_updateSelectedJoystick() {
-	// FIXME! should iterate in order
-	if (lif::joystick::JoystickManager::getInstance().isAnyEvtMoved()) {
+	const auto& jm = lif::joystick::JoystickManager::getInstance();
+	int n = -1;
+	if ((n = jm.isAnyEvtMoved()) >= 0) {
 		if (selected.second == nullptr) {
-select_begin:
-			const auto& pair = *(interactables.begin());
-			selected = std::make_pair(pair.first, pair.second.get());
+			const auto name = transitions.first();
+			selected = std::make_pair(name, interactables[name].get());
 		} else {
 			selected.second->setColor(sf::Color::White);
-			for (auto it = interactables.begin(); it != interactables.end(); ++it) {
-				if (it->second.get() == selected.second) {
-					auto nxt = it;
-					++nxt;
-					if (nxt == interactables.end())
-						goto select_begin;
-					else {
-						selected = std::make_pair(nxt->first, nxt->second.get());
-						break;
-					}
-				}
+			const auto nxt = transitions.get(selected.first, axis2dir(jm.getListener(n).getLatestEvt()));
+			if (nxt != "") {
+				selected = std::make_pair(nxt, interactables[nxt].get());
 			}
 		}
+		if (selected.second != nullptr)
+			selected.second->setColor(sf::Color::Red);
 	}
-	if (selected.second != nullptr)
-		selected.second->setColor(sf::Color::Red);
 }
 
 void Screen::_saveMousePos(int x, int y) {

@@ -123,8 +123,7 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 
 	if (interactable) {
 		const auto name = text["name"].get<std::string>();
-		screen.interactables[name] = std::unique_ptr<lif::ui::Interactable>(
-				new lif::ui::Interactable(newtxt));
+		screen.interactables[name] = std::make_unique<lif::ui::Interactable>(newtxt);
 	} else {
 		newtxt->setShadowSpacing(2, 2);
 		screen.nonInteractables.emplace_back(newtxt);
@@ -191,8 +190,7 @@ void ScreenBuilder::_addImage(lif::ui::Screen& screen, const json& image) {
 
 	if (interactable) {
 		const auto name = image["name"].get<std::string>();
-		screen.interactables[name] = std::unique_ptr<lif::ui::Interactable>(
-				new lif::ui::Interactable(newimg));
+		screen.interactables[name] = std::make_unique<lif::ui::Interactable>(newimg);
 	} else
 		screen.nonInteractables.emplace_back(newimg);
 }
@@ -228,6 +226,29 @@ void ScreenBuilder::_fixAlign(lif::ui::Screen& screen) {
 	}
 }
 
+void ScreenBuilder::_calcTransitions(lif::ui::Screen& screen) {
+	using ElemPair = std::pair<lif::ui::Interactable*, std::string>;
+	struct PosCmp {
+		bool operator()(const ElemPair& e1, const ElemPair& e2) const {
+			return e1.first->getPosition().y < e2.first->getPosition().y;
+		}
+	};
+	std::set<ElemPair, PosCmp> elems;
+	// Create a set of interactables ordered by y ascending
+	for (const auto& pair : screen.interactables)
+		elems.emplace(pair.second.get(), pair.first);
+	
+	// Add up/down transitions
+	using D = lif::Direction;
+	for (auto it = elems.begin(); it != elems.end(); ++it) {
+		const auto nxt = std::next(it);
+		if (nxt == elems.end())
+			screen.transitions.add(it->second, std::make_pair(D::DOWN, elems.begin()->second));
+		else
+			screen.transitions.add(it->second, std::make_pair(D::DOWN, nxt->second));
+	}
+}
+
 void ScreenBuilder::build(lif::ui::Screen& screen, const std::string& layoutFileName) {
 	if (screen.wasBuilt())
 		throw std::logic_error("screen passed to ScreenBuilder has already been built!");
@@ -260,6 +281,9 @@ void ScreenBuilder::build(lif::ui::Screen& screen, const std::string& layoutFile
 
 	// fix elements' align
 	_fixAlign(screen);
+
+	// calculate transitions
+	_calcTransitions(screen);
 
 	// load bg sprite
 	screen._loadBGSprite(bgSpritePath);

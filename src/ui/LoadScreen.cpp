@@ -37,7 +37,6 @@ LoadScreen::LoadScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	text->setCharacterSize(size);
 	nonInteractables.emplace_back(text);
 
-
 	// Back
 	text = new lif::ShadedText(font, "Back", sf::Vector2f(ipadx, ipady));
 	text->setCharacterSize(size);
@@ -47,6 +46,9 @@ LoadScreen::LoadScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 }
 
 void LoadScreen::onLoad() {
+
+	selected = std::make_pair("", nullptr);
+
 	// Wipe out old elements
 	{
 		auto begin = nonInteractables.begin();
@@ -62,6 +64,7 @@ void LoadScreen::onLoad() {
 			++it;
 	}
 	callbacks.clear();
+	transitions.clear();
 
 	const auto size = 20;
 	const auto font = lif::getAsset("fonts", lif::fonts::CUTSCENES);
@@ -80,19 +83,31 @@ void LoadScreen::onLoad() {
 
 	unsigned col = 0,
 	         row = 0;
+	std::string prevLcbname, prevDcbname;
 	for (const auto& save : saves) {
-		// Setup delete file
+		// Setup delete button
 		auto text = new lif::ShadedText(font, "[x]", pos);
 		text->setCharacterSize(size);
 		const auto dcbname = _newUniqueId();
 		interactables[dcbname] = std::make_unique<lif::ui::Interactable>(text);
 		callbacks[dcbname] = _createDeleteCallback(save.path);
 
+		// Setup load button
 		text = new lif::ShadedText(font, save.displayName.substr(0, 10), pos + sf::Vector2f(35, 0));
 		text->setCharacterSize(size);
 		const auto lcbname = _newUniqueId();
 		interactables[lcbname] = std::make_unique<lif::ui::Interactable>(text);
 		callbacks[lcbname] = _createLoadCallback(save.path);
+
+		transitions.add(lcbname, std::make_pair(lif::Direction::LEFT, dcbname));
+		if (prevLcbname.length() > 0) {
+			transitions.add(lcbname, std::make_pair(lif::Direction::UP, prevLcbname));
+			transitions.add(dcbname, std::make_pair(lif::Direction::UP, prevDcbname));
+		}
+		prevLcbname = lcbname;
+		prevDcbname = dcbname;
+
+		// Calculate new position
 		if (++col == 10) {
 			col = 0;
 			pos.x += 200;
@@ -103,4 +118,6 @@ void LoadScreen::onLoad() {
 			pos.y += 30;
 		}
 	}
+
+	transitions.add("back", std::make_pair(lif::Direction::UP, prevLcbname));
 }

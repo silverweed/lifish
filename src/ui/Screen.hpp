@@ -9,6 +9,7 @@
 #include "WithOrigin.hpp"
 #include "Action.hpp"
 #include "WindowContext.hpp"
+#include "TransitionGraph.hpp"
 
 namespace lif {
 
@@ -57,6 +58,9 @@ protected:
 
 	/** The currently selected element, if any */
 	std::pair<std::string, lif::ui::Interactable*> selected;
+
+	/** The elements transition graph, used when navigating via joystick */
+	lif::ui::TransitionGraph transitions;
 
 
 	Screen(const sf::RenderWindow& window, const sf::Vector2u& size);

@@ -34,6 +34,7 @@ private:
 	 */
 	std::array<bool, static_cast<int>(Axis::N_AXES)> evtAscending;
 	std::array<bool, static_cast<int>(Axis::N_AXES)> evtRegistered;
+	Axis latestEvt = Axis::N_AXES;
 
 	void _listen(sf::Joystick::Axis axis);
 	/** @return a pair of axes which are the "negative" and "positive" halves of the SFML Axis passed */
@@ -51,6 +52,7 @@ public:
 	bool evtMoved(Axis a) const;
 	/** @return true if any axis has event == true */
 	bool isAnyEvtMoved() const;
+	Axis getLatestEvt() const;
 
 	void update();
 };

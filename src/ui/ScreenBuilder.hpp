@@ -31,6 +31,7 @@ class ScreenBuilder final : private sf::NonCopyable {
 	void _addText(lif::ui::Screen& screen, const nlohmann::json& screenJSON);
 	void _addImage(lif::ui::Screen& screen, const nlohmann::json& screenJSON);
 	void _fixAlign(lif::ui::Screen& screen);
+	void _calcTransitions(lif::ui::Screen& screen);
 
 public:
 	explicit ScreenBuilder() {}
