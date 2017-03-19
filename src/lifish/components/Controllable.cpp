@@ -40,7 +40,8 @@ void Controllable::update() {
 				dir = lif::Direction::LEFT;
 			else if (horizontal > lif::JOYSTICK_INPUT_THRESHOLD)
 				dir = lif::Direction::RIGHT;
-		} else {
+		}
+		if (dir == lif::Direction::NONE) {
 			if (sf::Keyboard::isKeyPressed(controls[lif::controls::CTRL_UP]))
 				dir = lif::Direction::UP;
 			else if (sf::Keyboard::isKeyPressed(controls[lif::controls::CTRL_LEFT]))
