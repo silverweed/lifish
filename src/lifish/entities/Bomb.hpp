@@ -30,13 +30,14 @@ class Bomb : public lif::Entity {
 	lif::Animated *animated = nullptr;
 	lif::Killable *killable = nullptr;
 
-	/** The player who dropped this bomb */
-	const lif::Player& sourcePlayer;
+	/** The entity who dropped this bomb */
+	const lif::Entity *const sourceEntity = nullptr;
 
 public:
 
-	explicit Bomb(const sf::Vector2f& pos, const lif::Player& source, 
-			const sf::Time& fuseTime = lif::conf::bomb::DEFAULT_FUSE, 
+	explicit Bomb(const sf::Vector2f& pos,
+			const lif::Entity *const source = nullptr,
+			const sf::Time& fuseTime = lif::conf::bomb::DEFAULT_FUSE,
 			const unsigned short radius = lif::conf::bomb::DEFAULT_RADIUS,
 			bool isIncendiary = false);
 
@@ -55,7 +56,7 @@ public:
 
 	void setIncendiary(bool b) { incendiary = b; }
 
-	const lif::Player& getSourcePlayer() const { return sourcePlayer; }
+	const lif::Entity* getSourceEntity() const { return sourceEntity; }
 };
 
 }

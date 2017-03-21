@@ -44,7 +44,7 @@ void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm
 		&& lm.canDeployBombAt(lif::tile(player->getPosition())))
 	{
 		auto bomb = new lif::Bomb(lif::aligned(player->getPosition()), 
-					*player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius,
+					player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius,
 					pinfo.powers.incendiaryBomb);
 		lif::cache.playSound(bomb->get<lif::Sounded>()->getSoundFile("fuse"));
 		tbspawned.push_back(bomb);

@@ -199,7 +199,13 @@ void LevelManager::_spawn(lif::Entity *e) {
 }
 
 void LevelManager::_spawnBomb(lif::Bomb *b) {
-	const auto id = b->getSourcePlayer().getInfo().id - 1;
+	const auto player = dynamic_cast<const lif::Player*>(b->getSourceEntity());
+	if (player == nullptr) {
+		// Bomb was not spawned by a player
+		entities.add(b);
+		return;
+	}
+	const auto id = player->getInfo().id - 1;
 	// Spawn bomb only if player has not deployed all the available ones already
 	for (unsigned i = 0; i < bombs[id].size(); ++i) {
 		if (bombs[id][i].expired()) {

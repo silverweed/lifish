@@ -17,14 +17,14 @@ using lif::Bomb;
 using lif::TILE_SIZE;
 using namespace lif::conf::bomb;
 
-Bomb::Bomb(const sf::Vector2f& pos, const lif::Player& source,
+Bomb::Bomb(const sf::Vector2f& pos, const lif::Entity *const source,
 		const sf::Time& _fuseTime, const unsigned short _radius,
 		bool isIncendiary)
 	: lif::Entity(pos)
 	, fuseTime(_fuseTime)
 	, radius(_radius)
 	, incendiary(isIncendiary)
-	, sourcePlayer(source)
+	, sourceEntity(source)
 {
 	addComponent<lif::Fixed>(*this);
 	fuseClock = addComponent<lif::Clock>(*this);
@@ -48,7 +48,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Player& source,
 	}, lif::c_layers::BOMBS);
 	addComponent<lif::Drawable>(*this, *animated);
 	addComponent<lif::Spawning>(*this, [this] () {
-		return new lif::Explosion(position, radius, &sourcePlayer, incendiary);
+		return new lif::Explosion(position, radius, sourceEntity, incendiary);
 	});
 	addComponent<lif::LightSource>(*this, 0);
 
