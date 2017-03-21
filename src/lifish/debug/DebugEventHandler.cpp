@@ -10,8 +10,12 @@
 #include "MusicManager.hpp"
 #include "GameContext.hpp"
 #include <iostream>
+#include <iomanip>
+#include <map>
 
 using lif::debug::DebugEventHandler;
+
+static void _printEntitiesDetails(const lif::EntityGroup& entities);
 
 DebugEventHandler::DebugEventHandler(lif::GameContext& game)
 	: game(game)
@@ -29,6 +33,7 @@ DebugEventHandler::DebugEventHandler(lif::GameContext& game)
  * L : step game simulation (pauses if needed)
  * M : morph all enemies
  * N : kill all enemies
+ * \ : print number of entities
  * . : give infinite shield to player
  * + : forward one level
  * - : back one level
@@ -114,6 +119,9 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 					.setVolume(lif::options.musicVolume).play();
 				return true;
 			}
+		case sf::Keyboard::BackSlash:
+			_printEntitiesDetails(game.lm.getEntities());
+			break;
 		default: 
 			break;
 		}
@@ -121,4 +129,22 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 		break;
 	}
 	return false;
+}
+
+void _printEntitiesDetails(const lif::EntityGroup& entities) {
+	std::map<std::string, unsigned> count;
+	std::size_t largest = 1;
+	entities.apply([&count, &largest] (const lif::Entity *e) {
+		++count["all"];
+		const auto tname = e->getTypeName();
+		++count[tname];
+		largest = std::max(largest, tname.length() + 1);
+	});
+	std::cerr << "# Entities: " << count["all"] << "\n";
+	for (const auto& pair : count) {
+		if (pair.first == "all") continue;
+		std::cerr << "    " << std::setw(largest) << std::left << pair.first << ": " 
+			<< std::right << pair.second << "\n";
+	}
+	std::cerr << std::endl;
 }

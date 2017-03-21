@@ -114,3 +114,11 @@ void Entity::translate(const sf::Vector2f& offset) {
 std::string Entity::toString() const {
 	return _toString(0);
 }
+
+std::string Entity::getTypeName() const {
+	auto name = DEMANGLE(typeid(*this).name());
+	const auto idx = name.find_last_of(":");
+	if (idx != std::string::npos && idx < name.length() - 1)
+		name = name.substr(idx + 1);
+	return name;
+}

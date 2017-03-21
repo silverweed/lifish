@@ -8,6 +8,9 @@ namespace lif {
 class Animated;
 class Spawning;
 
+/**
+ * A DroppingBomb is an Entity which spawns a Bomb after a short falling animation.
+ */
 class DroppingBomb : public lif::Entity {
 
 	lif::Animated *animated = nullptr;

@@ -90,6 +90,7 @@ public:
 	
 	/** Implements Stringable */
 	virtual std::string toString() const override;
+	std::string getTypeName() const;
 
 	virtual sf::Vector2f getPosition() const;
 	virtual void setPosition(const sf::Vector2f& p);
