@@ -62,11 +62,13 @@ SidePanel::SidePanel(const lif::LevelManager& lm)
 			bonusesSprite[i][j].setPosition(pos);
 			bonusesSprite[i][j].setColor(DISABLED_COLOR);
 			pos.x += BONUS_ICON_WIDTH;
-			if (j != 0 && j % 10 == 0) 
+			if (j != 0 && j % 10 == 0)
 				pos.y += BONUS_ICON_HEIGHT;
 		}
+		bonusesSprite[i][bonusesSprite[i].size() - 2].setPosition(sf::Vector2f(
+					pos.x - 3 * BONUS_ICON_WIDTH, pos.y + 2 * BONUS_ICON_HEIGHT));
 		bonusesSprite[i][bonusesSprite[i].size() - 1].setPosition(sf::Vector2f(
-					pos.x - 2 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT));
+					pos.x - 3 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT));
 	}
 }
 

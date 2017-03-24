@@ -29,7 +29,9 @@
 using EntityList = std::vector<lif::Entity*>;
 
 void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm, EntityList& tbspawned) {
+	// Used for throwable bombs' detonators
 	static std::array<sf::Clock, lif::MAX_PLAYERS> latestDetonation;
+
 	auto& lm = static_cast<lif::LevelManager&>(blm);
 	if (!lm.isPlayer(*e)) return;
 	auto player = static_cast<lif::Player*>(e);
@@ -52,7 +54,7 @@ void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm
 					if (found) return;
 					auto bomb = dynamic_cast<lif::Bomb*>(e);
 					if (bomb == nullptr) return;
-					auto source = dynamic_cast<const lif::Player*>(bomb->getSourceEntity());
+					const auto source = dynamic_cast<const lif::Player*>(bomb->getSourceEntity());
 					if (source == nullptr || source->getInfo().id != id) return;
 					if (bomb->getCurrentFuse() > sf::seconds(0.5)) {
 						bomb->ignite();
@@ -70,21 +72,11 @@ void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm
 					pinfo.powers.incendiaryBomb);
 		lif::cache.playSound(bomb->get<lif::Sounded>()->getSoundFile("fuse"));
 		if (pinfo.powers.throwableBomb) {
-			const auto pdir = player->get<lif::AxisMoving>()->getDirection();
-			if (pdir != lif::Direction::NONE) {
-				sf::Vector2f off(0, 0);
-				switch (pdir) {
-				case lif::Direction::UP: off.y -= lif::TILE_SIZE/2; break;
-				case lif::Direction::DOWN: off.y += lif::TILE_SIZE*3/2; break;
-				case lif::Direction::LEFT: off.x -= lif::TILE_SIZE/2; break;
-				case lif::Direction::RIGHT: off.x += lif::TILE_SIZE*3/2; break;
-				default: break;
-				}
-				bomb->setPosition(bomb->getPosition() + off);
-				// FIXME: why does the bomb realign when throws right or down?
-			}
-			bomb->addComponent<lif::AxisMoving>(*bomb, lif::conf::player::DEFAULT_SPEED * 1.5, pdir)
+			bomb->addComponent<lif::AxisMoving>(*bomb, lif::conf::player::DEFAULT_SPEED * 1.5,
+				player->get<lif::AxisMoving>()->getDirection())
 				->setAutoRealign(false);
+			bomb->setPosition(static_cast<sf::Vector2f>(lif::tile2(player->getPosition()))
+					* static_cast<float>(lif::TILE_SIZE));
 		}
 		tbspawned.push_back(bomb);
 	}

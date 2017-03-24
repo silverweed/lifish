@@ -49,6 +49,7 @@ struct MainArgs {
 	std::string levelset_name;
 	bool mute_sounds;
 	bool mute_music;
+	int fps;
 #ifndef RELEASE
 	bool start_from_home;
 #endif	
@@ -76,6 +77,12 @@ static void parse_args(int argc, char **argv, /* out */ MainArgs& args) {
 			case 'm':
 				args.mute_music = !args.mute_music;
 				break;
+			case 'f':
+				if (i < argc - 1)
+					args.fps = std::atoi(argv[++i]);
+				else
+					std::cerr << "[ WARNING ] Expected numeral after -f flag" << std::endl;
+				break;
 #ifndef RELEASE
 			case 'u':
 				args.start_from_home = true;
@@ -88,15 +95,17 @@ static void parse_args(int argc, char **argv, /* out */ MainArgs& args) {
 				print_level_info = true;
 				break;
 			default:
-				std::cout << "Usage: " << argv[0] << " [-l <levelnum>] [-v] [levelset.json]\r\n"
-					  << "\t-l: start at level <levelnum>\r\n"
-					  << "\t-i: print info about <levelset.json> and exit\r\n"
-					  << "\t-s: start with sounds muted\r\n"
-					  << "\t-m: start with music muted\r\n"
+				std::cout << "Usage: " << argv[0]
+				          << " [-l <levelnum>] [-v] [-f <fps>] [levelset.json]\r\n"
+				          << "\t-l: start at level <levelnum>\r\n"
+				          << "\t-i: print info about <levelset.json> and exit\r\n"
+				          << "\t-s: start with sounds muted\r\n"
+				          << "\t-m: start with music muted\r\n"
+				          << "\t-f: set framerate limit to <fps>\r\n"
 #ifndef RELEASE
-					  << "\t-u: start in the home screen, not in game\r\n"
+				          << "\t-u: start in the home screen, not in game\r\n"
 #endif
-					  << "\t-v: print version and exit" << std::endl;
+				          << "\t-v: print version and exit" << std::endl;
 				std::exit(1);
 			}
 		} else {
@@ -151,6 +160,7 @@ int main(int argc, char **argv) {
 	// Argument parsing
 	MainArgs args;
 	args.start_level = 1;
+	args.fps = 120;
 	args.levelset_name = "";
 	args.mute_music = true; // FIXME
 	args.mute_sounds = true; // FIXME
@@ -182,7 +192,7 @@ int main(int argc, char **argv) {
 			sf::VideoMode(lif::options.windowSize.x, lif::options.windowSize.y),
 			"Lifish " VERSION);
 	lif::options.vsync = true;
-	lif::options.framerateLimit = 120;
+	lif::options.framerateLimit = args.fps;
 	window.setFramerateLimit(lif::options.framerateLimit);
 	window.setJoystickThreshold(lif::JOYSTICK_INPUT_THRESHOLD);
 #ifndef RELEASE

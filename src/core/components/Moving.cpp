@@ -4,7 +4,7 @@
 
 using lif::Moving;
 
-const sf::Time Moving::MAX_FRAME_TIME = sf::seconds(1 / 60.f);
+const sf::Time Moving::MAX_FRAME_TIME = sf::seconds(1 / 30.f);
 
 Moving::Moving(lif::Entity& owner, float speed)
 	: lif::Component(owner)
