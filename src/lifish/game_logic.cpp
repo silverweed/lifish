@@ -23,30 +23,69 @@
 #include "Letter.hpp"
 #include "BreakableWall.hpp"
 #include "ShootingPoint.hpp"
+#include "AxisMoving.hpp"
+#include <array>
 
 using EntityList = std::vector<lif::Entity*>;
 
 void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm, EntityList& tbspawned) {
+	static std::array<sf::Clock, lif::MAX_PLAYERS> latestDetonation;
 	auto& lm = static_cast<lif::LevelManager&>(blm);
 	if (!lm.isPlayer(*e)) return;
 	auto player = static_cast<lif::Player*>(e);
 
 	const auto pinfo = player->getInfo();
-	if (player->get<lif::Controllable>()->hasFocus() 
-		&& player->isAligned() 
-		&& ((lif::controls::useJoystick[pinfo.id-1] >= 0 
+	if (player->get<lif::Controllable>()->hasFocus()
+		&& lm.canDeployBomb(*player)
+		&& ((lif::controls::useJoystick[pinfo.id-1] >= 0
 			&& sf::Joystick::isButtonPressed(
-				lif::controls::useJoystick[pinfo.id-1], 
+				lif::controls::useJoystick[pinfo.id-1],
 				lif::controls::joystickBombKey[pinfo.id-1]))
 			|| sf::Keyboard::isKeyPressed(
 				lif::controls::players[pinfo.id-1][lif::controls::CTRL_BOMB]))
-		&& lm.bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs
 		&& lm.canDeployBombAt(lif::tile(player->getPosition())))
 	{
-		auto bomb = new lif::Bomb(lif::aligned(player->getPosition()), 
+		if (pinfo.powers.throwableBomb) {
+			if (lm.bombsDeployedBy(pinfo.id) > 0) {
+				bool found = false;
+				lm.getEntities().apply([&found, id = pinfo.id] (lif::Entity *e) {
+					if (found) return;
+					auto bomb = dynamic_cast<lif::Bomb*>(e);
+					if (bomb == nullptr) return;
+					auto source = dynamic_cast<const lif::Player*>(bomb->getSourceEntity());
+					if (source == nullptr || source->getInfo().id != id) return;
+					if (bomb->getCurrentFuse() > sf::seconds(0.5)) {
+						bomb->ignite();
+						found = true;
+						latestDetonation[id-1].restart();
+					}
+				});
+				return;
+			} else if (latestDetonation[pinfo.id-1].getElapsedTime() < sf::seconds(0.5)) {
+				return;
+			}
+		}
+		auto bomb = new lif::Bomb(lif::aligned(player->getPosition()),
 					player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius,
 					pinfo.powers.incendiaryBomb);
 		lif::cache.playSound(bomb->get<lif::Sounded>()->getSoundFile("fuse"));
+		if (pinfo.powers.throwableBomb) {
+			const auto pdir = player->get<lif::AxisMoving>()->getDirection();
+			if (pdir != lif::Direction::NONE) {
+				sf::Vector2f off(0, 0);
+				switch (pdir) {
+				case lif::Direction::UP: off.y -= lif::TILE_SIZE/2; break;
+				case lif::Direction::DOWN: off.y += lif::TILE_SIZE*3/2; break;
+				case lif::Direction::LEFT: off.x -= lif::TILE_SIZE/2; break;
+				case lif::Direction::RIGHT: off.x += lif::TILE_SIZE*3/2; break;
+				default: break;
+				}
+				bomb->setPosition(bomb->getPosition() + off);
+				// FIXME: why does the bomb realign when throws right or down?
+			}
+			bomb->addComponent<lif::AxisMoving>(*bomb, lif::conf::player::DEFAULT_SPEED * 1.5, pdir)
+				->setAutoRealign(false);
+		}
 		tbspawned.push_back(bomb);
 	}
 }

@@ -15,11 +15,12 @@ enum class BonusType {
 	SHIELD,
 	SPEEDY,
 	INCENDIARY_BOMB,
+	THROWABLE_BOMB,
 	// One-time bonuses
 	ZAPPER,
 	SUDDEN_DEATH,
 	HEALTH_SMALL,
-	HEALTH_FULL  
+	HEALTH_FULL
 };
 
 std::string bonusToString(lif::BonusType type);

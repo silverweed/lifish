@@ -53,6 +53,8 @@ public:
 
 	/** Returns true if this bomb's fuse is over and the bomb should blow off. */
 	void setFuseTime(const sf::Time& ft) { fuseTime = ft; }
+	sf::Time getFuseTime() const { return fuseTime; }
+	sf::Time getCurrentFuse() const;
 
 	void setIncendiary(bool b) { incendiary = b; }
 

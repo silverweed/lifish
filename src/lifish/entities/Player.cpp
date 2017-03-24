@@ -113,6 +113,9 @@ void Player::_init() {
 	animated->setAnimation(a_idle);
 	animatedSprite.setLooped(true, false);
 	animatedSprite.play();
+
+	// FIXME
+	info.powers.throwableBomb = true;
 }
 
 void Player::update() {

@@ -157,6 +157,13 @@ void LevelManager::resetPlayerPersistentData() {
 	playerContinues.fill(lif::conf::player::INITIAL_CONTINUES);
 }
 
+bool LevelManager::canDeployBomb(const lif::Player& player) const {
+	const auto pinfo = player.getInfo();
+	return pinfo.powers.throwableBomb
+		? true
+		: player.isAligned() && bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs;
+}
+
 bool LevelManager::canDeployBombAt(const sf::Vector2i& tile) const {
 	if (_isBombAt(tile)) return false;
 	bool there_are_expl = false;

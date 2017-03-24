@@ -26,7 +26,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Entity *const source,
 	, incendiary(isIncendiary)
 	, sourceEntity(source)
 {
-	addComponent<lif::Fixed>(*this);
+	//addComponent<lif::Fixed>(*this);
 	fuseClock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("explosion", lif::getAsset("sounds", "explosion.ogg")),
@@ -88,7 +88,11 @@ void Bomb::update() {
 }
 
 void Bomb::ignite() {
-	fuseTime = sf::milliseconds(50); 
+	fuseTime = sf::milliseconds(50);
 	fuseClock->restart();
-	ignited = true; 
+	ignited = true;
+}
+
+sf::Time Bomb::getCurrentFuse() const {
+	return fuseClock->getElapsedTime();
 }

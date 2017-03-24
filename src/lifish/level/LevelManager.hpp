@@ -125,6 +125,8 @@ public:
 
 	/** Checks whether the owner of `am` can proceed along direction `dir` */
 	bool canGo(const lif::AxisMoving& am, const lif::Direction dir) const;
+	/** @return whether a player can deploy a bomb or not */
+	bool canDeployBomb(const lif::Player& player) const;
 	/** A bomb can be deployed in a tile only if no other bomb or explosion is currently in that tile */
 	bool canDeployBombAt(const sf::Vector2i& tile) const;
 	/** Returns the number of bombs currently deployed by id-th player */

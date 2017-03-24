@@ -26,6 +26,7 @@ struct PlayerInfo {
 		unsigned short maxBombs   = lif::conf::player::DEFAULT_MAX_BOMBS;
 		sf::Time bombFuseTime     = lif::conf::bomb::DEFAULT_FUSE;
 		bool incendiaryBomb       = false;
+		bool throwableBomb        = false;
 	} powers;
 
 	short remainingLives = lif::conf::player::INITIAL_LIVES - 1;
@@ -44,6 +45,7 @@ struct PlayerInfo {
 		powers.maxBombs = lif::conf::player::DEFAULT_MAX_BOMBS;
 		powers.bombFuseTime = lif::conf::bomb::DEFAULT_FUSE;
 		powers.incendiaryBomb = false;
+		powers.throwableBomb = false;
 	}
 };
 
@@ -101,6 +103,7 @@ public:
 	void setMaxBombs(unsigned short m) { info.powers.maxBombs = m; }
 	void setBombFuseTime(sf::Time t) { info.powers.bombFuseTime = t; }
 	void setIncendiaryBomb(bool b) { info.powers.incendiaryBomb = b; }
+	void setThrowableBomb(bool b) { info.powers.throwableBomb = b; }
 	void setExtra(unsigned short n, bool e) { info.extra[n] = e; }
 	void setRemainingLives(short l) { info.remainingLives = l; }
 
