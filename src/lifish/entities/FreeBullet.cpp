@@ -22,7 +22,7 @@ FreeBullet::FreeBullet(const sf::Vector2f& pos, lif::Angle angle,
 	position.x += (TILE_SIZE - data.size) / 2;
 	position.y += (TILE_SIZE - data.size) / 2;
 
-	auto animated = addComponent<lif::Animated>(*this, lif::getAsset("test", "freebullets.png"));
+	auto animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "freebullets.png"));
 	addComponent<lif::Drawable>(*this, *animated);
 	
 	auto& a_move = animated->addAnimation("move");
