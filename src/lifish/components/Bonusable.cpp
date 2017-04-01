@@ -7,32 +7,33 @@ Bonusable::Bonusable(lif::Entity& owner)
 	: lif::Component(owner)
 {
 	_declComponent<Bonusable>();
-	bonusClock.fill(addComponent<lif::Clock>(*this));
+	for (unsigned i = 0; i < bonusClock.size(); ++i)
+		bonusClock[i] = addComponent<lif::Clock>(*this);
 	bonusTime.fill(sf::Time::Zero);
 }
 
 void Bonusable::giveBonus(lif::BonusType type, const sf::Time& time) {
-	const auto i = static_cast<unsigned short>(type);
+	const auto i = static_cast<std::size_t>(type);
 	bonusTime[i] = time;
 	bonusClock[i]->restart();
 }
 
 bool Bonusable::hasBonus(lif::BonusType type) const {
-	const auto i = static_cast<unsigned short>(type);
-	return bonusTime[i] < sf::Time::Zero || 
+	const auto i = static_cast<std::size_t>(type);
+	return bonusTime[i] < sf::Time::Zero ||
 		(bonusTime[i] > sf::Time::Zero && bonusClock[i]->getElapsedTime() <= bonusTime[i]);
 }
 
 sf::Time Bonusable::getTime(lif::BonusType type) const {
-	return bonusTime[static_cast<unsigned short>(type)]; 
+	return bonusTime[static_cast<std::size_t>(type)];
 }
 
 sf::Time Bonusable::getElapsedTime(lif::BonusType type) const {
-	return bonusClock[static_cast<unsigned short>(type)]->getElapsedTime();
+	return bonusClock[static_cast<std::size_t>(type)]->getElapsedTime();
 }
 
 sf::Time Bonusable::getRemainingTime(lif::BonusType type) const {
-	const auto i = static_cast<unsigned short>(type);
+	const auto i = static_cast<std::size_t>(type);
 	return std::max(sf::Time::Zero, bonusTime[i] - bonusClock[i]->getElapsedTime());
 }
 

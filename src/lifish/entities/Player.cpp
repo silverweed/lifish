@@ -68,7 +68,7 @@ void Player::_init() {
 	});
 	killable = addComponent<lif::Killable>(*this, [this] () {
 		// on kill
-		_kill(); 
+		_kill();
 	}, [this] () {
 		return death->isKillInProgress();
 	});
@@ -169,7 +169,7 @@ void Player::_checkCollision(lif::Collider& cld) {
 	if (bonusable->hasBonus(lif::BonusType::SHIELD))
 		return;
 
-	unsigned short damage = 0;
+	auto damage = 0;
 	switch (cld.getLayer()) {
 	case L::ENEMIES:
 	case L::ENEMIES_IGNORE_BREAKABLES:
@@ -218,7 +218,7 @@ void Player::_checkCollision(lif::Collider& cld) {
 			bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::player::DAMAGE_SHIELD_TIME);
 		else
 			bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::player::DAMAGE_SHIELD_TIME / 40.f);
-	} 
+	}
 }
 
 void Player::resurrect() {

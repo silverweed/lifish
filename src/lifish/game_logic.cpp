@@ -108,6 +108,11 @@ void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::BaseLevelManager
 		const bool is_boss = dynamic_cast<const lif::Boss*>(&klb->getOwner()) != nullptr;
 		if (is_boss && klb->isKillInProgress()) return;
 
+		// If it's a Grabbable, only give points if actually grabbed and not just expired
+		const auto grabbable = e->get<lif::Grabbable>();
+		if (grabbable != nullptr && !grabbable->isGrabbed())
+			return;
+
 		// Give and spawn points
 		auto target = scored->getTarget();
 		if (target < 0) {
