@@ -130,7 +130,7 @@ static lif::Direction axis2dir(const lif::joystick::JoystickListener::Axis axis)
 }
 
 void Screen::_updateSelectedJoystick() {
-	const auto& jm = lif::joystick::JoystickManager::getInstance();
+	auto& jm = lif::joystick::JoystickManager::getInstance();
 	int n = -1;
 	if ((n = jm.isAnyEvtMoved()) >= 0) {
 		if (selected.second == nullptr) {

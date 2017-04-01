@@ -92,3 +92,12 @@ void BaseLevelManager::resume() {
 	});
 	paused = false;
 }
+
+void BaseLevelManager::disableInputFor(const sf::Time& time) {
+	inputDisableTime = time;
+	inputDisableClock.restart();
+}
+
+bool BaseLevelManager::isInputDisabled() const {
+	return inputDisableClock.getElapsedTime() < inputDisableTime;
+}

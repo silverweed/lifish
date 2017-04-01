@@ -19,7 +19,7 @@ public:
 		return instance;
 	}
 
-	const lif::joystick::JoystickListener& getListener(unsigned n) const { return listeners[n]; }
+	lif::joystick::JoystickListener& getListener(unsigned n) { return listeners[n]; }
 	/** @return -1 if no evtMoved, else the index of the first listener that has an evtMoved */
 	int isAnyEvtMoved() const;
 

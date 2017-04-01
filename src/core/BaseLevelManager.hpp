@@ -35,6 +35,9 @@ protected:
 
 	bool paused = false;
 
+	sf::Time inputDisableTime = sf::Time::Zero;
+	sf::Clock inputDisableClock;
+
 #ifdef MULTITHREADED
 	mutable std::mutex lvMutex;
 #endif
@@ -67,6 +70,9 @@ public:
 	/** Resumes all Clock components of all entities */
 	virtual void resume();
 	bool isPaused() const { return paused; }
+
+	void disableInputFor(const sf::Time& time);
+	bool isInputDisabled() const;
 
 	/** Updates all entities and collisions */
 	virtual void update();

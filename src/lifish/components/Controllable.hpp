@@ -15,11 +15,13 @@ class Controllable : public lif::Component {
 	/** Reference to an external array telling us how to map keys to controls */
 	const std::array<sf::Keyboard::Key, lif::controls::CONTROLS_NUM>& controls;
 	/** Reference to an external variable telling us if we're using a joystick */
-	short& joystickUsed;	
+	short& joystickUsed;
 	lif::AxisMoving *moving = nullptr;
+	sf::Clock disableClock;
+	sf::Time disableTime = sf::Time::Zero;
 
 public:
-	explicit Controllable(lif::Entity& owner, 
+	explicit Controllable(lif::Entity& owner,
 			const std::array<sf::Keyboard::Key, lif::controls::CONTROLS_NUM>& controls,
 			short& joystickUsed);
 
@@ -29,6 +31,8 @@ public:
 	void setWindow(const sf::Window& w) { window = &w; }
 
 	bool hasFocus() const { return window != nullptr && window->hasFocus(); }
+
+	void disableFor(const sf::Time& time) { disableTime = time; disableClock.restart(); }
 };
 
 }

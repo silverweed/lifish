@@ -38,6 +38,7 @@ void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm
 
 	const auto pinfo = player->getInfo();
 	if (player->get<lif::Controllable>()->hasFocus()
+		&& !blm.isInputDisabled()
 		&& lm.canDeployBomb(*player)
 		&& ((lif::controls::useJoystick[pinfo.id-1] >= 0
 			&& sf::Joystick::isButtonPressed(

@@ -40,7 +40,7 @@ LevelManager::LevelManager()
 	reset();
 	resetPlayerPersistentData();
 	for (auto logic : lif::game_logic::functions)
-		logicFunctions.push_back(logic);
+		logicFunctions.emplace_back(logic);
 }
 
 void LevelManager::createNewPlayers(unsigned short n) {

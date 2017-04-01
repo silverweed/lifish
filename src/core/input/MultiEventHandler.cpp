@@ -1,6 +1,6 @@
 #include "MultiEventHandler.hpp"
 #include <SFML/Window.hpp>
-#include <iostream>
+
 using lif::MultiEventHandler;
 
 void MultiEventHandler::handleEvents(sf::Window& window) {

@@ -159,7 +159,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			ss << "X0";
 		else {
 			_drawExtraLetters(window, states, *player);
-			ss << "X" << player->getInfo().remainingLives;
+			ss << "X" << (player->getInfo().remainingLives + 1);
 		}
 
 		lif::ShadedText text(lif::getAsset("fonts", lif::fonts::SIDE_PANEL_MONO), ss.str(), pos);

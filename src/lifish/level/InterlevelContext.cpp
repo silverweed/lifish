@@ -7,6 +7,8 @@
 #include "Player.hpp"
 #include "GameCache.hpp"
 #include "SidePanel.hpp"
+#include "JoystickManager.hpp"
+#include "input_utils.hpp"
 #include <iostream>
 
 using lif::InterlevelContext;
@@ -215,25 +217,48 @@ void InterlevelContext::_ackPromptResponse() {
 
 bool InterlevelContext::handleEvent(sf::Window&, sf::Event event) {
 	if (state != State::PROMPT_CONTINUE) return false;
+	auto select_yes = [this] () {
+		yesSelected = true;
+		yesText.setFillColor(sf::Color::Red);
+		yesText.setCharacterSize(15);
+		noText.setFillColor(sf::Color::White);
+		noText.setCharacterSize(13);
+	};
+	auto select_no = [this] () {
+		yesSelected = false;
+		noText.setFillColor(sf::Color::Red);
+		noText.setCharacterSize(15);
+		yesText.setFillColor(sf::Color::White);
+		yesText.setCharacterSize(13);
+	};
+	auto& jl = lif::joystick::JoystickManager::getInstance().getListener(curPromptedPlayer);
+	// FIXME
+	if (jl.evtMoved(lif::joystick::JoystickListener::Axis::L_LEFT)) {
+		select_yes();
+		return true;
+	} else if (jl.evtMoved(lif::joystick::JoystickListener::Axis::L_RIGHT)) {
+		select_no();
+		return true;
+	}
 	switch (event.type) {
 	case sf::Event::JoystickButtonPressed:
-		// TODO
+		{
+			const auto btn = event.joystickButton.button;
+			if (lif::joystick::isButton(lif::joystick::ButtonType::BTN_DOWN, curPromptedPlayer, btn)
+				|| lif::joystick::isButton(lif::joystick::ButtonType::START, curPromptedPlayer, btn))
+			{
+				_ackPromptResponse();
+				return true;
+			}
+		}
 		break;
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
 		case sf::Keyboard::Left:
-			yesSelected = true;
-			yesText.setFillColor(sf::Color::Red);
-			yesText.setCharacterSize(15);
-			noText.setFillColor(sf::Color::White);
-			noText.setCharacterSize(13);
+			select_yes();
 			return true;
 		case sf::Keyboard::Right:
-			yesSelected = false;
-			noText.setFillColor(sf::Color::Red);
-			noText.setCharacterSize(15);
-			yesText.setFillColor(sf::Color::White);
-			yesText.setCharacterSize(13);
+			select_no();
 			return true;
 		case sf::Keyboard::Return:
 			_ackPromptResponse();

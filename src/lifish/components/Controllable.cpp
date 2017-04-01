@@ -26,13 +26,20 @@ void Controllable::update() {
 	if (window == nullptr)
 		throw std::logic_error("window is null in Controllable::update()!");
 
+	if (disableTime > sf::Time::Zero) {
+		if (disableClock.getElapsedTime() > disableTime)
+			disableTime = sf::Time::Zero;
+		else 
+			return;
+	}
+
 	lif::Direction dir(lif::Direction::NONE);
 
 	if (window->hasFocus()) {
 		if (joystickUsed >= 0) {
 			const auto horizontal = sf::Joystick::getAxisPosition(joystickUsed, sf::Joystick::X),
 				   vertical = sf::Joystick::getAxisPosition(joystickUsed, sf::Joystick::Y);
-			if (vertical < -lif::JOYSTICK_INPUT_THRESHOLD) 
+			if (vertical < -lif::JOYSTICK_INPUT_THRESHOLD)
 				dir = lif::Direction::UP;
 			else if (vertical > lif::JOYSTICK_INPUT_THRESHOLD)
 				dir = lif::Direction::DOWN;

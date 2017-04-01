@@ -255,6 +255,7 @@ int main(int argc, char **argv) {
 
 		///// EVENT LOOP /////
 		
+		lif::joystick::JoystickManager::getInstance().update();
 		cur_context->handleEvents(window);
 
 		if (cur_context == &ui && ui.mustQuitGame())
@@ -294,6 +295,13 @@ int main(int argc, char **argv) {
 						->setGettingReady(startLv);
 				}
 				break;
+			case lif::CTX_GAME:
+				// Keep inputs disabled for a brief period after switching back in game.
+				// This prevents accidental placement of bombs and similar.
+				game->getLM().disableInputFor(sf::seconds(0.5));
+				break;
+			default:
+				break;
 			}
 			cur_context = contexts[nc];
 			cur_context->setActive(true);
@@ -304,7 +312,6 @@ int main(int argc, char **argv) {
 
 		///// LOGIC LOOP /////
 
-		lif::joystick::JoystickManager::getInstance().update();
 		cur_context->update();
 
 		///// RENDERING LOOP //////

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <deque>
+#include <vector>
 #include <memory>
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Window/Window.hpp>
@@ -20,11 +20,11 @@ protected:
 	 *  which will try sequentially to catch it.
 	 *  Useful to share and reuse functionality of event handlers.
 	 */
-	std::deque<std::unique_ptr<lif::EventHandler>> handlers;
+	std::vector<std::unique_ptr<lif::EventHandler>> handlers;
 
 	template<class T, class... Args>
 	void _addHandler(Args... args) {
-		handlers.push_back(std::unique_ptr<lif::EventHandler>(new T(args...)));
+		handlers.emplace_back(new T(args...));
 	}
 public:
 	void handleEvents(sf::Window& window);

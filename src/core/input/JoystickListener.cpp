@@ -8,6 +8,14 @@ constexpr short JOYSTICK_INPUT_THRESHOLD = 50;
 
 JoystickListener::JoystickListener(unsigned jid) : id(jid) {}
 
+JoystickListener::JoystickListener(JoystickListener&& jl)
+	: id(jl.id)
+	, evtStarted(jl.evtStarted)
+	, evtAscending(jl.evtAscending)
+	, evtRegistered(jl.evtRegistered)
+	, latestEvt(jl.latestEvt)
+{}
+
 void JoystickListener::update() {
 	if (!sf::Joystick::isConnected(id))
 		return;

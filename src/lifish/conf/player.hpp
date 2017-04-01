@@ -6,7 +6,7 @@ namespace lif {
 
 namespace conf {
 	namespace player {
-		constexpr unsigned short INITIAL_LIVES = 4;
+		constexpr unsigned short INITIAL_LIVES = 3;
 		constexpr unsigned short MAX_LIFE = 16;
 		constexpr unsigned short DEFAULT_MAX_BOMBS = 5;
 		constexpr unsigned short MAX_MAX_BOMBS = 8;

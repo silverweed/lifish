@@ -38,9 +38,6 @@ private:
 	unsigned debug = 0;
 	unsigned cycle = 0;
 
-	/** Whether this Context was already active (false if it has just been activated) */
-	bool wasActive = true;
-
 	mutable sf::RenderTexture gameRenderTex;
 	mutable sf::RenderTexture sidePanelRenderTex;
 

@@ -18,7 +18,7 @@ namespace joystick {
  * 		if (jl.evtMoved(JoystickListener::Axis::L_RIGHT)) { ... }
  * 	}
  */
-class JoystickListener {
+class JoystickListener : private sf::NonCopyable {
 public:
 	enum class Axis { L_UP, L_DOWN, L_LEFT, L_RIGHT, R_UP, R_DOWN, R_LEFT, R_RIGHT, N_AXES };
 
@@ -40,7 +40,8 @@ private:
 	/** @return a pair of axes which are the "negative" and "positive" halves of the SFML Axis passed */
 	std::pair<Axis, Axis> _getPair(sf::Joystick::Axis axis) const;
 public:
-	explicit JoystickListener(unsigned joystickId);
+	JoystickListener(unsigned joystickId);
+	JoystickListener(JoystickListener&& jl);
 
 	/** @return true if a "move `a`" event was registered. "Moving `a`" is defined as follows:
 	 *  the value of sf::Joystick::getAxisPosition(a):
