@@ -2,6 +2,7 @@
 #include "utils.hpp"
 #include "Collider.hpp"
 #include "EntityGroup.hpp"
+#include <array>
 
 using lif::AxisSighted;
 
@@ -21,6 +22,13 @@ static bool check_left(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
 static bool check_right(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
 	return etile.y == mtile.y && etile.x > mtile.x;
 }
+
+static const std::array<std::function<bool(const sf::Vector2i&, const sf::Vector2i&)>, 4> helper_funcs = {{
+	check_up,
+	check_left,
+	check_down,
+	check_right
+}};
 // end helper functions
 
 
@@ -36,7 +44,7 @@ void AxisSighted::update() {
 	if (entities == nullptr) return;
 
 	vision.fill(visionRadius * lif::TILE_SIZE);
-	for (unsigned i = 0; i < static_cast<unsigned>(lif::Direction::NONE); ++i) {
+	for (unsigned i = 0; i < 4; ++i) {
 		_fillLine(static_cast<lif::Direction>(i));	
 	}
 }
@@ -45,9 +53,7 @@ void AxisSighted::_fillLine(const lif::Direction dir) {
 	// no check for lm != nullptr as it's done beforehand by update()
 
 	const auto mtile = lif::tile2(owner.getPosition());
-	auto same_line = dir == lif::Direction::UP ? check_up :
-	                 dir == lif::Direction::DOWN ? check_down :
-	                 dir == lif::Direction::LEFT ? check_left : check_right;
+	const auto same_line = helper_funcs[static_cast<std::size_t>(dir)];
 
 	seen[dir].clear();
 
