@@ -117,7 +117,7 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 			totHeight += bounds.height + style.spacing;
 		}
 		newtxt->setPosition(pos);
-		toBeAligned.emplace_back(std::make_pair(newtxt, rowWidths.size() - 1));
+		toBeAligned.emplace_back(newtxt, rowWidths.size() - 1);
 		prevElemBounds = bounds;
 	}
 
@@ -184,7 +184,7 @@ void ScreenBuilder::_addImage(lif::ui::Screen& screen, const json& image) {
 			totHeight += bounds.height + style.spacing;
 		}
 		newimg->setPosition(pos);
-		toBeAligned.emplace_back(std::make_pair(newimg, rowWidths.size() - 1));
+		toBeAligned.emplace_back(newimg, rowWidths.size() - 1);
 		prevElemBounds = bounds;
 	}
 
