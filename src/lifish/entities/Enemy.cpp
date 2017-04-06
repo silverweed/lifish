@@ -58,7 +58,7 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	addComponent<lif::Foe>(*this);
 	if (info.ai >= lif::ai_functions.size()) {
 		std::stringstream ss;
-		ss << "invalid AI number for Enemy: " << lif::to_string(info.ai) << "/" << lif::ai_functions.size();
+		ss << "invalid AI number for Enemy: " << lif::to_string(info.ai+1) << "/" << lif::ai_functions.size();
 		throw std::invalid_argument(ss.str());
 	}
 	ai = addComponent<lif::AI>(*this, lif::ai_functions[info.ai]);

@@ -27,6 +27,7 @@
 #include "Cage.hpp"
 #include "DroppingBomb.hpp"
 #include "TimedLaser.hpp"
+#include "LeapingMovement.hpp"
 #include <iostream>
 
 using lif::TILE_SIZE;
@@ -206,6 +207,9 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				sighted->setEntityGroup(&lm.entities);
 				sighted->setOpaque({ lif::c_layers::BREAKABLES, lif::c_layers::UNBREAKABLES });
 				entities.add(enemy);
+				// FIXME
+				if (enemy_id == 4)
+					enemy->addComponent<lif::LeapingMovement>(*enemy, sf::seconds(0.2))->init();
 			}
 		}
 	}

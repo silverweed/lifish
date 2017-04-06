@@ -69,7 +69,7 @@
 		{
 			"name": "mean-o-taur",
 			"ai": 2,
-			"speed": 2,
+			"speed": 5,
 			"attack": {
 				"type": ["contact"],
 				"damage": 2,

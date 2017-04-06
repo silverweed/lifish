@@ -29,7 +29,7 @@ protected:
 	
 	sf::Vector2f prevAlign;
 	lif::Clock *frameClock = nullptr,
-		    *blockClock = nullptr;
+		   *blockClock = nullptr;
 	/** This is the _first_ collider (if any) of the owner.
 	 *  It is the sole collider used to determine if we're colliding
 	 *  with something solid for us.

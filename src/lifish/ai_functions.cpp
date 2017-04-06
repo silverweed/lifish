@@ -40,7 +40,7 @@ std::array<lif::AIFunction, lif::AI_FUNCTIONS_NUM> lif::ai_functions = {{
 	lif::ai_random_forward_haunt,
 	lif::ai_follow,
 	lif::ai_follow_dash,
-	lif::ai_chase
+	lif::ai_chase,
 }};
 
 static lif::Direction directions[] = {
@@ -148,7 +148,7 @@ AIBoundFunction lif::ai_random_forward(lif::Entity& entity) {
 	auto moving = entity.get<lif::AxisMoving>();
 	const auto collider = entity.get<lif::Collider>();
 	if (moving == nullptr || collider == nullptr)
-		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving"
+		throw std::invalid_argument("Entity passed to ai_random_forward has no Moving"
 				" or Collider component!");
 	moving->setAutoRealign(false);
 	moving->setDistTravelled(4);
