@@ -30,6 +30,6 @@ void FreeSighted::update() {
 		// Only see living entities
 		const auto killable = ptr->get<lif::Killable>();
 		if (killable == nullptr || !killable->isKilled())
-			seen.push_back(std::make_pair(e, dist));
+			seen.emplace_back(e, dist);
 	});
 }

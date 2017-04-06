@@ -79,7 +79,7 @@ void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm
 			bomb->setPosition(static_cast<sf::Vector2f>(lif::tile2(player->getPosition()))
 					* static_cast<float>(lif::TILE_SIZE));
 		}
-		tbspawned.push_back(bomb);
+		tbspawned.emplace_back(bomb);
 	}
 }
 
@@ -91,7 +91,7 @@ void lif::game_logic::spawningLogic(lif::Entity *e, lif::BaseLevelManager& blm, 
 			if (spawned != nullptr) {
 				if (auto expl = dynamic_cast<lif::Explosion*>(spawned))
 					expl->propagate(lm);
-				tbspawned.push_back(spawned);	
+				tbspawned.emplace_back(spawned);	
 			}
 		}
 	}
@@ -132,7 +132,7 @@ void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::BaseLevelManager
 		points->setPosition(sf::Vector2f(
 				lif::centerX(points->getGlobalBounds(), sf::FloatRect(e->getPosition(), bounds_size)),
 				points->getPosition().y));
-		tbspawned.push_back(points);
+		tbspawned.emplace_back(points);
 	}
 }
 

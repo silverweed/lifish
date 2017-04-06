@@ -117,7 +117,7 @@ std::vector<sf::FloatRect> LevelEffects::_getRadialRectangles(const sf::Vector2f
 	      width = 1,
 	      height = 2 * radius + 1;
 	do {
-		rects.push_back(sf::FloatRect(px, py, TILE_SIZE * width, TILE_SIZE * height));
+		rects.emplace_back(px, py, TILE_SIZE * width, TILE_SIZE * height);
 		height -= 2;
 		width += 2;
 		px -= TILE_SIZE;

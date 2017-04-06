@@ -112,12 +112,12 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 		} else {
 			pos.x = 0;
 			pos.y += prevElemBounds.height + style.spacing;
-			rowWidths.push_back(bounds.width);
-			rowAligns.push_back(align);
+			rowWidths.emplace_back(bounds.width);
+			rowAligns.emplace_back(align);
 			totHeight += bounds.height + style.spacing;
 		}
 		newtxt->setPosition(pos);
-		toBeAligned.push_back(std::make_pair(newtxt, rowWidths.size() - 1));
+		toBeAligned.emplace_back(std::make_pair(newtxt, rowWidths.size() - 1));
 		prevElemBounds = bounds;
 	}
 
@@ -179,12 +179,12 @@ void ScreenBuilder::_addImage(lif::ui::Screen& screen, const json& image) {
 		} else {
 			pos.x = 0;
 			pos.y += prevElemBounds.height + style.spacing;
-			rowWidths.push_back(bounds.width);
-			rowAligns.push_back(align);
+			rowWidths.emplace_back(bounds.width);
+			rowAligns.emplace_back(align);
 			totHeight += bounds.height + style.spacing;
 		}
 		newimg->setPosition(pos);
-		toBeAligned.push_back(std::make_pair(newimg, rowWidths.size() - 1));
+		toBeAligned.emplace_back(std::make_pair(newimg, rowWidths.size() - 1));
 		prevElemBounds = bounds;
 	}
 

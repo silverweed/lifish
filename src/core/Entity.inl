@@ -66,7 +66,7 @@ std::vector<T*> Entity::getAllRecursive() const {
 	for (auto ptr : compSet) {
 		T* derived = nullptr;
 		if (ptr && (derived = dynamic_cast<T*>(ptr)))
-			all.push_back(derived);
+			all.emplace_back(derived);
 		auto sub = ptr->getAllRecursive<T>();
 		all.insert(all.end(), sub.begin(), sub.end());
 	}

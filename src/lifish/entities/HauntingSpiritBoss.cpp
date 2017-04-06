@@ -142,7 +142,7 @@ void HauntingSpiritBoss::_updateSearching() {
 	for (auto& pair : seen) {
 		if (auto statue = std::dynamic_pointer_cast<lif::HauntedStatue>(pair.first.lock()))
 			if (!statue->isPossessed())
-				statues.push_back(statue);
+				statues.emplace_back(statue);
 	}
 	sighted->setActive(false); // no need for this anymore
 	state = State::SELECT_NEW_STATUE;

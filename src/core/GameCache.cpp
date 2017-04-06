@@ -63,7 +63,7 @@ void GameCache::playSound(const std::string& sound_name) {
 	do {
 		if (idx == sounds.size()) {
 			// Sounds queue has less than `maxParallelSounds` sounds
-			sounds.push_back(sf::Sound());
+			sounds.emplace_back(sf::Sound());
 			break;
 		}
 		if (sounds[idx].getStatus() != sf::Sound::Status::Playing)

@@ -27,7 +27,7 @@ void SHContainer::insert(std::weak_ptr<lif::Collider> obj) {
 	
 	auto ids = _getIdFor(*obj.lock().get());
 	for (auto id : ids) {
-		buckets[id].push_back(obj);
+		buckets[id].emplace_back(obj);
 	}
 }
 
@@ -73,7 +73,7 @@ auto SHContainer::getNearby(const lif::Collider& obj) const -> std::vector<std::
 
 			auto oth = cld.lock().get();
 			if (oth != &obj)
-				nearby.push_back(cld);
+				nearby.emplace_back(cld);
 		}
 	}
 	return nearby;

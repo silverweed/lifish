@@ -31,9 +31,9 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 		if (d != nullptr) {
 			const auto zidx = e->get<lif::ZIndexed>();
 			if (zidx != nullptr)
-				toDraw[zidx->getZIndex()].push_back(d);
+				toDraw[zidx->getZIndex()].emplace_back(d);
 			else
-				toDraw[0].push_back(d);
+				toDraw[0].emplace_back(d);
 		}
 	});
 

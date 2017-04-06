@@ -61,7 +61,7 @@ void AxisSighted::_fillLine(const lif::Direction dir) {
 			// Only see living entities
 			const auto killable = ptr->get<lif::Killable>();
 			if (killable == nullptr || !killable->isKilled())
-				seen[dir].push_back(std::make_pair(const_cast<lif::Entity*>(ptr), dist));
+				seen[dir].emplace_back(const_cast<lif::Entity*>(ptr), dist);
 		}
 	});
 

@@ -44,7 +44,7 @@ Entity::~Entity() {}
 
 void Entity::_addUnique(lif::Component *c) {
 	if (std::find(compSet.begin(), compSet.end(), c) == compSet.end()) {
-		compSet.push_back(c);
+		compSet.emplace_back(c);
 	}
 }
 

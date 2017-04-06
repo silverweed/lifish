@@ -289,7 +289,7 @@ Action ControlsScreen::_toggleJoystick() {
 
 	for (auto i = 0; i < sf::Joystick::Count; ++i) {
 		if (sf::Joystick::isConnected(i)) {
-			joysticks.push_back(i);
+			joysticks.emplace_back(i);
 			if (i == current) // found the currently used joystick
 				idx = joysticks.size() - 1;
 		}

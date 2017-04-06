@@ -78,7 +78,7 @@ void Collider::addColliding(std::weak_ptr<lif::Collider> coll) {
 	if (std::find_if(colliding.begin(), colliding.end(), [&coll] (std::weak_ptr<lif::Collider> oth) {
 		return !oth.expired() && oth.lock().get() == coll.lock().get();
 	}) == colliding.end()) {
-		colliding.push_back(coll);
+		colliding.emplace_back(coll);
 	}
 }
 

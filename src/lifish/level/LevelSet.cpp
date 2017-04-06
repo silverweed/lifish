@@ -51,7 +51,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 			float loopend = loop["end"];
 			looplength = loopend - loopstart;
 		}
-		tracks.push_back(getNthTrack(tracknum++, loopstart, looplength));
+		tracks.emplace_back(getNthTrack(tracknum++, loopstart, looplength));
 	}
 
 	// load enemies data
@@ -164,7 +164,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 				info.effects.insert(s.get<std::string>());
 			}
 		}
-		levels.push_back(info);
+		levels.emplace_back(info);
 	}
 }
 

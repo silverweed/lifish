@@ -47,7 +47,7 @@ auto EntityGroup::getEntitiesAtTile(const sf::Vector2i& tile) const -> std::vect
 	std::vector<std::weak_ptr<lif::Entity>> ents;
 	for (auto& e : entities) {
 		if (lif::tile(e->getPosition()) == tile)
-			ents.push_back(e);
+			ents.emplace_back(e);
 	}
 	return ents;
 }
@@ -60,7 +60,7 @@ auto EntityGroup::getCollidersIntersecting(const sf::FloatRect& rect) const
 		if (e.expired()) continue;
 		auto cld = e.lock();
 		if (cld->getRect().intersects(rect))
-			clds.push_back(e);
+			clds.emplace_back(e);
 	}
 	return clds;
 }
@@ -76,12 +76,12 @@ lif::Entity* EntityGroup::_putInAux(lif::Entity *entity) {
 	// Put in aux collections, if not already managed
 	auto klb = entity->getShared<lif::Killable>();
 	if (klb != nullptr) {
-		killables.push_back(klb);
+		killables.emplace_back(klb);
 	} 
 
 	for (auto cld : entity->getAllShared<lif::Collider>()) {
 		if (cld != nullptr && !cld->isPhantom()) {
-			collidingEntities.push_back(cld);
+			collidingEntities.emplace_back(cld);
 		}
 	}
 
@@ -111,7 +111,7 @@ void EntityGroup::_checkKilled() {
 		if (klb->isKilled()) {
 			if (klb->isKillInProgress()) {
 				// Will be finalized later
-				dying.push_back(klb);
+				dying.emplace_back(klb);
 				it = killables.erase(it);
 				continue;
 			}

@@ -170,14 +170,14 @@ void EntityGroup::apply(AppliedFunc<std::weak_ptr<lif::Entity>, Args...> func, A
 template<class T>
 lif::Entity* EntityGroup::add(T *entity) {
 	entity->init();
-	entities.push_back(std::shared_ptr<lif::Entity>(entity));
+	entities.emplace_back(entity);
 	return _putInAux(entities.back().get());
 }
 
 template<class T>
 lif::Entity* EntityGroup::add(std::shared_ptr<T> entity) {
 	entity->init();
-	entities.push_back(entity);
+	entities.emplace_back(entity);
 	return _putInAux(entities.back().get());
 }
 

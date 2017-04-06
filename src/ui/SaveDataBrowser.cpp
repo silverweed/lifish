@@ -24,7 +24,7 @@ std::vector<SaveDataBrowser::SaveFile> SaveDataBrowser::browseSaveData(std::stri
 			file.displayName = std::string(ent->d_name, strlen(ent->d_name) - strlen(suffix));
 			file.path = path + lif::DIRSEP + ent->d_name;
 			file.level = 0; // TODO
-			files.push_back(file);
+			files.emplace_back(file);
 		}
 		ent = readdir(dir);
 	}
