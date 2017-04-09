@@ -52,15 +52,13 @@ auto EntityGroup::getEntitiesAtTile(const sf::Vector2i& tile) const -> std::vect
 	return ents;
 }
 
-auto EntityGroup::getCollidersIntersecting(const sf::FloatRect& rect) const
-	-> std::vector<std::weak_ptr<lif::Collider>>
-{
-	std::vector<std::weak_ptr<lif::Collider>> clds;
+auto EntityGroup::getCollidersIntersecting(const sf::FloatRect& rect) const -> std::vector<lif::Collider*> {
+	std::vector<lif::Collider*> clds;
 	for (auto& e : collidingEntities) {
 		if (e.expired()) continue;
 		auto cld = e.lock();
 		if (cld->getRect().intersects(rect))
-			clds.emplace_back(e);
+			clds.emplace_back(cld.get());
 	}
 	return clds;
 }

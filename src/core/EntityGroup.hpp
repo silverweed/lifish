@@ -71,7 +71,7 @@ class EntityGroup final : private sf::NonCopyable {
 	 */
 	void _checkDead();
 
-	/** Iterate over aux collections and remove all expired weak pointers. 
+	/** Iterate over aux collections and remove all expired weak pointers.
 	 *  Note that, differently from the `_check*` methods, the `_prune*` ones do NOT
 	 *  affect the main `entities` collection.
 	 */
@@ -128,9 +128,11 @@ public:
 		return collidingEntities;
 	}
 
-	/** @return all colliders intersecting `rect` */
-	auto getCollidersIntersecting(const sf::FloatRect& rect) const
-		-> std::vector<std::weak_ptr<lif::Collider>>;
+	/** @return all colliders intersecting `rect`.
+	 *  NOTE: these pointers are only guaranteed to be valid until the next call to updateAll(), so
+	 *  the caller should *not* retain them.
+	 */
+	auto getCollidersIntersecting(const sf::FloatRect& rect) const -> std::vector<lif::Collider*>;
 
 	/** @return all entities whose tile is `tile` */
 	auto getEntitiesAtTile(const sf::Vector2i& tile) const -> std::vector<std::weak_ptr<lif::Entity>>;

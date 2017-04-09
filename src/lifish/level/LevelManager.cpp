@@ -166,13 +166,15 @@ bool LevelManager::canDeployBomb(const lif::Player& player) const {
 
 bool LevelManager::canDeployBombAt(const sf::Vector2i& tile) const {
 	if (_isBombAt(tile)) return false;
-	bool there_are_expl = false;
-	entities.apply([tile, &there_are_expl] (const lif::Entity *e) {
-		if (there_are_expl) return;
-		if (lif::tile(e->getPosition()) == tile && dynamic_cast<const lif::Explosion*>(e) != nullptr)
-			there_are_expl = true;
-	});
-	return !there_are_expl;
+	for (const auto cld : entities.getCollidersIntersecting(sf::FloatRect(
+			lif::TILE_SIZE * tile.x,
+			lif::TILE_SIZE * tile.y,
+			lif::TILE_SIZE, lif::TILE_SIZE)))
+	{
+		if (cld->getLayer() == lif::c_layers::EXPLOSIONS)
+			return false;
+	}
+	return true;
 }
 
 bool LevelManager::_isBombAt(const sf::Vector2i& tile) const {
@@ -358,10 +360,9 @@ bool LevelManager::canGo(const lif::AxisMoving& am, const lif::Direction dir) co
 	if (collider == nullptr)
 		return true;
 
-	for (auto ptr : entities.getCollidersIntersecting(sf::FloatRect(
+	for (const auto cld : entities.getCollidersIntersecting(sf::FloatRect(
 			iposx * TILE_SIZE, iposy * TILE_SIZE, TILE_SIZE, TILE_SIZE)))
 	{
-		auto cld = ptr.lock();
 		if (cld->getOwner().get<lif::Fixed>() == nullptr) continue;
 		if (cld != nullptr && collider->isSolidFor(*cld))
 			return false;

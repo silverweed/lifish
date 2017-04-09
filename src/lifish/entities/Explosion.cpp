@@ -122,8 +122,7 @@ Explosion* Explosion::propagate(lif::BaseLevelManager& lm) {
 			// Check if a solid fixed entity blocks propagation in this direction
 			const auto rect = sf::FloatRect(new_tile.x * TILE_SIZE, new_tile.y * TILE_SIZE,
 					TILE_SIZE, TILE_SIZE);
-			for (auto ent : entities.getCollidersIntersecting(rect)) {
-				const auto entcld = ent.lock();
+			for (const auto entcld : entities.getCollidersIntersecting(rect)) {
 				if (entcld != nullptr && lif::c_layers::solid[entcld->getLayer()][
 						lif::c_layers::EXPLOSIONS])
 				{
