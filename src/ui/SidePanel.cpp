@@ -233,6 +233,26 @@ void SidePanel::update() {
 							powers.bombFuseTime == lif::conf::bomb::DEFAULT_FUSE
 							? DISABLED_COLOR : sf::Color::White);
 					break;
+				case B::MAX_RANGE:
+					bonusesSprite[i][j].setColor(
+							powers.bombRadius == lif::conf::bomb::DEFAULT_RADIUS
+							? DISABLED_COLOR : sf::Color::White);
+					break;
+				case B::MAX_BOMBS:
+					bonusesSprite[i][j].setColor(
+							powers.maxBombs == lif::conf::player::DEFAULT_MAX_BOMBS
+							? DISABLED_COLOR : sf::Color::White);
+					break;
+				case B::INCENDIARY_BOMB:
+					bonusesSprite[i][j].setColor(
+							powers.incendiaryBomb
+							? sf::Color::White : DISABLED_COLOR);
+					break;
+				case B::THROWABLE_BOMB:
+					bonusesSprite[i][j].setColor(
+							powers.throwableBomb
+							? sf::Color::White : DISABLED_COLOR);
+					break;
 				case B::SHIELD:
 				case B::SPEEDY:
 					bonusesSprite[i][j].setColor(bonusable->hasBonus(
