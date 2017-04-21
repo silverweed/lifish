@@ -49,8 +49,8 @@ void DebugRenderer::drawSHCells(sf::RenderTarget& target, const lif::SHCollision
 	}
 
 	// Draw level limit
-	sf::RectangleShape limitRect(sf::Vector2f(limit.width, limit.height));
-	limitRect.setPosition(lif::TILE_SIZE, lif::TILE_SIZE);
+	sf::RectangleShape limitRect(sf::Vector2f(limit.width - limit.left, limit.height - limit.top));
+	limitRect.setPosition(limit.left, limit.top);
 	limitRect.setOutlineColor(sf::Color(255, 100, 100, 255));
 	limitRect.setFillColor(sf::Color(0, 0, 0, 0));
 	limitRect.setOutlineThickness(4);
