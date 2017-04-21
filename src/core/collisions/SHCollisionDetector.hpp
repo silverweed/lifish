@@ -8,33 +8,29 @@
 
 namespace lif {
 
-/** Allow the preferred number of the SpatialHashingCollisionDetector subdivisions
- *  to be tuned when compiling. For Lifish's purposes, 7 is a good choice.
- */
-#ifndef DEFAULT_SHCD_SUBDIVISIONS
-#	define DEFAULT_SHCD_SUBDIVISIONS 7
-#endif
-constexpr unsigned SHCD_SUBDIVISIONS = DEFAULT_SHCD_SUBDIVISIONS;
-#undef DEFAULT_SHCD_SUBDIVISIONS
+constexpr static unsigned DEFAULT_SHCD_SUBDIVISIONS = 7;
 
 class Collider;
+class SHCollisionDetector;
 
 /**
  * Container for spatial hashing algorithm. Has `subdivision^2` buckets.
  */
-class SHContainer {
+class SHContainer final {
 	using Bucket = std::vector<std::weak_ptr<lif::Collider>>;
 
-	const sf::Vector2f levelSize,
-	                   cellSize;
-	const unsigned subdivisions;
+	friend class SHCollisionDetector;
+
+	sf::Vector2f levelSize,
+	             cellSize;
+	unsigned subdivisions;
 	std::vector<Bucket> buckets;
 
 	/** @return An unordered_set of bucket indexes for the buckets containing `obj`. */
 	std::unordered_set<unsigned> _getIdFor(const lif::Collider& obj) const;
 
 public:
-	explicit SHContainer(const sf::Vector2f& levelSize, unsigned subdivisions);
+	SHContainer(const sf::Vector2f& levelSize, unsigned subdivisions);
 
 	unsigned getSubdivisions() const { return subdivisions; }
 
@@ -47,15 +43,19 @@ public:
 /**
  * Implements a spatial hashing algorithm for collision detection.
  */
-class SHCollisionDetector : public lif::CollisionDetector {
+class SHCollisionDetector final : public lif::CollisionDetector {
 	SHContainer container;
 
 public:
-	explicit SHCollisionDetector(lif::EntityGroup& group, const sf::FloatRect& levelLimit, unsigned subdivisions);
+	explicit SHCollisionDetector(lif::EntityGroup& group,
+				const sf::FloatRect& levelLimit = sf::FloatRect(0, 0, 0, 0),
+				unsigned subdivisions = lif::DEFAULT_SHCD_SUBDIVISIONS);
 
 	void update() override;
 
 	unsigned getSubdivisions() const { return container.getSubdivisions(); }
+
+	void setLevelLimit(const sf::FloatRect& limit) override;
 };
 
 }

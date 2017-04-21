@@ -49,8 +49,7 @@ Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif:
 		// expire condition
 		return dealtDamage
 			|| (info.range > 0 && get<lif::Moving>()->getDistTravelled() > info.range)
-			|| position.x < 0 || position.x > (lif::TILE_SIZE + 1) * lif::LEVEL_WIDTH 
-			|| position.y < 0 || position.y > (lif::TILE_SIZE + 1) * lif::LEVEL_HEIGHT;
+			|| collider->isAtLimit();
 	}, [this] () {
 		// on kill
 		_destroy();

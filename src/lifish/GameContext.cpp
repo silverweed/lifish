@@ -33,8 +33,8 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, sh
 #ifndef RELEASE
 	_addHandler<lif::debug::DebugEventHandler>(std::ref(*this));
 #endif
-	gameRenderTex.create((lif::LEVEL_WIDTH + 2) * lif::TILE_SIZE, (lif::LEVEL_HEIGHT + 2) * lif::TILE_SIZE);
-	sidePanelRenderTex.create(lif::SIDE_PANEL_WIDTH, (lif::LEVEL_HEIGHT + 2) * lif::TILE_SIZE);
+	gameRenderTex.create(lif::GAME_WIDTH, lif::GAME_HEIGHT);
+	sidePanelRenderTex.create(lif::SIDE_PANEL_WIDTH, lif::GAME_HEIGHT);
 
 	ls.loadFromFile(levelsetName);
 	_initLM(window, startLv);

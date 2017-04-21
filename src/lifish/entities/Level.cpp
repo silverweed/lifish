@@ -13,8 +13,6 @@
 using lif::Level;
 using lif::pwd;
 using lif::DIRSEP;
-using lif::LEVEL_WIDTH;
-using lif::LEVEL_HEIGHT;
 using lif::TILE_SIZE;
 using lif::EntityType;
 
@@ -26,13 +24,13 @@ Level::Level(const lif::LevelSet& _levelSet)
 lif::Entity* Level::init() {
 	if (initialized) return this;
 	
-	if (!_setTilemap(levelInfo.tilemap))
+	if (!_setTilemap(info.tilemap))
 		return nullptr;
 
-	addComponent<lif::Music>(*this, levelInfo.track);
+	addComponent<lif::Music>(*this, info.track);
 	_loadTextures();
 
-	levelnumtext = addComponent<lif::LevelNumText>(*this, levelInfo.levelnum);
+	levelnumtext = addComponent<lif::LevelNumText>(*this, info.levelnum);
 
 	initialized = true;
 
@@ -41,14 +39,14 @@ lif::Entity* Level::init() {
 
 void Level::_loadTextures() {
 	std::stringstream ss;
-	ss << "bg" << levelInfo.tileIDs.bg << ".png";
+	ss << "bg" << info.tileIDs.bg << ".png";
 	// Load background texture
 	bgTexture = lif::cache.loadTexture(lif::getAsset("graphics", ss.str()));
 	bgTexture->setSmooth(true);
 	bgTexture->setRepeated(true);
 	// Load borderTexture
 	ss.str("");
-	ss << "border" << levelInfo.tileIDs.border << ".png";
+	ss << "border" << info.tileIDs.border << ".png";
 	borderTexture = lif::cache.loadTexture(lif::getAsset("graphics", ss.str()));
 	borderTexture->setSmooth(true);
 	_loadTiles();
@@ -57,12 +55,12 @@ void Level::_loadTextures() {
 void Level::_loadTiles() {
 	// Background
 	bgSprite.setTexture(*bgTexture);
-	bgSprite.setTextureRect(sf::IntRect(0, 0, TILE_SIZE * LEVEL_WIDTH, TILE_SIZE * LEVEL_HEIGHT));
+	bgSprite.setTextureRect(sf::IntRect(0, 0, TILE_SIZE * info.width, TILE_SIZE * info.height));
 	bgSprite.setPosition(TILE_SIZE, TILE_SIZE);
 
 	// Border
 	borderSprite.setTexture(*borderTexture);
-	borderSprite.setTextureRect(sf::IntRect(0, 0, TILE_SIZE * (LEVEL_WIDTH + 2), TILE_SIZE * (LEVEL_HEIGHT + 2)));
+	borderSprite.setTextureRect(sf::IntRect(0, 0, TILE_SIZE * (info.width + 2), TILE_SIZE * (info.height + 2)));
 }
 
 void Level::setOrigin(const sf::Vector2f& offset) {
@@ -73,31 +71,34 @@ void Level::setOrigin(const sf::Vector2f& offset) {
 }
 
 EntityType Level::getTile(unsigned short left, unsigned short top) const {
-	if (left >= LEVEL_WIDTH || top >= LEVEL_HEIGHT) 
+	if (left >= info.width || top >= info.height)
 		return EntityType::UNKNOWN;
-	return tiles[top][left];
+	return tiles[top * info.width + left];
 }
 
 bool Level::_setTilemap(const std::string& tilemap) {
-	unsigned short x = 0, y = 0;
 	bool player_set[] = { false, false };
-	for (unsigned int i = 0; i < tilemap.length(); ++i) {
-		EntityType et = lif::entityFromLetter(tilemap[i]);
-		if (et == EntityType::UNKNOWN) return false;
-		if (et == EntityType::PLAYER1) {
-			if (player_set[0]) return false;
+	tiles.reserve(info.width * info.height);
+
+	for (unsigned i = 0; i < tilemap.length() && i < info.width * info.height; ++i) {
+		const auto et = lif::entityFromLetter(tilemap[i]);
+		switch (et) {
+		case EntityType::UNKNOWN:
+			return false;
+		case EntityType::PLAYER1:
+			if (player_set[0])
+				return false;
 			player_set[0] = true;
-		}
-		if (et == EntityType::PLAYER2) {
-			if (player_set[1]) return false;
+			break;
+		case EntityType::PLAYER2:
+			if (player_set[1])
+				return false;
 			player_set[1] = true;
+			break;
+		default:
+			break;
 		}
-		tiles[y][x] = et;
-		if (++x == LEVEL_WIDTH) {
-			x = 0;
-			if (++y == LEVEL_HEIGHT)
-				break;
-		}
+		tiles.emplace_back(et);
 	}
 	return true;
 }
@@ -106,17 +107,16 @@ std::string Level::getTilemap() const {
 	static bool called = false;
 	static std::stringstream ss;
 
-	if (called)
-		return ss.str();
-
-	for (unsigned i = 0; i < LEVEL_HEIGHT; ++i) {
-		for (unsigned j = 0; j < LEVEL_WIDTH; ++j) {
-			ss << tiles[i][j] << " ";
+	if (!called) {
+		for (unsigned i = 0; i < info.height; ++i) {
+			for (unsigned j = 0; j < info.width; ++j) {
+				ss << tiles[i * info.width + j] << " ";
+			}
+			ss << "\r\n";
 		}
-		ss << std::endl;
+		called = true;
 	}
 
-	called = true;
 	return ss.str();
 }
 
@@ -124,29 +124,24 @@ std::string Level::toString() const {
 	static bool called = false;
 	static std::stringstream ss;
 
-	if (called)
-		return ss.str();
+	if (!called) {
+		ss << "Level Info:\r\n"
+		   << "-----------\r\n"
+		   << "Level " << info.levelnum << "\r\n"
+		   << "Time: " << info.time << " s\r\n"
+		   << "Tiles: {\r\n"
+		   << "    bg: " << info.tileIDs.bg << "\r\n"
+		   << "    border: " << info.tileIDs.border << "\r\n"
+		   << "    fixed: " << info.tileIDs.fixed << "\r\n"
+		   << "    breakable: " << info.tileIDs.breakable << "\r\n}\r\n"
+		   << "Music: " << get<lif::Music>()->getTrack().name << "\r\n"
+		   << "Belongs to: >>>\r\n"
+		   << levelSet.toString()
+		   << "<<<\r\n"
+		   << "Tilemap:\r\n"
+		   << getTilemap();
+		called = true;
+	}
 
-	ss << "Level Info:\r\n" 
-	   << "-----------\r\n"
-	   << "Level " << levelInfo.levelnum << "\r\n"
-	   << "Time: " << levelInfo.time << " s\r\n"
-	   << "Tiles: {\r\n"
-	   << "    bg: " << levelInfo.tileIDs.bg << "\r\n"
-	   << "    border: " << levelInfo.tileIDs.border << "\r\n"
-	   << "    fixed: " << levelInfo.tileIDs.fixed << "\r\n"
-	   << "    breakable: " << levelInfo.tileIDs.breakable << "\r\n}\r\n"
-	   << "Music: " << get<lif::Music>()->getTrack().name << "\r\n"
-	   << "Belongs to: >>>\r\n"
-	   << levelSet.toString()
-	   << "<<<\r\n"
-	   << "Tilemap:\r\n"
-	   << getTilemap();
-
-	called = true;
 	return ss.str();
-} 
-
-const sf::Drawable* Level::getNumText() const {
-	return levelnumtext;
 }

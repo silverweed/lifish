@@ -13,14 +13,14 @@
 
 using lif::Fog;
 
-Fog::Fog(float speed, sf::Time alphaDt) 
-	: lif::Entity(sf::Vector2f(0, 0)) 
+Fog::Fog(float speed, sf::Time alphaDt)
+	: lif::Entity(sf::Vector2f(0, 0))
 	, alphaDt(alphaDt)
 {
-	sprite = addComponent<lif::Sprite>(*this, lif::getAsset("graphics", "fog.png"), 
+	sprite = addComponent<lif::Sprite>(*this, lif::getAsset("graphics", "fog.png"),
 				sf::IntRect(0, 0, 
-					3 * lif::LEVEL_WIDTH * lif::TILE_SIZE, 
-					3 * lif::LEVEL_HEIGHT * lif::TILE_SIZE));
+					3 * lif::GAME_WIDTH,
+					3 * lif::GAME_HEIGHT));
 	sprite->getTexture()->setRepeated(true);
 	sprite->getTexture()->setSmooth(true);
 	addComponent<lif::Drawable>(*this, *sprite);
@@ -33,8 +33,8 @@ Fog::Fog(float speed, sf::Time alphaDt)
 	clock = addComponent<lif::Clock>(*this);
 
 	// Set the initial position
-	position.x = (1 - lif::LEVEL_WIDTH) * lif::TILE_SIZE;
-	position.y = (1 - lif::LEVEL_HEIGHT) * lif::TILE_SIZE;
+	position.x = lif::TILE_SIZE - lif::GAME_WIDTH;
+	position.y = lif::TILE_SIZE - lif::GAME_HEIGHT;
 	sprite->getSprite().setColor(sf::Color(255, 255, 255, 255));
 }
 
@@ -50,13 +50,13 @@ void Fog::update() {
 			if (c.a < 5) {
 				fading = false;
 				// Reset the position
-				position.x = (1 - lif::LEVEL_WIDTH) * lif::TILE_SIZE;
-				position.y = (1 - lif::LEVEL_HEIGHT) * lif::TILE_SIZE;
+				position.x = lif::TILE_SIZE - lif::GAME_WIDTH;
+				position.y = lif::TILE_SIZE - lif::GAME_HEIGHT;
 			}
 		} else {
 			c.a += 1;
 			if (c.a > 200)
-				fading = true; 
+				fading = true;
 		}
 		sprite->getSprite().setColor(c);
 	}

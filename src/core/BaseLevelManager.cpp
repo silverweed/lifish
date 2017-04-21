@@ -4,8 +4,8 @@
 
 using lif::BaseLevelManager;
 
-BaseLevelManager::BaseLevelManager(const sf::FloatRect& lvbounds)
-	: cd(entities, lvbounds, lif::SHCD_SUBDIVISIONS)
+BaseLevelManager::BaseLevelManager()
+	: cd(entities)
 {}
 
 void BaseLevelManager::update() {

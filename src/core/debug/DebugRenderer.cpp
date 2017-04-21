@@ -41,10 +41,18 @@ void DebugRenderer::drawSHCells(sf::RenderTarget& target, const lif::SHCollision
 	rect.setFillColor(sf::Color(72, 209, 204, 60));
 	rect.setOutlineColor(sf::Color(0, 139, 139, 255));
 
-	for (unsigned i = 0; i < s; ++i)
+	for (unsigned i = 0; i < s; ++i) {
 		for (unsigned j = 0; j < s; ++j) {
-			rect.setPosition(sf::Vector2f(i * w + lif::TILE_SIZE,
-						j * h + lif::TILE_SIZE));
+			rect.setPosition(i * w + lif::TILE_SIZE, j * h + lif::TILE_SIZE);
 			target.draw(rect);
 		}
+	}
+
+	// Draw level limit
+	sf::RectangleShape limitRect(sf::Vector2f(limit.width, limit.height));
+	limitRect.setPosition(lif::TILE_SIZE, lif::TILE_SIZE);
+	limitRect.setOutlineColor(sf::Color(255, 100, 100, 255));
+	limitRect.setFillColor(sf::Color(0, 0, 0, 0));
+	limitRect.setOutlineThickness(4);
+	target.draw(limitRect);
 }

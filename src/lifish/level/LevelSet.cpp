@@ -42,7 +42,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 	 */
 	for (const auto& trackinfo : tracksdata) {
 		auto loop = trackinfo["loop"];
-		float loopstart = loop["start"]; 
+		float loopstart = loop["start"];
 		float looplength = -1;
 		auto len = loop.find("length");
 		if (len != loop.end()) {
@@ -139,6 +139,8 @@ void LevelSet::loadFromFile(const std::string& path) {
 	 *	"time": uint,
 	 *	"tilemap": string,
 	 *	"music": ushort,
+	 *	"width": ushort,
+	 *	"height": ushort,
 	 *	"tileIDs": {
 	 *		"border": ushort,
 	 *		"bg": ushort,
@@ -154,6 +156,8 @@ void LevelSet::loadFromFile(const std::string& path) {
 		info.time              = lvinfo["time"];
 		info.track             = tracks[lvinfo["music"].get<unsigned short>()-1];
 		info.tilemap           = lvinfo["tilemap"];
+		info.width             = lvinfo["width"];
+		info.height            = lvinfo["height"];
 		info.tileIDs.border    = lvinfo["tileIDs"]["border"];
 		info.tileIDs.bg        = lvinfo["tileIDs"]["bg"];
 		info.tileIDs.fixed     = lvinfo["tileIDs"]["fixed"];
@@ -172,7 +176,7 @@ std::unique_ptr<Level> LevelSet::getLevel(unsigned short num) const {
 	std::unique_ptr<Level> level;
 	if (num > 0 && num <= levels.size()) {
 		level = std::make_unique<Level>(*this);
-		level->levelInfo = levels[num - 1];
+		level->info = levels[num - 1];
 		if (!level->init()) {
 			level.reset();
 		}

@@ -18,10 +18,6 @@
 using lif::WinLoseHandler;
 using State = WinLoseHandler::State;
 
-static const sf::FloatRect WIN_BOUNDS(lif::MAIN_WINDOW_SHIFT, 0,
-			lif::LEVEL_WIDTH * lif::TILE_SIZE,
-			lif::LEVEL_HEIGHT * lif::TILE_SIZE);
-
 WinLoseHandler::WinLoseHandler(lif::LevelManager& lm, const lif::SidePanel& sidePanel)
 	: lm(lm)
 	, interlevelCtx(lm, sidePanel)

@@ -4,6 +4,7 @@
 #include "LevelManager.hpp"
 #include "Animated.hpp"
 #include "Player.hpp"
+#include "Level.hpp"
 #include "Spawning.hpp"
 #include "AxisMoving.hpp"
 #include "AI.hpp"
@@ -84,8 +85,9 @@ sf::Vector2f AlienPredator::_findTunneledPosition(const lif::LevelManager& lm) c
 	 */
 	// First, construct the list of possible tiles.
 	std::list<sf::Vector2i> tiles;
-	for (unsigned i = 1; i <= lif::LEVEL_WIDTH; ++i)
-		for (unsigned j = 1; j <= lif::LEVEL_HEIGHT; ++j)
+	const auto lvinfo = lm.getLevel()->getInfo();
+	for (unsigned i = 1; i <= lvinfo.width; ++i)
+		for (unsigned j = 1; j <= lvinfo.height; ++j)
 			tiles.emplace_back(i, j);
 
 	// Remove all tiles which are too close to a player
@@ -145,7 +147,7 @@ sf::Vector2f AlienPredator::_findTunneledPosition(const lif::LevelManager& lm) c
 	std::advance(it, dist(lif::rng));
 
 	// FIXME: this should never happen, but it does in some cases.
-	if (it->x < 1 || it->y < 1 || it->x > lif::LEVEL_WIDTH || it->y > lif::LEVEL_HEIGHT)
+	if (it->x < 1 || it->y < 1 || it->x > lvinfo.width || it->y > lvinfo.height)
 		return newPos;
 
 	return sf::Vector2f(static_cast<int>(TILE_SIZE) * *it);

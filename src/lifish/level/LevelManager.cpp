@@ -28,13 +28,9 @@
 using lif::LevelManager;
 
 LevelManager::LevelManager()
-	: lif::BaseLevelManager(sf::FloatRect(
-		lif::TILE_SIZE,
-		lif::TILE_SIZE,
-		(lif::LEVEL_WIDTH + 1) * lif::TILE_SIZE,
-		(lif::LEVEL_HEIGHT + 1) * lif::TILE_SIZE))
+	: lif::BaseLevelManager()
 	, renderer(*this)
-	, effects(sf::Vector2u(lif::LEVEL_WIDTH * lif::TILE_SIZE, lif::LEVEL_HEIGHT * lif::TILE_SIZE))
+	, effects(sf::Vector2u(lif::GAME_WIDTH, lif::GAME_HEIGHT))
 	, levelTime(new lif::LevelTime)
 {
 	reset();
@@ -130,8 +126,10 @@ void LevelManager::setNextLevel() {
 void LevelManager::setLevel(const lif::LevelSet& ls, unsigned short lvnum) {
 	_mtxLock();
 	level = ls.getLevel(lvnum);
-	effects.setEffects(level->getInfo().effects);
+	const auto lvinfo = level->getInfo();
+	effects.setEffects(lvinfo.effects);
 	lif::LevelLoader::load(*level, *this);
+	cd.setLevelLimit(sf::FloatRect(0, 0, lvinfo.width * lif::TILE_SIZE, lvinfo.height * lif::TILE_SIZE));
 	_mtxUnlock();
 	// Don't trigger EXTRA game if there were no coins in the level
 	if (entities.size<lif::Coin>() == 0)
@@ -353,7 +351,7 @@ bool LevelManager::canGo(const lif::AxisMoving& am, const lif::Direction dir) co
 		return true;
 	}
 
-	if (iposx <= 0 || iposx > LEVEL_WIDTH || iposy <= 0 || iposy > LEVEL_HEIGHT)
+	if (iposx <= 0 || iposx > level->getInfo().width || iposy <= 0 || iposy > level->getInfo().height)
 		return false;
 
 	const auto collider = am.getOwner().get<lif::Collider>();

@@ -68,7 +68,7 @@ static lif::Direction select_random_viable(
 static lif::Direction seeing_player(const lif::LevelManager& lm, const lif::AxisSighted& sighted) {
 	const auto& seen = sighted.entitiesSeen();
 	lif::Direction dir = lif::Direction::NONE;
-	unsigned short dist = lif::LEVEL_WIDTH + 1;
+	unsigned short dist = -1; // "infinity"
 	for (unsigned i = 0; i < 4; ++i) {
 		for (const auto& pair : seen[i]) {
 			if (lm.isPlayer(*pair.first) && pair.second < dist) {

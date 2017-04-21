@@ -1,5 +1,6 @@
 #include "Explosion.hpp"
 #include "LevelManager.hpp"
+#include "Level.hpp"
 #include "BreakableWall.hpp"
 #include "Fire.hpp"
 #include "Animated.hpp"
@@ -82,14 +83,16 @@ void Explosion::update() {
 		(4 - lif::abs(static_cast<signed>(explosionC->getSprite().getCurrentFrame()) - 3)) * 255 / 4.0));
 }
 
-Explosion* Explosion::propagate(lif::BaseLevelManager& lm) {
+Explosion* Explosion::propagate(lif::LevelManager& lm) {
 	const sf::Vector2i m_tile = lif::tile(position);
+	const auto lvinfo = lm.getLevel()->getInfo();
 	auto& entities = lm.getEntities();
 	std::array<bool, 4> propagating,
 	                    blocked;
+
 	propagating.fill(true);
 	blocked.fill(false);
-	
+
 	for (unsigned dir = 0; dir < propagating.size(); ++dir) {
 		for (unsigned r = 1; r <= radius; ++r) {
 			if (!propagating[dir]) continue;
@@ -110,8 +113,8 @@ Explosion* Explosion::propagate(lif::BaseLevelManager& lm) {
 				break;
 			}
 			
-			if (new_tile.x < 1 || new_tile.x > lif::LEVEL_WIDTH
-				|| new_tile.y < 1 || new_tile.y > lif::LEVEL_HEIGHT)
+			if (new_tile.x < 1 || new_tile.x > lvinfo.width
+				|| new_tile.y < 1 || new_tile.y > lvinfo.height)
 			{
 				propagating[dir] = false;
 				continue;

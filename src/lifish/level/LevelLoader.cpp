@@ -42,8 +42,10 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 	lm.reset();
 	auto& entities = lm.getEntities();
 
-	for (unsigned top = 0; top < lif::LEVEL_HEIGHT; ++top) {
-		for (unsigned left = 0; left < lif::LEVEL_WIDTH; ++left) {
+	const auto lvinfo = level.getInfo();
+
+	for (unsigned top = 0; top < lvinfo.height; ++top) {
+		for (unsigned left = 0; left < lvinfo.width; ++left) {
 
 			const sf::Vector2f curPos((left + 1) * TILE_SIZE, (top + 1) * TILE_SIZE);
 			unsigned short enemy_id = 0;

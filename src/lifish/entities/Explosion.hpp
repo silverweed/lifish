@@ -7,7 +7,7 @@
 
 namespace lif {
 
-class BaseLevelManager;
+class LevelManager;
 class Collider;
 class Player;
 class Animated;
@@ -77,7 +77,7 @@ public:
 	 *  walls within the explosion. (called once in the Explosion's lifetime).
 	 *  @return self
 	 */
-	lif::Explosion* propagate(lif::BaseLevelManager& lm);
+	lif::Explosion* propagate(lif::LevelManager& lm);
 
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 

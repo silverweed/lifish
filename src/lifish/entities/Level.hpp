@@ -2,6 +2,7 @@
 
 #include <string>
 #include <array>
+#include <vector>
 #include <unordered_set>
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
@@ -32,6 +33,11 @@ struct LevelInfo {
 	/** Number of the level */
 	unsigned short levelnum = 0;
 
+	/** Width in tiles */
+	unsigned short width;
+	/** Height in tiles */
+	unsigned short height;
+
 	/** Time before "Hurry Up" (in seconds) */
 	unsigned int time = 0;
 
@@ -47,17 +53,18 @@ struct LevelInfo {
  * static information about it. Dynamic informations about the level
  * during the game are managed by lif::LevelManager.
  */
-class Level final : public lif::Entity , private sf::NonCopyable {
+class Level final : public lif::Entity, private sf::NonCopyable {
+
 	friend class lif::LevelSet;
 
 	/** This ought to be set before calling level.init(); */
-	lif::LevelInfo levelInfo;
+	lif::LevelInfo info;
 	
 	/** The text containing the level number */
 	lif::LevelNumText *levelnumtext = nullptr;
 	
 	/** This level's static (initial) tilemap */
-	lif::Matrix<lif::EntityType, LEVEL_HEIGHT, LEVEL_WIDTH> tiles;
+	std::vector<lif::EntityType> tiles;
 
 	sf::Texture *bgTexture = nullptr;
 	sf::Sprite bgSprite;
@@ -93,17 +100,14 @@ public:
 	explicit Level(const LevelSet& levelSet);
 
 	/** Loads the appropriate bgTexture, fills the bgTiles and makes this level
-	 *  usable. Must be called after setting levelInfo.
+	 *  usable. Must be called after setting info.
 	 *  Returns nullptr if there were errors, self otherwise.
 	 */
 	lif::Entity* init() override;
 	bool isInitialized() const { return initialized; }
 
-	const LevelInfo& getInfo() const { return levelInfo; }
+	const LevelInfo& getInfo() const { return info; }
 
-	void setTime(const unsigned int _time) { levelInfo.time = _time; }
-
-	/** Gets tile[left][top] */
 	EntityType getTile(unsigned short left, unsigned short top) const;
 
 	/** Changes the origin of all tiles */
@@ -116,7 +120,6 @@ public:
 
 	const sf::Drawable& getBackground() const { return bgSprite; }
 	const sf::Drawable& getBorder() const { return borderSprite; }
-	const sf::Drawable* getNumText() const;
 };
 
 }

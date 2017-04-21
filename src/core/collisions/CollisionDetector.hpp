@@ -16,15 +16,17 @@ class CollisionDetector {
 protected:
 	lif::EntityGroup& group;
 	/** The rectangle defining the level boundaries */
-	const sf::FloatRect levelLimit;
+	sf::FloatRect levelLimit;
 #ifndef RELEASE
 	lif::debug::Stats dbgStats;
 #endif
 
 public:
-	explicit CollisionDetector(lif::EntityGroup& group, const sf::FloatRect& levelLimit);
+	explicit CollisionDetector(lif::EntityGroup& group,
+				const sf::FloatRect& levelLimit = sf::FloatRect(0, 0, 0, 0));
 	virtual ~CollisionDetector() {}
 
+	virtual void setLevelLimit(const sf::FloatRect& limit) { levelLimit = limit; }
 	sf::FloatRect getLevelLimit() const { return levelLimit; }
 
 	virtual void update() = 0;

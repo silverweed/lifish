@@ -10,8 +10,6 @@
 
 using lif::LevelEffects;
 using lif::TILE_SIZE;
-using lif::LEVEL_WIDTH;
-using lif::LEVEL_HEIGHT;
 
 LevelEffects::LevelEffects(const sf::Vector2u& windowSize) {
 	darknessRenderTex.create(windowSize.x, windowSize.y);
@@ -87,8 +85,8 @@ auto LevelEffects::_getVisionRectangles(const lif::Entity& e) const
 	std::array<float, static_cast<std::size_t>(lif::Direction::NONE)> nearest = {{
 		pos.y - TILE_SIZE, // up
 		pos.x - TILE_SIZE, // left
-		LEVEL_HEIGHT * TILE_SIZE - pos.y, // down
-		LEVEL_WIDTH * TILE_SIZE - pos.x,  // right
+		GAME_HEIGHT - pos.y, // down
+		GAME_WIDTH - pos.x,  // right
 	}};
 	// calculate vision in all directions
 	for (unsigned i = 0; i < nearest.size(); ++i) {

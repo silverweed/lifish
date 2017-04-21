@@ -59,7 +59,7 @@ protected:
 	
 	virtual void _spawn(lif::Entity *e);
 public:
-	explicit BaseLevelManager(const sf::FloatRect& lvbounds);
+	explicit BaseLevelManager();
 
 	const lif::EntityGroup& getEntities() const { return entities; }
 	lif::EntityGroup& getEntities() { return entities; }

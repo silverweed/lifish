@@ -13,9 +13,7 @@
 
 using lif::InterlevelContext;
 
-static const sf::FloatRect WIN_BOUNDS(lif::MAIN_WINDOW_SHIFT, 0,
-			lif::LEVEL_WIDTH * lif::TILE_SIZE,
-			lif::LEVEL_HEIGHT * lif::TILE_SIZE);
+static const sf::FloatRect WIN_BOUNDS(lif::MAIN_WINDOW_SHIFT, 0, lif::GAME_WIDTH, lif::GAME_HEIGHT);
 
 InterlevelContext::InterlevelContext(lif::LevelManager& lm, const lif::SidePanel& sidePanel)
 	: lif::WindowContext()

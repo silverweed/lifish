@@ -8,7 +8,7 @@ LevelNumText::LevelNumText(lif::Entity& owner, unsigned short levelnum)
 	: lif::Component(owner)
 	, text(lif::getAsset("fonts", lif::fonts::LEVELNUM),
 		lif::to_string(levelnum),
-		sf::Vector2f(lif::TILE_SIZE * (lif::LEVEL_WIDTH+1), 0))
+		sf::Vector2f(lif::GAME_WIDTH - lif::TILE_SIZE, 0))
 {
 	_declComponent<LevelNumText>();
 	text.setStyle(sf::Text::Bold);

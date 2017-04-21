@@ -40,19 +40,16 @@ namespace lif {
 /****************************************************************************/
 
 constexpr unsigned short MAX_PLAYERS = 2;
-/**
- * Level width / height in tiles. Don't take the
- * level borders into accounts, so a level will
- * occupy LEVEL_WIDTH+2, LEVEL_HEIGHT+2 tiles.
- */
-constexpr unsigned short LEVEL_WIDTH = 15; 
-constexpr unsigned short LEVEL_HEIGHT = 13;
+/** Width of the game viewport, in pixels */
+constexpr unsigned GAME_WIDTH = 640;
+/** Height of the game viewport, in pixels */
+constexpr unsigned GAME_HEIGHT = 480;
 
 constexpr unsigned short SIDE_PANEL_WIDTH = 96;
 constexpr unsigned short SIDE_PANEL_HEIGHT = 480;
 
-constexpr unsigned short WINDOW_WIDTH = SIDE_PANEL_WIDTH + (LEVEL_WIDTH + 2) * TILE_SIZE;
-constexpr unsigned short WINDOW_HEIGHT = (LEVEL_HEIGHT + 2) * TILE_SIZE;
+constexpr unsigned short WINDOW_WIDTH = SIDE_PANEL_WIDTH + GAME_WIDTH;
+constexpr unsigned short WINDOW_HEIGHT = GAME_HEIGHT;
 
 /** How much the main game window is shifted relative to the
  *  SFML window (horizontally)

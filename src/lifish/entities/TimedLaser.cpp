@@ -41,12 +41,12 @@ TimedLaser::TimedLaser(unsigned short rowCol,
 	sf::Vector2f bounds(TILE_SIZE, TILE_SIZE);
 	if (isVert) {
 		position = sf::Vector2f(TILE_SIZE * (rowCol + 1), TILE_SIZE);
-		sprite.setScale(1, lif::LEVEL_HEIGHT);
-		bounds.y *= lif::LEVEL_HEIGHT;
+		sprite.setScale(1, lif::GAME_HEIGHT);
+		bounds.y *= lif::GAME_HEIGHT;
 	} else {
 		position = sf::Vector2f(TILE_SIZE, TILE_SIZE * (rowCol + 1));
-		sprite.setScale(lif::LEVEL_WIDTH, 1);
-		bounds.x *= lif::LEVEL_WIDTH;
+		sprite.setScale(lif::GAME_WIDTH, 1);
+		bounds.x *= lif::GAME_HEIGHT;
 	}
 
 	addComponent<lif::Collider>(*this, [this] (const lif::Collider& cld) {

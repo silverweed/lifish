@@ -90,6 +90,11 @@ SHCollisionDetector::SHCollisionDetector(lif::EntityGroup& group,
 #endif
 }
 
+void SHCollisionDetector::setLevelLimit(const sf::FloatRect& limit) {
+	lif::CollisionDetector::setLevelLimit(limit);
+	container.levelSize = sf::Vector2f(limit.width - limit.left, limit.height - limit.top);
+}
+
 void SHCollisionDetector::update() {
 #ifndef RELEASE
 	// Container setup time

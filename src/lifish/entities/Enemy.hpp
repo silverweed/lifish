@@ -94,7 +94,7 @@ protected:
 public:
 	constexpr static float BASE_SPEED = 75.f;
 
-	unsigned short distanceWithNearestPlayer = 2 * lif::LEVEL_WIDTH * lif::TILE_SIZE;
+	unsigned short distanceWithNearestPlayer = -1; // "infinity"
 
 	// TODO: eliminate need for `id`
 	explicit Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& info);

@@ -3,6 +3,7 @@
 #include "Level.hpp"
 #include "Drawable.hpp"
 #include "Sprite.hpp"
+#include "LevelNumText.hpp"
 #include "ZIndexed.hpp"
 #include <map>
 #include <vector>
@@ -46,7 +47,7 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 	// Draw the level border
 	owner._mtxLock();
 	target.draw(level->getBorder(), states);
-	const auto levelnumtext = level->getNumText();
+	const auto levelnumtext = level->get<lif::LevelNumText>();
 	if (levelnumtext != nullptr)
 		target.draw(*levelnumtext, states);
 	owner._mtxUnlock();
