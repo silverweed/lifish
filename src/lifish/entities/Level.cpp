@@ -80,7 +80,7 @@ bool Level::_setTilemap(const std::string& tilemap) {
 	bool player_set[] = { false, false };
 	tiles.reserve(info.width * info.height);
 
-	for (unsigned i = 0; i < tilemap.length() && i < info.width * info.height; ++i) {
+	for (unsigned i = 0; i < tilemap.length() && i < static_cast<unsigned>(info.width * info.height); ++i) {
 		const auto et = lif::entityFromLetter(tilemap[i]);
 		switch (et) {
 		case EntityType::UNKNOWN:

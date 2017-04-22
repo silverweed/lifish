@@ -81,8 +81,8 @@ void Entity::update() {
 
 std::string Entity::_toString(unsigned short indent) const {
 	std::stringstream ss;
-	auto put_indent = [&ss] (unsigned short indent) -> std::stringstream& { 
-		for (unsigned i = 0; i < indent; ++i) 
+	auto put_indent = [&ss] (unsigned short indent) -> std::stringstream& {
+		for (unsigned i = 0; i < indent; ++i)
 			ss << "    ";
 		return ss;
 	};
@@ -99,11 +99,11 @@ std::string Entity::_toString(unsigned short indent) const {
 	return ss.str();
 }
 
-sf::Vector2f Entity::getPosition() const { 
+sf::Vector2f Entity::getPosition() const {
 	return position;
-} 
+}
 
-void Entity::setPosition(const sf::Vector2f& p) { 
+void Entity::setPosition(const sf::Vector2f& p) {
 	position = p;
 }
 

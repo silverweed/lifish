@@ -39,24 +39,24 @@ namespace lif {
 /*                         GLOBAL DEFINITIONS                               */
 /****************************************************************************/
 
-constexpr unsigned short MAX_PLAYERS = 2;
+constexpr auto MAX_PLAYERS = 2;
 /** Width of the game viewport, in pixels */
-constexpr unsigned GAME_WIDTH = 640;
+constexpr auto GAME_WIDTH = 544;
 /** Height of the game viewport, in pixels */
-constexpr unsigned GAME_HEIGHT = 480;
+constexpr auto GAME_HEIGHT = 480;
 
-constexpr unsigned short SIDE_PANEL_WIDTH = 96;
-constexpr unsigned short SIDE_PANEL_HEIGHT = 480;
+constexpr auto SIDE_PANEL_WIDTH = 96;
+constexpr auto SIDE_PANEL_HEIGHT = 480;
 
-constexpr unsigned short WINDOW_WIDTH = SIDE_PANEL_WIDTH + GAME_WIDTH;
-constexpr unsigned short WINDOW_HEIGHT = GAME_HEIGHT;
+constexpr auto WINDOW_WIDTH = SIDE_PANEL_WIDTH + GAME_WIDTH;
+constexpr auto WINDOW_HEIGHT = GAME_HEIGHT;
 
 /** How much the main game window is shifted relative to the
  *  SFML window (horizontally)
  */
-constexpr float MAIN_WINDOW_SHIFT = 1 + SIDE_PANEL_WIDTH;
+constexpr auto MAIN_WINDOW_SHIFT = 1 + SIDE_PANEL_WIDTH;
 
-constexpr unsigned short N_ENEMIES = 10;
+constexpr auto N_ENEMIES = 10;
 
 namespace fonts {
 	constexpr auto POINTS          = "pf_tempesta_seven_bold.ttf";
