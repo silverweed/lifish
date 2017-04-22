@@ -67,11 +67,12 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void setOrigin(const sf::Vector2f& o) override {
+		lif::Component::setOrigin(o);
 		animatedSprite.setOrigin(o);
 	}
 
 	void setPosition(const sf::Vector2f& pos) override {
-		lif::Entity::setPosition(pos);
+		lif::Component::setPosition(pos);
 		manualPosition = true;
 	}
 };
