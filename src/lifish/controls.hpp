@@ -21,18 +21,29 @@ enum Control {
 constexpr static unsigned short CONTROLS_NUM = 5;
 
 extern std::array<sf::Keyboard::Key, CONTROLS_NUM> players[lif::MAX_PLAYERS];
-extern std::array<unsigned int, lif::MAX_PLAYERS> joystickBombKey;
+extern std::array<unsigned, lif::MAX_PLAYERS> joystickBombKey;
 /** -1 if i-th player doesn't use joystick, else the joystick index. */
 extern std::array<short, lif::MAX_PLAYERS> useJoystick;
 
-inline Control fromString(const std::string& name) {
-	if (name == "up" || name == "UP") return CTRL_UP;
-	else if (name == "down" || name == "DOWN") return CTRL_DOWN;
-	else if (name == "left" || name == "LEFT") return CTRL_LEFT;
-	else if (name == "right" || name == "RIGHT") return CTRL_RIGHT;
-	return CTRL_BOMB;
+namespace {
+	static const std::unordered_map<std::string, Control> ctrlStrings = {
+		{ "up", CTRL_UP },
+		{ "UP", CTRL_UP },
+		{ "down", CTRL_DOWN },
+		{ "DOWN", CTRL_DOWN },
+		{ "left", CTRL_LEFT },
+		{ "LEFT", CTRL_LEFT },
+		{ "right", CTRL_RIGHT },
+		{ "RIGHT", CTRL_RIGHT },
+	};
 }
 
-} // end namespace Controls
+inline Control fromString(const std::string& name) {
+	const auto it = ctrlStrings.find(name);
+	if (it == ctrlStrings.end()) return CTRL_BOMB;
+	return it->second;
+}
+
+} // end namespace controls
 
 } // end namespace lif
