@@ -140,7 +140,7 @@ static void load_icon(sf::Window& window) {
 #ifdef MULTITHREADED
 static void rendering_loop(sf::RenderWindow& window) {
 	static const sf::Vector2f fps_pos(
-			lif::WINDOW_WIDTH - lif::TILE_SIZE * 10;
+			lif::WINDOW_WIDTH - lif::TILE_SIZE * 8;
 			lif::WINDOW_HEIGHT - lif::TILE_SIZE);
 	while (window.isOpen() && !lif::terminated) {
 		window.clear();
@@ -247,7 +247,7 @@ int main(int argc, char **argv) {
 	std::thread rendering_thread(rendering_loop, std::ref(window));
 #else
 	const sf::Vector2f fps_pos(
-			lif::WINDOW_WIDTH - lif::TILE_SIZE * 10,
+			lif::WINDOW_WIDTH - lif::TILE_SIZE * 8,
 			lif::WINDOW_HEIGHT - lif::TILE_SIZE);
 #endif
 
