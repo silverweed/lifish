@@ -10,14 +10,14 @@ class Player;
 enum class BonusType {
 	// "Permanent" bonuses
 	MAX_BOMBS,
-	QUICK_FUSE,
 	MAX_RANGE,
-	SHIELD,
-	SPEEDY,
-	INCENDIARY_BOMB,
-	THROWABLE_BOMB,
 	ABSORB,
 	ARMOR,
+	QUICK_FUSE,
+	INCENDIARY_BOMB,
+	THROWABLE_BOMB,
+	SHIELD,
+	SPEEDY,
 	// One-time bonuses
 	ZAPPER,
 	SUDDEN_DEATH,

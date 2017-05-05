@@ -146,7 +146,7 @@ Explosion* Explosion::propagate(lif::LevelManager& lm) {
 	 * which would be ugly.
 	 */
 	// Note: no cast required, as `true` is promoted to integral value "1" by C++ standard (§4.7 conv.integral)
-	short reduction = blocked[Direction::RIGHT] + blocked[Direction::LEFT];
+	int reduction = blocked[Direction::RIGHT] + blocked[Direction::LEFT];
 	explColliderH = addComponent<lif::Collider>(*this, lif::c_layers::EXPLOSIONS,
 			// size
 			sf::Vector2f(

@@ -202,6 +202,9 @@ void Player::_checkCollision(lif::Collider& cld) {
 		return;
 	}
 
+	// Apply armor
+	damage = std::max(1, damage - info.powers.armor);
+
 	auto lifed = get<lif::Lifed>();
 	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("hurt"));
 	if (lifed->decLife(damage) <= 0) {
@@ -214,7 +217,7 @@ void Player::_checkCollision(lif::Collider& cld) {
 		const auto& expl = static_cast<const lif::Explosion&>(cld.getOwner());
 		const auto& sprite = expl.get<lif::Animated>()->getSprite();
 		// Give the "long" shield only if this is the explosion's last frame
-		if (sprite.getCurrentFrame() == sprite.getAnimation()->getSize() - 1) 
+		if (sprite.getCurrentFrame() == sprite.getAnimation()->getSize() - 1)
 			bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::player::DAMAGE_SHIELD_TIME);
 		else
 			bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::player::DAMAGE_SHIELD_TIME / 40.f);

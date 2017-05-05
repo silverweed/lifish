@@ -25,8 +25,8 @@ SidePanel::SidePanel(const lif::LevelManager& lm)
 		playerHeadsSprite[i].setTextureRect(sf::IntRect(PLAYER_HEAD_WIDTH * i, 0,
 					PLAYER_HEAD_WIDTH, PLAYER_HEAD_HEIGHT));
 	}
-	playerHeadsSprite[0].setPosition(16, 59);
-	playerHeadsSprite[1].setPosition(16, 268);
+	playerHeadsSprite[0].setPosition(PLAYER1_HEAD_X, PLAYER1_HEAD_Y);
+	playerHeadsSprite[1].setPosition(PLAYER1_HEAD_X, PLAYER2_HEAD_Y);
 
 	// Load health symbols
 	healthTexture = lif::cache.loadTexture(lif::getAsset("graphics", "health.png"));
@@ -62,13 +62,11 @@ SidePanel::SidePanel(const lif::LevelManager& lm)
 			bonusesSprite[i][j].setPosition(pos);
 			bonusesSprite[i][j].setColor(DISABLED_COLOR);
 			pos.x += BONUS_ICON_WIDTH;
-			if (j != 0 && j % 10 == 0)
-				pos.y += BONUS_ICON_HEIGHT;
+			if (j == 4) {
+				pos.y += 2 * BONUS_ICON_HEIGHT + 3;
+				pos.x =BONUS_ICON_POS_X;
+			}
 		}
-		bonusesSprite[i][bonusesSprite[i].size() - 2].setPosition(sf::Vector2f(
-					pos.x - 3 * BONUS_ICON_WIDTH, pos.y + 2 * BONUS_ICON_HEIGHT));
-		bonusesSprite[i][bonusesSprite[i].size() - 1].setPosition(sf::Vector2f(
-					pos.x - 3 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT));
 	}
 }
 
@@ -191,8 +189,18 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			window.draw(text, states);
 
 			// Draw bomb radius
-			text.setPosition(sf::Vector2f(pos.x + 2 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
+			text.setPosition(sf::Vector2f(pos.x + BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
 			text.setString("x" + lif::to_string(powers.bombRadius));
+			window.draw(text, states);
+
+			// Draw absorb
+			text.setPosition(sf::Vector2f(pos.x + 2 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
+			text.setString("+" + lif::to_string(powers.absorb));
+			window.draw(text, states);
+
+			// Draw armor 
+			text.setPosition(sf::Vector2f(pos.x + 3 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
+			text.setString("+" + lif::to_string(powers.armor));
 			window.draw(text, states);
 
 			// Draw bonuses
@@ -251,6 +259,16 @@ void SidePanel::update() {
 				case B::THROWABLE_BOMB:
 					bonusesSprite[i][j].setColor(
 							powers.throwableBomb
+							? sf::Color::White : DISABLED_COLOR);
+					break;
+				case B::ABSORB:
+					bonusesSprite[i][j].setColor(
+							powers.absorb
+							? sf::Color::White : DISABLED_COLOR);
+					break;
+				case B::ARMOR:
+					bonusesSprite[i][j].setColor(
+							powers.armor
 							? sf::Color::White : DISABLED_COLOR);
 					break;
 				case B::SHIELD:

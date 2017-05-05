@@ -24,6 +24,7 @@
 #include "BreakableWall.hpp"
 #include "ShootingPoint.hpp"
 #include "AxisMoving.hpp"
+#include "Absorbable.hpp"
 #include <array>
 
 using EntityList = std::vector<lif::Entity*>;
@@ -122,6 +123,16 @@ void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::BaseLevelManager
 		} else {
 			lm.addScore(target, scored->givePoints());
 		}
+
+		// Apply absorb
+		if (e->get<lif::Absorbable>() != nullptr) {
+			for (int i = 0; i < lif::MAX_PLAYERS; ++i) {
+				if (target >= 0 && target != i + 1) continue;
+				auto& player = lm.getPlayer(i + 1);
+				player->get<lif::Lifed>()->decLife(-player->getPowers().absorb);
+			}
+		}
+
 		auto points = is_boss
 			? new lif::Points(e->getPosition(), scored->getPointsGiven(), sf::Color::Magenta, 30)
 			: new lif::Points(e->getPosition(), scored->getPointsGiven());

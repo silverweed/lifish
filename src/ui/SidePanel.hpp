@@ -27,6 +27,9 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	// Elements' coordinates (in pixel)
 	constexpr static unsigned short PLAYER_HEAD_WIDTH = 32,
 	                                PLAYER_HEAD_HEIGHT = 23,
+	                                PLAYER1_HEAD_X = 16,
+	                                PLAYER1_HEAD_Y = 59,
+	                                PLAYER2_HEAD_Y = 268,
 	                                N_LIVES_X = 55,
 	                                N_LIVES_Y_1 = 57,
 	                                N_LIVES_Y_2 = 265,
@@ -78,9 +81,9 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	/** The Bonus icons */
 	Matrix<sf::Sprite, lif::MAX_PLAYERS, lif::conf::bonus::N_PERMANENT_BONUS_TYPES> bonusesSprite;
 
-	void _drawHealthSprites(sf::RenderTarget& window, sf::RenderStates states, 
+	void _drawHealthSprites(sf::RenderTarget& window, sf::RenderStates states,
 			const lif::Player& player) const;
-	void _drawExtraLetters(sf::RenderTarget& window, sf::RenderStates states, 
+	void _drawExtraLetters(sf::RenderTarget& window, sf::RenderStates states,
 			const lif::Player& player) const;
 	/** Draws the time remaining in format MM:SS */
 	void _drawTime(sf::RenderTarget& window, sf::RenderStates states) const;

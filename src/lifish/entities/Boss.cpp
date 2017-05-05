@@ -16,6 +16,7 @@
 #include "conf/zindex.hpp"
 #include "conf/boss.hpp"
 #include "Foe.hpp"
+#include "Absorbable.hpp"
 #include <cassert>
 
 using lif::Boss;
@@ -53,6 +54,7 @@ Boss::Boss(const sf::Vector2f& pos)
 		return expl;
 	});
 	addComponent<lif::Drawable>(*this, *addComponent<lif::HurtDrawProxy>(*this));
+	addComponent<lif::Absorbable>(*this);
 }
 
 lif::Entity* Boss::init() {

@@ -79,7 +79,7 @@ void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& 
 			powers.absorb++;
 		break;
 	case B::ARMOR:
-		if (powers.absorb < lif::conf::player::MAX_ARMOR)
+		if (powers.armor < lif::conf::player::MAX_ARMOR)
 			powers.armor++;
 		break;
 	case B::ZAPPER:

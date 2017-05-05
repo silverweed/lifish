@@ -24,6 +24,7 @@
 #include "collision_functions.hpp"
 #include "Collider.hpp"
 #include "ZIndexed.hpp"
+#include "Absorbable.hpp"
 #include "conf/enemy.hpp"
 #include "conf/zindex.hpp"
 #include "utils.hpp"
@@ -89,6 +90,7 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 
 	drawProxy = std::make_unique<lif::EnemyDrawableProxy>(*this);
 	addComponent<lif::Drawable>(*this, *drawProxy);
+	addComponent<lif::Absorbable>(*this);
 
 	auto hurt_by_explosion = lif::hurtByExplosions(*this);
 	collider = addComponent<lif::Collider>(*this, [this, hurt_by_explosion] (lif::Collider& coll) {
