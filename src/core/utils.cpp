@@ -2,7 +2,18 @@
 #include "Options.hpp"
 #include "LoopingMusic.hpp"
 #include "ShadedText.hpp"
+#include "json.hpp"
 #include <random>
+
+using json = nlohmann::json;
+
+void sf::to_json(json& j, const sf::Time& time) {
+	j = time.asMilliseconds();
+}
+
+void sf::from_json(const json& j, sf::Time& time) {
+	time = sf::milliseconds(j);
+}
 
 void lif::maybeShowFPS(sf::RenderWindow& window, const sf::Vector2f& pos) {
 	static double cur_time;

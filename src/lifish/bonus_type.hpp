@@ -16,6 +16,8 @@ enum class BonusType {
 	SPEEDY,
 	INCENDIARY_BOMB,
 	THROWABLE_BOMB,
+	ABSORB,
+	ARMOR,
 	// One-time bonuses
 	ZAPPER,
 	SUDDEN_DEATH,

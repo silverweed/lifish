@@ -21,6 +21,7 @@ class UI final : public lif::WindowContext {
 	sf::Vector2u size;
 	bool quitGame = false;
 	bool loadGame = false;
+	bool saveGame = false;
 
 	UI();
 public:
@@ -48,6 +49,7 @@ public:
 
 	bool mustQuitGame() const { return quitGame; }
 	bool mustLoadGame() const { return loadGame; }
+	bool mustSaveGame() const { return saveGame; }
 	/** This method can only be safely called after a check that `mustLoadGame() == true`. */
 	const lif::SaveData& getLoadedData() const {
 		return static_cast<lif::ui::LoadScreen*>(curScreen)->getLoadedData();

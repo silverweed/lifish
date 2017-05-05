@@ -5,6 +5,7 @@
 #include "LevelSet.hpp"
 #include "json.hpp"
 #include "Lifed.hpp"
+#include "utils.hpp"
 #include <iostream>
 
 using lif::SaveManager;
@@ -15,7 +16,7 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 	nlohmann::json save;
 
 	// Current levelset
-	save["levelSet"] = lm.getLevel()->getLevelSet().getMeta("name");
+	save["levelSet"] = lm.getLevel()->getLevelSet().getMeta("path");
 	// Current level
 	save["level"] = lm.getLevel()->getInfo().levelnum;
 	
@@ -31,17 +32,21 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 			continue;
 		}
 
-		const auto powers = player->getInfo().powers;
-		const auto info = player->getInfo();
+		const auto& powers = player->getPowers();
+		const auto& info = player->getInfo();
 		save["players"][i] = {
 			{ "continues", lm.getPlayerContinues(i + 1) },
 			{ "remainingLives", info.remainingLives },
 			{ "life", player->get<lif::Lifed>()->getLife() },
 			{ "powers",
 				{
-					{ "bombFuseTime", powers.bombFuseTime.asMilliseconds() },
-					{ "bombRadius",   powers.bombRadius },
-					{ "maxBombs",     powers.maxBombs }
+					{ "bombFuseTime",   powers.bombFuseTime },
+					{ "bombRadius",     powers.bombRadius },
+					{ "maxBombs",       powers.maxBombs },
+					{ "incendiaryBomb", powers.incendiaryBomb },
+					{ "throwableBomb",  powers.throwableBomb },
+					{ "absorb",         powers.absorb },
+					{ "armor",          powers.armor },
 				}
 			},
 			{ "score", lm.getScore(i + 1) }
@@ -58,11 +63,9 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 }
 
 lif::SaveData SaveManager::loadGame(const std::string& filename) {
-	SaveData data;
-	std::ifstream saveFile(filename);
-
+	lif::SaveData data;
 	try {
-		nlohmann::json load = nlohmann::json::parse(saveFile);
+		nlohmann::json load = nlohmann::json::parse(std::ifstream(filename));
 		
 		data.levelSet = load["levelSet"];
 		data.level = load["level"];
@@ -77,6 +80,10 @@ lif::SaveData SaveManager::loadGame(const std::string& filename) {
 			player.powers.bombRadius = powdata["bombRadius"];
 			player.powers.bombFuseTime = powdata["bombFuseTime"];
 			player.powers.maxBombs = powdata["maxBombs"];
+			player.powers.incendiaryBomb = powdata["incendiaryBomb"];
+			player.powers.throwableBomb = powdata["throwableBomb"];
+			player.powers.absorb = powdata["absorb"];
+			player.powers.armor = powdata["armor"];
 			const auto& exdata = pldata["extra"];
 			for (unsigned j = 0; j < player.letters.size(); ++j)
 				player.letters[j] = exdata[j];
@@ -84,6 +91,5 @@ lif::SaveData SaveManager::loadGame(const std::string& filename) {
 	} catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
 	}
-
 	return data;
 }

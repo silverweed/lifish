@@ -27,6 +27,10 @@ std::string lif::bonusToString(lif::BonusType type) {
 		return "Incendiary Bomb";
 	case B::THROWABLE_BOMB:
 		return "Throwable Bomb";
+	case B::ABSORB:
+		return "Absorb";
+	case B::ARMOR:
+		return "Armor";
 	case B::ZAPPER:
 		return "Zapper";
 	case B::SUDDEN_DEATH:
@@ -43,20 +47,20 @@ std::string lif::bonusToString(lif::BonusType type) {
 }
 
 void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& player) {
-	const auto powers = player.getInfo().powers;
+	auto& powers = player.getPowers();
 
 	switch (type) {
 	case B::MAX_BOMBS:
 		if (powers.maxBombs < lif::conf::player::MAX_MAX_BOMBS)
-			player.setMaxBombs(powers.maxBombs + 1);
+			powers.maxBombs++;
 		break;
 	case B::QUICK_FUSE:
 		if (powers.bombFuseTime == lif::conf::bomb::DEFAULT_FUSE)
-			player.setBombFuseTime(lif::conf::bomb::QUICK_FUSE);
+			powers.bombFuseTime = lif::conf::bomb::QUICK_FUSE;
 		break;
 	case B::MAX_RANGE:
 		if (powers.bombRadius < lif::conf::bomb::MAX_RADIUS)
-			player.setBombRadius(powers.bombRadius + 1);
+			powers.bombRadius++;
 		break;
 	case B::SHIELD:
 		player.get<lif::Bonusable>()->giveBonus(B::SHIELD, lif::conf::bonus::SHIELD_DURATION);
@@ -65,10 +69,18 @@ void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& 
 		player.get<lif::Bonusable>()->giveBonus(B::SPEEDY, lif::conf::bonus::SPEEDY_DURATION);
 		break;
 	case B::INCENDIARY_BOMB:
-		player.setIncendiaryBomb(true);
+		powers.incendiaryBomb = true;
 		break;
 	case B::THROWABLE_BOMB:
-		player.setThrowableBomb(true);
+		powers.throwableBomb = true;
+		break;
+	case B::ABSORB:
+		if (powers.absorb < lif::conf::player::MAX_ABSORB)
+			powers.absorb++;
+		break;
+	case B::ARMOR:
+		if (powers.absorb < lif::conf::player::MAX_ARMOR)
+			powers.armor++;
 		break;
 	case B::ZAPPER:
 		lm.getEntities().apply([&lm] (lif::Entity *e) {

@@ -5,6 +5,16 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/System/Vector2.hpp>
 #include "game.hpp"
+#include "json.hpp"
+
+// Enable automatic sf::Time / json conversion:
+// https://github.com/nlohmann/json#basic-usage
+namespace sf {
+
+void to_json(nlohmann::json& json, const sf::Time& time);
+void from_json(const nlohmann::json& json, sf::Time& time);
+
+}
 
 namespace lif {
 

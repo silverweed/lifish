@@ -5,6 +5,7 @@
 #include <array>
 #include "game.hpp"
 #include "conf/player.hpp"
+#include "Player.hpp"
 
 namespace lif {
 
@@ -14,11 +15,7 @@ struct PlayerSaveData {
 	int continues;
 	int remainingLives;
 	int life;
-	struct {
-		int bombFuseTime;
-		int bombRadius;
-		int maxBombs;
-	} powers;
+	lif::PlayerPowers powers;
 	std::array<bool, lif::conf::player::N_EXTRA_LETTERS> letters;
 	unsigned score;
 };
@@ -43,7 +40,11 @@ struct SaveData {
  *            powers: {
  *                bombFuseTime: int,
  *                bombRadius: int,
- *                maxBombs: int
+ *                maxBombs: int,
+ *                incendiaryBomb: bool,
+ *                throwableBomb: bool,
+ *                absorb: int,
+ *                armor: int,
  *            },
  *            letters: [ bool ],
  *            score: int

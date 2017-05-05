@@ -60,12 +60,14 @@ void LevelManager::loadGame(const lif::SaveData& saveData) {
 		// Current health
 		player->get<lif::Lifed>()->setLife(pdata.life);
 		// Powers
-		/// Bomb fuse time (in ms)
-		player->setBombFuseTime(sf::milliseconds(pdata.powers.bombFuseTime));
-		/// Bomb radius
-		player->setBombRadius(pdata.powers.bombRadius);
-		/// Max bombs
-		player->setMaxBombs(pdata.powers.maxBombs);
+		auto& powers = player->getPowers();
+		powers.bombFuseTime = pdata.powers.bombFuseTime;
+		powers.bombRadius = pdata.powers.bombRadius;
+		powers.maxBombs = pdata.powers.maxBombs;
+		powers.incendiaryBomb = pdata.powers.incendiaryBomb;
+		powers.throwableBomb = pdata.powers.throwableBomb;
+		powers.absorb = pdata.powers.absorb;
+		powers.armor = pdata.powers.armor;
 		// Letters
 		for (unsigned j = 0; j < lif::conf::player::N_EXTRA_LETTERS; ++j)
 			player->setExtra(j, pdata.letters[j]);

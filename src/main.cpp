@@ -286,7 +286,7 @@ int main(int argc, char **argv) {
 						const auto save_data = ui.getLoadedData();
 						game->loadGame(save_data);
 						startLv = save_data.level;
-					}
+					} 
 					contexts[lif::CTX_GAME] = game.get();
 					contexts[lif::CTX_INTERLEVEL] = &game->getWLHandler()
 						.getInterlevelContext();
@@ -309,6 +309,13 @@ int main(int argc, char **argv) {
 			lif::curContext = cur_context;
 #endif
 		}
+
+		// FIXME 
+		if (ui.mustSaveGame()) {
+			lif::SaveManager::saveGame("save.lifish", game->getLM());
+			std::cerr << "Saved game in save.lifish." << std::endl;
+		}
+
 
 		///// LOGIC LOOP /////
 

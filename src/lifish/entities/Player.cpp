@@ -23,7 +23,7 @@
 using lif::Player;
 using lif::TILE_SIZE;
 
-const sf::Time Player::DEATH_TIME = sf::milliseconds(5000); 
+const sf::Time Player::DEATH_TIME = sf::milliseconds(5000);
 
 Player::Player(const sf::Vector2f& pos, const lif::PlayerInfo& info)
 	: lif::Entity(pos)

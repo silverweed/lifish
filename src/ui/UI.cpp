@@ -89,6 +89,7 @@ void UI::setOrigin(const sf::Vector2f& pos) {
 void UI::update() {
 	quitGame = false;
 	loadGame = false;
+	saveGame = false;
 	if (curScreen != nullptr)
 		curScreen->update();
 }
@@ -121,6 +122,7 @@ void UI::fireClick() {
 		break;
 	case Action::SAVE_GAME:
 		// TODO
+		saveGame = true;
 		break;
 	case Action::LOAD_GAME:
 		loadGame = true;

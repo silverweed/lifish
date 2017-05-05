@@ -18,16 +18,23 @@ class Collider;
 class Animated;
 class RegularEntityDeath;
 
+struct PlayerPowers {
+	int bombRadius        = lif::conf::bomb::DEFAULT_RADIUS;
+	int maxBombs          = lif::conf::player::DEFAULT_MAX_BOMBS;
+	/** Every kill heals the player by `absorb` hp. */
+	int absorb            = 0;
+	/** Reduce every damage by `armor` (never below 1) */
+	int armor             = 0;
+	sf::Time bombFuseTime = lif::conf::bomb::DEFAULT_FUSE;
+	bool incendiaryBomb   = false;
+	bool throwableBomb    = false;
+};
+
 /** This structs contains all the data which is persistent through different levels. */
 struct PlayerInfo {
 	unsigned short id;
-	struct {
-		unsigned short bombRadius = lif::conf::bomb::DEFAULT_RADIUS;
-		unsigned short maxBombs   = lif::conf::player::DEFAULT_MAX_BOMBS;
-		sf::Time bombFuseTime     = lif::conf::bomb::DEFAULT_FUSE;
-		bool incendiaryBomb       = false;
-		bool throwableBomb        = false;
-	} powers;
+
+	lif::PlayerPowers powers;
 
 	short remainingLives = lif::conf::player::INITIAL_LIVES - 1;
 
@@ -99,11 +106,7 @@ public:
 	void resurrect();
 
 	const lif::PlayerInfo& getInfo() const { return info; }
-	void setBombRadius(unsigned short r) { info.powers.bombRadius = r; }
-	void setMaxBombs(unsigned short m) { info.powers.maxBombs = m; }
-	void setBombFuseTime(sf::Time t) { info.powers.bombFuseTime = t; }
-	void setIncendiaryBomb(bool b) { info.powers.incendiaryBomb = b; }
-	void setThrowableBomb(bool b) { info.powers.throwableBomb = b; }
+	lif::PlayerPowers& getPowers() { return info.powers; }
 	void setExtra(unsigned short n, bool e) { info.extra[n] = e; }
 	void setRemainingLives(short l) { info.remainingLives = l; }
 

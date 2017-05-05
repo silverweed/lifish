@@ -8,6 +8,7 @@ std::string lif::ui::screenCallbackArg;
 static Action cb_exit() { return Action::EXIT; }
 static Action cb_back() { return Action::SWITCH_TO_PARENT; }
 static Action cb_start() { return Action::START_GAME; }
+static Action cb_save() { return Action::SAVE_GAME; }
 static Action cb_resume() { return Action::DEACTIVATE_UI; }
 static Action cb_quit() { return Action::QUIT_TO_HOME; }
 static ScreenCallback cb_switchTo(const std::string& screen) {
@@ -39,6 +40,7 @@ std::unordered_map<std::string, ScreenCallback> lif::ui::screenCallbacks = {
 	{ "back", cb_back },
 	{ "start", cb_start },
 	{ "about", cb_switchTo("about") },
+	{ "save", cb_save },
 	{ "load", cb_switchTo("load") },
 	{ "home", cb_switchTo("home") },
 	{ "quit", cb_quit },

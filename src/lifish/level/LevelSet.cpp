@@ -12,7 +12,7 @@ using lif::Level;
 
 /** Optional additional metadata; all values must be strings */
 static constexpr const char* AVAIL_METADATA[] = {
-	"author", "created", "difficulty", "comment"
+	"author", "created", "difficulty", "comment", "name"
 };
 
 LevelSet::LevelSet(const std::string& path) {
@@ -20,15 +20,14 @@ LevelSet::LevelSet(const std::string& path) {
 }
 
 void LevelSet::loadFromFile(const std::string& path) {
-	json levelJSON = json::parse(std::ifstream(path.c_str()));
+	json levelJSON = json::parse(std::ifstream(path));
+
 	// load metadata
-	metadata["name"] = levelJSON["name"].get<std::string>();
-	if (metadata["name"].length() < 1)
-		metadata["name"] = path;
 	for (const auto& key : AVAIL_METADATA) {
 		if (levelJSON.find(key) != levelJSON.end())
 			metadata[key] = levelJSON[(std::string)key].get<std::string>();
 	}
+	metadata["path"] = path;
 
 	// load tracks data
 	const auto tracksdata = levelJSON["tracks"];
