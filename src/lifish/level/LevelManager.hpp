@@ -9,6 +9,7 @@
 #include "LevelTime.hpp"
 #include "conf/player.hpp"
 #include "Direction.hpp"
+#include "game.hpp"
 
 namespace lif {
 

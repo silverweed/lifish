@@ -4,7 +4,8 @@
 #include <ostream>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/System/Vector2.hpp>
-#include "game.hpp"
+#include <SFML/Graphics.hpp>
+#include "core.hpp"
 #include "json.hpp"
 
 // Enable automatic sf::Time / json conversion:
@@ -131,8 +132,5 @@ inline bool startsWith(const std::string& haystack, const std::string& needle) {
 
 /** Plays a brief sound */
 void testMusic();
-
-/** If lif::options.showFPS == true, then display FPS on screen */
-void maybeShowFPS(sf::RenderWindow& window, const sf::Vector2f& pos);
 
 } // end namespace lif

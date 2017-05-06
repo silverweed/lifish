@@ -32,6 +32,7 @@
 #include "GameCache.hpp"
 #include "GameContext.hpp"
 #include "contexts.hpp"
+#include "FPSDisplayer.hpp"
 
 #ifdef MULTITHREADED
 #	ifdef SFML_SYSTEM_LINUX
@@ -195,6 +196,12 @@ int main(int argc, char **argv) {
 	lif::options.framerateLimit = args.fps;
 	window.setFramerateLimit(lif::options.framerateLimit);
 	window.setJoystickThreshold(lif::JOYSTICK_INPUT_THRESHOLD);
+	sf::Font fps_font;
+	fps_font.loadFromFile(lif::getAsset("fonts", lif::fonts::DEBUG_INFO));
+	const sf::Vector2f fps_pos(
+			lif::WINDOW_WIDTH - lif::TILE_SIZE * 8,
+			lif::WINDOW_HEIGHT - lif::TILE_SIZE);
+	lif::FPSDisplayer fpsDisplayer(window, fps_pos, fps_font) ;
 #ifndef RELEASE
 	lif::options.showFPS = true;
 #endif
@@ -246,9 +253,6 @@ int main(int argc, char **argv) {
 	sf::Clock frame_clock;
 	std::thread rendering_thread(rendering_loop, std::ref(window));
 #else
-	const sf::Vector2f fps_pos(
-			lif::WINDOW_WIDTH - lif::TILE_SIZE * 8,
-			lif::WINDOW_HEIGHT - lif::TILE_SIZE);
 #endif
 
 	while (window.isOpen() && !lif::terminated) {
@@ -330,7 +334,9 @@ int main(int argc, char **argv) {
 		window.clear();
 		window.draw(*cur_context);
 		
-		lif::maybeShowFPS(window, fps_pos);
+		fpsDisplayer.update();
+		window.draw(fpsDisplayer);
+
 		window.display();
 #	ifndef RELEASE
 		++cycle;
