@@ -1,7 +1,7 @@
 #include "input_utils.hpp"
 #include <iostream>
 
-constexpr unsigned XBOX = 11;
+//constexpr unsigned XBOX = 11;
 constexpr unsigned PS3 = 12;
 
 short lif::joystick::getButton(lif::joystick::ButtonType type, unsigned id) {

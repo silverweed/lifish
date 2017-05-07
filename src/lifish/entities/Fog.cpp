@@ -6,7 +6,7 @@
 #include "utils.hpp"
 #include "Drawable.hpp"
 #include "GameCache.hpp"
-#include "core.hpp"
+#include "game.hpp"
 #include "conf/zindex.hpp"
 #include <SFML/System.hpp>
 #include <random>

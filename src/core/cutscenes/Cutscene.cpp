@@ -4,6 +4,7 @@
 #include "FreeMoving.hpp"
 #include "utils.hpp"
 #include <algorithm>
+#include "game.hpp"
 
 using lif::Cutscene;
 

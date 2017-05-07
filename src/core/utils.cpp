@@ -15,7 +15,7 @@ void sf::from_json(const json& j, sf::Time& time) {
 	time = sf::milliseconds(j);
 }
 
-void lif::maybeShowFPS(sf::RenderWindow& window, const sf::Vector2f& pos) {
+/*void lif::maybeShowFPS(sf::RenderWindow& window, const sf::Vector2f& pos) {
 	static double cur_time;
 	static int n_updates = 0;
 	static sf::Clock fps_clock, fps_update_clock;
@@ -44,7 +44,7 @@ void lif::maybeShowFPS(sf::RenderWindow& window, const sf::Vector2f& pos) {
 		}	
 		window.draw(fps_text);
 	}
-}
+}*/
 
 void lif::testMusic() {
 	sf::Music sample;

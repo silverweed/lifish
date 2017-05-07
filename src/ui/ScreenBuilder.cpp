@@ -9,6 +9,7 @@
 #include <fstream>
 #include <unordered_map>
 #include <algorithm>
+#include "game.hpp"
 
 using lif::ui::ScreenBuilder;
 using json = nlohmann::json;

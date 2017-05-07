@@ -196,12 +196,10 @@ int main(int argc, char **argv) {
 	lif::options.framerateLimit = args.fps;
 	window.setFramerateLimit(lif::options.framerateLimit);
 	window.setJoystickThreshold(lif::JOYSTICK_INPUT_THRESHOLD);
-	sf::Font fps_font;
-	fps_font.loadFromFile(lif::getAsset("fonts", lif::fonts::DEBUG_INFO));
 	const sf::Vector2f fps_pos(
 			lif::WINDOW_WIDTH - lif::TILE_SIZE * 8,
 			lif::WINDOW_HEIGHT - lif::TILE_SIZE);
-	lif::FPSDisplayer fpsDisplayer(window, fps_pos, fps_font) ;
+	lif::FPSDisplayer fpsDisplayer(fps_pos, lif::getAsset("fonts", lif::fonts::DEBUG_INFO)) ;
 #ifndef RELEASE
 	lif::options.showFPS = true;
 #endif
@@ -335,7 +333,8 @@ int main(int argc, char **argv) {
 		window.draw(*cur_context);
 		
 		fpsDisplayer.update();
-		window.draw(fpsDisplayer);
+		if (lif::options.showFPS)
+			window.draw(fpsDisplayer);
 
 		window.display();
 #	ifndef RELEASE

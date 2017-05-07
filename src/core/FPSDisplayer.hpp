@@ -14,7 +14,7 @@ class FPSDisplayer : public sf::Drawable {
 	int nUpdates = 0;
 
 public:
-	explicit FPSDisplayer(sf::RenderWindow& window, const sf::Vector2f& pos, const sf::Font& font);
+	explicit FPSDisplayer(const sf::Vector2f& pos, const std::string& fontname);
 
 	void update();
 
