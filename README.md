@@ -2,6 +2,7 @@
 	<img alt="Coverity Scan Build Status"
 	     src="https://scan.coverity.com/projects/5674/badge.svg"/>
 </a>
+
 ## ABOUT ##
 Lifish is an arcade old-style game inspired by Factor Software's BOOM.
 
@@ -26,7 +27,6 @@ See later for instructions on how to build the game from the sources.
 * [SFML](https://github.com/SFML/SFML) >= 2.4
 * [GTK3](http://www.gtk.org/) (optional)
 * [nlohmann/json](https://github.com/nlohmann/json) (included in the source)
-* [mlabbe/nativefiledialog](https://github.com/mlabbe/nativefiledialog) (optional, included in the source)
 
 ### Building ###
 The game can be compiled on *nix (tested on Linux, OSX and FreeBSD) via `cmake . && make`
