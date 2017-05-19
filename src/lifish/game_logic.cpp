@@ -2,6 +2,7 @@
 #include "Bomb.hpp"
 #include "Explosion.hpp"
 #include "GameCache.hpp"
+#include "AbsorbFX.hpp"
 #include "Spawning.hpp"
 #include "Killable.hpp"
 #include "Boss.hpp"
@@ -130,6 +131,7 @@ void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::BaseLevelManager
 				if (target >= 0 && target != i + 1) continue;
 				auto& player = lm.getPlayer(i + 1);
 				player->get<lif::Lifed>()->decLife(-player->getPowers().absorb);
+				tbspawned.emplace_back(new lif::AbsorbFX(e->getPosition(), player));
 			}
 		}
 

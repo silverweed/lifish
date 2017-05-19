@@ -31,7 +31,10 @@ void Sprite::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
 void Sprite::update() {
 	lif::Component::update();
-	sprite.setPosition(owner.getPosition());
+	if (manualPosition)
+		sprite.setPosition(position);
+	else
+		sprite.setPosition(owner.getPosition());
 }
 
 void Sprite::setOrigin(const sf::Vector2f& o) {
