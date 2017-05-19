@@ -16,6 +16,8 @@
 #include "Controllable.hpp"
 #include "GameCache.hpp"
 #include "ZIndexed.hpp"
+#include "BufferedSpawner.hpp"
+#include "ArmorFX.hpp"
 #include "utils.hpp"
 #include "conf/zindex.hpp"
 #include <sstream>
@@ -33,7 +35,7 @@ Player::Player(const sf::Vector2f& pos, const lif::PlayerInfo& info)
 	_init();
 }
 
-Player::Player(const sf::Vector2f& pos, const unsigned short id) 
+Player::Player(const sf::Vector2f& pos, const unsigned short id)
 	: lif::Entity(pos)
 	, info(id)
 	, drawProxy(*this)
@@ -79,6 +81,7 @@ void Player::_init() {
 				lif::controls::useJoystick[info.id-1]);
 	hurtClock = addComponent<lif::Clock>(*this);
 	death = addComponent<lif::RegularEntityDeath>(*this, lif::conf::player::DEATH_TIME);
+	addComponent<lif::BufferedSpawner>(*this);
 
 	// Setup animations
 	auto& a_down = animated->addAnimation("walk_down");
@@ -203,7 +206,10 @@ void Player::_checkCollision(lif::Collider& cld) {
 	}
 
 	// Apply armor
-	damage = std::max(1, damage - info.powers.armor);
+	if (info.powers.armor > 0) {
+		damage = std::max(1, damage - info.powers.armor);
+		get<lif::BufferedSpawner>()->addSpawned(new lif::ArmorFX(position - sf::Vector2f(TILE_SIZE / 4, 0)));
+	}
 
 	auto lifed = get<lif::Lifed>();
 	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("hurt"));
