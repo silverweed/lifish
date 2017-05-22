@@ -25,6 +25,7 @@
 #include "Collider.hpp"
 #include "ZIndexed.hpp"
 #include "Absorbable.hpp"
+#include "LightSource.hpp"
 #include "conf/enemy.hpp"
 #include "conf/zindex.hpp"
 #include "utils.hpp"
@@ -73,9 +74,10 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	movingAnimator = addComponent<lif::MovingAnimator>(*this);
 	killable = addComponent<lif::Killable>(*this, [this] () {
 		// on kill
-		death->kill(); 
+		death->kill();
+		get<lif::LightSource>()->setActive(true);
 	}, [this] () {
-		return death->isKillInProgress(); 
+		return death->isKillInProgress();
 	});
 	// Spawn letter on death
 	addComponent<lif::Spawning>(*this, [this] (const lif::Spawning& spw) {
@@ -91,6 +93,7 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	drawProxy = std::make_unique<lif::EnemyDrawableProxy>(*this);
 	addComponent<lif::Drawable>(*this, *drawProxy);
 	addComponent<lif::Absorbable>(*this);
+	addComponent<lif::LightSource>(*this, 0)->setActive(false);
 
 	auto hurt_by_explosion = lif::hurtByExplosions(*this);
 	collider = addComponent<lif::Collider>(*this, [this, hurt_by_explosion] (lif::Collider& coll) {
@@ -115,24 +118,24 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 
 	for (unsigned i = 0; i < WALK_N_FRAMES; ++i) {
 		a_down.addFrame(sf::IntRect(
-					i * TILE_SIZE, 
+					i * TILE_SIZE,
 					0,
-					TILE_SIZE, 
+					TILE_SIZE,
 					TILE_SIZE));
 		a_up.addFrame(sf::IntRect(
-					(WALK_N_FRAMES + i) * TILE_SIZE, 
-					0, 
-					TILE_SIZE, 
+					(WALK_N_FRAMES + i) * TILE_SIZE,
+					0,
+					TILE_SIZE,
 					TILE_SIZE));
 		a_right.addFrame(sf::IntRect(
-					i * TILE_SIZE, 
-					TILE_SIZE, 
+					i * TILE_SIZE,
+					TILE_SIZE,
 					TILE_SIZE,
 					TILE_SIZE));
 		a_left.addFrame(sf::IntRect(
-					(WALK_N_FRAMES + i) * TILE_SIZE, 
-					TILE_SIZE, 
-					TILE_SIZE, 
+					(WALK_N_FRAMES + i) * TILE_SIZE,
+					TILE_SIZE,
+					TILE_SIZE,
 					TILE_SIZE));
 	}
 
@@ -145,27 +148,27 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 
 	shootFrame[Direction::DOWN].setTextureRect(sf::IntRect(
 				0,
-				2 * TILE_SIZE, 
-				TILE_SIZE, 
+				2 * TILE_SIZE,
+				TILE_SIZE,
 				TILE_SIZE));
 	shootFrame[Direction::UP].setTextureRect(sf::IntRect(
-				TILE_SIZE, 
-				2 * TILE_SIZE, 
-				TILE_SIZE, 
+				TILE_SIZE,
+				2 * TILE_SIZE,
+				TILE_SIZE,
 				TILE_SIZE));
 	shootFrame[Direction::RIGHT].setTextureRect(sf::IntRect(
-				2 * TILE_SIZE, 
-				2 * TILE_SIZE, 
-				TILE_SIZE, 
+				2 * TILE_SIZE,
+				2 * TILE_SIZE,
+				TILE_SIZE,
 				TILE_SIZE));
 	shootFrame[Direction::LEFT].setTextureRect(sf::IntRect(
-				3 * TILE_SIZE, 
-				2 * TILE_SIZE, 
-				TILE_SIZE, 
+				3 * TILE_SIZE,
+				2 * TILE_SIZE,
+				TILE_SIZE,
 				TILE_SIZE));
 
 	auto& a_death = animated->addAnimation("death");
-	for (unsigned i = 0; i < death_n_frames; ++i) 
+	for (unsigned i = 0; i < death_n_frames; ++i)
 		a_death.addFrame(sf::IntRect((WALK_N_FRAMES + i) * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 
 	auto& animatedSprite = animated->getSprite();

@@ -54,7 +54,7 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 	// Calculate visibility circles for light sources
 	lm.getEntities().apply([this] (const lif::Entity *e) {
 		const auto source = e->get<lif::LightSource>();
-		if (source == nullptr) return;
+		if (source == nullptr || !source->isActive()) return;
 		const float radius = source->getRadius();
 		auto rects = _getRadialRectangles(e->getPosition(), radius/TILE_SIZE);
 		
