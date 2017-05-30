@@ -24,7 +24,7 @@ class AxisSighted : public lif::Sighted {
 	std::array<float, static_cast<unsigned short>(lif::Direction::NONE)> vision;
 
 	/** Fills seen[dir] with entities seen in that direction */
-	void _fillLine(const lif::Direction dir);
+	void _fillLine(lif::Direction dir);
 
 public:
 	explicit AxisSighted(lif::Entity& owner, float visionRadius = -1);

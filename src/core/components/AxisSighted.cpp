@@ -49,7 +49,7 @@ void AxisSighted::update() {
 	}
 }
 
-void AxisSighted::_fillLine(const lif::Direction dir) {
+void AxisSighted::_fillLine(lif::Direction dir) {
 	// no check for lm != nullptr as it's done beforehand by update()
 
 	const auto mtile = lif::tile2(owner.getPosition());
@@ -64,9 +64,9 @@ void AxisSighted::_fillLine(const lif::Direction dir) {
 		if (!same_line(etile, mtile)) return;
 		const auto dist = lif::manhattanDistance(etile, mtile);
 		if (visionRadius < 0 || dist <= visionRadius) {
-			// Only see living entities
+			// Only see living entities (including those who are killed but whose kill is in progress)
 			const auto killable = ptr->get<lif::Killable>();
-			if (killable == nullptr || !killable->isKilled())
+			if (killable == nullptr || !killable->isKilled() || killable->isKillInProgress())
 				seen[dir].emplace_back(const_cast<lif::Entity*>(ptr), dist);
 		}
 	});
@@ -74,11 +74,13 @@ void AxisSighted::_fillLine(const lif::Direction dir) {
 	std::sort(seen[dir].begin(), seen[dir].end(), [] (const SeenPair& a, const SeenPair& b) {
 		return a.second < b.second;
 	});
+
 	if (opaqueMask != 0) {
-		// Discard entities farther than an opaque one.
-		// NOTE THAT at the moment only the first collider of the entity is used
-		// to determine opaqueness; this assumes that we only see entities whose
-		// first collider determines their bounding box.
+		/* Discard entities farther than an opaque one.
+		 * NOTE THAT at the moment only the first collider of the entity is used
+		 * to determine opaqueness; this assumes that we only see entities whose
+		 * first collider determines their bounding box.
+		 */
 		for (auto it = seen[dir].begin(); it != seen[dir].end(); ++it) {
 			const auto cld = it->first->get<lif::Collider>();
 			if (cld != nullptr) {
