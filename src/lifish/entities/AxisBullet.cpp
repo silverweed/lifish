@@ -40,9 +40,9 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, lif::Direction dir,
 		break;
 	}
 
-	auto moving = addComponent<lif::AxisMoving>(*this, lif::conf::bullet::BASE_SPEED * info.speed, dir);
-	moving->setEnsureAlign(false);
-	moving->setAutoRealign(false);
+	moving = addComponent<lif::AxisMoving>(*this, lif::conf::bullet::BASE_SPEED * info.speed, dir);
+	static_cast<lif::AxisMoving*>(moving)->setEnsureAlign(false);
+	static_cast<lif::AxisMoving*>(moving)->setAutoRealign(false);
 	auto animated = addComponent<lif::Animated>(*this, lif::getAsset("test", "axisbullets.png"));
 	addComponent<lif::Drawable>(*this, *animated);
 

@@ -89,11 +89,12 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	shooting = addComponent<lif::Shooting>(*this, info.attack);
 	autoShooting = addComponent<lif::AutoShooting>(*this);
 	sighted = addComponent<lif::AxisSighted>(*this);
-
-	drawProxy = std::make_unique<lif::EnemyDrawableProxy>(*this);
-	addComponent<lif::Drawable>(*this, *drawProxy);
 	addComponent<lif::Absorbable>(*this);
 	addComponent<lif::LightSource>(*this, 0)->setActive(false);
+
+	drawProxy = std::make_unique<lif::EnemyDrawableProxy>(*this);
+	// Keep this AFTER drawProxy!!!
+	addComponent<lif::Drawable>(*this, *drawProxy);
 
 	auto hurt_by_explosion = lif::hurtByExplosions(*this);
 	collider = addComponent<lif::Collider>(*this, [this, hurt_by_explosion] (lif::Collider& coll) {
@@ -188,7 +189,7 @@ void Enemy::update() {
 }
 
 void Enemy::_checkShoot() {
-	if (killable->isKilled() || shooting->isRecharging() || morphed 
+	if (killable->isKilled() || shooting->isRecharging() || morphed
 			|| (shooting->getAttack().type & lif::AttackType::CONTACT))
 		return;
 	
@@ -203,7 +204,7 @@ void Enemy::_checkShoot() {
 }
 
 bool Enemy::_checkCollision(lif::Collider& coll) {
-	if (coll.getLayer() == lif::c_layers::PLAYERS 
+	if (coll.getLayer() == lif::c_layers::PLAYERS
 			&& (shooting->getAttack().type & lif::AttackType::CONTACT)
 			&& !shooting->isRecharging())
 	{

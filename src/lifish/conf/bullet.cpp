@@ -19,6 +19,8 @@ std::map<unsigned short, const lif::BulletData> lif::conf::bullet::data = {
 	{ 6, lif::BulletData(12, 1, 4, 1) },
 	// magma
 	{ 7, lif::BulletData(26, 1, 4, 4) },
+	// rocket
+	{ 8, lif::BulletData(/*TODO*/32, 2, 4, 4) },
 	//// FreeBullets ////
 	// star
 	{ 101, lif::BulletData(20, 2, 5) },

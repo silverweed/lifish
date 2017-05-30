@@ -87,8 +87,8 @@ void LevelSet::loadFromFile(const std::string& path) {
 				throw std::invalid_argument(at.c_str());
 
 			enemies[enemynum].attack.type = AttackType(
-					static_cast<unsigned int>(enemies[enemynum].attack.type)
-					| static_cast<unsigned int>(type));
+					static_cast<unsigned>(enemies[enemynum].attack.type)
+					| static_cast<unsigned>(type));
 		}
 
 		// Mandatory fields
@@ -109,6 +109,14 @@ void LevelSet::loadFromFile(const std::string& path) {
 		it = atk.find("blockTime");
 		if (it != atk.end())
 			enemies[enemynum].attack.blockTime = sf::milliseconds(it->get<float>());
+
+		it = atk.find("acceleration");
+		if (it != atk.end())
+			enemies[enemynum].attack.bullet.acceleration = it->get<float>();
+
+		it = atk.find("maxSpeed");
+		if (it != atk.end())
+			enemies[enemynum].attack.bullet.maxSpeed = it->get<float>();
 
 		// Find range: first search for `range` (in pixels); if not found, search `tileRange`.
 		// If neither is found, set range to -1 (infinite).

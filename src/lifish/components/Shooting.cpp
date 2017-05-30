@@ -16,7 +16,7 @@ const sf::Time Shooting::SHOOT_FRAME_TIME = sf::milliseconds(250);
 Shooting::Shooting(lif::Entity& owner, const Attack& attack)
 	: lif::Component(owner)
 	, attackAlign(-1.f, -1.f)
-	, attack(attack) 
+	, attack(attack)
 {
 	_declComponent<Shooting>();
 	position = owner.getPosition();
@@ -61,33 +61,20 @@ lif::AxisBullet* Shooting::shoot(lif::Direction dir) {
 			if (ownerMoving != nullptr)
 				ownerMoving->block(attack.blockTime);
 		}
-		shooting = true;
-		rechargeClock->restart();
-		auto bullet = new lif::AxisBullet(getPosition(), ownerMoving->getDirection(), attack.bullet, &owner);
-		lif::cache.playSound(bullet->get<lif::Sounded>()->getSoundFile("shot"));
-		return bullet;
+		return _doShoot(ownerMoving->getDirection());
 	}
 
 	if (attack.type & lif::AttackType::BLOCKING) {
 		if (ownerMoving != nullptr)
 			ownerMoving->block(attack.blockTime);
 	}
-	shooting = true;
-	rechargeClock->restart();
-	auto bullet = new lif::AxisBullet(getPosition(), dir, attack.bullet, &owner);
-	lif::cache.playSound(bullet->get<lif::Sounded>()->getSoundFile("shot"));
-	return bullet;
+	return _doShoot(dir);
 }
 
 lif::FreeBullet* Shooting::shoot(lif::Angle angle) {
 	if (attack.type & lif::AttackType::CONTACT)
 		throw std::logic_error("Called shoot(angle) for a CONTACT attack!");
-
-	shooting = true;
-	rechargeClock->restart();
-	auto bullet = new lif::FreeBullet(getPosition(), angle, attack.bullet, &owner);
-	lif::cache.playSound(bullet->get<lif::Sounded>()->getSoundFile("shot"));
-	return bullet;
+	return _doShoot(angle);
 }
 
 bool Shooting::isRecharging() const {
@@ -105,7 +92,7 @@ void Shooting::update() {
 void Shooting::setFireRateMult(float fr) {
 	if (fr <= 0)
 		throw std::invalid_argument("Fire rate multiplier cannot be <= 0!");
-	fireRateMult = fr; 
+	fireRateMult = fr;
 }
 
 void Shooting::setPosition(const sf::Vector2f& pos) {
@@ -115,4 +102,20 @@ void Shooting::setPosition(const sf::Vector2f& pos) {
 
 sf::Vector2f Shooting::getPosition() const {
 	return manualPosition ? position : owner.getPosition() + offset;
+}
+
+lif::AxisBullet* Shooting::_doShoot(lif::Direction dir) {
+	shooting = true;
+	rechargeClock->restart();
+	auto bullet = new lif::AxisBullet(getPosition(), dir, attack.bullet, &owner);
+	lif::cache.playSound(bullet->get<lif::Sounded>()->getSoundFile("shot"));
+	return bullet;
+}
+
+lif::FreeBullet* Shooting::_doShoot(lif::Angle angle) {
+	shooting = true;
+	rechargeClock->restart();
+	auto bullet = new lif::FreeBullet(getPosition(), angle, attack.bullet, &owner);
+	lif::cache.playSound(bullet->get<lif::Sounded>()->getSoundFile("shot"));
+	return bullet;
 }

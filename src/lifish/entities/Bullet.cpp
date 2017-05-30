@@ -2,6 +2,7 @@
 #include "Bullet.hpp"
 #include "AxisMoving.hpp"
 #include "Animated.hpp"
+#include "Clock.hpp"
 #include "Sounded.hpp"
 #include "GameCache.hpp"
 #include "Collider.hpp"
@@ -20,6 +21,7 @@ Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif:
 	, info(_info)
 	, data(lif::conf::bullet::data[info.id])
 	, source(source)
+	, speed(_info.speed)
 {
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("hit", lif::getAsset("test", std::string("bullet")
@@ -28,6 +30,7 @@ Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif:
 					+ lif::to_string(info.id) + std::string("_shot.ogg")))
 	});
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::BULLETS);
+	clock = addComponent<lif::Clock>(*this);
 	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& e) {
 		// on collision
 		// Note: the default layer doesn't automatically destroy a Bullet for
@@ -71,6 +74,11 @@ void Bullet::update() {
 	lif::Entity::update();
 	if (collider->isAtLimit())
 		get<lif::Killable>()->kill();
+	if (info.acceleration > 0) {
+		const auto delta = clock->getElapsedTime().asSeconds();
+		speed = std::min(info.maxSpeed, info.speed + info.acceleration * delta * delta * delta);
+		moving->setSpeed(speed, true);
+	}
 }
 
 void Bullet::_destroy() {

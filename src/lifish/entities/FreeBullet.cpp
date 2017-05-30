@@ -16,7 +16,7 @@ FreeBullet::FreeBullet(const sf::Vector2f& pos, lif::Angle angle,
 		const lif::BulletInfo& info, const lif::Entity *const source)
 	: lif::Bullet(pos, info, source)
 {
-	addComponent<lif::FreeMoving>(*this, lif::conf::bullet::BASE_SPEED * info.speed,
+	moving = addComponent<lif::FreeMoving>(*this, lif::conf::bullet::BASE_SPEED * info.speed,
 				sf::Vector2f(std::sin(angle.asRadians()), -std::cos(angle.asRadians())));
 
 	position.x += (TILE_SIZE - data.size) / 2;

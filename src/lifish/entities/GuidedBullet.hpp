@@ -3,7 +3,7 @@
 #include <initializer_list>
 #include <functional>
 #include <vector>
-#include "Bullet.hpp"
+#include "FreeBullet.hpp"
 #include "GuidedMoving.hpp"
 
 namespace lif {
@@ -11,7 +11,7 @@ namespace lif {
 /**
  * A GuidedBullet has a GuidedMoving moving behaviour.
  */
-class GuidedBullet : public lif::Bullet {
+class GuidedBullet : public lif::FreeBullet {
 public:
 	explicit GuidedBullet(const sf::Vector2f& start, const sf::Vector2f& end, sf::Time timeTaken,
 			const lif::BulletInfo& info,

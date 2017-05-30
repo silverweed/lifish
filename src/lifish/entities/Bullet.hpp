@@ -5,6 +5,8 @@
 namespace lif {
 
 class Collider;
+class Moving;
+class Clock;
 
 /**
  * All this data is biunivocal with the bullet's id. A bullet's id simultaneously
@@ -24,9 +26,16 @@ struct BulletData {
 	 */
 	unsigned short directionality;
 
-	BulletData() : size(0), nMotionFrames(0), nDestroyFrames(0), directionality(0) {}
+	BulletData()
+		: size(0)
+		, nMotionFrames(0)
+		, nDestroyFrames(0)
+		, directionality(0)
+	{}
+
 	BulletData(unsigned short size, unsigned short nMotionFrames,
-			unsigned short nDestroyFrames, unsigned short directionality = 0)
+			unsigned short nDestroyFrames,
+			unsigned short directionality = 0)
 		: size(size)
 		, nMotionFrames(nMotionFrames)
 		, nDestroyFrames(nDestroyFrames)
@@ -42,10 +51,16 @@ struct BulletInfo {
 	unsigned short id;
 	/** The damage to deal to the impacted Entity */
 	int damage = 1;
-	/** Bullet speed, relative to players' base speed (1 means "as fast as players") */
+	/** Bullet speed, relative to players' base speed (1 means "as fast as players").
+	 *  For accelerating bullets, it's the _start_ speed.
+	 */
 	float speed = 1;
 	/** How many pixels does this bullet travel; -1 means infinite. */
 	float range = -1;
+	/** Acceleration in units of speed per second */
+	float acceleration = 0;
+	/** If acceleration > 0, caps the max speed */
+	float maxSpeed = 1;
 };
 
 /**
@@ -58,11 +73,17 @@ protected:
 	/** The Entity that shot this bullet (optional) */
 	const lif::Entity *const source;
 
+	/** The actual bullet speed, derived from info.speed and info.acceleration */
+	float speed;
+
 	/** Whether this bullet already dealt its damage */
 	bool dealtDamage = false;
 
 	/** This should be implemented by child classes */
 	lif::Collider *collider = nullptr;
+	/** This should be implemented by child classes */
+	lif::Moving *moving = nullptr;
+	lif::Clock *clock = nullptr;
 
 
 	void _destroy();

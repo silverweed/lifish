@@ -9,14 +9,14 @@ namespace lif {
 
 class Clock;
 
-/** 
+/**
  * A GuidedMoving has a starting and an ending position, and will travel from the first
  * to the second one in the given time.
  * It may optionally have one or more "path modifier functions" which alter the way it travels from point
  * `start` to `end`.
  * Such functions have the signature double -> sf::Vector2f, where the input `double` is the percentage of
  * the original path travelled so far, and the output `sf::Vector2f` is the offset to be added to that path.
- * Note that the x and y of such offset are _relative to the path_, so an offset of (0, 1) shifts the 
+ * Note that the x and y of such offset are _relative to the path_, so an offset of (0, 1) shifts the
  * bullet of 1 unit _orthogonally_ to the line linking `start` to `end`.
  */
 class GuidedMoving : public lif::Moving {

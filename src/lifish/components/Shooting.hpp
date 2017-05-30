@@ -39,6 +39,10 @@ protected:
 
 	lif::Clock *rechargeClock = nullptr;
 	lif::AxisMoving *ownerMoving = nullptr;
+
+
+	lif::AxisBullet* _doShoot(lif::Direction dir);
+	lif::FreeBullet* _doShoot(lif::Angle angle);
 	
 public:
 	explicit Shooting(lif::Entity& owner, const Attack& attack);
