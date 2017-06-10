@@ -1,7 +1,7 @@
 #include "Track.hpp"
 #include "core.hpp"
 
-lif::Track lif::getNthTrack(unsigned short num, float start, float length) {
+lif::Track lif::getNthTrack(int num, float start, float length) {
 	using lif::DIRSEP;
 	std::stringstream ss;
 	ss << lif::pwd << DIRSEP << "assets" << DIRSEP << "music" << DIRSEP << "music" << num << ".ogg";

@@ -82,13 +82,13 @@ void SidePanel::_drawHealthSprites(sf::RenderTarget& window, sf::RenderStates st
 		const lif::Player& player) const
 {
 	const auto lifed = player.get<lif::Lifed>();
-	const unsigned short n_tot = lifed->getMaxLife() / 2;
-	const unsigned short n_full = lifed->getLife() / 2;
-	const unsigned short n_half = lifed->getLife() % 2;
+	const auto n_tot = lifed->getMaxLife() / 2;
+	const auto n_full = lifed->getLife() / 2;
+	const auto n_half = lifed->getLife() % 2;
 
 	sf::Vector2f pos(HEALTH_SYM_POS_X, player.getInfo().id == 1 ? HEALTH_SYM_POS_Y_1 : HEALTH_SYM_POS_Y_2);
-	for (unsigned j = 0; j < n_tot; ++j) {
-		const auto& hs = healthSprite[j < n_full 
+	for (auto j = 0; j < n_tot; ++j) {
+		const auto& hs = healthSprite[j < n_full
 						? HEALTH_FULL : j < n_full + n_half
 						? HEALTH_HALF : HEALTH_EMPTY];
 		sf::Sprite sprite(*healthTexture, hs.getTextureRect());
@@ -107,7 +107,7 @@ void SidePanel::_drawExtraLetters(sf::RenderTarget& window, sf::RenderStates sta
 	sf::Vector2f pos(EXTRA_LETTERS_POS_X, player.getInfo().id == 1
 			? EXTRA_LETTERS_POS_Y_1 : EXTRA_LETTERS_POS_Y_2);
 	for (unsigned j = 0; j < player.getInfo().extra.size(); ++j) {
-		const unsigned short i = player.getInfo().extra[j] ? j + 1 : 0;
+		const auto i = player.getInfo().extra[j] ? j + 1 : 0;
 		sf::Sprite sprite(extraLettersTexture[i], extraLettersSprite[i].getTextureRect());
 		sprite.setPosition(pos + sf::Vector2f(j * EXTRA_LETTERS_WIDTH, 0));
 		_drawWithShadow(window, states, sprite);
@@ -115,8 +115,8 @@ void SidePanel::_drawExtraLetters(sf::RenderTarget& window, sf::RenderStates sta
 }
 
 void SidePanel::_drawTime(sf::RenderTarget& window, sf::RenderStates states) const {
-	short seconds = static_cast<short>(lm.getLevelTime().getRemainingTime().asSeconds());
-	const short minutes = seconds < 0 ? 0 : seconds / 60;
+	auto seconds = static_cast<int>(lm.getLevelTime().getRemainingTime().asSeconds());
+	const auto minutes = seconds < 0 ? 0 : seconds / 60;
 	std::stringstream ss;
 	if (minutes < 10)
 		ss << "0";

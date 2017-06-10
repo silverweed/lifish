@@ -25,32 +25,32 @@ class Player;
  */
 class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	// Elements' coordinates (in pixel)
-	constexpr static unsigned short PLAYER_HEAD_WIDTH = 32,
-	                                PLAYER_HEAD_HEIGHT = 23,
-	                                PLAYER1_HEAD_X = 16,
-	                                PLAYER1_HEAD_Y = 59,
-	                                PLAYER2_HEAD_Y = 268,
-	                                N_LIVES_X = 55,
-	                                N_LIVES_Y_1 = 57,
-	                                N_LIVES_Y_2 = 265,
-	                                HEALTH_SYM_WIDTH = 17,
-	                                HEALTH_SYM_HEIGHT = 18,
-	                                HEALTH_SYM_POS_X = 15,
-	                                HEALTH_SYM_POS_Y_1 = 91,
-	                                HEALTH_SYM_POS_Y_2 = 299,
-	                                EXTRA_LETTERS_WIDTH = 14,
-	                                EXTRA_LETTERS_HEIGHT = 15,
-	                                EXTRA_LETTERS_POS_X = 12,
-	                                EXTRA_LETTERS_POS_Y_1 = 131,
-	                                EXTRA_LETTERS_POS_Y_2 = 339,
-	                                BONUS_ICON_WIDTH = 14,
-	                                BONUS_ICON_HEIGHT = 13,
-	                                BONUS_ICON_POS_X = 12,
-	                                BONUS_ICON_POS_Y_1 = 150,
-	                                BONUS_ICON_POS_Y_2 = 358,
-	                                SCORE_POS_X = 12,
-	                                SCORE_POS_Y_1 = 195,
-	                                SCORE_POS_Y_2 = 403;
+	constexpr static unsigned PLAYER_HEAD_WIDTH = 32,
+	                          PLAYER_HEAD_HEIGHT = 23,
+	                          PLAYER1_HEAD_X = 16,
+	                          PLAYER1_HEAD_Y = 59,
+	                          PLAYER2_HEAD_Y = 268,
+	                          N_LIVES_X = 55,
+	                          N_LIVES_Y_1 = 57,
+	                          N_LIVES_Y_2 = 265,
+	                          HEALTH_SYM_WIDTH = 17,
+	                          HEALTH_SYM_HEIGHT = 18,
+	                          HEALTH_SYM_POS_X = 15,
+	                          HEALTH_SYM_POS_Y_1 = 91,
+	                          HEALTH_SYM_POS_Y_2 = 299,
+	                          EXTRA_LETTERS_WIDTH = 14,
+	                          EXTRA_LETTERS_HEIGHT = 15,
+	                          EXTRA_LETTERS_POS_X = 12,
+	                          EXTRA_LETTERS_POS_Y_1 = 131,
+	                          EXTRA_LETTERS_POS_Y_2 = 339,
+	                          BONUS_ICON_WIDTH = 14,
+	                          BONUS_ICON_HEIGHT = 13,
+	                          BONUS_ICON_POS_X = 12,
+	                          BONUS_ICON_POS_Y_1 = 150,
+	                          BONUS_ICON_POS_Y_2 = 358,
+	                          SCORE_POS_X = 12,
+	                          SCORE_POS_Y_1 = 195,
+	                          SCORE_POS_Y_2 = 403;
 	const sf::Color DISABLED_COLOR = sf::Color(100, 100, 100, 255);
 	const sf::Vector2f TIME_POS = sf::Vector2f(21, 230);
 
@@ -66,7 +66,7 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	sf::Texture *playerHeadsTexture;
 
 	/** The health symbols' sprites: empty, half, full */
-	enum : unsigned short {
+	enum {
 		HEALTH_EMPTY = 0,
 		HEALTH_HALF  = 1,
 		HEALTH_FULL  = 2

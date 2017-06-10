@@ -44,14 +44,14 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 
 	const auto lvinfo = level.getInfo();
 
-	for (unsigned top = 0; top < lvinfo.height; ++top) {
-		for (unsigned left = 0; left < lvinfo.width; ++left) {
+	for (int top = 0; top < lvinfo.height; ++top) {
+		for (int left = 0; left < lvinfo.width; ++left) {
 
 			const sf::Vector2f curPos((left + 1) * TILE_SIZE, (top + 1) * TILE_SIZE);
-			unsigned short enemy_id = 0;
+			int enemy_id = 0;
 			const auto& ls = level.getLevelSet();
 
-			auto is_game_over = [&lm] (unsigned short id) -> bool {
+			auto is_game_over = [&lm] (int id) -> bool {
 				return lm.players[id] == nullptr || (
 						lm.players[id]->getInfo().remainingLives <= 0
 						&& lm.players[id]->get<lif::Lifed>()->getLife() <= 0
@@ -59,7 +59,7 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 					);
 			};
 
-			auto add_player = [&lm, &entities, is_game_over] (unsigned short id, const sf::Vector2f& pos) {
+			auto add_player = [&lm, &entities, is_game_over] (int id, const sf::Vector2f& pos) {
 				if (!is_game_over(id)) {
 					lm.players[id]->setWinning(false);
 					lm.players[id]->setPosition(pos);
@@ -221,7 +221,7 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 
 	if (level.getInfo().effects.find("darkness") != level.getInfo().effects.end()) {
 		// In case of darkness, we need the Players to have an AxisSighted component
-		for (unsigned short i = 0; i < lm.players.size(); ++i) {
+		for (size_t i = 0; i < lm.players.size(); ++i) {
 			if (lm.players[i] == nullptr) continue;
 			auto sighted = lm.players[i]->addComponent<lif::AxisSighted>(*lm.players[i]);
 			sighted->init();

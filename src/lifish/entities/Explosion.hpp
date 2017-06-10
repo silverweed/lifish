@@ -45,7 +45,7 @@ class Explosion : public lif::Entity, public sf::Drawable {
 	 *  more specifically, this is a 4-element array containing the propagation
 	 *  distance in the 4 directions. The array is indexed with ANIM_UP etc
 	 */
-	std::array<unsigned short, 4> propagation;
+	std::array<int, 4> propagation;
 
 	/** The Entity that generated this explosion, if any. Usually, this means the Player who
 	 *  dropped the bomb that cause this explosion.

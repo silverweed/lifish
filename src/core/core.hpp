@@ -33,10 +33,10 @@ constexpr char DIRSEP = '\\';
 constexpr char DIRSEP = '/';
 #endif
 
-constexpr unsigned short TILE_SIZE = 32; // pixels
+constexpr unsigned TILE_SIZE = 32; // pixels
 
 constexpr auto PI = 3.141592653589793238L;
-constexpr unsigned short PWD_BUFSIZE = 512;
+constexpr size_t PWD_BUFSIZE = 512;
 
 /** Threshold value to consider an input from joystick getAxisPosition(). */
 constexpr short JOYSTICK_INPUT_THRESHOLD = 50;

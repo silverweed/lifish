@@ -10,7 +10,7 @@ namespace ui {
 
 class ControlsScreen : public lif::ui::Screen {
 	/** Whose player we're changing controls */
-	unsigned short selectedPlayer = 1;
+	int selectedPlayer = 1;
 	/** The control we're changing right now, if any */
 	lif::ShadedText *changingCtrlText = nullptr;
 
@@ -19,7 +19,7 @@ class ControlsScreen : public lif::ui::Screen {
 
 	// Callbacks
 	/** Selects `id`-th player (starting from 1) */
-	lif::ui::Action _selectPlayer(unsigned short id);
+	lif::ui::Action _selectPlayer(int id);
 	/** Sets the `textKey` text to be in 'changing' state */
 	lif::ui::Action _changeControl(const std::string& textKey);
 	/** Toggles the lif::useJoystick variable for the selected player */

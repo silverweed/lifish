@@ -375,7 +375,7 @@ bool LevelManager::canGo(const lif::AxisMoving& am, const lif::Direction dir) co
 			iposx * TILE_SIZE, iposy * TILE_SIZE, TILE_SIZE, TILE_SIZE)))
 	{
 		if (cld->getOwner().get<lif::Fixed>() == nullptr) continue;
-		if (cld != nullptr && collider->isSolidFor(*cld))
+		if (collider->isSolidFor(*cld))
 			return false;
 	}
 

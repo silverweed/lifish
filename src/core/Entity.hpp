@@ -30,7 +30,7 @@ private:
 	std::unordered_map<CompKey, CompVec> components;
 	bool _initialized = false;
 
-	std::string _toString(unsigned short indent) const;
+	std::string _toString(int indent) const;
 	void _addUnique(lif::Component *c);
 
 protected:

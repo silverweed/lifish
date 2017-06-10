@@ -13,6 +13,6 @@ struct Track {
 	float loopstart, loopend, looplength;
 };
 
-Track getNthTrack(unsigned short num, float start, float length);
+Track getNthTrack(int num, float start, float length);
 
 }

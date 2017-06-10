@@ -32,7 +32,7 @@ struct PlayerPowers {
 
 /** This structs contains all the data which is persistent through different levels. */
 struct PlayerInfo {
-	unsigned short id;
+	int id;
 
 	lif::PlayerPowers powers;
 
@@ -41,7 +41,7 @@ struct PlayerInfo {
 	/** The EXTRA letters of this player */
 	std::array<bool, lif::conf::player::N_EXTRA_LETTERS> extra;
 
-	PlayerInfo(unsigned short id) : id(id) {
+	PlayerInfo(int id) : id(id) {
 		extra.fill(false);
 	}
 
@@ -73,9 +73,9 @@ class Player : public lif::Entity {
 
 	friend class lif::PlayerDrawProxy;
 
-	constexpr static unsigned short WALK_N_FRAMES = 8;
-	constexpr static unsigned short DEATH_N_FRAMES = 3;
-	constexpr static unsigned short IDLE_N_FRAMES = 20;
+	constexpr static int WALK_N_FRAMES = 8;
+	constexpr static int DEATH_N_FRAMES = 3;
+	constexpr static int IDLE_N_FRAMES = 20;
 	const static sf::Time DEATH_TIME;
 
 	/** If true, idle animation is winning animation */
@@ -99,7 +99,7 @@ class Player : public lif::Entity {
 
 public:
 	/** Creates a player with the default state and id `id` */
-	explicit Player(const sf::Vector2f& pos, const unsigned short id);
+	explicit Player(const sf::Vector2f& pos, const int id);
 	/** Creates a player whose state is described by `info` */
 	explicit Player(const sf::Vector2f& pos, const lif::PlayerInfo& info);
 
@@ -107,8 +107,8 @@ public:
 
 	const lif::PlayerInfo& getInfo() const { return info; }
 	lif::PlayerPowers& getPowers() { return info.powers; }
-	void setExtra(unsigned short n, bool e) { info.extra[n] = e; }
-	void setRemainingLives(short l) { info.remainingLives = l; }
+	void setExtra(int n, bool e) { info.extra[n] = e; }
+	void setRemainingLives(int l) { info.remainingLives = l; }
 
 	void setWinning(bool b);
 

@@ -154,8 +154,8 @@ Explosion* Explosion::propagate(lif::LevelManager& lm) {
 					+ 1 - reduction) + reduction,
 				TILE_SIZE - 2),
 			// offset
-			sf::Vector2f(-TILE_SIZE * propagation[Direction::LEFT]
-				+ (TILE_SIZE - 1) * blocked[Direction::LEFT], 1));
+			sf::Vector2f(static_cast<signed>(-TILE_SIZE * propagation[Direction::LEFT]
+				+ (TILE_SIZE - 1) * blocked[Direction::LEFT]), 1));
 
 	reduction = blocked[Direction::UP]  + blocked[Direction::DOWN];
 	explColliderV = addComponent<lif::Collider>(*this, lif::c_layers::EXPLOSIONS,
@@ -165,8 +165,8 @@ Explosion* Explosion::propagate(lif::LevelManager& lm) {
 				TILE_SIZE * (propagation[Direction::UP] + propagation[Direction::DOWN]
 					+ 1 - reduction) + reduction),
 			// offset
-			sf::Vector2f(1, -TILE_SIZE * propagation[Direction::UP]
-				+ (TILE_SIZE - 1) * blocked[Direction::UP]));
+			sf::Vector2f(1, static_cast<signed>(-TILE_SIZE * propagation[Direction::UP]
+				+ (TILE_SIZE - 1) * blocked[Direction::UP])));
 
 	for (unsigned i = 0; i < 4; ++i)
 		if (blocked[i]) --propagation[i];

@@ -10,8 +10,12 @@
 
 bool lif::init() {
 	if (!lif::initCore()) return false;
-	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i)
-		lif::controls::useJoystick[i] = i;
+	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
+		if (sf::Joystick::isConnected(i))
+			lif::controls::useJoystick[i] = i;
+		else
+			lif::controls::useJoystick[i] = -1;
+	}
 
 	// Setup collision layers
 	lif::c_layers::init();

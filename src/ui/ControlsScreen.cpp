@@ -157,7 +157,7 @@ void ControlsScreen::_setupTransitions() {
 	transitions.add("back", std::make_pair(D::DOWN, "p1"));
 }
 
-Action ControlsScreen::_selectPlayer(unsigned short id) {
+Action ControlsScreen::_selectPlayer(int id) {
 	if (selectedPlayer == id) return Action::DO_NOTHING;
 	interactables["p" + lif::to_string(selectedPlayer)]->setColor(sf::Color::White);
 	selectedPlayer = id;
@@ -177,7 +177,7 @@ Action ControlsScreen::_selectPlayer(unsigned short id) {
 				lif::controls::players[selectedPlayer-1][it->second]));
 	}
 
-	const short used = lif::controls::useJoystick[selectedPlayer-1];
+	const auto used = lif::controls::useJoystick[selectedPlayer-1];
 	interactables["joystick_toggle"]->getText()->setString(used == -1 ? "NO" :
 			std::string("Joystick") + lif::to_string(used));
 
@@ -188,7 +188,7 @@ void ControlsScreen::update() {
 	lif::ui::Screen::update();
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		auto& text = interactables["p" + lif::to_string(i+1)];
-		if (selectedPlayer == i + 1) 
+		if (static_cast<unsigned>(selectedPlayer) == i + 1)
 			text->setColor(sf::Color::Yellow);
 	}
 	if (changingCtrlText != nullptr) 
@@ -213,7 +213,7 @@ bool ControlsScreen::handleEvent(sf::Window&, sf::Event event) {
 		{
 			// Only meaningful if we're using a joystick (and the correct one)
 			if (lif::controls::useJoystick[selectedPlayer-1] < 0 ||
-				static_cast<short>(event.joystickButton.joystickId) !=
+				static_cast<int>(event.joystickButton.joystickId) !=
 					lif::controls::useJoystick[selectedPlayer-1])
 			{
 				break;
@@ -279,13 +279,13 @@ Action ControlsScreen::_changeControl(const std::string& textKey) {
 
 Action ControlsScreen::_toggleJoystick() {
 	// Retreive the list of connected joysticks
-	std::vector<short> joysticks;
+	std::vector<int> joysticks;
 	joysticks.reserve(sf::Joystick::Count);
 	
 	// Index of the currently used joystick, or -1 if no joystick is in use
-	short idx = -1;
+	auto idx = -1;
 	// Currently used joystick (-1 if none)
-	short current = lif::controls::useJoystick[selectedPlayer-1];
+	auto current = lif::controls::useJoystick[selectedPlayer-1];
 
 	for (auto i = 0; i < sf::Joystick::Count; ++i) {
 		if (sf::Joystick::isConnected(i)) {
@@ -295,9 +295,9 @@ Action ControlsScreen::_toggleJoystick() {
 		}
 	}
 
-	if (current == -1)
+	if (current == -1 && joysticks.size() > 0)
 		current = joysticks[0];
-	else if (idx < static_cast<short>(joysticks.size()) - 1)
+	else if (idx < static_cast<int>(joysticks.size()) - 1)
 		current = joysticks[++idx];
 	else
 		current = -1;

@@ -86,8 +86,8 @@ sf::Vector2f AlienPredator::_findTunneledPosition(const lif::LevelManager& lm) c
 	// First, construct the list of possible tiles.
 	std::list<sf::Vector2i> tiles;
 	const auto lvinfo = lm.getLevel()->getInfo();
-	for (unsigned i = 1; i <= lvinfo.width; ++i)
-		for (unsigned j = 1; j <= lvinfo.height; ++j)
+	for (int i = 1; i <= lvinfo.width; ++i)
+		for (int j = 1; j <= lvinfo.height; ++j)
 			tiles.emplace_back(i, j);
 
 	// Remove all tiles which are too close to a player

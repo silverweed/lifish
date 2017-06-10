@@ -21,25 +21,25 @@ class LevelNumText;
 /** Holds the data used in Level initialization. */
 struct LevelInfo {
 	struct {
-		unsigned short bg        = 1,
-			       border    = 1,
-			       fixed     = 1,
-			       breakable = 1;
+		int bg        = 1,
+		    border    = 1,
+		    fixed     = 1,
+		    breakable = 1;
 	} tileIDs;
 	
 	/** This game's track info */
 	lif::Track track;
 
 	/** Number of the level */
-	unsigned short levelnum = 0;
+	int levelnum = 0;
 
 	/** Width in tiles */
-	unsigned short width;
+	int width;
 	/** Height in tiles */
-	unsigned short height;
+	int height;
 
 	/** Time before "Hurry Up" (in seconds) */
-	unsigned int time = 0;
+	int time = 0;
 
 	/** String representation of the tilemap */
 	std::string tilemap;
@@ -108,7 +108,7 @@ public:
 
 	const LevelInfo& getInfo() const { return info; }
 
-	EntityType getTile(unsigned short left, unsigned short top) const;
+	EntityType getTile(int left, int top) const;
 
 	/** Changes the origin of all tiles */
 	void setOrigin(const sf::Vector2f& origin) override;

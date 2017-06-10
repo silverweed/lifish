@@ -16,9 +16,9 @@ using lif::DIRSEP;
 using lif::TILE_SIZE;
 using lif::EntityType;
 
-Level::Level(const lif::LevelSet& _levelSet) 
+Level::Level(const lif::LevelSet& _levelSet)
 	: lif::Entity()
-	, levelSet(_levelSet) 
+	, levelSet(_levelSet)
 {}
 
 lif::Entity* Level::init() {
@@ -70,8 +70,8 @@ void Level::setOrigin(const sf::Vector2f& offset) {
 	levelnumtext->setOrigin(offset);
 }
 
-EntityType Level::getTile(unsigned short left, unsigned short top) const {
-	if (left >= info.width || top >= info.height)
+EntityType Level::getTile(int left, int top) const {
+	if (left < 0 || top < 0 || left >= info.width || top >= info.height)
 		return EntityType::UNKNOWN;
 	return tiles[top * info.width + left];
 }
@@ -108,8 +108,8 @@ std::string Level::getTilemap() const {
 	static std::stringstream ss;
 
 	if (!called) {
-		for (unsigned i = 0; i < info.height; ++i) {
-			for (unsigned j = 0; j < info.width; ++j) {
+		for (int i = 0; i < info.height; ++i) {
+			for (int j = 0; j < info.width; ++j) {
 				ss << tiles[i * info.width + j] << " ";
 			}
 			ss << "\r\n";

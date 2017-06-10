@@ -15,7 +15,7 @@ struct Options {
 	bool printDrawStats;
 
 	bool vsync;
-	unsigned short framerateLimit;
+	int framerateLimit;
 
 	/** This is the designed size of the application. Used, for example, to correctly
 	 *  resize the content when window is resized. Must be set manually.
