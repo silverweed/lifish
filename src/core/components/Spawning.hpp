@@ -24,7 +24,7 @@ class Spawning : public lif::Component {
 	SpawnCondition spawnCondition;
 	SpawnFunction spawnFunction;
 
-	unsigned short _nSpawned = 0;
+	unsigned _nSpawned = 0;
 
 
 	/** Returns the condition for "spawn on death". 
@@ -45,7 +45,7 @@ public:
 	explicit Spawning(lif::Entity& owner, SpawnFunction spawnFunction);
 	explicit Spawning(lif::Entity& owner, SpawnCondition spawnCondition, SpawnFunction spawnFunction);
 
-	unsigned short nSpawned() const { return _nSpawned; }
+	unsigned nSpawned() const { return _nSpawned; }
 
 	virtual bool shouldSpawn() const { return spawnCondition(*this); }
 	/** @return the spawned entity */

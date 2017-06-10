@@ -32,10 +32,10 @@ public:
 	void loadFromFile(const std::string& jsonPath);
 
 	/** Constructs the i-th level (starting from 1) and returns it if init() is successful. */
-	std::unique_ptr<Level> getLevel(unsigned short i) const;
+	std::unique_ptr<Level> getLevel(unsigned i) const;
 	unsigned short getLevelsNum() const { return levels.size(); }
 	std::string getMeta(const std::string& key) const;
-	const EnemyInfo& getEnemyInfo(const unsigned short id) const { return enemies[id-1]; }
+	const EnemyInfo& getEnemyInfo(const int id) const { return enemies[id - 1]; }
 
 	std::string toString() const override;
 };

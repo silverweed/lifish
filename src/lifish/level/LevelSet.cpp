@@ -31,7 +31,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 
 	// load tracks data
 	const auto tracksdata = levelJSON["tracks"];
-	unsigned short tracknum = 1;
+	unsigned tracknum = 1;
 	/* trackinfo = {
 	 *	"loop": {
 	 *		"start": float,
@@ -55,14 +55,14 @@ void LevelSet::loadFromFile(const std::string& path) {
 
 	// load enemies data
 	const auto enemydata = levelJSON["enemies"];
-	unsigned short enemynum = 0;
+	unsigned enemynum = 0;
 	/* enemyinfo = {
-	 *	"ai": ushort,
-	 *	"speed": ushort,
+	 *	"ai": uint,
+	 *	"speed": uint,
 	 *	"attack": {
 	 *		"type": string,
 	 *		"damage": short,
-	 *		"id": ushort         [opt]
+	 *		"id": uint         [opt]
 	 *		"speed": float,      [opt]
 	 *		"fireRate": float,   [opt]
 	 *		"blockTime": float,  [opt]
@@ -92,7 +92,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 		}
 
 		// Mandatory fields
-		enemies[enemynum].attack.bullet.damage = atk["damage"].get<short>();
+		enemies[enemynum].attack.bullet.damage = atk["damage"].get<int>();
 		// Optional fields
 		auto it = atk.find("speed");
 		if (it != atk.end())
@@ -100,7 +100,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 		
 		it = atk.find("id");
 		if (it != atk.end())
-			enemies[enemynum].attack.bullet.id = it->get<unsigned short>();
+			enemies[enemynum].attack.bullet.id = it->get<unsigned>();
 
 		it = atk.find("fireRate");
 		if (it != atk.end())
@@ -131,7 +131,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 			it = atk.find("tileRange");
 			if (it != atk.end()) {
 				enemies[enemynum].attack.bullet.range =
-					static_cast<float>(it->get<short>() * lif::TILE_SIZE);
+					static_cast<float>(it->get<int>() * lif::TILE_SIZE);
 			}
 		}
 		++enemynum;
@@ -141,18 +141,18 @@ void LevelSet::loadFromFile(const std::string& path) {
 	// load levels data
 	const auto levelsdata = levelJSON["levels"];
 
-	unsigned short lvnum = 1;
+	unsigned lvnum = 1;
 	/* lvinfo = {
 	 *	"time": uint,
 	 *	"tilemap": string,
-	 *	"music": ushort,
-	 *	"width": ushort,
-	 *	"height": ushort,
+	 *	"music": uint,
+	 *	"width": uint,
+	 *	"height": uint,
 	 *	"tileIDs": {
-	 *		"border": ushort,
-	 *		"bg": ushort,
-	 *		"fixed": ushort,
-	 *		"breakable": ushort
+	 *		"border": uint,
+	 *		"bg": uint,
+	 *		"fixed": uint,
+	 *		"breakable": uint
 	 *	},
 	 *	"effects": [string] [opt]
 	 * }
@@ -179,7 +179,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 	}
 }
 
-std::unique_ptr<Level> LevelSet::getLevel(unsigned short num) const {
+std::unique_ptr<Level> LevelSet::getLevel(unsigned num) const {
 	std::unique_ptr<Level> level;
 	if (num > 0 && num <= levels.size()) {
 		level = std::make_unique<Level>(*this);
