@@ -199,7 +199,7 @@ int main(int argc, char **argv) {
 	const sf::Vector2f fps_pos(
 			lif::WINDOW_WIDTH - lif::TILE_SIZE * 8,
 			lif::WINDOW_HEIGHT - lif::TILE_SIZE);
-	lif::FPSDisplayer fpsDisplayer(fps_pos, lif::getAsset("fonts", lif::fonts::DEBUG_INFO)) ;
+	lif::FPSDisplayer fpsDisplayer(fps_pos, lif::getAsset("fonts", lif::fonts::DEBUG_INFO));
 #ifndef RELEASE
 	lif::options.showFPS = true;
 #endif
@@ -337,12 +337,14 @@ int main(int argc, char **argv) {
 			window.draw(fpsDisplayer);
 
 		window.display();
+
 #	ifndef RELEASE
+		dbgStats.timer.end("draw");
 		++cycle;
 		if (lif::options.printDrawStats && cycle % 50 == 0) {
 			std::ios::fmtflags flags(std::cerr.flags());
 			std::cerr << std::setfill(' ') << std::scientific << std::setprecision(4)
-				<< ">> Draw: " << std::setw(6) << dbgStats.timer.end("draw") << std::endl;
+				<< ">> Draw: " << std::setw(6) << dbgStats.timer.safeGet("draw") << std::endl;
 			std::cerr.flags(flags);
 		}
 #	endif
