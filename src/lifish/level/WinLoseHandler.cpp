@@ -48,6 +48,14 @@ void WinLoseHandler::_handleWin() {
 	if (time >= sf::seconds(4)) {
 		levelClearSoundPlayed = false;
 		playerWinSoundPlayed = false;
+		// Ensure all players have no pending resurrect
+		for (unsigned id = 1; id <= lif::MAX_PLAYERS; ++id) {
+			auto player = lm.getPlayer(id);
+			if (player == nullptr) continue;
+			auto klb = player->get<lif::Killable>();
+			if (klb->isKilled())
+				lm._tryResurrectPlayer(player);
+		}
 		lm.pause();
 		interlevelCtx.setAdvancingLevel();
 		state = State::ADVANCING_LEVEL;

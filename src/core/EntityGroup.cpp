@@ -14,9 +14,15 @@ void EntityGroup::validate() {
 	alreadyPrunedThisUpdate = true;
 }
 
-void EntityGroup::updateAll() {
+void EntityGroup::checkAll() {
 	_checkDead();
 	_checkKilled();
+	alreadyCheckedThisUpdate = true;
+}
+
+void EntityGroup::updateAll() {
+	if (!alreadyCheckedThisUpdate)
+		checkAll();
 
 	if (!alreadyPrunedThisUpdate)
 		_pruneAll();
@@ -25,6 +31,7 @@ void EntityGroup::updateAll() {
 		e->update();
 
 	alreadyPrunedThisUpdate = false;
+	alreadyCheckedThisUpdate = false;
 }
 
 void EntityGroup::remove(const lif::Entity& entity) {
@@ -114,8 +121,8 @@ void EntityGroup::_checkKilled() {
 				continue;
 			}
 
-			auto eit = std::find_if(entities.begin(), entities.end(), 
-					[klb] (std::shared_ptr<lif::Entity> ptr) 
+			auto eit = std::find_if(entities.begin(), entities.end(),
+					[klb] (std::shared_ptr<lif::Entity> ptr)
 			{
 				return ptr.get() == &klb->getOwner();
 			});
@@ -141,8 +148,8 @@ void EntityGroup::_checkDead() {
 		auto tmp = it->lock();
 		if (!tmp->isKillInProgress()) {
 			// kill function has ended, we can safely destroy this.
-			auto eit = std::find_if(entities.begin(), entities.end(), 
-					[tmp] (std::shared_ptr<lif::Entity>& ptr) 
+			auto eit = std::find_if(entities.begin(), entities.end(),
+					[tmp] (std::shared_ptr<lif::Entity>& ptr)
 			{
 				return ptr.get() == &tmp->getOwner();
 			});

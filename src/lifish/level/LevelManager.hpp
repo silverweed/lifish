@@ -81,6 +81,10 @@ class LevelManager final : public lif::BaseLevelManager, public sf::Drawable {
 	 *  sets the `gameOver` flag to `true`.
 	 */
 	void _checkResurrect();
+	/** If player has continues left, resurrect it and return true.
+	 *  Else, remove it from `players` and return false.
+	 */
+	bool _tryResurrectPlayer(std::shared_ptr<lif::Player> player);
 	void _checkSpecialConditions();
 	void _triggerHurryUp();
 	void _triggerHurryUpWarning();
@@ -93,45 +97,49 @@ public:
 	explicit LevelManager();
 
 	/** Generates n players. If n > MAX_PLAYERS, only generate MAX_PLAYERS players. */
-	void createNewPlayers(unsigned short n = lif::MAX_PLAYERS);
+	void createNewPlayers(int n = lif::MAX_PLAYERS);
 
 	bool isPlayer(const lif::Entity& e) const;
 	/** Returns the id-th player (id starting from 1) */
-	const std::shared_ptr<lif::Player> getPlayer(unsigned short id) const;
-	void setPlayer(unsigned short id, std::shared_ptr<lif::Player> player);
-	void removePlayer(unsigned short id);
+	const std::shared_ptr<lif::Player> getPlayer(int id) const;
+	void setPlayer(int id, std::shared_ptr<lif::Player> player);
+	void removePlayer(int id);
 
 	/** Adds `amt` points to player `id`'s score and returns new score (id starts from 1) */
-	int addScore(unsigned short id, int amt);
+	int addScore(int id, int amt);
 	void addScoreToAll(int amt);
-	int getScore(unsigned short id) const;
+	int getScore(int id) const;
 
-	short getPlayerContinues(unsigned short id) const;
-	void setPlayerContinues(unsigned short id, short amt);
-	void decPlayerContinues(unsigned short id);
+	short getPlayerContinues(int id) const;
+	void setPlayerContinues(int id, int amt);
+	void decPlayerContinues(int id);
 
 	void loadGame(const lif::SaveData& saveData);
 
 	const lif::Level* getLevel() const { return level != nullptr ? level.get() : nullptr; }
 	/** Loads `lvnum`-th level from `ls` into this LevelManager. Destroys previous level if any */
-	void setLevel(const lif::LevelSet& ls, unsigned short lvnum);
+	void setLevel(const lif::LevelSet& ls, int lvnum);
 	/** Loads next level from `level->getLevelSet()`. Throws if `level` is currently null */
 	void setNextLevel();
 
 	const lif::LevelTime& getLevelTime() const { return *levelTime; }
 
+	/** @return the game over state. The game is over when all players have 0 life and 0 continues. */
 	bool isGameOver() const { return gameOver; }
+	/** @return whether the current level is clear of enemies (entities marked with 'Foe'). */
 	bool isLevelClear() const;
 	bool isGameWon() const { return gameWon; }
 
-	/** Checks whether the owner of `am` can proceed along direction `dir` */
+	/** @return whether the owner of `am` can proceed along direction `dir` */
 	bool canGo(const lif::AxisMoving& am, const lif::Direction dir) const;
 	/** @return whether a player can deploy a bomb or not */
 	bool canDeployBomb(const lif::Player& player) const;
-	/** A bomb can be deployed in a tile only if no other bomb or explosion is currently in that tile */
+	/** @return whether a player can deploy a bomb in a specific tile.
+	 *  A bomb can be deployed in a tile only if no other bomb or explosion is currently in that tile.
+	 */
 	bool canDeployBombAt(const sf::Vector2i& tile) const;
-	/** Returns the number of bombs currently deployed by id-th player */
-	unsigned short bombsDeployedBy(unsigned short id) const;
+	/** @return the number of bombs currently deployed by id-th player */
+	int bombsDeployedBy(int id) const;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void update() override;

@@ -38,7 +38,8 @@ namespace {
  */
 class EntityGroup final : private sf::NonCopyable {
 
-	bool alreadyPrunedThisUpdate = false;
+	bool alreadyPrunedThisUpdate = false,
+	     alreadyCheckedThisUpdate = false;
 
 #ifdef MULTITHREADED
 	mutable std::mutex mutex;
@@ -122,6 +123,8 @@ public:
 	 *  something in its last update cycle between a call to `validate()` and `updateAll()`.
 	 */
 	void validate();
+	/** Explicitly request that the internal helper lists are updated. */
+	void checkAll();
 	void updateAll();
 
 	auto getColliding() -> std::vector<std::weak_ptr<lif::Collider>>& {

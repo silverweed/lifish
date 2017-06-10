@@ -39,7 +39,7 @@ LevelManager::LevelManager()
 		logicFunctions.emplace_back(logic);
 }
 
-void LevelManager::createNewPlayers(unsigned short n) {
+void LevelManager::createNewPlayers(int n) {
 	for (int i = 0; i < n && i < lif::MAX_PLAYERS; ++i) {
 		// Pointers kept by LevelManager
 		players[i] = std::make_shared<lif::Player>(sf::Vector2f(0, 0), i + 1);
@@ -76,11 +76,11 @@ void LevelManager::loadGame(const lif::SaveData& saveData) {
 	}
 }
 
-void LevelManager::setPlayer(unsigned short id, std::shared_ptr<lif::Player> player) {
+void LevelManager::setPlayer(int id, std::shared_ptr<lif::Player> player) {
 	players[id - 1].swap(player);
 }
 
-void LevelManager::removePlayer(unsigned short id) {
+void LevelManager::removePlayer(int id) {
 	players[id - 1].reset();
 }
 
@@ -107,7 +107,7 @@ bool LevelManager::isPlayer(const lif::Entity& e) const {
 	return false;
 }
 
-const std::shared_ptr<lif::Player> LevelManager::getPlayer(unsigned short id) const {
+const std::shared_ptr<lif::Player> LevelManager::getPlayer(int id) const {
 	return players[id-1];
 }
 
@@ -125,7 +125,7 @@ void LevelManager::setNextLevel() {
 	setLevel(level->getLevelSet(), lvnum);
 }
 
-void LevelManager::setLevel(const lif::LevelSet& ls, unsigned short lvnum) {
+void LevelManager::setLevel(const lif::LevelSet& ls, int lvnum) {
 	_mtxLock();
 	level = ls.getLevel(lvnum);
 	const auto lvinfo = level->getInfo();
@@ -187,7 +187,7 @@ bool LevelManager::_isBombAt(const sf::Vector2i& tile) const {
 	return false;
 }
 
-unsigned short LevelManager::bombsDeployedBy(unsigned short id) const {
+int LevelManager::bombsDeployedBy(int id) const {
 	return std::count_if(bombs[id-1].begin(), bombs[id-1].end(), [] (std::weak_ptr<lif::Bomb> b) {
 		return !b.expired();
 	});
@@ -313,17 +313,8 @@ void LevelManager::_checkResurrect() {
 
 		auto klb = player->get<lif::Killable>();
 		if (klb->isKilled() && !klb->isKillInProgress()) {
-			if (player->getInfo().remainingLives > 0) {
-				player->resurrect();
-				player->get<lif::Bonusable>()->giveBonus(lif::BonusType::SHIELD,
-				                                          lif::conf::player::RESURRECT_SHIELD_TIME);
-				player->setRemainingLives(player->getInfo().remainingLives - 1);
-				entities.add(player);
+			if (_tryResurrectPlayer(player))
 				++living_players;
-			} else {
-				entities.remove(player);
-				players[i] = nullptr;
-			}
 		} else {
 			++living_players;
 		}
@@ -331,6 +322,24 @@ void LevelManager::_checkResurrect() {
 
 	if (living_players == 0)
 		gameOver = true;
+}
+
+bool LevelManager::_tryResurrectPlayer(std::shared_ptr<lif::Player> player) {
+	if (player == nullptr)
+		return false;
+	if (player->getInfo().remainingLives > 0) {
+		player->resurrect();
+		player->get<lif::Bonusable>()->giveBonus(lif::BonusType::SHIELD,
+		                                         lif::conf::player::RESURRECT_SHIELD_TIME);
+		player->setRemainingLives(player->getInfo().remainingLives - 1);
+		// Re-add player after entitygroup automatically removed it
+		entities.checkAll();
+		entities.add(player);
+		return true;
+	} else {
+		players[player->getInfo().id - 1] = nullptr;
+		return false;
+	}
 }
 
 bool LevelManager::canGo(const lif::AxisMoving& am, const lif::Direction dir) const {
@@ -374,7 +383,7 @@ bool LevelManager::canGo(const lif::AxisMoving& am, const lif::Direction dir) co
 }
 
 
-int LevelManager::addScore(unsigned short id, int amt) {
+int LevelManager::addScore(int id, int amt) {
 	assert(0 < id && id <= lif::MAX_PLAYERS);
 	return score[id - 1] = std::max(0, score[id - 1] + amt);
 }
@@ -384,22 +393,22 @@ void LevelManager::addScoreToAll(int amt) {
 		s = std::max(0, s + amt);
 }
 
-int LevelManager::getScore(unsigned short id) const {
+int LevelManager::getScore(int id) const {
 	assert(0 < id && id <= lif::MAX_PLAYERS);
 	return score[id - 1];
 }
 
-short LevelManager::getPlayerContinues(unsigned short id) const {
+short LevelManager::getPlayerContinues(int id) const {
 	assert(0 < id && id <= lif::MAX_PLAYERS);
 	return playerContinues[id - 1];
 }
 
-void LevelManager::decPlayerContinues(unsigned short id) {
+void LevelManager::decPlayerContinues(int id) {
 	assert(0 < id && id <= lif::MAX_PLAYERS);
 	--playerContinues[id - 1];
 }
 
-void LevelManager::setPlayerContinues(unsigned short id, short amt) {
+void LevelManager::setPlayerContinues(int id, int amt) {
 	assert(0 < id && id <= lif::MAX_PLAYERS);
 	playerContinues[id - 1] = amt;
 }

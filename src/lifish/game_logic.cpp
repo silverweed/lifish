@@ -130,6 +130,7 @@ void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::BaseLevelManager
 			for (int i = 0; i < lif::MAX_PLAYERS; ++i) {
 				if (target >= 0 && target != i + 1) continue;
 				auto& player = lm.getPlayer(i + 1);
+				if (player == nullptr) continue;
 				const auto absorb = player->getPowers().absorb;
 				if (absorb > 0) {
 					player->get<lif::Lifed>()->decLife(absorb);

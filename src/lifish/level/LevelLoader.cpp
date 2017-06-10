@@ -194,7 +194,7 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				const auto& info = ls.getEnemyInfo(enemy_id);
 				// Some enemies have their own classes, others are just 'Enemy'
 				switch (enemy_id) {
-				case 2:
+				case 4:
 					enemy = new lif::Wisp(curPos, info);
 					break;
 				case 10:
