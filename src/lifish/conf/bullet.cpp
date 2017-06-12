@@ -22,6 +22,8 @@ std::map<unsigned, const lif::BulletData> lif::conf::bullet::data = {
 	{ 7, { 26, 1, 4, 4 } },
 	// rocket
 	{ 8, { /*TODO*/32, 2, 4, 4 } },
+	// grenade
+	{ 9, { 32, 1, 1, 1 } },
 	//// FreeBullets ////
 	// star
 	{ 101, { 20, 2, 5, 0 } },

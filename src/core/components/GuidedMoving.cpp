@@ -19,6 +19,20 @@ GuidedMoving::GuidedMoving(lif::Entity& owner,
 	clock = addComponent<lif::Clock>(*this);
 }
 
+GuidedMoving::GuidedMoving(lif::Entity& owner,
+		const sf::Vector2f& start, const sf::Vector2f& end, sf::Time timeTaken,
+		lif::GuidedMoving::ModFunc modfunc)
+	: lif::Moving(owner, 0)
+	, start(start)
+	, end(end)
+	, timeTaken(timeTaken)
+	, modfuncs({modfunc})
+{
+	_declComponent<GuidedMoving>();
+
+	clock = addComponent<lif::Clock>(*this);
+}
+
 void GuidedMoving::update() {
 	lif::Component::update();
 
@@ -28,7 +42,10 @@ void GuidedMoving::update() {
 	auto pos = _calcPathPos(tPerc);
 	
 	for (auto pair : modfuncs) {
-		pos += _calcModFunc(pair.first, pair.second ? tPerc : std::min(1.0f, tPerc));
+		pos += _calcModFunc(
+				std::get<0>(pair),
+				std::get<1>(pair) ? tPerc : std::min(1.0f, tPerc),
+				std::get<2>(pair));
 	}
 
 	owner.setPosition(pos);
@@ -38,8 +55,11 @@ sf::Vector2f GuidedMoving::_calcPathPos(float perc) const {
 	return perc > 1 ? end : start + (end - start) * perc;
 }
 
-sf::Vector2f GuidedMoving::_calcModFunc(const GuidedMoving::_ModFunc& f, float perc) const {
+sf::Vector2f GuidedMoving::_calcModFunc(const GuidedMoving::_ModFunc& f, float perc, bool useRelative) const {
 	const auto v = f(perc);
+
+	if (!useRelative)
+		return v;
 
 	// Angle between (end - start) and x axis
 	const auto angle = lif::normalized(end - start).x;

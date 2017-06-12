@@ -16,18 +16,19 @@ class Clock;
  * `start` to `end`.
  * Such functions have the signature double -> sf::Vector2f, where the input `double` is the percentage of
  * the original path travelled so far, and the output `sf::Vector2f` is the offset to be added to that path.
- * Note that the x and y of such offset are _relative to the path_, so an offset of (0, 1) shifts the
- * bullet of 1 unit _orthogonally_ to the line linking `start` to `end`.
+ * Note that the x and y of such offset can be either _relative to the path_ (so an offset of (0, 1) shifts the
+ * bullet of 1 unit orthogonally to the line linking `start` to `end`), or _absolute_, depending on the 3rd
+ * argument of the tuple given as a ModFunc.
  */
 class GuidedMoving : public lif::Moving {
 	using _ModFunc = std::function<sf::Vector2f(double)>;
 public:
-	/** { function, whether to accept inputs > 1 or not } */
-	using ModFunc = std::pair<_ModFunc, bool>;
+	/** { function, accept inputs > 1, use relative coordinates } */
+	using ModFunc = std::tuple<_ModFunc, bool, bool>;
 
 private:
 	sf::Vector2f _calcPathPos(float perc) const;
-	sf::Vector2f _calcModFunc(const _ModFunc& f, float perc) const;
+	sf::Vector2f _calcModFunc(const _ModFunc& f, float perc, bool useRelative) const;
 
 protected:
 	const sf::Vector2f start;
@@ -41,6 +42,14 @@ public:
 	explicit GuidedMoving(lif::Entity& owner,
 			const sf::Vector2f& start, const sf::Vector2f& end, sf::Time timeTaken,
 			std::initializer_list<lif::GuidedMoving::ModFunc> modfuncs = {});
+
+	/** This constructor enables forwarding of the modfunc parameter from `addComponent` and similar.
+	 *  Since it's a pretty common case to have only one modfunc, it serves the practical purpose
+	 *  of adding a component without ugly workarounds.
+	 */
+	explicit GuidedMoving(lif::Entity& owner,
+			const sf::Vector2f& start, const sf::Vector2f& end, sf::Time timeTaken,
+			lif::GuidedMoving::ModFunc modfunc);
 
 	bool isAtEnd() const;
 

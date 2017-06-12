@@ -37,6 +37,7 @@ Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif:
 		// behaviour. The bullet otherwise self-destructs as soon as it collides.
 		if (&e.getOwner() == this->source || e.getLayer() == lif::c_layers::DEFAULT)
 			return;
+
 		auto klb = get<lif::Killable>();
 		if (!klb->isKilled()) {
 			klb->kill();
