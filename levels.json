@@ -36,8 +36,6 @@
 			"attack": {
 				"id": 1,
 				"type": ["simple"],
-				"speed": 1.3,
-				"damage": 1,
 				"fireRate": 1
 			}
 		},
@@ -48,8 +46,6 @@
 			"attack": {
 				"id": 1,
 				"type": ["simple"],
-				"speed": 1.3,
-				"damage": 1,
 				"fireRate": 2
 			}
 		},
@@ -60,8 +56,6 @@
 			"attack": {
 				"id": 2,
 				"type": ["simple", "blocking"],
-				"speed": 0.9,
-				"damage": 1,
 				"fireRate": 1,
 				"blockTime": 200
 			}
@@ -72,7 +66,6 @@
 			"speed": 5,
 			"attack": {
 				"type": ["contact"],
-				"damage": 2,
 				"fireRate": 5
 			}
 		},
@@ -83,8 +76,6 @@
 			"attack": {
 				"id": 3,
 				"type": ["blocking"],
-				"speed": 1.3,
-				"damage": 2,
 				"fireRate": 10,
 				"blockTime": 150
 			}
@@ -96,8 +87,6 @@
 			"attack": {
 				"id": 4,
 				"type": ["simple", "blocking"],
-				"speed": 0.9,
-				"damage": 3,
 				"fireRate": 1,
 				"blockTime": 250
 			}
@@ -119,11 +108,9 @@
 			"attack": {
 				"id": 5,
 				"type": ["blocking", "ranged"],
-				"speed": 0.66,
-				"damage": 4,
 				"fireRate": 4,
-				"tileRange": 4,
-				"blockTime": 260
+				"blockTime": 260,
+				"tileRange": 4
 			}
 		},
 		{
@@ -133,8 +120,6 @@
 			"attack": {
 				"id": 6,
 				"type": ["blocking"],
-				"speed": 1.3,
-				"damage": 3,
 				"fireRate": 2
 			}
 		},
@@ -145,8 +130,6 @@
 			"attack": {
 				"id": 7,
 				"type": ["simple", "blocking"],
-				"speed": 1.3,
-				"damage": 4,
 				"fireRate": 0.7,
 				"blockTime": 650
 			}

@@ -10,7 +10,8 @@ namespace conf {
 	namespace bullet {
 		constexpr float BASE_SPEED = lif::conf::player::DEFAULT_SPEED;
 
-		extern std::map<unsigned short, const lif::BulletData> data;
+		/** Contains mappings dataId => bullet data */
+		extern std::map<unsigned, const lif::BulletData> data;
 	}
 }
 

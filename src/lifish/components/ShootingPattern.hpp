@@ -11,18 +11,18 @@ namespace lif {
  */
 class ShootingPattern : public lif::BufferedSpawner {
 protected:
-	lif::BulletInfo bullet;
+	unsigned bulletId;
 
 	virtual void _reset() {}
 public:
 	COMP_NOT_UNIQUE
 
-	explicit ShootingPattern(lif::Entity& owner, const lif::BulletInfo& bullet)
+	explicit ShootingPattern(lif::Entity& owner, unsigned bulletId)
 		: lif::BufferedSpawner(owner)
-		, bullet(bullet)
+		, bulletId(bulletId)
 	{
 		_declComponent<ShootingPattern>();
-		active = false;
+		setActive(false);
 	}
 	virtual ~ShootingPattern() {}
 

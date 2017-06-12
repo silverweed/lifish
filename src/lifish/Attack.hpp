@@ -50,8 +50,12 @@ inline bool stringToAttackType(const std::string& str, AttackType& type) {
 struct Attack {
 	lif::AttackType type;
 
-	lif::BulletInfo bullet;
-	
+	/** Damage dealt by the entity itself colliding with the player */
+	int contactDamage = 1;
+
+	/** The bullet's infoId */
+	unsigned bulletId;
+
 	/** Cooldown is 1/fireRate s. If AI is ai_follow_dash, determines
 	 *  the cooldown between two dashes.
 	 */
@@ -61,6 +65,12 @@ struct Attack {
 	 *  the enemy stops after shooting (should be more than Shooting::SHOOT_FRAME_TIME);
 	 */
 	sf::Time blockTime;
+
+	/** The max distance in pixels at which this entity attacks; -1 means infinite.
+	 *  Note that this amount may differ from the bullet's range, but it should
+	 *  always be <= than it, or the bullet may die before reaching the target.
+	 */
+	float range = -1;
 };
 
 }

@@ -1,12 +1,13 @@
 #include "CircleShootingPattern.hpp"
 #include "FreeBullet.hpp"
 #include "Clock.hpp"
+#include "BulletFactory.hpp"
 #include "core.hpp"
 
 using lif::CircleShootingPattern;
 
-CircleShootingPattern::CircleShootingPattern(lif::Entity& owner, const lif::BulletInfo& bullet)
-	: lif::ShootingPattern(owner, bullet)
+CircleShootingPattern::CircleShootingPattern(lif::Entity& owner, unsigned bulletId)
+	: lif::ShootingPattern(owner, bulletId)
 {
 	_declComponent<CircleShootingPattern>();
 	shootClock = addComponent<lif::Clock>(*this);
@@ -40,7 +41,7 @@ void CircleShootingPattern::_shoot() {
 	// Shoot first bullet towards `shootAxis`'s direction
 	auto angle = shootAngle;
 	for (int i = 0; i < bulletsPerShot; ++i) {
-		addSpawned(new lif::FreeBullet(owner.getPosition(), angle, bullet, &owner));
+		addSpawned(lif::BulletFactory::create(bulletId, owner.getPosition(), angle, &owner).release());
 		angle += delta;
 	}
 	shootAngle += rotationPerShot;

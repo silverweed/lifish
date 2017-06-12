@@ -61,8 +61,8 @@ void LevelSet::loadFromFile(const std::string& path) {
 	 *	"speed": uint,
 	 *	"attack": {
 	 *		"type": string,
-	 *		"damage": short,
-	 *		"id": uint         [opt]
+	 *		"damage": int,
+	 *		"id": uint           [opt]
 	 *		"speed": float,      [opt]
 	 *		"fireRate": float,   [opt]
 	 *		"blockTime": float,  [opt]
@@ -91,16 +91,14 @@ void LevelSet::loadFromFile(const std::string& path) {
 					| static_cast<unsigned>(type));
 		}
 
-		// Mandatory fields
-		enemies[enemynum].attack.bullet.damage = atk["damage"].get<int>();
 		// Optional fields
-		auto it = atk.find("speed");
+		auto it = atk.find("id");
 		if (it != atk.end())
-			enemies[enemynum].attack.bullet.speed = it->get<float>();
-		
-		it = atk.find("id");
+			enemies[enemynum].attack.bulletId = it->get<unsigned>();
+
+		it = atk.find("contactDamage");
 		if (it != atk.end())
-			enemies[enemynum].attack.bullet.id = it->get<unsigned>();
+			enemies[enemynum].attack.contactDamage = it->get<int>();
 
 		it = atk.find("fireRate");
 		if (it != atk.end())
@@ -110,27 +108,19 @@ void LevelSet::loadFromFile(const std::string& path) {
 		if (it != atk.end())
 			enemies[enemynum].attack.blockTime = sf::milliseconds(it->get<float>());
 
-		it = atk.find("acceleration");
-		if (it != atk.end())
-			enemies[enemynum].attack.bullet.acceleration = it->get<float>();
-
-		it = atk.find("maxSpeed");
-		if (it != atk.end())
-			enemies[enemynum].attack.bullet.maxSpeed = it->get<float>();
-
 		// Find range: first search for `range` (in pixels); if not found, search `tileRange`.
 		// If neither is found, set range to -1 (infinite).
-		enemies[enemynum].attack.bullet.range = -1;
+		enemies[enemynum].attack.range = -1;
 		bool range_found = false;
 		it = atk.find("range");
 		if (it != atk.end()) {
-			enemies[enemynum].attack.bullet.range = it->get<float>();
+			enemies[enemynum].attack.range = it->get<float>();
 			range_found = true;
 		}
 		if (!range_found) {
 			it = atk.find("tileRange");
 			if (it != atk.end()) {
-				enemies[enemynum].attack.bullet.range =
+				enemies[enemynum].attack.range =
 					static_cast<float>(it->get<int>() * lif::TILE_SIZE);
 			}
 		}

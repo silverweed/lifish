@@ -180,10 +180,7 @@ void Player::_checkCollision(lif::Collider& cld) {
 			return;
 		{
 			const auto shooting = cld.getOwner().get<lif::Shooting>();
-			if (shooting->getAttack().type & lif::AttackType::CONTACT)
-				damage = shooting->getAttack().bullet.damage;
-			else
-				damage = 1;
+			damage = shooting->getAttack().contactDamage;
 			break;
 		}
 	case L::EXPLOSIONS:

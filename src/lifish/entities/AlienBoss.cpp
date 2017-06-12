@@ -39,9 +39,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 
 	lif::Attack attack;
 	attack.type = lif::AttackType::SIMPLE;
-	attack.bullet.id = 101;
-	attack.bullet.damage = 4;
-	attack.bullet.speed = 1.1;
+	attack.bulletId = 101;
 	attack.fireRate = 1. / SHOOT_SHORT_INTERVAL.asSeconds();
 
 	// Shooting points

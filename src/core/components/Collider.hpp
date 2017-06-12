@@ -21,7 +21,7 @@ protected:
 	bool atLimit = false;
 	
 	/** Offset relative to the owner's position */
-	sf::Vector2f offset; 
+	sf::Vector2f offset;
 	sf::Vector2f size;
 	bool forceAck = false;
 	/** Collision layer */
@@ -32,7 +32,7 @@ protected:
 public:
 	COMP_NOT_UNIQUE
 
-	explicit Collider(lif::Entity& owner, 
+	explicit Collider(lif::Entity& owner,
 			  lif::c_layers::Layer layer = lif::c_layers::DEFAULT,
 			  const sf::Vector2f& size = sf::Vector2f(lif::TILE_SIZE, lif::TILE_SIZE),
 			  const sf::Vector2f& offset = sf::Vector2f(0, 0),
@@ -41,7 +41,7 @@ public:
 	explicit Collider(lif::Entity& owner,
 			  CollisionFunc onCollision,
 			  lif::c_layers::Layer layer = lif::c_layers::DEFAULT,
-			  const sf::Vector2f& size = sf::Vector2f(lif::TILE_SIZE, lif::TILE_SIZE), 
+			  const sf::Vector2f& size = sf::Vector2f(lif::TILE_SIZE, lif::TILE_SIZE),
 			  const sf::Vector2f& offset = sf::Vector2f(0, 0),
 			  bool phantom = false);
 	

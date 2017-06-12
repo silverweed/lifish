@@ -1,15 +1,16 @@
 #pragma once
 
 #include <exception>
+#include <memory>
 #include "Component.hpp"
 #include "Attack.hpp"
 #include "Direction.hpp"
 #include "Angle.hpp"
+#include "AxisBullet.hpp"
 
 namespace lif {
 
 class Clock;
-class AxisBullet;
 class FreeBullet;
 class AxisMoving;
 
@@ -41,8 +42,8 @@ protected:
 	lif::AxisMoving *ownerMoving = nullptr;
 
 
-	lif::AxisBullet* _doShoot(lif::Direction dir);
-	lif::FreeBullet* _doShoot(lif::Angle angle);
+	std::unique_ptr<lif::AxisBullet> _doShoot(lif::Direction dir);
+	std::unique_ptr<lif::FreeBullet> _doShoot(lif::Angle angle);
 	
 public:
 	explicit Shooting(lif::Entity& owner, const Attack& attack);
@@ -55,20 +56,18 @@ public:
 	/** If attack is CONTACT and not RANGED, just reset the recharge clock and return nullptr.
 	 *  If attack is also RANGED (i.e. "dashing"), also call setDashing(true) for the owner's
 	 *  Moving component (throws if no Moving component is found.)
-	 *  Else, create an AxisBullet described by `attack` and return it. 
-	 *  The caller must take care of its destruction.
-	 *  If dir is NONE, the bullet is shot in the direction of its owner. 
+	 *  Else, create an AxisBullet described by `attack` and return it.
+	 *  If dir is NONE, the bullet is shot in the direction of its owner.
 	 *  In this case, the owner must have an AxisMoving component, or an exception is thrown.
 	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
-	lif::AxisBullet* shoot(lif::Direction dir = lif::Direction::NONE);
+	std::unique_ptr<lif::AxisBullet> shoot(lif::Direction dir = lif::Direction::NONE);
 
 	/** Creates a FreeBullet moving with angle `angle` from its owner.
-	 *  Caller must take care of its destruction. 
 	 *  Throws if attack is CONTACT.
 	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
-	lif::FreeBullet* shoot(lif::Angle angle);
+	std::unique_ptr<lif::FreeBullet> shoot(lif::Angle angle);
 	bool isShooting() const { return shooting; }
 
 	bool isRecharging() const;

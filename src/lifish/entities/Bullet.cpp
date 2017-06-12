@@ -2,7 +2,6 @@
 #include "Bullet.hpp"
 #include "AxisMoving.hpp"
 #include "Animated.hpp"
-#include "Clock.hpp"
 #include "Sounded.hpp"
 #include "GameCache.hpp"
 #include "Collider.hpp"
@@ -19,18 +18,17 @@ using lif::Bullet;
 Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif::Entity *const source)
 	: lif::Entity(pos)
 	, info(_info)
-	, data(lif::conf::bullet::data[info.id])
+	, data(lif::conf::bullet::data[info.dataId])
 	, source(source)
 	, speed(_info.speed)
 {
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("hit", lif::getAsset("test", std::string("bullet")
-					+ lif::to_string(info.id) + std::string("_hit.ogg"))),
+					+ lif::to_string(info.dataId) + std::string("_hit.ogg"))),
 		std::make_pair("shot", lif::getAsset("test", std::string("bullet")
-					+ lif::to_string(info.id) + std::string("_shot.ogg")))
+					+ lif::to_string(info.dataId) + std::string("_shot.ogg")))
 	});
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::BULLETS);
-	clock = addComponent<lif::Clock>(*this);
 	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& e) {
 		// on collision
 		// Note: the default layer doesn't automatically destroy a Bullet for
@@ -43,10 +41,7 @@ Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif:
 		if (!klb->isKilled()) {
 			klb->kill();
 		}
-	}, info.id > 100 // FIXME this is an ugly way to set the collision layer, change to something saner.
-			? lif::c_layers::BOSS_BULLETS
-			: lif::c_layers::ENEMY_BULLETS,
-		sf::Vector2f(data.size, data.size));
+	}, info.cLayer, sf::Vector2f(data.size, data.size));
 
 	addComponent<lif::Temporary>(*this, [this] () {
 		// expire condition
@@ -74,11 +69,6 @@ void Bullet::update() {
 	lif::Entity::update();
 	if (collider->isAtLimit())
 		get<lif::Killable>()->kill();
-	if (info.acceleration > 0) {
-		const auto delta = clock->getElapsedTime().asSeconds();
-		speed = std::min(info.maxSpeed, info.speed + info.acceleration * delta * delta * delta);
-		moving->setSpeed(speed, true);
-	}
 }
 
 void Bullet::_destroy() {

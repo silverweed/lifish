@@ -28,15 +28,15 @@ FreeBullet::FreeBullet(const sf::Vector2f& pos, lif::Angle angle,
 	auto& a_move = animated->addAnimation("move");
 	auto& a_destroy = animated->addAnimation("destroy");
 
-	for (unsigned i = 0; i < data.nMotionFrames; ++i) 
+	for (unsigned i = 0; i < data.nMotionFrames; ++i)
 		a_move.addFrame(sf::IntRect(
 				i * TILE_SIZE,
-				(info.id - 101) * TILE_SIZE,
+				(info.dataId - 101) * TILE_SIZE,
 				TILE_SIZE, TILE_SIZE));
 	for (unsigned i = 0; i < data.nDestroyFrames; ++i)
 		a_destroy.addFrame(sf::IntRect(
 				(data.nMotionFrames + i) * TILE_SIZE,
-				(info.id - 101) * TILE_SIZE,
+				(info.dataId - 101) * TILE_SIZE,
 				TILE_SIZE, TILE_SIZE));
 
 	auto& animatedSprite = animated->getSprite();

@@ -36,7 +36,7 @@ public:
 	lif::Angle scatterAngle = lif::radians(1);
 
 	/** `owner` MUST have a FreeSighted component */
-	explicit ScatterVsPlayerPattern(lif::Entity& owner, const lif::BulletInfo& bullet);
+	explicit ScatterVsPlayerPattern(lif::Entity& owner, unsigned bulletId);
 
 	lif::Entity* init() override;
 	void update() override;

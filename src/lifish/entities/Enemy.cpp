@@ -216,8 +216,8 @@ bool Enemy::_checkCollision(lif::Collider& coll) {
 
 bool Enemy::_inRange(const lif::Entity *const e) const {
 	const auto atk = shooting->getAttack();
-	return e == nullptr || atk.bullet.range < 0
-		|| lif::manhattanDistance(e->getPosition(), position) <= atk.bullet.range;
+	return e == nullptr || atk.range < 0
+		|| lif::manhattanDistance(e->getPosition(), position) <= atk.range;
 }
 
 void Enemy::setMorphed(bool b) {

@@ -59,7 +59,7 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, lif::Direction dir,
 	for (unsigned i = 0; i < data.nMotionFrames && i < 8 / data.directionality; ++i)
 		a_move.addFrame(sf::IntRect(
 				(data.nMotionFrames * d + i) * TILE_SIZE,
-				(info.id - 1) * TILE_SIZE,
+				(info.dataId - 1) * TILE_SIZE,
 				TILE_SIZE,
 				TILE_SIZE));
 
@@ -67,7 +67,7 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, lif::Direction dir,
 	for (unsigned i = 0; i < data.nDestroyFrames && i < 5; ++i)
 		a_destroy.addFrame(sf::IntRect(
 				(data.nMotionFrames * data.directionality + i) * TILE_SIZE,
-				(info.id - 1) * TILE_SIZE,
+				(info.dataId - 1) * TILE_SIZE,
 				TILE_SIZE,
 				TILE_SIZE));
 

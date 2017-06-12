@@ -22,6 +22,10 @@ public:
 	std::unique_ptr<lif::Entity> spawn() override;
 
 	void addSpawned(lif::Entity *e);
+	template<typename T>
+	void addSpawned(std::unique_ptr<T>&& e) {
+		addSpawned(e.release());
+	}
 };
 
 }

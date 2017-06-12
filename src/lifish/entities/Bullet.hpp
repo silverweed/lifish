@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity.hpp"
+#include "collision_layers.hpp"
 
 namespace lif {
 
@@ -9,7 +10,7 @@ class Moving;
 class Clock;
 
 /**
- * All this data is biunivocal with the bullet's id. A bullet's id simultaneously
+ * All this data is biunivocal with the bullet's dataId. A bullet's dataId simultaneously
  * defines its texture, size and spritesheet format.
  */
 struct BulletData {
@@ -25,30 +26,14 @@ struct BulletData {
 	 *  The effective number of frames is established by nMotionFrames.
 	 */
 	unsigned short directionality;
-
-	BulletData()
-		: size(0)
-		, nMotionFrames(0)
-		, nDestroyFrames(0)
-		, directionality(0)
-	{}
-
-	BulletData(unsigned short size, unsigned short nMotionFrames,
-			unsigned short nDestroyFrames,
-			unsigned short directionality = 0)
-		: size(size)
-		, nMotionFrames(nMotionFrames)
-		, nDestroyFrames(nDestroyFrames)
-		, directionality(directionality)
-	{}
 };
 
 /**
- * The information needed to construct a Bullet
+ * The information needed to construct a Bullet.
  */
 struct BulletInfo {
 	/** Determines the bullet's data */
-	unsigned short id;
+	unsigned short dataId;
 	/** The damage to deal to the impacted Entity */
 	int damage = 1;
 	/** Bullet speed, relative to players' base speed (1 means "as fast as players").
@@ -57,10 +42,9 @@ struct BulletInfo {
 	float speed = 1;
 	/** How many pixels does this bullet travel; -1 means infinite. */
 	float range = -1;
-	/** Acceleration in units of speed per second */
-	float acceleration = 0;
-	/** If acceleration > 0, caps the max speed */
-	float maxSpeed = 1;
+
+	/** The bullet's collision layer */
+	lif::c_layers::Layer cLayer = lif::c_layers::ENEMY_BULLETS;
 };
 
 /**
@@ -83,7 +67,6 @@ protected:
 	lif::Collider *collider = nullptr;
 	/** This should be implemented by child classes */
 	lif::Moving *moving = nullptr;
-	lif::Clock *clock = nullptr;
 
 
 	void _destroy();

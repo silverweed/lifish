@@ -1,11 +1,9 @@
 #include "Shooting.hpp"
 #include "Clock.hpp"
-#include "Bullet.hpp"
 #include "AxisMoving.hpp"
-#include "AxisBullet.hpp"
-#include "FreeBullet.hpp"
 #include "GameCache.hpp"
 #include "Sounded.hpp"
+#include "BulletFactory.hpp"
 #include "utils.hpp"
 #include <exception>
 
@@ -29,7 +27,7 @@ lif::Entity* Shooting::init() {
 	return this;
 }
 
-lif::AxisBullet* Shooting::shoot(lif::Direction dir) {
+std::unique_ptr<lif::AxisBullet> Shooting::shoot(lif::Direction dir) {
 	if (attack.type & lif::AttackType::CONTACT) {
 		shooting = true;
 		lif::cache.playSound(owner.get<lif::Sounded>()->getSoundFile("attack"));
@@ -71,7 +69,7 @@ lif::AxisBullet* Shooting::shoot(lif::Direction dir) {
 	return _doShoot(dir);
 }
 
-lif::FreeBullet* Shooting::shoot(lif::Angle angle) {
+std::unique_ptr<lif::FreeBullet> Shooting::shoot(lif::Angle angle) {
 	if (attack.type & lif::AttackType::CONTACT)
 		throw std::logic_error("Called shoot(angle) for a CONTACT attack!");
 	return _doShoot(angle);
@@ -104,18 +102,18 @@ sf::Vector2f Shooting::getPosition() const {
 	return manualPosition ? position : owner.getPosition() + offset;
 }
 
-lif::AxisBullet* Shooting::_doShoot(lif::Direction dir) {
+std::unique_ptr<lif::AxisBullet> Shooting::_doShoot(lif::Direction dir) {
 	shooting = true;
 	rechargeClock->restart();
-	auto bullet = new lif::AxisBullet(getPosition(), dir, attack.bullet, &owner);
+	auto bullet = lif::BulletFactory::create(attack.bulletId, getPosition(), dir, &owner);
 	lif::cache.playSound(bullet->get<lif::Sounded>()->getSoundFile("shot"));
 	return bullet;
 }
 
-lif::FreeBullet* Shooting::_doShoot(lif::Angle angle) {
+std::unique_ptr<lif::FreeBullet> Shooting::_doShoot(lif::Angle angle) {
 	shooting = true;
 	rechargeClock->restart();
-	auto bullet = new lif::FreeBullet(getPosition(), angle, attack.bullet, &owner);
+	auto bullet = lif::BulletFactory::create(attack.bulletId, getPosition(), angle, &owner);
 	lif::cache.playSound(bullet->get<lif::Sounded>()->getSoundFile("shot"));
 	return bullet;
 }

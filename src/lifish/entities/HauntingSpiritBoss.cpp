@@ -64,18 +64,14 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	hauntClock = addComponent<lif::Clock>(*this);
 	atkClock = addComponent<lif::Clock>(*this);
 
-	lif::BulletInfo bullet;
-	bullet.id = 102;
-	bullet.speed = 1;
-	bullet.damage = 4;
-	auto circle = addComponent<lif::CircleShootingPattern>(*this, bullet);
+	auto circle = addComponent<lif::CircleShootingPattern>(*this, 102);
 	circle->consecutiveShots = 6;
 	circle->timeBetweenShots = sf::seconds(0.5);
 	circle->bulletsPerShot = 6;
 	circle->rotationPerShot = lif::radians(lif::PI / 5.);
 	shootPatterns[0] = circle;
 	shootColors[0] = sf::Color::White;
-	auto spiral = addComponent<lif::CircleShootingPattern>(*this, bullet);
+	auto spiral = addComponent<lif::CircleShootingPattern>(*this, 102);
 	spiral->consecutiveShots = 50;
 	spiral->timeBetweenShots = sf::seconds(0.1);
 	spiral->bulletsPerShot = 1;
@@ -83,7 +79,7 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	spiral->randomizeShootAngle = true;
 	shootPatterns[1] = spiral;
 	shootColors[1] = sf::Color::Blue;
-	auto scatter = addComponent<lif::ScatterVsPlayerPattern>(*this, bullet);
+	auto scatter = addComponent<lif::ScatterVsPlayerPattern>(*this, 102);
 	scatter->consecutiveShots = 18;
 	scatter->timeBetweenShots = sf::seconds(0.1);
 	scatter->scatterAngle = lif::degrees(30);

@@ -2,13 +2,14 @@
 #include "Clock.hpp"
 #include "FreeSighted.hpp"
 #include "FreeBullet.hpp"
+#include "BulletFactory.hpp"
 #include "Player.hpp"
 #include <cmath>
 
 using lif::ScatterVsPlayerPattern;
 
-ScatterVsPlayerPattern::ScatterVsPlayerPattern(lif::Entity& owner, const lif::BulletInfo& bullet)
-	: lif::ShootingPattern(owner, bullet)
+ScatterVsPlayerPattern::ScatterVsPlayerPattern(lif::Entity& owner, unsigned bulletId)
+	: lif::ShootingPattern(owner, bulletId)
 {
 	_declComponent<ScatterVsPlayerPattern>();
 	shootClock = addComponent<lif::Clock>(*this);
@@ -62,6 +63,6 @@ void ScatterVsPlayerPattern::_shoot() {
 	// `scatterAngle` and centered towards `playerPos`.
 	playerAngle = _calcAngle(sighted->nearest<lif::Player>().lock()->getPosition());
 	std::uniform_real_distribution<double> scatter(-scatterAngle.asRadians() / 2, scatterAngle.asRadians() / 2);
-	addSpawned(new lif::FreeBullet(owner.getPosition(), 
-				playerAngle + lif::radians(scatter(lif::rng)), bullet, &owner));
+	addSpawned(lif::BulletFactory::create(bulletId, owner.getPosition(),
+				playerAngle + lif::radians(scatter(lif::rng)), &owner));
 }

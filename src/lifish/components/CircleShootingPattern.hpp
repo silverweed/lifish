@@ -39,7 +39,7 @@ public:
 	/** Note that, rather than passing all parameters in the constructor,
 	 *  you just set it directly, as the useful variables are public for convenience.
 	 */
-	explicit CircleShootingPattern(lif::Entity& owner, const lif::BulletInfo& bullet);
+	explicit CircleShootingPattern(lif::Entity& owner, unsigned bulletId);
 	
 	void update() override;
 };
