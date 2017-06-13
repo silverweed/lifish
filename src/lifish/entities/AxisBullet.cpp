@@ -36,7 +36,7 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, lif::Direction dir,
 		break;
 	case lif::Direction::LEFT:
 		tx = data.directionality == 1 ? 3 : data.directionality == 2 ? 1 : 0;
-		tx = data.directionality - 1;
+		ty = data.directionality - 1;
 		position.y += (TILE_SIZE - data.size) / 2;
 		position.x -= data.size;
 		break;
