@@ -20,10 +20,10 @@ lif::Entity* AutoShooting::init() {
 	return this;
 }
 
-void AutoShooting::shoot(lif::Direction dir) {
-	addSpawned(shooting->shoot(dir));
+void AutoShooting::shoot(lif::Direction dir, const lif::Entity *const target) {
+	addSpawned(shooting->shoot(dir, target));
 }
 
-void AutoShooting::shoot(lif::Angle angle) {
-	addSpawned(shooting->shoot(angle));
+void AutoShooting::shoot(lif::Angle angle, const lif::Entity *const target) {
+	addSpawned(shooting->shoot(angle, target));
 }

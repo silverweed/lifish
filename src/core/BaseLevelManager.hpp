@@ -70,6 +70,8 @@ public:
 	/** Resumes all Clock components of all entities */
 	virtual void resume();
 	bool isPaused() const { return paused; }
+	/** Adds `delta` to all clocks. Used to simulate a frame tick for debugging */
+	void tickClocks(const sf::Time& delta);
 
 	void disableInputFor(const sf::Time& time);
 	bool isInputDisabled() const;

@@ -24,7 +24,7 @@ static std::map<unsigned, const lif::BulletInfo> bulletsInfo = {
 	// magma
 	{ 7, { 7, 4, 1.3 } },
 	// grenade
-	{ 9, { 9, 2, 150, 6 * lif::TILE_SIZE } },
+	{ 9, { 9, 2, 200, 6 * lif::TILE_SIZE } },
 	/// FreeBullets
 	// star
 	{ 101, { 101, 4, 1.1, -1, lif::c_layers::BOSS_BULLETS } },
@@ -33,7 +33,7 @@ static std::map<unsigned, const lif::BulletInfo> bulletsInfo = {
 };
 
 std::unique_ptr<lif::AxisBullet> BulletFactory::create(unsigned infoId, const sf::Vector2f& pos,
-		lif::Direction dir, const lif::Entity *const source)
+		lif::Direction dir, const lif::Entity *const source, const lif::Entity *const target)
 {
 	switch (infoId) {
 	case 1:
@@ -45,14 +45,14 @@ std::unique_ptr<lif::AxisBullet> BulletFactory::create(unsigned infoId, const sf
 	case 7:
 		return std::make_unique<lif::AxisBullet>(pos, dir, bulletsInfo[infoId], source);
 	case 9:
-		return std::unique_ptr<lif::AxisBullet>(new Grenade(pos, dir, bulletsInfo[infoId], source));
+		return std::unique_ptr<lif::AxisBullet>(new Grenade(pos, dir, bulletsInfo[infoId], source, target));
 	default:
 		throw std::invalid_argument("No AxisBullet with id " + lif::to_string(infoId) + "!");
 	}
 }
 
 std::unique_ptr<lif::FreeBullet> BulletFactory::create(unsigned infoId, const sf::Vector2f& pos,
-		lif::Angle angle, const lif::Entity *const source)
+		lif::Angle angle, const lif::Entity *const source, const lif::Entity *const /*target*/)
 {
 	switch (infoId) {
 	case 101:

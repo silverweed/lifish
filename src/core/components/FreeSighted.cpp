@@ -16,15 +16,15 @@ void FreeSighted::update() {
 
 	seen.clear();
 
-	const double sqrVR = visionRadius * lif::TILE_SIZE * visionRadius * lif::TILE_SIZE;
+	const auto sqrVR = visionRadius * lif::TILE_SIZE * visionRadius * lif::TILE_SIZE;
 	entities->apply([this, sqrVR] (std::weak_ptr<lif::Entity> e) {
 		if (e.expired())
 			return;
-		auto ptr = e.lock();
+		const auto ptr = e.lock();
 		// Don't see self
 		if (ptr.get() == &owner)
 			return;
-		double dist = lif::sqrDistance(ptr->getPosition(), owner.getPosition());
+		const auto dist = lif::sqrDistance(ptr->getPosition(), owner.getPosition());
 		if (visionRadius > 0 && dist > sqrVR)
 			return;
 		// Only see living entities

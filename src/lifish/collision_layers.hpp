@@ -8,6 +8,7 @@ namespace c_layers {
 
 enum Layer : unsigned {
 	DEFAULT,
+	IGNORE_ALL, // similar to deactivate the collider, but keep collision with level bounds
 	PLAYERS,
 	ENEMIES,
 	ENEMIES_IGNORE_BREAKABLES,
@@ -19,6 +20,7 @@ enum Layer : unsigned {
 	TRANSP_WALLS,
 	TELEPORTS,
 	EXPLOSIONS,
+	ENEMY_EXPLOSIONS,
 	BOMBS,
 	GRABBABLE,
 	N_LAYERS

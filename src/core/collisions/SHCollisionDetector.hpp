@@ -25,6 +25,7 @@ class SHContainer final {
 	             cellSize;
 	unsigned subdivisions;
 	std::vector<Bucket> buckets;
+	Bucket all;
 
 	/** @return An unordered_set of bucket indexes for the buckets containing `obj`. */
 	std::unordered_set<unsigned> _getIdFor(const lif::Collider& obj) const;
@@ -38,6 +39,11 @@ public:
 	void insert(std::weak_ptr<lif::Collider> obj);
 	/** @return A set of all colliders in an adjacent cell to `obj`. */
 	auto getNearby(const lif::Collider& obj) const -> std::vector<std::weak_ptr<lif::Collider>>;
+	/** @return The flattened vector of all colliders. This may differ from EntityGroup::getColliding
+	 *  as the colliders which are actually considered by SHContainer are filtered through some
+	 *  criteria (e.g. they must be active)
+	 */
+	auto getAll() const -> const std::vector<std::weak_ptr<lif::Collider>>& { return all; }
 };
 
 /**

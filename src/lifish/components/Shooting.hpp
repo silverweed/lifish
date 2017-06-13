@@ -42,8 +42,8 @@ protected:
 	lif::AxisMoving *ownerMoving = nullptr;
 
 
-	std::unique_ptr<lif::AxisBullet> _doShoot(lif::Direction dir);
-	std::unique_ptr<lif::FreeBullet> _doShoot(lif::Angle angle);
+	std::unique_ptr<lif::AxisBullet> _doShoot(lif::Direction dir, const lif::Entity *const target = nullptr);
+	std::unique_ptr<lif::FreeBullet> _doShoot(lif::Angle angle, const lif::Entity *const target = nullptr);
 	
 public:
 	explicit Shooting(lif::Entity& owner, const Attack& attack);
@@ -61,15 +61,17 @@ public:
 	 *  In this case, the owner must have an AxisMoving component, or an exception is thrown.
 	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
-	std::unique_ptr<lif::AxisBullet> shoot(lif::Direction dir = lif::Direction::NONE);
+	std::unique_ptr<lif::AxisBullet> shoot(lif::Direction dir = lif::Direction::NONE,
+			const lif::Entity *const target = nullptr);
 
 	/** Creates a FreeBullet moving with angle `angle` from its owner.
 	 *  Throws if attack is CONTACT.
 	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
-	std::unique_ptr<lif::FreeBullet> shoot(lif::Angle angle);
-	bool isShooting() const { return shooting; }
+	std::unique_ptr<lif::FreeBullet> shoot(lif::Angle angle,
+			const lif::Entity *const target = nullptr);
 
+	bool isShooting() const { return shooting; }
 	bool isRecharging() const;
 
 	void setFireRateMult(float fr);

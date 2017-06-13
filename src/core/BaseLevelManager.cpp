@@ -93,6 +93,14 @@ void BaseLevelManager::resume() {
 	paused = false;
 }
 
+void BaseLevelManager::tickClocks(const sf::Time& delta) {
+	entities.apply([delta] (lif::Entity *e) {
+		auto clocks = e->getAllRecursive<lif::Clock>();
+		for (auto clock : clocks)
+			clock->add(delta);
+	});
+}
+
 void BaseLevelManager::disableInputFor(const sf::Time& time) {
 	inputDisableTime = time;
 	inputDisableClock.restart();

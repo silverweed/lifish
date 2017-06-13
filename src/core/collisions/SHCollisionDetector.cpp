@@ -20,15 +20,20 @@ SHContainer::SHContainer(const sf::Vector2f& levelSize, unsigned subdivisions)
 void SHContainer::clear() {
 	for (auto& b : buckets)
 		b.clear();
+	all.clear();
 }
 
 void SHContainer::insert(std::weak_ptr<lif::Collider> obj) {
 	if (obj.expired()) return;
-	
-	auto ids = _getIdFor(*obj.lock().get());
+
+	auto cld = obj.lock().get();
+	if (!cld->isActive()) return;
+
+	auto ids = _getIdFor(*cld);
 	for (auto id : ids) {
 		buckets[id].emplace_back(obj);
 	}
+	all.emplace_back(obj);
 }
 
 std::unordered_set<unsigned> SHContainer::_getIdFor(const lif::Collider& obj) const {
@@ -127,7 +132,7 @@ void SHCollisionDetector::update() {
 #endif
 
 	// Collision detection loop
-	for (auto it = colliding.begin(); it != colliding.end(); ++it) {
+	for (auto it = container.getAll().begin(); it != container.getAll().end(); ++it) {
 		auto collider = it->lock();
 
 		// Fixed entities only collide passively
@@ -141,7 +146,7 @@ void SHCollisionDetector::update() {
 			continue;
 		}
 	
-		for (auto& oth : container.getNearby(*collider.get())) {
+		for (auto oth : container.getNearby(*collider)) {
 			if (oth.expired()) continue;
 #ifndef RELEASE
 			dbgStats.counter.inc("checked");

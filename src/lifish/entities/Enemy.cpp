@@ -197,7 +197,7 @@ void Enemy::_checkShoot() {
 	for (const auto& pair : entitiesSeen) {
 		const auto entity = pair.first;
 		if (_inRange(entity) && dynamic_cast<const lif::Player*>(entity) != nullptr) {
-			autoShooting->shoot();
+			autoShooting->shoot(lif::Direction::NONE, entity);
 			return;
 		}
 	}

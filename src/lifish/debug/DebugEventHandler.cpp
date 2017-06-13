@@ -79,10 +79,12 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 				game.lm.resume();
 			return true;
 		case sf::Keyboard::L:
-			if (game.lm.isPaused())
+			if (game.lm.isPaused()) {
+				game.lm.tickClocks(sf::seconds(1.0 / lif::options.framerateLimit));
 				game.lm.update();
-			else
+			} else {
 				game.lm.pause();
+			}
 			return true;
 		case sf::Keyboard::M:
 			game.lm.getEntities().apply([] (lif::Entity *e) {

@@ -32,12 +32,12 @@ FreeBullet::FreeBullet(const sf::Vector2f& pos, lif::Angle angle,
 		a_move.addFrame(sf::IntRect(
 				i * TILE_SIZE,
 				(info.dataId - 101) * TILE_SIZE,
-				TILE_SIZE, TILE_SIZE));
+				data.size, data.size));
 	for (unsigned i = 0; i < data.nDestroyFrames; ++i)
 		a_destroy.addFrame(sf::IntRect(
 				(data.nMotionFrames + i) * TILE_SIZE,
 				(info.dataId - 101) * TILE_SIZE,
-				TILE_SIZE, TILE_SIZE));
+				data.size, data.size));
 
 	auto& animatedSprite = animated->getSprite();
 	animatedSprite.setAnimation(a_move);

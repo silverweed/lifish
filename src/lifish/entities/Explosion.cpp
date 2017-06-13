@@ -27,8 +27,9 @@ using lif::TILE_SIZE;
 using lif::Direction;
 
 Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
-		const lif::Entity *const source, bool isIncendiary, int damage)
+		const lif::Entity *const source, bool isIncendiary, int damage, lif::c_layers::Layer cLayer)
 	: lif::Entity(pos)
+	, cLayer(cLayer)
 	, radius(_radius)
 	, damage(damage)
 	, sourceEntity(source)
@@ -147,7 +148,7 @@ Explosion* Explosion::propagate(lif::LevelManager& lm) {
 	 */
 	// Note: no cast required, as `true` is promoted to integral value "1" by C++ standard (§4.7 conv.integral)
 	int reduction = blocked[Direction::RIGHT] + blocked[Direction::LEFT];
-	explColliderH = addComponent<lif::Collider>(*this, lif::c_layers::EXPLOSIONS,
+	explColliderH = addComponent<lif::Collider>(*this, cLayer,
 			// size
 			sf::Vector2f(
 				TILE_SIZE * (propagation[Direction::LEFT] + propagation[Direction::RIGHT]
@@ -158,7 +159,7 @@ Explosion* Explosion::propagate(lif::LevelManager& lm) {
 				+ (TILE_SIZE - 1) * blocked[Direction::LEFT]), 1));
 
 	reduction = blocked[Direction::UP]  + blocked[Direction::DOWN];
-	explColliderV = addComponent<lif::Collider>(*this, lif::c_layers::EXPLOSIONS,
+	explColliderV = addComponent<lif::Collider>(*this, cLayer,
 			// size
 			sf::Vector2f(
 				TILE_SIZE - 2,

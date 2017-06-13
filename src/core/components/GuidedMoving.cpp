@@ -3,6 +3,8 @@
 #include "utils.hpp"
 #include <algorithm>
 
+#include <iostream>
+
 using lif::GuidedMoving;
 
 GuidedMoving::GuidedMoving(lif::Entity& owner,
@@ -13,34 +15,32 @@ GuidedMoving::GuidedMoving(lif::Entity& owner,
 	, end(end)
 	, timeTaken(timeTaken)
 	, modfuncs(modfuncs)
+	, tPerc(0)
 {
 	_declComponent<GuidedMoving>();
 
 	clock = addComponent<lif::Clock>(*this);
+	_updatePosition();
 }
 
 GuidedMoving::GuidedMoving(lif::Entity& owner,
 		const sf::Vector2f& start, const sf::Vector2f& end, sf::Time timeTaken,
 		GuidedMoving::ModFunc modfunc)
-	: lif::Moving(owner, 0)
-	, start(start)
-	, end(end)
-	, timeTaken(timeTaken)
-	, modfuncs({modfunc})
-{
-	_declComponent<GuidedMoving>();
-
-	clock = addComponent<lif::Clock>(*this);
-}
+	: GuidedMoving(owner, start, end, timeTaken, {modfunc})
+{}
 
 void GuidedMoving::update() {
 	lif::Component::update();
 
 	// Calculate this once here
-	const auto tPerc = clock->getElapsedTime() / timeTaken;
+	tPerc = clock->getElapsedTime() / timeTaken;
 
+	_updatePosition();
+}
+
+void GuidedMoving::_updatePosition() {
 	owner.setPosition(std::accumulate(modfuncs.begin(), modfuncs.end(), _calcPathPos(tPerc),
-		[this, &tPerc] (const auto& pos, const auto& pair)
+		[this] (const auto& pos, const auto& pair)
 	{
 		return pos + _calcModFunc(
 				std::get<0>(pair),
@@ -50,6 +50,7 @@ void GuidedMoving::update() {
 }
 
 sf::Vector2f GuidedMoving::_calcPathPos(float perc) const {
+	std::cerr << "perc="<<perc<<", pos="<<(perc > 1 ? end : start + (end - start) * perc) << std::endl;
 	return perc > 1 ? end : start + (end - start) * perc;
 }
 

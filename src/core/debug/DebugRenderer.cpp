@@ -4,7 +4,7 @@
 
 #define COLLIDER_REGULAR_COLOR sf::Color(255, 0, 255, 110)
 #define COLLIDER_PHANTOM_COLOR sf::Color(194, 194, 194, 110)
-#define COLLIDER_COMPOUND_COLOR sf::Color(194, 194, 194, 92)
+#define COLLIDER_INACTIVE_COLOR sf::Color(194, 194, 194, 92)
 
 using lif::debug::DebugRenderer;
 
@@ -24,9 +24,11 @@ void DebugRenderer::drawColliders(sf::RenderTarget& target, const lif::EntityGro
 		};
 
 		for (const auto c : cls) {
-			draw_coll_rect(target, *c, c->isPhantom()
-					? COLLIDER_PHANTOM_COLOR
-					: COLLIDER_REGULAR_COLOR);
+			draw_coll_rect(target, *c, c->isActive()
+					? c->isPhantom()
+						? COLLIDER_PHANTOM_COLOR
+						: COLLIDER_REGULAR_COLOR
+					: COLLIDER_INACTIVE_COLOR);
 		}
 	});
 }

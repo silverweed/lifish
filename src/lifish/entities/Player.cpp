@@ -168,7 +168,7 @@ void Player::_checkCollision(lif::Collider& cld) {
 	 * - Bullets
 	 */
 	using L = lif::c_layers::Layer;
-	
+
 	if (bonusable->hasBonus(lif::BonusType::SHIELD))
 		return;
 
@@ -184,6 +184,7 @@ void Player::_checkCollision(lif::Collider& cld) {
 			break;
 		}
 	case L::EXPLOSIONS:
+	case L::ENEMY_EXPLOSIONS:
 		damage = static_cast<const lif::Explosion&>(cld.getOwner()).getDamage();
 		break;
 	case L::ENEMY_BULLETS:
