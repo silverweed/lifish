@@ -81,7 +81,7 @@ void Entity::update() {
 
 std::string Entity::_toString(int indent) const {
 	std::stringstream ss;
-	auto put_indent = [&ss] (int indent) -> std::stringstream& {
+	const auto put_indent = [&ss] (int indent) -> std::stringstream& {
 		for (int i = 0; i < indent; ++i)
 			ss << "    ";
 		return ss;

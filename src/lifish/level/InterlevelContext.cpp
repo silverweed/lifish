@@ -215,14 +215,14 @@ void InterlevelContext::_ackPromptResponse() {
 
 bool InterlevelContext::handleEvent(sf::Window&, sf::Event event) {
 	if (state != State::PROMPT_CONTINUE) return false;
-	auto select_yes = [this] () {
+	const auto select_yes = [this] () {
 		yesSelected = true;
 		yesText.setFillColor(sf::Color::Red);
 		yesText.setCharacterSize(15);
 		noText.setFillColor(sf::Color::White);
 		noText.setCharacterSize(13);
 	};
-	auto select_no = [this] () {
+	const auto select_no = [this] () {
 		yesSelected = false;
 		noText.setFillColor(sf::Color::Red);
 		noText.setCharacterSize(15);

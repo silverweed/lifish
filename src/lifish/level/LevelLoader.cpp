@@ -51,10 +51,10 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 			int enemy_id = 0;
 			const auto& ls = level.getLevelSet();
 
-			auto is_game_over = [&lm] (int id) -> bool {
+			const auto is_game_over = [&lm] (auto id) -> bool {
 				return lm.players[id] == nullptr || (
 						lm.players[id]->getInfo().remainingLives <= 0
-						&& lm.players[id]->get<lif::Lifed>()->getLife() <= 0
+						&& lm.players[id]->template get<lif::Lifed>()->getLife() <= 0
 						&& lm.getPlayerContinues(id + 1) <= 0
 					);
 			};

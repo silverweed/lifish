@@ -21,7 +21,7 @@ GuidedMoving::GuidedMoving(lif::Entity& owner,
 
 GuidedMoving::GuidedMoving(lif::Entity& owner,
 		const sf::Vector2f& start, const sf::Vector2f& end, sf::Time timeTaken,
-		lif::GuidedMoving::ModFunc modfunc)
+		GuidedMoving::ModFunc modfunc)
 	: lif::Moving(owner, 0)
 	, start(start)
 	, end(end)
@@ -39,16 +39,14 @@ void GuidedMoving::update() {
 	// Calculate this once here
 	const auto tPerc = clock->getElapsedTime() / timeTaken;
 
-	auto pos = _calcPathPos(tPerc);
-	
-	for (auto pair : modfuncs) {
-		pos += _calcModFunc(
+	owner.setPosition(std::accumulate(modfuncs.begin(), modfuncs.end(), _calcPathPos(tPerc),
+		[this, &tPerc] (const auto& pos, const auto& pair)
+	{
+		return pos + _calcModFunc(
 				std::get<0>(pair),
 				std::get<1>(pair) ? tPerc : std::min(1.0f, tPerc),
 				std::get<2>(pair));
-	}
-
-	owner.setPosition(pos);
+	}));
 }
 
 sf::Vector2f GuidedMoving::_calcPathPos(float perc) const {

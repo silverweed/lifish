@@ -12,7 +12,7 @@ void DebugRenderer::drawColliders(sf::RenderTarget& target, const lif::EntityGro
 	group.apply([&target] (const lif::Entity *e) {
 		auto cls = e->getAllRecursive<lif::Collider>();
 
-		auto draw_coll_rect = [] (sf::RenderTarget& target, const lif::Collider& c, sf::Color color) {
+		const auto draw_coll_rect = [] (sf::RenderTarget& target, const lif::Collider& c, sf::Color color) {
 			const auto cr = c.getRect();
 			sf::RectangleShape rect(sf::Vector2f(cr.width - 1, cr.height - 1));
 			rect.setPosition(cr.left, cr.top);

@@ -115,7 +115,7 @@ void GameContext::update() {
 }
 
 bool GameContext::handleEvent(sf::Window&, sf::Event event) {
-	auto pause_game = [this] () {
+	const auto pause_game = [this] () {
 		lm.pause();
 		newContext = lif::CTX_UI;
 	};

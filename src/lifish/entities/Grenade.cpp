@@ -35,7 +35,7 @@ Grenade::Grenade(const sf::Vector2f& pos, lif::Direction dir,
 		break;
 	}
 	auto timeTaken = sf::seconds(lif::manhattanDistance(end, pos) / info.speed);
-	auto bounce = [] (double t) {
+	const auto bounce = [] (auto t) {
 		return sf::Vector2f(0, -static_cast<signed>(lif::TILE_SIZE) *
 				lif::abs(std::sin(t * 2 * lif::PI)) / std::pow(t + 1, 3));
 	};

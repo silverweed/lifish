@@ -198,7 +198,7 @@ void ControlsScreen::update() {
 bool ControlsScreen::handleEvent(sf::Window&, sf::Event event) {
 	if (changingCtrlText == nullptr) return false;
 
-	auto get_control = [this] (lif::ShadedText *text) {
+	const auto get_control = [this] (lif::ShadedText *text) {
 		using C = lif::controls::Control;
 		if (text == interactables["change_up"]->getText()) return C::CTRL_UP;
 		if (text == interactables["change_down"]->getText()) return C::CTRL_DOWN;
