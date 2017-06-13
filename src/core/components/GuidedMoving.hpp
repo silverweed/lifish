@@ -53,6 +53,8 @@ public:
 			const sf::Vector2f& start, const sf::Vector2f& end, sf::Time timeTaken,
 			lif::GuidedMoving::ModFunc modfunc);
 
+	void addModFunc(const lif::GuidedMoving::ModFunc& modfunc);
+
 	bool isAtEnd() const;
 
 	void reset();

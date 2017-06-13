@@ -86,3 +86,34 @@ void Bullet::_destroy() {
 		animatedSprite.setPosition(lif::aligned(position));
 	}
 }
+
+void Bullet::_setup() {
+	position.x += (TILE_SIZE - data.size) / 2;
+	position.y += (TILE_SIZE - data.size) / 2;
+
+	auto animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", data.filename));
+	addComponent<lif::Drawable>(*this, *animated);
+	
+	auto& a_move = animated->addAnimation("move");
+	auto& a_destroy = animated->addAnimation("destroy");
+
+	// Spritesheet format of a FreeBullet is just 1 line containing all motion frames
+	// followed by all destroy frames.
+	for (unsigned i = 0; i < data.nMotionFrames; ++i)
+		a_move.addFrame(sf::IntRect(
+				i * TILE_SIZE,
+				0,
+				data.size, data.size));
+
+	for (unsigned i = 0; i < data.nDestroyFrames; ++i)
+		a_destroy.addFrame(sf::IntRect(
+				(data.nMotionFrames + i) * TILE_SIZE,
+				0,
+				data.size, data.size));
+
+	auto& animatedSprite = animated->getSprite();
+	animatedSprite.setAnimation(a_move);
+	animatedSprite.setLooped(true);
+	animatedSprite.setFrameTime(sf::seconds(0.06));
+	animatedSprite.play();
+}

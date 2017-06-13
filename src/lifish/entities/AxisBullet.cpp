@@ -14,25 +14,29 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, lif::Direction dir,
 		const lif::BulletInfo& info, const lif::Entity *const source)
 	: lif::Bullet(pos, info, source)
 {
-	unsigned short d = 0;
+	// Indices of the starting frame in the spritesheet, depending on directionality
+	int tx = 0, ty = 0;
 	switch (dir) {
 	case lif::Direction::DOWN:
-		d = 0;
+		tx = 0, ty = 0;
 		position.x += (TILE_SIZE - data.size) / 2;
 		position.y += TILE_SIZE;
 		break;
 	case lif::Direction::UP:
-		d = data.directionality == 4 ? 1 : 0;
+		tx = data.directionality < 4;
+		ty = !(data.directionality < 4);
 		position.x += (TILE_SIZE - data.size) / 2;
 		position.y -= data.size;
 		break;
 	case lif::Direction::RIGHT:
-		d = data.directionality == 4 ? 2 : data.directionality == 2 ? 1 : 0;
+		tx = 2 * (data.directionality == 1);
+		ty = data.directionality == 1 ? 0 : data.directionality == 2 ? 1 : 3;
 		position.y += (TILE_SIZE - data.size) / 2;
 		position.x += TILE_SIZE;
 		break;
 	case lif::Direction::LEFT:
-		d = data.directionality == 4 ? 3 : data.directionality == 2 ? 1 : 0;
+		tx = data.directionality == 1 ? 3 : data.directionality == 2 ? 1 : 0;
+		tx = data.directionality - 1;
 		position.y += (TILE_SIZE - data.size) / 2;
 		position.x -= data.size;
 		break;
@@ -43,31 +47,30 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, lif::Direction dir,
 	moving = addComponent<lif::AxisMoving>(*this, lif::conf::bullet::BASE_SPEED * info.speed, dir);
 	static_cast<lif::AxisMoving*>(moving)->setEnsureAlign(false);
 	static_cast<lif::AxisMoving*>(moving)->setAutoRealign(false);
-	auto animated = addComponent<lif::Animated>(*this, lif::getAsset("test", "axisbullets.png"));
+	auto animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", data.filename));
 	addComponent<lif::Drawable>(*this, *animated);
 
 	auto& a_move = animated->addAnimation("move");
 	auto& a_destroy = animated->addAnimation("destroy");
 
 	// Since the bullet cannot change direction, we only need to setup these 2 animations.
-	// The motion animation has up to 8 / directionality frames (but can also have less),
-	// while the destroy animation can have from 0 to 5 frames.
 	// Format for the spritesheet is:
-	// 	- if directionality == 1, [motion frames] [destroy frames]
-	//	- if == 2, [up/down frames] [left/right frames] [destroy frames]
-	//	- if == 4, [down] [up] [right] [left] [destroy]
-	for (unsigned i = 0; i < data.nMotionFrames && i < 8 / data.directionality; ++i)
+	//	- (directionality + 1) lines, all but the last containing nMotionFrames frames and the
+	//	  last one containing nDestroyFrames frames.
+	// 	- if directionality == 2, first line is UP/DOWN, second is LEFT/RIGHT
+	//	- if == 4, first line is DOWN, second is UP, third is RIGHT and fourth is LEFT
+	for (unsigned i = 0; i < data.nMotionFrames; ++i)
 		a_move.addFrame(sf::IntRect(
-				(data.nMotionFrames * d + i) * TILE_SIZE,
-				(info.dataId - 1) * TILE_SIZE,
+				(data.nMotionFrames * tx + i) * TILE_SIZE,
+				ty * TILE_SIZE,
 				data.size, data.size));
 
 	// destroy animations are non-directional
-	for (unsigned i = 0; i < data.nDestroyFrames && i < 5; ++i)
+	for (unsigned i = 0; i < data.nDestroyFrames; ++i)
 		a_destroy.addFrame(sf::IntRect(
-				(data.nMotionFrames * data.directionality + i) * TILE_SIZE,
-				(info.dataId - 1) * TILE_SIZE,
-				data.size, data.size));
+				i * TILE_SIZE,
+				data.directionality * TILE_SIZE,
+				TILE_SIZE, TILE_SIZE));
 
 	auto& animatedSprite = animated->getSprite();
 	animatedSprite.setAnimation(a_move);

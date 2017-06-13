@@ -14,16 +14,19 @@ class Clock;
  * defines its texture, size and spritesheet format.
  */
 struct BulletData {
+	/** Name of the file containing the bullet's spritesheet (relative to graphics/) */
+	std::string filename;
 	/** The actual size of this bullet in pixels */
 	unsigned short size;
-	unsigned short nMotionFrames;  // up to 8/directionality for AxisBullet
-	unsigned short nDestroyFrames; // up to 5
+	/** Number of frames of the motion animation */
+	unsigned short nMotionFrames;
+	/** Number of frames of the destruction animation */
+	unsigned short nDestroyFrames;
 	/** Only valid for AxisBullets.
-	 *  If 1 => this bullet has the same animation for any direction, up to 8.
-	 *  If 2 => this bullet has 2 different animations when traveling UP/DOWN or
-	 *          LEFT/RIGHT, up to 4 per direction.
-	 *  If 4 => this bullet has different animations for each direction, up to 2.
-	 *  The effective number of frames is established by nMotionFrames.
+	 *  If 1 => this bullet has the same animation for any direction.
+	 *  If 2 => this bullet has 2 different animations when traveling UP/DOWN or LEFT/RIGHT
+	 *  If 4 => this bullet has different animations for each direction.
+	 *  The effective number of frames is established by nMotionFrames, and is the same for all directions.
 	 */
 	unsigned short directionality;
 };
@@ -69,6 +72,8 @@ protected:
 	lif::Moving *moving = nullptr;
 
 
+	/** Common setup for Free and GuidedBullets */
+	void _setup();
 	void _destroy();
 
 public:

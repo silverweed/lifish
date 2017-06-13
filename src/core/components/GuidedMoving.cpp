@@ -3,8 +3,6 @@
 #include "utils.hpp"
 #include <algorithm>
 
-#include <iostream>
-
 using lif::GuidedMoving;
 
 GuidedMoving::GuidedMoving(lif::Entity& owner,
@@ -38,6 +36,10 @@ void GuidedMoving::update() {
 	_updatePosition();
 }
 
+void GuidedMoving::addModFunc(const lif::GuidedMoving::ModFunc& modfunc) {
+	modfuncs.emplace_back(modfunc);
+}
+
 void GuidedMoving::_updatePosition() {
 	owner.setPosition(std::accumulate(modfuncs.begin(), modfuncs.end(), _calcPathPos(tPerc),
 		[this] (const auto& pos, const auto& pair)
@@ -50,7 +52,6 @@ void GuidedMoving::_updatePosition() {
 }
 
 sf::Vector2f GuidedMoving::_calcPathPos(float perc) const {
-	std::cerr << "perc="<<perc<<", pos="<<(perc > 1 ? end : start + (end - start) * perc) << std::endl;
 	return perc > 1 ? end : start + (end - start) * perc;
 }
 
