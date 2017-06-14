@@ -11,10 +11,10 @@
 using lif::Grenade;
 using lif::TILE_SIZE;
 
-Grenade::Grenade(const sf::Vector2f& pos, lif::Direction dir, const lif::BulletInfo& info,
-		const lif::Entity *const source, const lif::Entity *const target)
+Grenade::Grenade(const sf::Vector2f& pos, lif::Direction dir, const sf::Vector2f& target,
+		const lif::BulletInfo& info, const lif::Entity *const source)
 	: lif::GuidedBullet(pos,
-		_calculateEnd(pos, info.range, dir, target),
+		_calculateEnd(pos, target, info.range),
 		info,
 		sf::seconds(1.0 / info.speed),
 		source)
@@ -37,33 +37,11 @@ void Grenade::update() {
 	}
 }
 
-sf::Vector2f Grenade::_calculateEnd(const sf::Vector2f& pos, float range,
-		lif::Direction dir, const lif::Entity *const target) const
-{
+sf::Vector2f Grenade::_calculateEnd(const sf::Vector2f& pos, const sf::Vector2f& target, float range) const {
 	// Calculate motion params
-	auto end = pos;
-	if (target != nullptr && (range < 0 || lif::manhattanDistance(target->getPosition(), pos) <= range)) {
-		end = target->getPosition();
-	} else {
-		// Ensure the range is positive and finite
-		if (range < 0) range = 6 * lif::TILE_SIZE;
-
-		switch (dir) {
-		case lif::Direction::UP:
-			end.y -= range;
-			break;
-		case lif::Direction::DOWN:
-			end.y += range;
-			break;
-		case lif::Direction::RIGHT:
-			end.x += range;
-			break;
-		case lif::Direction::LEFT:
-			end.x -= range;
-			break;
-		default:
-			break;
-		}
-	}
-	return lif::aligned2(end);
+	auto dir = target - pos;
+	const auto len = lif::length(dir);
+	if (len > range)
+		dir *= range / len;
+	return lif::aligned2(pos + dir);
 }

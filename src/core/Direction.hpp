@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ostream>
+#include <SFML/System/Vector2.hpp>
 
 namespace lif {
 
@@ -58,5 +59,11 @@ inline Direction oppositeDirection(const Direction dir) {
  *  and returns the corresponding direction.
  */
 Direction turnRight(const Direction dir, short times);
+
+/** Returns the direction of the vector pointing from tile `from` to `to`.
+ *  Returns NONE if the given tiles don't have at least 1 coordinate in common or if
+ *  they are the same tile.
+ */
+Direction getDirection(const sf::Vector2i& from, const sf::Vector2i& to);
 
 }

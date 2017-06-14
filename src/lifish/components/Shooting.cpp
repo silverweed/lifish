@@ -27,27 +27,9 @@ lif::Entity* Shooting::init() {
 	return this;
 }
 
-std::unique_ptr<lif::Bullet> Shooting::shoot(lif::Direction dir, const lif::Entity *const target) {
+std::unique_ptr<lif::Bullet> Shooting::shoot(const sf::Vector2f& targetPos) {
 	if (attack.type & lif::AttackType::CONTACT) {
-		shooting = true;
-		lif::cache.playSound(owner.get<lif::Sounded>()->getSoundFile("attack"));
-		rechargeClock->restart();
-		attackAlign = lif::tile(owner.getPosition());
-		if (ownerMoving != nullptr) {
-			switch (ownerMoving->getDirection()) {
-			case lif::Direction::UP: --attackAlign.y; break;
-			case lif::Direction::DOWN: ++attackAlign.y; break;
-			case lif::Direction::LEFT: --attackAlign.x; break;
-			case lif::Direction::RIGHT: ++attackAlign.x; break;
-			default: break;
-			}
-		}
-		if (attack.type & lif::AttackType::RANGED) {
-			auto moving = ownerMoving == nullptr ? owner.get<lif::Moving>() : ownerMoving;
-			if (moving == nullptr)
-				throw std::logic_error("Called shoot() for a dashing attack on a non-Moving owner!");
-			moving->setDashing(4);
-		}
+		_contactAttack();
 		return nullptr;
 	}
 
@@ -116,4 +98,27 @@ std::unique_ptr<lif::Bullet> Shooting::_doShoot(lif::Angle angle, const lif::Ent
 	auto bullet = lif::BulletFactory::create(attack.bulletId, getPosition(), angle, &owner, target);
 	lif::cache.playSound(bullet->get<lif::Sounded>()->getSoundFile("shot"));
 	return bullet;
+}
+
+void Shooting::_contactAttack() {
+	shooting = true;
+	lif::cache.playSound(owner.get<lif::Sounded>()->getSoundFile("attack"));
+	rechargeClock->restart();
+	attackAlign = lif::tile(owner.getPosition());
+	if (ownerMoving != nullptr) {
+		switch (ownerMoving->getDirection()) {
+		case lif::Direction::UP: --attackAlign.y; break;
+		case lif::Direction::DOWN: ++attackAlign.y; break;
+		case lif::Direction::LEFT: --attackAlign.x; break;
+		case lif::Direction::RIGHT: ++attackAlign.x; break;
+		default: break;
+		}
+	}
+	if (attack.type & lif::AttackType::RANGED) {
+		auto moving = ownerMoving == nullptr ? owner.get<lif::Moving>() : ownerMoving;
+		if (moving == nullptr)
+			throw std::logic_error("Called shoot() for a dashing attack on a non-Moving owner!");
+		moving->setDashing(4);
+	}
+	return nullptr;
 }

@@ -8,11 +8,5 @@ void lif::shootToNearestPlayer(lif::Entity& shooter) {
 	if (player.expired() || player.lock() == nullptr) return;
 
 	const auto& ppos = player.lock()->getPosition();
-
-	// calculate angle with ppos: a = pi - arctan(dy / dx)
-	const double dx = ppos.x - shooter.getPosition().x,
-		     dy = ppos.y - shooter.getPosition().y;
-	const auto angle = lif::radians(lif::PI / 2. + std::atan2(dy, dx));
-
-	shooter.get<lif::AutoShooting>()->shoot(angle);
+	shooter.get<lif::AutoShooting>()->shoot(pos);
 }

@@ -33,7 +33,7 @@ static std::map<unsigned, const lif::BulletInfo> bulletsInfo = {
 };
 
 std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Vector2f& pos,
-		lif::Direction dir, const lif::Entity *const source, const lif::Entity *const target)
+		const sf::Vector2f& target, const lif::Entity *const source)
 {
 	switch (infoId) {
 	case 1:
@@ -43,21 +43,14 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 	case 5:
 	case 6:
 	case 7:
-		return std::unique_ptr<lif::Bullet>(new lif::AxisBullet(pos, dir, bulletsInfo[infoId], source));
+		return std::unique_ptr<lif::Bullet>(new lif::AxisBullet(pos,
+			lif::getDirection(lif::tile(pos), lif::tile(target))), bulletsInfo[infoId], source);
 	case 9:
-		return std::unique_ptr<lif::Bullet>(new lif::Grenade(pos, dir, bulletsInfo[infoId], source, target));
-	default:
-		throw std::invalid_argument("No bullet with id " + lif::to_string(infoId) + "!");
-	}
-}
-
-std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Vector2f& pos,
-		lif::Angle angle, const lif::Entity *const source, const lif::Entity *const /*target*/)
-{
-	switch (infoId) {
+		return std::unique_ptr<lif::Bullet>(new lif::Grenade(pos, target, bulletsInfo[infoId], source));
 	case 101:
 	case 102:
-		return std::unique_ptr<lif::Bullet>(new lif::FreeBullet(pos, angle, bulletsInfo[infoId], source));
+		return std::unique_ptr<lif::Bullet>(new lif::FreeBullet(pos,
+			lif::angleBetween(pos, target), bulletsInfo[infoId], source));
 	default:
 		throw std::invalid_argument("No bullet with id " + lif::to_string(infoId) + "!");
 	}

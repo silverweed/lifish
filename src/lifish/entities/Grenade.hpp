@@ -6,12 +6,10 @@
 namespace lif {
 
 class Grenade : public lif::GuidedBullet {
-	sf::Vector2f _calculateEnd(const sf::Vector2f& pos, float range, lif::Direction dir,
-			const lif::Entity *const target = nullptr) const;
+	sf::Vector2f _calculateEnd(const sf::Vector2f& pos,const sf::Vector2f& target, float range) const;
 public:
-	explicit Grenade(const sf::Vector2f& pos, lif::Direction dir, const lif::BulletInfo& info,
-			const lif::Entity *const source = nullptr,
-			const lif::Entity *const target = nullptr);
+	explicit Grenade(const sf::Vector2f& pos, const sf::Vector2f& target, const lif::BulletInfo& info,
+			const lif::Entity *const source = nullptr);
 
 	void update() override;
 };

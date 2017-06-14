@@ -5,6 +5,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics.hpp>
+#include "Angle.hpp"
 #include "core.hpp"
 #include "json.hpp"
 
@@ -91,8 +92,13 @@ inline std::ostream& operator<<(std::ostream& stream, const sf::RectangleShape& 
 }
 
 template<typename T, typename R>
-constexpr double sqrDistance(sf::Vector2<T> a, sf::Vector2<R> b) {
+constexpr float sqrDistance(sf::Vector2<T> a, sf::Vector2<R> b) {
 	return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
+}
+
+template<typename T>
+constexpr float length(sf::Vector2<T> v) {
+	return std::sqrt(v.x * v.x + v.y * v.y);
 }
 
 template<typename T, typename R>
@@ -114,6 +120,14 @@ constexpr float centerX(sf::Rect<T> innerBounds, sf::Rect<R> outerBounds) {
 template<typename T, typename R>
 constexpr float centerY(sf::Rect<T> innerBounds, sf::Rect<R> outerBounds) {
 	return outerBounds.top + (outerBounds.height - innerBounds.height) / 2.;
+}
+
+template<typename T, typename R>
+constexpr Angle angleBetween(sf::Vector2<T> a, sf::Vector2<R> b) {
+	// calculate angle with ppos: a = pi - arctan(dy / dx)
+	const double dx = a.x - b.x,
+		     dy = a.y - b.y;
+	return lif::radians(lif::PI / 2. + std::atan2(dy, dx));
 }
 
 template<typename T>

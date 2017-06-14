@@ -19,8 +19,7 @@ class AutoShooting : public lif::BufferedSpawner {
 public:
 	explicit AutoShooting(lif::Entity& owner);
 
-	void shoot(lif::Direction dir = lif::Direction::NONE, const lif::Entity *const target = nullptr);
-	void shoot(lif::Angle angle, const lif::Entity *const target = nullptr);
+	void shoot(const sf::Vector2f& target);
 
 	lif::Entity* init() override;
 };

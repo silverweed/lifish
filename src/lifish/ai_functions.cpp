@@ -291,7 +291,7 @@ AIBoundFunction lif::ai_follow_dash(lif::Entity& entity) {
 		auto sp = seeing_player(lm, *sighted);
 		if (sp != lif::Direction::NONE) {
 			if (!shooting->isRecharging()) {
-				shooting->shoot();
+				shooting->shoot(moving->getOwner().getPosition());
 				auto sounded = entity.get<lif::Sounded>();
 				if (sounded != nullptr)
 					lif::cache.playSound(sounded->getSoundFile("attack"));

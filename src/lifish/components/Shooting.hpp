@@ -44,6 +44,7 @@ protected:
 
 	std::unique_ptr<lif::Bullet> _doShoot(lif::Direction dir, const lif::Entity *const target = nullptr);
 	std::unique_ptr<lif::Bullet> _doShoot(lif::Angle angle, const lif::Entity *const target = nullptr);
+	void _contactAttack();
 	
 public:
 	explicit Shooting(lif::Entity& owner, const Attack& attack);
@@ -53,6 +54,8 @@ public:
 	sf::Vector2i getAttackAlign() const { return attackAlign; }
 	void setAttackAlign(const sf::Vector2i& aa) { attackAlign = aa; }
 
+	// TODO: refactor shoot() method. Make it accept just a sf::Vector2f target parameter,
+	// from which it can deduce direction or angle
 	/** If attack is CONTACT and not RANGED, just reset the recharge clock and return nullptr.
 	 *  If attack is also RANGED (i.e. "dashing"), also call setDashing(true) for the owner's
 	 *  Moving component (throws if no Moving component is found.)
@@ -61,15 +64,7 @@ public:
 	 *  In this case, the owner must have an AxisMoving component, or an exception is thrown.
 	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
-	std::unique_ptr<lif::Bullet> shoot(lif::Direction dir = lif::Direction::NONE,
-			const lif::Entity *const target = nullptr);
-
-	/** Creates a FreeBullet moving with angle `angle` from its owner.
-	 *  Throws if attack is CONTACT.
-	 *  NOTE: this method does NOT check whether this entity is recharging.
-	 */
-	std::unique_ptr<lif::Bullet> shoot(lif::Angle angle,
-			const lif::Entity *const target = nullptr);
+	std::unique_ptr<lif::Bullet> shoot(const sf::Vector2f& targetPos);
 
 	bool isShooting() const { return shooting; }
 	bool isRecharging() const;
