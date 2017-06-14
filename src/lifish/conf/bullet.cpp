@@ -23,7 +23,7 @@ std::map<unsigned, const lif::BulletData> lif::conf::bullet::data = {
 	// rocket
 	{ 8, { "shot.png", /*TODO*/32, 2, 4, 4 } },
 	// grenade
-	{ 9, { "shot.png", 32, 1, 1, 1 } },
+	{ 9, { "grenade.png", 32, 1, 1, 1 } },
 	//// FreeBullets ////
 	// star
 	{ 101, { "shot.png", 20, 2, 5, 0 } },

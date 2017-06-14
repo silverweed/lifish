@@ -62,15 +62,15 @@ inline sf::Vector2i tile2(const sf::Vector2f& pos) {
 /** Returns the pixel position `pos` aligned to the floored tile. */
 inline sf::Vector2f aligned(const sf::Vector2f& pos) {
 	return sf::Vector2f(
-		static_cast<int>(pos.x / TILE_SIZE) * static_cast<signed>(TILE_SIZE),
-		static_cast<int>(pos.y / TILE_SIZE) * static_cast<signed>(TILE_SIZE));
+		static_cast<int>(pos.x / TILE_SIZE) * TILE_SIZE,
+		static_cast<int>(pos.y / TILE_SIZE) * TILE_SIZE);
 }
 
 /** Like `aligned`, but instead of flooring, round to the nearest tile. */
 inline sf::Vector2f aligned2(const sf::Vector2f& pos) {
 	return sf::Vector2f(
-		static_cast<int>(pos.x / TILE_SIZE + 0.5) * static_cast<signed>(TILE_SIZE),
-		static_cast<int>(pos.y / TILE_SIZE + 0.5) * static_cast<signed>(TILE_SIZE));
+		static_cast<int>(pos.x / TILE_SIZE + 0.5) * TILE_SIZE,
+		static_cast<int>(pos.y / TILE_SIZE + 0.5) * TILE_SIZE);
 }
 
 template<typename T>

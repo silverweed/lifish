@@ -16,14 +16,12 @@ Grenade::Grenade(const sf::Vector2f& pos, lif::Direction dir, const lif::BulletI
 	: lif::GuidedBullet(pos,
 		_calculateEnd(pos, info.range, dir, target),
 		info,
-		sf::seconds(lif::manhattanDistance(_calculateEnd(pos, info.range, dir, target), pos) / info.speed),
+		sf::seconds(1.0 / info.speed),
 		source)
 {
-	collider->setLayer(lif::c_layers::IGNORE_ALL);
+	collider->setActive(false); // collide with nothing, not even level bounds
 	const auto bounce = [] (auto t) {
-		return sf::Vector2f(0, 0);
-		return sf::Vector2f(0, -static_cast<signed>(lif::TILE_SIZE) *
-				lif::abs(std::sin(t * 2 * lif::PI)) / std::pow(t + 1, 3));
+		return sf::Vector2f(0, -lif::TILE_SIZE * lif::abs(std::sin(t * 2 * lif::PI)) / std::pow(t + 1, 3));
 	};
 	static_cast<lif::GuidedMoving*>(moving)->addModFunc({ bounce, false, false });
 	addComponent<lif::Spawning>(*this, [this] () {

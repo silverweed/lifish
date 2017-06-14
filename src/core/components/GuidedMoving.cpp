@@ -24,7 +24,7 @@ GuidedMoving::GuidedMoving(lif::Entity& owner,
 GuidedMoving::GuidedMoving(lif::Entity& owner,
 		const sf::Vector2f& start, const sf::Vector2f& end, sf::Time timeTaken,
 		GuidedMoving::ModFunc modfunc)
-	: GuidedMoving(owner, start, end, timeTaken, {modfunc})
+	: GuidedMoving(owner, start, end, timeTaken, { modfunc })
 {}
 
 void GuidedMoving::update() {

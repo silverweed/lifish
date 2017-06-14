@@ -33,7 +33,7 @@ constexpr char DIRSEP = '\\';
 constexpr char DIRSEP = '/';
 #endif
 
-constexpr unsigned TILE_SIZE = 32; // pixels
+constexpr int TILE_SIZE = 32; // pixels
 
 constexpr auto PI = 3.141592653589793238L;
 constexpr size_t PWD_BUFSIZE = 512;

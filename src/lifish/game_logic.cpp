@@ -93,7 +93,7 @@ void lif::game_logic::spawningLogic(lif::Entity *e, lif::BaseLevelManager& blm, 
 			if (spawned != nullptr) {
 				if (auto expl = dynamic_cast<lif::Explosion*>(spawned))
 					expl->propagate(lm);
-				tbspawned.emplace_back(spawned);	
+				tbspawned.emplace_back(spawned);
 			}
 		}
 	}

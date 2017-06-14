@@ -24,7 +24,7 @@ static std::map<unsigned, const lif::BulletInfo> bulletsInfo = {
 	// magma
 	{ 7, { 7, 4, 1.3 } },
 	// grenade
-	{ 9, { 9, 2, 200, 6 * lif::TILE_SIZE } },
+	{ 9, { 9, 2, 1, 6 * lif::TILE_SIZE } },
 	/// FreeBullets
 	// star
 	{ 101, { 101, 4, 1.1, -1, lif::c_layers::BOSS_BULLETS } },
@@ -47,7 +47,7 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 	case 9:
 		return std::unique_ptr<lif::Bullet>(new lif::Grenade(pos, dir, bulletsInfo[infoId], source, target));
 	default:
-		throw std::invalid_argument("No AxisBullet with id " + lif::to_string(infoId) + "!");
+		throw std::invalid_argument("No bullet with id " + lif::to_string(infoId) + "!");
 	}
 }
 
@@ -59,6 +59,6 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 	case 102:
 		return std::unique_ptr<lif::Bullet>(new lif::FreeBullet(pos, angle, bulletsInfo[infoId], source));
 	default:
-		throw std::invalid_argument("No FreeBullet with id " + lif::to_string(infoId) + "!");
+		throw std::invalid_argument("No bullet with id " + lif::to_string(infoId) + "!");
 	}
 }
