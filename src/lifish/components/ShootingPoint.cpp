@@ -1,6 +1,5 @@
 #include "ShootingPoint.hpp"
 #include "Shooting.hpp"
-#include "AutoShooting.hpp"
 #include "FreeSighted.hpp"
 
 using lif::ShootingPoint;
@@ -10,14 +9,13 @@ ShootingPoint::ShootingPoint(lif::Entity& owner, const lif::Attack& attack, floa
 {
 	_declComponent<ShootingPoint>();
 	addComponent<lif::FreeSighted>(*this, visionRadius);
-	addComponent<lif::Shooting>(*this, attack);
-	autoShooting = addComponent<lif::AutoShooting>(*this);
+	shooting = addComponent<lif::Shooting>(*this, attack);
 }
 
 bool ShootingPoint::shouldSpawn() const {
-	return autoShooting->shouldSpawn();
+	return shooting->shouldSpawn();
 }
 
 std::unique_ptr<lif::Entity> ShootingPoint::spawn() {
-	return autoShooting->spawn();
+	return shooting->spawn();
 }

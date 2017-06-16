@@ -7,6 +7,7 @@
 #include "Direction.hpp"
 #include "Angle.hpp"
 #include "AxisBullet.hpp"
+#include "BufferedSpawner.hpp"
 
 namespace lif {
 
@@ -20,14 +21,18 @@ class AxisMoving;
  * for recharge time, along with tweaking the bullet's starting offset and
  * firerate multiplier.
  * A Shooting component is meant for the "regular entities' shooting stuff";
- * the shoot() methods are overloaded for both AxisBullets and FreeBullets,
+ * the shoot() methods are overloaded for contact attacks, AxisBullets, GuidedBullets and FreeBullets,
  * and take care of the extra effects like blocking the attacker after the shot, etc.
  */
-class Shooting : public lif::Component {
+class Shooting : public lif::BufferedSpawner {
 	
 	bool manualPosition = false;
 
 protected:
+	/** Tile at which the owner shot the latest time. */
+	sf::Vector2i attackAlign;
+
+	lif::Attack attack;
 	bool shooting = false;
 	float fireRateMult = 1;
 	sf::Vector2f offset;
@@ -36,25 +41,38 @@ protected:
 	lif::AxisMoving *ownerMoving = nullptr;
 
 
-	void _checkContact()
-	std::unique_ptr<lif::Bullet> _doShoot(const sf::Vector2f& pos);
+	void _checkBlock();
+	std::unique_ptr<lif::Bullet> _doShoot(std::unique_ptr<lif::Bullet>&& bullet);
 	void _contactAttack();
 	
 public:
 	explicit Shooting(lif::Entity& owner, const Attack& attack);
 
-	/** If attack is CONTACT and not RANGED, just reset the recharge clock and return nullptr.
-	 *  If attack is also RANGED (i.e. "dashing"), also call setDashing(true) for the owner's
-	 *  Moving component (throws if no Moving component is found.)
-	 *  Else, create an AxisBullet described by `attack` and return it.
-	 *  If dir is NONE, the bullet is shot in the direction of its owner.
-	 *  In this case, the owner must have an AxisMoving component, or an exception is thrown.
+	const lif::Attack& getAttack() const { return attack; }
+
+	sf::Vector2i getAttackAlign() const { return attackAlign; }
+	void setAttackAlign(const sf::Vector2i& aa) { attackAlign = aa; }
+
+	/** Makes a contact attack. Recharge clock is reset and, if attack is also RANGED ("dashing" attack),
+	 *  also call setDashing(true) for the owner's Moving component (throws if no Moving component is found).
+	 */
+	void shoot();
+	/** Shoots towards `targetPos`. Bullet can be of any kind.
 	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
-	std::unique_ptr<lif::Bullet> shoot(const sf::Vector2f& targetPos);
-	std::unique_ptr<lif::Bullet> shoot(const sf::Vector2f& targetPos);
-	std::unique_ptr<lif::Bullet> shoot(const sf::Vector2f& targetPos);
+	void shoot(const sf::Vector2f& targetPos);
+	/** Shoots a bullet towards direction `dir`. The spawned bullet should be an AxisBullet
+	*   or the behaviour is undefined.
+	 *  If dir is NONE, the bullet is shot in the direction of its owner.
+	 *  In this case, the owner must have an AxisMoving component, or an exception is thrown.
+	 */
+	void shoot(lif::Direction dir);
+	/** Shoots a bullet towards angle `angle` (starting from UP, clockwise).
+	 *  The spawned bullet should b a FreeBullet, or the behaviour is undefined.
+	 */
+	void shoot(lif::Angle angle);
 
+	/** @return whether this component's owner has shot within the latest SHOOT_FRAME_TIME */
 	bool isShooting() const { return shooting; }
 	bool isRecharging() const;
 

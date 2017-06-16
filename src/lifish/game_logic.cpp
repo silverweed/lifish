@@ -8,7 +8,6 @@
 #include "Boss.hpp"
 #include "LevelManager.hpp"
 #include "Grabbable.hpp"
-#include "AutoShooting.hpp"
 #include "Bullet.hpp"
 #include "Controllable.hpp"
 #include "Sounded.hpp"

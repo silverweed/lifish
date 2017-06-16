@@ -20,15 +20,12 @@ namespace lif {
  *            and stops moving while shooting; paired with SIMPLE,
  *            means the enemy shoots a single bullet and stops for
  *            `attack.blockTime` after shooting.
- *  AXIS_BOUND: the bullet travels along axes, therefore its instance
- *              will be an AxisBullet.
  */
 enum AttackType : unsigned int {
 	SIMPLE     = 1,
 	CONTACT    = 1 << 1,
 	RANGED     = 1 << 2,
-	BLOCKING   = 1 << 3,
-	AXIS_BOUND = 1 << 4
+	BLOCKING   = 1 << 3
 };
 
 inline bool stringToAttackType(const std::string& str, AttackType& type) {

@@ -44,7 +44,7 @@ void GuidedMoving::_updatePosition() {
 	owner.setPosition(std::accumulate(modfuncs.begin(), modfuncs.end(), _calcPathPos(tPerc),
 		[this] (const auto& pos, const auto& pair)
 	{
-		return pos + _calcModFunc(
+		return pos + this->_calcModFunc(
 				std::get<0>(pair),
 				std::get<1>(pair) ? tPerc : std::min(1.0f, tPerc),
 				std::get<2>(pair));

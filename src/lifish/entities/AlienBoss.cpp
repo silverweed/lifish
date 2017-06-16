@@ -6,7 +6,6 @@
 #include "Clock.hpp"
 #include "ShootingPoint.hpp"
 #include "FreeSighted.hpp"
-#include "AutoShooting.hpp"
 #include "Drawable.hpp"
 #include "Lifed.hpp"
 #include "Scored.hpp"

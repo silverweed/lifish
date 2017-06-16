@@ -8,7 +8,6 @@
 #include "Letter.hpp"
 #include "Shooting.hpp"
 #include "Spawning.hpp"
-#include "AutoShooting.hpp"
 #include "RegularEntityDeath.hpp"
 #include "Killable.hpp"
 #include "Clock.hpp"
@@ -87,7 +86,6 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	});
 	death = addComponent<lif::RegularEntityDeath>(*this, lif::conf::enemy::DEATH_TIME);
 	shooting = addComponent<lif::Shooting>(*this, info.attack);
-	autoShooting = addComponent<lif::AutoShooting>(*this);
 	sighted = addComponent<lif::AxisSighted>(*this);
 	addComponent<lif::Absorbable>(*this);
 	addComponent<lif::LightSource>(*this, 0)->setActive(false);
@@ -197,7 +195,7 @@ void Enemy::_checkShoot() {
 	for (const auto& pair : entitiesSeen) {
 		const auto entity = pair.first;
 		if (_inRange(entity) && dynamic_cast<const lif::Player*>(entity) != nullptr) {
-			autoShooting->shoot(entity->getPosition());
+			shooting->shoot(entity->getPosition());
 			return;
 		}
 	}
@@ -208,7 +206,7 @@ bool Enemy::_checkCollision(lif::Collider& coll) {
 			&& (shooting->getAttack().type & lif::AttackType::CONTACT)
 			&& !shooting->isRecharging())
 	{
-		shooting->shoot(position);
+		shooting->shoot();
 		return true;
 	}
 	return false;

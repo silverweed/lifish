@@ -5,7 +5,7 @@
 namespace lif {
 
 struct Attack;
-class AutoShooting;
+class Shooting;
 class FreeSighted;
 class Shooting;
 
@@ -14,7 +14,7 @@ class Shooting;
  */
 class ShootingPoint : public lif::Spawning {
 	sf::Vector2f offset;
-	lif::AutoShooting *autoShooting = nullptr;
+	lif::Shooting *shooting = nullptr;
 
 public:
 	COMP_NOT_UNIQUE

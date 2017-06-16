@@ -125,10 +125,9 @@ constexpr float centerY(sf::Rect<T> innerBounds, sf::Rect<R> outerBounds) {
 template<typename T, typename R>
 constexpr Angle angleBetween(sf::Vector2<T> a, sf::Vector2<R> b) {
 	// calculate angle with ppos: a = pi - arctan(dy / dx)
-	const double dx = a.x - b.x,
-		     dy = a.y - b.y;
+	const double dx = b.x - a.x,
+		     dy = b.y - a.y;
 	return lif::radians(lif::PI / 2. + std::atan2(dy, dx));
-}
 }
 
 template<typename T>
