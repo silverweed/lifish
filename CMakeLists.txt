@@ -12,6 +12,7 @@ else()
 	set(TARGET_ARCH 32)
 endif()
 
+# Setup source files
 # main
 set(MAIN_FILE src/main.cpp)
 # core/ contains the "game-independent" source
@@ -150,37 +151,7 @@ if(NOT ${HAS_CHECK_CXX} STREQUAL "")
 	endif()
 endif()
 
-
-# On Linux / OSX we use NFD
-#if(UNIX AND NOT APPLE)
-#	find_package(GTK3 3.0 OPTIONAL_COMPONENTS gtk)
-#	if(GTK3_FOUND)
-#		add_definitions(-DHAVE_NFD="true")
-#		if(TARGET_ARCH EQUAL 64)
-#			if(${SUPPORTS_PIE})
-#				target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/lib/libnfd_linux_x86_64_pie.a)
-#			else()
-#				target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/lib/libnfd.a)
-#			endif()
-#		else()
-#			if(${SUPPORTS_PIE})
-#				target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/lib/libnfd_linux_i386_pie.a)
-#			else()
-#				target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/lib/libnfd-32.a)
-#			endif()
-#		endif()
-#		target_link_libraries(${PROJECT_NAME} ${GTK3_LIBRARIES})
-#	else()
-#		message(WARNING "Didn't find GTK: compiling without NFD support.")
-#	endif()
-#elseif(APPLE)
-#	find_library(APPKIT AppKit)
-#	add_definitions(-DHAVE_NFD="true")
-#	target_link_libraries(${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/lib/libnfd-mac.a)
-#	target_link_libraries(${PROJECT_NAME} ${APPKIT})
-#endif()
-
-# Debug flags
+# Debug / Release
 if(${RELEASE})
 	message(STATUS "Compiling in RELEASE mode")
 	# Disable assertions
@@ -237,6 +208,7 @@ if(UNIX AND NOT APPLE)
 	endif()
 elseif(MSYS)
 	if(${RELEASE})
+		# No terminal on windows in release mode
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows")
 	endif()
 endif()
