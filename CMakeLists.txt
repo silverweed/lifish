@@ -1,3 +1,11 @@
+# Lifish CMakeLists
+# by silverweed
+#
+# Command-line switches:
+# - RELEASE: compile in release mode (optimization, hardening and no debug)
+# - USE_STATIC_SFML: force to use static SFML libs and dependencies (default on windows)
+# - MULTITHREADED: use multithreaded rendering (unstable, do NOT use)
+
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(lifish)
 set(PROJECT_NAME lifish)
@@ -56,8 +64,7 @@ file(GLOB LIFISH_SRC ${MAIN_FILE}
 	src/third_party/*cpp
 	src/ui/*cpp
 )
-if(${RELEASE})
-else()
+if(NOT RELEASE)
 	# core/debug/ contains debug utils
 	include_directories(src/core/debug)
 	# lifish/debug/ contains all the Lifish-specific debugging utilities
@@ -108,7 +115,7 @@ if(CCACHE_FOUND)
 endif()
 
 # SFML
-if(MSYS)
+if(MSYS OR USE_STATIC_SFML)
 	# On Windows we statically link SFML
 	message(STATUS "Using static SFML libs")
 	set(SFML_STATIC_LIBRARIES true)
@@ -116,12 +123,16 @@ endif()
 find_package(SFML 2.4 REQUIRED graphics window audio system)
 include_directories(${SFML_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES})
-if(MSYS)
+if(MSYS OR USE_STATIC_SFML)
 	target_link_libraries(${PROJECT_NAME} ${SFML_DEPENDENCIES})
+	if(UNIX AND NOT APPLE)
+		find_package(X11 REQUIRED)
+		target_link_libraries(${PROJECT_NAME} ${X11_LIBRARIES} ${X11_Xrandr_LIB})
+	endif()
 endif()
 
 # Use separate threads for logic and rendering (experimental)
-if(${MULTITHREADED})
+if(MULTITHREADED)
 	message(STATUS "Compiling in MULTITHREADED mode")
 	add_definitions(-DMULTITHREADED=1)
 
@@ -142,7 +153,7 @@ if(NOT ${HAS_CHECK_CXX} STREQUAL "")
 	check_cxx_compiler_flag("-pie -fPIE -Wl,-fPIE" SUPPORTS_PIE)
 	if(${SUPPORTS_PIE})
 		if(NOT MSYS)
-			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pie -fPIE -Wl,-pie")
+			#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pie -fPIE -Wl,-pie")
 		endif()
 	endif()
 	check_cxx_compiler_flag("-Qunused-arguments" SUPPORTS_UNUSED_ARGS)
@@ -152,7 +163,7 @@ if(NOT ${HAS_CHECK_CXX} STREQUAL "")
 endif()
 
 # Debug / Release
-if(${RELEASE})
+if(RELEASE)
 	message(STATUS "Compiling in RELEASE mode")
 	# Disable assertions
 	add_definitions(-DNDEBUG=1)
@@ -207,7 +218,7 @@ if(UNIX AND NOT APPLE)
 		message(STATUS "Using GNU gold as linker")
 	endif()
 elseif(MSYS)
-	if(${RELEASE})
+	if(RELEASE)
 		# No terminal on windows in release mode
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows")
 	endif()
