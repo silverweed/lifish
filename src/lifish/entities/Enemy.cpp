@@ -197,7 +197,7 @@ void Enemy::_checkShoot() {
 	for (const auto& pair : entitiesSeen) {
 		const auto entity = pair.first;
 		if (_inRange(entity) && dynamic_cast<const lif::Player*>(entity) != nullptr) {
-			autoShooting->shoot(lif::Direction::NONE, entity);
+			autoShooting->shoot(entity->getPosition());
 			return;
 		}
 	}
@@ -208,7 +208,7 @@ bool Enemy::_checkCollision(lif::Collider& coll) {
 			&& (shooting->getAttack().type & lif::AttackType::CONTACT)
 			&& !shooting->isRecharging())
 	{
-		shooting->shoot();
+		shooting->shoot(position);
 		return true;
 	}
 	return false;

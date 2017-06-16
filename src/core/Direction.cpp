@@ -21,9 +21,9 @@ Direction lif::turnRight(const Direction dir, short times) {
 
 Direction lif::getDirection(const sf::Vector2i& from, const sf::Vector2i& to) {
 	if (from.x == to.x)
-		return from.y < to.y ? Direction::UP : from.y == to.y ? Direction::NONE : Direction::DOWN;
+		return from.y < to.y ? Direction::DOWN : from.y == to.y ? Direction::NONE : Direction::UP;
 	else if (from.y == to.y)
-		return from.x < to.x ? Direction::LEFT : from.x == to.x ? Direction::NONE : Direction::RIGHT;
+		return from.x < to.x ? Direction::RIGHT : from.x == to.x ? Direction::NONE : Direction::LEFT;
 	else
 		return Direction::NONE;
 }

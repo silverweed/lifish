@@ -5,8 +5,10 @@
 
 using lif::BulletFactory;
 
+namespace {
+
 // Regular bullets' info
-static std::map<unsigned, const lif::BulletInfo> bulletsInfo = {
+std::map<unsigned, const lif::BulletInfo> bulletsInfo = {
 	// infoId, {dataId, damage, speed, range in pixels, collisionLayer}
 	/// AxisBullets
 	// shot
@@ -32,6 +34,8 @@ static std::map<unsigned, const lif::BulletInfo> bulletsInfo = {
 	{ 102, { 102, 4, 1, -1, lif::c_layers::BOSS_BULLETS } }
 };
 
+}
+
 std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Vector2f& pos,
 		const sf::Vector2f& target, const lif::Entity *const source)
 {
@@ -44,7 +48,7 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 	case 6:
 	case 7:
 		return std::unique_ptr<lif::Bullet>(new lif::AxisBullet(pos,
-			lif::getDirection(lif::tile(pos), lif::tile(target))), bulletsInfo[infoId], source);
+			lif::getDirection(lif::tile(pos), lif::tile(target)), bulletsInfo[infoId], source));
 	case 9:
 		return std::unique_ptr<lif::Bullet>(new lif::Grenade(pos, target, bulletsInfo[infoId], source));
 	case 101:
@@ -54,4 +58,16 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 	default:
 		throw std::invalid_argument("No bullet with id " + lif::to_string(infoId) + "!");
 	}
+}
+
+std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Vector2f& pos,
+		lif::Angle angle, const lif::Entity *const source)
+{
+	return std::unique_ptr<lif::Bullet>(new lif::FreeBullet(pos, angle, bulletsInfo[infoId], source));
+}
+
+std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Vector2f& pos,
+		lif::Direction dir, const lif::Entity *const source)
+{
+	return std::unique_ptr<lif::Bullet>(new lif::AxisBullet(pos, dir, bulletsInfo[infoId], source));
 }

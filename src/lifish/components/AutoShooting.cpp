@@ -23,3 +23,11 @@ lif::Entity* AutoShooting::init() {
 void AutoShooting::shoot(const sf::Vector2f& target) {
 	addSpawned(shooting->shoot(target));
 }
+
+void AutoShooting::shoot(lif::Direction dir) {
+	addSpawned(shooting->shoot(dir));
+}
+
+void AutoShooting::shoot(lif::Angle angle) {
+	addSpawned(shooting->shoot(angle));
+}

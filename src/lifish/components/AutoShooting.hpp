@@ -20,6 +20,8 @@ public:
 	explicit AutoShooting(lif::Entity& owner);
 
 	void shoot(const sf::Vector2f& target);
+	void shoot(lif::Direction dir);
+	void shoot(lif::Angle angle);
 
 	lif::Entity* init() override;
 };

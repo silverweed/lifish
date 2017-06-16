@@ -26,7 +26,7 @@ class RegularEntityDeath;
 struct EnemyInfo {
 	unsigned short ai = 0;
 	unsigned short speed = 0;
-	Attack attack;	
+	Attack attack;
 };
 
 /**
@@ -74,7 +74,7 @@ protected:
 	std::array<sf::Sprite, 4> shootFrame;
 
 	lif::Clock *yellClock = nullptr,
-		    *dashClock = nullptr;
+		   *dashClock = nullptr;
 	sf::Time morphDuration;
 
 	/** True when the enemy is morphed into a harmless Alien during EXTRA game */

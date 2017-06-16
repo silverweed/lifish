@@ -24,16 +24,10 @@ class AxisMoving;
  * and take care of the extra effects like blocking the attacker after the shot, etc.
  */
 class Shooting : public lif::Component {
-	/** The duration of the shooting frame */
-	const static sf::Time SHOOT_FRAME_TIME;
 	
 	bool manualPosition = false;
 
 protected:
-	/** Used by CONTACT attack AI */
-	sf::Vector2i attackAlign;
-	
-	Attack attack;
 	bool shooting = false;
 	float fireRateMult = 1;
 	sf::Vector2f offset;
@@ -42,20 +36,13 @@ protected:
 	lif::AxisMoving *ownerMoving = nullptr;
 
 
-	std::unique_ptr<lif::Bullet> _doShoot(lif::Direction dir, const lif::Entity *const target = nullptr);
-	std::unique_ptr<lif::Bullet> _doShoot(lif::Angle angle, const lif::Entity *const target = nullptr);
+	void _checkContact()
+	std::unique_ptr<lif::Bullet> _doShoot(const sf::Vector2f& pos);
 	void _contactAttack();
 	
 public:
 	explicit Shooting(lif::Entity& owner, const Attack& attack);
 
-	const Attack& getAttack() const { return attack; }
-	
-	sf::Vector2i getAttackAlign() const { return attackAlign; }
-	void setAttackAlign(const sf::Vector2i& aa) { attackAlign = aa; }
-
-	// TODO: refactor shoot() method. Make it accept just a sf::Vector2f target parameter,
-	// from which it can deduce direction or angle
 	/** If attack is CONTACT and not RANGED, just reset the recharge clock and return nullptr.
 	 *  If attack is also RANGED (i.e. "dashing"), also call setDashing(true) for the owner's
 	 *  Moving component (throws if no Moving component is found.)
@@ -64,6 +51,8 @@ public:
 	 *  In this case, the owner must have an AxisMoving component, or an exception is thrown.
 	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
+	std::unique_ptr<lif::Bullet> shoot(const sf::Vector2f& targetPos);
+	std::unique_ptr<lif::Bullet> shoot(const sf::Vector2f& targetPos);
 	std::unique_ptr<lif::Bullet> shoot(const sf::Vector2f& targetPos);
 
 	bool isShooting() const { return shooting; }

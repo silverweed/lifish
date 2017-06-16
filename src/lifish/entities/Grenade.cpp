@@ -11,7 +11,7 @@
 using lif::Grenade;
 using lif::TILE_SIZE;
 
-Grenade::Grenade(const sf::Vector2f& pos, lif::Direction dir, const sf::Vector2f& target,
+Grenade::Grenade(const sf::Vector2f& pos, const sf::Vector2f& target,
 		const lif::BulletInfo& info, const lif::Entity *const source)
 	: lif::GuidedBullet(pos,
 		_calculateEnd(pos, target, info.range),

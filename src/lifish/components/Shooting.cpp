@@ -9,7 +9,7 @@
 
 using lif::Shooting;
 
-const sf::Time Shooting::SHOOT_FRAME_TIME = sf::milliseconds(250);
+const sf::Time SHOOT_FRAME_TIME = sf::milliseconds(250);
 
 Shooting::Shooting(lif::Entity& owner, const Attack& attack)
 	: lif::Component(owner)
@@ -33,28 +33,22 @@ std::unique_ptr<lif::Bullet> Shooting::shoot(const sf::Vector2f& targetPos) {
 		return nullptr;
 	}
 
-	if (dir == lif::Direction::NONE) {
-		if (ownerMoving == nullptr)
-			throw std::logic_error("Called shoot(Direction::NONE) on a non-AxisMoving owner!");
+	//if (dir == lif::Direction::NONE) {
+		//if (ownerMoving == nullptr)
+			//throw std::logic_error("Called shoot(Direction::NONE) on a non-AxisMoving owner!");
 		
-		if (attack.type & lif::AttackType::BLOCKING) {
-			if (ownerMoving != nullptr)
-				ownerMoving->block(attack.blockTime);
-		}
-		return _doShoot(ownerMoving->getDirection(), target);
-	}
+		//if (attack.type & lif::AttackType::BLOCKING) {
+			//if (ownerMoving != nullptr)
+				//ownerMoving->block(attack.blockTime);
+		//}
+		//return _doShoot(ownerMoving->getDirection(), target);
+	//}
 
 	if (attack.type & lif::AttackType::BLOCKING) {
 		if (ownerMoving != nullptr)
 			ownerMoving->block(attack.blockTime);
 	}
-	return _doShoot(dir, target);
-}
-
-std::unique_ptr<lif::Bullet> Shooting::shoot(lif::Angle angle, const lif::Entity *const target) {
-	if (attack.type & lif::AttackType::CONTACT)
-		throw std::logic_error("Called shoot(angle) for a CONTACT attack!");
-	return _doShoot(angle, target);
+	return _doShoot(targetPos);
 }
 
 bool Shooting::isRecharging() const {
@@ -84,18 +78,10 @@ sf::Vector2f Shooting::getPosition() const {
 	return manualPosition ? position : owner.getPosition() + offset;
 }
 
-std::unique_ptr<lif::Bullet> Shooting::_doShoot(lif::Direction dir, const lif::Entity *const target) {
+std::unique_ptr<lif::Bullet> Shooting::_doShoot(const sf::Vector2f& target) {
 	shooting = true;
 	rechargeClock->restart();
-	auto bullet = lif::BulletFactory::create(attack.bulletId, getPosition(), dir, &owner, target);
-	lif::cache.playSound(bullet->get<lif::Sounded>()->getSoundFile("shot"));
-	return bullet;
-}
-
-std::unique_ptr<lif::Bullet> Shooting::_doShoot(lif::Angle angle, const lif::Entity *const target) {
-	shooting = true;
-	rechargeClock->restart();
-	auto bullet = lif::BulletFactory::create(attack.bulletId, getPosition(), angle, &owner, target);
+	auto bullet = lif::BulletFactory::create(attack.bulletId, getPosition(), target, &owner);
 	lif::cache.playSound(bullet->get<lif::Sounded>()->getSoundFile("shot"));
 	return bullet;
 }
@@ -120,5 +106,4 @@ void Shooting::_contactAttack() {
 			throw std::logic_error("Called shoot() for a dashing attack on a non-Moving owner!");
 		moving->setDashing(4);
 	}
-	return nullptr;
 }

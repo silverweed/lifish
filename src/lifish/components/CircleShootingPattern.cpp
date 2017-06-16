@@ -41,7 +41,7 @@ void CircleShootingPattern::_shoot() {
 	// Shoot first bullet towards `shootAxis`'s direction
 	auto angle = shootAngle;
 	for (int i = 0; i < bulletsPerShot; ++i) {
-		addSpawned(lif::BulletFactory::create(bulletId, owner.getPosition(), angle, &owner).release());
+		addSpawned(lif::BulletFactory::create(bulletId, owner.getPosition(), angle, &owner));
 		angle += delta;
 	}
 	shootAngle += rotationPerShot;

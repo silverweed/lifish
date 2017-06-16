@@ -129,6 +129,7 @@ constexpr Angle angleBetween(sf::Vector2<T> a, sf::Vector2<R> b) {
 		     dy = a.y - b.y;
 	return lif::radians(lif::PI / 2. + std::atan2(dy, dx));
 }
+}
 
 template<typename T>
 inline sf::Vector2f normalized(const sf::Vector2<T>& v) {
