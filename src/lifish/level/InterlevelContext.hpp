@@ -55,6 +55,8 @@ class InterlevelContext : public lif::WindowContext {
 	/** Sets up the window for prompting player i+1 for continue */
 	void _preparePromptContinue(unsigned short i);
 	void _ackPromptResponse();
+	void _continueSelectYes();
+	void _continueSelectNo();
 
 public:
 	explicit InterlevelContext(lif::LevelManager& lm, const lif::SidePanel& sidePanel);

@@ -136,6 +136,16 @@ void InterlevelContext::update() {
 	case State::WAIT_DISTRIBUTING_POINTS:
 		_tickWaitDistributePoints();
 		// fallthrough
+	case State::PROMPT_CONTINUE:
+		// Selection via joystick (can't do this is the event handler since it's not an SFML event)
+		{
+			const auto& jl = lif::joystick::JoystickManager::getInstance().getListener(curPromptedPlayer);
+			if (jl.evtMoved(lif::joystick::JoystickListener::Axis::L_LEFT)) {
+				_continueSelectYes();
+			} else if (jl.evtMoved(lif::joystick::JoystickListener::Axis::L_RIGHT)) {
+				_continueSelectNo();
+			}
+		}
 	default:
 		break;
 	}
@@ -215,29 +225,6 @@ void InterlevelContext::_ackPromptResponse() {
 
 bool InterlevelContext::handleEvent(sf::Window&, sf::Event event) {
 	if (state != State::PROMPT_CONTINUE) return false;
-	const auto select_yes = [this] () {
-		yesSelected = true;
-		yesText.setFillColor(sf::Color::Red);
-		yesText.setCharacterSize(15);
-		noText.setFillColor(sf::Color::White);
-		noText.setCharacterSize(13);
-	};
-	const auto select_no = [this] () {
-		yesSelected = false;
-		noText.setFillColor(sf::Color::Red);
-		noText.setCharacterSize(15);
-		yesText.setFillColor(sf::Color::White);
-		yesText.setCharacterSize(13);
-	};
-	auto& jl = lif::joystick::JoystickManager::getInstance().getListener(curPromptedPlayer);
-	// FIXME
-	if (jl.evtMoved(lif::joystick::JoystickListener::Axis::L_LEFT)) {
-		select_yes();
-		return true;
-	} else if (jl.evtMoved(lif::joystick::JoystickListener::Axis::L_RIGHT)) {
-		select_no();
-		return true;
-	}
 	switch (event.type) {
 	case sf::Event::JoystickButtonPressed:
 		{
@@ -253,10 +240,10 @@ bool InterlevelContext::handleEvent(sf::Window&, sf::Event event) {
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
 		case sf::Keyboard::Left:
-			select_yes();
+			_continueSelectYes();
 			return true;
 		case sf::Keyboard::Right:
-			select_no();
+			_continueSelectNo();
 			return true;
 		case sf::Keyboard::Return:
 			_ackPromptResponse();
@@ -268,6 +255,22 @@ bool InterlevelContext::handleEvent(sf::Window&, sf::Event event) {
 		break;
 	}
 	return false;
+}
+
+void InterlevelContext::_continueSelectYes() {
+	yesSelected = true;
+	yesText.setFillColor(sf::Color::Red);
+	yesText.setCharacterSize(15);
+	noText.setFillColor(sf::Color::White);
+	noText.setCharacterSize(13);
+}
+
+void InterlevelContext::_continueSelectNo() {
+	yesSelected = false;
+	noText.setFillColor(sf::Color::Red);
+	noText.setCharacterSize(15);
+	yesText.setFillColor(sf::Color::White);
+	yesText.setCharacterSize(13);
 }
 	
 void InterlevelContext::draw(sf::RenderTarget& window, sf::RenderStates states) const {

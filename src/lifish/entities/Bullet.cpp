@@ -83,7 +83,7 @@ void Bullet::_destroy() {
 		animatedSprite.stop();
 		animated->setAnimation("destroy");
 		animatedSprite.play();
-		animatedSprite.setPosition(lif::aligned(position));
+		position = lif::aligned(position);
 	}
 }
 

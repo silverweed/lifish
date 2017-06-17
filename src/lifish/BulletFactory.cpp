@@ -1,6 +1,7 @@
 #include "BulletFactory.hpp"
 #include "Grenade.hpp"
 #include "utils.hpp"
+#include "AxisMoving.hpp"
 #include "collision_layers.hpp"
 
 using lif::BulletFactory;
@@ -47,8 +48,16 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 	case 5:
 	case 6:
 	case 7:
-		return std::unique_ptr<lif::Bullet>(new lif::AxisBullet(pos,
-			lif::getDirection(lif::tile(pos), lif::tile(target)), bulletsInfo[infoId], source));
+		{
+			auto dir = lif::getDirection(lif::tile(pos), lif::tile(target));
+			if (dir == lif::Direction::NONE && source != nullptr) {
+				const auto moving = source->get<lif::AxisMoving>();
+				if (moving != nullptr)
+					dir = moving->getDirection();
+			}
+			return std::unique_ptr<lif::Bullet>(new lif::AxisBullet(pos, dir
+				, bulletsInfo[infoId], source));
+		}
 	case 9:
 		return std::unique_ptr<lif::Bullet>(new lif::Grenade(pos, target, bulletsInfo[infoId], source));
 	case 101:

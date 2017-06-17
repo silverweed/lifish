@@ -14,29 +14,26 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, lif::Direction dir,
 		const lif::BulletInfo& info, const lif::Entity *const source)
 	: lif::Bullet(pos, info, source)
 {
-	// Indices of the starting frame in the spritesheet, depending on directionality
-	int tx = 0, ty = 0;
+	// Indices of the line in the spritesheet, depending on directionality
+	int animLine = 0;
 	switch (dir) {
 	case lif::Direction::DOWN:
-		tx = 0, ty = 0;
+		animLine = 0;
 		position.x += (TILE_SIZE - data.size) / 2;
 		position.y += TILE_SIZE;
 		break;
 	case lif::Direction::UP:
-		tx = data.directionality < 4;
-		ty = !(data.directionality < 4);
+		animLine = !(data.directionality < 4);
 		position.x += (TILE_SIZE - data.size) / 2;
 		position.y -= data.size;
 		break;
 	case lif::Direction::RIGHT:
-		tx = 2 * (data.directionality == 1);
-		ty = data.directionality == 1 ? 0 : data.directionality == 2 ? 1 : 3;
+		animLine = data.directionality == 1 ? 0 : data.directionality == 2 ? 1 : 2;
 		position.y += (TILE_SIZE - data.size) / 2;
 		position.x += TILE_SIZE;
 		break;
 	case lif::Direction::LEFT:
-		tx = data.directionality == 1 ? 3 : data.directionality == 2 ? 1 : 0;
-		ty = data.directionality - 1;
+		animLine = data.directionality - 1;
 		position.y += (TILE_SIZE - data.size) / 2;
 		position.x -= data.size;
 		break;
@@ -59,18 +56,20 @@ AxisBullet::AxisBullet(const sf::Vector2f& pos, lif::Direction dir,
 	//	  last one containing nDestroyFrames frames.
 	// 	- if directionality == 2, first line is UP/DOWN, second is LEFT/RIGHT
 	//	- if == 4, first line is DOWN, second is UP, third is RIGHT and fourth is LEFT
-	for (unsigned i = 0; i < data.nMotionFrames; ++i)
+	for (unsigned i = 0; i < data.nMotionFrames; ++i) {
 		a_move.addFrame(sf::IntRect(
-				(data.nMotionFrames * tx + i) * TILE_SIZE,
-				ty * TILE_SIZE,
+				i * TILE_SIZE,
+				animLine * TILE_SIZE,
 				data.size, data.size));
+	}
 
 	// destroy animations are non-directional
-	for (unsigned i = 0; i < data.nDestroyFrames; ++i)
+	for (unsigned i = 0; i < data.nDestroyFrames; ++i) {
 		a_destroy.addFrame(sf::IntRect(
 				i * TILE_SIZE,
 				data.directionality * TILE_SIZE,
 				TILE_SIZE, TILE_SIZE));
+	}
 
 	auto& animatedSprite = animated->getSprite();
 	animatedSprite.setAnimation(a_move);

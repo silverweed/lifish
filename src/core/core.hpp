@@ -39,7 +39,7 @@ constexpr auto PI = 3.141592653589793238L;
 constexpr size_t PWD_BUFSIZE = 512;
 
 /** Threshold value to consider an input from joystick getAxisPosition(). */
-constexpr short JOYSTICK_INPUT_THRESHOLD = 50;
+constexpr auto JOYSTICK_INPUT_THRESHOLD = 50;
 
 /****************************************************************************/
 /*                         GLOBAL VARIABLES                                 */
