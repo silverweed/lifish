@@ -13,26 +13,26 @@ std::map<unsigned, const lif::BulletInfo> bulletsInfo = {
 	// infoId, {dataId, damage, speed, range in pixels, collisionLayer}
 	/// AxisBullets
 	// shot
-	{ 1, { 1, 1, 1.3 } },
+	{ 1, lif::BulletInfo{ 1, 1, 1.3, -1 } },
 	// fireball
-	{ 2, { 2, 2, 0.9 } },
+	{ 2, lif::BulletInfo{ 2, 2, 0.9, -1 } },
 	// MG shot
-	{ 3, { 3, 2, 1.3 } },
+	{ 3, lif::BulletInfo{ 3, 2, 1.3, -1 } },
 	// lightbolt
-	{ 4, { 4, 3, 0.9 } },
+	{ 4, lif::BulletInfo{ 4, 3, 0.9, -1 } },
 	// flame
-	{ 5, { 5, 3, 0.66, 4 * lif::TILE_SIZE } },
+	{ 5, lif::BulletInfo{ 5, 3, 0.66, 4 * lif::TILE_SIZE } },
 	// plasma
-	{ 6, { 6, 3, 1.3 } },
+	{ 6, lif::BulletInfo{ 6, 3, 1.3, -1 } },
 	// magma
-	{ 7, { 7, 4, 1.3 } },
+	{ 7, lif::BulletInfo{ 7, 4, 1.3, -1 } },
 	// grenade
-	{ 9, { 9, 2, 1, 6 * lif::TILE_SIZE } },
+	{ 9, lif::BulletInfo{ 9, 2, 1, 6 * lif::TILE_SIZE } },
 	/// FreeBullets
 	// star
-	{ 101, { 101, 4, 1.1, -1, lif::c_layers::BOSS_BULLETS } },
+	{ 101, lif::BulletInfo{ 101, 4, 1.1, -1, lif::c_layers::BOSS_BULLETS } },
 	// spirit bullets
-	{ 102, { 102, 4, 1, -1, lif::c_layers::BOSS_BULLETS } }
+	{ 102, lif::BulletInfo{ 102, 4, 1, -1, lif::c_layers::BOSS_BULLETS } }
 };
 
 }
