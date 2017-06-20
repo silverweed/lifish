@@ -112,13 +112,13 @@ void SHCollisionDetector::update() {
 	 * 2) is there another non-trasparent entity occupying the cell ahead?
 	 */
 	auto& colliding = group.getColliding();
-	for (auto& cld : colliding) {
+	for (auto it = colliding.begin(); it != colliding.end(); ++it) {
 		// No need to check for expired, as EntityGroup prunes them before we're called
-		auto collider = cld.lock();
+		auto collider = it->lock();
 		// reset collider
 		collider->reset();
 		collider->setAtLimit(false);
-		container.insert(cld);
+		container.insert(*it);
 	}
 
 #ifndef RELEASE
@@ -132,7 +132,8 @@ void SHCollisionDetector::update() {
 #endif
 
 	// Collision detection loop
-	for (auto it = container.getAll().begin(); it != container.getAll().end(); ++it) {
+	auto& all = container.getAll();
+	for (auto it = all.begin(); it != all.end(); ++it) {
 		auto collider = it->lock();
 
 		// Fixed entities only collide passively
@@ -146,6 +147,7 @@ void SHCollisionDetector::update() {
 			continue;
 		}
 	
+		std::cerr << "oth has " << container.getNearby(*collider).size() << " nearby\n";
 		for (auto oth : container.getNearby(*collider)) {
 			if (oth.expired()) continue;
 #ifndef RELEASE

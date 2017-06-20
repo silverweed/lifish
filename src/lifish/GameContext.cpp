@@ -157,10 +157,12 @@ void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const 
 #ifndef RELEASE
 	if ((debug >> DBG_DRAW_COLLIDERS) & 1)
 		debug::DebugRenderer::drawColliders(gameRenderTex, lm.getEntities());
-	if ((debug >> DBG_DRAW_SH_CELLS) & 1)
-		debug::DebugRenderer::drawSHCells(gameRenderTex,
-				static_cast<const lif::SHCollisionDetector&>(
-					lm.getCollisionDetector()));
+	if ((debug >> DBG_DRAW_SH_CELLS) & 1) {
+		const auto sh = dynamic_cast<const lif::SHCollisionDetector*>(&lm.getCollisionDetector());
+		if (sh != nullptr) {
+			debug::DebugRenderer::drawSHCells(gameRenderTex, *sh);
+		}
+	}
 #endif
 	gameRenderTex.display();
 
