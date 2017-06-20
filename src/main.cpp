@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 #include <SFML/Window.hpp>
 #include "LevelManager.hpp"
 #include "WinLoseHandler.hpp"
@@ -155,6 +156,12 @@ static void rendering_loop(sf::RenderWindow& window) {
 #endif
 
 int main(int argc, char **argv) {
+	// Duplicate stdout and stderr to file for logging
+	//std::ofstream outFile(".lifish_out.txt");
+	//std::cout.rdbuf(outFile.rdbuf());
+	//std::ofstream errFile(".lifish_err.txt");
+	//std::cerr.rdbuf(errFile.rdbuf());
+
 #if defined(MULTITHREADED) && defined(SFML_SYSTEM_LINUX)
 	XInitThreads();
 #endif
