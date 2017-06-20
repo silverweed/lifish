@@ -1,5 +1,6 @@
 #include "GameContext.hpp"
 #include "Killable.hpp"
+#include "SHCollisionDetector.hpp"
 #include "Music.hpp"
 #include "BaseEventHandler.hpp"
 #include "Options.hpp"

@@ -41,7 +41,7 @@ std::unordered_set<unsigned> SHContainer::_getIdFor(const lif::Collider& obj) co
 	
 	const auto pos = obj.getPosition();
 	const auto size = obj.getSize();
-	
+
 	const sf::Vector2i upleft(
 				(pos.x - lif::TILE_SIZE) / cellSize.x,
 				(pos.y - lif::TILE_SIZE) / cellSize.y),
@@ -98,6 +98,8 @@ SHCollisionDetector::SHCollisionDetector(lif::EntityGroup& group,
 void SHCollisionDetector::setLevelLimit(const sf::FloatRect& limit) {
 	lif::CollisionDetector::setLevelLimit(limit);
 	container.levelSize = sf::Vector2f(limit.width - limit.left, limit.height - limit.top);
+	container.cellSize = sf::Vector2f(container.levelSize.x / container.subdivisions,
+	                                  container.levelSize.y / container.subdivisions);
 }
 
 void SHCollisionDetector::update() {
@@ -147,7 +149,6 @@ void SHCollisionDetector::update() {
 			continue;
 		}
 	
-		std::cerr << "oth has " << container.getNearby(*collider).size() << " nearby\n";
 		for (auto oth : container.getNearby(*collider)) {
 			if (oth.expired()) continue;
 #ifndef RELEASE
