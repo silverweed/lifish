@@ -56,6 +56,7 @@ void Player::_init() {
 			_checkCollision(cld);
 	}, lif::c_layers::PLAYERS);
 	moving = addComponent<lif::AxisMoving>(*this, lif::conf::player::DEFAULT_SPEED);
+	moving->setFastTurn(true);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", std::string("player") +
 				lif::to_string(info.id) + std::string(".png")));
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::PLAYERS);

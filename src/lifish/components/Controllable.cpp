@@ -29,7 +29,7 @@ void Controllable::update() {
 	if (disableTime > sf::Time::Zero) {
 		if (disableClock.getElapsedTime() > disableTime)
 			disableTime = sf::Time::Zero;
-		else 
+		else
 			return;
 	}
 
@@ -60,6 +60,6 @@ void Controllable::update() {
 		}
 	}
 
-	if (owner.isAligned())
+	if (owner.isAligned() || dir == lif::oppositeDirection(moving->getDirection()))
 		moving->setDirection(dir);
 }

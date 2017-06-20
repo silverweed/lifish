@@ -51,6 +51,27 @@ void AxisMoving::update() {
 	const float delta = effSpeed * frameTime.asSeconds();
 	distTravelled += delta;
 
+	// If "fast turn" is enabled, the unit can change to opposite direction without being aligned:
+	// this `if` make sure that `ensureAlign` doesn't get in the way
+	if (fastTurn && direction == lif::oppositeDirection(prevDirection)) {
+		switch (direction) {
+		case lif::Direction::RIGHT:
+		case lif::Direction::DOWN:
+			prevAlign = lif::tile(owner.getPosition());
+			break;
+		case lif::Direction::LEFT:
+			prevAlign = lif::tile(owner.getPosition());
+			++prevAlign.x;
+			break;
+		case lif::Direction::UP:
+			prevAlign = lif::tile(owner.getPosition());
+			++prevAlign.y;
+			break;
+		default:
+			break;
+		}
+	}
+
 	if (!_collidesWithSolid()) {
 		owner.setPosition(owner.getPosition() + shift * frameTime.asSeconds());
 		if (delta > 1 && ensureAlign)
@@ -80,7 +101,7 @@ void AxisMoving::realign() {
 	case lif::Direction::RIGHT:
 		pos.x = static_cast<int>(pos.x / TILE_SIZE) * TILE_SIZE;
 		break;
-	default: 
+	default:
 		pos = lif::aligned(pos);
 		break;
 	}

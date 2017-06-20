@@ -6,22 +6,25 @@
 namespace lif {
 
 /**
- * An object moving only parallel to axes 
+ * An object moving only parallel to axes
  */
 class AxisMoving : public lif::Moving {
 	lif::Direction direction;
 	lif::Direction prevDirection;
+	/** Latest tile at which owner was aligned to grid */
 	sf::Vector2i prevAlign;
 	/** Whether this entity will auto-realign when colliding with a solid entity */
 	bool autoRealign = true;
 	/** Whether this entity will adjust its align at each tile */
 	bool ensureAlign = true;
+	/** Whether this entity can switch to opposite direction without being aligned */
+	bool fastTurn = false;
 
 
 	void _ensureAlign();
 
 public:
-	explicit AxisMoving(lif::Entity& owner, float speed, 
+	explicit AxisMoving(lif::Entity& owner, float speed,
 			lif::Direction dir = lif::Direction::NONE);
 
 	lif::Direction getDirection() const { return direction; }
@@ -43,6 +46,8 @@ public:
 	 */
 	void setEnsureAlign(bool b) { ensureAlign = b; }
 	bool isEnsureRealignEnabled() const { return ensureAlign; }
+
+	void setFastTurn(bool b) { fastTurn = b; }
 
 	void realign();
 	void stop() override;
