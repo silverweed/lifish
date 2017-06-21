@@ -231,16 +231,16 @@ void GameContext::toggleDebug(unsigned int flag) {
 
 void GameContext::_printCDStats() const {
 	const auto& dbgStats = lm.getCollisionDetector().getStats();
-	std::ios::fmtflags flags(std::cerr.flags());
-	std::cerr << std::setfill(' ') << std::scientific << std::setprecision(4)
+	std::stringstream ss;
+	ss << std::setfill(' ') << std::scientific << std::setprecision(4)
 		<< "#checked: " << std::setw(5) << dbgStats.counter.safeGet("checked")
 		<< " | tot: " << std::setw(8) << dbgStats.timer.safeGet("tot")
 		<< " | tot_narrow: " << std::setw(8) << dbgStats.timer.safeGet("tot_narrow")
-		<< " | setup: " << std::setw(8) << dbgStats.timer.safeGet("setup") 
-		<< " | average: " << std::setw(8) 
+		<< " | setup: " << std::setw(8) << dbgStats.timer.safeGet("setup")
+		<< " | average: " << std::setw(8)
 			<< dbgStats.timer.safeGet("tot_narrow")/dbgStats.counter.safeGet("checked")
 		<< std::endl;
-	std::cerr.flags(flags);
+	std::cout << ss.str();
 }
 
 static float get_percentage(const lif::debug::Stats& stats, const char *totn, const char *name, char *percentage) {
@@ -258,27 +258,27 @@ static float get_percentage(const lif::debug::Stats& stats, const char *totn, co
 void GameContext::_printGameStats() const {
 	const auto& dbgStats = lm.getStats();
 	const auto timers = { "tot", "reset_align", "validate", "cd", "logic", "ent_update", "checks" };
-	std::ios::fmtflags flags(std::cerr.flags());
-	std::cerr << "-------------";
-	std::cerr << std::setfill(' ') << std::scientific << std::setprecision(3);
+	std::stringstream ss;
+	ss << "-------------";
+	ss << std::setfill(' ') << std::scientific << std::setprecision(3);
 	for (const auto& t : timers) {
 		char percentage[21] = {0};
 		const float ratio = get_percentage(dbgStats, "tot", t, percentage);
-		std::cerr << "\r\n | " << std::left << std::setw(12) << t << ": " 
+		ss << "\r\n | " << std::left << std::setw(12) << t << ": " 
 			<< std::setw(7) << dbgStats.timer.safeGet(t) << " " << percentage
 			<< (ratio >= 0 ? " " + lif::to_string(static_cast<int>(ratio*100)) + "%" : "");
 	}
-	std::cerr << "\r\n -- logic: --";
+	ss << "\r\n -- logic: --";
 	for (unsigned i = 0; i < lif::game_logic::functions.size(); ++i) {
 		std::stringstream t;
 		t << "logic_" << i;
 		char percentage[21] = {0};
 		const float ratio = get_percentage(dbgStats, "logic", t.str().c_str(), percentage);
-		std::cerr << "\r\n | " << i << ": " << std::setw(7) << dbgStats.timer.safeGet(t.str())
+		ss << "\r\n | " << i << ": " << std::setw(7) << dbgStats.timer.safeGet(t.str())
 			<< " " << percentage
 			<< (ratio >= 0 ? " " + lif::to_string(static_cast<int>(ratio*100)) + "%" : "");
 	}
-	std::cerr << std::endl;
-	std::cerr.flags(flags);
+	ss << std::endl;
+	std::cout << ss.str();
 }
 #endif

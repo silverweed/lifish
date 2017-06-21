@@ -156,11 +156,10 @@ static void rendering_loop(sf::RenderWindow& window) {
 #endif
 
 int main(int argc, char **argv) {
-	// Duplicate stdout and stderr to file for logging
-	//std::ofstream outFile(".lifish_out.txt");
-	//std::cout.rdbuf(outFile.rdbuf());
-	//std::ofstream errFile(".lifish_err.txt");
-	//std::cerr.rdbuf(errFile.rdbuf());
+	// Duplicate stderr to file for logging
+	std::ofstream errFile(".lifish_err.txt");
+	auto errbuf = std::cerr.rdbuf();
+	std::cerr.rdbuf(errFile.rdbuf());
 
 #if defined(MULTITHREADED) && defined(SFML_SYSTEM_LINUX)
 	XInitThreads();
@@ -349,10 +348,10 @@ int main(int argc, char **argv) {
 		dbgStats.timer.end("draw");
 		++cycle;
 		if (lif::options.printDrawStats && cycle % 50 == 0) {
-			std::ios::fmtflags flags(std::cerr.flags());
-			std::cerr << std::setfill(' ') << std::scientific << std::setprecision(4)
+			std::ios::fmtflags flags(std::cout.flags());
+			std::cout << std::setfill(' ') << std::scientific << std::setprecision(4)
 				<< ">> Draw: " << std::setw(6) << dbgStats.timer.safeGet("draw") << std::endl;
-			std::cerr.flags(flags);
+			std::cout.flags(flags);
 		}
 #	endif
 #else
@@ -370,6 +369,9 @@ int main(int argc, char **argv) {
 	// Perform cleanup
 	mm.stop();
 	lif::cache.finalize();
+
+	// Restore stream buffers
+	std::cerr.rdbuf(errbuf);
 
 	return lif::exitCode;
 }
