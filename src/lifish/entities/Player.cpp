@@ -79,7 +79,8 @@ void Player::_init() {
 	movingAnimator = addComponent<lif::MovingAnimator>(*this);
 	addComponent<lif::Controllable>(*this,
 				lif::controls::players[info.id-1],
-				lif::controls::useJoystick[info.id-1]);
+				lif::controls::useJoystick[info.id-1],
+				lif::controls::joystickBombKey[info.id-1]);
 	hurtClock = addComponent<lif::Clock>(*this);
 	death = addComponent<lif::RegularEntityDeath>(*this, lif::conf::player::DEATH_TIME);
 	addComponent<lif::BufferedSpawner>(*this);

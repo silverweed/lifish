@@ -161,9 +161,10 @@ void LevelManager::resetPlayerPersistentData() {
 
 bool LevelManager::canDeployBomb(const lif::Player& player) const {
 	const auto pinfo = player.getInfo();
+	const bool mostly_aligned = lif::length(player.getPosition() - lif::aligned2(player.getPosition())) < 8;
 	return pinfo.powers.throwableBomb
 		? true
-		: player.isAligned() && bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs;
+		: /*player.isAligned() &&*/ mostly_aligned && bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs;
 }
 
 bool LevelManager::canDeployBombAt(const sf::Vector2i& tile) const {

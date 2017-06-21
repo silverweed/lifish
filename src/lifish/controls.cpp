@@ -18,5 +18,5 @@ std::array<sf::Keyboard::Key, lif::controls::CONTROLS_NUM> lif::controls::player
 	}}
 };
 
-std::array<unsigned int, lif::MAX_PLAYERS> lif::controls::joystickBombKey = {{ 0, 0 }};
+std::array<unsigned, lif::MAX_PLAYERS> lif::controls::joystickBombKey = {{ 0, 0 }};
 std::array<short, lif::MAX_PLAYERS> lif::controls::useJoystick;

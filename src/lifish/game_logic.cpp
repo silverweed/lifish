@@ -38,16 +38,12 @@ void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm
 	auto player = static_cast<lif::Player*>(e);
 
 	const auto pinfo = player->getInfo();
-	if (player->get<lif::Controllable>()->hasFocus()
+	const auto controllable = player->get<lif::Controllable>();
+	if (controllable->hasFocus()
 		&& !blm.isInputDisabled()
 		&& lm.canDeployBomb(*player)
-		&& ((lif::controls::useJoystick[pinfo.id-1] >= 0
-			&& sf::Joystick::isButtonPressed(
-				lif::controls::useJoystick[pinfo.id-1],
-				lif::controls::joystickBombKey[pinfo.id-1]))
-			|| sf::Keyboard::isKeyPressed(
-				lif::controls::players[pinfo.id-1][lif::controls::CTRL_BOMB]))
-		&& lm.canDeployBombAt(lif::tile(player->getPosition())))
+		&& controllable->hasQueuedBombCommand()
+		&& lm.canDeployBombAt(lif::tile2(player->getPosition())))
 	{
 		if (pinfo.powers.throwableBomb) {
 			if (lm.bombsDeployedBy(pinfo.id) > 0) {
@@ -69,7 +65,7 @@ void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm
 				return;
 			}
 		}
-		auto bomb = new lif::Bomb(lif::aligned(player->getPosition()),
+		auto bomb = new lif::Bomb(lif::aligned2(player->getPosition()),
 					player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius,
 					pinfo.powers.incendiaryBomb);
 		lif::cache.playSound(bomb->get<lif::Sounded>()->getSoundFile("fuse"));
@@ -132,7 +128,7 @@ void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::BaseLevelManager
 				if (player == nullptr) continue;
 				const auto absorb = player->getPowers().absorb;
 				if (absorb > 0) {
-					player->get<lif::Lifed>()->decLife(absorb);
+					player->get<lif::Lifed>()->decLife(-absorb);
 					tbspawned.emplace_back(new lif::AbsorbFX(e->getPosition(), player));
 				}
 			}
