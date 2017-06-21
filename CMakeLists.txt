@@ -75,6 +75,13 @@ if(NOT RELEASE)
 	)
 	set(LIFISH_SRC ${LIFISH_SRC} ${LIFISH_DEBUG_SRC})
 endif()
+# Remove files which aren't being used for now
+list(REMOVE_ITEM LIFISH_SRC
+	"${CMAKE_SOURCE_DIR}/src/core/collisions/SimpleCollisionDetector.cpp"
+	"${CMAKE_SOURCE_DIR}/src/core/cutscenes/Cutscene.cpp"
+	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Cage.cpp"
+	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Torch.cpp"
+)
 
 # Platform-specific source
 if(MSYS)

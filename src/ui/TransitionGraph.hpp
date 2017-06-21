@@ -51,7 +51,7 @@ public:
 		firstNode = "";
 	}
 
-	std::size_t size() const {
+	size_t size() const {
 		return transitions.size();
 	}
 };

@@ -52,7 +52,7 @@ void AxisMoving::update() {
 	distTravelled += delta;
 
 	// If "fast turn" is enabled, the unit can change to opposite direction without being aligned:
-	// this `if` make sure that `ensureAlign` doesn't get in the way
+	// this `if` makes sure that `ensureAlign` doesn't get in the way
 	if (fastTurn && direction == lif::oppositeDirection(prevDirection)) {
 		switch (direction) {
 		case lif::Direction::RIGHT:
