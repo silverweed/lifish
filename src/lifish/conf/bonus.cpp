@@ -4,10 +4,10 @@
 std::discrete_distribution<unsigned> lif::conf::bonus::distribution {
 	10,	// max bombs
 	10,	// max range
-	2,	// absorb
-	2,	// armor
+	1,	// absorb
+	1,	// armor
 	7,	// quick fuse
-	4,	// incendiary bomb
+	3,	// incendiary bomb
 	1,	// throwable bomb
 	10,	// shield
 	10,	// speedy
@@ -15,5 +15,5 @@ std::discrete_distribution<unsigned> lif::conf::bonus::distribution {
 	2,	// sudden death
 	10,	// health small
 	7,	// health full
-	803	// no bonus
+	808	// no bonus
 };

@@ -10,7 +10,7 @@ namespace conf {
 		constexpr unsigned short MAX_LIFE = 16;
 		constexpr unsigned short DEFAULT_MAX_BOMBS = 5;
 		constexpr unsigned short MAX_MAX_BOMBS = 8;
-		constexpr unsigned short MAX_ABSORB = 4;
+		constexpr unsigned short MAX_ABSORB = 3;
 		constexpr unsigned short MAX_ARMOR = 2;
 		constexpr unsigned short INITIAL_CONTINUES = 3;
 		constexpr float DEFAULT_SPEED = 150.f;

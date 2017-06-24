@@ -53,6 +53,8 @@ struct PlayerInfo {
 		powers.bombFuseTime = lif::conf::bomb::DEFAULT_FUSE;
 		powers.incendiaryBomb = false;
 		powers.throwableBomb = false;
+		powers.absorb = 0;
+		powers.armor = 0;
 	}
 };
 
