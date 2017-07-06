@@ -6,7 +6,6 @@
 #include "Attack.hpp"
 #include "Direction.hpp"
 #include "Angle.hpp"
-#include "AxisBullet.hpp"
 #include "BufferedSpawner.hpp"
 
 namespace lif {

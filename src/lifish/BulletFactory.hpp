@@ -5,9 +5,6 @@
 #include <SFML/System/Vector2.hpp>
 #include "Direction.hpp"
 #include "Angle.hpp"
-#include "AxisBullet.hpp"
-#include "FreeBullet.hpp"
-#include "conf/bullet.hpp"
 
 namespace lif {
 

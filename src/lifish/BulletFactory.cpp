@@ -2,6 +2,8 @@
 #include "Grenade.hpp"
 #include "utils.hpp"
 #include "AxisMoving.hpp"
+#include "AxisBullet.hpp"
+#include "FreeBullet.hpp"
 #include "collision_layers.hpp"
 
 using lif::BulletFactory;

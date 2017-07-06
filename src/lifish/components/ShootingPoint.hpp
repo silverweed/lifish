@@ -6,8 +6,6 @@ namespace lif {
 
 struct Attack;
 class Shooting;
-class FreeSighted;
-class Shooting;
 
 /** A ShootingPoint is a component with a sight and an AutoShooting.
  *  Can be used to give an entity multiple "weapons".
