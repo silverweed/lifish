@@ -134,7 +134,7 @@ void Player::update() {
 	{
 		animated->getSprite().stop();
 		animated->getSprite().setFrame(1);
-	} else if (animated->getAnimationName() == "hurt" && 
+	} else if (animated->getAnimationName() == "hurt" &&
 			hurtClock->getElapsedTime() > lif::conf::player::HURT_ANIM_DURATION)
 	{
 		const auto dir = moving->getDirection();
@@ -151,8 +151,7 @@ void Player::update() {
 }
 
 void Player::setWinning(bool b) {
-	if ((winning = b))
-		animated->setAnimation("win");
+	winning = b;
 }
 
 void Player::_kill() {
