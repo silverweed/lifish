@@ -150,7 +150,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 		_drawWithShadow(window, states, playerHeadsSprite[i]);
 		
 		// Draw remaining lives
-		sf::Vector2f pos(N_LIVES_X, i == 0 ? N_LIVES_Y_1 : N_LIVES_Y_2); 
+		sf::Vector2f pos(N_LIVES_X, i == 0 ? N_LIVES_Y_1 : N_LIVES_Y_2);
 		std::stringstream ss;
 		const auto player = lm.getPlayer(i + 1);
 		if (player == nullptr)
@@ -169,7 +169,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 
 		// Draw health / game over
 		if (player == nullptr) {
-			text.setPosition(sf::Vector2f(HEALTH_SYM_POS_X, i == 0 
+			text.setPosition(sf::Vector2f(GAME_OVER_POS_X, i == 0
 						? HEALTH_SYM_POS_Y_1 : HEALTH_SYM_POS_Y_2));
 			text.setCharacterSize(HEALTH_SYM_HEIGHT);
 			text.setString("GAME\nOVER");
