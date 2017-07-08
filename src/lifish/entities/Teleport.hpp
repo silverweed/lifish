@@ -27,7 +27,7 @@ class Teleport : public lif::Entity {
 	lif::Animated *animated = nullptr;
 
 
-	void warp(lif::Collider& cld);
+	void _warp(lif::Collider& cld);
 
 public:
 	explicit Teleport(const sf::Vector2f& pos);

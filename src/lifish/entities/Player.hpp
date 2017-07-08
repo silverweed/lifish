@@ -101,7 +101,7 @@ class Player : public lif::Entity {
 
 public:
 	/** Creates a player with the default state and id `id` */
-	explicit Player(const sf::Vector2f& pos, const int id);
+	explicit Player(const sf::Vector2f& pos, int id);
 	/** Creates a player whose state is described by `info` */
 	explicit Player(const sf::Vector2f& pos, const lif::PlayerInfo& info);
 
@@ -115,6 +115,12 @@ public:
 	void setWinning(bool b);
 
 	void update() override;
+
+	/** Convenient function to apply damage to the player, optionally considering its armor.
+	 *  This function also checks if player's HP becomes 0 and kills it in that case.
+	 *  This function DOES NOT CHECK if the player has shield.
+	 */
+	void dealDamage(int dmg, bool ignoreArmor = false, bool giveShortShield = false);
 };
 
 }

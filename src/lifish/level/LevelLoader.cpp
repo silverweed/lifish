@@ -22,6 +22,7 @@
 #include "LevelEffects.hpp"
 #include "HauntedStatue.hpp"
 #include "HauntingSpiritBoss.hpp"
+#include "Spikes.hpp"
 #include "Torch.hpp"
 #include "Sprite.hpp"
 #include "Cage.hpp"
@@ -101,6 +102,10 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 
 			case EntityType::PLAYER2:
 				add_player(1, curPos);
+				break;
+			
+			case EntityType::SPIKES:
+				entities.add(new lif::Spikes(curPos));
 				break;
 
 			case EntityType::TELEPORT:

@@ -27,6 +27,7 @@ EntityType lif::entityFromLetter(const char c) {
 	case '5': return EntityType::ACID_POND;
 	case '6': return EntityType::HAUNTED_STATUE;
 	case '=': return EntityType::HAUNTING_SPIRIT_BOSS;
+	case '^': return EntityType::SPIKES;
 	}
 	return EntityType::UNKNOWN;
 }
@@ -55,6 +56,7 @@ std::ostream& lif::operator<<(std::ostream& stream, const EntityType& et) {
 	case EntityType::ACID_POND:            stream << '5'; break;
 	case EntityType::HAUNTED_STATUE:       stream << '6'; break;
 	case EntityType::HAUNTING_SPIRIT_BOSS: stream << '='; break;
+	case EntityType::SPIKES:               stream << "^"; break;
 	case EntityType::UNKNOWN:              stream << "?"; break;
 	}
 	return stream;

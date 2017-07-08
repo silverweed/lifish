@@ -27,7 +27,8 @@ enum class EntityType {
 	TRANSPARENT_WALL,
 	ACID_POND,
 	HAUNTED_STATUE,
-	HAUNTING_SPIRIT_BOSS
+	HAUNTING_SPIRIT_BOSS,
+	SPIKES,
 };
 
 EntityType entityFromLetter(const char c);

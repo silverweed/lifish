@@ -33,10 +33,10 @@ Coin::Coin(const sf::Vector2f& pos)
 	addComponent<lif::Drawable>(*this, *animated);
 	grabbable = addComponent<lif::Grabbable>(*this);
 	addComponent<lif::Collider>(*this, [this] (lif::Collider& coll) {
-		if (coll.getLayer() != lif::c_layers::PLAYERS || grabbable->isGrabbed()) 
+		if (coll.getLayer() != lif::c_layers::PLAYERS || grabbable->isGrabbed())
 			return;
 		// only collides with player, so no further check
-		get<lif::Killable>()->kill();			
+		get<lif::Killable>()->kill();
 		get<lif::Scored>()->setTarget(static_cast<const lif::Player&>(coll.getOwner()).getInfo().id);
 		lif::cache.playSound(get<lif::Sounded>()->getSoundFile("grab"));
 	}, lif::c_layers::GRABBABLE);

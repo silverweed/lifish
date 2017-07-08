@@ -11,10 +11,10 @@ using CollisionFunc = lif::Collider::CollisionFunc;
 CollisionFunc lif::hurtByExplosions(lif::Entity& e, unsigned opts) {
 	auto killable = e.get<lif::Killable>();
 	if (killable == nullptr)
-		throw std::invalid_argument("Entity given to `hurtByAdjacentExplosions` has no Killable!");
+		throw std::invalid_argument("Entity given to `hurtByExplosions` has no Killable!");
 	auto lifed = e.get<lif::Lifed>();
 	if (lifed == nullptr)
-		throw std::invalid_argument("Entity given to `hurtByAdjacentExplosions` has no Lifed!");
+		throw std::invalid_argument("Entity given to `hurtByExplosions` has no Lifed!");
 	auto scored = e.get<lif::Scored>();
 
 	return [e, killable, lifed, scored, opts] (lif::Collider& cld) {

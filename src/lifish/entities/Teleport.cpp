@@ -23,7 +23,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 	disableClock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Drawable>(*this, *animated);
 	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& c) {
-		warp(c);
+		_warp(c);
 	}, lif::c_layers::TELEPORTS);
 	addComponent<lif::Spawning>(*this, [this] (const lif::Spawning&) {
 		return mustSpawnFlash;
@@ -62,7 +62,7 @@ void Teleport::disable() {
 	disableClock->restart();
 }
 
-void Teleport::warp(lif::Collider& cld) {
+void Teleport::_warp(lif::Collider& cld) {
 	if (disabled) return;
 	
 	const auto& entity = cld.getOwner();

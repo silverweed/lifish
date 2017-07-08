@@ -12,6 +12,10 @@ namespace conf {
 			/** Wisp's speed in walls is (1 - IN_WALL_SPEED_REDUCTION) * speed */
 			constexpr float IN_WALL_SPEED_REDUCTION = 0.5;
 		}
+
+		namespace spikes {
+			constexpr int DAMAGE = 2;
+		}
 	}
 }
 

@@ -35,7 +35,7 @@ Player::Player(const sf::Vector2f& pos, const lif::PlayerInfo& info)
 	_init();
 }
 
-Player::Player(const sf::Vector2f& pos, const int id)
+Player::Player(const sf::Vector2f& pos, int id)
 	: lif::Entity(pos)
 	, info(id)
 	, drawProxy(*this)
@@ -174,7 +174,8 @@ void Player::_checkCollision(lif::Collider& cld) {
 		return;
 
 	auto damage = 0;
-	switch (cld.getLayer()) {
+	const auto layer = cld.getLayer();
+	switch (layer) {
 	case L::ENEMIES:
 	case L::ENEMIES_IGNORE_BREAKABLES:
 		if (cld.getOwner().get<lif::Killable>()->isKilled())
@@ -204,8 +205,20 @@ void Player::_checkCollision(lif::Collider& cld) {
 		return;
 	}
 
+	bool shortShield = false;
+	// In case of Explosions, give the "long" shield only if this is the explosion's last frame
+	if (layer == L::EXPLOSIONS) {
+		const auto& expl = static_cast<const lif::Explosion&>(cld.getOwner());
+		const auto& sprite = expl.get<lif::Animated>()->getSprite();
+		shortShield = sprite.getCurrentFrame() != sprite.getAnimation()->getSize() - 1;
+	}
+
+	dealDamage(damage, layer == L::BOSSES || layer == L::EXPLOSIONS, shortShield);
+}
+
+void Player::dealDamage(int damage, bool ignoreArmor, bool shortShield) {
 	// Apply armor
-	if (info.powers.armor > 0) {
+	if (!ignoreArmor && info.powers.armor > 0) {
 		damage = std::max(1, damage - info.powers.armor);
 		get<lif::BufferedSpawner>()->addSpawned(new lif::ArmorFX(position - sf::Vector2f(TILE_SIZE / 4, 0)));
 	}
@@ -218,15 +231,7 @@ void Player::_checkCollision(lif::Collider& cld) {
 	}
 
 	// Give shield after receiving damage
-	if (cld.getLayer() == L::EXPLOSIONS) {
-		const auto& expl = static_cast<const lif::Explosion&>(cld.getOwner());
-		const auto& sprite = expl.get<lif::Animated>()->getSprite();
-		// Give the "long" shield only if this is the explosion's last frame
-		if (sprite.getCurrentFrame() == sprite.getAnimation()->getSize() - 1)
-			bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::player::DAMAGE_SHIELD_TIME);
-		else
-			bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::player::DAMAGE_SHIELD_TIME / 40.f);
-	}
+	bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::player::DAMAGE_SHIELD_TIME * (shortShield ? 0.025f : 1));
 }
 
 void Player::resurrect() {
