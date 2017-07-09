@@ -17,7 +17,7 @@ public:
 
 private:
 	lif::Clock *clock = nullptr,
-		    *extraGameClock = nullptr;
+		   *extraGameClock = nullptr;
 	sf::Time initialTime;
 	bool isHurryUp = false;
 	bool hurryUpWarningGiven = false;

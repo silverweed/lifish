@@ -22,10 +22,10 @@ namespace lif {
 class BaseLevelManager : private sf::NonCopyable {
 public:
 	using GameLogicFunc = std::function<void(
-			lif::Entity*,              // for-each loop variable
-			lif::BaseLevelManager&,    // LevelManager calling this function
-			std::vector<lif::Entity*>& // vector of entities to be spawned after calling game logic
-			)>;
+		lif::Entity*,              // for-each loop variable
+		lif::BaseLevelManager&,    // LevelManager calling this function
+		std::vector<lif::Entity*>& // vector of entities to be spawned after calling game logic
+	)>;
 
 protected:
 	lif::EntityGroup entities;

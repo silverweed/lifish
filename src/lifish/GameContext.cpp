@@ -20,6 +20,9 @@
 #	include "DebugEventHandler.hpp"
 #	include "game_logic.hpp"
 #endif
+#include "GlobalDataPipe.hpp"
+#include "CameraShake.hpp"
+#include "CameraShakeRequest.hpp"
 
 using lif::GameContext;
 
@@ -100,6 +103,11 @@ void GameContext::update() {
 		break;
 	}
 
+	// Check for pending CameraShakes and add them to entities
+	auto& cameraShakeRequests = lif::GlobalDataPipe<lif::CameraShakeRequest>::getInstance();
+	while (cameraShakeRequests.hasData())
+		lm.getEntities().add(new lif::CameraShake(gameRenderTex, cameraShakeRequests.pop()));
+
 	// Update level
 	if (!lm.isPaused()) {
 		lm.update();
@@ -142,10 +150,10 @@ bool GameContext::handleEvent(sf::Window&, sf::Event event) {
 				}
 			}
 			return true;
-		default: 
+		default:
 			break;
 		}
-	default: 
+	default:
 		break;
 	}
 	return false;
@@ -157,11 +165,11 @@ void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const 
 	gameRenderTex.draw(lm, states);
 #ifndef RELEASE
 	if ((debug >> DBG_DRAW_COLLIDERS) & 1)
-		debug::DebugRenderer::drawColliders(gameRenderTex, lm.getEntities());
+		lif::debug::DebugRenderer::drawColliders(gameRenderTex, lm.getEntities());
 	if ((debug >> DBG_DRAW_SH_CELLS) & 1) {
 		const auto sh = dynamic_cast<const lif::SHCollisionDetector*>(&lm.getCollisionDetector());
 		if (sh != nullptr) {
-			debug::DebugRenderer::drawSHCells(gameRenderTex, *sh);
+			lif::debug::DebugRenderer::drawSHCells(gameRenderTex, *sh);
 		}
 	}
 #endif

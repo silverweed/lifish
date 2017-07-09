@@ -21,9 +21,9 @@ Bonus::Bonus(const sf::Vector2f& pos, const lif::BonusType type)
 	, type(type)
 {
 	sprite = addComponent<lif::Sprite>(*this,
-				lif::getAsset("graphics", "bonuses.png"), 
+				lif::getAsset("graphics", "bonuses.png"),
 				sf::IntRect(
-					static_cast<unsigned short>(type) * TILE_SIZE, 
+					static_cast<unsigned short>(type) * TILE_SIZE,
 					0,
 					TILE_SIZE,
 					TILE_SIZE));
@@ -36,7 +36,7 @@ Bonus::Bonus(const sf::Vector2f& pos, const lif::BonusType type)
 	addComponent<lif::Scored>(*this, lif::conf::bonus::VALUE);
 	expireClock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("grab", lif::getAsset("test", "bonus_grab.ogg")) 
+		std::make_pair("grab", lif::getAsset("test", "bonus_grab.ogg"))
 	});
 	addComponent<lif::Temporary>(*this, [this] () {
 		// expire condition

@@ -15,7 +15,7 @@
 
 using lif::debug::DebugEventHandler;
 
-static void _printEntitiesDetails(const lif::EntityGroup& entities);
+static std::string _printEntitiesDetails(const lif::EntityGroup& entities);
 
 DebugEventHandler::DebugEventHandler(lif::GameContext& game)
 	: game(game)
@@ -52,7 +52,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			{
 				int i = 0;
 				game.lm.getEntities().apply([&i] (const lif::Entity *e) {
-					std::cerr << i++ << ": " << e->toString() << std::endl;
+					std::cout << i++ << ": " << e->toString() << std::endl;
 				});
 			}
 			return true;
@@ -122,7 +122,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 				return true;
 			}
 		case sf::Keyboard::BackSlash:
-			_printEntitiesDetails(game.lm.getEntities());
+			std::cout << _printEntitiesDetails(game.lm.getEntities());
 			break;
 		default: 
 			break;
@@ -133,7 +133,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 	return false;
 }
 
-void _printEntitiesDetails(const lif::EntityGroup& entities) {
+std::string _printEntitiesDetails(const lif::EntityGroup& entities) {
 	std::map<std::string, unsigned> count;
 	std::size_t largest = 1;
 	entities.apply([&count, &largest] (const lif::Entity *e) {
@@ -142,11 +142,13 @@ void _printEntitiesDetails(const lif::EntityGroup& entities) {
 		++count[tname];
 		largest = std::max(largest, tname.length() + 1);
 	});
-	std::cerr << "# Entities: " << count["all"] << "\n";
+	std::stringstream ss;
+	ss << "# Entities: " << count["all"] << "\n";
 	for (const auto& pair : count) {
 		if (pair.first == "all") continue;
-		std::cerr << "    " << std::setw(largest) << std::left << pair.first << ": " 
+		ss << "    " << std::setw(largest) << std::left << pair.first << ": " 
 			<< std::right << pair.second << "\n";
 	}
-	std::cerr << std::endl;
+	ss << std::endl;
+	return ss.str();
 }

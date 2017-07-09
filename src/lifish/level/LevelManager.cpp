@@ -206,7 +206,7 @@ void LevelManager::_spawn(lif::Entity *e) {
 	if (auto b = dynamic_cast<lif::Bomb*>(e))
 		_spawnBomb(b);
 	else
-		entities.add(e);
+		lif::BaseLevelManager::_spawn(e);
 }
 
 void LevelManager::_spawnBomb(lif::Bomb *b) {
