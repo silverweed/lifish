@@ -6,7 +6,7 @@
 namespace lif {
 
 class Clock;
-class CameraShakeRequest;
+struct CameraShakeRequest;
 
 class CameraShake : public lif::Entity {
 	
