@@ -10,7 +10,8 @@ class RexBoss : public lif::Boss {
 	bool wasBlocked = false;
 
 	lif::AxisMoving *moving = nullptr;
-
+	
+	void _kill() override;
 public:
 	explicit RexBoss(const sf::Vector2f& pos);
 

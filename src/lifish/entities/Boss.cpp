@@ -63,8 +63,6 @@ lif::Entity* Boss::init() {
 		throw std::logic_error("Collider is null for " + toString() + "!");
 	if (animated == nullptr)
 		throw std::logic_error("Animated is null for " + toString() + "!");
-	if (killable == nullptr)
-		throw std::logic_error("Killable is null for " + toString() + "!");
 	return this;
 }
 
@@ -102,4 +100,11 @@ void Boss::_checkCollision(lif::Collider& coll) {
 		killable->kill();
 	expl.dealDamageTo(*this);
 	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("hurt"));
+}
+
+void Boss::_addDefaultCollider(const sf::Vector2f& size) {
+	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& coll) {
+		// on collision
+		_checkCollision(coll);
+	}, lif::c_layers::BOSSES, size);
 }

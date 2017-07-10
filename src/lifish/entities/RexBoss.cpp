@@ -3,9 +3,12 @@
 #include "AxisMoving.hpp"
 #include "LevelManager.hpp"
 #include "Enemy.hpp"
+#include "Scored.hpp"
 #include "Collider.hpp"
 #include "Animated.hpp"
+#include "Lifed.hpp"
 #include "Drawable.hpp"
+#include "Sounded.hpp"
 #include "AI.hpp"
 #include "ai_functions.hpp"
 #include "ai_helpers.hpp"
@@ -21,16 +24,19 @@ lif::AIBoundFunction ai_rex(lif::Entity&);
 RexBoss::RexBoss(const sf::Vector2f& pos)
 	: lif::Boss(pos)
 {
+	const sf::Vector2f size(4 * lif::TILE_SIZE, 4 * lif::TILE_SIZE);
 	moving = addComponent<lif::AxisMoving>(*this,
 			lif::conf::boss::rex_boss::SPEED * lif::Enemy::BASE_SPEED,
 			lif::Direction::LEFT);
 	addComponent<lif::AI>(*this, ai_rex);
 	addComponent<lif::LeapingMovement>(*this, sf::seconds(1.5));
-	const sf::Vector2f size(4 * lif::TILE_SIZE, 4 * lif::TILE_SIZE);
-	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& coll) {
-		// on collision
-		_checkCollision(coll);
-	}, lif::c_layers::BOSSES, size);
+	_addDefaultCollider(size);
+	addComponent<lif::Lifed>(*this, lif::conf::boss::rex_boss::LIFE);
+	addComponent<lif::Scored>(*this, lif::conf::boss::rex_boss::VALUE);
+	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
+		std::make_pair("death", lif::getAsset("sounds", std::string("rex_death.ogg"))),
+		std::make_pair("hurt", lif::getAsset("sounds", std::string("rex_hurt.ogg")))
+	});
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "rex.png"));
 	animated->addAnimation("move_up", { sf::IntRect(0, 0, size.x, size.y) });
 	animated->addAnimation("move_down", { sf::IntRect(0, 0, size.x, size.y) });
@@ -50,6 +56,11 @@ void RexBoss::update() {
 	} else {
 		wasBlocked = false;
 	}
+}
+
+void RexBoss::_kill() {
+	moving->setActive(false);
+	lif::Boss::_kill();
 }
 
 namespace {

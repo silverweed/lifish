@@ -26,10 +26,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 		std::make_pair("hurt", lif::getAsset("test", std::string("alienboss_hurt.ogg")))
 	});
 	const sf::Vector2f size(3 * lif::TILE_SIZE, 3 * lif::TILE_SIZE);
-	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& coll) {
-		// on collision
-		_checkCollision(coll);
-	}, lif::c_layers::BOSSES, size);
+	_addDefaultCollider(size);
 	addComponent<lif::Scored>(*this, VALUE);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("test", "alien_boss.png"));
 	animated->addAnimation("idle", { sf::IntRect(0, 0, size.x, size.y) }, true);
