@@ -15,7 +15,6 @@ class Animated;
 class Clock;
 class Killable;
 class MovingAnimator;
-class AI;
 class AlienSprite;
 class AxisSighted;
 class AxisMoving;
@@ -68,7 +67,6 @@ protected:
 	lif::Killable *killable = nullptr;
 	lif::MovingAnimator *movingAnimator = nullptr;
 	lif::AxisSighted *sighted = nullptr;
-	lif::AI *ai = nullptr;
 	lif::RegularEntityDeath *death = nullptr;
 
 	std::array<sf::Sprite, 4> shootFrame;

@@ -6,8 +6,8 @@
 
 using lif::Wisp;
 
-Wisp::Wisp(const sf::Vector2f& pos, const lif::EnemyInfo& info) : lif::Enemy(pos, 2, info) {
-	collider->setLayer(lif::c_layers::ENEMIES_IGNORE_BREAKABLES);	
+Wisp::Wisp(const sf::Vector2f& pos, const lif::EnemyInfo& info) : lif::Enemy(pos, 2 /* FIXME */, info) {
+	collider->setLayer(lif::c_layers::ENEMIES_IGNORE_BREAKABLES);
 }
 
 void Wisp::update() {

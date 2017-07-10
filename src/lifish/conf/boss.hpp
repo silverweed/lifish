@@ -32,6 +32,10 @@ namespace conf {
 			constexpr unsigned int VALUE = 50000;
 			constexpr unsigned short LIFE = 100;
 		}
+
+		namespace rex_boss {
+			constexpr float SPEED = 3;
+		}
 	}
 }
 

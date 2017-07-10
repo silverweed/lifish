@@ -62,7 +62,7 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 		ss << "invalid AI number for Enemy: " << lif::to_string(info.ai+1) << "/" << lif::ai_functions.size();
 		throw std::invalid_argument(ss.str());
 	}
-	ai = addComponent<lif::AI>(*this, lif::ai_functions[info.ai]);
+	addComponent<lif::AI>(*this, lif::ai_functions[info.ai]);
 	moving = addComponent<lif::AxisMoving>(*this, BASE_SPEED * originalSpeed, lif::Direction::DOWN);
 	animated = addComponent<lif::Animated>(*this, 
 		lif::getAsset("graphics", std::string("enemy") + lif::to_string(id) + std::string(".png")));

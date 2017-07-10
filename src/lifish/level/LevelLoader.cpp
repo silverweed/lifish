@@ -29,6 +29,7 @@
 #include "DroppingBomb.hpp"
 #include "TimedLaser.hpp"
 #include "LeapingMovement.hpp"
+#include "RexBoss.hpp"
 #include <iostream>
 
 using lif::TILE_SIZE;
@@ -199,7 +200,7 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				const auto& info = ls.getEnemyInfo(enemy_id);
 				// Some enemies have their own classes, others are just 'Enemy'
 				switch (enemy_id) {
-				case 4:
+				case 5:
 					enemy = new lif::Wisp(curPos, info);
 					break;
 				case 10:
@@ -223,6 +224,15 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 
 	for (auto e : LevelEffects::getEffectEntities(level))
 		entities.add(e);
+
+	{
+		auto rex = new lif::RexBoss({32*8, 32*8});
+		rex->get<lif::AI>()->setLevelManager(&lm);
+		entities.add(rex);
+		//rex = new lif::RexBoss({32*3, 32*3});
+		//rex->get<lif::AI>()->setLevelManager(&lm);
+		//entities.add(rex);
+	}
 
 	if (level.getInfo().effects.find("darkness") != level.getInfo().effects.end()) {
 		// In case of darkness, we need the Players to have an AxisSighted component

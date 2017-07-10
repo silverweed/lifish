@@ -1,9 +1,10 @@
 #include "ai_functions.hpp"
+#include "ai_helpers.hpp"
 #include "LevelManager.hpp"
 #include "AxisMoving.hpp"
 #include "GameCache.hpp"
-#include "AxisSighted.hpp"
 #include "utils.hpp"
+#include "AxisSighted.hpp"
 #include "game.hpp"
 #include "Shooting.hpp"
 #include "Sounded.hpp"
@@ -16,23 +17,7 @@
 
 using lif::AIBoundFunction;
 using D = lif::Direction;
-
-#define NEW_DIRECTION(d) \
-{ \
-	moving->setDirection(d); \
-	return; \
-}
-#define SAME_DIRECTION return;
-#define HANDLE_NOT_MOVING \
-	if (!moving->isMoving()) \
-		SAME_DIRECTION
-#define HANDLE_UNALIGNED \
-	if (!entity.isAligned()) { \
-		if (collider->collidesWithSolid()) \
-			NEW_DIRECTION(adjust_prev_align(entity, *moving)) \
-		else \
-			SAME_DIRECTION \
-	} 
+using namespace lif::ai;
 
 std::array<lif::AIFunction, lif::AI_FUNCTIONS_NUM> lif::ai_functions = {{
 	lif::ai_random,
@@ -43,67 +28,6 @@ std::array<lif::AIFunction, lif::AI_FUNCTIONS_NUM> lif::ai_functions = {{
 	lif::ai_chase,
 }};
 
-static lif::Direction directions[] = {
-	D::UP, D::RIGHT, D::DOWN, D::LEFT
-};
-
-// Selects a random direction where `moving` can go, choosing `opp` if
-// and only if no other viable direction is found.
-static lif::Direction select_random_viable(
-		const lif::AxisMoving& moving,
-		const lif::LevelManager& lm, 
-		const lif::Direction opp)
-{
-	lif::Direction dirs[4];
-	unsigned short n = 0;
-	for (const auto& d : directions)
-		if (lm.canGo(moving, d) && d != opp)
-			dirs[n++] = d;		
-	if (n == 0)
-		dirs[n++] = opp;
-	std::uniform_int_distribution<int> dist(0, n - 1);
-	return dirs[dist(lif::rng)];
-}
-
-static lif::Direction seeing_player(const lif::LevelManager& lm, const lif::AxisSighted& sighted) {
-	const auto& seen = sighted.entitiesSeen();
-	lif::Direction dir = lif::Direction::NONE;
-	unsigned short dist = -1; // "infinity"
-	for (unsigned i = 0; i < 4; ++i) {
-		for (const auto& pair : seen[i]) {
-			if (lm.isPlayer(*pair.first) && pair.second < dist) {
-				dir = static_cast<lif::Direction>(i);
-				dist = pair.second;
-			}
-		}
-	}
-	return dir;
-}
-
-/** To be called when `entity` is colliding and is not aligned:
- *  sets `moving.prevAlign` to the tile it'd have reached if it hadn't collided,
- *  and returns oppositeDirection(moving.direction).
- */
-static lif::Direction adjust_prev_align(const lif::Entity& entity, lif::AxisMoving& moving) {
-	switch (moving.getDirection()) {
-	case D::LEFT: 
-	case D::UP:
-		moving.setPrevAlign(lif::tile(entity.getPosition()));
-		break;
-	case D::RIGHT:
-		moving.setPrevAlign(lif::tile(entity.getPosition()) + sf::Vector2i(1, 0));
-		break;
-	case D::DOWN:
-		moving.setPrevAlign(lif::tile(entity.getPosition()) + sf::Vector2i(0, 1));
-		break;
-	case D::NONE:
-		break;
-	}
-	moving.setDashing(0);
-
-	return lif::oppositeDirection(moving.getDirection());
-}
-
 AIBoundFunction lif::ai_random(lif::Entity& entity) {
 	auto moving = entity.get<lif::AxisMoving>();
 	const auto collider = entity.get<lif::Collider>();
@@ -111,11 +35,11 @@ AIBoundFunction lif::ai_random(lif::Entity& entity) {
 		throw std::invalid_argument("Entity passed to ai_random has no Moving or Collider component!");
 	moving->setAutoRealign(false);
 
-	return [&entity, moving, collider] (const lif::LevelManager& lm) { 
+	return [&entity, moving, collider] (const lif::LevelManager& lm) {
 		HANDLE_NOT_MOVING;
 		HANDLE_UNALIGNED;
 		if (!collider->isColliding()) {
-			if (moving->getDistTravelled() < lif::TILE_SIZE) 
+			if (moving->getDistTravelled() < lif::TILE_SIZE)
 				SAME_DIRECTION
 
 			std::uniform_int_distribution<int> dist(0, 10);
@@ -153,7 +77,7 @@ AIBoundFunction lif::ai_random_forward(lif::Entity& entity) {
 	moving->setAutoRealign(false);
 	moving->setDistTravelled(4);
 
-	return [&entity, moving, collider] (const lif::LevelManager& lm) { 
+	return [&entity, moving, collider] (const lif::LevelManager& lm) {
 		HANDLE_NOT_MOVING;
 		HANDLE_UNALIGNED;
 		const D cur = moving->getDirection();
@@ -183,7 +107,7 @@ AIBoundFunction lif::ai_random_forward_haunt(lif::Entity& entity) {
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving, "
 				"Shooting or Collider component!");
 	moving->setAutoRealign(false);
-	auto random_forward = ai_random_forward(entity);
+	const auto random_forward = ai_random_forward(entity);
 
 	return [&entity, moving, random_forward, collider, shooting] (const lif::LevelManager& lm) {
 		HANDLE_NOT_MOVING;

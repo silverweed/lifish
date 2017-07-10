@@ -17,10 +17,10 @@ class Boss : public lif::Entity {
 	           *deathClock = nullptr;
 
 protected:
+	lif::Killable *killable = nullptr;
 	// The following components MUST be added by children
 	lif::Collider *collider = nullptr;
 	lif::Animated *animated = nullptr;
-	lif::Killable *killable = nullptr;
 
 
 	void _checkCollision(lif::Collider& coll);

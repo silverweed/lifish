@@ -5,7 +5,7 @@
 using lif::AI;
 
 AI::AI(lif::Entity& owner, AIFunction ai)
-	: lif::Component(owner) 
+	: lif::Component(owner)
 	, ai(ai)
 {
 	_declComponent<AI>();

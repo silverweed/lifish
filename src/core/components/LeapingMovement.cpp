@@ -27,8 +27,11 @@ lif::Entity* LeapingMovement::init() {
 void LeapingMovement::update() {
 	lif::Component::update();
 	
-	if (!moving->isBlocked())
+	if (!moving->isBlocked()) {
+		// This prevents some AI malfunctioning, e.g. ai_random_forward.
+		moving->setDistTravelled(0);
 		moving->setSpeed(1, true);
+	}
 
 	if (owner.isAligned() && lif::tile(owner.getPosition()) != moving->getPrevAlign()) {
 		moving->block(blockTime);
