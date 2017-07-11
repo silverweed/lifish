@@ -2,6 +2,7 @@
 #include "LeapingMovement.hpp"
 #include "AxisMoving.hpp"
 #include "LevelManager.hpp"
+#include "Clock.hpp"
 #include "Enemy.hpp"
 #include "Scored.hpp"
 #include "Collider.hpp"
@@ -33,6 +34,8 @@ RexBoss::RexBoss(const sf::Vector2f& pos)
 	_addDefaultCollider(size);
 	addComponent<lif::Lifed>(*this, lif::conf::boss::rex_boss::LIFE);
 	addComponent<lif::Scored>(*this, lif::conf::boss::rex_boss::VALUE);
+	animClock = addComponent<lif::Clock>(*this);
+	attackClock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("death", lif::getAsset("sounds", std::string("rex_death.ogg"))),
 		std::make_pair("hurt", lif::getAsset("sounds", std::string("rex_hurt.ogg")))
@@ -40,13 +43,50 @@ RexBoss::RexBoss(const sf::Vector2f& pos)
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "rex.png"));
 	animated->addAnimation("move_up", { sf::IntRect(0, 0, size.x, size.y) });
 	animated->addAnimation("move_down", { sf::IntRect(0, 0, size.x, size.y) });
-	animated->addAnimation("move_left", { sf::IntRect(0, 0, size.x, size.y) }, true);
+	animated->addAnimation("move_left", { sf::IntRect(0, 0, size.x, size.y) });
 	animated->addAnimation("move_right", { sf::IntRect(0, 0, size.x, size.y) });
+	animated->addAnimation("idle", { sf::IntRect(0, 0, size.x, size.y) });
+	animated->addAnimation("start", { sf::IntRect(0, 0, size.x, size.y) });
+	animated->addAnimation("death", { sf::IntRect(0, 0, size.x, size.y) });
+	animated->getSprite().stop();
 }
 
 void RexBoss::update() {
 	lif::Entity::update();
 
+	if (killable->isKilled())
+		return;
+
+	switch (state) {
+	case State::START:
+		_updateStart();
+		break;
+	case State::WALKING:
+		_updateWalking();
+		break;
+	case State::SHOOTING:
+		_updateShooting();
+		break;
+	default:
+		break;
+	}
+}
+
+void RexBoss::_updateStart() {
+	if (animClock->getElapsedTime() < sf::seconds(2)) return;
+	if (!animated->getSprite().isPlaying()) {
+		animated->getSprite().setLooped(true);
+		animated->setAnimation("idle");
+		animated->getSprite().play();
+		state = State::WALKING;
+	} else if (animated->getAnimationName() == "idle") {
+		animated->getSprite().setLooped(false, false);	
+		animated->setAnimation("start");
+		animated->getSprite().play();
+	}
+}
+
+void RexBoss::_updateWalking() {
 	if (moving->isBlocked()) {
 		if (!wasBlocked) {
 			// Stomp
@@ -58,8 +98,18 @@ void RexBoss::update() {
 	}
 }
 
+void RexBoss::_updateShootingFlame() {
+
+}
+
 void RexBoss::_kill() {
 	moving->setActive(false);
+	if (animated->getAnimationName() != "death") {
+		animated->setAnimation("death");
+		animated->getSprite().setLooped(false);
+		animated->getSprite().play();
+		lif::requestCameraShake(0.06, 70, 0.03, 50, sf::seconds(4), 2);
+	}
 	lif::Boss::_kill();
 }
 
