@@ -25,7 +25,6 @@ See later for instructions on how to build the game from the sources.
 ## DEPENDENCIES ##
 
 * [SFML](https://github.com/SFML/SFML) >= 2.4
-* [GTK3](http://www.gtk.org/) (optional)
 * [nlohmann/json](https://github.com/nlohmann/json) (included in the source)
 
 ### Building ###
