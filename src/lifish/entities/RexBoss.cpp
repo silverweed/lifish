@@ -98,7 +98,7 @@ void RexBoss::_updateWalking() {
 	}
 }
 
-void RexBoss::_updateShootingFlame() {
+void RexBoss::_updateShooting() {
 
 }
 
