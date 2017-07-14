@@ -34,7 +34,7 @@ static std::string demangle(const char *name) {
 
 using lif::Entity;
 
-Entity::Entity() {}
+Entity::Entity() : Entity({ 0, 0 }) {}
 
 Entity::Entity(const sf::Vector2f& pos)
 	: position(pos)
