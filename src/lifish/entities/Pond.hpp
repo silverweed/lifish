@@ -8,13 +8,16 @@
 namespace lif {
 
 /**
- * An entity damaging whoever steps on it. Can either be used directly 
+ * An entity damaging whoever steps on it. Can either be used directly
  * (but in this case the sprite, damage and layer bitmask must be added manually)
- * or via a child class. 
+ * or via a child class.
  */
 class Pond : public lif::Entity {
+protected:
+	const sf::Vector2f size;
+
 	/** Bitmask determining which layers get influenced by this Pond */
-	unsigned damagedc_layers = 0;
+	unsigned damaged_layers = 0;
 	int damage;
 
 public:

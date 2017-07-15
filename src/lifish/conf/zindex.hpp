@@ -7,7 +7,8 @@ namespace conf {
 		// Default layer is 0
 		constexpr int EXPLOSIONS      = 1;
 		constexpr int TRANSP_WALLS    = 2;
-		constexpr int WALLS           = 4;
+		constexpr int WALLS           = 3;
+		constexpr int PONDS           = 4;
 		constexpr int PLAYERS         = 5;
 		constexpr int ENEMIES         = 6;
 		constexpr int TALL_ENTITIES   = 7;

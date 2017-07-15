@@ -159,6 +159,7 @@ void Player::_kill() {
 	get<lif::Bonusable>()->reset();
 	info.reset(false);
 	death->kill();
+	std::cout << "_kill\n";
 }
 
 void Player::_checkCollision(lif::Collider& cld) {
@@ -198,9 +199,6 @@ void Player::_checkCollision(lif::Collider& cld) {
 			bullet.dealDamage();
 			break;
 		}
-	case L::BOSSES:
-		damage = lif::conf::player::MAX_LIFE;
-		break;
 	default:
 		return;
 	}
@@ -213,10 +211,12 @@ void Player::_checkCollision(lif::Collider& cld) {
 		shortShield = sprite.getCurrentFrame() != sprite.getAnimation()->getSize() - 1;
 	}
 
-	dealDamage(damage, layer == L::BOSSES || layer == L::EXPLOSIONS, shortShield);
+	dealDamage(damage, layer == L::EXPLOSIONS, shortShield);
 }
 
 void Player::dealDamage(int damage, bool ignoreArmor, bool shortShield) {
+	if (killable->isKilled()) return;
+
 	// Apply armor
 	if (!ignoreArmor && info.powers.armor > 0) {
 		damage = std::max(1, damage - info.powers.armor);
@@ -231,7 +231,8 @@ void Player::dealDamage(int damage, bool ignoreArmor, bool shortShield) {
 	}
 
 	// Give shield after receiving damage
-	bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::player::DAMAGE_SHIELD_TIME * (shortShield ? 0.025f : 1));
+	bonusable->giveBonus(lif::BonusType::SHIELD,
+			lif::conf::player::DAMAGE_SHIELD_TIME * (shortShield ? 0.025f : 1));
 }
 
 void Player::resurrect() {

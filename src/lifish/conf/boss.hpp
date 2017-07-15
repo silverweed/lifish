@@ -37,6 +37,17 @@ namespace conf {
 			constexpr float SPEED = 3;
 			constexpr auto LIFE = 40;
 			constexpr auto VALUE = 20000;
+			const sf::Time STOMP_WINDUP_TIME = sf::seconds(1);
+			const sf::Time STOMP_DAMAGE_TIME = sf::seconds(1);
+			const sf::Time STOMP_RECOVER_TIME = sf::seconds(1.5);
+			constexpr auto STOMP_TILE_RADIUS = 2;
+			constexpr auto STOMP_DAMAGE = 4;
+			const sf::Time FLAME_WINDUP_TIME = sf::seconds(1);
+			const sf::Time FLAME_DAMAGE_TIME = sf::seconds(3);
+			const sf::Time FLAME_RECOVER_TIME = sf::seconds(1);
+			constexpr auto FLAME_TILE_HEIGHT = 4;
+			constexpr auto FLAME_TILE_WIDTH = 5;
+			constexpr auto FLAME_DAMAGE = 3;
 		}
 	}
 }

@@ -1,6 +1,8 @@
 #include "Boss.hpp"
 #include "ZIndexed.hpp"
 #include "game.hpp"
+#include "Bonusable.hpp"
+#include "Player.hpp"
 #include "Drawable.hpp"
 #include "Animated.hpp"
 #include "Clock.hpp"
@@ -15,6 +17,7 @@
 #include "Lifed.hpp"
 #include "conf/zindex.hpp"
 #include "conf/boss.hpp"
+#include "conf/player.hpp"
 #include "Foe.hpp"
 #include "Absorbable.hpp"
 #include <cassert>
@@ -76,6 +79,15 @@ bool Boss::_killInProgress() const {
 }
 
 void Boss::_checkCollision(lif::Collider& coll) {
+	// One-shot players
+	if (coll.getLayer() == lif::c_layers::PLAYERS) {
+		auto& player = static_cast<lif::Player&>(coll.getOwnerRW());
+		if (!player.get<lif::Bonusable>()->hasBonus(lif::BonusType::SHIELD)) {
+			player.dealDamage(lif::conf::player::MAX_LIFE, true);
+		}
+		return;
+	}
+
 	if (coll.getLayer() != lif::c_layers::EXPLOSIONS) return;
 
 	auto& expl = static_cast<lif::Explosion&>(coll.getOwnerRW());

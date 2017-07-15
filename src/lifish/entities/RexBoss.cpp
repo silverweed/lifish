@@ -5,6 +5,7 @@
 #include "Clock.hpp"
 #include "Enemy.hpp"
 #include "Scored.hpp"
+#include "Bonusable.hpp"
 #include "Collider.hpp"
 #include "Animated.hpp"
 #include "Lifed.hpp"
@@ -12,6 +13,11 @@
 #include "Drawable.hpp"
 #include "Sounded.hpp"
 #include "AI.hpp"
+#include "Player.hpp"
+#include "MovingAnimator.hpp"
+#include "BufferedSpawner.hpp"
+#include "RexFlame.hpp"
+#include "SmokeRing.hpp"
 #include "ai_functions.hpp"
 #include "ai_helpers.hpp"
 #include "conf/boss.hpp"
@@ -19,29 +25,29 @@
 #include "camera_utils.hpp"
 #include <cassert>
 #include <random>
-#include "MovingAnimator.hpp"
 
 using lif::RexBoss;
+using lif::TILE_SIZE;
+using namespace lif::conf::boss::rex_boss;
 
 constexpr auto MIN_STEPS = 4;
 constexpr auto MAX_STEPS_BEFORE_ATK = MIN_STEPS;
 constexpr auto MIN_STEPS_BEFORE_ATK = 2;
-constexpr auto STOMP_DISTANCE = 2 * lif::TILE_SIZE;
+constexpr auto STOMP_DISTANCE = 2 * TILE_SIZE;
 
 lif::AIBoundFunction ai_rex(lif::Entity&);
 
 RexBoss::RexBoss(const sf::Vector2f& pos)
 	: lif::Boss(pos)
 {
-	const sf::Vector2f size(4 * lif::TILE_SIZE, 4 * lif::TILE_SIZE);
+	const sf::Vector2f size(4 * TILE_SIZE, 4 * TILE_SIZE);
 	moving = addComponent<lif::AxisMoving>(*this,
 			lif::conf::boss::rex_boss::SPEED * lif::Enemy::BASE_SPEED,
-			lif::Direction::LEFT);
+			lif::Direction::NONE);
 	addComponent<lif::AI>(*this, ai_rex);
 	addComponent<lif::LeapingMovement>(*this, sf::seconds(1.5));
-	_addDefaultCollider(size);
-	addComponent<lif::Lifed>(*this, lif::conf::boss::rex_boss::LIFE);
-	addComponent<lif::Scored>(*this, lif::conf::boss::rex_boss::VALUE);
+	addComponent<lif::Lifed>(*this, LIFE);
+	addComponent<lif::Scored>(*this, VALUE);
 	animClock = addComponent<lif::Clock>(*this);
 	attackClock = addComponent<lif::Clock>(*this);
 	sighted = addComponent<lif::FreeSighted>(*this);
@@ -50,6 +56,7 @@ RexBoss::RexBoss(const sf::Vector2f& pos)
 		std::make_pair("hurt", lif::getAsset("sounds", std::string("rex_hurt.ogg")))
 	});
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "rex_boss.png"));
+	animated->addAnimation("start", { sf::IntRect(0, 0, size.x, size.y) });
 	animated->addAnimation("walk_up", { sf::IntRect(0, 0, size.x, size.y) });
 	animated->addAnimation("walk_down", { sf::IntRect(0, 0, size.x, size.y) });
 	animated->addAnimation("walk_left", { sf::IntRect(0, 0, size.x, size.y) });
@@ -57,8 +64,38 @@ RexBoss::RexBoss(const sf::Vector2f& pos)
 	animated->addAnimation("idle", { sf::IntRect(0, 0, size.x, size.y) });
 	animated->addAnimation("start", { sf::IntRect(0, 0, size.x, size.y) });
 	animated->addAnimation("death", { sf::IntRect(0, 0, size.x, size.y) });
-	animated->getSprite().stop();
+	animated->addAnimation("stomp_windup", { sf::IntRect(0, size.y, size.x, size.y) });
+	animated->addAnimation("stomp_damage", { sf::IntRect(0, 0, size.x, size.y) });
+	animated->addAnimation("stomp_recover", { sf::IntRect(0, 0, size.x, size.y) });
+	animated->addAnimation("flame_windup", { sf::IntRect(0, size.y, size.x, size.y) });
+	animated->addAnimation("flame_damage", { sf::IntRect(0, 0, size.x, size.y) });
+	animated->addAnimation("flame_recover", { sf::IntRect(0, 0, size.x, size.y) });
+	animated->setAnimation("start");
+	animated->getSprite().setLooped(false, false);
+	animated->getSprite().play();
 	addComponent<lif::MovingAnimator>(*this)->setActive(false);
+	addComponent<lif::BufferedSpawner>(*this);
+
+	// Body collider
+	_addDefaultCollider(size);
+
+	// Colliders for attacks
+	stompCollider = addComponent<lif::Collider>(*this, [] (lif::Collider& cld) {
+		if (cld.getLayer() != lif::c_layers::PLAYERS)
+			return;
+		auto& player = static_cast<lif::Player&>(cld.getOwnerRW());
+		if (!player.get<lif::Bonusable>()->hasBonus(lif::BonusType::SHIELD))
+			player.dealDamage(STOMP_DAMAGE);
+	}, lif::c_layers::BOSSES, sf::Vector2f(
+		// size
+		collider->getRect().width + 2 * STOMP_TILE_RADIUS * TILE_SIZE,
+		collider->getRect().height + 2 * STOMP_TILE_RADIUS * TILE_SIZE
+	), sf::Vector2f(
+		// offset
+		-STOMP_TILE_RADIUS * TILE_SIZE,
+		-STOMP_TILE_RADIUS * TILE_SIZE
+	));
+	stompCollider->setActive(false);
 }
 
 void RexBoss::update() {
@@ -66,19 +103,21 @@ void RexBoss::update() {
 
 	if (killable->isKilled())
 		return;
-	
-	if (isAligned() && moving->getPrevAlign() != lif::tile(position))
-		++steps;
 
 	switch (state) {
 	case State::START:
 		_updateStart();
 		break;
 	case State::WALKING:
+		if (isAligned() && moving->getPrevAlign() != lif::tile(position))
+			++steps;
 		_updateWalking();
 		break;
 	case State::ATTACKING:
 		_updateAttacking();
+		break;
+	case State::DYING:
+		_updateDying();
 		break;
 	default:
 		break;
@@ -86,17 +125,12 @@ void RexBoss::update() {
 }
 
 void RexBoss::_updateStart() {
-	if (animClock->getElapsedTime() < sf::seconds(2)) return;
-	if (!animated->getSprite().isPlaying()) {
+	if (animClock->getElapsedTime() >= sf::seconds(2)) {
 		animated->getSprite().setLooped(true);
-		animated->setAnimation("idle");
 		animated->getSprite().play();
 		state = State::WALKING;
+		moving->setDirection(lif::Direction::LEFT);
 		get<lif::MovingAnimator>()->setActive(true);
-	} else if (animated->getAnimationName() == "idle") {
-		animated->getSprite().setLooped(false, false);
-		animated->setAnimation("start");
-		animated->getSprite().play();
 	}
 }
 
@@ -113,11 +147,16 @@ void RexBoss::_updateWalking() {
 
 	if (!isAligned()) return;
 
+	const auto dir = moving->getDirection();
+	if (dir != lif::Direction::NONE)
+		flameDirection = dir;
+
 	// Check state transition
 	auto atkCond = _checkAttackCondition();
 	if (atkCond >= 0 && atkCond < static_cast<int>(AtkType::N_ATTACKS)) {
 		atkType = static_cast<AtkType>(atkCond);
 		state = State::ATTACKING;
+		atkState = AtkState::ENTERING;
 		moving->stop();
 		attackClock->restart();
 	}
@@ -125,7 +164,20 @@ void RexBoss::_updateWalking() {
 
 void RexBoss::_updateAttacking() {
 	std::cout << "attacking: " << static_cast<int>(atkType) << std::endl;
-	if (attackClock->getElapsedTime() > sf::seconds(2)) {
+	switch (atkType) {
+	case AtkType::STOMP:
+		_updateStomp();
+		break;
+	case AtkType::FLAME:
+		_updateFlame();
+		break;
+	case AtkType::MISSILES:
+		_updateMissiles();
+		break;
+	default:
+		break;
+	}
+	if (atkState == AtkState::EXITING) {
 		std::uniform_int_distribution<> dist(0, 3);
 		moving->setDirection(lif::ai::directions[dist(lif::rng)]);
 		state = State::WALKING;
@@ -134,11 +186,130 @@ void RexBoss::_updateAttacking() {
 	}
 }
 
+void RexBoss::_updateStomp() {
+	// Task: wind up / damage / recover
+	if (atkState == AtkState::ENTERING) {
+		atkState = AtkState::WINDUP;
+		animated->setAnimation("stomp_windup");
+		animated->getSprite().play();
+		return;
+	}
+	const auto time = attackClock->getElapsedTime();
+	switch (atkState) {
+	case AtkState::WINDUP:
+		if (time > STOMP_WINDUP_TIME) {
+			atkState = AtkState::DAMAGE;
+			animated->setAnimation("stomp_damage");
+			animated->getSprite().play();
+			// Deal damage
+			stompCollider->setActive(true);
+			lif::requestCameraShake(0, 0, 0.1, 50, sf::seconds(1), 5);
+			const auto rect = collider->getRect();
+			auto smoke = new lif::SmokeRing(position + sf::Vector2f(rect.width / 2, rect.height / 2));
+			smoke->get<lif::Animated>()->getSprite().setOrigin(TILE_SIZE, TILE_SIZE);
+			smoke->get<lif::Animated>()->getSprite().setScale(4, 4);
+			get<lif::BufferedSpawner>()->addSpawned(smoke);
+			attackClock->restart();
+		}
+		break;
+	case AtkState::DAMAGE:
+		if (time > STOMP_DAMAGE_TIME) {
+			atkState = AtkState::RECOVER;
+			animated->setAnimation("stomp_recover");
+			animated->getSprite().play();
+			stompCollider->setActive(false);
+			attackClock->restart();
+		}
+		break;
+	case AtkState::RECOVER:
+		if (time > STOMP_RECOVER_TIME)
+			atkState = AtkState::EXITING;
+		break;
+	default:
+		break;
+	}
+}
+
+void RexBoss::_updateFlame() {
+	// Task: wind up / damage / recover
+	if (atkState == AtkState::ENTERING) {
+		atkState = AtkState::WINDUP;
+		animated->setAnimation("flame_windup");
+		animated->getSprite().play();
+		return;
+	}
+	const auto time = attackClock->getElapsedTime();
+	switch (atkState) {
+	case AtkState::WINDUP:
+		if (time > FLAME_WINDUP_TIME) {
+			atkState = AtkState::DAMAGE;
+			animated->setAnimation("flame_damage");
+			animated->getSprite().play();
+			// Deal damage
+			sf::Vector2f flamePos(position);
+			const bool isVert = flameDirection == lif::Direction::UP ||
+					flameDirection == lif::Direction::DOWN;
+			switch (flameDirection) {
+			case lif::Direction::LEFT:
+				flamePos.x -= FLAME_TILE_WIDTH * TILE_SIZE;
+				break;
+			case lif::Direction::RIGHT:
+				flamePos.x += collider->getRect().width;
+				break;
+			case lif::Direction::UP:
+				flamePos.y -= FLAME_TILE_WIDTH * TILE_SIZE;
+				break;
+			case lif::Direction::DOWN:
+				flamePos.y += collider->getRect().height;
+				break;
+			default:
+				break;
+			}
+			get<lif::BufferedSpawner>()->addSpawned(new lif::RexFlame(flamePos, isVert
+				? sf::Vector2f(FLAME_TILE_HEIGHT * TILE_SIZE, FLAME_TILE_WIDTH * TILE_SIZE)
+				: sf::Vector2f(FLAME_TILE_WIDTH * TILE_SIZE, FLAME_TILE_HEIGHT * TILE_SIZE)));
+			attackClock->restart();
+		}
+		break;
+	case AtkState::DAMAGE:
+		if (time > FLAME_DAMAGE_TIME) {
+			atkState = AtkState::RECOVER;
+			animated->setAnimation("flame_recover");
+			animated->getSprite().play();
+			attackClock->restart();
+		}
+		break;
+	case AtkState::RECOVER:
+		if (time > FLAME_RECOVER_TIME)
+			atkState = AtkState::EXITING;
+		break;
+	default:
+		break;
+	}
+
+}
+
+void RexBoss::_updateMissiles() {
+	// TODO
+}
+
+void RexBoss::_updateDying() {
+	if (animated->getAnimationName() != "death") {
+		killable->kill();
+		animated->setAnimation("death");
+		animated->getSprite().setLooped(false);
+		animated->getSprite().play();
+		lif::requestCameraShake(0.1, 70, 0, 50, sf::seconds(4), 2);
+	}
+
+}
+
 int RexBoss::_checkAttackCondition() const {
 	if (steps < MIN_STEPS_BEFORE_ATK)
 		return -1;
 
 	std::vector<AtkType> viable;
+
 	if (_playerAhead())
 		viable.emplace_back(AtkType::FLAME);
 	if (_playersNearby())
@@ -165,14 +336,13 @@ void RexBoss::_kill() {
 }
 
 bool RexBoss::_playersNearby() const {
+	const auto seen = sighted->entitiesSeen();
 	const auto lm = get<lif::AI>()->getLevelManager();
 	assert(lm && "lm is null in _playersNearby!");
-	for (auto ptr : sighted->entitiesSeen()) {
+	return std::find_if(seen.begin(), seen.end(), [this, lm] (auto ptr) {
 		const auto e = ptr.first.lock();
-		if (lm->isPlayer(*e) && _isNearby(*e->get<lif::Collider>()))
-			return true;
-	}
-	return false;
+		return  (lm->isPlayer(*e) && this->_isNearby(*e->get<lif::Collider>()));
+	}) != seen.end();
 }
 
 bool RexBoss::_playerAhead() const {
@@ -192,8 +362,8 @@ bool RexBoss::_isAhead(const lif::Collider& cld) const {
 	const auto dir = moving->getDirection();
 	const bool isVert = dir == lif::Direction::UP || dir == lif::Direction::DOWN;
 	sf::FloatRect rect(position.x, position.y,
-			(isVert ? AHEAD_CHECK_WIDTH : AHEAD_CHECK_HEIGTH) * lif::TILE_SIZE,
-			(isVert ? AHEAD_CHECK_HEIGTH : AHEAD_CHECK_WIDTH) * lif::TILE_SIZE);
+			(isVert ? AHEAD_CHECK_WIDTH : AHEAD_CHECK_HEIGTH) * TILE_SIZE,
+			(isVert ? AHEAD_CHECK_HEIGTH : AHEAD_CHECK_WIDTH) * TILE_SIZE);
 	switch (dir) {
 	case lif::Direction::LEFT:
 		rect.left -= rect.width;
@@ -217,10 +387,10 @@ bool RexBoss::_isNearby(const lif::Collider& cld) const {
 	// Check if `e` is nearer than 2 tiles from our binding box
 	constexpr auto NEARBY_CHECK_SIZE = 1;
 	const auto crect = collider->getRect();
-	sf::FloatRect rect(position.x - NEARBY_CHECK_SIZE * lif::TILE_SIZE,
-			position.y - NEARBY_CHECK_SIZE * lif::TILE_SIZE,
-			crect.width + 2 * NEARBY_CHECK_SIZE * lif::TILE_SIZE,
-			crect.height + 2 * NEARBY_CHECK_SIZE * lif::TILE_SIZE);
+	sf::FloatRect rect(position.x - NEARBY_CHECK_SIZE * TILE_SIZE,
+			position.y - NEARBY_CHECK_SIZE * TILE_SIZE,
+			crect.width + 2 * NEARBY_CHECK_SIZE * TILE_SIZE,
+			crect.height + 2 * NEARBY_CHECK_SIZE * TILE_SIZE);
 	return rect.intersects(cld.getRect());
 }
 
