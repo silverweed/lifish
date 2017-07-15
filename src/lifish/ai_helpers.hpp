@@ -17,7 +17,7 @@
 #define HANDLE_UNALIGNED \
 	if (!entity.isAligned()) { \
 		if (collider->collidesWithSolid()) \
-			NEW_DIRECTION(adjust_prev_align(entity, *moving)) \
+			NEW_DIRECTION(lif::ai::adjust_prev_align(entity, *moving)) \
 		else \
 			SAME_DIRECTION \
 	}

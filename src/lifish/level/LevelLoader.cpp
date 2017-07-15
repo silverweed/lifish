@@ -146,6 +146,16 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				}
 				break;
 
+			case EntityType::REX_BOSS:
+				{
+					auto boss = new lif::RexBoss(curPos);
+					for (auto s : boss->getAllRecursive<lif::Sighted>())
+						s->setEntityGroup(&lm.entities);
+					boss->get<lif::AI>()->setLevelManager(&lm);
+					entities.add(boss);
+				}
+				break;
+
 			case EntityType::ENEMY1:
 				enemy_id = 1;
 				break;
@@ -224,15 +234,6 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 
 	for (auto e : LevelEffects::getEffectEntities(level))
 		entities.add(e);
-
-	{
-		auto rex = new lif::RexBoss({32*8, 32*8});
-		rex->get<lif::AI>()->setLevelManager(&lm);
-		entities.add(rex);
-		//rex = new lif::RexBoss({32*3, 32*3});
-		//rex->get<lif::AI>()->setLevelManager(&lm);
-		//entities.add(rex);
-	}
 
 	if (level.getInfo().effects.find("darkness") != level.getInfo().effects.end()) {
 		// In case of darkness, we need the Players to have an AxisSighted component

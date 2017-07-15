@@ -30,7 +30,7 @@ public:
 	void setLevelManager(lif::LevelManager *_lm);
 	const lif::LevelManager* getLevelManager() const { return lm; }
 
-	lif::Entity* init() override; 
+	lif::Entity* init() override;
 	void update() override;
 };
 

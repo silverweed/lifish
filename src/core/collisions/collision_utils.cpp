@@ -58,7 +58,7 @@ bool lif::collision_utils::is_at_boundaries(const lif::Collider& cld,
 }
 
 // Checks if `ocld` is along the forward direction of `cld`
-bool lif::collision_utils::direction_is_viable(const lif::Collider& cld, 
+bool lif::collision_utils::direction_is_viable(const lif::Collider& cld,
 		const lif::AxisMoving& moving, const lif::Collider& ocld)
 {
 	const auto pos = cld.getPosition();

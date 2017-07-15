@@ -2,7 +2,7 @@
 	"name": "Converted BOOM levels",
 	"author": "Federico Filipponi",
 	"difficulty": "average",
-	"created": "2017-07-10 12:30:42 +0200",
+	"created": "2017-07-15 12:36:20 +0200",
 	"comment": "Created with LifishEdit 0.7.4",
 	"tracks": [
 		{
@@ -26,7 +26,7 @@
 			"author": "Luca Barazzetta",
 			"loop": {
 				"start": 3.428,
-				"length": 96
+				"length": 96.0
 			}
 		}
 	],
@@ -34,19 +34,19 @@
 		{
 			"name": "soldier",
 			"ai": 0,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"simple"
 				],
 				"id": 1,
-				"fireRate": 1
+				"fireRate": 1.0
 			}
 		},
 		{
 			"name": "sgt. cool",
 			"ai": 0,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"simple"
@@ -58,98 +58,98 @@
 		{
 			"name": "thick lizzy",
 			"ai": 3,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"simple",
 					"blocking"
 				],
 				"id": 9,
-				"fireRate": 1,
-				"blockTime": 200
+				"fireRate": 1.0,
+				"blockTime": 200.0
 			}
 		},
 		{
 			"name": "mean-o-taur",
 			"ai": 2,
-			"speed": 5,
+			"speed": 5.0,
 			"attack": {
 				"type": [
 					"contact"
 				],
-				"fireRate": 5
+				"fireRate": 5.0
 			}
 		},
 		{
 			"name": "gunner",
 			"ai": 1,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"blocking"
 				],
 				"id": 3,
-				"fireRate": 10,
-				"blockTime": 150
+				"fireRate": 10.0,
+				"blockTime": 150.0
 			}
 		},
 		{
 			"name": "thing",
 			"ai": 3,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"simple",
 					"blocking"
 				],
 				"id": 4,
-				"fireRate": 1,
-				"blockTime": 250
+				"fireRate": 1.0,
+				"blockTime": 250.0
 			}
 		},
 		{
 			"name": "ghost",
 			"ai": 4,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"contact",
 					"ranged"
 				],
-				"fireRate": 2
+				"fireRate": 2.0
 			}
 		},
 		{
 			"name": "smoulder",
 			"ai": 3,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"blocking",
 					"ranged"
 				],
 				"id": 5,
-				"fireRate": 4,
-				"blockTime": 260,
+				"fireRate": 4.0,
+				"blockTime": 260.0,
 				"tileRange": 4
 			}
 		},
 		{
 			"name": "skully",
 			"ai": 3,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"blocking"
 				],
 				"id": 6,
-				"fireRate": 2
+				"fireRate": 2.0
 			}
 		},
 		{
 			"name": "h.r. giggler",
 			"ai": 3,
-			"speed": 2,
+			"speed": 2.0,
 			"attack": {
 				"type": [
 					"simple",
@@ -157,7 +157,7 @@
 				],
 				"id": 7,
 				"fireRate": 0.7,
-				"blockTime": 650
+				"blockTime": 650.0
 			}
 		}
 	],
@@ -229,7 +229,7 @@
 				"fixed": 1,
 				"breakable": 1
 			},
-			"tilemap": "X0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000001A",
+			"tilemap": "X00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000R0000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000001A",
 			"effects": []
 		},
 		{
