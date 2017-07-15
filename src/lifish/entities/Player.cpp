@@ -159,7 +159,6 @@ void Player::_kill() {
 	get<lif::Bonusable>()->reset();
 	info.reset(false);
 	death->kill();
-	std::cout << "_kill\n";
 }
 
 void Player::_checkCollision(lif::Collider& cld) {
