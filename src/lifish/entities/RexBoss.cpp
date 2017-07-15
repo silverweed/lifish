@@ -33,7 +33,6 @@ using namespace lif::conf::boss::rex_boss;
 constexpr auto MIN_STEPS = 4;
 constexpr auto MAX_STEPS_BEFORE_ATK = MIN_STEPS;
 constexpr auto MIN_STEPS_BEFORE_ATK = 2;
-constexpr auto STOMP_DISTANCE = 2 * TILE_SIZE;
 
 lif::AIBoundFunction ai_rex(lif::Entity&);
 
