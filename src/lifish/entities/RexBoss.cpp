@@ -341,7 +341,7 @@ bool RexBoss::_playersNearby() const {
 	assert(lm && "lm is null in _playersNearby!");
 	return std::find_if(seen.begin(), seen.end(), [this, lm] (auto ptr) {
 		const auto e = ptr.first.lock();
-		return  (lm->isPlayer(*e) && this->_isNearby(*e->get<lif::Collider>()));
+		return  (lm->isPlayer(*e) && this->_isNearby(*e->template get<lif::Collider>()));
 	}) != seen.end();
 }
 
@@ -351,7 +351,7 @@ bool RexBoss::_playerAhead() const {
 	assert(lm && "lm is null in _playerAhead!");
 	return std::find_if(seen.begin(), seen.end(), [this, lm] (auto ptr) {
 		const auto e = ptr.first.lock();
-		return lm->isPlayer(*e) && this->_isAhead(*e->get<lif::Collider>());
+		return lm->isPlayer(*e) && this->_isAhead(*e->template get<lif::Collider>());
 	}) != seen.end();
 }
 

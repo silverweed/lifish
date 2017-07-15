@@ -22,8 +22,12 @@ while [[ $# > 0 ]]; do
 		SKIP_BUILD=1
 		shift
 		;;
+	-c|--skip-clean)
+		SKIP_CLEAN=1
+		shift
+		;;
 	*)
-		echo "Usage: $0 [-s, --skip-build]" >&2
+		echo "Usage: $0 [-s, --skip-build] [-c, --skip-clean]" >&2
 		exit 1
 		;;
 	esac
@@ -39,7 +43,7 @@ getreadiness() {
 
 PATH=$PATH:$COVERITY_PATH
 if [[ $SKIP_BUILD != 1 ]]; then
-	make clean
+	[[ $SKIP_CLEAN != 1 ]] && make clean
 	rm -f ${PROJECT_NAME}.tgz
 	if (cov-build --dir cov-int make -j 4); then
 		tar cvfz ${PROJECT_NAME}.tgz cov-int
