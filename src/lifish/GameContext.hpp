@@ -48,11 +48,12 @@ private:
 	lif::WinLoseHandler wlHandler;
 
 	void _initLM(const sf::Window& window, short lvnum);
+	void _advanceLevel();
+	void _resurrectDeadPlayers();
 #ifndef RELEASE
 	void _printCDStats() const;
 	void _printGameStats() const;
 #endif
-	void _advanceLevel();
 
 public:
 	explicit GameContext(sf::Window& window, const std::string& levelsetName, short startLv);

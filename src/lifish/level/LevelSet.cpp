@@ -175,6 +175,7 @@ std::unique_ptr<Level> LevelSet::getLevel(unsigned num) const {
 		level = std::make_unique<Level>(*this);
 		level->info = levels[num - 1];
 		if (!level->init()) {
+			std::cerr << "WARNING: level " << num << " failed to initialize!" << std::endl;
 			level.reset();
 		}
 	}

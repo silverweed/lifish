@@ -84,6 +84,7 @@ bool Level::_setTilemap(const std::string& tilemap) {
 		const auto et = lif::entityFromLetter(tilemap[i]);
 		switch (et) {
 		case EntityType::UNKNOWN:
+			std::cerr << "Unknown entity type `" << et << "` at tile " << i << std::endl;
 			return false;
 		case EntityType::PLAYER1:
 			if (player_set[0])

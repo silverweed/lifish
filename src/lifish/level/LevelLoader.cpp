@@ -39,7 +39,7 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 	lm.levelTime->setTime(sf::seconds(level.getInfo().time));
 
 	lif::Teleport *first_teleport = nullptr,
-		       *latest_teleport = nullptr;
+	              *latest_teleport = nullptr;
 
 	lm.reset();
 	auto& entities = lm.getEntities();

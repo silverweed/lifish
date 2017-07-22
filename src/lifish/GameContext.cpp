@@ -168,9 +168,8 @@ void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const 
 		lif::debug::DebugRenderer::drawColliders(gameRenderTex, lm.getEntities());
 	if ((debug >> DBG_DRAW_SH_CELLS) & 1) {
 		const auto sh = dynamic_cast<const lif::SHCollisionDetector*>(&lm.getCollisionDetector());
-		if (sh != nullptr) {
+		if (sh != nullptr)
 			lif::debug::DebugRenderer::drawSHCells(gameRenderTex, *sh);
-		}
 	}
 #endif
 	gameRenderTex.display();
@@ -201,6 +200,21 @@ void GameContext::_advanceLevel() {
 		//return;
 	}
 
+	_resurrectDeadPlayers();
+
+	lm.setNextLevel();
+	{
+		const auto level = lm.getLevel();
+		if (level == nullptr)
+			throw std::logic_error("No levels found after " + lif::to_string(lvnum)
+					+ " but end game not triggered!");
+		lif::musicManager->set(level->get<lif::Music>()->getMusic())
+			.setVolume(lif::options.musicVolume)
+			.play();
+	}
+}
+
+void GameContext::_resurrectDeadPlayers() {
 	// Resurrect any dead player which has a 'continue' left and
 	// remove temporary effects
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
@@ -209,7 +223,7 @@ void GameContext::_advanceLevel() {
 			if (lm.getPlayerContinues(i + 1) > 0) {
 				lm.decPlayerContinues(i + 1);
 				auto player = std::make_shared<Player>(sf::Vector2f(0, 0), i + 1);
-				player->get<lif::Controllable>()->setWindow(window); 
+				player->get<lif::Controllable>()->setWindow(window);
 				lm.setPlayer(i + 1, player);
 			} else {
 				lm.removePlayer(i + 1);
@@ -218,17 +232,6 @@ void GameContext::_advanceLevel() {
 			auto bns = player->get<lif::Bonusable>();
 			bns->expireTemporaryBonuses();
 		}
-	}
-
-	lm.setNextLevel();
-	{
-		const auto level = lm.getLevel();
-		if (level == nullptr)
-			throw std::logic_error("No levels found after " + lif::to_string(lvnum) 
-					+ " but end game not triggered!");
-		lif::musicManager->set(level->get<lif::Music>()->getMusic())
-			.setVolume(lif::options.musicVolume)
-			.play();
 	}
 }
 
