@@ -6,7 +6,6 @@
 #include "ZIndexed.hpp"
 #include "Temporary.hpp"
 #include "conf/zindex.hpp"
-#include <iostream>
 
 using lif::AbsorbFX;
 

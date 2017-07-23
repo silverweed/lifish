@@ -7,6 +7,7 @@ namespace lif {
 
 /**
  * Generic class for representing angles. Does NOT autowrap values, and allows negative angles.
+ * This class's design mimics sf::Time.
  */
 class Angle {
 	/** Angle is stored in radians */
@@ -23,6 +24,8 @@ public:
 
 	constexpr double asRadians() const { return angle; }
 	constexpr double asDegrees() const { return angle * RAD2DEG; }
+
+	static const Angle Zero;
 };
 
 #undef RAD2DEG

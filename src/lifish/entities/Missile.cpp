@@ -1,7 +1,9 @@
 #include "Missile.hpp"
 #include "Killable.hpp"
 #include "core.hpp"
+#include "Drawable.hpp"
 #include "Collider.hpp"
+#include "Clock.hpp"
 #include "Animated.hpp"
 #include "Targeter.hpp"
 #include "Temporary.hpp"
@@ -43,9 +45,11 @@ Missile::Missile(const sf::Vector2f& pos, const sf::Vector2f& target,
 		return targeter;
 	});
 
-	// TODO: rotate the sprite properly
-	//auto animated = get<lif::Animated>();
-	//animated->getSprite().setOrigin(data.size / 2, data.size / 2);
+	clock = addComponent<lif::Clock>(*this);
+	
+	drawable = get<lif::Drawable>();
+	drawable->setRotOrigin(sf::Vector2f(data.size / 2, data.size / 2));
+	rotRate = lif::degrees(180) / sf::seconds(1.0 / info.speed).asSeconds() * (target.x >= pos.x ? -1 : 1);
 }
 
 void Missile::update() {
@@ -54,5 +58,7 @@ void Missile::update() {
 	if (static_cast<const lif::GuidedMoving*>(moving)->getPerc() >= 1) {
 		collider->setActive(true);
 		get<lif::Killable>()->kill();
+	} else {
+		drawable->setRotation(drawable->getRotation() + rotRate * clock->restart().asSeconds());
 	}
 }

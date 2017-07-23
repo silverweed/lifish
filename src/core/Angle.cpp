@@ -2,6 +2,8 @@
 
 namespace lif {
 
+const Angle Angle::Zero;
+
 Angle operator +(Angle left, Angle right) {
 	return radians(left.asRadians() + right.asRadians());
 }
