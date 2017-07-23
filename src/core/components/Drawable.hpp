@@ -11,7 +11,7 @@ class Drawable : public lif::Component, public sf::Drawable {
 public:
 	explicit Drawable(lif::Entity& owner, const sf::Drawable& delegate)
 		: lif::Component(owner)
-		, delegate(delegate) 
+		, delegate(delegate)
 	{
 		_declComponent<Drawable>();
 	}

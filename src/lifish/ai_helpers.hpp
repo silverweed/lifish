@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Direction.hpp"
+#include <array>
 
 #define NEW_DIRECTION(d) \
 { \
@@ -31,7 +32,9 @@ class Entity;
 
 namespace ai {
 
-extern lif::Direction directions[];
+extern std::array<lif::Direction, 4> directions;
+
+lif::Direction random_direction();
 
 /** Selects a random direction where `moving` can go, choosing `opp` if
  * and only if no other viable direction is found.

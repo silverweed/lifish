@@ -1,5 +1,6 @@
 #include "BulletFactory.hpp"
 #include "Grenade.hpp"
+#include "Missile.hpp"
 #include "utils.hpp"
 #include "AxisMoving.hpp"
 #include "AxisBullet.hpp"
@@ -34,7 +35,9 @@ std::map<unsigned, const lif::BulletInfo> bulletsInfo = {
 	// star
 	{ 101, lif::BulletInfo{ 101, 4, 1.1, -1, lif::c_layers::BOSS_BULLETS } },
 	// spirit bullets
-	{ 102, lif::BulletInfo{ 102, 4, 1, -1, lif::c_layers::BOSS_BULLETS } }
+	{ 102, lif::BulletInfo{ 102, 4, 1, -1, lif::c_layers::BOSS_BULLETS } },
+	// missile
+	{ 103, lif::BulletInfo{ 103, 4, 0.5, -1, lif::c_layers::BOSS_BULLETS } },
 };
 
 }
@@ -66,6 +69,8 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 	case 102:
 		return std::unique_ptr<lif::Bullet>(new lif::FreeBullet(pos,
 			lif::angleBetween(pos, target), bulletsInfo[infoId], source));
+	case 103:
+		return std::unique_ptr<lif::Bullet>(new lif::Missile(pos, target, bulletsInfo[infoId], source));
 	default:
 		throw std::invalid_argument("No bullet with id " + lif::to_string(infoId) + "!");
 	}

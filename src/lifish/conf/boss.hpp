@@ -48,6 +48,11 @@ namespace conf {
 			constexpr auto FLAME_TILE_HEIGHT = 4;
 			constexpr auto FLAME_TILE_WIDTH = 5;
 			constexpr auto FLAME_DAMAGE = 3;
+			const sf::Time MISSILES_WINDUP_TIME = sf::seconds(1);
+			const sf::Time MISSILES_DAMAGE_TIME = sf::seconds(1.5);
+			const sf::Time MISSILES_RECOVER_TIME = sf::seconds(2);
+			// Missile damage and speed are in BulletFactory
+			constexpr auto N_MISSILES = 12;
 		}
 	}
 }

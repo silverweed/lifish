@@ -41,7 +41,7 @@ void Animated::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
 Animation* Animated::getAnimation(const std::string& name) {
 	auto it = animations.find(name);
-	if (it == animations.end()) 
+	if (it == animations.end())
 		return nullptr;
 
 	return &it->second;

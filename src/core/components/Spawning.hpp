@@ -28,8 +28,8 @@ class Spawning : public lif::Component {
 	unsigned _nSpawned = 0;
 
 
-	/** Returns the condition for "spawn on death". 
-	 *  Since it's a common case, use as default constructor argument. 
+	/** Returns the condition for "spawn on death".
+	 *  Since it's a common case, use as default constructor argument.
 	 */
 	SpawnCondition _spawnOnDeath(const lif::Killable*);
 

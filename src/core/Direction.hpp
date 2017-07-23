@@ -72,11 +72,11 @@ Direction getDirection(const sf::Vector2i& from, const sf::Vector2i& to);
 template<typename T>
 sf::Vector2<T> towards(const sf::Vector2<T>& start, Direction dir, float scale = 1) {
 	switch (dir) {
-	case Direction::UP: return scale * start + sf::Vector2<T>(0, -1);
-	case Direction::DOWN: return scale * start + sf::Vector2<T>(0, 1);
-	case Direction::LEFT: return scale * start + sf::Vector2<T>(-1, 0);
-	case Direction::RIGHT: return scale * start + sf::Vector2<T>(1, 0);
-	default: return scale * start;
+	case Direction::UP:    return start + scale * sf::Vector2<T>(0, -1);
+	case Direction::DOWN:  return start + scale * sf::Vector2<T>(0, 1);
+	case Direction::LEFT:  return start + scale * sf::Vector2<T>(-1, 0);
+	case Direction::RIGHT: return start + scale * sf::Vector2<T>(1, 0);
+	default: return start;
 	}
 }
 

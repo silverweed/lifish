@@ -9,9 +9,14 @@ namespace lif {
 
 namespace ai {
 
-lif::Direction directions[] = {
+std::array<lif::Direction, 4> directions = {
 	D::UP, D::RIGHT, D::DOWN, D::LEFT
 };
+
+static std::uniform_int_distribution<> rand_dir_dist(0, directions.size());
+lif::Direction random_direction() {
+	return directions[rand_dir_dist(lif::rng)];
+}
 
 lif::Direction select_random_viable(
 		const lif::AxisMoving& moving,
@@ -19,7 +24,7 @@ lif::Direction select_random_viable(
 		const lif::Direction opp,
 		bool forceChange)
 {
-	lif::Direction dirs[4];
+	lif::Direction dirs[directions.size()];
 	unsigned short n = 0;
 	for (const auto& d : directions)
 		if (lm.canGo(moving, d) && d != opp && !(forceChange && moving.getDirection() == d))
@@ -34,7 +39,7 @@ lif::Direction seeing_player(const lif::LevelManager& lm, const lif::AxisSighted
 	const auto& seen = sighted.entitiesSeen();
 	lif::Direction dir = lif::Direction::NONE;
 	unsigned short dist = -1; // "infinity"
-	for (unsigned i = 0; i < 4; ++i) {
+	for (unsigned i = 0; i < directions.size(); ++i) {
 		for (const auto& pair : seen[i]) {
 			if (lm.isPlayer(*pair.first) && pair.second < dist) {
 				dir = static_cast<lif::Direction>(i);
