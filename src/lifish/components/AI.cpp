@@ -4,7 +4,7 @@
 
 using lif::AI;
 
-AI::AI(lif::Entity& owner, AIFunction ai)
+AI::AI(lif::Entity& owner, lif::AIFunction ai)
 	: lif::Component(owner)
 	, ai(ai)
 {

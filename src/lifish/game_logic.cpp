@@ -163,8 +163,8 @@ void lif::game_logic::bonusGrabLogic(lif::Entity *e, lif::BaseLevelManager& blm,
 }
 
 std::vector<lif::BaseLevelManager::GameLogicFunc> lif::game_logic::functions = {
-	bombDeployLogic,
-	bonusGrabLogic,
-	scoredKillablesLogic,
-	spawningLogic
+	lif::game_logic::bombDeployLogic,
+	lif::game_logic::bonusGrabLogic,
+	lif::game_logic::scoredKillablesLogic,
+	lif::game_logic::spawningLogic
 };

@@ -116,7 +116,7 @@ std::string Entity::toString() const {
 }
 
 std::string Entity::getTypeName() const {
-	auto name = DEMANGLE(typeid(*this).name());
+	std::string name = DEMANGLE(typeid(*this).name());
 	const auto idx = name.find_last_of(":");
 	if (idx != std::string::npos && idx < name.length() - 1)
 		name = name.substr(idx + 1);

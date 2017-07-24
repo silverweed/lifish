@@ -43,9 +43,11 @@ void Collider::update() {
 	lif::Component::update();
 	
 	if (onCollision)
-		for (auto cld : colliding)
+		for (int i = 0; i < colliding.size(); ++i) {
+			auto cld = colliding[i];
 			if (!cld.expired())
 				onCollision(*cld.lock());
+		}
 }
 
 bool Collider::collidesWithSolid() const {

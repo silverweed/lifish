@@ -92,7 +92,7 @@ void InterlevelContext::_setPromptContinue() {
 		}
 	}
 	unsigned idx = 0;
-	while  (!mustPromptPlayer[idx] && idx < mustPromptPlayer.size()) ++idx;
+	while (idx < mustPromptPlayer.size() && !mustPromptPlayer[idx]) ++idx;
 	if (idx == mustPromptPlayer.size()) {
 		// all players alive or without continues: skip this phase
 		setGettingReady(lm.getLevel()->getInfo().levelnum + 1);

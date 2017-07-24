@@ -142,13 +142,9 @@ sf::Vector2f AlienPredator::_findTunneledPosition(const lif::LevelManager& lm) c
 	if (tiles.size() == 0)
 		return newPos;
 
-	std::uniform_int_distribution<short> dist(0, tiles.size());
+	std::uniform_int_distribution<short> dist(0, tiles.size() - 1);
 	auto it = tiles.begin();
 	std::advance(it, dist(lif::rng));
-
-	// FIXME: this should never happen, but it does in some cases.
-	if (it->x < 1 || it->y < 1 || it->x > lvinfo.width || it->y > lvinfo.height)
-		return newPos;
 
 	return sf::Vector2f(static_cast<int>(TILE_SIZE) * *it);
 }
