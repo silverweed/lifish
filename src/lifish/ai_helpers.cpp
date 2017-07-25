@@ -9,9 +9,9 @@ namespace lif {
 
 namespace ai {
 
-std::array<lif::Direction, 4> directions = {
+std::array<lif::Direction, 4> directions = {{
 	D::UP, D::RIGHT, D::DOWN, D::LEFT
-};
+}};
 
 static std::uniform_int_distribution<> rand_dir_dist(0, directions.size());
 lif::Direction random_direction() {
