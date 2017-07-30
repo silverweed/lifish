@@ -51,3 +51,5 @@ at the moment it's not really a good idea to do so, as:
 
 ### LICENSE ###
 Copyright (c) Giacomo Parolini, 2017
+
+See the LICENSE file for licensing information.

@@ -1,16 +1,38 @@
-lifish - an open source BOOM-like game
-Copyright (C) 2015 Giacomo Parolini
+                             LIFISH LICENSE
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Copyright (c) 2017 Giacomo Parolini
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+------------------------------
+  Preamble
+------------------------------
+Note that these terms only apply to the source code, NOT to game assets
+(such as images, audio and all similar multimedia) included in Lifish.
+Such assets may NOT be used under ANY circumstance.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+------------------------------
+  Rights granted
+------------------------------
+Permission is granted to anyone to obtain and study the source code,
+as well as to modify and redistribute it freely, subject to the
+following restrictions:
 
+1. The origin of this software must not be misrepresented; you must not
+   claim that you wrote the original software. If you use this software
+   in a product, an acknowledgment to the author in the product documentation
+   is required, providing a link to the software repository, or any other
+   URL where the original software (including this license) can be obtained.
+
+2. Altered source versions must be plainly marked as such, and must not be
+   misrepresented as being the original software.
+
+3. This notice may not be removed or altered from any source distribution.
+
+4. This software, as well as modifications and works derived from it,
+   may NOT be sold or otherwise used for commercial purposes.
+
+-------------------------------
+  Warranty
+-------------------------------
+This software is provided 'as-is', without any express or implied
+warranty. In no event will the authors be held liable for any damages
+arising from the use of this software.
