@@ -28,19 +28,21 @@ See later for instructions on how to build the game from the sources.
 * [nlohmann/json](https://github.com/nlohmann/json) (included in the source)
 
 ### Building ###
+The graphics you'll find in `assets` is a placeholder. No graphic asset is even close to being final, and the final
+assets won't be uploaded on this repo, as they'll be available for purchase in the official release.
+
+#### Linux, OS X, BSD, etc ####
 The game can be compiled on *nix (tested on Linux, OSX and FreeBSD) via `cmake . && make`
 (you need to have SFML >=2.4 installed).
 
-On Windows, the game can be compiled using MinGW-w64 (I use the TDM-GCC compiler).
-Avoid the Visual Studio compiler, as it lacks decent C++11 support (it can't compile nlohmann/json).
+#### Windows ####
+On Windows you can either use VS2015 (or later), or a Unix-like environment like MinGW-w64 (I use the TDM-GCC compiler).
 
-To get a working build environment, you can follow the steps on
+If you use the latter, you can follow the steps on
 [this guide](http://ascend4.org/Setting_up_a_MinGW-w64_build_environment) until the *MinGW-w64*
 chapter (included -- you can skip the *First steps* section, as all the listed dependencies like Python etc
 aren't required). Remember to `cmake -G "MSYS Makefiles" .`, otherwise cmake will probably
 generate a VS makefile.
-
-**IMPORTANT**: the current game graphics is a placeholder. No graphic asset is even close to being final.
 
 #### Multithreaded mode ####
 The game can be compiled in multithreaded mode (separate logic and rendering), but
