@@ -123,7 +123,7 @@ constexpr float centerY(sf::Rect<T> innerBounds, sf::Rect<R> outerBounds) {
 }
 
 template<typename T, typename R>
-#if __cplusplus == 201103L
+#ifdef _MSC_VER
 inline Angle angleBetween(sf::Vector2<T> a, sf::Vector2<R> b) {
 #else
 constexpr Angle angleBetween(sf::Vector2<T> a, sf::Vector2<R> b) {
