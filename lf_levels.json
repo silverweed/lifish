@@ -2,8 +2,8 @@
 	"name": "Original Lifish levels",
 	"author": "Giacomo Parolini",
 	"difficulty": "average",
-	"created": "2017-06-24 13:12:40 +0200",
-	"comment": "Created with LifishEdit 0.7.2",
+	"created": "2017-08-03 14:49:42 +0200",
+	"comment": "Created with LifishEdit 0.7.5",
 	"tracks": [
 		{
 			"name": "DMZ beat",
@@ -26,7 +26,7 @@
 			"author": "Luca Barazzetta",
 			"loop": {
 				"start": 3.428,
-				"length": 96
+				"length": 96.0
 			}
 		}
 	],
@@ -34,122 +34,122 @@
 		{
 			"name": "soldier",
 			"ai": 0,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"simple"
 				],
 				"id": 1,
-				"fireRate": 1
+				"fireRate": 1.0
 			}
 		},
 		{
 			"name": "sgt. cool",
 			"ai": 0,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"simple"
 				],
 				"id": 1,
-				"fireRate": 2
+				"fireRate": 2.0
 			}
 		},
 		{
 			"name": "thick lizzy",
 			"ai": 1,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"simple",
 					"blocking"
 				],
 				"id": 9,
-				"fireRate": 1,
-				"blockTime": 200
+				"fireRate": 1.0,
+				"blockTime": 200.0
 			}
 		},
 		{
 			"name": "mean-o-taur",
 			"ai": 2,
-			"speed": 5,
+			"speed": 5.0,
 			"attack": {
 				"type": [
 					"contact"
 				],
-				"fireRate": 5
+				"fireRate": 5.0
 			}
 		},
 		{
 			"name": "gunner",
 			"ai": 1,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"blocking"
 				],
 				"id": 3,
-				"fireRate": 10,
-				"blockTime": 150
+				"fireRate": 10.0,
+				"blockTime": 150.0
 			}
 		},
 		{
 			"name": "thing",
 			"ai": 3,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"simple",
 					"blocking"
 				],
 				"id": 4,
-				"fireRate": 1,
-				"blockTime": 250
+				"fireRate": 1.0,
+				"blockTime": 250.0
 			}
 		},
 		{
 			"name": "ghost",
 			"ai": 4,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"contact",
 					"ranged"
 				],
-				"fireRate": 2
+				"fireRate": 2.0
 			}
 		},
 		{
 			"name": "smoulder",
 			"ai": 3,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"blocking",
 					"ranged"
 				],
 				"id": 5,
-				"fireRate": 4,
-				"blockTime": 260,
+				"fireRate": 4.0,
+				"blockTime": 260.0,
 				"tileRange": 4
 			}
 		},
 		{
 			"name": "skully",
 			"ai": 3,
-			"speed": 1,
+			"speed": 1.0,
 			"attack": {
 				"type": [
 					"blocking"
 				],
 				"id": 6,
-				"fireRate": 2
+				"fireRate": 2.0
 			}
 		},
 		{
 			"name": "h.r. giggler",
 			"ai": 3,
-			"speed": 2,
+			"speed": 2.0,
 			"attack": {
 				"type": [
 					"simple",
@@ -157,7 +157,7 @@
 				],
 				"id": 7,
 				"fireRate": 0.7,
-				"blockTime": 650
+				"blockTime": 650.0
 			}
 		}
 	],
@@ -257,7 +257,7 @@
 				"fixed": 1,
 				"breakable": 1
 			},
-			"tilemap": "2032A13231A2302310100010001013012121313121210010121222121010B1B121010121B1B2121210X012121222B221111122B22B101011Y110101B0101010001010100101012021010103131A13231A1313212120010021212232321313123232",
+			"tilemap": "2032A13231A2302310100010001013012121313121210010131222131010B1B131010131B1B2121310X013121222B221111122B22B101011Y110101B0101010001010100101012021010103131A13231A1313212120010021212232321313123232",
 			"effects": []
 		},
 		{
@@ -271,7 +271,7 @@
 				"fixed": 1,
 				"breakable": 1
 			},
-			"tilemap": "303030B2B0303030121210101212103230300200303230101210C0121010B2300203020032B212101222101212B0300B222B0030B01012121212101000320003000230031212X121Y21213003200030002300010121212121010B0300B232B0030B",
+			"tilemap": "3030300200303030121210101212103230300200303230101210C0121010B230B20302B032B212101222101212B0300022200030B01012121212101000320003000230031212X121Y21213003200030002300010121212121010B0300023200030B",
 			"effects": []
 		},
 		{
@@ -285,7 +285,7 @@
 				"fixed": 1,
 				"breakable": 1
 			},
-			"tilemap": "B1C33C0A0C33C1B021332222233120032122121221230013211222112310320B0000000B023010100B0B00101003000121210003011232A232A232112121101210112123000000200000030230120302103200120121A1210210X0030200020300Y",
+			"tilemap": "B1C33C0A0C33C1B021332222233120032122121221230013211222112310320B0000000B023010100B0B00101003000121210003011232A232A232112121101210112123000000200000030210120302101200120121A1210210X0030233320300Y",
 			"effects": []
 		},
 		{
