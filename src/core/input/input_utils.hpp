@@ -11,6 +11,9 @@ namespace kb {
 
 	/** @return The display name of the given key */
 	std::string keyToString(sf::Keyboard::Key key);
+
+	/** @return The alphanumeric char corresponding to the given key, or -1 if non-alphanumeric. */
+	char keyToAlnum(sf::Keyboard::Key key);
 }
 
 namespace joystick {

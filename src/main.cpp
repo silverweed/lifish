@@ -223,11 +223,11 @@ int main(int argc, char **argv) {
 
 	// load static screens
 	ui.load(window, { "home.json", "about.json", "pause.json" });
-	// load dynamic screens
-	ui.add(new lif::ui::ControlsScreen(window, lif::options.windowSize));
-	ui.add(new lif::ui::PreferencesScreen(window, lif::options.windowSize));
-	ui.add(new lif::ui::LoadScreen(window, lif::options.windowSize));
-	ui.add(new lif::ui::SaveScreen(window, lif::options.windowSize));
+	// create dynamic screens
+	ui.add<lif::ui::ControlsScreen>(window, lif::options.windowSize);
+	ui.add<lif::ui::PreferencesScreen>(window, lif::options.windowSize);
+	ui.add<lif::ui::LoadScreen>(window, lif::options.windowSize);
+	ui.add<lif::ui::SaveScreen>(window, lif::options.windowSize);
 
 	// Create pointer to game context
 	std::unique_ptr<lif::GameContext> game;
@@ -322,10 +322,10 @@ int main(int argc, char **argv) {
 #endif
 		}
 
-		// FIXME 
 		if (ui.mustSaveGame()) {
-			lif::SaveManager::saveGame("save.lifish", game->getLM());
-			std::cerr << "Saved game in save.lifish." << std::endl;
+			const auto saveName = ui.getSaveName() + ".lifish";
+			lif::SaveManager::saveGame(saveName, game->getLM());
+			std::cerr << "Saved game in " << saveName << "." << std::endl;
 		}
 
 

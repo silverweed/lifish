@@ -152,3 +152,8 @@ void Screen::_saveMousePos(int x, int y) {
 	latestMousePos.x = x;
 	latestMousePos.y = y;
 }
+
+void Screen::_triggerAction(lif::ui::Action action) {
+	actionTriggered = action;
+	wasActionTriggered = true;
+}

@@ -2,7 +2,6 @@
 
 #include <array>
 #include <ostream>
-#include <SFML/Window/Keyboard.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics.hpp>
 #include "Angle.hpp"
@@ -24,7 +23,7 @@ template<class T, size_t ROWS, size_t COLS>
 using Matrix = std::array<std::array<T, COLS>, ROWS>;
 
 /// Polyfill ///
-template<typename T> 
+template<typename T>
 constexpr T abs(T num) {
 #ifdef IS_APPLE
 	// Apple Clang is a "good" compiler...
@@ -106,22 +105,6 @@ constexpr T manhattanDistance(sf::Vector2<T> tileA, sf::Vector2<R> tileB) {
 	return lif::abs(tileA.x - tileB.x) + lif::abs(tileA.y - tileB.y);
 }
 
-/** @return A float indicating the X coordinate where `innerBounds` is to be positioned in 
- *  order to be horizontally centered relatively to `outerBounds`.
- */
-template<typename T, typename R>
-constexpr float centerX(sf::Rect<T> innerBounds, sf::Rect<R> outerBounds) {
-	return outerBounds.left + (outerBounds.width - innerBounds.width) / 2.;
-}
-
-/** @return A float indicating the Y coordinate where `innerBounds` is to be positioned in 
- *  order to be vertically centered relatively to `outerBounds`.
- */
-template<typename T, typename R>
-constexpr float centerY(sf::Rect<T> innerBounds, sf::Rect<R> outerBounds) {
-	return outerBounds.top + (outerBounds.height - innerBounds.height) / 2.;
-}
-
 template<typename T, typename R>
 #ifdef _MSC_VER
 inline Angle angleBetween(sf::Vector2<T> a, sf::Vector2<R> b) {
@@ -140,6 +123,22 @@ inline sf::Vector2f normalized(const sf::Vector2<T>& v) {
 	if (norm == 0)
 		return v;
 	return sf::Vector2f(v.x / norm, v.y / norm);
+}
+
+/** @return A float indicating the X coordinate where `innerBounds` is to be positioned in
+ *  order to be horizontally centered relatively to `outerBounds`.
+ */
+template<typename T, typename R>
+constexpr float centerX(sf::Rect<T> innerBounds, sf::Rect<R> outerBounds) {
+	return outerBounds.left + (outerBounds.width - innerBounds.width) / 2.;
+}
+
+/** @return A float indicating the Y coordinate where `innerBounds` is to be positioned in
+ *  order to be vertically centered relatively to `outerBounds`.
+ */
+template<typename T, typename R>
+constexpr float centerY(sf::Rect<T> innerBounds, sf::Rect<R> outerBounds) {
+	return outerBounds.top + (outerBounds.height - innerBounds.height) / 2.;
 }
 
 /** Given the bounding box of something, returns the coordinates

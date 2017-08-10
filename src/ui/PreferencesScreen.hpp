@@ -31,7 +31,10 @@ class PreferencesScreen : public lif::ui::Screen {
 	lif::ui::Action _changeVolume(VolumeType which, VolumeAction what);
 	void _setupCallbacks();
 	void _setupTransitions();
+
 public:
+	static constexpr const char *SCREEN_NAME = "preferences";
+
 	explicit PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& size);
 };
 

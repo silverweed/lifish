@@ -4,27 +4,32 @@
 #include "Interactable.hpp"
 #include "game.hpp"
 #include "utils.hpp"
+#include "SaveScreen.hpp"
 #include <memory>
 #include <SFML/Graphics.hpp>
 
 using lif::ui::LoadScreen;
 
+namespace lif {
+	namespace ui {
+		extern std::string screenCallbackArg;
+	}
+}
+
 LoadScreen::LoadScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	: lif::ui::Screen(window, sz)
 {
-	name = "load";
+	name = SCREEN_NAME;
 	parent = "home";
 	_loadBGSprite(lif::getAsset("graphics", "screenbg1.png"));
 
 	/* Layout:
 	 *
 	 * Load
-	 * [save1]
-	 * [save2]
+	 * [x][save1]
+	 * [x][save2]
 	 * --
-	 * 
-	 * [save1]
-	 * [new save]
+	 * [Back]
 	 */
 	const auto font = lif::getAsset("fonts", lif::fonts::SCREEN);
 	const auto win_bounds = sf::FloatRect(0, 0, sz.x, sz.y);
@@ -83,6 +88,7 @@ void LoadScreen::onLoad() {
 
 	unsigned col = 0,
 	         row = 0;
+	// These variables store the previous load callback and delete callback
 	std::string prevLcbname, prevDcbname;
 	for (const auto& save : saves) {
 		// Setup delete button
@@ -90,10 +96,18 @@ void LoadScreen::onLoad() {
 		text->setCharacterSize(size);
 		const auto dcbname = _newUniqueId();
 		interactables[dcbname] = std::make_unique<lif::ui::Interactable>(text);
-		callbacks[dcbname] = _createDeleteCallback(save.path);
+		callbacks[dcbname] = [this, save] () {
+			_createDeleteCallback(save.path)();
+			// Reload load screen to refresh list of save files
+			lif::ui::screenCallbackArg = "load";
+			return lif::ui::Action::SWITCH_SCREEN;
+		};
 
 		// Setup load button
-		text = new lif::ShadedText(font, save.displayName.substr(0, 10), pos + sf::Vector2f(35, 0));
+		text = new lif::ShadedText(font,
+			save.displayName.substr(0, lif::ui::SaveScreen::MAX_SAVE_FILE_NAME_LEN)
+				+ " (lv " + lif::to_string(save.level) + ")",
+			pos + sf::Vector2f(35, 0));
 		text->setCharacterSize(size);
 		const auto lcbname = _newUniqueId();
 		interactables[lcbname] = std::make_unique<lif::ui::Interactable>(text);
@@ -110,9 +124,9 @@ void LoadScreen::onLoad() {
 		// Calculate new position
 		if (++col == 10) {
 			col = 0;
-			pos.x += 200;
+			pos.x += 300;
 			pos.y = 75;
-			if (++row == 3)
+			if (++row == 2)
 				break;
 		} else {
 			pos.y += 30;

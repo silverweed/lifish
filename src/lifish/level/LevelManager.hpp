@@ -71,7 +71,7 @@ class LevelManager final : public lif::BaseLevelManager, public sf::Drawable {
 
 
 	/** Unowned references to bombs currently deployed by players */
-	Matrix<std::weak_ptr<lif::Bomb>, lif::MAX_PLAYERS, lif::conf::player::MAX_MAX_BOMBS> bombs;
+	lif::Matrix<std::weak_ptr<lif::Bomb>, lif::MAX_PLAYERS, lif::conf::player::MAX_MAX_BOMBS> bombs;
 
 
 	/** Adds the given entity to `entities` */

@@ -6,6 +6,7 @@
 #include "Screen.hpp"
 #include "BaseEventHandler.hpp"
 #include "screen_callbacks.hpp"
+#include "SaveScreen.hpp"
 #include <exception>
 #include <iostream>
 
@@ -33,6 +34,11 @@ void UI::load(const sf::RenderWindow& window, std::initializer_list<std::string>
 bool UI::handleEvent(sf::Window& window, sf::Event event) {
 	if (curScreen == nullptr)
 		return false;
+
+	if (curScreen->pollTriggeredAction()) {
+		_processAction(curScreen->getTriggeredAction());
+		return true;
+	}
 
 	if (curScreen->handleEvent(window, event))
 		return true;
@@ -78,10 +84,6 @@ bool UI::handleEvent(sf::Window& window, sf::Event event) {
 	return false;
 }
 
-void UI::add(lif::ui::Screen *screen) {
-	screens[screen->getName()] = std::unique_ptr<lif::ui::Screen>(screen);
-}
-
 void UI::setOrigin(const sf::Vector2f& pos) {
 	lif::WithOrigin::setOrigin(pos);
 }
@@ -113,7 +115,11 @@ void UI::fireClick() {
 		if (it == lif::ui::screenCallbacks.end()) return;
 		action = it->second();
 	}
+	
+	_processAction(action);
+}
 
+void UI::_processAction(lif::ui::Action action) {
 	switch (action) {
 	case Action::EXIT:
 		// terminate the game
@@ -121,8 +127,9 @@ void UI::fireClick() {
 		lif::terminated = true;
 		break;
 	case Action::SAVE_GAME:
-		// TODO
 		saveGame = true;
+		saveName = static_cast<lif::ui::SaveScreen*>(curScreen)->getPrompt();
+		setCurrentToParent();
 		break;
 	case Action::LOAD_GAME:
 		loadGame = true;

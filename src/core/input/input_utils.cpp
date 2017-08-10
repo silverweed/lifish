@@ -159,3 +159,51 @@ std::string lif::kb::keyToString(sf::Keyboard::Key key) {
 	default: return "Unknown";
 	}
 }
+
+char lif::kb::keyToAlnum(sf::Keyboard::Key key) {
+#define ALPHA(x, X)  \
+	(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) \
+		? X : x)
+
+	switch (key) {
+		using K = sf::Keyboard::Key;
+	case K::A: return ALPHA('a', 'A');
+	case K::B: return ALPHA('b', 'B');
+	case K::C: return ALPHA('c', 'C');
+	case K::D: return ALPHA('d', 'D');
+	case K::E: return ALPHA('e', 'E');
+	case K::F: return ALPHA('f', 'F');
+	case K::G: return ALPHA('g', 'G');
+	case K::H: return ALPHA('h', 'H');
+	case K::I: return ALPHA('i', 'I');
+	case K::J: return ALPHA('j', 'J');
+	case K::K: return ALPHA('k', 'K');
+	case K::L: return ALPHA('l', 'L');
+	case K::M: return ALPHA('m', 'M');
+	case K::N: return ALPHA('n', 'N');
+	case K::O: return ALPHA('o', 'O');
+	case K::P: return ALPHA('p', 'P');
+	case K::Q: return ALPHA('q', 'Q');
+	case K::R: return ALPHA('r', 'R');
+	case K::S: return ALPHA('s', 'S');
+	case K::T: return ALPHA('t', 'T');
+	case K::U: return ALPHA('u', 'U');
+	case K::V: return ALPHA('v', 'V');
+	case K::W: return ALPHA('w', 'W');
+	case K::X: return ALPHA('x', 'X');
+	case K::Y: return ALPHA('y', 'Y');
+	case K::Z: return ALPHA('z', 'Z');
+	case K::Num0: case K::Numpad0: return '0';
+	case K::Num1: case K::Numpad1: return '1';
+	case K::Num2: case K::Numpad2: return '2';
+	case K::Num3: case K::Numpad3: return '3';
+	case K::Num4: case K::Numpad4: return '4';
+	case K::Num5: case K::Numpad5: return '5';
+	case K::Num6: case K::Numpad6: return '6';
+	case K::Num7: case K::Numpad7: return '7';
+	case K::Num8: case K::Numpad8: return '8';
+	case K::Num9: case K::Numpad9: return '9';
+	default: return -1;
+	}
+#undef ALPHA
+}

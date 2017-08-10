@@ -16,7 +16,7 @@ using Action = lif::ui::Action;
 PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	: lif::ui::Screen(window, sz)
 {
-	name = "preferences";
+	name = SCREEN_NAME;
 	parent = "home";
 	_loadBGSprite(lif::getAsset("graphics", "screenbg1.png"));
 

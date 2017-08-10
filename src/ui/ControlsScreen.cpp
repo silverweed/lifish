@@ -13,10 +13,10 @@ using lif::ui::Interactable;
 using Action = lif::ui::Action;
 using namespace lif::controls;
 
-ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2u& size) 
+ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2u& size)
 	: lif::ui::Screen(window, size)
 {
-	name = "controls";
+	name = SCREEN_NAME;
 	parent = "preferences";
 	_loadBGSprite(lif::getAsset("graphics", "screenbg1.png"));
 

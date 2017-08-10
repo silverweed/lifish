@@ -27,6 +27,8 @@ private:
 	friend class lif::ui::ScreenBuilder;
 
 	sf::Vector2i latestMousePos;
+	bool wasActionTriggered = false;
+	lif::ui::Action actionTriggered = lif::ui::Action::DO_NOTHING;
 
 	void _saveMousePos(int x, int y);
 
@@ -68,6 +70,10 @@ protected:
 	void _loadBGSprite(const std::string& bgSpritePath);
 	void _updateSelectedMouse();
 	void _updateSelectedJoystick();
+	/** Manually triggers an Action, as if an interactable was clicked. Useful for
+	 *  raising actions upon keyboard shortcuts and similar.
+	 */
+	void _triggerAction(lif::ui::Action action);
 
 public:
 	explicit Screen(const std::string& layoutFileName, const sf::RenderWindow& window, const sf::Vector2u& size);
@@ -85,6 +91,10 @@ public:
 	bool hasCallback(const std::string& name) const;
 	lif::ui::Action fireCallback(const std::string& name);
 
+	/** @return Whether we have triggered an action or not. Upon this query, the action trigger resets. */
+	bool pollTriggeredAction() { bool t = wasActionTriggered; return wasActionTriggered = false, t; }
+	lif::ui::Action getTriggeredAction() const { return actionTriggered; }
+
 	/** This may be used by child classes to do specific logic;
 	 *  @return true if signal was caught and should be ignored by UI's event loop.
 	 */
@@ -93,6 +103,7 @@ public:
 	/** Called whenever the screen is displayed */
 	virtual void onLoad() {}
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
 	void setOrigin(const sf::Vector2f& pos) override;
 };
 

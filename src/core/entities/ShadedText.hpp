@@ -17,12 +17,12 @@ public:
 	ShadedText() {}
 	ShadedText(
 		const std::string& fontname,
-		const std::string& str, 
+		const std::string& str,
 		sf::Vector2f pos = sf::Vector2f(0, 0),
 		sf::Color fgcol = sf::Color::White,
 		sf::Color bgcol = sf::Color::Black);
 
-	sf::FloatRect getGlobalBounds() const; 
+	sf::FloatRect getGlobalBounds() const;
 	std::string getString() const;
 
 	void setStyle(sf::Text::Style style);

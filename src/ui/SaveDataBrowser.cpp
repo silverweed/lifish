@@ -9,10 +9,10 @@ using lif::SaveDataBrowser;
 
 SaveDataBrowser::SaveDataBrowser() : idnum(0) {}
 
-std::vector<SaveDataBrowser::SaveFile> SaveDataBrowser::browseSaveData(std::string path) const {
+auto SaveDataBrowser::browseSaveData(std::string path) const -> std::vector<SaveDataBrowser::SaveFile> {
 	std::vector<SaveDataBrowser::SaveFile> files;
 
-	DIR *dir = opendir(path.c_str());
+	auto dir = opendir(path.c_str());
 	if (dir == NULL)
 		return files;
 	
@@ -23,8 +23,15 @@ std::vector<SaveDataBrowser::SaveFile> SaveDataBrowser::browseSaveData(std::stri
 			SaveDataBrowser::SaveFile file;
 			file.displayName = std::string(ent->d_name, strlen(ent->d_name) - strlen(suffix));
 			file.path = path + lif::DIRSEP + ent->d_name;
-			file.level = 0; // TODO
-			files.emplace_back(file);
+			try {
+				auto savejson = nlohmann::json::parse(std::ifstream(file.path));
+				file.level = savejson["level"];
+				files.emplace_back(file);
+			} catch (const std::exception& e) {
+				file.level = 0;
+				std::cerr << "Error reading save file " << file.displayName << ": "
+					<< e.what() << std::endl;
+			}
 		}
 		ent = readdir(dir);
 	}

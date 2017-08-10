@@ -58,39 +58,70 @@ void ScreenBuilder::_parseStyles(lif::ui::Screen& screen, const json& stylesJSON
 	}
 }
 
-// TODO: refactor this and _addImage to DRY
+// Define some useful mixins
+#define FILL_STYLE_PROPERTIES(obj) \
+	{ \
+		auto it = obj.find("interactable"); \
+		interactable = it != obj.end() && it->get<bool>(); \
+		it = obj.find("consecutive"); \
+		consecutive = it != obj.end() && it->get<bool>(); \
+		it = obj.find("style"); \
+		if (it != obj.end()) \
+			style_name = it->get<std::string>(); \
+		it = obj.find("position"); \
+		if (it != obj.end()) { \
+			manualPosition.x = (*it)[0].get<int>(); \
+			if (manualPosition.x < 0) \
+				manualPosition.x += lif::WINDOW_WIDTH; \
+			manualPosition.y = (*it)[1].get<int>(); \
+			if (manualPosition.y < 0) \
+				manualPosition.y += lif::WINDOW_HEIGHT; \
+		} \
+	}
+
+#define COMPUTE_STYLE_OVERRIDE(obj) \
+	{ \
+		auto it = obj.find("style-override"); \
+		if (it != obj.end()) \
+			for (auto sit = it->begin(); sit != it->end(); ++sit) \
+				add_style_property(style, sit.key(), sit.value()); \
+	} \
+
+#define COMPUTE_POSITION(obj) \
+	if (manualPosition.x >= 0 && manualPosition.y >= 0) \
+		obj->setPosition(manualPosition); \
+	else { \
+		const auto bounds = obj->getGlobalBounds(); \
+		const auto align = style.hAlign.length() > 0 ? style.hAlign : "center"; \
+		if (consecutive) { \
+			pos.x += prevElemBounds.width + style.spacing; \
+			rowWidths.back() = prevElemBounds.width + style.spacing + bounds.width; \
+			rowAligns.back() = align; \
+		} else { \
+			pos.x = 0; \
+			pos.y += prevElemBounds.height + style.spacing; \
+			rowWidths.emplace_back(bounds.width); \
+			rowAligns.emplace_back(align); \
+			totHeight += bounds.height + style.spacing; \
+		} \
+		obj->setPosition(pos); \
+		toBeAligned.emplace_back(obj, rowWidths.size() - 1); \
+		prevElemBounds = bounds; \
+	} \
+
 void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 	bool interactable = false, consecutive = false;
 	sf::Vector2f manualPosition(-1, -1);
 	std::string style_name = "default";
-	{
-		auto it = text.find("interactable");
-		interactable = it != text.end() && it->get<bool>();
-		it = text.find("consecutive");
-		consecutive = it != text.end() && it->get<bool>();
-		it = text.find("style");
-		if (it != text.end())
-			style_name = it->get<std::string>();
-		it = text.find("position");
-		if (it != text.end()) {
-			manualPosition.x = (*it)[0].get<int>();
-			if (manualPosition.x < 0)
-				manualPosition.x += lif::WINDOW_WIDTH;
-			manualPosition.y = (*it)[1].get<int>();
-			if (manualPosition.y < 0)
-				manualPosition.y += lif::WINDOW_HEIGHT;
-		}
-	}
+
+	FILL_STYLE_PROPERTIES(text)
+
 	auto newtxt = new lif::ShadedText;
 	auto style = screen.styles[style_name];
-	{
-		auto it = text.find("style-override");
-		if (it != text.end())
-			for (auto sit = it->begin(); sit != it->end(); ++sit)
-				add_style_property(style, sit.key(), sit.value());
-	}
 	
-	// set shadow 
+	COMPUTE_STYLE_OVERRIDE(text)
+
+	// set shadow
 	newtxt->setShadowSpacing(3.5, 3);
 	newtxt->setBGColor(sf::Color::Black);
 	// set char size
@@ -101,26 +132,7 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 	newtxt->setString(convert_special_string(text["string"].get<std::string>()));
 
 	// set position
-	if (manualPosition.x >= 0 && manualPosition.y >= 0)
-		newtxt->setPosition(manualPosition);
-	else {
-		const auto bounds = newtxt->getGlobalBounds();
-		const auto align = style.hAlign.length() > 0 ? style.hAlign : "center";
-		if (consecutive) {
-			pos.x += prevElemBounds.width + style.spacing;
-			rowWidths.back() = prevElemBounds.width + style.spacing + bounds.width;
-			rowAligns.back() = align;
-		} else {
-			pos.x = 0;
-			pos.y += prevElemBounds.height + style.spacing;
-			rowWidths.emplace_back(bounds.width);
-			rowAligns.emplace_back(align);
-			totHeight += bounds.height + style.spacing;
-		}
-		newtxt->setPosition(pos);
-		toBeAligned.emplace_back(newtxt, rowWidths.size() - 1);
-		prevElemBounds = bounds;
-	}
+	COMPUTE_POSITION(newtxt)
 
 	if (interactable) {
 		const auto name = text["name"].get<std::string>();
@@ -135,59 +147,21 @@ void ScreenBuilder::_addImage(lif::ui::Screen& screen, const json& image) {
 	bool interactable = false, consecutive = false;
 	sf::Vector2f manualPosition(-1, -1);
 	std::string style_name = "default";
-	{
-		auto it = image.find("interactable");
-		interactable = it != image.end() && it->get<bool>();
-		it = image.find("consecutive");
-		consecutive = it != image.end() && it->get<bool>();
-		it = image.find("style");
-		if (it != image.end())
-			style_name = it->get<std::string>();
-		it = image.find("position");
-		if (it != image.end()) {
-			manualPosition.x = (*it)[0].get<int>();
-			if (manualPosition.x < 0)
-				manualPosition.x += lif::WINDOW_WIDTH;
-			manualPosition.y = (*it)[1].get<int>();
-			if (manualPosition.y < 0)
-				manualPosition.y += lif::WINDOW_HEIGHT;
-		}
-	}
+
+	FILL_STYLE_PROPERTIES(image)
+
 	auto newimg = new sf::Sprite;
 	auto style = screen.styles[style_name];
-	{
-		auto it = image.find("style-override");
-		if (it != image.end())
-			for (auto sit = it->begin(); sit != it->end(); ++sit)
-				add_style_property(style, sit.key(), sit.value());
-	}
 	
+	COMPUTE_STYLE_OVERRIDE(image)
+
 	// set string
 	newimg->setTexture(*lif::cache.loadTexture(lif::getAsset("graphics", image["src"].get<std::string>())));
 	const auto size = image["size"];
 	newimg->setTextureRect(sf::IntRect(0, 0, size[0].get<int>(), size[1].get<int>()));
 
 	// set position
-	if (manualPosition.x >= 0 && manualPosition.y >= 0)
-		newimg->setPosition(manualPosition);
-	else {
-		const auto bounds = newimg->getGlobalBounds();
-		const auto align = style.hAlign.length() > 0 ? style.hAlign : "center";
-		if (consecutive) {
-			pos.x += prevElemBounds.width + style.spacing;
-			rowWidths.back() = prevElemBounds.width + style.spacing + bounds.width;
-			rowAligns.back() = align;
-		} else {
-			pos.x = 0;
-			pos.y += prevElemBounds.height + style.spacing;
-			rowWidths.emplace_back(bounds.width);
-			rowAligns.emplace_back(align);
-			totHeight += bounds.height + style.spacing;
-		}
-		newimg->setPosition(pos);
-		toBeAligned.emplace_back(newimg, rowWidths.size() - 1);
-		prevElemBounds = bounds;
-	}
+	COMPUTE_POSITION(newimg)
 
 	if (interactable) {
 		const auto name = image["name"].get<std::string>();

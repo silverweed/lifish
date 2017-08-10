@@ -28,6 +28,8 @@ class ControlsScreen : public lif::ui::Screen {
 	void _setupCallbacks();
 	void _setupTransitions();
 public:
+	static constexpr const char *SCREEN_NAME = "controls";
+
 	explicit ControlsScreen(const sf::RenderWindow& window, const sf::Vector2u& size);
 
 	void update() override;

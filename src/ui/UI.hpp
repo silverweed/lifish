@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "WindowContext.hpp"
 #include "LoadScreen.hpp"
+#include <sstream>
 
 namespace lif {
 
@@ -22,8 +23,12 @@ class UI final : public lif::WindowContext {
 	bool quitGame = false;
 	bool loadGame = false;
 	bool saveGame = false;
+	std::string saveName;
 
 	UI();
+
+	void _processAction(lif::ui::Action action);
+
 public:
 
 	static UI& getInstance() {
@@ -34,7 +39,15 @@ public:
 	/** Loads all screens from `scrNames` into `screens`. Will ignore already-loaded screens. */
 	void load(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames);
 	/** Adds a custom Screen to the screens (used to manage dynamic screens). */
-	void add(lif::ui::Screen *screen);
+	template<class T, class...Args>
+	void add(Args&&... args) {
+		if (screens.find(T::SCREEN_NAME) != screens.end()) {
+			std::stringstream ss;
+			ss << "Added 2 screens of type " << T::SCREEN_NAME << "!";
+			throw std::logic_error(ss.str());
+		}
+		screens[T::SCREEN_NAME] = std::make_unique<T>(args...);
+	}
 
 	/** The size of the UI is used to construct any screen loaded via `load`.
 	 *  This method should be called once immediately after loading the screens.
@@ -54,6 +67,7 @@ public:
 	const lif::SaveData& getLoadedData() const {
 		return static_cast<lif::ui::LoadScreen*>(curScreen)->getLoadedData();
 	}
+	std::string getSaveName() const { return saveName; }
 
 	/** UI-specific event loop, to be called when UI is active (instead of the main event loop) */
 	bool handleEvent(sf::Window& window, sf::Event evt) override;
