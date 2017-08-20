@@ -114,7 +114,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 		case sf::Keyboard::Subtract:
 			{
 				int lvnum = game.lm.getLevel()->getInfo().levelnum - 1;
-				if (lvnum < 1) 
+				if (lvnum < 1)
 					lvnum = game.ls.getLevelsNum();
 				game.lm.setLevel(game.ls, lvnum);
 				lif::musicManager->set(game.lm.getLevel()->get<lif::Music>()->getMusic())
@@ -124,10 +124,10 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 		case sf::Keyboard::BackSlash:
 			std::cout << _printEntitiesDetails(game.lm.getEntities());
 			break;
-		default: 
+		default:
 			break;
 		}
-	default: 
+	default:
 		break;
 	}
 	return false;
@@ -146,7 +146,7 @@ std::string _printEntitiesDetails(const lif::EntityGroup& entities) {
 	ss << "# Entities: " << count["all"] << "\n";
 	for (const auto& pair : count) {
 		if (pair.first == "all") continue;
-		ss << "    " << std::setw(largest) << std::left << pair.first << ": " 
+		ss << "    " << std::setw(largest) << std::left << pair.first << ": "
 			<< std::right << pair.second << "\n";
 	}
 	ss << std::endl;

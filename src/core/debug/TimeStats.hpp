@@ -18,11 +18,11 @@ class TimeStats {
 	std::map<std::string, double> results;
 
 public:
-	/** Sets the starting time for timer `timerName`. Resets previous, if present. 
+	/** Sets the starting time for timer `timerName`. Resets previous, if present.
 	 *  @return the saved tick.
 	 */
 	clock_t start(std::string timerName);
-	/** Sets the ending time for `timerName` and collects (end-start). 
+	/** Sets the ending time for `timerName` and collects (end-start).
 	 *  @return the result.
 	 */
 	double end(std::string timerName);

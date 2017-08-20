@@ -52,7 +52,7 @@ class RexBoss : public lif::Boss {
 	lif::FreeSighted *sighted = nullptr;
 	lif::Collider *stompCollider = nullptr;
 	lif::BufferedSpawner *spawner = nullptr;
-	
+
 	void _kill() override;
 	void _updateStart();
 	void _updateWalking();

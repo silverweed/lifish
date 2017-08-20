@@ -64,7 +64,7 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	}
 	addComponent<lif::AI>(*this, lif::ai_functions[info.ai]);
 	moving = addComponent<lif::AxisMoving>(*this, BASE_SPEED * originalSpeed, lif::Direction::DOWN);
-	animated = addComponent<lif::Animated>(*this, 
+	animated = addComponent<lif::Animated>(*this,
 		lif::getAsset("graphics", std::string("enemy") + lif::to_string(id) + std::string(".png")));
 	yellClock = addComponent<lif::Clock>(*this);
 	dashClock = addComponent<lif::Clock>(*this);
@@ -190,7 +190,7 @@ void Enemy::_checkShoot() {
 	if (killable->isKilled() || shooting->isRecharging() || morphed
 			|| (shooting->getAttack().type & lif::AttackType::CONTACT))
 		return;
-	
+
 	const auto& entitiesSeen = sighted->entitiesSeen(moving->getDirection());
 	for (const auto& pair : entitiesSeen) {
 		const auto entity = pair.first;

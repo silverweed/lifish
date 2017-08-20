@@ -15,7 +15,7 @@ auto SaveDataBrowser::browseSaveData(std::string path) const -> std::vector<Save
 	auto dir = opendir(path.c_str());
 	if (dir == NULL)
 		return files;
-	
+
 	auto ent = readdir(dir);
 	while (ent != NULL) {
 		char *suffix = strrchr(ent->d_name, '.');

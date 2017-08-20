@@ -30,7 +30,7 @@ lif::Entity* MovingAnimator::init() {
 	animated = owner.get<lif::Animated>();
 	if (animated == nullptr)
 		throw std::invalid_argument("owner has no Animated!");
-	
+
 	return this;
 }
 

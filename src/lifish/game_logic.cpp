@@ -99,7 +99,7 @@ void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::BaseLevelManager
 	if (scored == nullptr || scored->hasGivenPoints()) return;
 
 	auto& lm = static_cast<lif::LevelManager&>(blm);
-	
+
 	auto klb = e->get<lif::Killable>();
 	if (klb != nullptr && klb->isKilled()) {
 		// Special behaviour for bosses
@@ -151,13 +151,13 @@ void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::BaseLevelManager
 void lif::game_logic::bonusGrabLogic(lif::Entity *e, lif::BaseLevelManager& blm, EntityList&) {
 	auto bonus = dynamic_cast<lif::Bonus*>(e);
 	if (bonus == nullptr) return;
-	
+
 	auto grb = bonus->get<lif::Grabbable>();
 	if (grb->isGrabbed()) return;
-	
+
 	auto player = grb->getGrabbingEntity();
 	if (player == nullptr) return;
-	
+
 	lif::triggerBonus(static_cast<lif::LevelManager&>(blm), bonus->getType(), *static_cast<lif::Player*>(player));
 	grb->grab();
 }

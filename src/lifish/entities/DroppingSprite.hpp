@@ -18,14 +18,14 @@ class DroppingSprite : public lif::Entity {
 	const sf::Time PAUSE_TIME = sf::seconds(1);
 	const sf::Vector2f origPosition;
 	const float height;
-	
+
 	lif::Clock *pauseClock = nullptr;
 	lif::AxisMoving *moving = nullptr;
 	bool stoppedAtMiddle = false;
 	bool playing = false;
 
 public:
-	explicit DroppingSprite(const std::string& texture_name, 
+	explicit DroppingSprite(const std::string& texture_name,
 			const sf::Vector2i& texture_rect, float speed = 230.f);
 
 	/** Makes the DroppingSprite start moving down. */

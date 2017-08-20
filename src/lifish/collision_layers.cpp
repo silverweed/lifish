@@ -3,7 +3,7 @@
 /** Defines layers `a` and `b` to collide with each other.
  *  If two layers collide, the `onCollision` callback of a collider on layer `a`
  *  will be called whenever its collider intersects that of one on layer `b`.
- *  This does NOT imply the layers are solid for each other, but merely that they 
+ *  This does NOT imply the layers are solid for each other, but merely that they
  *  interact.
  */
 #define COLLIDES(a, b) \

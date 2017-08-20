@@ -32,8 +32,8 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	, id(_id)
 {
 	addComponent<lif::Scored>(*this, 100);
-	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList { 
-		std::make_pair("grab", lif::getAsset("test", "letter_grab.ogg")) 
+	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
+		std::make_pair("grab", lif::getAsset("test", "letter_grab.ogg"))
 	});
 	transitionClock = addComponent<lif::Clock>(*this);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("test", "extra_letters.png"));
@@ -42,11 +42,11 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	addComponent<lif::Collider>(*this, [this] (lif::Collider& coll) {
 		if (coll.getLayer() != lif::c_layers::PLAYERS || grabbable->isGrabbed())
 			return;
-		get<lif::Killable>()->kill();			
+		get<lif::Killable>()->kill();
 		grabbable->grab();
 		get<lif::Scored>()->setTarget(static_cast<const lif::Player&>(coll.getOwner()).getInfo().id);
 		lif::cache.playSound(get<lif::Sounded>()->getSoundFile("grab"));
-		
+
 		// Give letter to player
 		auto& player = static_cast<lif::Player&>(coll.getOwnerRW());
 		player.setExtra(id, true);
@@ -54,12 +54,12 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	grabbable = addComponent<lif::Grabbable>(*this);
 
 	// Letters are indexed 0 to N_EXTRA_LETTERS - 1.
-	if (id > N_EXTRA_LETTERS - 1) 
+	if (id > N_EXTRA_LETTERS - 1)
 		id = N_EXTRA_LETTERS - 1;
 
 	auto& animatedSprite = animated->getSprite();
 
-	for (unsigned i = 0; i < N_EXTRA_LETTERS; ++i) {	
+	for (unsigned i = 0; i < N_EXTRA_LETTERS; ++i) {
 		auto& anim = animated->addAnimation(lif::to_string(i));
 		// Total different frames are 4 * N_EXTRA_LETTERS
 		// (full letter + 3 transitions to next, cyclic).

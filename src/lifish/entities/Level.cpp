@@ -23,7 +23,7 @@ Level::Level(const lif::LevelSet& _levelSet)
 
 lif::Entity* Level::init() {
 	if (initialized) return this;
-	
+
 	if (!_setTilemap(info.tilemap))
 		return nullptr;
 

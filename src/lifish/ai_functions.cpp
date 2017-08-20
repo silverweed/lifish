@@ -168,13 +168,13 @@ AIBoundFunction lif::ai_follow(lif::Entity& entity) {
 			NEW_DIRECTION(opp)
 
 		auto sp = seeing_player(lm, *sighted);
-		if (sp != lif::Direction::NONE) {	
+		if (sp != lif::Direction::NONE) {
 			auto sounded = entity.get<lif::Sounded>();
 			if (sounded != nullptr)
 				lif::cache.playSound(sounded->getSoundFile("yell"));
 			NEW_DIRECTION(sp)
 		}
-		
+
 		if (moving->getDistTravelled() > 1 || moving->getDistTravelled() == 0) {
 			collider->reset();
 			NEW_DIRECTION(select_random_viable(*moving, lm, opp))

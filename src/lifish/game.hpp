@@ -1,13 +1,13 @@
 /*!
  * @mainpage
- * 
+ *
  * Lifish is an open source game based on "BOOM", a shareware MacOS game by
  * Federico Filipponi.
- * 
+ *
  * @copyright This game is licensed under the Lifish License, available at
  *            https://silverweed.github.io/lifish-license.txt
  *            or in the LICENSE file in this repository's root directory.
- * 
+ *
  * @author [Giacomo Parolini](https://github.com/silverweed)
  * @see https://github.com/silverweed/lifish to download the source code
 */

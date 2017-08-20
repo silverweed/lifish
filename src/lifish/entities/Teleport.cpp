@@ -15,7 +15,7 @@
 using lif::Teleport;
 using lif::TILE_SIZE;
 
-Teleport::Teleport(const sf::Vector2f& pos) 
+Teleport::Teleport(const sf::Vector2f& pos)
 	: lif::Entity(pos)
 {
 	addComponent<lif::Fixed>(*this);
@@ -32,13 +32,13 @@ Teleport::Teleport(const sf::Vector2f& pos)
 		return new lif::Flash(position);
 	});
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("warp", lif::getAsset("test", "teleport.ogg")) 
+		std::make_pair("warp", lif::getAsset("test", "teleport.ogg"))
 	});
 
 	auto& anim = animated->addAnimation("teleport");
 	for (unsigned i = 0; i < N_ANIM_FRAMES; ++i)
 		anim.addFrame(sf::IntRect(i * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));
-	
+
 	auto& animatedSprite = animated->getSprite();
 	animatedSprite.setAnimation(anim);
 	animatedSprite.setLooped(true);
@@ -64,7 +64,7 @@ void Teleport::disable() {
 
 void Teleport::_warp(lif::Collider& cld) {
 	if (disabled) return;
-	
+
 	const auto& entity = cld.getOwner();
 	auto am = entity.get<lif::AxisMoving>();
 	if (am != nullptr && !(entity.isAligned() && lif::tile(entity.getPosition()) == lif::tile(position))) {

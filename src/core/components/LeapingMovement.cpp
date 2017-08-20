@@ -17,7 +17,7 @@ lif::Entity* LeapingMovement::init() {
 	moving = owner.get<lif::AxisMoving>();
 	if (moving == nullptr)
 		throw std::invalid_argument("Owner of LeapingMovement has no AxisMoving!");
-	
+
 	std::uniform_real_distribution<float> dist(0, blockTime.asSeconds());
 	moving->block(sf::seconds(dist(lif::rng)));
 
@@ -26,7 +26,7 @@ lif::Entity* LeapingMovement::init() {
 
 void LeapingMovement::update() {
 	lif::Component::update();
-	
+
 	if (!moving->isBlocked()) {
 		// This prevents some AI malfunctioning, e.g. ai_random_forward.
 		moving->setDistTravelled(0);

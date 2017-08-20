@@ -65,7 +65,7 @@ sf::Vector2f GuidedMoving::_calcModFunc(const GuidedMoving::_ModFunc& f, float p
 	const auto angle = lif::normalized(end - start).x;
 	const float c = std::cos(angle),
 	            s = std::sin(angle);
-	
+
 	// Tilt the resulting vector to use (end - start) as the horizontal axis
 	return sf::Vector2f(v.x * c - v.y * s, v.x * s + v.y * c);
 }

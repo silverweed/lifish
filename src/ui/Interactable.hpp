@@ -22,7 +22,7 @@ class Interactable : public sf::Drawable, public lif::WithOrigin {
 	const Type type;
 
 public:
-	explicit Interactable(lif::ShadedText *text) 
+	explicit Interactable(lif::ShadedText *text)
 		: text(text)
 		, type(Type::TEXT)
 	{}
@@ -53,16 +53,16 @@ public:
 
 	sf::Vector2f getPosition() const {
 		switch (type) {
-		case Type::TEXT: return text->getPosition(); 
-		case Type::SPRITE: return sprite->getPosition(); 
+		case Type::TEXT: return text->getPosition();
+		case Type::SPRITE: return sprite->getPosition();
 		}
 		return sf::Vector2f(0, 0);
 	}
 
 	sf::FloatRect getGlobalBounds() const {
 		switch (type) {
-		case Type::TEXT: return text->getGlobalBounds(); 
-		case Type::SPRITE: return sprite->getGlobalBounds(); 
+		case Type::TEXT: return text->getGlobalBounds();
+		case Type::SPRITE: return sprite->getGlobalBounds();
 		}
 		return sf::FloatRect(0, 0, 0, 0);
 	}

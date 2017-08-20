@@ -92,7 +92,7 @@ public:
 
 	/** Implements WithOrigin */
 	virtual void setOrigin(const sf::Vector2f& origin) override;
-	
+
 	/** Implements Stringable */
 	virtual std::string toString() const override;
 	/** @return The human-readable name of this Entity's concrete class. */

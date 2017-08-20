@@ -8,7 +8,7 @@ namespace lif {
 class AxisMoving;
 class Animated;
 
-/** 
+/**
  * A Component which animates an Animated entity based on its direction.
  */
 class MovingAnimator : public lif::Component {

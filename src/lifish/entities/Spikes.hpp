@@ -17,7 +17,7 @@ class Spikes : public lif::Entity {
 	bool damaging = false;
 
 	lif::Animated *animated = nullptr;
-	
+
 	void _maybeTrigger(const lif::Collider& c);
 
 public:

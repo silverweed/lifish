@@ -20,7 +20,7 @@ public:
 	/** @return the nearest seen object of class `T` whose pointer is not expired. */
 	template<class T>
 	std::weak_ptr<T> nearest();
-	
+
 	void update() override;
 };
 

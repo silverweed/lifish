@@ -4,7 +4,7 @@
 
 using lif::Sprite;
 
-Sprite::Sprite(lif::Entity& owner, const std::string& texture_name) 
+Sprite::Sprite(lif::Entity& owner, const std::string& texture_name)
 	: lif::Component(owner)
 {
 	_declComponent<Sprite>();
@@ -12,8 +12,8 @@ Sprite::Sprite(lif::Entity& owner, const std::string& texture_name)
 	sprite.setTexture(*texture);
 }
 
-Sprite::Sprite(lif::Entity& owner, const std::string& texture_name, 
-		const sf::IntRect& division) 
+Sprite::Sprite(lif::Entity& owner, const std::string& texture_name,
+		const sf::IntRect& division)
 	: Sprite(owner, texture_name)
 {
 	sprite.setTextureRect(division);

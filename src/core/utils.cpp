@@ -27,7 +27,7 @@ void sf::from_json(const json& j, sf::Time& time) {
 		fps_text.setStyle(sf::Text::Style::Bold);
 		fps_text.setCharacterSize(20);
 		textSetUp = true;
-	}	
+	}
 
 	float t = fps_clock.restart().asSeconds();
 	if (lif::options.showFPS) {
@@ -41,7 +41,7 @@ void sf::from_json(const json& j, sf::Time& time) {
 			fps_update_clock.restart();
 			n_updates = 0;
 			cur_time = 0.;
-		}	
+		}
 		window.draw(fps_text);
 	}
 }*/

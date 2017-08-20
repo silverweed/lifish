@@ -26,7 +26,7 @@ struct LevelInfo {
 		    fixed     = 1,
 		    breakable = 1;
 	} tileIDs;
-	
+
 	/** This game's track info */
 	lif::Track track;
 
@@ -59,10 +59,10 @@ class Level final : public lif::Entity, private sf::NonCopyable {
 
 	/** This ought to be set before calling level.init(); */
 	lif::LevelInfo info;
-	
+
 	/** The text containing the level number */
 	lif::LevelNumText *levelnumtext = nullptr;
-	
+
 	/** This level's static (initial) tilemap */
 	std::vector<lif::EntityType> tiles;
 

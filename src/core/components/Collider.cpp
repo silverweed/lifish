@@ -16,7 +16,7 @@ Collider::Collider(lif::Entity& owner, lif::c_layers::Layer layer, const sf::Vec
 }
 
 Collider::Collider(lif::Entity& owner, CollisionFunc onCollision,
-		lif::c_layers::Layer layer, const sf::Vector2f& size, 
+		lif::c_layers::Layer layer, const sf::Vector2f& size,
 		const sf::Vector2f& offset, bool phantom)
 	: lif::Component(owner)
 	, phantom(phantom)
@@ -41,7 +41,7 @@ Collider::Collider(const lif::Collider& other)
 
 void Collider::update() {
 	lif::Component::update();
-	
+
 	if (onCollision)
 		for (unsigned i = 0; i < colliding.size(); ++i) {
 			auto cld = colliding[i];
@@ -52,7 +52,7 @@ void Collider::update() {
 
 bool Collider::collidesWithSolid() const {
 	if (atLimit) return true;
-	for (auto c : colliding) 
+	for (auto c : colliding)
 		if (!c.expired() && c.lock().get()->isSolidFor(*this))
 			return true;
 	return false;
@@ -71,8 +71,8 @@ bool Collider::isSolidFor(const lif::Collider& other) const {
 	return lif::c_layers::solid[layer][other.layer];
 }
 
-std::vector<std::weak_ptr<Collider>> Collider::getColliding() const { 
-	return colliding; 
+std::vector<std::weak_ptr<Collider>> Collider::getColliding() const {
+	return colliding;
 }
 
 void Collider::addColliding(std::weak_ptr<lif::Collider> coll) {
@@ -88,8 +88,8 @@ bool Collider::contains(const lif::Collider& other) const {
 	return getRect().intersects(other.getRect());
 }
 
-bool Collider::isColliding() const { 
-	return atLimit || colliding.size() > 0; 
+bool Collider::isColliding() const {
+	return atLimit || colliding.size() > 0;
 }
 
 std::string Collider::toString() const {

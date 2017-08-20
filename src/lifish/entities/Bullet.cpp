@@ -93,7 +93,7 @@ void Bullet::_setup() {
 
 	auto animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", data.filename));
 	addComponent<lif::Drawable>(*this, *animated);
-	
+
 	auto& a_move = animated->addAnimation("move");
 	auto& a_destroy = animated->addAnimation("destroy");
 

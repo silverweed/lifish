@@ -68,7 +68,7 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 		if (spawner == nullptr) return;
 		spawner->addSpawned(new lif::Fire(explColliderH->getPosition(),
 					explColliderH->getSize(), lif::conf::bonus::FIRE_DURATION));
-		spawner->addSpawned(new lif::Fire(explColliderV->getPosition(), 
+		spawner->addSpawned(new lif::Fire(explColliderV->getPosition(),
 					explColliderV->getSize(), lif::conf::bonus::FIRE_DURATION));
 	});
 
@@ -113,7 +113,7 @@ Explosion* Explosion::propagate(lif::LevelManager& lm) {
 				new_tile.x += r;
 				break;
 			}
-			
+
 			if (new_tile.x < 1 || new_tile.x > lvinfo.width
 				|| new_tile.y < 1 || new_tile.y > lvinfo.height)
 			{

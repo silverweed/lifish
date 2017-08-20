@@ -19,12 +19,12 @@ class Bomb : public lif::Entity {
 	lif::Clock *fuseClock = nullptr;
 	sf::Time fuseTime;
 	unsigned short radius;
-	
+
 	bool ignited = false;
 	bool exploded = false;
 	/** Whether this bomb has already started the "near-explosion" animation or not */
 	bool switched = false;
-	/** An incendiary bomb will spawn Fire on explosion */ 
+	/** An incendiary bomb will spawn Fire on explosion */
 	bool incendiary = false;
 
 	lif::Animated *animated = nullptr;
@@ -42,7 +42,7 @@ public:
 			bool isIncendiary = false);
 
 	void update() override;
-	
+
 	/** `true` if this bomb was driven to explode by another explosion */
 	bool isIgnited() const { return ignited; }
 	/** Manually set this bomb to explode after 50 ms */

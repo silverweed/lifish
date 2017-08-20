@@ -27,7 +27,7 @@ private:
 
 	std::vector<lif::Entity*> dmgEntities;
 	bool isWarning = true;
-	
+
 	lif::Clock *clock = nullptr;
 	lif::Animated *animated = nullptr;
 

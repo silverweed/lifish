@@ -12,7 +12,7 @@ class FreeMoving : public lif::Moving {
 	sf::Vector2f velocity;
 
 public:
-	explicit FreeMoving(lif::Entity& owner, float speed, 
+	explicit FreeMoving(lif::Entity& owner, float speed,
 			sf::Vector2f velocity = sf::Vector2f(0.f, 0.f));
 
 	sf::Vector2f getVelocity() const { return velocity; }

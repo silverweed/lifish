@@ -38,7 +38,7 @@ void SHContainer::insert(std::weak_ptr<lif::Collider> obj) {
 
 std::unordered_set<unsigned> SHContainer::_getIdFor(const lif::Collider& obj) const {
 	std::unordered_set<unsigned> ids;
-	
+
 	const auto pos = obj.getPosition();
 	const auto size = obj.getSize();
 
@@ -148,15 +148,15 @@ void SHCollisionDetector::update() {
 			collider->setAtLimit(true);
 			continue;
 		}
-	
+
 		for (auto oth : container.getNearby(*collider)) {
 			if (oth.expired()) continue;
 #ifndef RELEASE
 			dbgStats.counter.inc("checked");
 			dbgStats.timer.start("single");
-#endif	
+#endif
 			auto othcollider = oth.lock().get();
-		
+
 			if (axismoving) {
 				// Only check entities ahead of this one
 				if (!direction_is_viable(*collider, *axismoving, *othcollider))
@@ -168,7 +168,7 @@ void SHCollisionDetector::update() {
 					//std::cerr << &collider->getOwner() << " colliding with " << &othcollider->getOwner()<<std::endl;
 					collider->addColliding(oth);
 					if (collider->requestsForceAck() || othcollider->requestsForceAck()
-							|| othcollider->getOwner().get<lif::Moving>() == nullptr) 
+							|| othcollider->getOwner().get<lif::Moving>() == nullptr)
 					{
 						// Let the entity know we collided with it.
 						// We only do that for non-moving entities to avoid problems with
@@ -182,7 +182,7 @@ void SHCollisionDetector::update() {
 			}
 
 #ifndef RELEASE
-			dbgStats.timer.set("tot_narrow", dbgStats.timer.get("tot_narrow") 
+			dbgStats.timer.set("tot_narrow", dbgStats.timer.get("tot_narrow")
 					+ dbgStats.timer.end("single"));
 #endif
 		}

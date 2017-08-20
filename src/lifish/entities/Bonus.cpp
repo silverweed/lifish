@@ -15,7 +15,7 @@
 using lif::Bonus;
 using lif::TILE_SIZE;
 using lif::conf::bonus::EXPIRE_TIME;
-	
+
 Bonus::Bonus(const sf::Vector2f& pos, const lif::BonusType type)
 	: lif::Entity(pos)
 	, type(type)

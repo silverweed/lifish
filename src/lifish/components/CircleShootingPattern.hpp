@@ -40,7 +40,7 @@ public:
 	 *  you just set it directly, as the useful variables are public for convenience.
 	 */
 	explicit CircleShootingPattern(lif::Entity& owner, unsigned bulletId);
-	
+
 	void update() override;
 };
 

@@ -82,7 +82,7 @@ lif::Entity* EntityGroup::_putInAux(lif::Entity *entity) {
 	auto klb = entity->getShared<lif::Killable>();
 	if (klb != nullptr) {
 		killables.emplace_back(klb);
-	} 
+	}
 
 	for (auto cld : entity->getAllShared<lif::Collider>()) {
 		if (cld != nullptr && !cld->isPhantom()) {
@@ -158,7 +158,7 @@ void EntityGroup::_checkDead() {
 				entities.erase(eit);
 				mtxUnlock();
 			}
-			
+
 			it = dying.erase(it);
 		} else {
 			++it;

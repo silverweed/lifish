@@ -18,7 +18,7 @@ class BreakableWall : public lif::Entity {
 	lif::Entity* _spawnBonus();
 protected:
 	/** Constructor used by TransparentWall */
-	BreakableWall(const sf::Vector2f& pos, const std::string& texture_name, 
+	BreakableWall(const sf::Vector2f& pos, const std::string& texture_name,
 			unsigned life, unsigned int score);
 
 	Animation& _setupAnimations(const std::string& texture_name);

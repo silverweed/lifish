@@ -50,14 +50,14 @@ void LevelEffects::_blendDarkness(const lif::LevelManager& lm, sf::RenderTarget&
 		halo.setFillColor(sf::Color(255, 255, 255, 200));
 		darknessRenderTex.draw(halo);
 	}
-	
+
 	// Calculate visibility circles for light sources
 	lm.getEntities().apply([this] (const lif::Entity *e) {
 		const auto source = e->get<lif::LightSource>();
 		if (source == nullptr || !source->isActive()) return;
 		const float radius = source->getRadius();
 		auto rects = _getRadialRectangles(e->getPosition(), radius/TILE_SIZE);
-		
+
 		for (const auto& fr : rects) {
 			sf::RectangleShape rect(sf::Vector2f(fr.width, fr.height));
 			rect.setPosition(fr.left, fr.top);

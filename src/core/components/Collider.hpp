@@ -19,7 +19,7 @@ protected:
 	std::vector<std::weak_ptr<lif::Collider>> colliding;
 	/** Whether this entity is at a level's boundary */
 	bool atLimit = false;
-	
+
 	/** Offset relative to the owner's position */
 	sf::Vector2f offset;
 	sf::Vector2f size;
@@ -44,7 +44,7 @@ public:
 			  const sf::Vector2f& size = sf::Vector2f(lif::TILE_SIZE, lif::TILE_SIZE),
 			  const sf::Vector2f& offset = sf::Vector2f(0, 0),
 			  bool phantom = false);
-	
+
 	Collider(const lif::Collider& other);
 
 	/** @return the list of Colliders colliding with this one */
@@ -71,7 +71,7 @@ public:
 	 *  in giving a collision layer to the collider.
 	 */
 	bool isPhantom() const { return phantom; }
-	
+
 	/** If a Collider requests "force ack", the CollisionDetector will be forced to
 	 *  signal the collision to _both_ this collider and the one this is colliding with.
 	 *  Useful to ensure this collision isn't missed by any of the parties involved,

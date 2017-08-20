@@ -1,7 +1,7 @@
 #include "BreakableWall.hpp"
 #include "game.hpp"
 #include "GameCache.hpp"
-#include "Spawning.hpp"	
+#include "Spawning.hpp"
 #include "Animated.hpp"
 #include "Bonus.hpp"
 #include "Animation.hpp"
@@ -32,24 +32,24 @@ BreakableWall::BreakableWall(const sf::Vector2f& pos, const std::string& texture
 	auto& animation = _setupAnimations(texture_name);
 	for (unsigned i = 0; i < 4; ++i)
 		animation.addFrame(sf::IntRect(
-					i * TILE_SIZE, 
+					i * TILE_SIZE,
 					0,
-					TILE_SIZE, 
+					TILE_SIZE,
 					TILE_SIZE));
 
 	animated->setAnimation(animation);
 }
 
-BreakableWall::BreakableWall(const sf::Vector2f& pos, 
+BreakableWall::BreakableWall(const sf::Vector2f& pos,
 		const unsigned short id, unsigned life)
 	: lif::Entity(pos)
 {
 	_setupComponents(life, lif::conf::wall::breakable::VALUE);
-	auto& animation = _setupAnimations(lif::getAsset("graphics", "breakable.png"));	
+	auto& animation = _setupAnimations(lif::getAsset("graphics", "breakable.png"));
 	for (unsigned i = 0; i < 4; ++i)
 		animation.addFrame(sf::IntRect(
-					i * TILE_SIZE, 
-					(id-1) * TILE_SIZE, 
+					i * TILE_SIZE,
+					(id-1) * TILE_SIZE,
 					TILE_SIZE,
 					TILE_SIZE));
 	animated->setAnimation(animation);
@@ -61,7 +61,7 @@ void BreakableWall::_setupComponents(unsigned life, unsigned int score) {
 	addComponent<lif::Lifed>(*this, life);
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("death", lif::getAsset("sounds", "wall_break.ogg"))
-	}); 
+	});
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::WALLS);
 	addComponent<lif::Killable>(*this, [this] () {
 		// on kill

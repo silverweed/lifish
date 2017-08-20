@@ -80,7 +80,7 @@ constexpr std::ostream& operator<<(std::ostream& stream, sf::Vector2<T> vec) {
 
 template<typename T>
 constexpr std::ostream& operator<<(std::ostream& stream, sf::Rect<T> rect) {
-	return stream << "(" << rect.left << ", " << rect.top 
+	return stream << "(" << rect.left << ", " << rect.top
 		<< " x " << rect.width << ", " << rect.height << ")";
 }
 

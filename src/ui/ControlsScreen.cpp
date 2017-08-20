@@ -21,7 +21,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	_loadBGSprite(lif::getAsset("graphics", "screenbg1.png"));
 
 	/* Layout:
-	 * 
+	 *
 	 * P1 / P2
 	 *
 	 * UP: key
@@ -161,7 +161,7 @@ Action ControlsScreen::_selectPlayer(int id) {
 	if (selectedPlayer == id) return Action::DO_NOTHING;
 	interactables["p" + lif::to_string(selectedPlayer)]->setColor(sf::Color::White);
 	selectedPlayer = id;
-	
+
 	const std::array<std::pair<const char*, Control>, 5> pairs = {{
 		std::make_pair("up", controls::CTRL_UP),
 		std::make_pair("down", controls::CTRL_DOWN),
@@ -191,7 +191,7 @@ void ControlsScreen::update() {
 		if (static_cast<unsigned>(selectedPlayer) == i + 1)
 			text->setColor(sf::Color::Yellow);
 	}
-	if (changingCtrlText != nullptr) 
+	if (changingCtrlText != nullptr)
 		changingCtrlText->setFGColor(sf::Color::Red);
 }
 
@@ -234,7 +234,7 @@ bool ControlsScreen::handleEvent(sf::Window&, sf::Event event) {
 			return true;
 		default:
 			// Only meaningful if we're using the keyboard
-			if (lif::controls::useJoystick[selectedPlayer-1] >= 0) 
+			if (lif::controls::useJoystick[selectedPlayer-1] >= 0)
 				break;
 
 			lif::controls::players[selectedPlayer-1][get_control(changingCtrlText)] = event.key.code;
@@ -281,7 +281,7 @@ Action ControlsScreen::_toggleJoystick() {
 	// Retreive the list of connected joysticks
 	std::vector<int> joysticks;
 	joysticks.reserve(sf::Joystick::Count);
-	
+
 	// Index of the currently used joystick, or -1 if no joystick is in use
 	auto idx = -1;
 	// Currently used joystick (-1 if none)

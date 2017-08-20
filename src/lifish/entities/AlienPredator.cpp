@@ -111,7 +111,7 @@ sf::Vector2f AlienPredator::_findTunneledPosition(const lif::LevelManager& lm) c
 		const auto cld = e->get<lif::Collider>();
 		if (cld == nullptr || !cld->isSolidFor(*collider))
 			return;
-	
+
 		sf::Vector2i etile(lif::tile(e->getPosition()));
 		tiles.remove(etile);
 		const auto mv = e->get<lif::AxisMoving>();

@@ -14,7 +14,7 @@ using lif::Points;
 // (notably: clang) to give 'undefined reference'
 constexpr static float SPEED = 30.f;
 
-Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color, unsigned short charSize) 
+Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color, unsigned short charSize)
 	: lif::Entity(pos)
 	, initialPos(pos)
 	, text(lif::getAsset("fonts", lif::fonts::POINTS), str, pos, color, sf::Color::Black)
@@ -30,7 +30,7 @@ Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color,
 	});
 }
 
-Points::Points(const sf::Vector2f& pos, int pts, sf::Color color, unsigned short charSize) 
+Points::Points(const sf::Vector2f& pos, int pts, sf::Color color, unsigned short charSize)
 	: lif::Points(pos, lif::to_string(pts), color, charSize)
 {}
 

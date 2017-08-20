@@ -104,7 +104,7 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 			case EntityType::PLAYER2:
 				add_player(1, curPos);
 				break;
-			
+
 			case EntityType::SPIKES:
 				entities.add(new lif::Spikes(curPos));
 				break;

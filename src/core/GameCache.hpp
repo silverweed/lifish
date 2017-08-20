@@ -18,13 +18,13 @@ class GameCache final : private sf::NonCopyable {
 
 	/** The game textures */
 	std::unordered_map<std::string, sf::Texture> textures;
-	
+
 	/** The sound buffers used by sounds */
 	std::unordered_map<std::string, sf::SoundBuffer> soundBuffers;
 
 	/** The game fonts */
 	std::unordered_map<std::string, sf::Font> fonts;
-	
+
 	/** The queue of sound being played. Ended sounds are removed from this
 	 *  queue as needed when `playSound()` is called. At most MAX_PARALLEL_SOUNDS
 	 *  can be playing at once.

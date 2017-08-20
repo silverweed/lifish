@@ -19,7 +19,7 @@ UI::UI() : lif::WindowContext() {
 void UI::load(const sf::RenderWindow& window, std::initializer_list<std::string> scrNames) {
 	for (const auto& name : scrNames) {
 		if (screens.find(name) != screens.end()) {
-			std::cerr << "[ WARNING ] Screen " << name << " already loaded: skipping." << std::endl;	
+			std::cerr << "[ WARNING ] Screen " << name << " already loaded: skipping." << std::endl;
 			continue;
 		}
 		auto screen = new lif::ui::Screen(name, window, size);
@@ -115,7 +115,7 @@ void UI::fireClick() {
 		if (it == lif::ui::screenCallbacks.end()) return;
 		action = it->second();
 	}
-	
+
 	_processAction(action);
 }
 

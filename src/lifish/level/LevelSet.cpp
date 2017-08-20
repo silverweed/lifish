@@ -75,10 +75,10 @@ void LevelSet::loadFromFile(const std::string& path) {
 	for (const auto& enemyinfo : enemydata) {
 		enemies[enemynum].ai = enemyinfo["ai"];
 		enemies[enemynum].speed = enemyinfo["speed"];
-		
+
 		auto atk = enemyinfo["attack"];
 		auto atktype = atk["type"];
-		
+
 		enemies[enemynum].attack.type = static_cast<lif::AttackType>(0);
 		for (unsigned i = 0; i < atktype.size(); ++i) {
 			AttackType type;

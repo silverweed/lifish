@@ -8,7 +8,7 @@ class Drawable;
 class Clock;
 
 class Missile : public lif::GuidedBullet {
-	
+
 	lif::Angle rotRate;
 
 	lif::Clock *clock = nullptr;

@@ -11,7 +11,7 @@ class Clock;
 
 class RexFlame : public lif::Pond, public sf::Drawable {
 	std::array<lif::Sprite*, 2> sprites;
-	
+
 	lif::Clock *spriteClock = nullptr,
 	           *durationClock = nullptr;
 

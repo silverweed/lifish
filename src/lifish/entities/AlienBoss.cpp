@@ -48,7 +48,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 void AlienBoss::update() {
 	lif::Entity::update();
 	if (killable->isKilled() || eyes[0]->get<lif::Shooting>()->isRecharging()) return;
-	
+
 	if (shotsFired > 0 || shootClock->getElapsedTime() > SHOOT_INTERVAL) {
 		for (auto eye : eyes)
 			lif::shootToNearestPlayer(*eye);

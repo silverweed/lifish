@@ -4,7 +4,7 @@
 using lif::debug::Counter;
 
 int Counter::inc(std::string name) {
-	return ++counts[name]; 
+	return ++counts[name];
 }
 
 void Counter::reset(std::string name) {

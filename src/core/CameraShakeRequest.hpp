@@ -1,7 +1,7 @@
 #pragma once
 
 namespace lif {
-	
+
 /**
  * A CameraShakeRequest holds all the information needed to create a CameraShake, except its target.
  * This struct is used to create CameraShakes when the target is not accessible to the requester:

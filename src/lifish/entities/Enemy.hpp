@@ -42,8 +42,8 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
-/** 
- * An Enemy is a MovingEntity which (usually) shoots towards players 
+/**
+ * An Enemy is a MovingEntity which (usually) shoots towards players
  * when they see them and is vulnerable to Bombs.
  */
 class Enemy : public lif::Entity {
@@ -55,7 +55,7 @@ class Enemy : public lif::Entity {
 protected:
 	constexpr static unsigned short WALK_N_FRAMES = 4;
 	constexpr static int YELL_DELAY = 1000;
-	
+
 	const unsigned short id;
 	const lif::EnemyInfo info;
 

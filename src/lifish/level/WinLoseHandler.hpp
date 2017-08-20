@@ -31,7 +31,7 @@ public:
 
 private:
 	State state = State::DEFAULT;
-	
+
 	lif::LevelManager& lm;
 	lif::InterlevelContext interlevelCtx;
 	sftools::Chronometer clock;

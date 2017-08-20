@@ -40,7 +40,7 @@ CollisionFunc lif::hurtByExplosions(lif::Entity& e, unsigned opts) {
 		if (lifed->decLife(expl.getDamage()) <= 0)
 			killable->kill();
 		expl.dealDamageTo(e);
-		
+
 		// Give points (optional)
 		if (scored == nullptr)
 			return;

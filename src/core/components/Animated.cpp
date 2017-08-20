@@ -6,7 +6,7 @@
 
 using lif::Animated;
 
-Animated::Animated(lif::Entity& owner, const std::string& texture_name) 
+Animated::Animated(lif::Entity& owner, const std::string& texture_name)
 	: lif::Component(owner)
 {
 	_declComponent<Animated>();
@@ -21,11 +21,11 @@ Animation& Animated::addAnimation(const std::string& name) {
 	return anim;
 }
 
-Animation& Animated::addAnimation(const std::string& name, 
+Animation& Animated::addAnimation(const std::string& name,
 		std::initializer_list<sf::IntRect> frames, bool set)
 {
 	auto& anim = addAnimation(name);
-	
+
 	for (auto& frame : frames)
 		anim.addFrame(frame);
 

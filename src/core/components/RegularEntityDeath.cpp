@@ -34,7 +34,7 @@ void RegularEntityDeath::kill() {
 		mv->setAutoRealign(false);
 		mv->stop();
 	}
-	
+
 	// Disable all MovingAnimators
 	auto movingAnimators = owner.getAllRecursive<lif::MovingAnimator>();
 	for (auto movingAnimator : movingAnimators)
@@ -67,7 +67,7 @@ void RegularEntityDeath::resurrect() {
 		if (ar != origAutoRealign.end())
 			mv->setAutoRealign(ar->second);
 	}
-	
+
 	// Reset all MovingAnimators
 	auto movingAnimators = owner.getAllRecursive<lif::MovingAnimator>();
 	for (auto movingAnimator : movingAnimators)

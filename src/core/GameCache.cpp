@@ -17,13 +17,13 @@ void GameCache::setMaxParallelSounds(std::size_t n) {
 sf::Texture* GameCache::loadTexture(const std::string& texture_name) {
 	// Check if image is already in cache
 	auto it = textures.find(texture_name);
-	if (it != textures.end()) 
+	if (it != textures.end())
 		return &it->second;
 
 	// Not in cache: load from file
 	auto& txt = textures[texture_name];
 	if (!txt.loadFromFile(texture_name)) {
-		std::cerr << "[GameCache.cpp] Error: couldn't load texture " 
+		std::cerr << "[GameCache.cpp] Error: couldn't load texture "
 			<< texture_name << " from file!" << std::endl;
 	}
 #ifndef RELEASE
@@ -91,7 +91,7 @@ sf::Font* GameCache::loadFont(const std::string& font_name) {
 	// Load from file and update the cache
 	auto& font = fonts[font_name];
 	if (!font.loadFromFile(font_name)) {
-		std::cerr << "[GameCache.cpp] Error: couldn't load font " 
+		std::cerr << "[GameCache.cpp] Error: couldn't load font "
 			<< font_name << " from file!" << std::endl;
 	}
 #ifndef RELEASE

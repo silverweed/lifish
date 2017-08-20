@@ -36,7 +36,7 @@ public:
 	const PartSeenEntitiesList& entitiesSeen(lif::Direction dir) const {
 		return seen[static_cast<std::size_t>(dir)];
 	}
-	
+
 	/** @return The number of pixels seen by entity before first opaque entity along `dir`;
 	 *  if none, return -1.
 	 */

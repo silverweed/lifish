@@ -7,9 +7,9 @@ namespace lif {
 class ZIndexed : public lif::Component {
 	int zIndex = 0;
 public:
-	explicit ZIndexed(lif::Entity& owner, int z) 
+	explicit ZIndexed(lif::Entity& owner, int z)
 		: lif::Component(owner)
-		, zIndex(z) 
+		, zIndex(z)
 	{
 		_declComponent<ZIndexed>();
 	}

@@ -49,12 +49,12 @@ void SimpleCollisionDetector::update() {
 			continue;
 
 		const auto moving = collider->getOwner().get<lif::Moving>();
-		const auto axismoving = moving ? dynamic_cast<lif::AxisMoving*>(moving) : nullptr; 
+		const auto axismoving = moving ? dynamic_cast<lif::AxisMoving*>(moving) : nullptr;
 		if (moving && is_at_boundaries(*collider, axismoving, levelLimit)) {
-			collider->setAtLimit(true);	
+			collider->setAtLimit(true);
 			continue;
 		}
-		
+
 		// Very simple (aka quadratic) check with all others
 		for (auto jt = colliding.begin(); jt != colliding.end(); ++jt) {
 			if (it == jt)  continue;
@@ -62,7 +62,7 @@ void SimpleCollisionDetector::update() {
 #ifndef RELEASE
 			dbgStats.counter.inc("checked");
 			dbgStats.timer.start("single");
-#endif	
+#endif
 
 			auto othcollider = jt->lock();
 			if (axismoving) {
@@ -76,7 +76,7 @@ void SimpleCollisionDetector::update() {
 					//std::cerr << &collider->getOwner() << " colliding with " << &othcollider->getOwner()<<std::endl;
 					collider->addColliding(*jt);
 					if (collider->requestsForceAck() || othcollider->requestsForceAck()
-							|| othcollider->getOwner().get<lif::Moving>() == nullptr) 
+							|| othcollider->getOwner().get<lif::Moving>() == nullptr)
 					{
 						// Let the entity know we collided with it.
 						// We only do that for non-moving entities to avoid problems with
@@ -92,7 +92,7 @@ void SimpleCollisionDetector::update() {
 			}
 
 #ifndef RELEASE
-			dbgStats.timer.set("tot_narrow", dbgStats.timer.get("tot_narrow") 
+			dbgStats.timer.set("tot_narrow", dbgStats.timer.get("tot_narrow")
 					+ dbgStats.timer.end("single"));
 #endif
 		}

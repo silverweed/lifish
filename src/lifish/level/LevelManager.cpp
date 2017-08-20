@@ -249,7 +249,7 @@ void LevelManager::_triggerExtraGame() {
 	entities.apply([] (lif::Entity *e) {
 		auto enemy = dynamic_cast<lif::Enemy*>(e);
 		if (enemy == nullptr) return;
-		
+
 		enemy->setMorphed(true);
 	});
 	dropTextManager.trigger(lif::DroppingTextManager::Text::EXTRA_GAME);
@@ -266,10 +266,10 @@ void LevelManager::_endExtraGame() {
 
 		auto enemy = dynamic_cast<lif::Enemy*>(e);
 		if (enemy == nullptr) return;
-		
+
 		enemy->setMorphed(false);
 	});
-	
+
 	extraGame = false;
 }
 
@@ -346,7 +346,7 @@ bool LevelManager::canGo(const lif::AxisMoving& am, const lif::Direction dir) co
 	auto pos = am.getOwner().getPosition();
 	int iposx = static_cast<int>(pos.x / TILE_SIZE),
 	    iposy = static_cast<int>(pos.y / TILE_SIZE);
-	
+
 	switch (dir) {
 	case Direction::UP:
 		--iposy;

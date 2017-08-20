@@ -84,7 +84,7 @@ SaveScreen::SaveScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 
 void SaveScreen::update() {
 	Screen::update();
-	
+
 	// Blink cursor
 	if (cursorClock.getElapsedTime() > CURSOR_BLINK_TIME) {
 		cursorVisible = !cursorVisible;
@@ -131,7 +131,7 @@ bool SaveScreen::handleEvent(sf::Window&, sf::Event event) {
 	const char ch = lif::kb::keyToAlnum(event.key.code);
 	if (ch < 0)
 		return false;
-	
+
 	errText->setString("");
 
 	if (bufIdx < buffer.size()) {

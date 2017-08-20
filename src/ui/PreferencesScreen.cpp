@@ -21,7 +21,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	_loadBGSprite(lif::getAsset("graphics", "screenbg1.png"));
 
 	/* Layout:
-	 * 
+	 *
 	 * MUSIC: - ||||||| + (m)
 	 * FX:    - ||||||| + (m)
 	 * Controls
@@ -106,7 +106,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	text = new lif::ShadedText(font, "Controls", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
 	text->setCharacterSize(size);
 	interactables["controls"] = std::make_unique<Interactable>(text);
-	
+
 	text = new lif::ShadedText(font, "Back", pos);
 	text->setCharacterSize(size);
 	bounds = text->getGlobalBounds();
@@ -160,7 +160,7 @@ Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {
 	// TODO better mute handling
 	if (what == VolumeAction::MUTE_TOGGLE) {
 		switch (which) {
-		case VolumeType::MUSIC: 
+		case VolumeType::MUSIC:
 			if (prevMusicVolume < 0) {
 				// unmute->mute
 				prevMusicVolume = lif::options.musicVolume;
@@ -182,13 +182,13 @@ Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {
 					sf::IntRect(lif::options.soundsMute ? SPEAKER_SPRITE_SIZE : 0,
 						0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
 			break;
-		default: 
+		default:
 			break;
 		}
 
 		return Action::DO_NOTHING;
 	}
-	short &vol = which == VolumeType::MUSIC ? relMusicVolume : relSoundVolume; 
+	short &vol = which == VolumeType::MUSIC ? relMusicVolume : relSoundVolume;
 	const bool raise = what == VolumeAction::RAISE;
 
 	if ((raise && vol == MAX_VOLUME) || (!raise && vol == 0))
@@ -198,7 +198,7 @@ Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {
 
 	std::stringstream ss;
 	for (int i = 0; i < vol; ++i) {
-		ss << "|";	
+		ss << "|";
 	}
 
 	if (which == VolumeType::MUSIC) {

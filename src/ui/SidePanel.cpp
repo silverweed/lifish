@@ -15,7 +15,7 @@ SidePanel::SidePanel(const lif::LevelManager& lm)
 	// Load background
 	bgTexture = lif::cache.loadTexture(lif::getAsset("graphics", "panel.png"));
 	backgroundSprite.setTexture(*bgTexture);
-	backgroundSprite.setTextureRect(sf::IntRect(0, 0, lif::SIDE_PANEL_WIDTH, lif::SIDE_PANEL_HEIGHT));	
+	backgroundSprite.setTextureRect(sf::IntRect(0, 0, lif::SIDE_PANEL_WIDTH, lif::SIDE_PANEL_HEIGHT));
 	backgroundSprite.setPosition(0, 0);
 
 	// Load player heads
@@ -148,7 +148,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	window.draw(backgroundSprite, states);
 	for (unsigned i = 0; i < playerHeadsSprite.size(); ++i) {
 		_drawWithShadow(window, states, playerHeadsSprite[i]);
-		
+
 		// Draw remaining lives
 		sf::Vector2f pos(N_LIVES_X, i == 0 ? N_LIVES_Y_1 : N_LIVES_Y_2);
 		std::stringstream ss;
@@ -198,7 +198,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			text.setString("+" + lif::to_string(powers.absorb));
 			window.draw(text, states);
 
-			// Draw armor 
+			// Draw armor
 			text.setPosition(sf::Vector2f(pos.x + 3 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
 			text.setString("+" + lif::to_string(powers.armor));
 			window.draw(text, states);

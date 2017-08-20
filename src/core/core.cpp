@@ -9,7 +9,7 @@
 #elif defined(__unix__)
 #	include <unistd.h>
 #elif defined(SFML_SYSTEM_WINDOWS)
-#	include <Windows.h> 
+#	include <Windows.h>
 #else
 #	error "Unsupported platform."
 #endif
@@ -68,7 +68,7 @@ static bool _initPwd() {
 	if (bytes < 1) return false;
 	pwd[bytes] = '\0';
 #endif
-	
+
 	int len = strlen(pwd);
 	if (len < 1)
 		return false;

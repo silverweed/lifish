@@ -30,7 +30,7 @@ public:
 	COMP_NOT_UNIQUE
 
 	explicit Animated(lif::Entity& owner, const std::string& texture_name);
-	
+
 	/** Adds a new empty animation to this Animated and returns it */
 	Animation& addAnimation(const std::string& name);
 	/** Adds a new animation tagged `name` with frames described by `frames`, and optionally sets it active. */
@@ -63,7 +63,7 @@ public:
 	AnimatedSprite& getSprite() { return animatedSprite; }
 
 	void update() override;
-	
+
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void setOrigin(const sf::Vector2f& o) override {

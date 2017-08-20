@@ -5,7 +5,7 @@
 #include "Component.hpp"
 
 /**
- * An object which has one or more sounds associated with it. 
+ * An object which has one or more sounds associated with it.
  */
 namespace lif {
 

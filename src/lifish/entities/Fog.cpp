@@ -18,7 +18,7 @@ Fog::Fog(float speed, sf::Time alphaDt)
 	, alphaDt(alphaDt)
 {
 	sprite = addComponent<lif::Sprite>(*this, lif::getAsset("graphics", "fog.png"),
-				sf::IntRect(0, 0, 
+				sf::IntRect(0, 0,
 					3 * lif::GAME_WIDTH,
 					3 * lif::GAME_HEIGHT));
 	sprite->getTexture()->setRepeated(true);
@@ -40,7 +40,7 @@ Fog::Fog(float speed, sf::Time alphaDt)
 
 void Fog::update() {
 	lif::Entity::update();
-	
+
 	// Fade in/out sprite
 	if (clock->getElapsedTime() >= alphaDt) {
 		clock->restart();

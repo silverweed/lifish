@@ -21,7 +21,7 @@ void JoystickListener::update() {
 		return;
 
 	evtRegistered.fill(false);
-	
+
 	_listen(sf::Joystick::X);
 	_listen(sf::Joystick::Y);
 	_listen(sf::Joystick::U);

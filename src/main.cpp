@@ -58,7 +58,7 @@ struct MainArgs {
 	int fps;
 #ifndef RELEASE
 	bool start_from_home;
-#endif	
+#endif
 };
 
 static void parse_args(int argc, char **argv, /* out */ MainArgs& args) {
@@ -179,7 +179,7 @@ int main(int argc, char **argv) {
 	args.start_from_home = false; // FIXME
 #endif
 	parse_args(argc, argv, args);
-	
+
 	// Create the MusicManager (in a local scope)
 	lif::MusicManager mm;
 	lif::musicManager = &mm;
@@ -196,7 +196,7 @@ int main(int argc, char **argv) {
 		lif::options.musicVolume = 0;
 	if (args.levelset_name.length() < 1)
 		args.levelset_name = std::string(lif::pwd) + lif::DIRSEP + std::string("levels.json");
-	
+
 	// Create the game window
 	lif::options.windowSize = sf::Vector2u(lif::WINDOW_WIDTH, lif::WINDOW_HEIGHT);
 	sf::RenderWindow window(
@@ -266,7 +266,7 @@ int main(int argc, char **argv) {
 	while (window.isOpen() && !lif::terminated) {
 
 		///// EVENT LOOP /////
-		
+
 		lif::joystick::JoystickManager::getInstance().update();
 		cur_context->handleEvents(window);
 
@@ -298,7 +298,7 @@ int main(int argc, char **argv) {
 						const auto save_data = ui.getLoadedData();
 						game->loadGame(save_data);
 						startLv = save_data.level;
-					} 
+					}
 					contexts[lif::CTX_GAME] = game.get();
 					contexts[lif::CTX_INTERLEVEL] = &game->getWLHandler()
 						.getInterlevelContext();
@@ -341,7 +341,7 @@ int main(int argc, char **argv) {
 #	endif
 		window.clear();
 		window.draw(*cur_context);
-		
+
 		fpsDisplayer.update();
 		if (lif::options.showFPS)
 			window.draw(fpsDisplayer);

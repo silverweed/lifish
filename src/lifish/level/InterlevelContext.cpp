@@ -26,7 +26,7 @@ InterlevelContext::InterlevelContext(lif::LevelManager& lm, const lif::SidePanel
 	if (!interlevelFont.loadFromFile(fontname)) {
 		std::cerr << "[WinLoseHandler.cpp] Error: couldn't load font " << fontname << std::endl;
 	}
-	
+
 	centralText.setFont(interlevelFont);
 	centralText.setCharacterSize(13);
 	subtitleText.setFont(interlevelFont);
@@ -88,7 +88,7 @@ void InterlevelContext::_setPromptContinue() {
 		const auto player = lm.getPlayer(i + 1);
 		if ((player == nullptr || player->get<lif::Killable>()->isKilled())
 				&& lm.getPlayerContinues(i + 1) > 0) {
-			mustPromptPlayer[i] = true;	
+			mustPromptPlayer[i] = true;
 		}
 	}
 	unsigned idx = 0;
@@ -105,7 +105,7 @@ void InterlevelContext::_setPromptContinue() {
 
 void InterlevelContext::_preparePromptContinue(unsigned short idx) {
 	curPromptedPlayer = idx;
-	centralText.setString("P" + lif::to_string(idx+1) + " CONTINUE? (" 
+	centralText.setString("P" + lif::to_string(idx+1) + " CONTINUE? ("
 			+ lif::to_string(lm.getPlayerContinues(idx + 1)) + " left)");
 	auto bounds = centralText.getGlobalBounds();
 	centralText.setPosition(lif::center(bounds, WIN_BOUNDS));
@@ -153,13 +153,13 @@ void InterlevelContext::update() {
 
 void InterlevelContext::_tickDistributePoints() {
 	const auto time = clock.getElapsedTime();
-	
+
 	// Wait 2 seconds before starting updating score
 	if (time < sf::seconds(2)) return;
 
 	// Wait 60ms before next update
 	if (bonusPoints > 0 && time - lastTickTime < sf::milliseconds(60)) return;
-	
+
 	if (bonusTime == sf::Time::Zero) {
 		if (bonusPoints == 0) {
 			// First assignment of bonusTime: truncate decimals of remaining time
@@ -272,7 +272,7 @@ void InterlevelContext::_continueSelectNo() {
 	yesText.setFillColor(sf::Color::White);
 	yesText.setCharacterSize(13);
 }
-	
+
 void InterlevelContext::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	window.draw(centralText, states);
 	window.draw(subtitleText, states);

@@ -10,10 +10,10 @@ public:
 	explicit Activable(bool active = true) : active(active) {}
 	virtual ~Activable() {}
 
-	virtual void setActive(bool b) { active = b; }	
+	virtual void setActive(bool b) { active = b; }
 	bool isActive() const { return active; }
 	/** @return The active state after the change */
-	bool toggleActive() { 
+	bool toggleActive() {
 		setActive(!active);
 		return active;
 	}

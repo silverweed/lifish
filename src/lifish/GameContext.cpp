@@ -99,7 +99,7 @@ void GameContext::update() {
 	case S::EXIT_GAME:
 		newContext = lif::CTX_UI;
 		break;
-	default: 
+	default:
 		break;
 	}
 
@@ -178,7 +178,7 @@ void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const 
 	sidePanelRenderTex.clear();
 	sidePanelRenderTex.draw(sidePanel, states);
 	sidePanelRenderTex.display();
-	
+
 	// Draw both textures to window
 	sf::Sprite gameSprite(gameRenderTex.getTexture());
 	gameSprite.setOrigin(origin);
@@ -275,7 +275,7 @@ void GameContext::_printGameStats() const {
 	for (const auto& t : timers) {
 		char percentage[21] = {0};
 		const float ratio = get_percentage(dbgStats, "tot", t, percentage);
-		ss << "\r\n | " << std::left << std::setw(12) << t << ": " 
+		ss << "\r\n | " << std::left << std::setw(12) << t << ": "
 			<< std::setw(7) << dbgStats.timer.safeGet(t) << " " << percentage
 			<< (ratio >= 0 ? " " + lif::to_string(static_cast<int>(ratio*100)) + "%" : "");
 	}

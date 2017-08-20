@@ -5,7 +5,7 @@ using lif::Lifed;
 
 Lifed::Lifed(lif::Entity& owner, const unsigned int life)
 	: lif::Component(owner)
-	, life(life) 
+	, life(life)
 	, maxLife(life)
 {
 	_declComponent<Lifed>();

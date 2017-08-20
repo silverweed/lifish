@@ -22,7 +22,7 @@ class ScreenBuilder final : private sf::NonCopyable {
 	// pair (element, row)
 	std::vector<std::pair<sf::Drawable*, unsigned>> toBeAligned;
 	std::vector<std::string> rowAligns;
-	std::vector<float> rowWidths; 
+	std::vector<float> rowWidths;
 	std::string vAlign;
 	float totHeight = 0;
 
@@ -36,7 +36,7 @@ class ScreenBuilder final : private sf::NonCopyable {
 public:
 	explicit ScreenBuilder() {}
 
-	/** Builds `screen` from layout file `layoutFileName`. 
+	/** Builds `screen` from layout file `layoutFileName`.
 	 *  Throws is `screen` was already built.
 	 */
 	void build(lif::ui::Screen& screen, const std::string& layoutFileName);

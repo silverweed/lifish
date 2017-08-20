@@ -15,14 +15,14 @@ class Controllable : public lif::Component {
 	const sf::Window *window = nullptr;
 	/** Reference to an external array telling us how to map keys to controls */
 	const std::array<sf::Keyboard::Key, lif::controls::CONTROLS_NUM>& controls;
-	
+
 	bool usedBomb = false;
 
 	/** Reference to an external variable telling us if we're using a joystick */
 	short& joystickUsed;
 	/** Reference to an external variable containing the button number for the joystick bomb command */
 	unsigned& joystickBombKey;
-	
+
 	sf::Clock disableClock;
 	sf::Time disableTime = sf::Time::Zero;
 

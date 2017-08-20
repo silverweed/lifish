@@ -9,7 +9,7 @@ class Clock;
 struct CameraShakeRequest;
 
 class CameraShake : public lif::Entity {
-	
+
 	sf::RenderTarget& target;
 
 	// Random initial offsets

@@ -26,7 +26,7 @@ public:
 	sf::Time getTime(lif::BonusType type) const;
 	sf::Time getElapsedTime(lif::BonusType type) const;
 	sf::Time getRemainingTime(lif::BonusType type) const;
-	
+
 	void reset();
 	void expireTemporaryBonuses();
 };

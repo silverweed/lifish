@@ -17,7 +17,7 @@ class AlienPredator : public lif::Enemy {
 	const static sf::Time TUNNEL_TRANSITION_TIME;
 	constexpr static unsigned short TUNNEL_N_FRAMES = 2;
 
-	lif::Clock *tunnelClock = nullptr,     // keeps track of seconds since latest tunneling 
+	lif::Clock *tunnelClock = nullptr,     // keeps track of seconds since latest tunneling
 	            *tunnelAnimClock = nullptr; // used for tunneling animation
 	bool tunneling = false,
 	     tunnelChangedPosition = false;

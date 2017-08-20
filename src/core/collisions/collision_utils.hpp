@@ -17,7 +17,7 @@ bool collide(const lif::Collider& cld1, const lif::Collider& cld2, const lif::Di
 bool is_at_boundaries(const lif::Collider& cld, const lif::AxisMoving *const am, const sf::FloatRect& limits);
 
 /** Checks if `ocld` is along the forward direction of `cld` */
-bool direction_is_viable(const lif::Collider& cld, 
+bool direction_is_viable(const lif::Collider& cld,
 		const lif::AxisMoving& moving, const lif::Collider& ocld);
 
 }

@@ -18,7 +18,7 @@ class LightSource : public lif::Component {
 	float radius;
 	sf::Color color;
 	unsigned short flickerLen = 0;
-	
+
 	void _fillRandomPool(float flickerAmount);
 	float _flickerStep();
 public:

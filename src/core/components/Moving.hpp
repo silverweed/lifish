@@ -7,7 +7,7 @@ namespace lif {
 class Clock;
 class Collider;
 
-/** 
+/**
  * An object moving in a generic direction. Use its child
  * AxisMoving for restricting motion along axes or its child
  * FreeMoving for generic 2d motion.
@@ -26,7 +26,7 @@ protected:
 
 	sf::Time blockTime;
 	bool blocked = false;
-	
+
 	sf::Vector2f prevAlign;
 	lif::Clock *frameClock = nullptr,
 		   *blockClock = nullptr;
@@ -41,7 +41,7 @@ protected:
 	/** Checks if entity is blocked and unblocks it if block expired.
 	 *  @return true if entity is still blocked, false otherwise.
 	 */
-	bool _handleBlock();	
+	bool _handleBlock();
 	/** @return the actual speed of this entity, which is the summation of
 	 *  the base `speed` and `dashAmount * originalSpeed`.
 	 *  Always use this, not directly `speed`.
@@ -57,18 +57,18 @@ public:
 	 *  If `relativeToOriginal` is true, then `speed` is interpreted as a multiplier to the
 	 *  original speed (i.e. passing `speed = 0.5` will halve the speed.)
 	 */
-	void setSpeed(float speed, bool relativeToOriginal = false); 
+	void setSpeed(float speed, bool relativeToOriginal = false);
 
 	float getDistTravelled() const { return distTravelled; }
 	void setDistTravelled(float d) { distTravelled = d; }
 
-	/** Make this entity dash, i.e. temporarily increase its speed by `mult * originalSpeed`. 
+	/** Make this entity dash, i.e. temporarily increase its speed by `mult * originalSpeed`.
 	 *  Passing `0` as argument cancels the dash.
 	 */
 	void setDashing(float mult);
 	bool isDashing() const { return dashAmount != 0; }
 
-	/** Prevent this entity's owner to move for `duration`. 
+	/** Prevent this entity's owner to move for `duration`.
 	 *  Give sf::Time::Zero as argument to unblock.
 	 */
 	void block(sf::Time duration);

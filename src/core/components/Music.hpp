@@ -21,7 +21,7 @@ class Music : public lif::Component {
 
 public:
 	explicit Music(lif::Entity& owner, const lif::Track& track);
-	
+
 	std::shared_ptr<LoopingMusic> getMusic() const { return music; }
 	const lif::Track& getTrack() const { return track; }
 };

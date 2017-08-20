@@ -119,7 +119,7 @@ public:
 	 *  automatically in updateAll() if this method hasn't been called since latest update.
 	 *  Note that calling this method does NOT remove any killed or dead entity from the main
 	 *  collection: that is only done in `updateAll`, so one can still refer to an "almost-dead"
-	 *  entity (i.e. one that `isKilled()` and has `isKillInProgress() == false`) to do 
+	 *  entity (i.e. one that `isKilled()` and has `isKillInProgress() == false`) to do
 	 *  something in its last update cycle between a call to `validate()` and `updateAll()`.
 	 */
 	void validate();

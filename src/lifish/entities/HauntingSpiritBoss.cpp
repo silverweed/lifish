@@ -126,7 +126,7 @@ void HauntingSpiritBoss::_updateStart() {
 		get<lif::FreeSighted>()->setActive(true);
 		state = State::SEARCHING;
 	} else if (animated->getAnimationName() == "idle") {
-		animated->getSprite().setLooped(false, false);	
+		animated->getSprite().setLooped(false, false);
 		animated->setAnimation("start");
 		animated->getSprite().play();
 	}

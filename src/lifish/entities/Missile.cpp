@@ -46,7 +46,7 @@ Missile::Missile(const sf::Vector2f& pos, const sf::Vector2f& target,
 	});
 
 	clock = addComponent<lif::Clock>(*this);
-	
+
 	drawable = get<lif::Drawable>();
 	drawable->setRotOrigin(sf::Vector2f(data.size / 2, data.size / 2));
 	rotRate = lif::degrees(180) / sf::seconds(1.0 / info.speed).asSeconds() * (target.x >= pos.x ? -1 : 1);

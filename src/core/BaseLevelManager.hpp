@@ -56,7 +56,7 @@ protected:
 #ifndef RELEASE
 	lif::debug::Stats dbgStats;
 #endif
-	
+
 	virtual void _spawn(lif::Entity *e);
 public:
 	explicit BaseLevelManager();

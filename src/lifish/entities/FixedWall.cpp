@@ -10,7 +10,7 @@
 using lif::FixedWall;
 using lif::TILE_SIZE;
 
-FixedWall::FixedWall(const sf::Vector2f& pos, const unsigned short id) 
+FixedWall::FixedWall(const sf::Vector2f& pos, const unsigned short id)
 	: lif::Entity(pos)
 {
 	addComponent<lif::Fixed>(*this);

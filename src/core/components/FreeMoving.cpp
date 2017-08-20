@@ -23,7 +23,7 @@ void FreeMoving::update() {
 
 	if (frameTime > MAX_FRAME_TIME)
 		frameTime = MAX_FRAME_TIME;
-	
+
 	shift += velocity * effSpeed;
 
 	if (!_collidesWithSolid()) {

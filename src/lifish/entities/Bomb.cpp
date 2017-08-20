@@ -31,7 +31,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Entity *const source,
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("explosion", lif::getAsset("sounds", "explosion.ogg")),
 		std::make_pair("fuse", lif::getAsset("sounds", "fuse.ogg"))
-	}); 
+	});
 	killable = addComponent<lif::Temporary>(*this, [this] () {
 		// Expire condition
 		return fuseClock->getElapsedTime() >= fuseTime;

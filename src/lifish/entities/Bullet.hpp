@@ -49,7 +49,7 @@ struct BulletInfo {
 	/** The bullet's collision layer */
 	lif::c_layers::Layer cLayer = lif::c_layers::ENEMY_BULLETS;
 
-	BulletInfo(unsigned short dataId, int damage, float speed, 
+	BulletInfo(unsigned short dataId, int damage, float speed,
 			float range = -1, lif::c_layers::Layer cLayer = lif::c_layers::ENEMY_BULLETS)
 		: dataId(dataId), damage(damage), speed(speed), range(range), cLayer(cLayer)
 	{}

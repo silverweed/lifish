@@ -24,7 +24,7 @@ class AxisMoving;
  * and take care of the extra effects like blocking the attacker after the shot, etc.
  */
 class Shooting : public lif::BufferedSpawner {
-	
+
 	bool manualPosition = false;
 
 protected:
@@ -43,7 +43,7 @@ protected:
 	void _checkBlock();
 	std::unique_ptr<lif::Bullet> _doShoot(std::unique_ptr<lif::Bullet>&& bullet);
 	void _contactAttack();
-	
+
 public:
 	explicit Shooting(lif::Entity& owner, const Attack& attack);
 

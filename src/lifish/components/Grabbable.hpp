@@ -10,7 +10,7 @@ class Grabbable : public lif::Component {
 
 public:
 	explicit Grabbable(lif::Entity& owner)
-		: lif::Component(owner) 
+		: lif::Component(owner)
 	{
 		_declComponent<Grabbable>();
 	}

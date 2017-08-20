@@ -24,7 +24,7 @@ void FPSDisplayer::update() {
 		fpsUpdateClock.restart();
 		nUpdates = 0;
 		curTime = 0;
-	}	
+	}
 }
 
 void FPSDisplayer::draw(sf::RenderTarget& target, sf::RenderStates states) const {

@@ -52,7 +52,7 @@ lif::Direction seeing_player(const lif::LevelManager& lm, const lif::AxisSighted
 
 lif::Direction adjust_prev_align(const lif::Entity& entity, lif::AxisMoving& moving) {
 	switch (moving.getDirection()) {
-	case D::LEFT: 
+	case D::LEFT:
 	case D::UP:
 		moving.setPrevAlign(lif::tile(entity.getPosition()));
 		break;

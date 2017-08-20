@@ -19,7 +19,7 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 	save["levelSet"] = lm.getLevel()->getLevelSet().getMeta("path");
 	// Current level
 	save["level"] = lm.getLevel()->getInfo().levelnum;
-	
+
 	const auto& players = lm.players;
 	for (unsigned i = 0; i < players.size(); ++i) {
 		const auto& player = players[i];
@@ -66,7 +66,7 @@ lif::SaveData SaveManager::loadGame(const std::string& filename) {
 	lif::SaveData data;
 	try {
 		nlohmann::json load = nlohmann::json::parse(std::ifstream(filename));
-		
+
 		data.levelSet = load["levelSet"];
 		data.level = load["level"];
 		for (unsigned i = 0; i < data.players.size(); ++i) {

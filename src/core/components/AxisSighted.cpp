@@ -45,7 +45,7 @@ void AxisSighted::update() {
 
 	vision.fill(visionRadius * lif::TILE_SIZE);
 	for (unsigned i = 0; i < 4; ++i) {
-		_fillLine(static_cast<lif::Direction>(i));	
+		_fillLine(static_cast<lif::Direction>(i));
 	}
 }
 

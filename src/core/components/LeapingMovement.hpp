@@ -11,7 +11,7 @@ class AxisMoving;
  * a new tile. This can be used to obtain a "leap" effect.
  */
 class LeapingMovement : public lif::Component {
-	
+
 	sf::Time blockTime;
 
 	lif::AxisMoving *moving = nullptr;

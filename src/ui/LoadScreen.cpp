@@ -75,7 +75,7 @@ void LoadScreen::onLoad() {
 	const auto font = lif::getAsset("fonts", lif::fonts::CUTSCENES);
 
 	sf::Vector2f pos(25, 75);
-	
+
 	auto saves = browseSaveData(lif::pwd);
 	if (saves.size() == 0) {
 		auto text = new lif::ShadedText(font, "No save data", pos);

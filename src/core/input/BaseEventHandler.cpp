@@ -30,7 +30,7 @@ bool BaseEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 		default:
 			break;
 		}
-	default: 
+	default:
 		break;
 	}
 	return false;

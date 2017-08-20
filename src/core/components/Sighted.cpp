@@ -16,7 +16,7 @@ void Sighted::setOpaque(std::initializer_list<lif::c_layers::Layer> layers, bool
 		if (opaque)
 			opaqueMask |= 1 << shift;
 		else
-			opaqueMask &= ~(1 << shift); 
+			opaqueMask &= ~(1 << shift);
 	}
 }
 

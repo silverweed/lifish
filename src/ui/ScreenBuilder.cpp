@@ -118,7 +118,7 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 
 	auto newtxt = new lif::ShadedText;
 	auto style = screen.styles[style_name];
-	
+
 	COMPUTE_STYLE_OVERRIDE(text)
 
 	// set shadow
@@ -152,7 +152,7 @@ void ScreenBuilder::_addImage(lif::ui::Screen& screen, const json& image) {
 
 	auto newimg = new sf::Sprite;
 	auto style = screen.styles[style_name];
-	
+
 	COMPUTE_STYLE_OVERRIDE(image)
 
 	// set string
@@ -212,7 +212,7 @@ void ScreenBuilder::_calcTransitions(lif::ui::Screen& screen) {
 	// Create a set of interactables ordered by y ascending
 	for (const auto& pair : screen.interactables)
 		elems.emplace(pair.second.get(), pair.first);
-	
+
 	// Add up/down transitions
 	using D = lif::Direction;
 	for (auto it = elems.begin(); it != elems.end(); ++it) {
@@ -232,7 +232,7 @@ void ScreenBuilder::build(lif::ui::Screen& screen, const std::string& layoutFile
 	const auto absname = lif::getAsset("screens", layoutFileName);
 	std::cerr << "Loading screen " << absname << std::endl;
 	json screenJSON = json::parse(std::ifstream(absname.c_str()));
-	
+
 	// top-level properties
 	screen.name = screenJSON["name"].get<std::string>();
 	auto parent = screenJSON["parent"];
@@ -262,9 +262,9 @@ void ScreenBuilder::build(lif::ui::Screen& screen, const std::string& layoutFile
 
 	// load bg sprite
 	screen._loadBGSprite(bgSpritePath);
-	
+
 	screen.built = true;
 
-	//std::cerr << "Screen loaded. Has " << screen.texts.size() << " texts, " << screen.images.size() 
+	//std::cerr << "Screen loaded. Has " << screen.texts.size() << " texts, " << screen.images.size()
 		//<< " images and " << screen.nonInteractables.size() << " non-interactables." << std::endl;
 }

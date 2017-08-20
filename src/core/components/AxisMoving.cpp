@@ -28,7 +28,7 @@ void AxisMoving::update() {
 	// Cap frameTime to a maximum to avoid excessive "jumps" due to lag.
 	if (frameTime > MAX_FRAME_TIME)
 		frameTime = MAX_FRAME_TIME;
-	
+
 	const float effSpeed = _effectiveSpeed();
 
 	switch (direction) {
@@ -105,7 +105,7 @@ void AxisMoving::realign() {
 		pos = lif::aligned(pos);
 		break;
 	}
-	
+
 	owner.setPosition(pos);
 }
 
