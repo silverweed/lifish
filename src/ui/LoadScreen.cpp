@@ -51,6 +51,7 @@ LoadScreen::LoadScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 }
 
 void LoadScreen::onLoad() {
+	Screen::onLoad();
 
 	selected = std::make_pair("", nullptr);
 

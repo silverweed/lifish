@@ -33,6 +33,8 @@ void Screen::update() {
 	if (lif::joystick::JoystickManager::getInstance().isAnyEvtMoved() >= 0)
 		usingJoystick = true;
 
+	_updateItrScale();
+
 	if (usingJoystick)
 		_updateSelectedJoystick();
 	else
@@ -99,9 +101,7 @@ void Screen::_updateSelectedMouse() {
 		if (selected.second->getGlobalBounds().contains(mousePos.x, mousePos.y))
 			return;
 		else {
-			selected.second->setColor(sf::Color::White);
-			selected.first = "";
-			selected.second = nullptr;
+			_deselect();
 		}
 	}
 	// We may be selecting a new interactable: in that case, find out which.
@@ -113,7 +113,7 @@ void Screen::_updateSelectedMouse() {
 		}
 	}
 	if (selected.second != nullptr)
-		selected.second->setColor(sf::Color::Red);
+		_select(*selected.second);
 }
 
 static lif::Direction axis2dir(const lif::joystick::JoystickListener::Axis axis) {
@@ -137,15 +137,27 @@ void Screen::_updateSelectedJoystick() {
 			const auto name = transitions.first();
 			selected = std::make_pair(name, interactables[name].get());
 		} else {
-			selected.second->setColor(sf::Color::White);
 			const auto nxt = transitions.get(selected.first, axis2dir(jm.getListener(n).getLatestEvt()));
+			_deselect();
 			if (nxt != "") {
 				selected = std::make_pair(nxt, interactables[nxt].get());
 			}
 		}
 		if (selected.second != nullptr)
-			selected.second->setColor(sf::Color::Red);
+			_select(*selected.second);
 	}
+}
+
+void Screen::_select(lif::ui::Interactable& elem) {
+	elem.setColor(sf::Color::Red);
+	elem.setScale(1.1f, 1.1f);
+}
+
+void Screen::_deselect() {
+	selected.second->setColor(sf::Color::White);
+	selected.second->setScale(1.f, 1.f);
+	selected.first = "";
+	selected.second = nullptr;
 }
 
 void Screen::_saveMousePos(int x, int y) {
@@ -156,4 +168,29 @@ void Screen::_saveMousePos(int x, int y) {
 void Screen::_triggerAction(lif::ui::Action action) {
 	actionTriggered = action;
 	wasActionTriggered = true;
+}
+
+void Screen::onLoad() {
+	_setItrScale(0);
+	itrScaleClock.restart();
+	itrScaleMid = false;
+}
+
+void Screen::_setItrScale(float x) {
+	itrScale = x;
+	for (auto& pair : interactables) {
+		auto& itr = pair.second;
+		itr->setScale(1, x);
+	}
+}
+
+void Screen::_updateItrScale() {
+	static constexpr auto SCALE_SPEED = 15;
+	if (itrScaleMid) {
+		if (itrScale > 1)
+			_setItrScale(std::max(1.f, itrScale - itrScaleClock.restart().asSeconds() * SCALE_SPEED));
+	} else if (itrScale < 1.3f) {
+		_setItrScale(std::min(1.3f, itrScale + itrScaleClock.restart().asSeconds() * SCALE_SPEED));
+		if (itrScale >= 1.3f) itrScaleMid = true;
+	}
 }

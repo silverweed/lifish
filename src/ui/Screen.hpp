@@ -29,8 +29,15 @@ private:
 	sf::Vector2i latestMousePos;
 	bool wasActionTriggered = false;
 	lif::ui::Action actionTriggered = lif::ui::Action::DO_NOTHING;
+	float itrScale = 0;
+	sf::Clock itrScaleClock;
+	bool itrScaleMid = false;
 
 	void _saveMousePos(int x, int y);
+	void _setItrScale(float x);
+	void _updateItrScale();
+	void _select(lif::ui::Interactable& elem);
+	void _deselect();
 
 protected:
 	/** The window this screen is rendered in */
@@ -101,7 +108,7 @@ public:
 	virtual bool handleEvent(sf::Window&, sf::Event) override;
 	virtual void update() override;
 	/** Called whenever the screen is displayed */
-	virtual void onLoad() {}
+	virtual void onLoad();
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void setOrigin(const sf::Vector2f& pos) override;

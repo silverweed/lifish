@@ -33,6 +33,7 @@ public:
 	void setBGColor(const sf::Color& bg) { bgtext.setFillColor(bg); }
 	void setColor(const sf::Color& fg, const sf::Color& bg);
 	void setFont(const std::string& fontname);
+	void setScale(float x, float y);
 
 	void setPosition(const sf::Vector2f& pos) override;
 	void setOrigin(const sf::Vector2f& origin) override;

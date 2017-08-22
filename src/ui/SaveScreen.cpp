@@ -144,8 +144,8 @@ bool SaveScreen::handleEvent(sf::Window&, sf::Event event) {
 }
 
 void SaveScreen::_updateCursorPosition() {
-	cursor->setPosition(bufferText->getPosition()
-		+ sf::Vector2f(bufIdx * charBounds.x, charBounds.y));
+	const auto txtbounds = bufferText->getGlobalBounds();
+	cursor->setPosition(bufferText->getPosition() + sf::Vector2f(txtbounds.width, charBounds.y));
 	cursorVisible = true;
 	cursor->setFillColor(sf::Color::White);
 	cursorClock.restart();

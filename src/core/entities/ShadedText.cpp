@@ -79,3 +79,8 @@ sf::FloatRect ShadedText::getGlobalBounds() const {
 std::string ShadedText::getString() const {
 	return fgtext.getString().toAnsiString();
 }
+
+void ShadedText::setScale(float x, float y) {
+	fgtext.setScale(x, y);
+	bgtext.setScale(x, y);
+}

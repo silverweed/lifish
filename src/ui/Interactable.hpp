@@ -92,6 +92,13 @@ public:
 			throw std::bad_cast();
 		return sprite;
 	}
+
+	void setScale(float x, float y) {
+		switch (type) {
+		case Type::TEXT: text->setScale(x, y); return;
+		case Type::SPRITE: sprite->setScale(x, y); return;
+		}
+	}
 };
 
 }
