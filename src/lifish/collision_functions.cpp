@@ -17,7 +17,7 @@ CollisionFunc lif::hurtByExplosions(lif::Entity& e, unsigned opts) {
 		throw std::invalid_argument("Entity given to `hurtByExplosions` has no Lifed!");
 	auto scored = e.get<lif::Scored>();
 
-	return [e, killable, lifed, scored, opts] (lif::Collider& cld) {
+	return [&e, killable, lifed, scored, opts] (lif::Collider& cld) {
 		// Check valid hit
 		if (cld.getLayer() != lif::c_layers::EXPLOSIONS || killable->isKilled())
 			return;

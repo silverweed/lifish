@@ -1,7 +1,11 @@
 #include "GodEyeBoss.hpp"
 #include "Lifed.hpp"
 #include "Animated.hpp"
+#include "Controllable.hpp"
+#include "FixedWall.hpp"
+#include "BreakableWall.hpp"
 #include "Collider.hpp"
+#include "Level.hpp"
 #include "HurtDrawProxy.hpp"
 #include "Player.hpp"
 #include "FreeSighted.hpp"
@@ -12,7 +16,9 @@
 #include "Enemy.hpp"
 #include "game.hpp"
 #include "conf/boss.hpp"
+#include "camera_utils.hpp"
 #include <cmath>
+#include <random>
 
 #include <iostream>
 
@@ -22,8 +28,9 @@ using lif::TILE_SIZE;
 const sf::Vector2f SIZE(3 * TILE_SIZE, 3 * TILE_SIZE);
 const sf::Vector2f SHIELD_SIZE(4 * TILE_SIZE, 4 * TILE_SIZE);
 
-GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos)
+GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 	: lif::Boss(pos)
+	, lm(lm)
 {
 	spriteBg = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "godeyeboss.png"));
 	spriteBg->addAnimation("idle", {
@@ -65,6 +72,7 @@ GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos)
 	// Boss is only vulnerable when shield is down
 	vulnerable = false;
 
+	attackClock = addComponent<lif::Clock>(*this);
 	sighted = addComponent<lif::FreeSighted>(*this);
 	//addComponent<lif::LightSource>(*this, 2 * TILE_SIZE, sf::Color(128, 128, 128))
 			//->setPosition(sf::Vector2f(TILE_SIZE, TILE_SIZE));
@@ -76,6 +84,17 @@ void GodEyeBoss::update() {
 
 	_updatePupilPos();
 	_updateShield();
+
+	if (attackClock->getElapsedTime() > sf::seconds(10)) {
+		_shakeWalls();
+		attackClock->restart();
+	}
+
+	//lm.getEntities().apply([] (const lif::Entity* e) {
+			//if (!dynamic_cast<const lif::BreakableWall*>(e))return;
+		//auto cld = e->get<lif::Collider>();
+		//std::cout << "pos = " << e->getPosition() << ", cld = " << cld->getPosition() << std::endl;
+	//});
 }
 
 void GodEyeBoss::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -96,7 +115,7 @@ void GodEyeBoss::_updatePupilPos() {
 void GodEyeBoss::_teleportTo(const sf::Vector2f& newpos) {
 	position = newpos;
 	_updatePupilPos();
-	shield->setPosition(position + sf::Vector2f{ TILE_SIZE * 3/2, TILE_SIZE * 3/2 });
+	shield->setPosition(position + sf::Vector2f(TILE_SIZE * 3/2, TILE_SIZE * 3/2));
 }
 
 void GodEyeBoss::_updateShield() {
@@ -110,4 +129,50 @@ void GodEyeBoss::_updateShield() {
 	} else {
 		shield->getSprite().setColor(sf::Color(255, 255, 255, 0));
 	}
+}
+
+void GodEyeBoss::_shakeWalls() {
+	const auto SHAKE_DURATION = sf::seconds(3);
+
+	lif::requestCameraShake(0.1, 50, 0.1, 50, SHAKE_DURATION, 2.0);
+
+	// Freeze players
+	for (int i = 0; i < lif::MAX_PLAYERS; ++i) {
+		auto player = lm.getPlayer(i + 1);
+		if (player == nullptr)
+			continue;
+		player->setPosition(lif::aligned2(player->getPosition()));
+		player->get<lif::Moving>()->stop();
+		player->get<lif::Controllable>()->disableFor(SHAKE_DURATION);
+	}
+
+	// Change walls' disposition
+	static std::uniform_int_distribution<> disposition(0, 2);
+	const auto shakeType = disposition(lif::rng);
+	lm.getEntities().apply([this, shakeType] (lif::Entity *e) {
+		if (dynamic_cast<lif::FixedWall*>(e) == nullptr && dynamic_cast<lif::BreakableWall*>(e) == nullptr)
+			return;
+
+		const float width = lm.getLevel()->getInfo().width,
+		            height = lm.getLevel()->getInfo().height;
+		float x = e->getPosition().x,
+		      y = e->getPosition().y;
+
+		switch (shakeType) {
+		case 0: // flip X
+			x = (width + 1) * TILE_SIZE - x;
+			break;
+		case 1: // flix Y
+			y = (height + 1) * TILE_SIZE - y;
+			break;
+		case 2: // flip both
+			x = (width + 1) * TILE_SIZE - x;
+			y = (height + 1) * TILE_SIZE - y;
+			break;
+		// TODO mirror diagonally (with a premade configuration)
+		default:
+			break;
+		}
+		e->setPosition(sf::Vector2f(x, y));
+	});
 }

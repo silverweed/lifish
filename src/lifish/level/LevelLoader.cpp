@@ -238,11 +238,11 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 		entities.add(e);
 
 	// FIXME
-	//if (level.getInfo().levelnum == 30) {
-		auto eye = new lif::GodEyeBoss({ 10 * lif::TILE_SIZE, 6 * lif::TILE_SIZE });
+	if (level.getInfo().levelnum == 30) {
+		auto eye = new lif::GodEyeBoss({ 13 * lif::TILE_SIZE, 6 * lif::TILE_SIZE }, lm);
 		eye->get<lif::Sighted>()->setEntityGroup(&lm.entities);
 		entities.add(eye);
-	//}
+	}
 
 	if (level.hasEffect("darkness")) {
 		// In case of darkness, we need the Players to have an AxisSighted component
