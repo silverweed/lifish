@@ -120,6 +120,10 @@ public:
 
 	const sf::Drawable& getBackground() const { return bgSprite; }
 	const sf::Drawable& getBorder() const { return borderSprite; }
+	
+	bool hasEffect(const std::string& effectName) const {
+		return info.effects.find(effectName) != info.effects.end();
+	}
 };
 
 }

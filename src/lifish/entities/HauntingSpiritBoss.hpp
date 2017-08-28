@@ -36,6 +36,7 @@ class HauntingSpiritBoss : public lif::Boss {
 	std::array<sf::Color, 3> shootColors;
 
 	lif::ShootingPattern *curShootPattern = nullptr;
+	lif::Animated *animated = nullptr;
 	lif::Clock *animClock = nullptr,
 	           *atkClock = nullptr,   // used for shooting
 	           *hauntClock = nullptr; // used for changing haunted statue after delay

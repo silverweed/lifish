@@ -7,6 +7,7 @@
 
 namespace lif {
 
+class Animated;
 class AxisMoving;
 class Clock;
 class FreeSighted;
@@ -48,6 +49,7 @@ class RexBoss : public lif::Boss {
 
 	lif::Clock *animClock = nullptr,
 	           *attackClock = nullptr;
+	lif::Animated *animated = nullptr;
 	lif::AxisMoving *moving = nullptr;
 	lif::FreeSighted *sighted = nullptr;
 	lif::Collider *stompCollider = nullptr;

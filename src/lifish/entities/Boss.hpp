@@ -6,7 +6,6 @@
 
 namespace lif {
 
-class Animated;
 class Collider;
 class Killable;
 class Clock;
@@ -27,7 +26,9 @@ protected:
 	lif::Killable *killable = nullptr;
 	// The following components MUST be added by children.
 	lif::Collider *collider = nullptr;
-	lif::Animated *animated = nullptr;
+
+	/** If `false`, boss cannot be hurt by bombs. */
+	bool vulnerable = true;
 
 
 	void _checkCollision(lif::Collider& coll);

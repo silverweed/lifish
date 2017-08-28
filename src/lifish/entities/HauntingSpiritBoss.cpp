@@ -86,6 +86,8 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	scatter->scatterAngle = lif::degrees(30);
 	shootPatterns[2] = scatter;
 	shootColors[2] = sf::Color::Red;
+
+	addComponent<lif::Drawable>(*this, *animated);
 }
 
 void HauntingSpiritBoss::update() {

@@ -9,11 +9,11 @@
 #include "BossExplosion.hpp"
 #include "Spawning.hpp"
 #include "Collider.hpp"
+#include "HurtDrawProxy.hpp"
 #include "Killable.hpp"
 #include "GameCache.hpp"
 #include "Sounded.hpp"
 #include "Explosion.hpp"
-#include "HurtDrawProxy.hpp"
 #include "Lifed.hpp"
 #include "conf/zindex.hpp"
 #include "conf/boss.hpp"
@@ -56,7 +56,6 @@ Boss::Boss(const sf::Vector2f& pos)
 		lif::cache.playSound(expl->get<lif::Sounded>()->getSoundFile("explode"));
 		return expl;
 	});
-	addComponent<lif::Drawable>(*this, *addComponent<lif::HurtDrawProxy>(*this));
 	addComponent<lif::Absorbable>(*this);
 }
 
@@ -64,8 +63,6 @@ lif::Entity* Boss::init() {
 	lif::Entity::init();
 	if (collider == nullptr)
 		throw std::logic_error("Collider is null for " + toString() + "!");
-	if (animated == nullptr)
-		throw std::logic_error("Animated is null for " + toString() + "!");
 	return this;
 }
 
@@ -88,7 +85,7 @@ void Boss::_checkCollision(lif::Collider& coll) {
 		return;
 	}
 
-	if (coll.getLayer() != lif::c_layers::EXPLOSIONS) return;
+	if (!vulnerable || coll.getLayer() != lif::c_layers::EXPLOSIONS) return;
 
 	auto& expl = static_cast<lif::Explosion&>(coll.getOwnerRW());
 	if (expl.hasDamaged(*this)) return;
@@ -119,4 +116,13 @@ void Boss::_addDefaultCollider(const sf::Vector2f& size) {
 		// on collision
 		_checkCollision(coll);
 	}, lif::c_layers::BOSSES, size);
+	if (get<lif::HurtDrawProxy>() == nullptr) {
+		throw std::logic_error("You need to add a HurtDrawProxy to this Boss.");
+	}
+	if (get<lif::Lifed>() == nullptr) {
+		throw std::logic_error("You need to add a Lifed to this Boss.");
+	}
+	if (get<lif::Sounded>() == nullptr) {
+		throw std::logic_error("You need to add a Sounded to this Boss.");
+	}
 }

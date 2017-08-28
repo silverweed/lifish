@@ -19,6 +19,7 @@
 #include "BufferedSpawner.hpp"
 #include "RexFlame.hpp"
 #include "SmokeRing.hpp"
+#include "HurtDrawProxy.hpp"
 #include "ai_functions.hpp"
 #include "ai_helpers.hpp"
 #include "conf/boss.hpp"
@@ -78,6 +79,8 @@ RexBoss::RexBoss(const sf::Vector2f& pos)
 	animated->getSprite().play();
 	addComponent<lif::MovingAnimator>(*this)->setActive(false);
 	spawner = addComponent<lif::BufferedSpawner>(*this);
+
+	addComponent<lif::Drawable>(*this, *addComponent<lif::HurtDrawProxy>(*this));
 
 	// Body collider
 	_addDefaultCollider(SIZE);

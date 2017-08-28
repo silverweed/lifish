@@ -17,10 +17,9 @@ class HurtDrawProxy : public lif::Component, public sf::Drawable {
 	lif::Animated *animated = nullptr;
 	lif::Clock *hurtClock = nullptr;
 
-
 public:
 	/** `owner` must have an Animated component */
-	explicit HurtDrawProxy(lif::Entity& owner);
+	explicit HurtDrawProxy(lif::Entity& owner, lif::Animated *animated = nullptr);
 
 	/** Signal that the owner was hurt, resets hurtClock */
 	void hurt();

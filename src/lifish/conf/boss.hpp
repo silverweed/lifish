@@ -54,6 +54,10 @@ namespace conf {
 			// Missile damage and speed are in BulletFactory
 			constexpr auto N_MISSILES = 12;
 		}
+
+		namespace god_eye_boss {
+			constexpr auto LIFE = 10;
+		}
 	}
 }
 

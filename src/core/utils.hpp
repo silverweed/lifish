@@ -90,6 +90,13 @@ inline std::ostream& operator<<(std::ostream& stream, const sf::RectangleShape& 
 	return stream << "(" << p.x << ", " << p.y << " x " << s.x << ", " << s.y << ")";
 }
 
+inline std::ostream& operator<<(std::ostream& stream, const sf::Color& col) {
+	return stream << "(" << static_cast<int>(col.r)
+		<< ", " << static_cast<int>(col.g)
+		<< ", " << static_cast<int>(col.b)
+		<< ", " << static_cast<int>(col.a) << ")";
+}
+
 template<typename T, typename R>
 constexpr float sqrDistance(sf::Vector2<T> a, sf::Vector2<R> b) {
 	return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);

@@ -29,7 +29,7 @@ void ScatterVsPlayerPattern::update() {
 	lif::Component::update();
 	if (!positionLocked) {
 		// Find out player position; will keep using that until reset.
-		auto player = sighted->nearest<lif::Player>().lock();
+		auto player = sighted->nearest<lif::Player>();
 		if (player == nullptr) {
 			setActive(false);
 			return;
@@ -61,7 +61,7 @@ void ScatterVsPlayerPattern::_reset() {
 void ScatterVsPlayerPattern::_shoot() {
 	// Fire a bullet in a random direction inside the cone with angle
 	// `scatterAngle` and centered towards `playerPos`.
-	playerAngle = _calcAngle(sighted->nearest<lif::Player>().lock()->getPosition());
+	playerAngle = _calcAngle(sighted->nearest<lif::Player>()->getPosition());
 	std::uniform_real_distribution<double> scatter(-scatterAngle.asRadians() / 2, scatterAngle.asRadians() / 2);
 	addSpawned(lif::BulletFactory::create(bulletId, owner.getPosition(),
 				playerAngle + lif::radians(scatter(lif::rng)), &owner));

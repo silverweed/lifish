@@ -9,7 +9,7 @@
 #include "AxisSighted.hpp"
 #include "Teleport.hpp"
 #include "BreakableWall.hpp"
-#include "AlienBoss.hpp"
+//#include "AlienBoss.hpp"
 #include "AI.hpp"
 #include "Flash.hpp"
 #include "TransparentWall.hpp"
@@ -30,6 +30,8 @@
 #include "TimedLaser.hpp"
 #include "LeapingMovement.hpp"
 #include "RexBoss.hpp"
+#include "GodEyeBoss.hpp"
+#include "Flare.hpp"
 #include <iostream>
 
 using lif::TILE_SIZE;
@@ -128,14 +130,14 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				}
 				break;
 
-			case EntityType::ALIEN_BOSS:
-				{
-					auto boss = new lif::AlienBoss(curPos);
-					for (auto s : boss->getAllRecursive<lif::Sighted>())
-						s->setEntityGroup(&lm.entities);
-					entities.add(boss);
-				}
-				break;
+			//case EntityType::ALIEN_BOSS:
+				//{
+					//auto boss = new lif::AlienBoss(curPos);
+					//for (auto s : boss->getAllRecursive<lif::Sighted>())
+						//s->setEntityGroup(&lm.entities);
+					//entities.add(boss);
+				//}
+				//break;
 
 			case EntityType::HAUNTING_SPIRIT_BOSS:
 				{
@@ -235,7 +237,14 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 	for (auto e : LevelEffects::getEffectEntities(level))
 		entities.add(e);
 
-	if (level.getInfo().effects.find("darkness") != level.getInfo().effects.end()) {
+	// FIXME
+	//if (level.getInfo().levelnum == 30) {
+		auto eye = new lif::GodEyeBoss({ 10 * lif::TILE_SIZE, 6 * lif::TILE_SIZE });
+		eye->get<lif::Sighted>()->setEntityGroup(&lm.entities);
+		entities.add(eye);
+	//}
+
+	if (level.hasEffect("darkness")) {
 		// In case of darkness, we need the Players to have an AxisSighted component
 		for (size_t i = 0; i < lm.players.size(); ++i) {
 			if (lm.players[i] == nullptr) continue;
@@ -247,6 +256,7 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				lif::c_layers::UNBREAKABLES
 			});
 		}
+		entities.add(new lif::Flare(sf::seconds(0.07f), sf::seconds(0.7f)));
 	}
 
 	lm.levelTime->resume();

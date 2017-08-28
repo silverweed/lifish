@@ -5,19 +5,23 @@
 
 using lif::HurtDrawProxy;
 
-HurtDrawProxy::HurtDrawProxy(lif::Entity& owner)
+HurtDrawProxy::HurtDrawProxy(lif::Entity& owner, lif::Animated *animated)
 	: lif::Component(owner)
 {
 	_declComponent<HurtDrawProxy>();
 	hurtClock = addComponent<lif::Clock>(*this);
 	hurtClock->add(lif::conf::HURT_TIME);
+	if (animated)
+		this->animated = animated;
 }
 
 lif::Entity* HurtDrawProxy::init() {
 	lif::Component::init();
-	animated = owner.get<lif::Animated>();
-	if (animated == nullptr)
-		throw std::invalid_argument("Owner of HurtDrawProxy has no Animated!");
+	if (animated == nullptr) {
+		animated = owner.get<lif::Animated>();
+		if (animated == nullptr)
+			throw std::invalid_argument("Owner of HurtDrawProxy has no Animated!");
+	}
 	return this;
 }
 

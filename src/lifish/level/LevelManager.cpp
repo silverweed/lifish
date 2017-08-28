@@ -29,7 +29,7 @@ using lif::LevelManager;
 LevelManager::LevelManager()
 	: lif::BaseLevelManager()
 	, renderer(*this)
-	, effects(sf::Vector2u(lif::GAME_WIDTH, lif::GAME_HEIGHT))
+	, effects(sf::Vector2u(lif::GAME_WIDTH - 2 * lif::TILE_SIZE, lif::GAME_HEIGHT - 2 * lif::TILE_SIZE))
 	, levelTime(new lif::LevelTime)
 {
 	reset();

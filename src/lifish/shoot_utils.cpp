@@ -5,8 +5,8 @@
 
 void lif::shootToNearestPlayer(lif::Entity& shooter) {
 	const auto player = shooter.get<lif::FreeSighted>()->nearest<lif::Player>();
-	if (player.expired() || player.lock() == nullptr) return;
+	if (player == nullptr) return;
 
-	const auto& ppos = player.lock()->getPosition();
+	const auto& ppos = player->getPosition();
 	shooter.get<lif::Shooting>()->shoot(lif::angleBetween(shooter.getPosition(), ppos));
 }
