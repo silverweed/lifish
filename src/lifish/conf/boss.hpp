@@ -56,7 +56,7 @@ namespace conf {
 		}
 
 		namespace god_eye_boss {
-			constexpr auto LIFE = 10;
+			constexpr auto LIFE = 1000;
 		}
 	}
 }

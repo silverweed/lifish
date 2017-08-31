@@ -14,6 +14,7 @@
 #include "Sounded.hpp"
 #include "Drawable.hpp"
 #include "Enemy.hpp"
+#include "Bonusable.hpp"
 #include "game.hpp"
 #include "conf/boss.hpp"
 #include "camera_utils.hpp"
@@ -62,7 +63,11 @@ GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 	shieldAlphaClock = addComponent<lif::Clock>(*this);
 
 	hurtDrawProxy = addComponent<lif::HurtDrawProxy>(*this, spriteBg);
-	addComponent<lif::Lifed>(*this, lif::conf::boss::god_eye_boss::LIFE);
+	addComponent<lif::Lifed>(*this, lif::conf::boss::god_eye_boss::LIFE, [this] (int, int) {
+		// on hurt
+		if (++timesHurt == lif::conf::boss::god_eye_boss::TIMES_TO_HURT_BEFORE_DEATH)
+			get<lif::Killable>()->kill();
+	});
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("death", lif::getAsset("sounds", std::string("god_eye_death.ogg"))),
 		std::make_pair("hurt", lif::getAsset("sounds", std::string("god_eye_hurt.ogg")))
@@ -77,6 +82,7 @@ GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 	//addComponent<lif::LightSource>(*this, 2 * TILE_SIZE, sf::Color(128, 128, 128))
 			//->setPosition(sf::Vector2f(TILE_SIZE, TILE_SIZE));
 	addComponent<lif::Drawable>(*this, *this);
+	addComponent<lif::Bonusable>(*this);
 }
 
 void GodEyeBoss::update() {
@@ -85,10 +91,10 @@ void GodEyeBoss::update() {
 	_updatePupilPos();
 	_updateShield();
 
-	if (attackClock->getElapsedTime() > sf::seconds(10)) {
-		_shakeWalls();
-		attackClock->restart();
-	}
+	//if (attackClock->getElapsedTime() > sf::seconds(10)) {
+		//_shakeWalls();
+		//attackClock->restart();
+	//}
 
 	//lm.getEntities().apply([] (const lif::Entity* e) {
 			//if (!dynamic_cast<const lif::BreakableWall*>(e))return;

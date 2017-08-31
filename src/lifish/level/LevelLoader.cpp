@@ -35,13 +35,15 @@
 #include <iostream>
 
 using lif::TILE_SIZE;
+using lif::LevelLoader;
+using lif::EntityType;
 
-bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
+bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 
 	lm.levelTime->setTime(sf::seconds(level.getInfo().time));
 
-	lif::Teleport *first_teleport = nullptr,
-	              *latest_teleport = nullptr;
+	lif::Teleport *firstTeleport = nullptr,
+	              *latestTeleport = nullptr;
 
 	lm.reset();
 	auto& entities = lm.getEntities();
@@ -111,24 +113,28 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				entities.add(new lif::Spikes(curPos));
 				break;
 
+			case EntityType::TORCH:
+				_addTorch(entities, curPos, level, left, top);
+				break;
+
 			case EntityType::TELEPORT:
 				{
 					auto teleport = new lif::Teleport(curPos);
 
 					// Save the first Teleport added
-					if (first_teleport == nullptr)
-						first_teleport = teleport;
+					if (firstTeleport == nullptr)
+						firstTeleport = teleport;
 					else
-						teleport->linkTo(first_teleport);
+						teleport->linkTo(firstTeleport);
 
 					// If we had already added a Teleport, link it to this one.
-					if (latest_teleport != nullptr)
-						latest_teleport->linkTo(teleport);
-					latest_teleport = teleport;
+					if (latestTeleport != nullptr)
+						latestTeleport->linkTo(teleport);
+					latestTeleport = teleport;
 
 					entities.add(teleport);
+					break;
 				}
-				break;
 
 			//case EntityType::ALIEN_BOSS:
 				//{
@@ -242,6 +248,15 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 		auto eye = new lif::GodEyeBoss({ 13 * lif::TILE_SIZE, 6 * lif::TILE_SIZE }, lm);
 		eye->get<lif::Sighted>()->setEntityGroup(&lm.entities);
 		entities.add(eye);
+		entities.add(new lif::Torch({ 0, 0 }, 5));
+		auto torch = new lif::Torch({ (level.getInfo().width + 2) * lif::TILE_SIZE, 0 }, 5);
+		torch->get<lif::Animated>()->getSprite().setScale(-1, 1);
+		entities.add(torch);
+		entities.add(new lif::Torch({ 0, (level.getInfo().height + 1) * lif::TILE_SIZE }, 5));
+		torch = new lif::Torch(sf::Vector2f{ float((level.getInfo().width + 2) * lif::TILE_SIZE),
+					float((level.getInfo().height + 1) * lif::TILE_SIZE) }, 5);
+		torch->get<lif::Animated>()->getSprite().setScale(-1, 1);
+		entities.add(torch);
 	}
 
 	if (level.hasEffect("darkness")) {
@@ -262,4 +277,47 @@ bool lif::LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 	lm.levelTime->resume();
 
 	return true;
+}
+
+void LevelLoader::_addTorch(lif::EntityGroup& entities, const sf::Vector2f& curPos,
+		const lif::Level& level, int left, int top)
+{
+	auto torch = new lif::Torch(curPos);
+	
+	// Tether the torch to a wall if possible
+	
+	// If it has a level limit nearby, tether to it
+	if (left == 0)
+		goto add_torch;
+	else if (left == level.getInfo().width - 1)
+		goto flip_and_add_torch;
+
+	// If it has a wall on its left, tether to left
+	switch (level.getTile(left - 1, top)) {
+	case EntityType::BREAKABLE:
+	case EntityType::FIXED:
+	case EntityType::TRANSPARENT_WALL:
+		goto add_torch;
+	default:
+		break;
+	}
+
+	// If it has a wall on its right, tether to right
+	switch (level.getTile(left + 1, top)) {
+	case EntityType::BREAKABLE:
+	case EntityType::FIXED:
+	case EntityType::TRANSPARENT_WALL:
+		goto flip_and_add_torch;
+	default:
+		break;
+	}
+
+	// Else, give up and tether to whichever tile it has at its left
+	goto add_torch;
+
+flip_and_add_torch:
+	torch->setPosition(torch->getPosition() + sf::Vector2f(lif::TILE_SIZE, 0));
+	torch->get<lif::Animated>()->getSprite().setScale(-1, 1);
+add_torch:
+	entities.add(torch);
 }

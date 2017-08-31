@@ -26,27 +26,48 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 	// Draw according to z-index
 	std::map<int, std::vector<const lif::Drawable*>> toDraw;
 
+	int minZ = 0, maxZ = 0;
 	owner.entities.mtxLock();
-	owner.entities.apply([&target, &toDraw] (const lif::Entity *e) {
+	owner.entities.apply([&target, &toDraw, &minZ, &maxZ] (const lif::Entity *e) {
 		const auto d = e->get<lif::Drawable>();
-		if (d != nullptr) {
-			const auto zidx = e->get<lif::ZIndexed>();
-			if (zidx != nullptr)
-				toDraw[zidx->getZIndex()].emplace_back(d);
-			else
-				toDraw[0].emplace_back(d);
+		if (d == nullptr)
+			return;
+		const auto zidx = e->get<lif::ZIndexed>();
+		if (zidx != nullptr) {
+			const auto z = zidx->getZIndex();
+			if (z < minZ) minZ = z;
+			if (z > maxZ) maxZ = z;
+			toDraw[z].emplace_back(d);
+		} else {
+			toDraw[0].emplace_back(d);
 		}
 	});
 
-	for (const auto& pair : toDraw)
-		for (const auto d : pair.second)
+	for (int i = std::max(0, minZ); i <= maxZ; ++i) {
+		const auto it = toDraw.find(i);
+		if (it == toDraw.end()) continue;
+		for (const auto d : it->second)
 			target.draw(*d, states);
+	}
 
 	owner.entities.mtxUnlock();
 
 	// Draw the level border
 	owner._mtxLock();
 	target.draw(level->getBorder(), states);
+	owner._mtxUnlock();
+
+	// Draw entities above border
+	owner.entities.mtxLock();
+	for (int i = std::min(maxZ, -1); i >= minZ; --i) {
+		const auto it = toDraw.find(i);
+		if (it == toDraw.end()) continue;
+		for (const auto d : it->second)
+			target.draw(*d, states);
+	}
+	owner.entities.mtxUnlock();
+	
+	owner._mtxLock();
 	const auto levelnumtext = level->get<lif::LevelNumText>();
 	if (levelnumtext != nullptr)
 		target.draw(*levelnumtext, states);

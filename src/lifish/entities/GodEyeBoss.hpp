@@ -6,6 +6,7 @@
 namespace lif {
 
 class Animated;
+class Bonusable;
 class Clock;
 class FreeSighted;
 class HurtDrawProxy;
@@ -17,6 +18,7 @@ class GodEyeBoss : public lif::Boss, public sf::Drawable {
 	lif::Animated *spriteBg = nullptr,
 	              *spriteFg = nullptr,
 	              *shield = nullptr;
+	lif::Bonusable *bonusable = nullptr;
 	lif::HurtDrawProxy *hurtDrawProxy = nullptr;
 	lif::FreeSighted *sighted = nullptr;
 	lif::Clock *shieldAlphaClock = nullptr,

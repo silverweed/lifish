@@ -1,6 +1,7 @@
 #include "Bomb.hpp"
 #include "Sounded.hpp"
 #include "Player.hpp"
+#include "ZIndexed.hpp"
 #include "Drawable.hpp"
 #include "Spawning.hpp"
 #include "Clock.hpp"
@@ -12,6 +13,7 @@
 #include "game.hpp"
 #include "Fixed.hpp"
 #include "LightSource.hpp"
+#include "conf/zindex.hpp"
 
 using lif::Bomb;
 using lif::TILE_SIZE;
@@ -51,6 +53,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Entity *const source,
 		return new lif::Explosion(position, radius, sourceEntity, incendiary);
 	});
 	addComponent<lif::LightSource>(*this, 0);
+	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::BOMBS);
 
 	auto& a_normal_idle = animated->addAnimation("normal_idle", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),

@@ -15,12 +15,12 @@ class Lifed : public lif::Component {
 	OnHurtCallback onHurt;
 
 protected:
+	const int maxLife;
 	int life;
-	const unsigned int maxLife;
 
 public:
-	explicit Lifed(lif::Entity& owner, const unsigned int life);
-	explicit Lifed(lif::Entity& owner, const unsigned int life, OnHurtCallback onHurt);
+	explicit Lifed(lif::Entity& owner, const int life);
+	explicit Lifed(lif::Entity& owner, const int life, OnHurtCallback onHurt);
 
 	bool isAlive() const { return life > 0; }
 	int getLife() const { return life; }

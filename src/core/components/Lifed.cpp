@@ -3,15 +3,15 @@
 
 using lif::Lifed;
 
-Lifed::Lifed(lif::Entity& owner, const unsigned int life)
+Lifed::Lifed(lif::Entity& owner, const int life)
 	: lif::Component(owner)
-	, life(life)
 	, maxLife(life)
+	, life(life)
 {
 	_declComponent<Lifed>();
 }
 
-Lifed::Lifed(lif::Entity& owner, const unsigned int life, OnHurtCallback _onHurt)
+Lifed::Lifed(lif::Entity& owner, const int life, OnHurtCallback _onHurt)
 	: lif::Lifed(owner, life)
 {
 	onHurt = _onHurt;
