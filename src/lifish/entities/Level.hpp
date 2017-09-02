@@ -117,6 +117,7 @@ public:
 
 	std::string toString() const override;
 	std::string getTilemap() const;
+	std::string getTilemapRaw() const;
 
 	const sf::Drawable& getBackground() const { return bgSprite; }
 	const sf::Drawable& getBorder() const { return borderSprite; }

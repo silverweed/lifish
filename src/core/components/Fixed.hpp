@@ -6,8 +6,7 @@ namespace lif {
 
 /**
  * A Fixed Entity is an entity which cannot ever move.
- * This enables some optimizations on this Component's owner, particularly for its lookup in
- * an EntityGroup (i.e. a tile can be checked for its presence in a random access fashion).
+ * This enables some optimizations on this Component's owner, particularly for collision detection.
  */
 class Fixed : public lif::Component {
 public:

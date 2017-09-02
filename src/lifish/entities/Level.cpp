@@ -105,18 +105,23 @@ bool Level::_setTilemap(const std::string& tilemap) {
 }
 
 std::string Level::getTilemap() const {
-	static bool called = false;
-	static std::stringstream ss;
+	std::stringstream ss;
 
-	if (!called) {
-		for (int i = 0; i < info.height; ++i) {
-			for (int j = 0; j < info.width; ++j) {
-				ss << tiles[i * info.width + j] << " ";
-			}
-			ss << "\r\n";
+	for (int i = 0; i < info.height; ++i) {
+		for (int j = 0; j < info.width; ++j) {
+			ss << tiles[i * info.width + j] << " ";
 		}
-		called = true;
+		ss << "\r\n";
 	}
+
+	return ss.str();
+}
+
+std::string Level::getTilemapRaw() const {
+	std::stringstream ss;
+
+	for (unsigned i = 0; i < tiles.size(); ++i)
+		ss << tiles[i];
 
 	return ss.str();
 }

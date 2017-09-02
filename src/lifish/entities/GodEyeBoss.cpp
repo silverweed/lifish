@@ -2,6 +2,9 @@
 #include "Lifed.hpp"
 #include "Animated.hpp"
 #include "Controllable.hpp"
+#include "Torch.hpp"
+#include "Spikes.hpp"
+#include "EnemyFactory.hpp"
 #include "FixedWall.hpp"
 #include "BreakableWall.hpp"
 #include "Collider.hpp"
@@ -15,19 +18,41 @@
 #include "Drawable.hpp"
 #include "Enemy.hpp"
 #include "Bonusable.hpp"
+#include "BufferedSpawner.hpp"
 #include "game.hpp"
 #include "conf/boss.hpp"
 #include "camera_utils.hpp"
+#include "entity_type.hpp"
 #include <cmath>
 #include <random>
+#include <array>
+#include <string>
+#include <algorithm>
+#include <vector>
 
 #include <iostream>
 
 using lif::GodEyeBoss;
 using lif::TILE_SIZE;
+using namespace lif::conf::boss::god_eye_boss;
 
-const sf::Vector2f SIZE(3 * TILE_SIZE, 3 * TILE_SIZE);
-const sf::Vector2f SHIELD_SIZE(4 * TILE_SIZE, 4 * TILE_SIZE);
+const static sf::Vector2f SIZE(3 * TILE_SIZE, 3 * TILE_SIZE);
+const static sf::Vector2f SHIELD_SIZE(4 * TILE_SIZE, 4 * TILE_SIZE);
+
+const static std::array<std::string, 4> LEVEL_CONFIGURATIONS = {{
+	// BOSS_RIGHT
+	"X00100t100000000101t12121021210000010000022002101010111010000120^0t100^20000111010101120000001000"
+	"^0002000110101110102000002000000002000210111110101000t00001^00102200011121010112121Y0000001000000t",
+	// BOSS_LEFT
+	"t0000001000000Y12121101012111000220100^10000t0001010111110120002000000002000002010111010110002000"
+	"^00010000002110101011100002^001t0^02100001011101010120022000001000001212012121t101000000001t00100X",
+	// BOSS_TOP
+	"00100000000010Yt0200000000020001221010101221000^0020202t000011011101010111000200200010000^0111010"
+	"12101t110201010000^2010010101t1011001001000200200102001010111^1010100020100000200000010201t101010X",
+	// BOSS_BOTTOM
+	"X010101t1020100000020000010200010101^1110101002010020020001001001101t1010100102^000010102011t1012"
+	"10101110^000010002002000111010101110110000t2020200^0001221010101221000200000000020tY01000000000100",
+}};
 
 GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 	: lif::Boss(pos)
@@ -63,10 +88,12 @@ GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 	shieldAlphaClock = addComponent<lif::Clock>(*this);
 
 	hurtDrawProxy = addComponent<lif::HurtDrawProxy>(*this, spriteBg);
-	addComponent<lif::Lifed>(*this, lif::conf::boss::god_eye_boss::LIFE, [this] (int, int) {
+	addComponent<lif::Lifed>(*this, LIFE, [this] (int, int) {
 		// on hurt
-		if (++timesHurt == lif::conf::boss::god_eye_boss::TIMES_TO_HURT_BEFORE_DEATH)
+		if (++timesHurt >= TIMES_TO_HURT_BEFORE_DEATH)
 			get<lif::Killable>()->kill();
+		else
+			_onHurt();
 	});
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("death", lif::getAsset("sounds", std::string("god_eye_death.ogg"))),
@@ -79,6 +106,7 @@ GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 
 	attackClock = addComponent<lif::Clock>(*this);
 	sighted = addComponent<lif::FreeSighted>(*this);
+	addComponent<lif::BufferedSpawner>(*this);
 	//addComponent<lif::LightSource>(*this, 2 * TILE_SIZE, sf::Color(128, 128, 128))
 			//->setPosition(sf::Vector2f(TILE_SIZE, TILE_SIZE));
 	addComponent<lif::Drawable>(*this, *this);
@@ -90,17 +118,6 @@ void GodEyeBoss::update() {
 
 	_updatePupilPos();
 	_updateShield();
-
-	//if (attackClock->getElapsedTime() > sf::seconds(10)) {
-		//_shakeWalls();
-		//attackClock->restart();
-	//}
-
-	//lm.getEntities().apply([] (const lif::Entity* e) {
-			//if (!dynamic_cast<const lif::BreakableWall*>(e))return;
-		//auto cld = e->get<lif::Collider>();
-		//std::cout << "pos = " << e->getPosition() << ", cld = " << cld->getPosition() << std::endl;
-	//});
 }
 
 void GodEyeBoss::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -138,9 +155,8 @@ void GodEyeBoss::_updateShield() {
 }
 
 void GodEyeBoss::_shakeWalls() {
-	const auto SHAKE_DURATION = sf::seconds(3);
 
-	lif::requestCameraShake(0.1, 50, 0.1, 50, SHAKE_DURATION, 2.0);
+	lif::requestCameraShake(0.07, 125, 0.05, 125, SHAKE_DURATION, 2.5);
 
 	// Freeze players
 	for (int i = 0; i < lif::MAX_PLAYERS; ++i) {
@@ -152,33 +168,201 @@ void GodEyeBoss::_shakeWalls() {
 		player->get<lif::Controllable>()->disableFor(SHAKE_DURATION);
 	}
 
-	// Change walls' disposition
-	static std::uniform_int_distribution<> disposition(0, 2);
-	const auto shakeType = disposition(lif::rng);
-	lm.getEntities().apply([this, shakeType] (lif::Entity *e) {
-		if (dynamic_cast<lif::FixedWall*>(e) == nullptr && dynamic_cast<lif::BreakableWall*>(e) == nullptr)
+	std::vector<lif::BreakableWall*> breakables;
+	std::vector<lif::FixedWall*> fixed;
+	std::vector<lif::Torch*> torches;
+	std::vector<lif::Spikes*> spikes;
+
+	const auto lvWidth = lm.getLevel()->getInfo().width;
+	const auto lvHeight = lm.getLevel()->getInfo().height;
+
+	// Collect all entities to move
+	lm.getEntities().apply([this, lvWidth, lvHeight, &breakables, &fixed, &torches, &spikes] (lif::Entity *e) {
+		if (auto w = dynamic_cast<lif::FixedWall*>(e)) {
+			fixed.emplace_back(w);
+			e->setPosition(sf::Vector2f(0, 0));
 			return;
+		}
+		if (auto w = dynamic_cast<lif::BreakableWall*>(e)) {
+			breakables.emplace_back(w);
+			e->setPosition(sf::Vector2f(0, 0));
+			return;
+		}
+		if (auto w = dynamic_cast<lif::Torch*>(e)) {
+			const auto pos = e->getPosition();
+			if (pos.x * pos.y <= 0 || pos.x > lvWidth * TILE_SIZE || pos.y > lvHeight * TILE_SIZE)
+				return;
+			torches.emplace_back(w);
+			e->setPosition(sf::Vector2f(0, 0));
+			return;
+		}
+		if (auto w = dynamic_cast<lif::Spikes*>(e)) {
+			spikes.emplace_back(w);
+			e->setPosition(sf::Vector2f(0, 0));
+			return;
+		}
+	});
 
-		const float width = lm.getLevel()->getInfo().width,
-		            height = lm.getLevel()->getInfo().height;
-		float x = e->getPosition().x,
-		      y = e->getPosition().y;
+	// Take all entities to move from the current configuration and redistribute
+	// them according to the new one. No wall is created or destroyed in the process, as
+	// every configuration has the same number of objects.
+	// If an object would be moved onto a player, it is not placed.
+	std::vector<int> possibleConfigs = { 0, 1, 2, 3 };
+	possibleConfigs.erase(std::remove(possibleConfigs.begin(), possibleConfigs.end(), lvConfiguration));
+	static std::uniform_int_distribution<> newLevelConfigDist(0, 2);
+	lvConfiguration = static_cast<LevelConfiguration>(possibleConfigs[newLevelConfigDist(lif::rng)]);
 
-		switch (shakeType) {
-		case 0: // flip X
-			x = (width + 1) * TILE_SIZE - x;
-			break;
-		case 1: // flix Y
-			y = (height + 1) * TILE_SIZE - y;
-			break;
-		case 2: // flip both
-			x = (width + 1) * TILE_SIZE - x;
-			y = (height + 1) * TILE_SIZE - y;
-			break;
-		// TODO mirror diagonally (with a premade configuration)
+	assert(0 <= lvConfiguration && lvConfiguration < LEVEL_CONFIGURATIONS.size() && "Invalid new configuration!");
+
+	const auto& newConf = LEVEL_CONFIGURATIONS[static_cast<int>(lvConfiguration)];
+
+	// (UGLY): this keeps references to the torches so we can adjust them
+	// after having popped them from the original vector.
+	std::vector<lif::Torch*> torches2(torches);
+
+#define MOVE_AND_POP(what, canOverlapPlayer) \
+	{ \
+		if (what .size() > 0) { \
+			auto entity = what .back(); \
+			if (canOverlapPlayer || !isPlayerAt(curPos)) { \
+				entity->setPosition(curPos); \
+				what .pop_back(); \
+			} \
+		} \
+		break; \
+	}
+
+	const auto isPlayerAt = [this] (const auto& pos) {
+		for (int i = 0; i < lif::MAX_PLAYERS; ++i) {
+			const auto player = lm.getPlayer(i + 1);
+			if (player != nullptr && player->getPosition() == pos)
+				return true;
+		}
+		return false;
+	};
+
+	for (unsigned curTile = 0; curTile < newConf.length(); ++curTile) {
+		const sf::Vector2f curPos(TILE_SIZE * (curTile % lvWidth + 1), TILE_SIZE * (curTile / lvWidth + 1));
+
+		switch (lif::entityFromLetter(newConf[curTile])) {
+			using ET = lif::EntityType;
+		case ET::FIXED:
+			MOVE_AND_POP(fixed, false)
+		case ET::BREAKABLE:
+			MOVE_AND_POP(breakables, false)
+		case ET::TORCH:
+			MOVE_AND_POP(torches, true)
+		case ET::SPIKES:
+			MOVE_AND_POP(spikes, false)
 		default:
 			break;
 		}
-		e->setPosition(sf::Vector2f(x, y));
+	}
+#undef MOVE_AND_POP
+
+	for (auto torch : torches2)
+		torch->fixOrientation(newConf, lvWidth);
+}
+
+void GodEyeBoss::_onHurt() {
+	// Shake walls, teleport away and spawn enemies
+
+	// Become invulnerable right away to prevent more explosion to damage the boss
+	vulnerable = false;
+
+	/// Shake walls. We need to do this first to know where to teleport.
+	_shakeWalls();
+
+	/// Teleport
+	const std::vector<sf::Vector2f> teleportPositions({
+		sf::Vector2f(13, 6) * static_cast<float>(TILE_SIZE), // boss right
+		sf::Vector2f(1, 6)  * static_cast<float>(TILE_SIZE), // boss left
+		sf::Vector2f(7, 1)  * static_cast<float>(TILE_SIZE), // boss top
+		sf::Vector2f(7, 11) * static_cast<float>(TILE_SIZE), // boss bottom
 	});
+	_teleportTo(teleportPositions[static_cast<int>(lvConfiguration)]);
+
+	/// Spawn enemies
+
+	auto spawner = get<lif::BufferedSpawner>();
+
+	// Array containing all valid spawn positions for [0]: boss_right, [1]: boss_bottom.
+	// Positions are expressed in tiles.
+	static const std::array<std::vector<sf::Vector2i>, 2> VIABLE_POSITIONS {{
+		// right
+		{
+			{1,1}, {2,1}, {3,1}, {5,1}, {6,1}, {7,1}, {9,1}, {10,1},
+				{11,1}, {12,1}, {13,1}, {14,1}, {15,1},
+			{1,2}, {3,2}, {5,2}, {11,2},
+			{1,3}, {2,3}, {3,3}, {4,3}, {5,3}, {7,3}, {8,3}, {9,3}, {10,3}, {11,3},
+			{3,4}, {5,4}, {7,4}, {11,4},
+			{1,5}, {4,5}, {5,5}, {6,5}, {7,5}, {9,5}, {10,5}, {11,5},
+			{1,6}, {5,6}, {7,6}, {9,6},
+			{1,7}, {2,7}, {3,7}, {5,7}, {6,7}, {7,7}, {8,7}, {9,7}, {10,7}, {11,7},
+			{3,8}, {5,8}, {9,8}, {11,8},
+			{1,9}, {2,9}, {4,9}, {5,9}, {6,9}, {7,9}, {8,9}, {9,9}, {10,9}, {11,9},
+			{3,10}, {9,10}, {11,10},
+			{1,11}, {2,11}, {3,11}, {4,11}, {5,11}, {7,11}, {8,11}, {9,11}, {11,11},
+			{1,12}, {7,12}, {9,12},
+			{1,13}, {2,13}, {3,13}, {4,13}, {5,13}, {6,13}, {7,13}, {9,13},
+				{10,13}, {11,13}, {12,13}, {13,13}, {14,13}, {15,13}
+		},
+		// bottom
+		{
+			{1,1}, {2,1}, {4,1}, {6,1}, {8,1}, {10,1}, {12,1}, {14,1}, {15,1},
+			{1,2}, {2,2}, {3,2}, {4,2}, {6,2}, {7,2}, {8,2}, {9,2}, {10,2}, {12,2}, {14,2}, {15,2},
+			{1,3}, {3,3}, {5,3}, {7,3}, {11,3}, {13,3}, {15,3},
+			{1,4}, {3,4}, {5,4}, {6,4}, {8,4}, {9,4}, {11,4}, {12,4}, {13,4}, {15,4},
+			{1,5}, {3,5}, {4,5}, {7,5}, {9,5}, {11,5}, {13,5}, {15,5},
+			{1,6}, {3,6}, {5,6}, {6,6}, {7,6}, {8,6}, {9,6}, {11,6}, {13,6}, {15,6},
+			{3,7}, {5,7}, {9,7}, {11,7}, {15,7},
+			{1,8}, {2,8}, {3,8}, {4,8}, {5,8}, {7,8}, {8,8}, {9,8}, {11,8}, {12,8}, {14,8}, {15,8},
+			{1,9}, {5,9}, {7,9}, {9,9}, {13,9},
+			{1,10}, {2,10}, {3,10}, {4,10}, {5,10}, {7,10}, {9,10},
+				{11,10}, {12,10}, {13,10}, {14,10}, {15,10},
+			{1,11}, {15,11},
+			{1,12}, {2,12}, {14,12}, {15,12},
+			{1,13}, {2,13}, {14,13}, {15,13},
+		}
+	}};
+
+	// Flips the proper axes to adjust the chosen viable positions to current level configuration.
+	const auto adjustPos = [this] (const auto levelConfiguration, const auto& pos) {
+		auto newPos = pos;
+		switch (levelConfiguration) {
+		case LevelConfiguration::BOSS_TOP:
+			newPos.y = lm.getLevel()->getInfo().height + 1 - pos.y;
+			// fallthrough (boss top is flipped along both axes in respect to boss bottom)
+		case LevelConfiguration::BOSS_LEFT:
+			newPos.x = lm.getLevel()->getInfo().width + 1 - pos.x;
+			break;
+		default:
+			break;
+		}
+		return newPos;
+	};
+
+	std::vector<sf::Vector2i> viablePositions(VIABLE_POSITIONS[static_cast<int>(lvConfiguration) / 2]);
+
+	// Don't spawn enemies near players
+	viablePositions.erase(std::remove_if(viablePositions.begin(), viablePositions.end(),
+		[this, &adjustPos] (const auto& pos)
+	{
+		const auto npos = adjustPos(lvConfiguration, pos);
+		for (int i = 0; i < lif::MAX_PLAYERS; ++i) {
+			const auto player = lm.getPlayer(i + 1);
+			if (player != nullptr && lif::manhattanDistance(lif::tile(player->getPosition()), npos) <= 4)
+				return true;
+		}
+		return false;
+	}), viablePositions.end());
+
+	std::uniform_int_distribution<> dist(0, viablePositions.size() - 1);
+	for (int i = 0; i < ENEMIES_SPAWNED; ++i) {
+		const auto pos = sf::Vector2f(
+				adjustPos(lvConfiguration, viablePositions[dist(lif::rng)]) * lif::TILE_SIZE);
+		auto enemy = lif::EnemyFactory::create(lm, SPAWNED_ENEMY_ID, pos);
+		enemy->get<lif::Moving>()->block(SHAKE_DURATION);
+		spawner->addSpawned(enemy.release());
+	}
 }

@@ -57,6 +57,10 @@ namespace conf {
 
 		namespace god_eye_boss {
 			constexpr auto LIFE = 1000;
+			constexpr auto TIMES_TO_HURT_BEFORE_DEATH = 4;
+			constexpr auto ENEMIES_SPAWNED = 4;
+			constexpr auto SPAWNED_ENEMY_ID = 7;
+			const sf::Time SHAKE_DURATION = sf::seconds(3);
 		}
 	}
 }

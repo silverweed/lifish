@@ -2,6 +2,8 @@
 #include "Killable.hpp"
 #include "game.hpp"
 #include "Player.hpp"
+#include "BreakableWall.hpp"
+#include "Drawable.hpp"
 #include "Options.hpp"
 #include "Music.hpp"
 #include "Boss.hpp"
@@ -37,11 +39,38 @@ DebugEventHandler::DebugEventHandler(lif::GameContext& game)
  * . : give infinite shield to player
  * + : forward one level
  * - : back one level
+ * Numpad3 : destroy all breakable walls
+ * Numpad6 : flip all entities
+ * Numpad9 : rotate all entities of pi/4
  */
 bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 	switch (event.type) {
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
+		case sf::Keyboard::Numpad3:
+			game.lm.getEntities().apply([] (lif::Entity *e) {
+				auto w = dynamic_cast<lif::BreakableWall*>(e);
+				if (w) w->get<lif::Killable>()->kill();
+			});
+			return true;
+		case sf::Keyboard::Numpad6:
+			game.lm.getEntities().apply([] (lif::Entity *e) {
+				auto d = e->get<lif::Drawable>();
+				if (d) {
+					d->setScaleOrigin(lif::TILE_SIZE/2, lif::TILE_SIZE/2);
+					d->setScale(-d->getScale().x, 1);
+				}
+			});
+			return true;
+		case sf::Keyboard::Numpad9:
+			game.lm.getEntities().apply([] (lif::Entity *e) {
+				auto d = e->get<lif::Drawable>();
+				if (d) {
+					d->setRotOrigin(lif::TILE_SIZE/2, lif::TILE_SIZE/2);
+					d->setRotation(d->getRotation() + lif::degrees(90));
+				}
+			});
+			return true;
 		case sf::Keyboard::B:
 			game.lm.getEntities().apply([] (lif::Entity *e) {
 				auto en = dynamic_cast<lif::Boss*>(e);
@@ -95,7 +124,6 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 		case sf::Keyboard::N:
 			game.lm.getEntities().apply([] (lif::Entity *e) {
 				auto en = dynamic_cast<lif::Enemy*>(e);
-				//auto en = dynamic_cast<lif::BreakableWall*>(e);
 				if (en) en->get<lif::Killable>()->kill();
 			});
 			return true;

@@ -14,10 +14,8 @@
 #include "Flash.hpp"
 #include "TransparentWall.hpp"
 #include "Coin.hpp"
-#include "Enemy.hpp"
 #include "Lifed.hpp"
-#include "Wisp.hpp"
-#include "AlienPredator.hpp"
+#include "EnemyFactory.hpp"
 #include "AcidPond.hpp"
 #include "LevelEffects.hpp"
 #include "HauntedStatue.hpp"
@@ -114,8 +112,12 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				break;
 
 			case EntityType::TORCH:
-				_addTorch(entities, curPos, level, left, top);
-				break;
+				{
+					auto torch = new lif::Torch(curPos);
+					torch->fixOrientation(level);
+					entities.add(torch);
+					break;
+				}
 
 			case EntityType::TELEPORT:
 				{
@@ -213,30 +215,8 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				break;
 			}
 
-			if (enemy_id > 0) {
-				lif::Enemy *enemy = nullptr;
-				const auto& info = ls.getEnemyInfo(enemy_id);
-				// Some enemies have their own classes, others are just 'Enemy'
-				switch (enemy_id) {
-				case 5:
-					enemy = new lif::Wisp(curPos, info);
-					break;
-				case 10:
-					enemy = new lif::AlienPredator(curPos, info);
-					break;
-				default:
-					enemy = new lif::Enemy(curPos, enemy_id, info);
-					break;
-				}
-				enemy->get<lif::AI>()->setLevelManager(&lm);
-				auto sighted = enemy->get<lif::Sighted>();
-				sighted->setEntityGroup(&lm.entities);
-				sighted->setOpaque({ lif::c_layers::BREAKABLES, lif::c_layers::UNBREAKABLES });
-				entities.add(enemy);
-				// FIXME
-				if (enemy_id == 4)
-					enemy->addComponent<lif::LeapingMovement>(*enemy, sf::seconds(0.2))->init();
-			}
+			if (enemy_id > 0)
+				entities.add(lif::EnemyFactory::create(lm, enemy_id, curPos).release());
 		}
 	}
 
@@ -277,47 +257,4 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 	lm.levelTime->resume();
 
 	return true;
-}
-
-void LevelLoader::_addTorch(lif::EntityGroup& entities, const sf::Vector2f& curPos,
-		const lif::Level& level, int left, int top)
-{
-	auto torch = new lif::Torch(curPos);
-	
-	// Tether the torch to a wall if possible
-	
-	// If it has a level limit nearby, tether to it
-	if (left == 0)
-		goto add_torch;
-	else if (left == level.getInfo().width - 1)
-		goto flip_and_add_torch;
-
-	// If it has a wall on its left, tether to left
-	switch (level.getTile(left - 1, top)) {
-	case EntityType::BREAKABLE:
-	case EntityType::FIXED:
-	case EntityType::TRANSPARENT_WALL:
-		goto add_torch;
-	default:
-		break;
-	}
-
-	// If it has a wall on its right, tether to right
-	switch (level.getTile(left + 1, top)) {
-	case EntityType::BREAKABLE:
-	case EntityType::FIXED:
-	case EntityType::TRANSPARENT_WALL:
-		goto flip_and_add_torch;
-	default:
-		break;
-	}
-
-	// Else, give up and tether to whichever tile it has at its left
-	goto add_torch;
-
-flip_and_add_torch:
-	torch->setPosition(torch->getPosition() + sf::Vector2f(lif::TILE_SIZE, 0));
-	torch->get<lif::Animated>()->getSprite().setScale(-1, 1);
-add_torch:
-	entities.add(torch);
 }
