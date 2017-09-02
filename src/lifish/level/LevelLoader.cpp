@@ -53,7 +53,6 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 
 			const sf::Vector2f curPos((left + 1) * TILE_SIZE, (top + 1) * TILE_SIZE);
 			int enemy_id = 0;
-			const auto& ls = level.getLevelSet();
 
 			const auto is_game_over = [&lm] (auto id) -> bool {
 				return lm.players[id] == nullptr || (
@@ -228,6 +227,7 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 		auto eye = new lif::GodEyeBoss({ 13 * lif::TILE_SIZE, 6 * lif::TILE_SIZE }, lm);
 		eye->get<lif::Sighted>()->setEntityGroup(&lm.entities);
 		entities.add(eye);
+		/*
 		entities.add(new lif::Torch({ 0, 0 }, 5));
 		auto torch = new lif::Torch({ (level.getInfo().width + 2) * lif::TILE_SIZE, 0 }, 5);
 		torch->get<lif::Animated>()->getSprite().setScale(-1, 1);
@@ -237,6 +237,7 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 					float((level.getInfo().height + 1) * lif::TILE_SIZE) }, 5);
 		torch->get<lif::Animated>()->getSprite().setScale(-1, 1);
 		entities.add(torch);
+		*/
 	}
 
 	if (level.hasEffect("darkness")) {
