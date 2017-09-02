@@ -22,14 +22,16 @@ for the current platforms:
 
 See later for instructions on how to build the game from the sources.
 
-## DEPENDENCIES ##
+## Building ##
+
+### Note about assets ###
+The graphics and sounds you'll find in `assets` is a placeholder. No graphic asset is even close to being final, and the final
+assets won't be uploaded on this repo, as they'll be available for purchase in the official release.
+
+### DEPENDENCIES ###
 
 * [SFML](https://github.com/SFML/SFML) >= 2.4
 * [nlohmann/json](https://github.com/nlohmann/json) (included in the source)
-
-### Building ###
-The graphics you'll find in `assets` is a placeholder. No graphic asset is even close to being final, and the final
-assets won't be uploaded on this repo, as they'll be available for purchase in the official release.
 
 #### Linux, OS X, BSD, etc ####
 The game can be compiled on *nix (tested on Linux, OSX and FreeBSD) via `cmake . && make`
@@ -50,8 +52,11 @@ at the moment it's not really a good idea to do so, as:
 - the framerate probably won't improve (and it needs not, should be already smooth 120fps)
 - odd behaviours and occasional crashes may occur.
 
+### Command line parameters ###
+If launched from the command line, `lifish` accepts a bunch of parameters (see `lifish -h` for details).
+It also accepts an optional argument which is the path of the level JSON to use (default: `lifish.json`).
 
-### LICENSE ###
+## LICENSE ##
 Copyright (c) Giacomo Parolini, 2017
 
 See the LICENSE file for licensing information.
