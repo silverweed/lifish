@@ -165,6 +165,15 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				}
 				break;
 
+			case EntityType::GOD_EYE_BOSS:
+				{
+					auto boss = new lif::GodEyeBoss(curPos, lm);
+					for (auto s : boss->getAllRecursive<lif::Sighted>())
+						s->setEntityGroup(&lm.entities);
+					entities.add(boss);
+				}
+				break;
+
 			case EntityType::ENEMY1:
 				enemy_id = 1;
 				break;
@@ -222,24 +231,6 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 	for (auto e : LevelEffects::getEffectEntities(level))
 		entities.add(e);
 
-	// FIXME
-	if (level.getInfo().levelnum == 30) {
-		auto eye = new lif::GodEyeBoss({ 13 * lif::TILE_SIZE, 6 * lif::TILE_SIZE }, lm);
-		eye->get<lif::Sighted>()->setEntityGroup(&lm.entities);
-		entities.add(eye);
-		/*
-		entities.add(new lif::Torch({ 0, 0 }, 5));
-		auto torch = new lif::Torch({ (level.getInfo().width + 2) * lif::TILE_SIZE, 0 }, 5);
-		torch->get<lif::Animated>()->getSprite().setScale(-1, 1);
-		entities.add(torch);
-		entities.add(new lif::Torch({ 0, (level.getInfo().height + 1) * lif::TILE_SIZE }, 5));
-		torch = new lif::Torch(sf::Vector2f{ float((level.getInfo().width + 2) * lif::TILE_SIZE),
-					float((level.getInfo().height + 1) * lif::TILE_SIZE) }, 5);
-		torch->get<lif::Animated>()->getSprite().setScale(-1, 1);
-		entities.add(torch);
-		*/
-	}
-
 	if (level.hasEffect("darkness")) {
 		// In case of darkness, we need the Players to have an AxisSighted component
 		for (size_t i = 0; i < lm.players.size(); ++i) {
@@ -253,6 +244,18 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 			});
 		}
 		entities.add(new lif::Flare(sf::seconds(0.07f), sf::seconds(0.7f)));
+
+		/*
+		entities.add(new lif::Torch({ 0, 0 }, 5));
+		auto torch = new lif::Torch({ (level.getInfo().width + 2) * lif::TILE_SIZE, 0 }, 5);
+		torch->get<lif::Animated>()->getSprite().setScale(-1, 1);
+		entities.add(torch);
+		entities.add(new lif::Torch({ 0, (level.getInfo().height + 1) * lif::TILE_SIZE }, 5));
+		torch = new lif::Torch(sf::Vector2f{ float((level.getInfo().width + 2) * lif::TILE_SIZE),
+					float((level.getInfo().height + 1) * lif::TILE_SIZE) }, 5);
+		torch->get<lif::Animated>()->getSprite().setScale(-1, 1);
+		entities.add(torch);
+		*/
 	}
 
 	lm.levelTime->resume();

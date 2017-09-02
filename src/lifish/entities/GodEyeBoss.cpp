@@ -58,7 +58,7 @@ GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 	: lif::Boss(pos)
 	, lm(lm)
 {
-	spriteBg = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "godeyeboss.png"));
+	spriteBg = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "god_eye_boss.png"));
 	spriteBg->addAnimation("idle", {
 		sf::IntRect(0 * SIZE.x, 0 * SIZE.y, SIZE.x, SIZE.y),
 		sf::IntRect(1 * SIZE.x, 0 * SIZE.y, SIZE.x, SIZE.y),
@@ -68,11 +68,11 @@ GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 		sf::IntRect(3 * SIZE.x, 0 * SIZE.y, SIZE.x, SIZE.y),
 	}, true);
 	spriteBg->getSprite().setFrameTime(sf::milliseconds(140));
-	spriteFg = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "godeyeboss_fg.png"));
+	spriteFg = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "god_eye_boss_fg.png"));
 	spriteFg->addAnimation("idle", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE)
 	}, true);
-	shield = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "godeyeshield.png"));
+	shield = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "god_eye_shield.png"));
 	shield->addAnimation("shield", {
 		sf::IntRect(0 * SHIELD_SIZE.x, 0, SHIELD_SIZE.x, SHIELD_SIZE.y),
 		sf::IntRect(1 * SHIELD_SIZE.x, 0, SHIELD_SIZE.x, SHIELD_SIZE.y),

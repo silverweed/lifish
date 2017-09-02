@@ -31,6 +31,7 @@ enum class EntityType {
 	HAUNTED_STATUE,
 	HAUNTING_SPIRIT_BOSS,
 	REX_BOSS,
+	GOD_EYE_BOSS,
 };
 
 EntityType entityFromLetter(const char c);
