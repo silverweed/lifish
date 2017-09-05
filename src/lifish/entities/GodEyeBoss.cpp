@@ -265,9 +265,12 @@ void GodEyeBoss::_shakeWalls() {
 	auto torchesToRemove = timesHurt;
 	for (auto torch : torches2) {
 		if (torchesToRemove > 0) {
-			torch->get<lif::LightSource>()->setActive(false);
-			torch->get<lif::Animated>()->setAnimation("off");
-			--torchesToRemove;
+			auto light = torch->get<lif::LightSource>();
+			if (light->isActive()) {
+				light->setActive(false);
+				torch->get<lif::Animated>()->setAnimation("off");
+				--torchesToRemove;
+			}
 		}
 		torch->fixOrientation(newConf, lvWidth);
 	}
