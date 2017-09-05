@@ -31,3 +31,4 @@ gmon.out*
 perf.data
 tests/*.x
 .lifish_*.txt
+assets/final

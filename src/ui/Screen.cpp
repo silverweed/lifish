@@ -185,7 +185,7 @@ void Screen::_setItrScale(float x) {
 }
 
 void Screen::_updateItrScale() {
-	static constexpr auto SCALE_SPEED = 15;
+	static constexpr auto SCALE_SPEED = 25;
 	if (itrScaleMid) {
 		if (itrScale > 1)
 			_setItrScale(std::max(1.f, itrScale - itrScaleClock.restart().asSeconds() * SCALE_SPEED));

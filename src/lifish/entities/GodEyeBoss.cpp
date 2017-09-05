@@ -212,7 +212,7 @@ void GodEyeBoss::_shakeWalls() {
 	static std::uniform_int_distribution<> newLevelConfigDist(0, 2);
 	lvConfiguration = static_cast<LevelConfiguration>(possibleConfigs[newLevelConfigDist(lif::rng)]);
 
-	assert(0 <= lvConfiguration && lvConfiguration < LEVEL_CONFIGURATIONS.size() && "Invalid new configuration!");
+	assert(0 <= lvConfiguration && "Invalid new configuration!");
 
 	const auto& newConf = LEVEL_CONFIGURATIONS[static_cast<int>(lvConfiguration)];
 
