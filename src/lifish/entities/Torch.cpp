@@ -19,6 +19,9 @@ Torch::Torch(const sf::Vector2f& pos, unsigned tileRadius)
 		sf::IntRect(1 * lif::TILE_SIZE, 0, lif::TILE_SIZE, lif::TILE_SIZE),
 		sf::IntRect(2 * lif::TILE_SIZE, 0, lif::TILE_SIZE, lif::TILE_SIZE)
 	}, true);
+	animated->addAnimation("off", {
+		sf::IntRect(3 * lif::TILE_SIZE, 0, lif::TILE_SIZE, lif::TILE_SIZE)
+	});
 	animated->getSprite().setFrameTime(sf::milliseconds(100));
 	auto drawable = addComponent<lif::Drawable>(*this, *animated);
 	drawable->setScaleOrigin(lif::TILE_SIZE / 2, lif::TILE_SIZE / 2);

@@ -13,7 +13,7 @@
 #include "Player.hpp"
 #include "FreeSighted.hpp"
 #include "Clock.hpp"
-//#include "LightSource.hpp"
+#include "LightSource.hpp"
 #include "Sounded.hpp"
 #include "Drawable.hpp"
 #include "Enemy.hpp"
@@ -47,11 +47,11 @@ const static std::array<std::string, 4> LEVEL_CONFIGURATIONS = {{
 	"t0000001000000Y12121101012111000220100^10000t0001010111110120002000000002000002010111010110002000"
 	"^00010000002110101011100002^001t0^02100001011101010120022000001000001212012121t101000000001t00100X",
 	// BOSS_TOP
-	"00100000000010Yt0200000000020001221010101221000^0020202t000011011101010111000200200010000^0111010"
+	"00100000000010Yt0200000000020001221010101221000^00202020000011011101t10111000200200010000^0111010"
 	"12101t110201010000^2010010101t1011001001000200200102001010111^1010100020100000200000010201t101010X",
 	// BOSS_BOTTOM
 	"X010101t1020100000020000010200010101^1110101002010020020001001001101t1010100102^000010102011t1012"
-	"10101110^000010002002000111010101110110000t2020200^0001221010101221000200000000020tY01000000000100",
+	"10101110^00001000200200011101t10111011000002020200^0001221010101221000200000000020tY01000000000100",
 }};
 
 GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
@@ -260,8 +260,17 @@ void GodEyeBoss::_shakeWalls() {
 	}
 #undef MOVE_AND_POP
 
-	for (auto torch : torches2)
+	// Remove more and more torches as the fight proceeds
+	std::random_shuffle(torches2.begin(), torches2.end());
+	auto torchesToRemove = timesHurt;
+	for (auto torch : torches2) {
+		if (torchesToRemove > 0) {
+			torch->get<lif::LightSource>()->setActive(false);
+			torch->get<lif::Animated>()->setAnimation("off");
+			--torchesToRemove;
+		}
 		torch->fixOrientation(newConf, lvWidth);
+	}
 }
 
 void GodEyeBoss::_onHurt() {
