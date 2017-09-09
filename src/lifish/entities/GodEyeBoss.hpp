@@ -6,7 +6,6 @@
 namespace lif {
 
 class Animated;
-class Bonusable;
 class Clock;
 class FreeSighted;
 class HurtDrawProxy;
@@ -25,7 +24,6 @@ class GodEyeBoss : public lif::Boss, public sf::Drawable {
 	lif::Animated *spriteBg = nullptr,
 	              *spriteFg = nullptr,
 	              *shield = nullptr;
-	lif::Bonusable *bonusable = nullptr;
 	lif::HurtDrawProxy *hurtDrawProxy = nullptr;
 	lif::FreeSighted *sighted = nullptr;
 	lif::Clock *shieldAlphaClock = nullptr,
@@ -40,7 +38,7 @@ class GodEyeBoss : public lif::Boss, public sf::Drawable {
 	void _teleportTo(const sf::Vector2f& newpos);
 	/** Shuffles the level's wall configuration and updates `lvConfiguration` accordingly. */
 	void _shakeWalls();
-
+	void _kill() override;
 public:
 	explicit GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm);
 

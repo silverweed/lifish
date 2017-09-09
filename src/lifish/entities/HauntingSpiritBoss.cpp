@@ -251,7 +251,7 @@ void HauntingSpiritBoss::_updateDying() {
 		animated->setAnimation("death");
 		animated->getSprite().setLooped(false);
 		animated->getSprite().play();
-		lif::requestCameraShake(0.1, 70, 0, 50, sf::seconds(4), 2);
+		lif::requestCameraShake(0.1, 100, 0, 0, sf::seconds(4), 2);
 	}
 }
 

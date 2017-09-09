@@ -19,6 +19,7 @@
 #include "Enemy.hpp"
 #include "Bonusable.hpp"
 #include "BufferedSpawner.hpp"
+#include "Flare.hpp"
 #include "game.hpp"
 #include "conf/boss.hpp"
 #include "camera_utils.hpp"
@@ -377,4 +378,10 @@ void GodEyeBoss::_onHurt() {
 		enemy->get<lif::Moving>()->block(SHAKE_DURATION);
 		spawner->addSpawned(enemy.release());
 	}
+}
+
+void GodEyeBoss::_kill() {
+	lif::Boss::_kill();
+	get<lif::BufferedSpawner>()->addSpawned(new lif::Flare(sf::seconds(0), sf::seconds(60)));
+	lif::requestCameraShake(0.08, 120, 0, 0, sf::seconds(4), 2);
 }
