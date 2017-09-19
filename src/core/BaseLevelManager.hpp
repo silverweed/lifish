@@ -60,6 +60,7 @@ protected:
 	virtual void _spawn(lif::Entity *e);
 public:
 	explicit BaseLevelManager();
+	virtual ~BaseLevelManager() {}
 
 	const lif::EntityGroup& getEntities() const { return entities; }
 	lif::EntityGroup& getEntities() { return entities; }

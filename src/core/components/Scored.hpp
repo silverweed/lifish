@@ -29,7 +29,7 @@ public:
 
 	short getTarget() const { return target; }
 	/** Sets this component to give points to `t`-th player */
-	void setTarget(unsigned short t);
+	void setTarget(short t);
 };
 
 }
