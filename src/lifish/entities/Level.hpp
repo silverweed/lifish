@@ -7,11 +7,9 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/System/NonCopyable.hpp>
-#include "game.hpp"
 #include "Entity.hpp"
 #include "Track.hpp"
 #include "entity_type.hpp"
-#include "utils.hpp"
 
 namespace lif {
 
@@ -121,7 +119,7 @@ public:
 
 	const sf::Drawable& getBackground() const { return bgSprite; }
 	const sf::Drawable& getBorder() const { return borderSprite; }
-	
+
 	bool hasEffect(const std::string& effectName) const {
 		return info.effects.find(effectName) != info.effects.end();
 	}

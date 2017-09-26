@@ -12,4 +12,4 @@ cppclean -I src/core \
 	-I src/third_party/ \
 	-I src/lifish/entities/ \
 	-I src/lifish/components/ \
-	-I src/lifish/level/ --exclude src/old/ src/ | grep -v old
+	-I src/lifish/level/ --exclude src/old/ src/ | grep -v old | grep -v 'static data'

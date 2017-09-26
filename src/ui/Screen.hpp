@@ -7,7 +7,6 @@
 #include <memory>
 #include <vector>
 #include "ScreenStyle.hpp"
-#include "WithOrigin.hpp"
 #include "Action.hpp"
 #include "WindowContext.hpp"
 #include "TransitionGraph.hpp"

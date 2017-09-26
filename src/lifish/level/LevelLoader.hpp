@@ -6,8 +6,6 @@ namespace lif {
 
 class Level;
 class LevelManager;
-class Teleport;
-class EntityGroup;
 
 class LevelLoader {
 public:

@@ -7,10 +7,8 @@
 
 namespace lif {
 
-class HauntedStatue;
 class Animated;
 class Clock;
-class ShootingPoint;
 class ShootingPattern;
 
 class HauntingSpiritBoss : public lif::Boss {
