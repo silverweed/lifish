@@ -160,8 +160,8 @@ lif::Entity* EntityGroup::add(std::shared_ptr<T> entity) {
 
 template<class T>
 size_t EntityGroup::size() const {
-	return std::accumulate(entities.begin(), entities.end(), 0u, [this] (size_t acc, const auto& e) {
-		return acc + !!dynamic_cast<const T*>(e.get());
+	return std::count_if(entities.begin(), entities.end(), [] (const auto& e) {
+		return dynamic_cast<const T*>(e.get()) != nullptr;
 	});
 }
 
