@@ -6,6 +6,10 @@
 
 namespace lif {
 
+/** A FreeSighted provides vision to its owner at any angle up to a certain radius.
+ *  IMPORTANT: all returned pointers are guaranteed valid only until the next call to
+ *  `entities->updateAll()`, which may destroy the pointed objects.
+ */
 class FreeSighted : public lif::Sighted {
 	using SeenEntitiesList = std::vector<std::pair<lif::Entity*, float>>;
 
@@ -17,16 +21,16 @@ public:
 	/** @return A list of pairs {entity, squared distance in pixel} */
 	const SeenEntitiesList& entitiesSeen() const { return seen; }
 
-	/** @return the nearest seen object of class `T` whose pointer is not expired. */
+	/** @return the nearest seen object of class `T`.  */
 	template<class T>
-	T* nearest();
+	T* nearest() const;
 
 	void update() override;
 };
 
 
 template<class T>
-T* FreeSighted::nearest() {
+T* FreeSighted::nearest() const {
 	std::pair<T*, float> cur{nullptr, 0};
 	for (auto& pair : seen) {
 		auto e = pair.first;
@@ -40,7 +44,7 @@ T* FreeSighted::nearest() {
 }
 
 template<>
-inline lif::Entity* FreeSighted::nearest<lif::Entity>() {
+inline lif::Entity* FreeSighted::nearest<lif::Entity>() const {
 	auto it = std::min_element(seen.begin(), seen.end(), [] (auto a, auto b) {
 		return a.second < b.second;
 	});
