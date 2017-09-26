@@ -25,8 +25,8 @@ class HauntingSpiritBoss : public lif::Boss {
 	} state;
 
 	bool selectedNewPattern = false;
-	std::vector<std::weak_ptr<lif::HauntedStatue>> statues;
-	std::weak_ptr<lif::HauntedStatue> targetStatue;
+	std::vector<std::weak_ptr<lif::Killable>> statues;
+	std::weak_ptr<lif::Killable> targetStatue;
 	/**
 	 * 0. circle
 	 * 1. spiral

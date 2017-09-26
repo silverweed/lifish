@@ -7,7 +7,7 @@
 namespace lif {
 
 class FreeSighted : public lif::Sighted {
-	using SeenEntitiesList = std::vector<std::pair<std::weak_ptr<lif::Entity>, float>>;
+	using SeenEntitiesList = std::vector<std::pair<lif::Entity*, float>>;
 
 	SeenEntitiesList seen;
 
@@ -27,14 +27,13 @@ public:
 
 template<class T>
 T* FreeSighted::nearest() {
-	std::pair<T*, float> cur(nullptr, 0);
-	for (auto& e : seen) {
-		if (e.first.expired()) continue;
-		auto ptr = e.first.lock();
-		if (std::dynamic_pointer_cast<const T>(ptr) != nullptr
-				&& (cur.first == nullptr || cur.second > e.second))
+	std::pair<T*, float> cur{nullptr, 0};
+	for (auto& pair : seen) {
+		auto e = pair.first;
+		if (dynamic_cast<const T*>(e) != nullptr
+				&& (cur.first == nullptr || cur.second > pair.second))
 		{
-			cur = std::make_pair(static_cast<T*>(ptr.get()), e.second);
+			cur = std::make_pair(static_cast<T*>(e), pair.second);
 		}
 	}
 	return cur.first;
@@ -46,7 +45,7 @@ inline lif::Entity* FreeSighted::nearest<lif::Entity>() {
 		return a.second < b.second;
 	});
 	if (it == seen.end()) return nullptr;
-	return it->first.expired() ? nullptr : it->first.lock().get();
+	return it->first;
 }
 
 }

@@ -187,7 +187,6 @@ void RexBoss::_updateAttacking() {
 		std::uniform_int_distribution<> dist(0, 3);
 		moving->setDirection(lif::ai::directions[dist(lif::rng)]);
 		state = State::WALKING;
-		std::cout << "=-----\n";
 		steps = 0;
 	}
 }
@@ -429,15 +428,15 @@ void RexBoss::_kill() {
 }
 
 void RexBoss::_updatePlayersPos() {
-	const auto seen = sighted->entitiesSeen();
+	const auto& seen = sighted->entitiesSeen();
 	const auto lm = get<lif::AI>()->getLevelManager();
 	assert(lm && "lm is null in _updatePlayersPos!");
 	latestPlayersPos.fill({ -1, -1 });
 	int found = 0;
-	for (auto ptr : seen) {
-		const auto e = ptr.first.lock();
+	for (const auto& pair : seen) {
+		const auto e = pair.first;
 		if (lm->isPlayer(*e) && !e->template get<lif::Killable>()->isKilled()) {
-			latestPlayersPos[static_cast<const lif::Player*>(e.get())->getInfo().id - 1] = e->getPosition();
+			latestPlayersPos[static_cast<const lif::Player*>(e)->getInfo().id - 1] = e->getPosition();
 			if (++found == static_cast<signed>(latestPlayersPos.size()))
 				break;
 		}

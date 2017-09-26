@@ -6,6 +6,7 @@
 #include <iterator>
 #include <unordered_set>
 #include <functional>
+#include <algorithm>
 #include <SFML/System/NonCopyable.hpp>
 #include "Entity.hpp"
 #include "Temporary.hpp"
@@ -21,16 +22,6 @@ namespace lif {
 
 class CollisionDetector;
 class LevelRenderer;
-
-namespace {
-	template<class T>
-	struct identity {
-		typedef T type;
-	};
-
-	template<class T, typename... Args>
-	using AppliedFunc = typename identity<std::function<void(T, Args...)>>::type;
-}
 
 /**
  * A container for Entities, providing convenient methods for operating
@@ -86,20 +77,15 @@ public:
 	 */
 	explicit EntityGroup();
 
-	/** Applies a void(Args...) function to all entities (ref-args version)  */
-	template<typename... Args>
-	void apply(AppliedFunc<lif::Entity*, Args&...> func, Args&... args);
+	/** Applies a function to all entities  */
+	template<class T, typename... Args>
+	void apply(const T& func, Args&... args);
 
-	/** Applies a void(Args...) function to all entities (const version) */
-	template<typename... Args>
-	void apply(AppliedFunc<const lif::Entity*, Args...> func, Args... args) const;
+	/** Applies a function to all entities (const version) */
+	template<class T, typename... Args>
+	void apply(const T& func, Args&... args) const;
 
-	/** Applies a void(Args...) function to all entities (weak_ptr version) */
-	template<typename... Args>
-	void apply(AppliedFunc<std::weak_ptr<lif::Entity>, Args...> func, Args... args) const;
-
-	template<class T>
-	lif::Entity* add(T *entity);
+	lif::Entity* add(lif::Entity *entity);
 
 	template<class T>
 	lif::Entity* add(std::shared_ptr<T> entity);
@@ -154,29 +140,15 @@ public:
 
 ///// Implementation /////
 
-template<typename... Args>
-void EntityGroup::apply(AppliedFunc<lif::Entity*, Args&...> func, Args&... args) {
+template<class T, typename... Args>
+void EntityGroup::apply(const T& func, Args&... args) {
 	for (auto& e : entities)
 		func(e.get(), args...);
 }
-
-template<typename... Args>
-void EntityGroup::apply(AppliedFunc<const lif::Entity*, Args...> func, Args... args) const {
-	for (const auto& e : entities)
+template<class T, typename... Args>
+void EntityGroup::apply(const T& func, Args&... args) const {
+	for (auto& e : entities)
 		func(e.get(), args...);
-}
-
-template<typename... Args>
-void EntityGroup::apply(AppliedFunc<std::weak_ptr<lif::Entity>, Args...> func, Args... args) const {
-	for (const auto& e : entities)
-		func(e, args...);
-}
-
-template<class T>
-lif::Entity* EntityGroup::add(T *entity) {
-	entity->init();
-	entities.emplace_back(entity);
-	return _putInAux(entities.back().get());
 }
 
 template<class T>
@@ -188,12 +160,9 @@ lif::Entity* EntityGroup::add(std::shared_ptr<T> entity) {
 
 template<class T>
 size_t EntityGroup::size() const {
-	size_t sz = 0;
-	for (auto& e : entities) {
-		if (dynamic_cast<T*>(e.get()) != nullptr)
-			++sz;
-	}
-	return sz;
+	return std::accumulate(entities.begin(), entities.end(), 0u, [this] (size_t acc, const auto& e) {
+		return acc + !!dynamic_cast<const T*>(e.get());
+	});
 }
 
-}
+} // end namespace lif

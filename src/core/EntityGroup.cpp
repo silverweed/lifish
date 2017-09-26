@@ -77,6 +77,12 @@ void EntityGroup::clear() {
 	collidingEntities.clear();
 }
 
+lif::Entity* EntityGroup::add(lif::Entity *entity) {
+	entity->init();
+	entities.emplace_back(entity);
+	return _putInAux(entities.back().get());
+}
+
 lif::Entity* EntityGroup::_putInAux(lif::Entity *entity) {
 	// Put in aux collections, if not already managed
 	auto klb = entity->getShared<lif::Killable>();

@@ -91,10 +91,7 @@ inline std::ostream& operator<<(std::ostream& stream, const sf::RectangleShape& 
 }
 
 inline std::ostream& operator<<(std::ostream& stream, const sf::Color& col) {
-	return stream << "(" << static_cast<int>(col.r)
-		<< ", " << static_cast<int>(col.g)
-		<< ", " << static_cast<int>(col.b)
-		<< ", " << static_cast<int>(col.a) << ")";
+	return stream << "(" << int{col.r} << ", " << int{col.g} << ", " << int{col.b} << ", " << int{col.a} << ")";
 }
 
 template<typename T, typename R>

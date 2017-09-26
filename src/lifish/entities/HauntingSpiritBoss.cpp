@@ -135,15 +135,18 @@ void HauntingSpiritBoss::_updateStart() {
 }
 
 void HauntingSpiritBoss::_updateSearching() {
-	// Task: find all the HauntedStatues in the level. Do this once and keep track of them internally thereafter.
+	// Task: find all the HauntedStatues in the level.
+	// Note: since FreeSighted returns raw pointers but we want to keep track of the living state of
+	// the statues, we track the *weak pointers* to their Killable component. This will expire together
+	// with the statue itself.
 	auto sighted = get<lif::FreeSighted>();
-	const auto seen = sighted->entitiesSeen();
-	for (auto& pair : seen) {
-		if (auto statue = std::dynamic_pointer_cast<lif::HauntedStatue>(pair.first.lock()))
+	const auto& seen = sighted->entitiesSeen();
+	for (const auto& pair : seen) {
+		if (auto statue = dynamic_cast<const lif::HauntedStatue*>(pair.first))
 			if (!statue->isPossessed())
-				statues.emplace_back(statue);
+				statues.emplace_back(statue->getShared<lif::Killable>());
 	}
-	sighted->setActive(false); // no need for this anymore
+	sighted->setActive(false); // no need for this anymore.
 	state = State::SELECT_NEW_STATUE;
 }
 
@@ -179,7 +182,7 @@ void HauntingSpiritBoss::_updateTransitioningBegin() {
 			state = State::DYING;
 			return;
 		}
-		position.x = statue->getPosition().x + lif::TILE_SIZE / 2;
+		position.x = statue->getOwner().getPosition().x + lif::TILE_SIZE / 2;
 		animated->getSprite().rotate(180);
 		state = State::TRANSITIONING_END;
 	} else {
@@ -193,14 +196,14 @@ void HauntingSpiritBoss::_updateTransitioningEnd() {
 		state = State::SELECT_NEW_STATUE;
 		return;
 	}
-	if (position.y >= statue->getPosition().y) {
+	if (position.y >= statue->getOwner().getPosition().y) {
 		animated->getSprite().rotate(180);
 		animated->getSprite().setLooped(true);
 		animated->setAnimation("idle");
 		animated->getSprite().play();
 		hauntClock->restart();
 		atkClock->restart();
-		targetStatue.lock()->setPossessed(true);
+		static_cast<lif::HauntedStatue&>(targetStatue.lock()->getOwnerRW()).setPossessed(true);
 		get<lif::Drawable>()->setActive(false);
 		selectedNewPattern = false;
 		state = State::HAUNTING;
@@ -218,6 +221,7 @@ void HauntingSpiritBoss::_updateHaunting() {
 			curShootPattern->setActive(false);
 		return;
 	}
+	auto& statue = static_cast<lif::HauntedStatue&>(targetStatue.lock()->getOwnerRW());
 	if (_isShooting()) {
 		atkClock->restart();
 		return;
@@ -229,12 +233,12 @@ void HauntingSpiritBoss::_updateHaunting() {
 		std::uniform_int_distribution<unsigned> dist(0, shootPatterns.size() - 1);
 		const auto idx = dist(lif::rng);
 		curShootPattern = shootPatterns[idx];
-		targetStatue.lock()->setSpiritColor(shootColors[idx]);
+		statue.setSpiritColor(shootColors[idx]);
 	}
 	// We haunted this statue long enough: select a new one
 	if (hauntClock->getElapsedTime() > lif::conf::boss::haunting_spirit_boss::CHANGE_STATUE_DELAY) {
 		get<lif::Drawable>()->setActive(true);
-		targetStatue.lock()->setPossessed(false);
+		statue.setPossessed(false);
 		state = State::SELECT_NEW_STATUE;
 		return;
 	}
