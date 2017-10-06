@@ -28,7 +28,7 @@ Missile::Missile(const sf::Vector2f& pos, const sf::Vector2f& target,
 		const auto x = 0.5 * lif::TILE_SIZE * std::sin(freq * t * lif::PI);
 		return sf::Vector2f(x, -y);
 	};
-	static_cast<lif::GuidedMoving*>(moving)->addModFunc(std::make_tuple(wave, false, false));
+	static_cast<lif::GuidedMoving*>(moving)->addModFunc(wave, false, false);
 
 	// spawn/despawn the targeter
 	addComponent<lif::Spawning>(*this, [] (const lif::Spawning& spw) {

@@ -4,7 +4,6 @@
 #include <exception>
 #include <fstream>
 #include <iostream>
-#include <typeinfo>
 
 using json = nlohmann::json;
 using lif::LevelSet;
@@ -145,6 +144,8 @@ void LevelSet::loadFromFile(const std::string& path) {
 	 *		"breakable": uint
 	 *	},
 	 *	"effects": [string] [opt]
+	 *	"cutscenePre": string [opt]
+	 *	"cutscenePost": string [opt]
 	 * }
 	 */
 	for (const auto& lvinfo : levelsdata) {
@@ -165,6 +166,12 @@ void LevelSet::loadFromFile(const std::string& path) {
 				info.effects.insert(s.get<std::string>());
 			}
 		}
+		it = lvinfo.find("cutscenePre");
+		if (it != lvinfo.end())
+			info.cutscenePre = it->get<std::string>();
+		it = lvinfo.find("cutscenePost");
+		if (it != lvinfo.end())
+			info.cutscenePost = it->get<std::string>();
 		levels.emplace_back(info);
 	}
 }

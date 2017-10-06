@@ -1,0 +1,46 @@
+{
+	"scenes": [
+		{
+			"layers": [
+				{
+					"img": "bands.png",
+					"z": 0
+				},
+				{
+					"img": "boss_hauntingspirit_pre/mist.png",
+					"z": 4
+				},
+				{
+					"img": "boss_hauntingspirit_pre/bush.png",
+					"z": 5
+				},
+				{
+					"img": "boss_hauntingspirit_pre/trees.png",
+					"z": 8
+				},
+				{
+					"img": "boss_hauntingspirit_pre/hill.png",
+					"z": 10
+				},
+				{
+					"img": "boss_hauntingspirit_pre/moon.png",
+					"z": 15
+				},
+				{
+					"img": "boss_hauntingspirit_pre/bg.png",
+					"z": 30
+				}
+			],
+			"subs": [
+				{
+					"s": "...",
+					"duration": 2
+				},
+				{
+					"s": "I have a bad feeling about this.",
+					"duration": 6
+				}
+			]
+		}
+	]
+}

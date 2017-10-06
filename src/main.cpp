@@ -38,6 +38,8 @@
 #include "GameContext.hpp"
 #include "contexts.hpp"
 #include "FPSDisplayer.hpp"
+#include "CutscenePlayer.hpp"
+#include "CutsceneBuilder.hpp"
 
 #ifdef MULTITHREADED
 #	ifdef SFML_SYSTEM_LINUX
@@ -148,14 +150,13 @@ static void rendering_loop(sf::RenderWindow& window) {
 	static const sf::Vector2f fps_pos(
 			lif::WINDOW_WIDTH - lif::TILE_SIZE * 8;
 			lif::WINDOW_HEIGHT - lif::TILE_SIZE);
-	while (window.isOpen() && !lif::terminated) {
+	while (!lif::terminated) {
 		window.clear();
 		window.draw(*lif::curContext);
 		lif::maybeShowFPS(window, fps_pos);
 		window.display();
 	}
-	if (window.isOpen())
-		window.close();
+	window.close();
 }
 #endif
 
@@ -218,7 +219,7 @@ int main(int argc, char **argv) {
 	load_icon(window);
 
 	// Setup UI
-	lif::ui::UI& ui = lif::ui::UI::getInstance();
+	auto& ui = lif::ui::UI::getInstance();
 	ui.setSize(lif::options.windowSize);
 
 	// load static screens
@@ -235,15 +236,21 @@ int main(int argc, char **argv) {
 	// Adjust the origin to make room for side panel
 	sf::Vector2f origin(-lif::SIDE_PANEL_WIDTH, 0);
 
-	std::array<lif::WindowContext*, 3> contexts;
-	contexts[lif::CTX_UI] = &ui;
+	// Create cutscene player
+	lif::CutscenePlayer cutscenePlayer;
+
+	std::array<lif::WindowContext*, 4> contexts;
 	contexts[lif::CTX_GAME] = game.get();
+	contexts[lif::CTX_UI] = &ui;
+	contexts[lif::CTX_INTERLEVEL] = nullptr;
+	contexts[lif::CTX_CUTSCENE] = &cutscenePlayer;
 	// Note: this is always assumed non-null throughout the program
 	lif::WindowContext *cur_context = contexts[lif::CTX_UI];
 #ifndef RELEASE
 	if (!args.start_from_home) {
 		game.reset(new lif::GameContext(window, args.levelset_name, args.start_level));
 		game->setOrigin(origin);
+		// Adjust context pointers
 		contexts[lif::CTX_GAME] = game.get();
 		contexts[lif::CTX_INTERLEVEL] = &game->getWLHandler()
 						.getInterlevelContext();
@@ -260,10 +267,9 @@ int main(int argc, char **argv) {
 	const sf::Time frame_time_limit = sf::seconds(1 / 60.);
 	sf::Clock frame_clock;
 	std::thread rendering_thread(rendering_loop, std::ref(window));
-#else
 #endif
 
-	while (window.isOpen() && !lif::terminated) {
+	while (!lif::terminated) {
 
 		///// EVENT LOOP /////
 
@@ -312,6 +318,22 @@ int main(int argc, char **argv) {
 				// This prevents accidental placement of bombs and similar.
 				game->getLM().disableInputFor(sf::seconds(0.5));
 				break;
+			case lif::CTX_CUTSCENE:
+				{
+					cutscenePlayer.reset();
+					std::string cutsceneToPlay = "";
+					using WLState = lif::WinLoseHandler::State;
+					if (game->getWLHandler().getState() == WLState::ADVANCED_LEVEL) {
+						cutsceneToPlay = game->getLM().getLevel()->getInfo().cutscenePre;
+						cutscenePlayer.setNewContext(lif::CTX_GAME);
+					} else {
+						cutsceneToPlay = game->getLM().getLevel()->getInfo().cutscenePost;
+						cutscenePlayer.setNewContext(lif::CTX_INTERLEVEL);
+					}
+					cutscenePlayer.addCutscenes(lif::CutsceneBuilder::fromJson(cutsceneToPlay));
+					cutscenePlayer.play();
+					break;
+				}
 			default:
 				break;
 			}
@@ -365,8 +387,7 @@ int main(int argc, char **argv) {
 	} // end game loop
 
 #ifndef MULTITHREADED
-	if (window.isOpen())
-		window.close();
+	window.close();
 #else
 	rendering_thread.join();
 #endif

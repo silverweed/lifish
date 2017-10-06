@@ -78,7 +78,7 @@ endif()
 # Remove files which aren't being used for now
 list(REMOVE_ITEM LIFISH_SRC
 	"${CMAKE_SOURCE_DIR}/src/core/collisions/SimpleCollisionDetector.cpp"
-	"${CMAKE_SOURCE_DIR}/src/core/cutscenes/Cutscene.cpp"
+	#"${CMAKE_SOURCE_DIR}/src/core/cutscenes/Cutscene.cpp"
 	"${CMAKE_SOURCE_DIR}/src/lifish/entities/AlienBoss.cpp"
 	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Cage.cpp"
 	#"${CMAKE_SOURCE_DIR}/src/lifish/entities/Torch.cpp"

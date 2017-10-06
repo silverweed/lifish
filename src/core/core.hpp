@@ -78,14 +78,20 @@ extern int exitCode;
 /*                         GLOBAL FUNCTIONS                                 */
 /****************************************************************************/
 
-inline std::string getAssetDir(const std::string& dir) {
+inline std::string getAssetDir() {
 	std::stringstream ss;
-	ss << pwd << DIRSEP << "assets" << DIRSEP << dir;
+	ss << pwd << DIRSEP << "assets" << DIRSEP;
 	return ss.str();
 }
 
-inline std::string getAsset(const std::string& dir, const std::string& file) {
-	return getAssetDir(dir) + DIRSEP + file;
+/** Returns the asset found under assetDir/{path args joined by DIRSEP} */
+template<class...Args>
+inline std::string getAsset(Args... path) {
+	std::string result = getAssetDir();
+	const int unpack[] { 0, (result += path, result += DIRSEP, 0)... };
+	static_cast<void>(unpack);
+	result.resize(result.length() - 1); // Strip final '/'
+	return result;
 }
 
 /** Initializes runtime variables */

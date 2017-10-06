@@ -44,6 +44,11 @@ struct LevelInfo {
 
 	/** Special effects for this level (e.g. Fog) */
 	std::unordered_set<std::string> effects;
+
+	/** Optional cutscene for this level (played before level begin). */
+	std::string cutscenePre;
+	/** Optional cutscene for this level (played after level ends). */
+	std::string cutscenePost;
 };
 
 /**

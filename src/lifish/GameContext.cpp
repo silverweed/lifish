@@ -91,7 +91,11 @@ void GameContext::update() {
 	switch (wlHandler.getState()) {
 		using S = lif::WinLoseHandler::State;
 	case S::ADVANCING_LEVEL:
-		newContext = lif::CTX_INTERLEVEL;
+		// Handle cutscenePost
+		if (lm.getLevel()->getInfo().cutscenePost.length() > 0)
+			newContext = lif::CTX_CUTSCENE;
+		else
+			newContext = lif::CTX_INTERLEVEL;
 		return;
 	case S::ADVANCED_LEVEL:
 		_advanceLevel();
@@ -189,7 +193,7 @@ void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const 
 }
 
 void GameContext::_advanceLevel() {
-	const auto level = lm.getLevel();
+	const auto *level = lm.getLevel();
 	if (level == nullptr)
 		throw std::logic_error("Called _advanceLevel on null level!");
 	short lvnum = level->getInfo().levelnum;
@@ -203,15 +207,17 @@ void GameContext::_advanceLevel() {
 	_resurrectDeadPlayers();
 
 	lm.setNextLevel();
-	{
-		const auto level = lm.getLevel();
-		if (level == nullptr)
-			throw std::logic_error("No levels found after " + lif::to_string(lvnum)
-					+ " but end game not triggered!");
-		lif::musicManager->set(level->get<lif::Music>()->getMusic())
-			.setVolume(lif::options.musicVolume)
-			.play();
-	}
+	level = lm.getLevel();
+	if (level == nullptr)
+		throw std::logic_error("No levels found after " + lif::to_string(lvnum)
+				+ " but end game not triggered!");
+	lif::musicManager->set(level->get<lif::Music>()->getMusic())
+		.setVolume(lif::options.musicVolume)
+		.play();
+
+	// If level has a cutscene, play it
+	if (level->getInfo().cutscenePre.length() > 0)
+		newContext = lif::CTX_CUTSCENE;
 }
 
 void GameContext::_resurrectDeadPlayers() {

@@ -8,7 +8,7 @@ using lif::BaseEventHandler;
 bool BaseEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 	switch (event.type) {
 	case sf::Event::Closed:
-		window.close();
+		lif::terminated = true;
 		return true;
 	case sf::Event::Resized:
 		static_cast<sf::RenderWindow&>(window).setView(_keepRatio(event.size, lif::options.windowSize));

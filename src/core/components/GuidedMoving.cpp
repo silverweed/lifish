@@ -36,10 +36,6 @@ void GuidedMoving::update() {
 	_updatePosition();
 }
 
-void GuidedMoving::addModFunc(const lif::GuidedMoving::ModFunc& modfunc) {
-	modfuncs.emplace_back(modfunc);
-}
-
 void GuidedMoving::_updatePosition() {
 	owner.setPosition(std::accumulate(modfuncs.begin(), modfuncs.end(), _calcPathPos(tPerc),
 		[this] (const auto& pos, const auto& pair)
