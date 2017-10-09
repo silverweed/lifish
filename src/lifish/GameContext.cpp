@@ -166,6 +166,8 @@ bool GameContext::handleEvent(sf::Window&, sf::Event event) {
 void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 	// Draw the LevelManager in its render texture
 	gameRenderTex.clear();
+	if (newContext == lif::CTX_CUTSCENE)
+		return;
 	gameRenderTex.draw(lm, states);
 #ifndef RELEASE
 	if ((debug >> DBG_DRAW_COLLIDERS) & 1)

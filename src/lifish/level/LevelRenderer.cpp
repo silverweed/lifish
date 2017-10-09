@@ -28,7 +28,7 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 
 	int minZ = 0, maxZ = 0;
 	owner.entities.mtxLock();
-	owner.entities.apply([&target, &toDraw, &minZ, &maxZ] (const lif::Entity *e) {
+	owner.entities.apply([&toDraw, &minZ, &maxZ] (const lif::Entity *e) {
 		const auto d = e->get<lif::Drawable>();
 		if (d == nullptr)
 			return;
@@ -66,7 +66,7 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 			target.draw(*d, states);
 	}
 	owner.entities.mtxUnlock();
-	
+
 	owner._mtxLock();
 	const auto levelnumtext = level->get<lif::LevelNumText>();
 	if (levelnumtext != nullptr)

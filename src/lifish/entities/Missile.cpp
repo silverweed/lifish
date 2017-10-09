@@ -38,7 +38,7 @@ Missile::Missile(const sf::Vector2f& pos, const sf::Vector2f& target,
 		// spawn function
 		auto targeter = new lif::Targeter(target);
 		auto klb = get<lif::Killable>();
-		targeter->addComponent<lif::Temporary>(*targeter, [this, klb] () {
+		targeter->addComponent<lif::Temporary>(*targeter, [klb] () {
 			// expire condition
 			return klb->isKilled();
 		});

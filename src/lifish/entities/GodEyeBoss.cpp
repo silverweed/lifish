@@ -178,7 +178,7 @@ void GodEyeBoss::_shakeWalls() {
 	const auto lvHeight = lm.getLevel()->getInfo().height;
 
 	// Collect all entities to move
-	lm.getEntities().apply([this, lvWidth, lvHeight, &breakables, &fixed, &torches, &spikes] (lif::Entity *e) {
+	lm.getEntities().apply([lvWidth, lvHeight, &breakables, &fixed, &torches, &spikes] (lif::Entity *e) {
 		if (auto w = dynamic_cast<lif::FixedWall*>(e)) {
 			fixed.emplace_back(w);
 			e->setPosition(sf::Vector2f(0, 0));
