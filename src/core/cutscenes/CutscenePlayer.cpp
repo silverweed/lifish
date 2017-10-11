@@ -8,6 +8,8 @@
 
 using lif::CutscenePlayer;
 
+static const sf::Time FADE_TIME = sf::seconds(1);
+
 CutscenePlayer::CutscenePlayer()
 	: lif::WindowContext()
 	, curSubtitle(lif::getAsset("fonts", lif::fonts::CUTSCENES), "")
@@ -22,11 +24,21 @@ void CutscenePlayer::reset() {
 }
 
 void CutscenePlayer::play() {
+	_startFadeIn();
 	_nextCutscene();
 }
 
 void CutscenePlayer::update() {
 	if (_cutsceneEnded()) {
+		if (static_cast<unsigned>(curCutsceneIdx) == cutscenes.size() - 1) {
+			// Fade out before terminating
+			if (fadingIn)
+				_startFadeOut();
+			if (fadeClock.getElapsedTime() < FADE_TIME) {
+				// Still fading out, wait
+				return;
+			}
+		}
 		_nextCutscene();
 		return;
 	}
@@ -41,6 +53,7 @@ void CutscenePlayer::draw(sf::RenderTarget& target, sf::RenderStates states) con
 		target.draw(*e->get<lif::Sprite>(), states);
 	});
 	target.draw(curSubtitle, states);
+	_applyFade(target, states);
 }
 
 void CutscenePlayer::_resetCutscene() {
@@ -56,6 +69,7 @@ void CutscenePlayer::_nextCutscene() {
 	_resetCutscene();
 	curCutscene = &cutscenes[curCutsceneIdx];
 	_initCutscene();
+	fadeSprite.setSize(sf::Vector2f(curCutscene->windowSize));
 }
 
 void CutscenePlayer::_initCutscene() {
@@ -101,9 +115,29 @@ void CutscenePlayer::_nextSubtitle() {
 	curSubtitle.setString(nxtsub.first);
 	const auto bounds = curSubtitle.getGlobalBounds();
 	curSubtitle.setPosition(sf::Vector2f(
-				lif::centerX(bounds, sf::IntRect(0, 0,
-				curCutscene->windowSize.x, curCutscene->windowSize.y)),
-				curCutscene->windowSize.y - bounds.height - 15));
+		lif::centerX(bounds, sf::IntRect(0, 0, curCutscene->windowSize.x, curCutscene->windowSize.y)),
+		curCutscene->windowSize.y - bounds.height - 15));
 	curSubtitleTime = nxtsub.second;
 	subtitleClock.restart();
+}
+
+void CutscenePlayer::_startFadeIn() {
+	fadeClock.restart();
+	fadingIn = true;
+}
+
+void CutscenePlayer::_startFadeOut() {
+	fadeClock.restart();
+	fadingIn = false;
+}
+
+void CutscenePlayer::_applyFade(sf::RenderTarget& target, sf::RenderStates states) const {
+	// Apply fade-in / fade-out
+	const auto alpha = std::min(255.f, 255 * (fadingIn
+		? (1.f - fadeClock.getElapsedTime() / FADE_TIME)
+		: fadeClock.getElapsedTime() / FADE_TIME));
+	if (alpha > 0) {
+		fadeSprite.setFillColor(sf::Color(0, 0, 0, static_cast<unsigned char>(alpha)));
+		target.draw(fadeSprite, states);
+	}
 }

@@ -18,9 +18,10 @@
 using lif::AlienPredator;
 using lif::TILE_SIZE;
 
-const sf::Time AlienPredator::POND_LIFETIME = sf::seconds(5);
-const sf::Time AlienPredator::TUNNEL_PERIOD = sf::seconds(20);
-const sf::Time AlienPredator::TUNNEL_TRANSITION_TIME = sf::seconds(1);
+static constexpr unsigned short TUNNEL_N_FRAMES = 2;
+static const sf::Time POND_LIFETIME = sf::seconds(5);
+static const sf::Time TUNNEL_PERIOD = sf::seconds(20);
+static const sf::Time TUNNEL_TRANSITION_TIME = sf::seconds(1);
 
 AlienPredator::AlienPredator(const sf::Vector2f& pos, const lif::EnemyInfo& info) : lif::Enemy(pos, 10, info) {
 	addComponent<lif::Spawning>(*this, [this] () {
@@ -49,6 +50,9 @@ AlienPredator::AlienPredator(const sf::Vector2f& pos, const lif::EnemyInfo& info
 
 void AlienPredator::update() {
 	lif::Enemy::update();
+
+	if (killable->isKilled())
+		return;
 
 	if (tunneling) {
 		const auto t = tunnelAnimClock->getElapsedTime();

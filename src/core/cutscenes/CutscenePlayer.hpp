@@ -11,7 +11,7 @@ namespace lif {
 
 /** The CutscenePlayer is a WindowContext which plays a sequence of Cutscenes in a row. */
 class CutscenePlayer final : public lif::WindowContext {
-	
+
 	std::vector<lif::Cutscene> cutscenes;
 	const lif::Cutscene *curCutscene = nullptr;
 	int curCutsceneIdx = 0;
@@ -24,6 +24,14 @@ class CutscenePlayer final : public lif::WindowContext {
 	lif::ShadedText curSubtitle;
 	sf::Time curSubtitleTime;
 	sf::Clock subtitleClock;
+
+	sf::Clock fadeClock;
+	mutable sf::RectangleShape fadeSprite;
+	bool fadingIn;
+
+	void _startFadeIn();
+	void _startFadeOut();
+	void _applyFade(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	/** Sets the next cutscene as the current one and resets the per-cutscene status.
 	 *  If the current cutscene is the last one, switches to `_newContext`.
