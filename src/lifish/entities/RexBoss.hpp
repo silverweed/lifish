@@ -43,11 +43,11 @@ private:
 	lif::BufferedSpawner *spawner = nullptr;
 
 	lif::ai::StateFunction stateFunction = std::bind(&RexBoss::_updateStart, this);
-	const std::array<lif::ai::StateFunction, 3> atkStateFunctions = {
+	const std::array<lif::ai::StateFunction, 3> atkStateFunctions = {{
 		std::bind(&RexBoss::_updateStompEntering, this),
 		std::bind(&RexBoss::_updateFlameEntering, this),
 		std::bind(&RexBoss::_updateMissilesEntering, this),
-	};
+	}};
 	
 	void _kill() override;
 

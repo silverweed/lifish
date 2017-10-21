@@ -125,7 +125,7 @@ StateFunction RexBoss::_updateStart() {
 		get<lif::MovingAnimator>()->setActive(true);
 		return BIND(_updateWalking);
 	}
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 StateFunction RexBoss::_updateWalking() {
@@ -139,7 +139,7 @@ StateFunction RexBoss::_updateWalking() {
 		wasBlocked = false;
 	}
 
-	if (!isAligned()) return stateFunction;
+	if (!isAligned()) return std::move(stateFunction);
 
 	if (moving->getPrevAlign() != lif::tile(position))
 		++steps;
@@ -155,10 +155,10 @@ StateFunction RexBoss::_updateWalking() {
 		atkType = static_cast<AtkType>(atkCond);
 		moving->stop();
 		attackClock->restart();
-		return atkStateFunctions[static_cast<unsigned>(atkType)];
+		return atkStateFunctions[static_cast<unsigned>(atkType)].f;
 	}
 
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 StateFunction RexBoss::_updateStompEntering() {
@@ -184,7 +184,7 @@ StateFunction RexBoss::_updateStompWindup() {
 		attackClock->restart();
 		return BIND(_updateStompDamage);
 	}
-	return stateFunction;
+	return std::move(stateFunction);
 }
 StateFunction RexBoss::_updateStompDamage() {
 	const auto time = attackClock->getElapsedTime();
@@ -195,14 +195,14 @@ StateFunction RexBoss::_updateStompDamage() {
 		attackClock->restart();
 		return BIND(_updateStompRecover);
 	}
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 StateFunction RexBoss::_updateStompRecover() {
 	const auto time = attackClock->getElapsedTime();
 	if (time > STOMP_RECOVER_TIME)
 		return BIND(_updateAttackExiting);
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 StateFunction RexBoss::_updateAttackExiting() {
@@ -249,7 +249,7 @@ StateFunction RexBoss::_updateFlameWindup() {
 		attackClock->restart();
 		return BIND(_updateFlameDamage);
 	}
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 StateFunction RexBoss::_updateFlameDamage() {
@@ -260,14 +260,14 @@ StateFunction RexBoss::_updateFlameDamage() {
 		attackClock->restart();
 		return BIND(_updateFlameRecover);
 	}
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 StateFunction RexBoss::_updateFlameRecover() {;
 	const auto time = attackClock->getElapsedTime();
 	if (time > FLAME_RECOVER_TIME)
 		return BIND(_updateAttackExiting);
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 StateFunction RexBoss::_updateMissilesEntering() {
@@ -288,7 +288,7 @@ StateFunction RexBoss::_updateMissilesWindup() {
 		_calcMissilesPos();
 		return BIND(_updateMissilesDamage);
 	}
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 StateFunction RexBoss::_updateMissilesDamage() {
@@ -306,14 +306,14 @@ StateFunction RexBoss::_updateMissilesDamage() {
 		_shootMissile();
 		attackClock->restart();
 	}
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 StateFunction RexBoss::_updateMissilesRecover() {
 	const auto time = attackClock->getElapsedTime();
 	if (time > MISSILES_RECOVER_TIME)
 		return BIND(_updateAttackExiting);
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 StateFunction RexBoss::_updateDying() {
@@ -324,7 +324,7 @@ StateFunction RexBoss::_updateDying() {
 		animated->getSprite().play();
 		lif::requestCameraShake(0.1, 100, 0, 0, sf::seconds(4), 2);
 	}
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 void RexBoss::_shootMissile() {

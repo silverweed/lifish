@@ -97,13 +97,13 @@ void HauntingSpiritBoss::update() {
 	lif::Entity::update();
 
 	assert(stateFunction);
-	stateFunction = stateFunction();
+	stateFunction = std::move(stateFunction());
 }
 
 StateFunction HauntingSpiritBoss::_updateStart() {
 	// Task: play initial animation after a delay
 	if (animClock->getElapsedTime() < sf::seconds(2))
-		return stateFunction;
+		return std::move(stateFunction);
 
 	if (!animated->getSprite().isPlaying()) {
 		animated->getSprite().setLooped(true);
@@ -118,7 +118,7 @@ StateFunction HauntingSpiritBoss::_updateStart() {
 		animated->getSprite().play();
 	}
 
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 StateFunction HauntingSpiritBoss::_updateSearching() {
@@ -173,7 +173,7 @@ StateFunction HauntingSpiritBoss::_updateTransitioningBegin() {
 	} else {
 		position.y -= animClock->restart().asSeconds() * 200;
 	}
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 StateFunction HauntingSpiritBoss::_updateTransitioningEnd() {
@@ -196,7 +196,7 @@ StateFunction HauntingSpiritBoss::_updateTransitioningEnd() {
 
 	position.y += animClock->restart().asSeconds() * 200;
 
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 StateFunction HauntingSpiritBoss::_updateHaunting() {
@@ -210,7 +210,7 @@ StateFunction HauntingSpiritBoss::_updateHaunting() {
 	auto& statue = static_cast<lif::HauntedStatue&>(targetStatue.lock()->getOwnerRW());
 	if (_isShooting()) {
 		atkClock->restart();
-		return stateFunction;
+		return std::move(stateFunction);
 	} else if (!selectedNewPattern) {
 		// Select the next pattern as soon as we stop shooting;
 		// actually start shooting only after PATTERN_SHOOT_DELAY
@@ -231,7 +231,7 @@ StateFunction HauntingSpiritBoss::_updateHaunting() {
 		curShootPattern->resetAndPlay();
 		selectedNewPattern = false;
 	}
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 StateFunction HauntingSpiritBoss::_updateDying() {
@@ -243,7 +243,7 @@ StateFunction HauntingSpiritBoss::_updateDying() {
 		animated->getSprite().play();
 		lif::requestCameraShake(0.06, 100, 0, 0, sf::seconds(4), 2);
 	}
-	return stateFunction;
+	return std::move(stateFunction);
 }
 
 bool HauntingSpiritBoss::_isShooting() const {
