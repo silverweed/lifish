@@ -4,6 +4,7 @@
 #include <memory>
 #include "Boss.hpp"
 #include "game.hpp"
+#include "state_function.hpp"
 
 namespace lif {
 
@@ -12,15 +13,6 @@ class Clock;
 class ShootingPattern;
 
 class HauntingSpiritBoss : public lif::Boss {
-	enum class State {
-		START,
-		SEARCHING,
-		SELECT_NEW_STATUE,
-		TRANSITIONING_BEGIN,
-		TRANSITIONING_END,
-		HAUNTING,
-		DYING
-	} state;
 
 	bool selectedNewPattern = false;
 	std::vector<std::weak_ptr<lif::Killable>> statues;
@@ -39,13 +31,16 @@ class HauntingSpiritBoss : public lif::Boss {
 	           *atkClock = nullptr,   // used for shooting
 	           *hauntClock = nullptr; // used for changing haunted statue after delay
 
-	void _updateStart();
-	void _updateSearching();
-	void _updateSelectNewStatue();
-	void _updateTransitioningBegin();
-	void _updateTransitioningEnd();
-	void _updateHaunting();
-	void _updateDying();
+	lif::ai::StateFunction stateFunction = std::bind(&HauntingSpiritBoss::_updateStart, this);
+
+	lif::ai::StateFunction _updateStart();
+	lif::ai::StateFunction _updateSearching();
+	lif::ai::StateFunction _updateSelectNewStatue();
+	lif::ai::StateFunction _updateTransitioningBegin();
+	lif::ai::StateFunction _updateTransitioningEnd();
+	lif::ai::StateFunction _updateHaunting();
+	lif::ai::StateFunction _updateDying();
+
 	bool _isShooting() const;
 public:
 	explicit HauntingSpiritBoss(const sf::Vector2f& pos);

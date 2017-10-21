@@ -14,12 +14,15 @@
 #include "core.hpp"
 #include <algorithm>
 #include "camera_utils.hpp"
+#include <cassert>
+
+#define BIND(f) std::bind(&HauntingSpiritBoss:: f, this)
 
 using lif::HauntingSpiritBoss;
+using StateFunction = lif::ai::StateFunction;
 
 HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	: lif::Boss(pos)
-	, state(State::START)
 {
 	// This boss has no Lifed component: it dies when there are no HauntedStatues left in the level.
 	addComponent<lif::FreeSighted>(*this)->setActive(false);
@@ -93,48 +96,32 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 void HauntingSpiritBoss::update() {
 	lif::Entity::update();
 
-	switch (state) {
-	case State::START:
-		_updateStart();
-		break;
-	case State::SEARCHING:
-		_updateSearching();
-		break;
-	case State::SELECT_NEW_STATUE:
-		_updateSelectNewStatue();
-		break;
-	case State::TRANSITIONING_BEGIN:
-		_updateTransitioningBegin();
-		break;
-	case State::TRANSITIONING_END:
-		_updateTransitioningEnd();
-		break;
-	case State::HAUNTING:
-		_updateHaunting();
-		break;
-	case State::DYING:
-		_updateDying();
-		break;
-	}
+	assert(stateFunction);
+	stateFunction = stateFunction();
 }
 
-void HauntingSpiritBoss::_updateStart() {
+StateFunction HauntingSpiritBoss::_updateStart() {
 	// Task: play initial animation after a delay
-	if (animClock->getElapsedTime() < sf::seconds(2)) return;
+	if (animClock->getElapsedTime() < sf::seconds(2))
+		return stateFunction;
+
 	if (!animated->getSprite().isPlaying()) {
 		animated->getSprite().setLooped(true);
 		animated->setAnimation("idle");
 		animated->getSprite().play();
 		get<lif::FreeSighted>()->setActive(true);
-		state = State::SEARCHING;
+		return BIND(_updateSearching);
+
 	} else if (animated->getAnimationName() == "idle") {
 		animated->getSprite().setLooped(false, false);
 		animated->setAnimation("start");
 		animated->getSprite().play();
 	}
+
+	return stateFunction;
 }
 
-void HauntingSpiritBoss::_updateSearching() {
+StateFunction HauntingSpiritBoss::_updateSearching() {
 	// Task: find all the HauntedStatues in the level.
 	// Note: since FreeSighted returns raw pointers but we want to keep track of the living state of
 	// the statues, we track the *weak pointers* to their Killable component. This will expire together
@@ -147,10 +134,10 @@ void HauntingSpiritBoss::_updateSearching() {
 				statues.emplace_back(statue->getShared<lif::Killable>());
 	}
 	sighted->setActive(false); // no need for this anymore.
-	state = State::SELECT_NEW_STATUE;
+	return BIND(_updateSelectNewStatue);
 }
 
-void HauntingSpiritBoss::_updateSelectNewStatue() {
+StateFunction HauntingSpiritBoss::_updateSelectNewStatue() {
 	// Task: select a statue to possess
 	for (auto it = statues.begin(); it != statues.end(); ) {
 		if (it->expired())
@@ -159,15 +146,14 @@ void HauntingSpiritBoss::_updateSelectNewStatue() {
 			++it;
 	}
 	if (statues.size() == 0) {
-		state = State::DYING;
-		return;
+		return BIND(_updateDying);
 	}
 	std::uniform_int_distribution<> dist(0, statues.size() - 1);
 	targetStatue = statues[dist(lif::rng)];
-	state = State::TRANSITIONING_BEGIN;
+	return BIND(_updateTransitioningBegin);
 }
 
-void HauntingSpiritBoss::_updateTransitioningBegin() {
+StateFunction HauntingSpiritBoss::_updateTransitioningBegin() {
 	// Task: play the transitioning animation and set the next haunted statue as `possessed`
 	if (animated->getAnimationName() != "transition") {
 		animated->setAnimation("transition");
@@ -179,22 +165,21 @@ void HauntingSpiritBoss::_updateTransitioningBegin() {
 		// Center on the target statue
 		const auto statue = targetStatue.lock();
 		if (statue == nullptr) {
-			state = State::DYING;
-			return;
+			return BIND(_updateDying);
 		}
 		position.x = statue->getOwner().getPosition().x + lif::TILE_SIZE / 2;
 		animated->getSprite().rotate(180);
-		state = State::TRANSITIONING_END;
+		return BIND(_updateTransitioningEnd);
 	} else {
 		position.y -= animClock->restart().asSeconds() * 200;
 	}
+	return stateFunction;
 }
 
-void HauntingSpiritBoss::_updateTransitioningEnd() {
+StateFunction HauntingSpiritBoss::_updateTransitioningEnd() {
 	const auto statue = targetStatue.lock();
 	if (statue == nullptr) {
-		state = State::SELECT_NEW_STATUE;
-		return;
+		return BIND(_updateSelectNewStatue);
 	}
 	if (position.y >= statue->getOwner().getPosition().y) {
 		animated->getSprite().rotate(180);
@@ -206,25 +191,26 @@ void HauntingSpiritBoss::_updateTransitioningEnd() {
 		static_cast<lif::HauntedStatue&>(targetStatue.lock()->getOwnerRW()).setPossessed(true);
 		get<lif::Drawable>()->setActive(false);
 		selectedNewPattern = false;
-		state = State::HAUNTING;
-		return;
+		return BIND(_updateHaunting);
 	}
+
 	position.y += animClock->restart().asSeconds() * 200;
+
+	return stateFunction;
 }
 
-void HauntingSpiritBoss::_updateHaunting() {
+StateFunction HauntingSpiritBoss::_updateHaunting() {
 	// Task: attack the player; leave after some delay
 	if (targetStatue.expired()) {
 		get<lif::Drawable>()->setActive(true);
-		state = State::SELECT_NEW_STATUE;
 		if (curShootPattern != nullptr)
 			curShootPattern->setActive(false);
-		return;
+		return BIND(_updateSelectNewStatue);
 	}
 	auto& statue = static_cast<lif::HauntedStatue&>(targetStatue.lock()->getOwnerRW());
 	if (_isShooting()) {
 		atkClock->restart();
-		return;
+		return stateFunction;
 	} else if (!selectedNewPattern) {
 		// Select the next pattern as soon as we stop shooting;
 		// actually start shooting only after PATTERN_SHOOT_DELAY
@@ -239,24 +225,25 @@ void HauntingSpiritBoss::_updateHaunting() {
 	if (hauntClock->getElapsedTime() > lif::conf::boss::haunting_spirit_boss::CHANGE_STATUE_DELAY) {
 		get<lif::Drawable>()->setActive(true);
 		statue.setPossessed(false);
-		state = State::SELECT_NEW_STATUE;
-		return;
+		return BIND(_updateSelectNewStatue);;
 	}
 	if (atkClock->getElapsedTime() > lif::conf::boss::haunting_spirit_boss::PATTERN_SHOOT_DELAY) {
 		curShootPattern->resetAndPlay();
 		selectedNewPattern = false;
 	}
+	return stateFunction;
 }
 
-void HauntingSpiritBoss::_updateDying() {
+StateFunction HauntingSpiritBoss::_updateDying() {
 	// Task: play death animation
 	if (animated->getAnimationName() != "death") {
 		killable->kill();
 		animated->setAnimation("death");
 		animated->getSprite().setLooped(false);
 		animated->getSprite().play();
-		lif::requestCameraShake(0.1, 100, 0, 0, sf::seconds(4), 2);
+		lif::requestCameraShake(0.06, 100, 0, 0, sf::seconds(4), 2);
 	}
+	return stateFunction;
 }
 
 bool HauntingSpiritBoss::_isShooting() const {

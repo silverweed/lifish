@@ -28,9 +28,12 @@
 #include <random>
 #include <algorithm>
 
+#define BIND(f) std::bind(&RexBoss:: f, this)
+
 using lif::RexBoss;
 using lif::TILE_SIZE;
 using namespace lif::conf::boss::rex_boss;
+using StateFunction = lif::ai::StateFunction;
 
 constexpr auto MIN_STEPS = 4;
 constexpr auto MAX_STEPS_BEFORE_ATK = MIN_STEPS;
@@ -110,37 +113,22 @@ void RexBoss::update() {
 	if (killable->isKilled())
 		return;
 
-	switch (state) {
-	case State::START:
-		_updateStart();
-		break;
-	case State::WALKING:
-		if (isAligned() && moving->getPrevAlign() != lif::tile(position))
-			++steps;
-		_updateWalking();
-		break;
-	case State::ATTACKING:
-		_updateAttacking();
-		break;
-	case State::DYING:
-		_updateDying();
-		break;
-	default:
-		break;
-	}
+	assert(stateFunction);
+	stateFunction = stateFunction();
 }
 
-void RexBoss::_updateStart() {
+StateFunction RexBoss::_updateStart() {
 	if (animClock->getElapsedTime() >= sf::seconds(2)) {
 		animated->getSprite().setLooped(true);
 		animated->getSprite().play();
-		state = State::WALKING;
 		moving->setDirection(lif::Direction::LEFT);
 		get<lif::MovingAnimator>()->setActive(true);
+		return BIND(_updateWalking);
 	}
+	return stateFunction;
 }
 
-void RexBoss::_updateWalking() {
+StateFunction RexBoss::_updateWalking() {
 	if (moving->isBlocked()) {
 		if (!wasBlocked) {
 			// Stomp
@@ -151,7 +139,10 @@ void RexBoss::_updateWalking() {
 		wasBlocked = false;
 	}
 
-	if (!isAligned()) return;
+	if (!isAligned()) return stateFunction;
+
+	if (moving->getPrevAlign() != lif::tile(position))
+		++steps;
 
 	const auto dir = moving->getDirection();
 	if (dir != lif::Direction::NONE)
@@ -162,181 +153,178 @@ void RexBoss::_updateWalking() {
 	auto atkCond = _checkAttackCondition();
 	if (atkCond >= 0 && atkCond < static_cast<int>(AtkType::N_ATTACKS)) {
 		atkType = static_cast<AtkType>(atkCond);
-		state = State::ATTACKING;
-		atkState = AtkState::ENTERING;
 		moving->stop();
 		attackClock->restart();
+		return atkStateFunctions[static_cast<unsigned>(atkType)];
 	}
+
+	return stateFunction;
 }
 
-void RexBoss::_updateAttacking() {
-	switch (atkType) {
-	case AtkType::STOMP:
-		_updateStomp();
-		break;
-	case AtkType::FLAME:
-		_updateFlame();
-		break;
-	case AtkType::MISSILES:
-		_updateMissiles();
-		break;
-	default:
-		break;
-	}
-	if (atkState == AtkState::EXITING) {
-		std::uniform_int_distribution<> dist(0, 3);
-		moving->setDirection(lif::ai::directions[dist(lif::rng)]);
-		state = State::WALKING;
-		steps = 0;
-	}
-}
-
-void RexBoss::_updateStomp() {
+StateFunction RexBoss::_updateStompEntering() {
 	// Task: wind up / damage / recover
-	if (atkState == AtkState::ENTERING) {
-		atkState = AtkState::WINDUP;
-		animated->setAnimation("stomp_windup");
-		animated->getSprite().play();
-		return;
-	}
+	animated->setAnimation("stomp_windup");
+	animated->getSprite().play();
+	return BIND(_updateStompWindup);
+}
+
+StateFunction RexBoss::_updateStompWindup() {
 	const auto time = attackClock->getElapsedTime();
-	switch (atkState) {
-	case AtkState::WINDUP:
-		if (time > STOMP_WINDUP_TIME) {
-			atkState = AtkState::DAMAGE;
-			animated->setAnimation("stomp_damage");
-			animated->getSprite().play();
-			// Deal damage
-			stompCollider->setActive(true);
-			lif::requestCameraShake(0, 0, 0.1, 50, sf::seconds(1), 5);
-			const auto rect = collider->getRect();
-			auto smoke = new lif::SmokeRing(position + sf::Vector2f(rect.width / 2, rect.height / 2));
-			smoke->get<lif::Animated>()->getSprite().setOrigin(TILE_SIZE, TILE_SIZE);
-			smoke->get<lif::Animated>()->getSprite().setScale(4, 4);
-			spawner->addSpawned(smoke);
-			attackClock->restart();
+	if (time > STOMP_WINDUP_TIME) {
+		animated->setAnimation("stomp_damage");
+		animated->getSprite().play();
+		// Deal damage
+		stompCollider->setActive(true);
+		lif::requestCameraShake(0, 0, 0.1, 50, sf::seconds(1), 5);
+		const auto rect = collider->getRect();
+		auto smoke = new lif::SmokeRing(position + sf::Vector2f(rect.width / 2, rect.height / 2));
+		smoke->get<lif::Animated>()->getSprite().setOrigin(TILE_SIZE, TILE_SIZE);
+		smoke->get<lif::Animated>()->getSprite().setScale(4, 4);
+		spawner->addSpawned(smoke);
+		attackClock->restart();
+		return BIND(_updateStompDamage);
+	}
+	return stateFunction;
+}
+StateFunction RexBoss::_updateStompDamage() {
+	const auto time = attackClock->getElapsedTime();
+	if (time > STOMP_DAMAGE_TIME) {
+		animated->setAnimation("stomp_recover");
+		animated->getSprite().play();
+		stompCollider->setActive(false);
+		attackClock->restart();
+		return BIND(_updateStompRecover);
+	}
+	return stateFunction;
+}
+
+StateFunction RexBoss::_updateStompRecover() {
+	const auto time = attackClock->getElapsedTime();
+	if (time > STOMP_RECOVER_TIME)
+		return BIND(_updateAttackExiting);
+	return stateFunction;
+}
+
+StateFunction RexBoss::_updateAttackExiting() {
+	static std::uniform_int_distribution<> dist(0, 3);
+	moving->setDirection(lif::ai::directions[dist(lif::rng)]);
+	steps = 0;
+	return BIND(_updateWalking);
+}
+
+StateFunction RexBoss::_updateFlameEntering() {
+	animated->setAnimation("flame_windup");
+	animated->getSprite().play();
+	return BIND(_updateFlameWindup);
+}
+
+StateFunction RexBoss::_updateFlameWindup() {
+	const auto time = attackClock->getElapsedTime();
+	if (time > FLAME_WINDUP_TIME) {
+		animated->setAnimation("flame_damage");
+		animated->getSprite().play();
+		// Deal damage
+		sf::Vector2f flamePos(position);
+		const bool isVert = flameDirection == lif::Direction::UP ||
+				flameDirection == lif::Direction::DOWN;
+		switch (flameDirection) {
+		case lif::Direction::LEFT:
+			flamePos.x -= FLAME_TILE_WIDTH * TILE_SIZE;
+			break;
+		case lif::Direction::RIGHT:
+			flamePos.x += collider->getRect().width;
+			break;
+		case lif::Direction::UP:
+			flamePos.y -= FLAME_TILE_WIDTH * TILE_SIZE;
+			break;
+		case lif::Direction::DOWN:
+			flamePos.y += collider->getRect().height;
+			break;
+		default:
+			break;
 		}
-		break;
-	case AtkState::DAMAGE:
-		if (time > STOMP_DAMAGE_TIME) {
-			atkState = AtkState::RECOVER;
-			animated->setAnimation("stomp_recover");
+		spawner->addSpawned(new lif::RexFlame(flamePos, isVert
+			? sf::Vector2f(FLAME_TILE_HEIGHT * TILE_SIZE, FLAME_TILE_WIDTH * TILE_SIZE)
+			: sf::Vector2f(FLAME_TILE_WIDTH * TILE_SIZE, FLAME_TILE_HEIGHT * TILE_SIZE)));
+		attackClock->restart();
+		return BIND(_updateFlameDamage);
+	}
+	return stateFunction;
+}
+
+StateFunction RexBoss::_updateFlameDamage() {
+	const auto time = attackClock->getElapsedTime();
+	if (time > FLAME_DAMAGE_TIME) {
+		animated->setAnimation("flame_recover");
+		animated->getSprite().play();
+		attackClock->restart();
+		return BIND(_updateFlameRecover);
+	}
+	return stateFunction;
+}
+
+StateFunction RexBoss::_updateFlameRecover() {;
+	const auto time = attackClock->getElapsedTime();
+	if (time > FLAME_RECOVER_TIME)
+		return BIND(_updateAttackExiting);
+	return stateFunction;
+}
+
+StateFunction RexBoss::_updateMissilesEntering() {
+	animated->setAnimation("missiles_windup");
+	animated->getSprite().play();
+	return BIND(_updateMissilesWindup);
+}
+
+StateFunction RexBoss::_updateMissilesWindup() {
+	const auto time = attackClock->getElapsedTime();
+	if (time > MISSILES_WINDUP_TIME) {
+		missilesShot = 0;
+		animated->setAnimation("missiles_damage");
+		animated->getSprite().play();
+		attackClock->restart();
+		// The updated players' positions are needed for the missiles' targets
+		_updatePlayersPos();
+		_calcMissilesPos();
+		return BIND(_updateMissilesDamage);
+	}
+	return stateFunction;
+}
+
+StateFunction RexBoss::_updateMissilesDamage() {
+	const auto time = attackClock->getElapsedTime();
+	if (missilesShot == N_MISSILES) {
+		if (time > MISSILES_DAMAGE_TIME) {
+			animated->setAnimation("missiles_recover");
 			animated->getSprite().play();
 			stompCollider->setActive(false);
 			attackClock->restart();
+			return BIND(_updateMissilesRecover);
 		}
-		break;
-	case AtkState::RECOVER:
-		if (time > STOMP_RECOVER_TIME)
-			atkState = AtkState::EXITING;
-		break;
-	default:
-		break;
+	} else if (time > MISSILES_DAMAGE_TIME / static_cast<float>(N_MISSILES)) {
+		// Spawn the missiles
+		_shootMissile();
+		attackClock->restart();
 	}
+	return stateFunction;
 }
 
-void RexBoss::_updateFlame() {
-	// Task: wind up / damage / recover
-	if (atkState == AtkState::ENTERING) {
-		atkState = AtkState::WINDUP;
-		animated->setAnimation("flame_windup");
-		animated->getSprite().play();
-		return;
-	}
+StateFunction RexBoss::_updateMissilesRecover() {
 	const auto time = attackClock->getElapsedTime();
-	switch (atkState) {
-	case AtkState::WINDUP:
-		if (time > FLAME_WINDUP_TIME) {
-			atkState = AtkState::DAMAGE;
-			animated->setAnimation("flame_damage");
-			animated->getSprite().play();
-			// Deal damage
-			sf::Vector2f flamePos(position);
-			const bool isVert = flameDirection == lif::Direction::UP ||
-					flameDirection == lif::Direction::DOWN;
-			switch (flameDirection) {
-			case lif::Direction::LEFT:
-				flamePos.x -= FLAME_TILE_WIDTH * TILE_SIZE;
-				break;
-			case lif::Direction::RIGHT:
-				flamePos.x += collider->getRect().width;
-				break;
-			case lif::Direction::UP:
-				flamePos.y -= FLAME_TILE_WIDTH * TILE_SIZE;
-				break;
-			case lif::Direction::DOWN:
-				flamePos.y += collider->getRect().height;
-				break;
-			default:
-				break;
-			}
-			spawner->addSpawned(new lif::RexFlame(flamePos, isVert
-				? sf::Vector2f(FLAME_TILE_HEIGHT * TILE_SIZE, FLAME_TILE_WIDTH * TILE_SIZE)
-				: sf::Vector2f(FLAME_TILE_WIDTH * TILE_SIZE, FLAME_TILE_HEIGHT * TILE_SIZE)));
-			attackClock->restart();
-		}
-		break;
-	case AtkState::DAMAGE:
-		if (time > FLAME_DAMAGE_TIME) {
-			atkState = AtkState::RECOVER;
-			animated->setAnimation("flame_recover");
-			animated->getSprite().play();
-			attackClock->restart();
-		}
-		break;
-	case AtkState::RECOVER:
-		if (time > FLAME_RECOVER_TIME)
-			atkState = AtkState::EXITING;
-		break;
-	default:
-		break;
-	}
-
+	if (time > MISSILES_RECOVER_TIME)
+		return BIND(_updateAttackExiting);
+	return stateFunction;
 }
 
-void RexBoss::_updateMissiles() {
-	if (atkState == AtkState::ENTERING) {
-		atkState = AtkState::WINDUP;
-		animated->setAnimation("missiles_windup");
+StateFunction RexBoss::_updateDying() {
+	if (animated->getAnimationName() != "death") {
+		killable->kill();
+		animated->setAnimation("death");
+		animated->getSprite().setLooped(false);
 		animated->getSprite().play();
-		return;
+		lif::requestCameraShake(0.1, 100, 0, 0, sf::seconds(4), 2);
 	}
-	const auto time = attackClock->getElapsedTime();
-	switch (atkState) {
-	case AtkState::WINDUP:
-		if (time > MISSILES_WINDUP_TIME) {
-			atkState = AtkState::DAMAGE;
-			missilesShot = 0;
-			animated->setAnimation("missiles_damage");
-			animated->getSprite().play();
-			attackClock->restart();
-			// The updated players' positions are needed for the missiles' targets
-			_updatePlayersPos();
-			_calcMissilesPos();
-		}
-		break;
-	case AtkState::DAMAGE:
-		if (missilesShot == N_MISSILES) {
-			if (time > MISSILES_DAMAGE_TIME) {
-				atkState = AtkState::RECOVER;
-				animated->setAnimation("missiles_recover");
-				animated->getSprite().play();
-				stompCollider->setActive(false);
-				attackClock->restart();
-			}
-		} else if (time > MISSILES_DAMAGE_TIME / static_cast<float>(N_MISSILES)) {
-			// Spawn the missiles
-			_shootMissile();
-			attackClock->restart();
-		}
-		break;
-	case AtkState::RECOVER:
-		if (time > MISSILES_RECOVER_TIME)
-			atkState = AtkState::EXITING;
-		break;
-	default:
-		break;
-	}
+	return stateFunction;
 }
 
 void RexBoss::_shootMissile() {
@@ -383,16 +371,6 @@ void RexBoss::_calcMissilesPos() {
 		dirs.pop_back();
 		missilesTargets.emplace_back(pos);
 		pid = (pid + 1) % nPlayers;
-	}
-}
-
-void RexBoss::_updateDying() {
-	if (animated->getAnimationName() != "death") {
-		killable->kill();
-		animated->setAnimation("death");
-		animated->getSprite().setLooped(false);
-		animated->getSprite().play();
-		lif::requestCameraShake(0.1, 100, 0, 0, sf::seconds(4), 2);
 	}
 }
 

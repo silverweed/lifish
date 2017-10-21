@@ -31,8 +31,6 @@
 #include <algorithm>
 #include <vector>
 
-#include <iostream>
-
 using lif::GodEyeBoss;
 using lif::TILE_SIZE;
 using namespace lif::conf::boss::god_eye_boss;
