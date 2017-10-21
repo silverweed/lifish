@@ -97,7 +97,7 @@ void HauntingSpiritBoss::update() {
 	lif::Entity::update();
 
 	assert(stateFunction);
-	stateFunction = std::move(stateFunction());
+	stateFunction = stateFunction();
 }
 
 StateFunction HauntingSpiritBoss::_updateStart() {
