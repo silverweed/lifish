@@ -16,7 +16,7 @@ class Collider;
 class BufferedSpawner;
 
 class RexBoss : public lif::Boss {
-private:
+
 	enum class AtkType {
 		STOMP,
 		FLAME,
