@@ -19,7 +19,7 @@ class Clock;
 class Animated : public lif::Component, public sf::Drawable {
 protected:
 	sf::Texture *texture;
-	lif::Clock *frameClock;
+	lif::Clock *frameClock = nullptr;
 	std::unordered_map<std::string, Animation> animations;
 	std::unordered_map<std::string, sf::Time> frameTimes;
 	sf::Time defaultFrameTime = sf::Time::Zero;

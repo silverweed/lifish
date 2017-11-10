@@ -227,16 +227,16 @@ else()
 	endif()
 endif()
 
-# Linker / platform-specific flags
-if(UNIX AND NOT APPLE)
-	execute_process(
-		COMMAND ${CMAKE_C_COMPILER} -fuse-ld=gold -Wl,--version
-		ERROR_QUIET OUTPUT_VARIABLE LD_VERSION)
-	if("${LD_VERSION}" MATCHES "GNU gold")
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fuse-ld=gold")
-		message(STATUS "Using GNU gold as linker")
-	endif()
-elseif(MSYS)
+# Linker
+execute_process(
+	COMMAND ${CMAKE_C_COMPILER} -fuse-ld=gold -Wl,--version
+	ERROR_QUIET OUTPUT_VARIABLE LD_VERSION)
+if("${LD_VERSION}" MATCHES "GNU gold")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fuse-ld=gold")
+	message(STATUS "Using GNU gold as linker")
+endif()
+
+if(MSYS)
 	if(RELEASE)
 		# No terminal on windows in release mode
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows")

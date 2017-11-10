@@ -162,9 +162,9 @@ static void rendering_loop(sf::RenderWindow& window) {
 
 int main(int argc, char **argv) {
 	// Duplicate stderr to file for logging
-	std::ofstream errFile(".lifish_err.txt");
-	auto errbuf = std::cerr.rdbuf();
-	std::cerr.rdbuf(errFile.rdbuf());
+	//std::ofstream errFile(".lifish_err.txt");
+	//auto errbuf = std::cerr.rdbuf();
+	//std::cerr.rdbuf(errFile.rdbuf());
 
 #if defined(MULTITHREADED) && defined(SFML_SYSTEM_LINUX)
 	XInitThreads();
@@ -396,7 +396,7 @@ int main(int argc, char **argv) {
 	lif::cache.finalize();
 
 	// Restore stream buffers
-	std::cerr.rdbuf(errbuf);
+	//std::cerr.rdbuf(errbuf);
 
 	return lif::exitCode;
 }
