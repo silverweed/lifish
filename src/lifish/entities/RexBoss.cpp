@@ -38,9 +38,9 @@ using StateFunction = lif::ai::StateFunction;
 constexpr auto MIN_STEPS = 4;
 constexpr auto MAX_STEPS_BEFORE_ATK = MIN_STEPS;
 constexpr auto MIN_STEPS_BEFORE_ATK = 2;
-const sf::Vector2f SIZE(4 * TILE_SIZE, 4 * TILE_SIZE);
+static const sf::Vector2f SIZE(4 * TILE_SIZE, 4 * TILE_SIZE);
 
-lif::AIBoundFunction ai_rex(lif::Entity&);
+static lif::AIBoundFunction ai_rex(lif::Entity&);
 
 RexBoss::RexBoss(const sf::Vector2f& pos)
 	: lif::Boss(pos)

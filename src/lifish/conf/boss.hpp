@@ -62,6 +62,11 @@ namespace conf {
 			constexpr auto SPAWNED_ENEMY_ID = 7;
 			const sf::Time SHAKE_DURATION = sf::seconds(3);
 		}
+
+		namespace mainframe_boss {
+			constexpr auto LIFE = 30;
+			constexpr auto VALUE = 30000;
+		}
 	}
 }
 

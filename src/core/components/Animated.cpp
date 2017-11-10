@@ -3,6 +3,7 @@
 #include "Clock.hpp"
 #include "core.hpp"
 #include "utils.hpp"
+#include <iostream>
 
 using lif::Animated;
 
@@ -30,7 +31,7 @@ Animation& Animated::addAnimation(const std::string& name,
 		anim.addFrame(frame);
 
 	if (set)
-		setAnimation(anim);
+		setAnimation(name);
 
 	return anim;
 }
@@ -63,7 +64,8 @@ void Animated::setAnimation(const std::string& name) {
 	if (anim == nullptr)
 		throw std::invalid_argument("Animation set to non-existing `" + name + "`!");
 
-	animatedSprite.setAnimation(*anim);
+	setAnimation(*anim);
+
 	// Set the frame time, if specified.
 	auto it = frameTimes.find(name);
 	if (it != frameTimes.end())
@@ -94,5 +96,6 @@ void Animated::setDefaultFrameTime(sf::Time time) {
 }
 
 void Animated::setFrameTime(const std::string& name, sf::Time time) {
+	std::cout << "frame time[" << name << "] = " << time.asSeconds() << std::endl;
 	frameTimes[name] = time;
 }

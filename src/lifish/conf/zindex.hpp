@@ -14,9 +14,9 @@ namespace conf {
 		constexpr int BOMBS           = 5;
 		constexpr int PLAYERS         = 6;
 		constexpr int ENEMIES         = 7;
-		constexpr int TALL_ENTITIES   = 8;
-		constexpr int BULLETS         = 9;
-		constexpr int BOSSES          = 9;
+		constexpr int BULLETS         = 8;
+		constexpr int BOSSES          = 8;
+		constexpr int TALL_ENTITIES   = 9;
 		constexpr int FOG             = 10;
 		constexpr int BOSS_EXPLOSIONS = 20;
 		constexpr int FLASHES         = 20;
