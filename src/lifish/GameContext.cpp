@@ -19,6 +19,7 @@
 #	include "DebugRenderer.hpp"
 #	include "DebugEventHandler.hpp"
 #	include "game_logic.hpp"
+#	include "DebugPainter.hpp"
 #endif
 #include "GlobalDataPipe.hpp"
 #include "CameraShake.hpp"
@@ -170,6 +171,7 @@ void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const 
 		return;
 	gameRenderTex.draw(lm, states);
 #ifndef RELEASE
+	gameRenderTex.draw(*lif::debugPainter, states);
 	if ((debug >> DBG_DRAW_COLLIDERS) & 1)
 		lif::debug::DebugRenderer::drawColliders(gameRenderTex, lm.getEntities());
 	if ((debug >> DBG_DRAW_SH_CELLS) & 1) {

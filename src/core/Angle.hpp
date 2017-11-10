@@ -28,6 +28,12 @@ public:
 	static const Angle Zero;
 };
 
+template<typename T>
+constexpr T deg2rad(T a) { return a * DEG2RAD; }
+
+template<typename T>
+constexpr T rad2deg(T a) { return a * RAD2DEG; }
+
 #undef RAD2DEG
 #undef DEG2RAD
 

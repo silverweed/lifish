@@ -1,6 +1,7 @@
 #include "core.hpp"
 #include "Options.hpp"
 #include "GameCache.hpp"
+#include "DebugPainter.hpp"
 #include <cstring>
 #include <chrono>
 
@@ -24,6 +25,9 @@ int lif::exitCode = 0;
 lif::MusicManager *lif::musicManager = nullptr;
 #ifdef MULTITHREADED
 lif::WindowContext *lif::curContext = nullptr;
+#endif
+#ifndef RELEASE
+lif::DebugPainter *lif::debugPainter = nullptr;
 #endif
 
 static void _initOptions() {

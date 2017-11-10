@@ -58,10 +58,16 @@ extern std::default_random_engine rng;
 extern lif::Options options;
 
 /** Pointer to an unowned MusicManager, which *MUST* be created in the main function.
- *  Allows easy access to the music manager throughout the code, but the object
- *  itself has automatic lifetime and is guaranteed to die before the main's exit.
+ *  Allows easy access to the music manager throughout the code, but since the object
+ *  itself is created in the main, it has automatic storage and is guaranteed to die before the program's exit.
  */
 extern lif::MusicManager *musicManager;
+
+#ifndef RELEASE
+class DebugPainter;
+/** See musicManager */
+extern lif::DebugPainter *debugPainter;
+#endif
 
 #ifdef MULTITHREADED
 /** Pointer to the current WindowContext (unowned), used by the rendering thread

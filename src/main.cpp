@@ -37,9 +37,9 @@
 #include "GameCache.hpp"
 #include "GameContext.hpp"
 #include "contexts.hpp"
-#include "FPSDisplayer.hpp"
 #include "CutscenePlayer.hpp"
 #include "CutsceneBuilder.hpp"
+#include "FPSDisplayer.hpp"
 
 #ifdef MULTITHREADED
 #	ifdef SFML_SYSTEM_LINUX
@@ -50,6 +50,7 @@
 
 #ifndef RELEASE
 #	include "Stats.hpp"
+#	include "DebugPainter.hpp"
 #endif
 
 struct MainArgs {
@@ -181,9 +182,15 @@ int main(int argc, char **argv) {
 #endif
 	parse_args(argc, argv, args);
 
-	// Create the MusicManager (in a local scope)
+	// Create the MusicManager
 	lif::MusicManager mm;
 	lif::musicManager = &mm;
+
+#ifndef RELEASE
+	// Create the DebugPainter
+	lif::DebugPainter debugPainter;
+	lif::debugPainter = &debugPainter;
+#endif
 
 	// Initialize game variables
 	if (!lif::init()) {
@@ -350,7 +357,6 @@ int main(int argc, char **argv) {
 			std::cerr << "Saved game in " << saveName << "." << std::endl;
 		}
 
-
 		///// LOGIC LOOP /////
 
 		cur_context->update();
@@ -379,6 +385,8 @@ int main(int argc, char **argv) {
 				<< ">> Draw: " << std::setw(6) << dbgStats.timer.safeGet("draw") << std::endl;
 			std::cout.flags(flags);
 		}
+
+		lif::debugPainter->clear();
 #	endif
 #else
 		// Just wait for the vsync
