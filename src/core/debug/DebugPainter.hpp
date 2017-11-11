@@ -7,6 +7,9 @@
 
 namespace lif {
 
+/** This class provides utility functions to draw simple geometry atop the game render target.
+ *  Useful for visual debugging. The `clear()` method should be called after every frame.
+ */
 class DebugPainter : public sf::Drawable {
 
 	std::vector<std::unique_ptr<sf::Shape>> shapes;
@@ -19,12 +22,14 @@ public:
 			target.draw(*shape, states);
 	}
 
-	void addRectangleAt(const sf::Vector2f& pos, const sf::Vector2f& size,
-			const sf::Color& color, const lif::Angle& rot = lif::Angle::Zero)
+	void addRectangleAt(const sf::Vector2f& pos, const sf::Vector2f& size, const sf::Color& color,
+			const lif::Angle& rot = lif::Angle::Zero,
+			const sf::Vector2f& origin = sf::Vector2f(0, 0))
 	{
 		auto r = std::make_unique<sf::RectangleShape>(size);
 		r->setPosition(pos);
 		r->setFillColor(color);
+		r->setOrigin(origin);
 		if (rot != lif::Angle::Zero)
 			r->setRotation(rot.asDegrees());
 		shapes.emplace_back(std::move(r));

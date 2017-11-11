@@ -23,7 +23,9 @@ class Surge : public lif::Entity {
 	 */
 	void _checkCollision();
 public:
-	explicit Surge(const sf::Vector2f& pos, const lif::Angle& rotPerSecond, const lif::LevelManager& lm);
+	explicit Surge(const sf::Vector2f& pos, const lif::LevelManager& lm,
+			const lif::Angle& initialRotation, const lif::Angle& rotPerSecond,
+			const lif::Angle& spannedAngle);
 
 	void update() override;
 };

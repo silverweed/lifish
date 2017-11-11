@@ -385,8 +385,6 @@ int main(int argc, char **argv) {
 				<< ">> Draw: " << std::setw(6) << dbgStats.timer.safeGet("draw") << std::endl;
 			std::cout.flags(flags);
 		}
-
-		lif::debugPainter->clear();
 #	endif
 #else
 		// Just wait for the vsync

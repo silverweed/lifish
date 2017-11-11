@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/System/Time.hpp>
+#include "Angle.hpp"
 
 namespace lif {
 
@@ -66,6 +67,12 @@ namespace conf {
 		namespace mainframe_boss {
 			constexpr auto LIFE = 30;
 			constexpr auto VALUE = 30000;
+			const sf::Time IDLE_TIME = sf::seconds(3);
+			constexpr auto SURGE_DAMAGE = 6;
+			constexpr auto SURGE_ROT_PER_SECOND = lif::degrees(8);
+			constexpr auto SURGE_SPANNED_ANGLE = lif::degrees(60);
+			const sf::Time SURGE_WINDUP_TIME = sf::seconds(3);
+			const sf::Time SURGE_RECOVER_TIME = sf::seconds(SURGE_SPANNED_ANGLE / SURGE_ROT_PER_SECOND);
 		}
 	}
 }

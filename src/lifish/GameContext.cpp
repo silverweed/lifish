@@ -87,6 +87,12 @@ void GameContext::setActive(bool b) {
 }
 
 void GameContext::update() {
+
+#ifndef RELEASE
+	if (!lm.isPaused())
+		lif::debugPainter->clear();
+#endif
+
 	// Handle win / loss cases
 	wlHandler.handleWinLose();
 	switch (wlHandler.getState()) {

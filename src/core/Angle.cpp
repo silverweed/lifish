@@ -64,4 +64,8 @@ bool operator <(Angle left, Angle right) {
 	return left.asRadians() < right.asRadians();
 }
 
+double operator /(Angle left, Angle right) {
+	return left.asRadians() / right.asRadians();
+}
+
 }

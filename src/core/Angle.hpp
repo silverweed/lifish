@@ -55,5 +55,6 @@ bool operator <=(Angle left, Angle right);
 bool operator >=(Angle left, Angle right);
 bool operator <(Angle left, Angle right);
 bool operator >(Angle left, Angle right);
+double operator /(Angle left, Angle right);
 
 }

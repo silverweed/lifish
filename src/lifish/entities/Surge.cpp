@@ -2,19 +2,21 @@
 #include "Animated.hpp"
 #include "Clock.hpp"
 #include "Drawable.hpp"
+#include "Temporary.hpp"
 #include "Player.hpp"
 #include "Killable.hpp"
 #include "Bonusable.hpp"
 #include "ZIndexed.hpp"
-#include "conf/zindex.hpp"
 #include "core.hpp"
-#include "DebugPainter.hpp"
+#include "conf/zindex.hpp"
+#include "conf/boss.hpp"
 
 using lif::Surge;
 
 static const sf::Vector2f SIZE(1024, 64);
 
-Surge::Surge(const sf::Vector2f& pos, const lif::Angle& rotPerSecond, const lif::LevelManager& lm)
+Surge::Surge(const sf::Vector2f& pos, const lif::LevelManager& lm, const lif::Angle& initialRotation,
+		const lif::Angle& rotPerSecond, const lif::Angle& spannedAngle)
 	: lif::Entity(pos)
 	, lm(lm)
 	, rotPerSecond(rotPerSecond)
@@ -29,9 +31,15 @@ Surge::Surge(const sf::Vector2f& pos, const lif::Angle& rotPerSecond, const lif:
 		sf::IntRect(0, 4 * SIZE.y, SIZE.x, SIZE.y),
 	}, true);
 	animated->getSprite().setOrigin(SIZE.x * 0.5, SIZE.y * 0.5);
+	animated->getSprite().setRotation(initialRotation.asDegrees());
+
 	addComponent<lif::Drawable>(*this, *animated);
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::TALL_ENTITIES);
 	clock = addComponent<lif::Clock>(*this);
+	addComponent<lif::Temporary>(*this, [this, initialRotation, spannedAngle] () -> bool {
+		return std::abs(animated->getSprite().getRotation() - initialRotation.asDegrees()) >
+			spannedAngle.asDegrees();
+	});
 }
 
 void Surge::update() {
@@ -50,18 +58,21 @@ void Surge::_checkCollision() {
 		{
 			continue;
 		}	
-		auto pos = player->getPosition();
-		const auto diff = lif::length(pos - position);
 		// rotate the point to the inverse angle than the Surge
+		const auto diff = player->getPosition() - position;
 		const auto angle = -animated->getSprite().getRotation();
-		pos = sf::Vector2f(position.x + diff * std::sin(lif::deg2rad(angle)),
-				position.y + diff * std::cos(lif::deg2rad(angle)));
-		const sf::FloatRect aabb(position.x - SIZE.x * 0.5, position.y - SIZE.y * 0.5, SIZE.x, SIZE.y);
-		lif::debugPainter->addRectangleAt(sf::Vector2f(aabb.left, aabb.top), SIZE, sf::Color(255, 0, 0, 128));
-		lif::debugPainter->addCircleAt(pos, 5, sf::Color::Blue);
+		const float c = std::cos(lif::deg2rad(angle)),
+		            s = std::sin(lif::deg2rad(angle));
+		const auto rot = sf::Transform(c, -s,  0,
+		                               s,  c,  0,
+		                               0,  0,  0);
+		const auto pos = position + rot.transformPoint(diff);
+		const sf::FloatRect aabb(position.x - SIZE.x * 0.5 + lif::TILE_SIZE,
+		                         position.y - SIZE.y * 0.5 + lif::TILE_SIZE,
+		                         SIZE.x, SIZE.y);
 		if (aabb.contains(pos)) {
 			// deal damage
-			std::cout << "DAMAGE!\n";
+			player->dealDamage(lif::conf::boss::mainframe_boss::SURGE_DAMAGE);
 		}
 	}
 }

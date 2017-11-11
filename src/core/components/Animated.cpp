@@ -3,7 +3,6 @@
 #include "Clock.hpp"
 #include "core.hpp"
 #include "utils.hpp"
-#include <iostream>
 
 using lif::Animated;
 
@@ -96,6 +95,5 @@ void Animated::setDefaultFrameTime(sf::Time time) {
 }
 
 void Animated::setFrameTime(const std::string& name, sf::Time time) {
-	std::cout << "frame time[" << name << "] = " << time.asSeconds() << std::endl;
 	frameTimes[name] = time;
 }
