@@ -45,9 +45,11 @@ Player::Player(const sf::Vector2f& pos, int id)
 
 void Player::_init() {
 	// Setup components
-	addComponent<lif::Lifed>(*this, lif::conf::player::MAX_LIFE, [this] (int damage, int) {
+	addComponent<lif::Lifed>(*this, lif::conf::player::MAX_LIFE, [this] (int damage, int newLife) {
 		// on hurt
-		if (damage > 0)
+		if (newLife <= 0)
+			killable->kill();
+		else if (damage > 0)
 			_hurt();
 	});
 	addComponent<lif::Collider>(*this, [this] (lif::Collider& cld) {
@@ -224,10 +226,7 @@ void Player::dealDamage(int damage, bool ignoreArmor, bool shortShield) {
 
 	auto lifed = get<lif::Lifed>();
 	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("hurt"));
-	if (lifed->decLife(damage) <= 0) {
-		killable->kill();
-		return;
-	}
+	lifed->decLife(damage);
 
 	// Give shield after receiving damage
 	bonusable->giveBonus(lif::BonusType::SHIELD,

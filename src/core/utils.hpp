@@ -165,6 +165,11 @@ inline bool startsWith(const std::string& haystack, const std::string& needle) {
 	return haystack.substr(0, needle.size()) == needle;
 }
 
+template<typename T>
+constexpr T lerp(T a, T b, float alpha) {
+	return a * (1 - alpha) + b * alpha;
+}
+
 /** Plays a brief sound */
 void testMusic();
 

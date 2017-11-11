@@ -18,7 +18,7 @@
 #include "MovingAnimator.hpp"
 #include "BufferedSpawner.hpp"
 #include "RexFlame.hpp"
-#include "SmokeRing.hpp"
+#include "OneShotFX.hpp"
 #include "HurtDrawProxy.hpp"
 #include "ai_functions.hpp"
 #include "ai_helpers.hpp"
@@ -177,7 +177,15 @@ StateFunction RexBoss::_updateStompWindup() {
 		stompCollider->setActive(true);
 		lif::requestCameraShake(0, 0, 0.1, 50, sf::seconds(1), 5);
 		const auto rect = collider->getRect();
-		auto smoke = new lif::SmokeRing(position + sf::Vector2f(rect.width / 2, rect.height / 2));
+		auto smoke = new lif::OneShotFX(position + sf::Vector2f(rect.width / 2, rect.height / 2),
+			"smoke_ring.png",
+		{
+			sf::IntRect(0 * lif::TILE_SIZE, 0, 2 * lif::TILE_SIZE, 2 * lif::TILE_SIZE),
+			sf::IntRect(2 * lif::TILE_SIZE, 0, 2 * lif::TILE_SIZE, 2 * lif::TILE_SIZE),
+			sf::IntRect(4 * lif::TILE_SIZE, 0, 2 * lif::TILE_SIZE, 2 * lif::TILE_SIZE),
+			sf::IntRect(6 * lif::TILE_SIZE, 0, 2 * lif::TILE_SIZE, 2 * lif::TILE_SIZE),
+			sf::IntRect(8 * lif::TILE_SIZE, 0, 2 * lif::TILE_SIZE, 2 * lif::TILE_SIZE),
+		});
 		smoke->get<lif::Animated>()->getSprite().setOrigin(TILE_SIZE, TILE_SIZE);
 		smoke->get<lif::Animated>()->getSprite().setScale(4, 4);
 		spawner->addSpawned(smoke);

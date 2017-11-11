@@ -25,7 +25,7 @@ void LightSource::update() {
 
 	if (flickerLen > 0) {
 		const float f = _flickerStep();
-		color.a = 256 * f;
+		color.a = 255 * f;
 	}
 }
 

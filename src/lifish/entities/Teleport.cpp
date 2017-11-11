@@ -3,7 +3,7 @@
 #include "Clock.hpp"
 #include "game.hpp"
 #include "GameCache.hpp"
-#include "Flash.hpp"
+#include "OneShotFX.hpp"
 #include "Drawable.hpp"
 #include "Collider.hpp"
 #include "AxisMoving.hpp"
@@ -29,7 +29,15 @@ Teleport::Teleport(const sf::Vector2f& pos)
 		return mustSpawnFlash;
 	}, [this] () {
 		mustSpawnFlash = false;
-		return new lif::Flash(position);
+		return new lif::OneShotFX(position, "flash.png", {
+			sf::IntRect(0, 0, lif::TILE_SIZE, lif::TILE_SIZE),
+			sf::IntRect(lif::TILE_SIZE, 0, lif::TILE_SIZE, lif::TILE_SIZE),
+			sf::IntRect(2 * lif::TILE_SIZE, 0, lif::TILE_SIZE, lif::TILE_SIZE),
+			sf::IntRect(3 * lif::TILE_SIZE, 0, lif::TILE_SIZE, lif::TILE_SIZE),
+			sf::IntRect(2 * lif::TILE_SIZE, 0, lif::TILE_SIZE, lif::TILE_SIZE),
+			sf::IntRect(lif::TILE_SIZE, 0, lif::TILE_SIZE, lif::TILE_SIZE),
+			sf::IntRect(0, 0, lif::TILE_SIZE, lif::TILE_SIZE)
+		});
 	});
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
 		std::make_pair("warp", lif::getAsset("test", "teleport.ogg"))

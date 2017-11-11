@@ -25,6 +25,7 @@ public:
 	bool isAlive() const { return life > 0; }
 	int getLife() const { return life; }
 	int getMaxLife() const { return maxLife; }
+	float getRemainingLifePerc() const { return static_cast<float>(life) / maxLife; }
 	/** @return Life after subtracting `dam`. If `triggerCallback` is true, call `onHurt(newLife)` (if any). */
 	int decLife(int dam, bool triggerCallback = true);
 	void setLife(int lf) { life = lf < 0 ? 0 : lf; }

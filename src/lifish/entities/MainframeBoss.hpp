@@ -9,8 +9,10 @@ namespace lif {
 class Animated;
 class Clock;
 class BufferedSpawner;
+class HurtDrawProxy;
+class LightSource;
 
-class MainframeBoss : public lif::Boss {
+class MainframeBoss : public lif::Boss, public sf::Drawable {
 
 	const lif::LevelManager& lm;
 
@@ -19,22 +21,33 @@ class MainframeBoss : public lif::Boss {
 		LASERS,
 		LIGHTNING_STORM,
 		SHIELD,
+		SPAWN_ZAPS,
 		N_ATTACKS
 	};
 
 	/** Used for RotatingSurge attack */
 	lif::Angle nextAttackAngle = lif::Angle::Zero;
 
-	/** Used for lightning storm */
+	/** Used for lightning storm and lasers */
 	unsigned nShots = 0;
 
-	lif::Clock *clock = nullptr;
+	/** How many lasers will actually shoot (based on remaining health) */
+	unsigned lasersNShots = 0;
+	sf::Time lasersShootDelay;
+
+	sf::CircleShape shieldSprite;
+
+	lif::Clock *clock = nullptr,
+	           *sparkClock = nullptr;
 	lif::Animated *animated = nullptr;
 	lif::BufferedSpawner *spawner = nullptr;
+	lif::HurtDrawProxy *hurtDrawProxy = nullptr;
+	lif::LightSource *lightSource = nullptr;
 	
 	lif::ai::StateFunction stateFunction = std::bind(&MainframeBoss::_updateIdle, this);
 
 	void _resetIdleAnim();
+	void _checkShieldCollision();
 
 	lif::ai::StateFunction _updateIdle();
 	lif::ai::StateFunction _updateSurgeEntering();
@@ -44,10 +57,19 @@ class MainframeBoss : public lif::Boss {
 	lif::ai::StateFunction _updateLightningWindup();
 	lif::ai::StateFunction _updateLightningShooting();
 	lif::ai::StateFunction _updateLightningRecover();
+	lif::ai::StateFunction _updateShieldEntering();
+	lif::ai::StateFunction _updateShieldWindup();
+	lif::ai::StateFunction _updateShieldDamage();
+	lif::ai::StateFunction _updateShieldRecover();
+	lif::ai::StateFunction _updateLasersEntering();
+	lif::ai::StateFunction _updateLasersShooting();
+	lif::ai::StateFunction _updateLasersRecover();
 public:
 	explicit MainframeBoss(const sf::Vector2f& pos, const lif::LevelManager& lm);
 
 	void update() override;
+
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 
 }

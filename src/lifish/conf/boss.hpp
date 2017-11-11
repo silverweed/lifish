@@ -65,7 +65,7 @@ namespace conf {
 		}
 
 		namespace mainframe_boss {
-			constexpr auto LIFE = 30;
+			constexpr auto LIFE = 40;
 			constexpr auto VALUE = 30000;
 			const sf::Time IDLE_TIME = sf::seconds(3);
 			constexpr auto SURGE_DAMAGE = 6;
@@ -77,6 +77,17 @@ namespace conf {
 			constexpr auto LIGHTNING_N_SHOTS = 20;
 			const sf::Time LIGHTNING_SHOOT_DELAY = sf::milliseconds(133);
 			const sf::Time LIGHTNING_RECOVERY_TIME = sf::seconds(3);
+			const sf::Time SHIELD_WINDUP_TIME = sf::seconds(2.5);
+			const sf::Time SHIELD_DAMAGE_TIME = sf::seconds(5);
+			const sf::Time SHIELD_RECOVERY_TIME = sf::seconds(1);
+			constexpr auto SHIELD_DAMAGE = 4;
+			constexpr auto LASERS_MIN_N_SHOTS = 3;
+			constexpr auto LASERS_MAX_N_SHOTS = 9;
+			const sf::Time LASERS_SHOOT_MIN_DELAY = sf::seconds(0.3);
+			const sf::Time LASERS_SHOOT_MAX_DELAY = sf::seconds(1.5);
+			constexpr auto LASERS_DAMAGE = 3;
+			const sf::Time LASERS_WARN_DURATION = sf::seconds(1);
+			const sf::Time LASERS_RECOVERY_TIME = sf::seconds(4);
 		}
 	}
 }

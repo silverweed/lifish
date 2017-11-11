@@ -50,8 +50,8 @@ Boss::Boss(const sf::Vector2f& pos)
 		                                            TILE_SIZE * (collider->getSize().x/TILE_SIZE - 0.5)),
 		                                      distY(-0.5 * TILE_SIZE,
 		                                            TILE_SIZE * (collider->getSize().y/TILE_SIZE - 0.5));
-		const float x = distX(rng),
-		            y = distY(rng);
+		const float x = distX(lif::rng),
+		            y = distY(lif::rng);
 		auto expl = new lif::BossExplosion(sf::Vector2f(bpos.x + x, bpos.y + y));
 		lif::cache.playSound(expl->get<lif::Sounded>()->getSoundFile("explode"));
 		return expl;
