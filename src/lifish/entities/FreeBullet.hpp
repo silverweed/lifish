@@ -14,7 +14,6 @@ public:
 	explicit FreeBullet(const sf::Vector2f& pos, lif::Angle angle,
 			const lif::BulletInfo& info,
 			const lif::Entity *const source = nullptr);
-
 };
 
 }

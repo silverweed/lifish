@@ -145,6 +145,13 @@ constexpr float centerY(sf::Rect<T> innerBounds, sf::Rect<R> outerBounds) {
 	return outerBounds.top + (outerBounds.height - innerBounds.height) / 2.;
 }
 
+/** Given a starting point `start`, returns the point which is at `extent` distance from it,
+ *  at angle `angle`. Angle is 0 in UP direction, CW.
+ */
+inline sf::Vector2f towards(const sf::Vector2f& start, const lif::Angle& angle, float extent) {
+	return start + extent * sf::Vector2f(std::sin(angle.asRadians()), -std::cos(angle.asRadians()));
+}
+
 /** Given the bounding box of something, returns the coordinates
  *  which center that thing relatively to the given rectangle.
  *  bounds = object to center

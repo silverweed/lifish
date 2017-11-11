@@ -38,6 +38,8 @@ std::map<unsigned, const lif::BulletInfo> bulletsInfo = {
 	{ 102, lif::BulletInfo{ 102, 4, 1.f, -1, lif::c_layers::BOSS_BULLETS } },
 	// missile
 	{ 103, lif::BulletInfo{ 103, 4, 0.5f, -1, lif::c_layers::BOSS_BULLETS } },
+	// lightning
+	{ 104, lif::BulletInfo{ 104, 3, 1.3f, -1, lif::c_layers::BOSS_BULLETS } },
 };
 
 }
@@ -67,6 +69,7 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 		return std::unique_ptr<lif::Bullet>(new lif::Grenade(pos, target, bulletsInfo[infoId], source));
 	case 101:
 	case 102:
+	case 104:
 		return std::unique_ptr<lif::Bullet>(new lif::FreeBullet(pos,
 			lif::angleBetween(pos, target), bulletsInfo[infoId], source));
 	case 103:

@@ -19,4 +19,7 @@ FreeBullet::FreeBullet(const sf::Vector2f& pos, lif::Angle angle,
 	moving = addComponent<lif::FreeMoving>(*this, lif::conf::bullet::BASE_SPEED * info.speed,
 				sf::Vector2f(std::sin(angle.asRadians()), -std::cos(angle.asRadians())));
 	_setup();
+
+	get<lif::Drawable>()->setRotOrigin(data.size / 2, data.size / 2);
+	get<lif::Drawable>()->setRotation(lif::degrees(90) - angle);
 }

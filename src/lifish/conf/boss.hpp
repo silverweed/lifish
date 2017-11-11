@@ -73,6 +73,10 @@ namespace conf {
 			constexpr auto SURGE_SPANNED_ANGLE = lif::degrees(60);
 			const sf::Time SURGE_WINDUP_TIME = sf::seconds(3);
 			const sf::Time SURGE_RECOVER_TIME = sf::seconds(SURGE_SPANNED_ANGLE / SURGE_ROT_PER_SECOND);
+			const sf::Time LIGHTNING_WINDUP_TIME = sf::seconds(2);
+			constexpr auto LIGHTNING_N_SHOTS = 20;
+			const sf::Time LIGHTNING_SHOOT_DELAY = sf::milliseconds(133);
+			const sf::Time LIGHTNING_RECOVERY_TIME = sf::seconds(3);
 		}
 	}
 }

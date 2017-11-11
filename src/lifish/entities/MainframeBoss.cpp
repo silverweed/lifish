@@ -1,6 +1,7 @@
 #include "MainframeBoss.hpp"
 #include "game.hpp"
 #include "Animated.hpp"
+#include "Bullet.hpp"
 #include "BufferedSpawner.hpp"
 #include "Clock.hpp"
 #include "Killable.hpp"
@@ -11,9 +12,11 @@
 #include "Scored.hpp"
 #include "Surge.hpp"
 #include "SurgeWarn.hpp"
+#include "BulletFactory.hpp"
 #include "conf/boss.hpp"
 #include <cassert>
 #include <random>
+#include "DebugPainter.hpp"
 
 #define BIND(f) std::bind(&MainframeBoss:: f, this)
 
@@ -67,11 +70,12 @@ StateFunction MainframeBoss::_updateIdle() {
 		// Choose attack
 		static std::uniform_int_distribution<> dist(0, static_cast<int>(AttackType::N_ATTACKS) - 1);
 		auto atkType = dist(lif::rng);
+		clock->restart();
 		switch (static_cast<AttackType>(atkType)) {
 		case AttackType::ROTATING_SURGE:
-		default: // TODO
-			clock->restart();
 			return BIND(_updateSurgeEntering);
+		default: // TODO
+			return BIND(_updateLightningEntering);
 		}
 	}
 	return std::move(stateFunction);
@@ -90,9 +94,7 @@ StateFunction MainframeBoss::_updateSurgeEntering() {
 
 StateFunction MainframeBoss::_updateSurgeWindup() {
 	if (clock->getElapsedTime() > SURGE_WINDUP_TIME) {
-		animated->setFrameTime("idle", IDLE_FRAME_TIME);
-		animated->setAnimation("idle");
-		animated->getSprite().setColor(sf::Color::White);
+		_resetIdleAnim();
 		spawner->addSpawned(new lif::Surge(position + SIZE * 0.5f, lm, nextAttackAngle,
 				SURGE_ROT_PER_SECOND, SURGE_SPANNED_ANGLE));
 		clock->restart();
@@ -107,4 +109,52 @@ StateFunction MainframeBoss::_updateSurgeRecover() {
 		return BIND(_updateIdle);
 	}
 	return std::move(stateFunction);
+}
+
+StateFunction MainframeBoss::_updateLightningEntering() {
+	animated->setFrameTime("idle", sf::milliseconds(30));
+	animated->setAnimation("idle");
+	animated->getSprite().setColor(sf::Color(200, 255, 0));
+	clock->restart();
+	return BIND(_updateLightningWindup);
+}
+
+StateFunction MainframeBoss::_updateLightningWindup() {
+	if (clock->getElapsedTime() > LIGHTNING_WINDUP_TIME) {
+		clock->restart();
+		nShots = 0;
+		return BIND(_updateLightningShooting);
+	}
+	return std::move(stateFunction);
+}
+
+StateFunction MainframeBoss::_updateLightningShooting() {
+	if (nShots == LIGHTNING_N_SHOTS) {
+		clock->restart();
+		_resetIdleAnim();
+		return BIND(_updateLightningRecover);
+	}
+	if (clock->getElapsedTime() > LIGHTNING_SHOOT_DELAY) {
+		const auto angle = lif::degrees(angleDist(lif::rng));
+		const auto pos = lif::towards(position + (SIZE - sf::Vector2f(TILE_SIZE, TILE_SIZE)) * 0.5f,
+				angle, 40);
+		spawner->addSpawned(std::move(lif::BulletFactory::create(104, pos, angle, this)));
+		++nShots;
+		clock->restart();
+	}
+	return std::move(stateFunction);
+}
+
+StateFunction MainframeBoss::_updateLightningRecover() {
+	if (clock->getElapsedTime() > LIGHTNING_RECOVERY_TIME) {
+		clock->restart();
+		return BIND(_updateIdle);
+	}
+	return std::move(stateFunction);
+}
+
+void MainframeBoss::_resetIdleAnim() {
+	animated->setFrameTime("idle", IDLE_FRAME_TIME);
+	animated->setAnimation("idle");
+	animated->getSprite().setColor(sf::Color::White);
 }
