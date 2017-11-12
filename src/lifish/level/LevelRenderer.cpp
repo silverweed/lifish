@@ -5,7 +5,7 @@
 #include "Sprite.hpp"
 #include "LevelNumText.hpp"
 #include "ZIndexed.hpp"
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 using lif::LevelRenderer;
@@ -24,7 +24,7 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 	owner._mtxUnlock();
 
 	// Draw according to z-index
-	std::map<int, std::vector<const lif::Drawable*>> toDraw;
+	std::unordered_map<int, std::vector<const lif::Drawable*>> toDraw;
 
 	int minZ = 0, maxZ = 0;
 	owner.entities.mtxLock();

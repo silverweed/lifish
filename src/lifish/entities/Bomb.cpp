@@ -81,7 +81,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Entity *const source,
 
 void Bomb::update() {
 	lif::Entity::update();
-	if (!switched && fuseTime - fuseClock->getElapsedTime() < sf::milliseconds(2000)
+	if (!switched && fuseTime - fuseClock->getElapsedTime() < sf::seconds(2)
 			&& !killable->isKilled())
 	{
 		animated->setAnimation(fuseTime < DEFAULT_FUSE && !ignited

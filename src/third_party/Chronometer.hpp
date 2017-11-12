@@ -170,13 +170,18 @@ namespace sftools
                     return sf::Time::Zero;
 
                 case RUNNING:
-                    return m_time + m_clock.getElapsedTime();
+                    return m_time + m_timeScale * m_clock.getElapsedTime();
 
                 case PAUSED:
                     return m_time;
             }
 	    return m_time;
         }
+
+	void setTimeScale(float scale)
+	{
+	    m_timeScale = scale;
+	}
 
         /*!
          @brief Implicit conversion to sf::Time
@@ -194,6 +199,7 @@ namespace sftools
         enum { STOPPED, RUNNING, PAUSED } m_state;  //!< state
         sf::Time m_time;                            //!< time counter
         sf::Clock m_clock;                          //!< clock
+	float m_timeScale = 1.f;
     };
 }
 

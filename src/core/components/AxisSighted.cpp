@@ -57,7 +57,7 @@ void AxisSighted::_fillLine(lif::Direction dir) {
 
 	seen[dir].clear();
 
-	entities->apply([=] (const lif::Entity *ptr) {
+	entities->apply([&] (const lif::Entity *ptr) {
 		if (ptr == &owner)
 			return;
 		const auto etile = lif::tile2(ptr->getPosition());
