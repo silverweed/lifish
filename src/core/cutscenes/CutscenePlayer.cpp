@@ -63,7 +63,7 @@ void CutscenePlayer::_resetCutscene() {
 
 void CutscenePlayer::_nextCutscene() {
 	if (static_cast<unsigned>(++curCutsceneIdx) == cutscenes.size()) {
-		newContext = _newContext;
+		end();
 		return;
 	}
 	_resetCutscene();
@@ -140,4 +140,19 @@ void CutscenePlayer::_applyFade(sf::RenderTarget& target, sf::RenderStates state
 		fadeSprite.setFillColor(sf::Color(0, 0, 0, static_cast<unsigned char>(alpha)));
 		target.draw(fadeSprite, states);
 	}
+}
+
+bool CutscenePlayer::handleEvent(sf::Window&, sf::Event event) {
+	switch (event.type) {
+	case sf::Event::KeyPressed:
+		end();
+		return true;
+	default:
+		break;
+	}
+	return false;
+}
+
+void CutscenePlayer::end() {
+	newContext = _newContext;
 }

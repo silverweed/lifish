@@ -23,6 +23,7 @@
 #include "ai_functions.hpp"
 #include "ai_helpers.hpp"
 #include "conf/boss.hpp"
+#include "conf/enemy.hpp"
 #include "camera_utils.hpp"
 #include <cassert>
 #include <random>
@@ -46,7 +47,7 @@ RexBoss::RexBoss(const sf::Vector2f& pos)
 	: lif::Boss(pos)
 {
 	moving = addComponent<lif::AxisMoving>(*this,
-			lif::conf::boss::rex_boss::SPEED * lif::Enemy::BASE_SPEED,
+			lif::conf::boss::rex_boss::SPEED * lif::conf::enemy::BASE_SPEED,
 			lif::Direction::NONE);
 	addComponent<lif::AI>(*this, ai_rex);
 	addComponent<lif::LeapingMovement>(*this, sf::seconds(1.5));

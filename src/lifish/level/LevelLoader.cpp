@@ -38,11 +38,12 @@ using lif::LevelLoader;
 using lif::EntityType;
 
 template<typename T, typename... Args>
-static void addBoss(lif::EntityGroup& entities, Args&&... args) {
+static T* addBoss(lif::EntityGroup& entities, Args&&... args) {
 	auto boss = new T(std::forward<Args>(args)...);
 	for (auto s : boss->template getAllRecursive<lif::Sighted>())
 		s->setEntityGroup(&entities);
 	entities.add(boss);
+	return boss;
 }
 
 bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
@@ -160,7 +161,7 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				break;
 
 			case EntityType::REX_BOSS:
-				addBoss<lif::RexBoss>(entities, curPos);
+				addBoss<lif::RexBoss>(entities, curPos)->get<lif::AI>()->setLevelManager(&lm);
 				break;
 
 			case EntityType::GOD_EYE_BOSS:

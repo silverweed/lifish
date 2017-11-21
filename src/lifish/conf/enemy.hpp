@@ -6,6 +6,7 @@ namespace lif {
 
 namespace conf {
 	namespace enemy {
+		constexpr float BASE_SPEED = 75.f;
 		const sf::Time DEATH_TIME = sf::seconds(2);
 
 		namespace wisp {

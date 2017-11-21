@@ -13,14 +13,7 @@ T* Entity::addComponent(const std::shared_ptr<T>& comp) {
 
 template<class T, class... Args>
 T* Entity::addComponent(Args&&... args) {
-	if (T::requiredUnique() && get<T>() != nullptr)
-		throw std::logic_error("Two components of type " +
-				std::string(typeid(T).name()) + " were added to this Entity!");
-	auto comp = std::make_shared<T>(std::forward<Args>(args)...);
-	_addUnique(comp.get());
-	for (const auto& t : comp->getKeys())
-		components[t].emplace_back(comp);
-	return comp.get();
+	return addComponent(std::make_shared<T>(std::forward<Args>(args)...));
 }
 
 template<class T>

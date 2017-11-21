@@ -58,12 +58,16 @@ public:
 	}
 	/** Starts playing the cutscenes by calling _nextCutscene */
 	void play();
+	/** Quits the cutscenes and goes to the new context */
+	void end();
 
 	void update() override;
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	/** Sets which context the CutscenePlayer returns to after playing all cutscenes. */
 	void setNewContext(int ctx) { _newContext = ctx; }
+
+	bool handleEvent(sf::Window& window, sf::Event event) override;
 };
 
 }

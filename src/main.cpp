@@ -300,9 +300,10 @@ int main(int argc, char **argv) {
 				break;
 			case lif::CTX_INTERLEVEL:
 				if (cur_context == &ui) {
+					// We got here from the start menu (via StartGame or LoadGame)
 					int startLv = args.start_level;
-					// Game started: create a new GameContext
 					if (!game) {
+						// Game just started: create a new GameContext
 						game.reset(new lif::GameContext(window,
 							args.levelset_name, args.start_level));
 						game->setOrigin(origin);
@@ -336,6 +337,8 @@ int main(int argc, char **argv) {
 					} else {
 						cutsceneToPlay = game->getLM().getLevel()->getInfo().cutscenePost;
 						cutscenePlayer.setNewContext(lif::CTX_INTERLEVEL);
+						static_cast<lif::InterlevelContext*>(contexts[lif::CTX_INTERLEVEL])
+							->setAdvancingLevel();
 					}
 					cutscenePlayer.addCutscenes(lif::CutsceneBuilder::fromJson(cutsceneToPlay));
 					cutscenePlayer.play();
