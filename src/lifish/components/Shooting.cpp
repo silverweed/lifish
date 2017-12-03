@@ -24,6 +24,12 @@ Shooting::Shooting(lif::Entity& owner, const lif::Attack& attack)
 lif::Entity* Shooting::init() {
 	// optional
 	ownerMoving = owner.get<lif::AxisMoving>();
+	if (ownerMoving != nullptr) {
+		ownerMoving->setOnDashChange([this] (float old, float _new) {
+			if (old != 0 && _new == 0)
+				rechargeClock->restart();
+		});
+	}
 	return this;
 }
 

@@ -16,7 +16,7 @@ class AxisMoving;
 
 /**
  * A Shooting is a component that manages a single Attack type.
- * It provides methods for creating an Bullet with that Attack and querying
+ * It provides methods for creating a Bullet with that Attack and querying
  * for recharge time, along with tweaking the bullet's starting offset and
  * firerate multiplier.
  * A Shooting component is meant for the "regular entities' shooting stuff";
@@ -64,10 +64,12 @@ public:
 	*   or the behaviour is undefined.
 	 *  If dir is NONE, the bullet is shot in the direction of its owner.
 	 *  In this case, the owner must have an AxisMoving component, or an exception is thrown.
+	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
 	void shoot(lif::Direction dir);
 	/** Shoots a bullet towards angle `angle` (starting from UP, clockwise).
 	 *  The spawned bullet should b a FreeBullet, or the behaviour is undefined.
+	 *  NOTE: this method does NOT check whether this entity is recharging.
 	 */
 	void shoot(lif::Angle angle);
 

@@ -44,6 +44,8 @@ void Moving::block(sf::Time duration) {
 }
 
 void Moving::setDashing(float mult) {
+	if (onDashChange)
+		onDashChange(dashAmount, mult);
 	dashAmount = mult;
 }
 

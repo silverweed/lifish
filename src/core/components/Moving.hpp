@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include "Component.hpp"
 
 namespace lif {
@@ -13,6 +14,9 @@ class Collider;
  * FreeMoving for generic 2d motion.
  */
 class Moving : public lif::Component {
+
+	std::function<void(float, float)> onDashChange;
+
 protected:
 	const static sf::Time MAX_FRAME_TIME;
 
@@ -67,6 +71,10 @@ public:
 	 */
 	void setDashing(float mult);
 	bool isDashing() const { return dashAmount != 0; }
+	template<typename T>
+	void setOnDashChange(const T& handler) {
+		onDashChange = handler;
+	}
 
 	/** Prevent this entity's owner to move for `duration`.
 	 *  Give sf::Time::Zero as argument to unblock.
