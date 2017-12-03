@@ -126,9 +126,10 @@ void lif::game_logic::scoredKillablesLogic(lif::Entity *e, lif::BaseLevelManager
 				if (target >= 0 && target != i + 1) continue;
 				auto& player = lm.getPlayer(i + 1);
 				if (player == nullptr) continue;
-				const auto absorb = player->getPowers().absorb;
-				if (absorb > 0) {
-					player->get<lif::Lifed>()->decLife(-absorb);
+				auto& powers = player->getPowers();
+				if (powers.absorb > 0 && ++powers.absorbKillCount >= 3 - powers.absorb) {
+					powers.absorbKillCount = 0;
+					player->get<lif::Lifed>()->decLife(-1);
 					tbspawned.emplace_back(new lif::AbsorbFX(e->getPosition(), player));
 				}
 			}
