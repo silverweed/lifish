@@ -168,7 +168,10 @@ void Enemy::update() {
 	}
 
 	if (shootingAnim && !animated->getSprite().isPlaying()) {
-		animated->setAnimation("walk_" + lif::directionToString(moving->getDirection()));
+		if (moving->getDirection() == lif::Direction::NONE)
+			animated->setAnimation("walk_down");
+		else
+			animated->setAnimation("walk_" + lif::directionToString(moving->getDirection()));
 		animated->getSprite().setLooped(true);
 		animated->getSprite().play();
 		shootingAnim = false;
