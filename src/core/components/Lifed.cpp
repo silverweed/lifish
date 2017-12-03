@@ -1,5 +1,6 @@
 #include "Lifed.hpp"
 #include <sstream>
+#include <algorithm>
 
 using lif::Lifed;
 
@@ -24,7 +25,7 @@ std::string Lifed::toString() const {
 }
 
 int Lifed::decLife(int dam, bool triggerCallback) {
-	life -= dam > life ? life : dam;
+	life = std::max(0, std::min(maxLife, life - dam));
 
 	if (triggerCallback && onHurt)
 		onHurt(dam, life);
