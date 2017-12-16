@@ -5,8 +5,6 @@
 #include "AxisMoving.hpp"
 #include "Explosion.hpp"
 #include "Foe.hpp"
-#include "Music.hpp"
-#include "MusicManager.hpp"
 #include "Options.hpp"
 #include "Player.hpp"
 #include "Bomb.hpp"

@@ -51,6 +51,7 @@
 #ifndef RELEASE
 #	include "Stats.hpp"
 #	include "DebugPainter.hpp"
+#	include <cassert>
 #endif
 
 struct MainArgs {
@@ -64,7 +65,11 @@ struct MainArgs {
 #endif
 };
 
-static void parse_args(int argc, char **argv, /* out */ MainArgs& args) {
+inline lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
+		std::array<lif::WindowContext*, 4>& contexts, lif::WindowContext *cur_context,
+		std::unique_ptr<lif::GameContext>& game, const MainArgs& args);
+
+static void parseArgs(int argc, char **argv, /* out */ MainArgs& args) {
 	bool args_ended = false;
 	bool print_level_info = false;
 	int i = 1;
@@ -137,7 +142,7 @@ static void parse_args(int argc, char **argv, /* out */ MainArgs& args) {
 	}
 }
 
-static void load_icon(sf::Window& window) {
+static void loadIcon(sf::Window& window) {
 	sf::Image iconImg;
 	if (iconImg.loadFromFile(lif::getAsset("graphics", "icon.png"))) {
 		auto pixels = iconImg.getPixelsPtr();
@@ -146,8 +151,20 @@ static void load_icon(sf::Window& window) {
 	}
 }
 
+static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
+	ui.setSize(lif::options.windowSize);
+
+	// load static screens
+	ui.load(window, { "home.json", "about.json", "pause.json" });
+	// create dynamic screens
+	ui.add<lif::ui::ControlsScreen>(window, lif::options.windowSize);
+	ui.add<lif::ui::PreferencesScreen>(window, lif::options.windowSize);
+	ui.add<lif::ui::LoadScreen>(window, lif::options.windowSize);
+	ui.add<lif::ui::SaveScreen>(window, lif::options.windowSize);
+}
+
 #ifdef MULTITHREADED
-static void rendering_loop(sf::RenderWindow& window) {
+static void renderingLoop(sf::RenderWindow& window) {
 	static const sf::Vector2f fps_pos(
 			lif::WINDOW_WIDTH - lif::TILE_SIZE * 8;
 			lif::WINDOW_HEIGHT - lif::TILE_SIZE);
@@ -180,7 +197,7 @@ int main(int argc, char **argv) {
 #ifndef RELEASE
 	args.start_from_home = false; // FIXME
 #endif
-	parse_args(argc, argv, args);
+	parseArgs(argc, argv, args);
 
 	// Create the MusicManager
 	lif::MusicManager mm;
@@ -223,25 +240,17 @@ int main(int argc, char **argv) {
 #endif
 
 	// Setup icon
-	load_icon(window);
+	loadIcon(window);
 
 	// Setup UI
 	auto& ui = lif::ui::UI::getInstance();
-	ui.setSize(lif::options.windowSize);
-
-	// load static screens
-	ui.load(window, { "home.json", "about.json", "pause.json" });
-	// create dynamic screens
-	ui.add<lif::ui::ControlsScreen>(window, lif::options.windowSize);
-	ui.add<lif::ui::PreferencesScreen>(window, lif::options.windowSize);
-	ui.add<lif::ui::LoadScreen>(window, lif::options.windowSize);
-	ui.add<lif::ui::SaveScreen>(window, lif::options.windowSize);
+	setupUI(ui, window);
 
 	// Create pointer to game context
 	std::unique_ptr<lif::GameContext> game;
 
 	// Adjust the origin to make room for side panel
-	sf::Vector2f origin(-lif::SIDE_PANEL_WIDTH, 0);
+	const sf::Vector2f origin(-lif::SIDE_PANEL_WIDTH, 0);
 
 	// Create cutscene player
 	lif::CutscenePlayer cutscenePlayer;
@@ -287,72 +296,7 @@ int main(int argc, char **argv) {
 			game.reset();
 
 		// Check context switch
-		const int nc = cur_context->getNewContext();
-		if (nc >= 0) {
-			cur_context->setActive(false);
-			cur_context->resetNewContext();
-			switch (nc) {
-			case lif::CTX_UI:
-				if (cur_context == game.get() && game->getLM().isGameOver())
-					ui.setCurrent("home");
-				else
-					ui.setCurrent("pause");
-				break;
-			case lif::CTX_INTERLEVEL:
-				if (cur_context == &ui) {
-					// We got here from the start menu (via StartGame or LoadGame)
-					int startLv = args.start_level;
-					if (!game) {
-						// Game just started: create a new GameContext
-						game.reset(new lif::GameContext(window,
-							args.levelset_name, args.start_level));
-						game->setOrigin(origin);
-					}
-					if (ui.mustLoadGame()) {
-						const auto save_data = ui.getLoadedData();
-						game->loadGame(save_data);
-						startLv = save_data.level;
-					}
-					contexts[lif::CTX_GAME] = game.get();
-					contexts[lif::CTX_INTERLEVEL] = &game->getWLHandler()
-						.getInterlevelContext();
-					game->getLM().pause();
-					static_cast<lif::InterlevelContext*>(contexts[lif::CTX_INTERLEVEL])
-						->setGettingReady(startLv);
-				}
-				break;
-			case lif::CTX_GAME:
-				// Keep inputs disabled for a brief period after switching back in game.
-				// This prevents accidental placement of bombs and similar.
-				game->getLM().disableInputFor(sf::seconds(0.5));
-				break;
-			case lif::CTX_CUTSCENE:
-				{
-					cutscenePlayer.reset();
-					std::string cutsceneToPlay = "";
-					using WLState = lif::WinLoseHandler::State;
-					if (game->getWLHandler().getState() == WLState::ADVANCED_LEVEL) {
-						cutsceneToPlay = game->getLM().getLevel()->getInfo().cutscenePre;
-						cutscenePlayer.setNewContext(lif::CTX_GAME);
-					} else {
-						cutsceneToPlay = game->getLM().getLevel()->getInfo().cutscenePost;
-						cutscenePlayer.setNewContext(lif::CTX_INTERLEVEL);
-						static_cast<lif::InterlevelContext*>(contexts[lif::CTX_INTERLEVEL])
-							->setAdvancingLevel();
-					}
-					cutscenePlayer.addCutscenes(lif::CutsceneBuilder::fromJson(cutsceneToPlay));
-					cutscenePlayer.play();
-					break;
-				}
-			default:
-				break;
-			}
-			cur_context = contexts[nc];
-			cur_context->setActive(true);
-#ifdef MULTITHREADED
-			lif::curContext = cur_context;
-#endif
-		}
+		cur_context = checkContextSwitch(window, contexts, cur_context, game, args);
 
 		if (ui.mustSaveGame()) {
 			const auto saveName = ui.getSaveName() + ".lifish";
@@ -408,4 +352,82 @@ int main(int argc, char **argv) {
 	//std::cerr.rdbuf(errbuf);
 
 	return lif::exitCode;
+}
+
+lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
+		std::array<lif::WindowContext*, 4>& contexts, lif::WindowContext *cur_context,
+		std::unique_ptr<lif::GameContext>& game, const MainArgs& args)
+{
+	assert(cur_context != nullptr);
+	const int nc = cur_context->getNewContext();
+	if (nc >= 0) {
+		auto& ui = *static_cast<lif::ui::UI*>(contexts[lif::CTX_UI]);
+		cur_context->setActive(false);
+		cur_context->resetNewContext();
+		switch (nc) {
+		case lif::CTX_UI:
+			if (cur_context == game.get() && game->getLM().isGameOver())
+				ui.setCurrent("home");
+			else
+				ui.setCurrent("pause");
+			break;
+		case lif::CTX_INTERLEVEL:
+			if (cur_context == &ui) {
+				// We got here from the start menu (via StartGame or LoadGame)
+				int startLv = args.start_level;
+				if (!game) {
+					// Game just started: create a new GameContext
+					game.reset(new lif::GameContext(window,
+						args.levelset_name, args.start_level));
+					// Adjust the origin to make room for side panel
+					const sf::Vector2f origin(-lif::SIDE_PANEL_WIDTH, 0);
+					game->setOrigin(origin);
+				}
+				if (ui.mustLoadGame()) {
+					const auto save_data = ui.getLoadedData();
+					game->loadGame(save_data);
+					startLv = save_data.level;
+				}
+				contexts[lif::CTX_GAME] = game.get();
+				contexts[lif::CTX_INTERLEVEL] = &game->getWLHandler()
+					.getInterlevelContext();
+				game->getLM().pause();
+				static_cast<lif::InterlevelContext*>(contexts[lif::CTX_INTERLEVEL])
+					->setGettingReady(startLv);
+			}
+			break;
+		case lif::CTX_GAME:
+			// Keep inputs disabled for a brief period after switching back in game.
+			// This prevents accidental placement of bombs and similar.
+			game->getLM().disableInputFor(sf::seconds(0.5));
+			break;
+		case lif::CTX_CUTSCENE:
+			{
+				auto& cutscenePlayer = *static_cast<lif::CutscenePlayer*>(contexts[lif::CTX_CUTSCENE]);
+				cutscenePlayer.reset();
+				std::string cutsceneToPlay = "";
+				using WLState = lif::WinLoseHandler::State;
+				if (game->getWLHandler().getState() == WLState::ADVANCED_LEVEL) {
+					cutsceneToPlay = game->getLM().getLevel()->getInfo().cutscenePre;
+					cutscenePlayer.setNewContext(lif::CTX_GAME);
+				} else {
+					cutsceneToPlay = game->getLM().getLevel()->getInfo().cutscenePost;
+					cutscenePlayer.setNewContext(lif::CTX_INTERLEVEL);
+					static_cast<lif::InterlevelContext*>(contexts[lif::CTX_INTERLEVEL])
+						->setAdvancingLevel();
+				}
+				cutscenePlayer.addCutscenes(lif::CutsceneBuilder::fromJson(cutsceneToPlay));
+				cutscenePlayer.play();
+				break;
+			}
+		default:
+			break;
+		}
+		cur_context = contexts[nc];
+		cur_context->setActive(true);
+#ifdef MULTITHREADED
+		lif::curContext = cur_context;
+#endif
+	}
+	return cur_context;
 }
