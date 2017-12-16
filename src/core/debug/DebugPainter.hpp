@@ -19,41 +19,24 @@ class DebugPainter : public sf::Drawable {
 public:
 	explicit DebugPainter() {}
 
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-		for (auto& item : items)
-			target.draw(*item, states);
-	}
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void addRectangleAt(const sf::Vector2f& pos, const sf::Vector2f& size, const sf::Color& color,
+			int outlineThickness = 0,
+			const sf::Color& outlineColor = sf::Color::Black,
 			const lif::Angle& rot = lif::Angle::Zero,
-			const sf::Vector2f& origin = sf::Vector2f(0, 0))
-	{
-		auto r = std::make_unique<sf::RectangleShape>(size);
-		r->setPosition(pos);
-		r->setFillColor(color);
-		r->setOrigin(origin);
-		if (rot != lif::Angle::Zero)
-			r->setRotation(rot.asDegrees());
-		items.emplace_back(std::move(r));
-	}
+			const sf::Vector2f& origin = sf::Vector2f(0, 0));
 
-	void addCircleAt(const sf::Vector2f& pos, float radius, const sf::Color& color) {
-		auto c = std::make_unique<sf::CircleShape>(radius);
-		c->setPosition(pos);
-		c->setFillColor(color);
-		items.emplace_back(std::move(c));
-	}
+	void addCircleAt(const sf::Vector2f& pos, float radius, const sf::Color& color,
+			int outlineThickness = 0,
+			const sf::Color& outlineColor = sf::Color::Black);
 	
 	void addTextAt(const sf::Vector2f& pos, const std::string& text,
-			unsigned size = 15, const sf::Color& color = sf::Color::Magenta) {
-		auto t = std::make_unique<sf::Text>(text, *lif::cache.loadFont(
-					lif::getAsset("fonts", lif::fonts::DEBUG_INFO)), size);
-		t->setPosition(pos);
-		t->setFillColor(color);
-		items.emplace_back(std::move(t));
-	}
+			unsigned size = 15, const sf::Color& color = sf::Color::Magenta,
+			int outlineThickness = 1,
+			const sf::Color& outlineColor = sf::Color::Black);
 
-	void clear() { items.clear(); }
+	void clear();
 };
 
 }

@@ -9,10 +9,12 @@ class SHCollisionDetector;
 
 namespace debug {
 
-class DebugRenderer {
+class DebugRenderer final {
 public:
-	static void drawColliders(sf::RenderTarget& target, const lif::EntityGroup& group);
-	static void drawSHCells(sf::RenderTarget& target, const lif::SHCollisionDetector& group);
+	DebugRenderer() = delete;
+
+	static void drawColliders(const lif::EntityGroup& group);
+	static void drawSHCells(const lif::SHCollisionDetector& group);
 };
 
 }
