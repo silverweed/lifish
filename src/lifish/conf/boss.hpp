@@ -59,7 +59,7 @@ namespace conf {
 		namespace god_eye_boss {
 			constexpr auto LIFE = 1000;
 			constexpr auto TIMES_TO_HURT_BEFORE_DEATH = 4;
-			constexpr auto ENEMIES_SPAWNED = 4;
+			constexpr auto N_ENEMIES_SPAWNED = 4;
 			constexpr auto SPAWNED_ENEMY_ID = 7;
 			const sf::Time SHAKE_DURATION = sf::seconds(3);
 		}
@@ -88,7 +88,8 @@ namespace conf {
 			constexpr auto LASERS_DAMAGE = 3;
 			const sf::Time LASERS_WARN_DURATION = sf::seconds(1);
 			const sf::Time LASERS_RECOVERY_TIME = sf::seconds(4);
-			constexpr auto N_SPAWNED_ZAPS = 4;
+			constexpr auto SPAWNED_ENEMY_ID = 4;
+			constexpr auto N_SPAWNED_ENEMIES = 4;
 			const sf::Time ZAPS_SPAWN_DELAY = sf::seconds(1.5);
 			const sf::Time ZAPS_RECOVERY_TIME = sf::seconds(4);
 		}

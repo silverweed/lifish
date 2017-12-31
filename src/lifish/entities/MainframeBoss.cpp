@@ -10,7 +10,9 @@
 #include "OneShotFX.hpp"
 #include "Clock.hpp"
 #include "Killable.hpp"
+#include "Enemy.hpp"
 #include "Level.hpp"
+#include "spawn_functions.hpp"
 #include "HurtDrawProxy.hpp"
 #include "Drawable.hpp"
 #include "Lifed.hpp"
@@ -37,7 +39,7 @@ static const sf::Time IDLE_FRAME_TIME = sf::milliseconds(100);
 static std::uniform_real_distribution<float> angleDist(0, 360);
 constexpr auto SHIELD_DIAMETER = 8 * TILE_SIZE;
 
-MainframeBoss::MainframeBoss(const sf::Vector2f& pos, const lif::LevelManager& lm)
+MainframeBoss::MainframeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 	: lif::Boss(pos)
 	, lm(lm)
 	, shieldSprite(SHIELD_DIAMETER / 2)
@@ -108,8 +110,11 @@ void MainframeBoss::_checkShieldCollision() {
 
 StateFunction MainframeBoss::_updateIdle() {
 	if (clock->getElapsedTime() > IDLE_TIME) {
-		// Choose attack
-		static std::uniform_int_distribution<> dist(0, static_cast<int>(AttackType::N_ATTACKS) - 1);
+		/// Choose attack
+		const auto nEnemies = lm.getEntities().size<lif::Enemy>();
+		std::uniform_int_distribution<> dist(0, static_cast<int>(AttackType::N_ATTACKS) - 1
+				- (nEnemies > 2) // disable SPAWN_ZAPS if there are too many enemies
+		);
 		auto atkType = dist(lif::rng);
 		clock->restart();
 		switch (static_cast<AttackType>(atkType)) {
@@ -121,9 +126,10 @@ StateFunction MainframeBoss::_updateIdle() {
 			return BIND(_updateShieldEntering);
 		case AttackType::LASERS:
 			return BIND(_updateLasersEntering);
-		//case AttackType::SPAWN_ZAPS:
-			//return BIND(_updateSpawnZapsEntering);
+		case AttackType::SPAWN_ZAPS:
+			return BIND(_updateSpawnZapsEntering);
 		default:
+			assert(0 && "[MainframeBoss] Chosen invalid attack type!");
 			break;
 		}
 	}
@@ -329,28 +335,18 @@ StateFunction MainframeBoss::_updateSpawnZapsEntering() {
 }
 
 StateFunction MainframeBoss::_updateSpawnZapsShooting() {
-	if (nShots > N_SPAWNED_ZAPS) {
+	if (nShots > N_SPAWNED_ENEMIES) {
 		clock->restart();
 		_resetIdleAnim();
 		return BIND(_updateSpawnZapsRecover);
 	}
 	if (clock->getElapsedTime() > ZAPS_SPAWN_DELAY) {
 		clock->restart();
-		const auto lvinfo = lm.getLevel()->getInfo();
-		const auto nRows = lvinfo.width;
-		const auto nCols = lvinfo.height;
-		const auto orientation = static_cast<lif::TimedLaser::Orientation>(rand() % 2);
-		int rowCol = 0;
-		if (orientation == lif::TimedLaser::Orientation::HORIZONTAL) {
-			std::uniform_int_distribution<> rowDist(0, nRows);
-			rowCol = rowDist(lif::rng);
-		} else {
-			std::uniform_int_distribution<> colDist(0, nCols);
-			rowCol = colDist(lif::rng);
-		}
-		spawner->addSpawned(new lif::TimedLaser(rowCol, orientation, LASERS_WARN_DURATION, LASERS_DAMAGE,
-			{ lif::c_layers::PLAYERS }));
-		++nShots;
+
+		auto spawner = get<lif::BufferedSpawner>();
+		// TODO: add cool spawn effect
+		lif::spawnInFreeTiles(spawner, lm, SPAWNED_ENEMY_ID, N_SPAWNED_ENEMIES, 4);
+		nShots = N_SPAWNED_ENEMIES + 1;
 	}
 	return std::move(stateFunction);
 }

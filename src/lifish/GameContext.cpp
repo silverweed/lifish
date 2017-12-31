@@ -89,7 +89,7 @@ void GameContext::setActive(bool b) {
 void GameContext::update() {
 
 #ifndef RELEASE
-	if (!lm.isPaused() && !((debug >> DBG_NO_PAINT_CLEAR) & 1))
+	if (!((debug >> DBG_NO_PAINT_CLEAR) & 1))
 		lif::debugPainter->clear();
 #endif
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Boss.hpp"
-#include "LevelManager.hpp"
 
 namespace lif {
 
@@ -9,6 +8,7 @@ class Animated;
 class Clock;
 class FreeSighted;
 class HurtDrawProxy;
+class LevelManager;
 
 class GodEyeBoss : public lif::Boss, public sf::Drawable {
 

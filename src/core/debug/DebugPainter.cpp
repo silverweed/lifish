@@ -11,8 +11,8 @@ void DebugPainter::addRectangleAt(const sf::Vector2f& pos, const sf::Vector2f& s
 		int outlineThickness, const sf::Color& outlineColor,
 		const lif::Angle& rot, const sf::Vector2f& origin )
 {
-	auto r = std::make_unique<sf::RectangleShape>(size);
-	r->setPosition(pos);
+	auto r = std::make_unique<sf::RectangleShape>(size - 2.f * sf::Vector2f(outlineThickness, outlineThickness));
+	r->setPosition(pos + sf::Vector2f(outlineThickness, outlineThickness));
 	r->setFillColor(color);
 	r->setOutlineThickness(outlineThickness);
 	r->setOutlineColor(outlineColor);
@@ -25,8 +25,8 @@ void DebugPainter::addRectangleAt(const sf::Vector2f& pos, const sf::Vector2f& s
 void DebugPainter::addCircleAt(const sf::Vector2f& pos, float radius, const sf::Color& color,
 		int outlineThickness, const sf::Color& outlineColor)
 {
-	auto c = std::make_unique<sf::CircleShape>(radius);
-	c->setPosition(pos);
+	auto c = std::make_unique<sf::CircleShape>(radius - 2.f * outlineThickness);
+	c->setPosition(pos + sf::Vector2f(outlineThickness, outlineThickness));
 	c->setFillColor(color);
 	c->setOutlineThickness(outlineThickness);
 	c->setOutlineColor(outlineColor);

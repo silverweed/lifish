@@ -14,7 +14,7 @@ class LightSource;
 
 class MainframeBoss : public lif::Boss, public sf::Drawable {
 
-	const lif::LevelManager& lm;
+	lif::LevelManager& lm;
 
 	enum class AttackType {
 		ROTATING_SURGE,
@@ -68,7 +68,7 @@ class MainframeBoss : public lif::Boss, public sf::Drawable {
 	lif::ai::StateFunction _updateSpawnZapsShooting();
 	lif::ai::StateFunction _updateSpawnZapsRecover();
 public:
-	explicit MainframeBoss(const sf::Vector2f& pos, const lif::LevelManager& lm);
+	explicit MainframeBoss(const sf::Vector2f& pos, lif::LevelManager& lm);
 
 	void update() override;
 

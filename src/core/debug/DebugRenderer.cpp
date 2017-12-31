@@ -2,6 +2,7 @@
 #include "SHCollisionDetector.hpp"
 #include "EntityGroup.hpp"
 #include "DebugPainter.hpp"
+#include <sstream>
 
 #define COLLIDER_REGULAR_COLOR sf::Color(255, 0, 255, 110)
 #define COLLIDER_PHANTOM_COLOR sf::Color(194, 194, 194, 110)
@@ -21,6 +22,10 @@ void DebugRenderer::drawColliders(const lif::EntityGroup& group) {
 				c->getOwner().getPosition(), sf::Vector2f(c->getRect().width, c->getRect().height),
 				color,
 				1, sf::Color(color.r + 40, color.g + 40, color.b + 40, 240));
+			std::stringstream ss;
+			ss << sf::Vector2i(c->getOwner().getPosition()) << "\n" << c->getSize();
+			lif::debugPainter->addTextAt(c->getOwner().getPosition(), ss.str(), 7,
+					sf::Color(100, 100, 100));
 		}
 	});
 }
