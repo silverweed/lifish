@@ -1,6 +1,7 @@
 #include "collision_utils.hpp"
 #include "AxisMoving.hpp"
 #include "Collider.hpp"
+#include "BaseLevelManager.hpp"
 
 using lif::TILE_SIZE;
 
@@ -75,4 +76,34 @@ bool lif::collision_utils::direction_is_viable(const lif::Collider& cld,
 	}
 
 	return true;
+}
+
+// Finds all free aligned positions that don't collide with any non-phantom collider in lm
+std::vector<sf::Vector2f> lif::collision_utils::find_free_tiles(const lif::BaseLevelManager& lm) {
+	std::vector<sf::Vector2f> free;
+	const auto limits = lm.getCollisionDetector().getLevelLimit();
+	for (int x = limits.left; x < limits.width; x += lif::TILE_SIZE) {
+		for (int y = limits.top; y < limits.height; y += lif::TILE_SIZE) {
+			free.emplace_back(x, y);
+		}
+	}
+	const auto touchedTiles = [] (const auto& cld) {
+		std::vector<sf::Vector2f> touched;
+		const auto pos = cld->getOwner().getPosition();
+		const auto size = cld->getSize();
+		for (int x = 0; x < size.x; x += lif::TILE_SIZE)
+			for (int y = 0; y < size.y; y += lif::TILE_SIZE)
+				touched.emplace_back(lif::aligned(pos + sf::Vector2f(x, y)));
+		touched.emplace_back(lif::aligned(pos + sf::Vector2f(size.x - 1, size.y - 1)));
+		return touched;
+	};
+	for (auto wcld : lm.getEntities().getColliding()) {
+		if (wcld.expired()) continue;
+		const auto cld = wcld.lock();
+		const auto touched = touchedTiles(cld);
+		free.erase(std::remove_if(free.begin(), free.end(), [&touched] (const auto& pos) {
+			return std::find(touched.begin(), touched.end(), pos) != touched.end();
+		}), free.end());
+	}
+	return free;
 }

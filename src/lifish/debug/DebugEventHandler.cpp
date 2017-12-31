@@ -1,6 +1,7 @@
 #include "DebugEventHandler.hpp"
 #include "Killable.hpp"
 #include "game.hpp"
+#include "DebugPainter.hpp"
 #include "Player.hpp"
 #include "BreakableWall.hpp"
 #include "Drawable.hpp"
@@ -11,6 +12,7 @@
 #include "Bonusable.hpp"
 #include "MusicManager.hpp"
 #include "GameContext.hpp"
+#include "collision_utils.hpp"
 #include <iostream>
 #include <iomanip>
 #include <map>
@@ -41,6 +43,7 @@ DebugEventHandler::DebugEventHandler(lif::GameContext& game)
  * - : back one level
  * Numpad3 : destroy all breakable walls
  * Numpad6 : flip all entities
+ * Numpad7 : compute and show free tiles
  * Numpad9 : rotate all entities of pi/4
  */
 bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
@@ -62,6 +65,18 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 				}
 			});
 			return true;
+		case sf::Keyboard::Numpad7:
+			{
+				const auto free = lif::collision_utils::find_free_tiles(game.lm);
+				for (const auto& tile : free) {
+					std::cout << tile << std::endl;
+					lif::debugPainter->addRectangleAt(
+						tile, {lif::TILE_SIZE, lif::TILE_SIZE},
+						sf::Color(0, 160, 100, 128));
+				}
+				game.toggleDebug(lif::GameContext::DBG_NO_PAINT_CLEAR);
+				return true;
+			}
 		case sf::Keyboard::Numpad9:
 			game.lm.getEntities().apply([] (lif::Entity *e) {
 				auto d = e->get<lif::Drawable>();

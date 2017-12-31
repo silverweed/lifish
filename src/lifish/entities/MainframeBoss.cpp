@@ -120,8 +120,11 @@ StateFunction MainframeBoss::_updateIdle() {
 		case AttackType::SHIELD:
 			return BIND(_updateShieldEntering);
 		case AttackType::LASERS:
-		default: //TODO
 			return BIND(_updateLasersEntering);
+		//case AttackType::SPAWN_ZAPS:
+			//return BIND(_updateSpawnZapsEntering);
+		default:
+			break;
 		}
 	}
 	return std::move(stateFunction);
@@ -310,6 +313,50 @@ StateFunction MainframeBoss::_updateLasersShooting() {
 
 StateFunction MainframeBoss::_updateLasersRecover() {
 	if (clock->getElapsedTime() > LASERS_RECOVERY_TIME) {
+		clock->restart();
+		return BIND(_updateIdle);
+	}
+	return std::move(stateFunction);
+}
+
+StateFunction MainframeBoss::_updateSpawnZapsEntering() {
+	animated->setFrameTime("idle", sf::milliseconds(40));
+	animated->setAnimation("idle");
+	animated->getSprite().setColor(sf::Color(255, 0, 200));
+	clock->restart();
+	nShots = 0;
+	return BIND(_updateSpawnZapsShooting);
+}
+
+StateFunction MainframeBoss::_updateSpawnZapsShooting() {
+	if (nShots > N_SPAWNED_ZAPS) {
+		clock->restart();
+		_resetIdleAnim();
+		return BIND(_updateSpawnZapsRecover);
+	}
+	if (clock->getElapsedTime() > ZAPS_SPAWN_DELAY) {
+		clock->restart();
+		const auto lvinfo = lm.getLevel()->getInfo();
+		const auto nRows = lvinfo.width;
+		const auto nCols = lvinfo.height;
+		const auto orientation = static_cast<lif::TimedLaser::Orientation>(rand() % 2);
+		int rowCol = 0;
+		if (orientation == lif::TimedLaser::Orientation::HORIZONTAL) {
+			std::uniform_int_distribution<> rowDist(0, nRows);
+			rowCol = rowDist(lif::rng);
+		} else {
+			std::uniform_int_distribution<> colDist(0, nCols);
+			rowCol = colDist(lif::rng);
+		}
+		spawner->addSpawned(new lif::TimedLaser(rowCol, orientation, LASERS_WARN_DURATION, LASERS_DAMAGE,
+			{ lif::c_layers::PLAYERS }));
+		++nShots;
+	}
+	return std::move(stateFunction);
+}
+
+StateFunction MainframeBoss::_updateSpawnZapsRecover() {
+	if (clock->getElapsedTime() > ZAPS_RECOVERY_TIME) {
 		clock->restart();
 		return BIND(_updateIdle);
 	}

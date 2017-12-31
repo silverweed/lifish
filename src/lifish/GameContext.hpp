@@ -28,7 +28,8 @@ public:
 		DBG_DRAW_COLLIDERS   = 1,
 		DBG_DRAW_SH_CELLS    = 1 << 1,
 		DBG_PRINT_CD_STATS   = 1 << 2,
-		DBG_PRINT_GAME_STATS = 1 << 3
+		DBG_PRINT_GAME_STATS = 1 << 3,
+		DBG_NO_PAINT_CLEAR      = 1 << 4
 	};
 private:
 #ifndef RELEASE
@@ -72,7 +73,9 @@ public:
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 	void setActive(bool b) override;
 
+#ifndef RELEASE
 	void toggleDebug(unsigned dbg);
+#endif
 };
 
 }

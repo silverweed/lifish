@@ -88,6 +88,9 @@ namespace conf {
 			constexpr auto LASERS_DAMAGE = 3;
 			const sf::Time LASERS_WARN_DURATION = sf::seconds(1);
 			const sf::Time LASERS_RECOVERY_TIME = sf::seconds(4);
+			constexpr auto N_SPAWNED_ZAPS = 4;
+			const sf::Time ZAPS_SPAWN_DELAY = sf::seconds(1.5);
+			const sf::Time ZAPS_RECOVERY_TIME = sf::seconds(4);
 		}
 	}
 }

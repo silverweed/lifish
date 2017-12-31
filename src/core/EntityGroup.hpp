@@ -117,6 +117,10 @@ public:
 		return collidingEntities;
 	}
 
+	auto getColliding() const -> const std::vector<std::weak_ptr<lif::Collider>>& {
+		return collidingEntities;
+	}
+
 	/** @return all colliders intersecting `rect`.
 	 *  NOTE: these pointers are only guaranteed to be valid until the next call to updateAll(), so
 	 *  the caller should *not* retain them.

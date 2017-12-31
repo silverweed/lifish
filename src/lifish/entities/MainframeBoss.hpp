@@ -28,7 +28,7 @@ class MainframeBoss : public lif::Boss, public sf::Drawable {
 	/** Used for RotatingSurge attack */
 	lif::Angle nextAttackAngle = lif::Angle::Zero;
 
-	/** Used for lightning storm and lasers */
+	/** Used for lightning storm, zaps and lasers */
 	unsigned nShots = 0;
 
 	/** How many lasers will actually shoot (based on remaining health) */
@@ -64,6 +64,9 @@ class MainframeBoss : public lif::Boss, public sf::Drawable {
 	lif::ai::StateFunction _updateLasersEntering();
 	lif::ai::StateFunction _updateLasersShooting();
 	lif::ai::StateFunction _updateLasersRecover();
+	lif::ai::StateFunction _updateSpawnZapsEntering();
+	lif::ai::StateFunction _updateSpawnZapsShooting();
+	lif::ai::StateFunction _updateSpawnZapsRecover();
 public:
 	explicit MainframeBoss(const sf::Vector2f& pos, const lif::LevelManager& lm);
 
