@@ -14,11 +14,11 @@ std::array<lif::Direction, 4> directions = {{
 }};
 
 static std::uniform_int_distribution<> rand_dir_dist(0, directions.size());
-lif::Direction random_direction() {
+lif::Direction randomDirection() {
 	return directions[rand_dir_dist(lif::rng)];
 }
 
-lif::Direction select_random_viable(
+lif::Direction selectRandomViable(
 		const lif::AxisMoving& moving,
 		const lif::LevelManager& lm,
 		const lif::Direction opp,
@@ -35,7 +35,7 @@ lif::Direction select_random_viable(
 	return dirs[dist(lif::rng)];
 }
 
-lif::Direction seeing_player(const lif::LevelManager& lm, const lif::AxisSighted& sighted) {
+lif::Direction seeingPlayer(const lif::LevelManager& lm, const lif::AxisSighted& sighted) {
 	const auto& seen = sighted.entitiesSeen();
 	lif::Direction dir = lif::Direction::NONE;
 	unsigned short dist = -1; // "infinity"
@@ -50,7 +50,7 @@ lif::Direction seeing_player(const lif::LevelManager& lm, const lif::AxisSighted
 	return dir;
 }
 
-lif::Direction adjust_prev_align(const lif::Entity& entity, lif::AxisMoving& moving) {
+lif::Direction adjustPrevAlign(const lif::Entity& entity, lif::AxisMoving& moving) {
 	switch (moving.getDirection()) {
 	case D::LEFT:
 	case D::UP:

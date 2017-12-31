@@ -67,7 +67,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			return true;
 		case sf::Keyboard::Numpad7:
 			{
-				const auto free = lif::collision_utils::find_free_tiles(game.lm);
+				const auto free = lif::collision_utils::findFreeTiles(game.lm);
 				for (const auto& tile : free) {
 					lif::debugPainter->addRectangleAt(
 						sf::Vector2f(tile * lif::TILE_SIZE), {lif::TILE_SIZE, lif::TILE_SIZE},

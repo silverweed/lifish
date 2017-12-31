@@ -16,13 +16,13 @@ namespace collision_utils {
 bool collide(const lif::Collider& cld1, const lif::Collider& cld2, const lif::Direction dir);
 
 /** Checks if `cld` is at the level limit. */
-bool is_at_boundaries(const lif::Collider& cld, const lif::AxisMoving *const am, const sf::FloatRect& limits);
+bool isAtBoundaries(const lif::Collider& cld, const lif::AxisMoving *const am, const sf::FloatRect& limits);
 
 /** Checks if `ocld` is along the forward direction of `cld` */
-bool direction_is_viable(const lif::Collider& cld,
+bool directionIsViable(const lif::Collider& cld,
 		const lif::AxisMoving& moving, const lif::Collider& ocld);
 
-std::vector<sf::Vector2i> find_free_tiles(const lif::BaseLevelManager& lm);
+std::vector<sf::Vector2i> findFreeTiles(const lif::BaseLevelManager& lm);
 
 }
 

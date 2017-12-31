@@ -144,7 +144,7 @@ void SHCollisionDetector::update() {
 
 		const auto moving = collider->getOwner().get<lif::Moving>();
 		const auto axismoving = moving ? dynamic_cast<lif::AxisMoving*>(moving) : nullptr;
-		if (moving && is_at_boundaries(*collider, axismoving, levelLimit)) {
+		if (moving && isAtBoundaries(*collider, axismoving, levelLimit)) {
 			collider->setAtLimit(true);
 			continue;
 		}
@@ -159,7 +159,7 @@ void SHCollisionDetector::update() {
 
 			if (axismoving) {
 				// Only check entities ahead of this one
-				if (!direction_is_viable(*collider, *axismoving, *othcollider))
+				if (!directionIsViable(*collider, *axismoving, *othcollider))
 					continue;
 
 				if (collider->collidesWith(*othcollider)

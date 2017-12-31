@@ -13,7 +13,7 @@ void lif::spawnInFreeTiles(lif::BufferedSpawner *spawner, lif::LevelManager& lm,
 		int spawnedEnemyId, int nSpawned, int minDistFromPlayers,
 		std::function<void(lif::Enemy*)> cb)
 {
-	auto viablePositions = lif::collision_utils::find_free_tiles(lm);
+	auto viablePositions = lif::collision_utils::findFreeTiles(lm);
 
 	// Don't spawn enemies near players
 	viablePositions.erase(std::remove_if(viablePositions.begin(), viablePositions.end(),

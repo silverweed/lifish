@@ -7,27 +7,27 @@
 using lif::AxisSighted;
 
 // Helper functions for _fillLine
-static bool check_up(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
+static bool checkUp(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
 	return etile.x == mtile.x && etile.y < mtile.y;
 }
 
-static bool check_down(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
+static bool checkDown(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
 	return etile.x == mtile.x && etile.y > mtile.y;
 }
 
-static bool check_left(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
+static bool checkLeft(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
 	return etile.y == mtile.y && etile.x < mtile.x;
 }
 
-static bool check_right(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
+static bool checkRight(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
 	return etile.y == mtile.y && etile.x > mtile.x;
 }
 
 static const std::array<std::function<bool(const sf::Vector2i&, const sf::Vector2i&)>, 4> helper_funcs = {{
-	check_up,
-	check_left,
-	check_down,
-	check_right
+	checkUp,
+	checkLeft,
+	checkDown,
+	checkRight
 }};
 // end helper functions
 

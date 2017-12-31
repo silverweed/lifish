@@ -92,7 +92,7 @@ AIBoundFunction lif::ai_random_forward(lif::Entity& entity) {
 		// it may be considered "aligned" again after changing direction.)
 		if (moving->getDistTravelled() > 3 || moving->getDistTravelled() == 0) {
 			collider->reset();
-			NEW_DIRECTION(select_random_viable(*moving, lm, opp))
+			NEW_DIRECTION(selectRandomViable(*moving, lm, opp))
 		} else {
 			SAME_DIRECTION
 		}
@@ -120,7 +120,7 @@ AIBoundFunction lif::ai_random_forward_haunt(lif::Entity& entity) {
 				NEW_DIRECTION(lif::oppositeDirection(cur))
 
 			if (shooting->getAttackAlign() == cur_align)
-				NEW_DIRECTION(select_random_viable(*moving, lm, lif::oppositeDirection(cur)))
+				NEW_DIRECTION(selectRandomViable(*moving, lm, lif::oppositeDirection(cur)))
 
 			if (shooting->getAttackAlign().x < cur_align.x)
 				NEW_DIRECTION(D::LEFT)
@@ -167,7 +167,7 @@ AIBoundFunction lif::ai_follow(lif::Entity& entity) {
 		if (colliding && lm.canGo(*moving, cur))
 			NEW_DIRECTION(opp)
 
-		auto sp = seeing_player(lm, *sighted);
+		auto sp = seeingPlayer(lm, *sighted);
 		if (sp != lif::Direction::NONE) {
 			auto sounded = entity.get<lif::Sounded>();
 			if (sounded != nullptr)
@@ -177,7 +177,7 @@ AIBoundFunction lif::ai_follow(lif::Entity& entity) {
 
 		if (moving->getDistTravelled() > 1 || moving->getDistTravelled() == 0) {
 			collider->reset();
-			NEW_DIRECTION(select_random_viable(*moving, lm, opp))
+			NEW_DIRECTION(selectRandomViable(*moving, lm, opp))
 		} else {
 			SAME_DIRECTION
 		}
@@ -212,7 +212,7 @@ AIBoundFunction lif::ai_follow_dash(lif::Entity& entity) {
 		if (moving->isDashing())
 			SAME_DIRECTION
 
-		auto sp = seeing_player(lm, *sighted);
+		auto sp = seeingPlayer(lm, *sighted);
 		if (sp != lif::Direction::NONE) {
 			if (!shooting->isRecharging()) {
 				shooting->shoot(moving->getOwner().getPosition());
@@ -225,7 +225,7 @@ AIBoundFunction lif::ai_follow_dash(lif::Entity& entity) {
 
 		if (moving->getDistTravelled() > 1 || moving->getDistTravelled() == 0) {
 			collider->reset();
-			NEW_DIRECTION(select_random_viable(*moving, lm, opp))
+			NEW_DIRECTION(selectRandomViable(*moving, lm, opp))
 		} else {
 			SAME_DIRECTION
 		}

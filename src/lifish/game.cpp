@@ -23,7 +23,7 @@ bool lif::init() {
 	return true;
 }
 
-std::string lif::game_info() {
+std::string lif::gameInfo() {
 	std::stringstream ss;
 	ss << "lifish v." VERSION " rev." COMMIT;
 #ifdef RELEASE

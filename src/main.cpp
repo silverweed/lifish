@@ -103,7 +103,7 @@ static void parseArgs(int argc, char **argv, /* out */ MainArgs& args) {
 				break;
 #endif
 			case 'v':
-				std::cout << lif::game_info();
+				std::cout << lif::gameInfo();
 				std::exit(0);
 			case 'i':
 				print_level_info = true;

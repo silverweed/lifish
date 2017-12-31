@@ -270,7 +270,7 @@ void GameContext::_printCDStats() const {
 	std::cout << ss.str();
 }
 
-static float get_percentage(const lif::debug::Stats& stats, const char *totn, const char *name, char *percentage) {
+static float getPercentage(const lif::debug::Stats& stats, const char *totn, const char *name, char *percentage) {
 	const auto tot = stats.timer.safeGet(totn);
 	if (tot < 0) return -1;
 	const float ratio = stats.timer.safeGet(name) / tot;
@@ -290,7 +290,7 @@ void GameContext::_printGameStats() const {
 	ss << std::setfill(' ') << std::scientific << std::setprecision(3);
 	for (const auto& t : timers) {
 		char percentage[21] = {0};
-		const float ratio = get_percentage(dbgStats, "tot", t, percentage);
+		const float ratio = getPercentage(dbgStats, "tot", t, percentage);
 		ss << "\r\n | " << std::left << std::setw(12) << t << ": "
 			<< std::setw(7) << dbgStats.timer.safeGet(t) << " " << percentage
 			<< (ratio >= 0 ? " " + lif::to_string(static_cast<int>(ratio*100)) + "%" : "");
@@ -300,7 +300,7 @@ void GameContext::_printGameStats() const {
 		std::stringstream t;
 		t << "logic_" << i;
 		char percentage[21] = {0};
-		const float ratio = get_percentage(dbgStats, "logic", t.str().c_str(), percentage);
+		const float ratio = getPercentage(dbgStats, "logic", t.str().c_str(), percentage);
 		ss << "\r\n | " << i << ": " << std::setw(7) << dbgStats.timer.safeGet(t.str())
 			<< " " << percentage
 			<< (ratio >= 0 ? " " + lif::to_string(static_cast<int>(ratio*100)) + "%" : "");

@@ -18,7 +18,7 @@
 #define HANDLE_UNALIGNED \
 	if (!entity.isAligned()) { \
 		if (collider->collidesWithSolid()) \
-			NEW_DIRECTION(lif::ai::adjust_prev_align(entity, *moving)) \
+			NEW_DIRECTION(lif::ai::adjustPrevAlign(entity, *moving)) \
 		else \
 			SAME_DIRECTION \
 	}
@@ -40,19 +40,19 @@ lif::Direction random_direction();
  * and only if no other viable direction is found.
  * If `forceChange` is true, avoid taking the same direction.
  */
-lif::Direction select_random_viable(
+lif::Direction selectRandomViable(
 		const lif::AxisMoving& moving,
 		const lif::LevelManager& lm,
 		const lif::Direction opp,
 		bool forceChange = false);
 
-lif::Direction seeing_player(const lif::LevelManager& lm, const lif::AxisSighted& sighted);
+lif::Direction seeingPlayer(const lif::LevelManager& lm, const lif::AxisSighted& sighted);
 
 /** To be called when `entity` is colliding and is not aligned:
  *  sets `moving.prevAlign` to the tile it'd have reached if it hadn't collided,
  *  and returns oppositeDirection(moving.direction).
  */
-lif::Direction adjust_prev_align(const lif::Entity& entity, lif::AxisMoving& moving);
+lif::Direction adjustPrevAlign(const lif::Entity& entity, lif::AxisMoving& moving);
 
 } // end namespace ai
 

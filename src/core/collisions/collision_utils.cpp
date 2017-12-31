@@ -32,7 +32,7 @@ bool lif::collision_utils::collide(const lif::Collider& cld1, const lif::Collide
 
 // Checks if `cld` is at the level limit. Algorithm used depends on whether
 // that Entity is AxisMoving or not.
-bool lif::collision_utils::is_at_boundaries(const lif::Collider& cld,
+bool lif::collision_utils::isAtBoundaries(const lif::Collider& cld,
 		const lif::AxisMoving *const am, const sf::FloatRect& limits)
 {
 	const auto pos = cld.getPosition();
@@ -59,7 +59,7 @@ bool lif::collision_utils::is_at_boundaries(const lif::Collider& cld,
 }
 
 // Checks if `ocld` is along the forward direction of `cld`
-bool lif::collision_utils::direction_is_viable(const lif::Collider& cld,
+bool lif::collision_utils::directionIsViable(const lif::Collider& cld,
 		const lif::AxisMoving& moving, const lif::Collider& ocld)
 {
 	const auto pos = cld.getPosition();
@@ -79,7 +79,7 @@ bool lif::collision_utils::direction_is_viable(const lif::Collider& cld,
 }
 
 // Finds all free tiles that don't collide with any non-phantom collider in lm
-std::vector<sf::Vector2i> lif::collision_utils::find_free_tiles(const lif::BaseLevelManager& lm) {
+std::vector<sf::Vector2i> lif::collision_utils::findFreeTiles(const lif::BaseLevelManager& lm) {
 	std::vector<sf::Vector2i> free;
 	const auto limits = lm.getCollisionDetector().getLevelLimit();
 	for (int x = limits.left; x < limits.width; x += lif::TILE_SIZE) {
