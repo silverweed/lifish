@@ -22,7 +22,7 @@ bool is_at_boundaries(const lif::Collider& cld, const lif::AxisMoving *const am,
 bool direction_is_viable(const lif::Collider& cld,
 		const lif::AxisMoving& moving, const lif::Collider& ocld);
 
-std::vector<sf::Vector2f> find_free_tiles(const lif::BaseLevelManager& lm);
+std::vector<sf::Vector2i> find_free_tiles(const lif::BaseLevelManager& lm);
 
 }
 
