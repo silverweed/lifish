@@ -362,17 +362,19 @@ bool LevelManager::canGo(const lif::AxisMoving& am, const lif::Direction dir) co
 		return true;
 	}
 
+	// Check level bounds
 	if (iposx <= 0 || iposx > level->getInfo().width || iposy <= 0 || iposy > level->getInfo().height)
 		return false;
 
+	// If the entity has no collider, it can always move within the level
 	const auto collider = am.getOwner().get<lif::Collider>();
 	if (collider == nullptr)
 		return true;
 
+	// Check if another collider blocks the way
 	for (const auto cld : entities.getCollidersIntersecting(sf::FloatRect(
 			iposx * TILE_SIZE, iposy * TILE_SIZE, TILE_SIZE, TILE_SIZE)))
 	{
-		if (cld->getOwner().get<lif::Fixed>() == nullptr) continue;
 		if (collider->isSolidFor(*cld))
 			return false;
 	}

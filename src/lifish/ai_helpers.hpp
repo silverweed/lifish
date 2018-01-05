@@ -17,10 +17,11 @@
 
 #define HANDLE_UNALIGNED \
 	if (!entity.isAligned()) { \
-		if (collider->collidesWithSolid()) \
+		if (collider->collidesWithSolid()) { \
 			NEW_DIRECTION(lif::ai::adjustPrevAlign(entity, *moving)) \
-		else \
+		} else { \
 			SAME_DIRECTION \
+		} \
 	}
 
 namespace lif {

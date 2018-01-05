@@ -9,7 +9,7 @@ namespace lif {
 
 constexpr unsigned short AI_FUNCTIONS_NUM = 6;
 
-extern std::array<lif::AIFunction, lif::AI_FUNCTIONS_NUM> ai_functions;
+extern const std::array<lif::AIFunction, lif::AI_FUNCTIONS_NUM> ai_functions;
 
 /** Choose a random direction; allow turning around */
 lif::AIBoundFunction ai_random(lif::Entity&);

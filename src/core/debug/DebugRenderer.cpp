@@ -24,6 +24,8 @@ void DebugRenderer::drawColliders(const lif::EntityGroup& group) {
 				1, sf::Color(color.r + 40, color.g + 40, color.b + 40, 240));
 			std::stringstream ss;
 			ss << sf::Vector2i(c->getOwner().getPosition()) << "\n" << c->getSize();
+			if (c->getOwner().isAligned())
+				ss << "\n A";
 			lif::debugPainter->addTextAt(c->getOwner().getPosition(), ss.str(), 7,
 					sf::Color(100, 100, 100));
 		}

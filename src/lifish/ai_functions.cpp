@@ -19,7 +19,7 @@ using lif::AIBoundFunction;
 using D = lif::Direction;
 using namespace lif::ai;
 
-std::array<lif::AIFunction, lif::AI_FUNCTIONS_NUM> lif::ai_functions = {{
+const std::array<lif::AIFunction, lif::AI_FUNCTIONS_NUM> lif::ai_functions = {{
 	lif::ai_random,
 	lif::ai_random_forward,
 	lif::ai_random_forward_haunt,
