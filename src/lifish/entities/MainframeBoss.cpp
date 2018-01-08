@@ -76,7 +76,7 @@ MainframeBoss::MainframeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 
 void MainframeBoss::update() {
 	lif::Entity::update();
-	
+
 	if (killable->isKilled())
 		return;
 
@@ -193,7 +193,7 @@ StateFunction MainframeBoss::_updateLightningShooting() {
 		const auto angle = lif::degrees(angleDist(lif::rng));
 		const auto pos = lif::towards(position + (SIZE - sf::Vector2f(TILE_SIZE, TILE_SIZE)) * 0.5f,
 				angle, 40);
-		spawner->addSpawned(std::move(lif::BulletFactory::create(104, pos, angle, this)));
+		spawner->addSpawned(lif::BulletFactory::create(104, pos, angle, this));
 		++nShots;
 		clock->restart();
 	}
@@ -222,7 +222,7 @@ StateFunction MainframeBoss::_updateShieldWindup() {
 		vulnerable = false;
 		return BIND(_updateShieldDamage);
 	}
-	
+
 	auto col = shieldSprite.getFillColor();
 	col.a = (clock->getElapsedTime() / SHIELD_WINDUP_TIME) * 180;
 	shieldSprite.setFillColor(col);
