@@ -19,14 +19,14 @@ void DebugRenderer::drawColliders(const lif::EntityGroup& group) {
 							: COLLIDER_REGULAR_COLOR
 						: COLLIDER_INACTIVE_COLOR;
 			lif::debugPainter->addRectangleAt(
-				c->getOwner().getPosition(), sf::Vector2f(c->getRect().width, c->getRect().height),
+				c->getPosition(), sf::Vector2f(c->getRect().width, c->getRect().height),
 				color,
 				1, sf::Color(color.r + 40, color.g + 40, color.b + 40, 240));
 			std::stringstream ss;
-			ss << sf::Vector2i(c->getOwner().getPosition()) << "\n" << c->getSize();
+			ss << sf::Vector2i(c->getPosition()) << "\n" << c->getSize();
 			if (c->getOwner().isAligned())
 				ss << "\n A";
-			lif::debugPainter->addTextAt(c->getOwner().getPosition(), ss.str(), 7,
+			lif::debugPainter->addTextAt(c->getPosition(), ss.str(), 7,
 					sf::Color(100, 100, 100));
 		}
 	});
