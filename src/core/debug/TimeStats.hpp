@@ -9,9 +9,10 @@ namespace lif {
 namespace debug {
 
 /**
- * Contains time statistics for performance analysis
+ * Contains time statistics for performance analysis.
+ * All returned values are in seconds.
  */
-class TimeStats {
+class TimeStats final {
 	/** Contains the starting points in ticks */
 	std::map<std::string, clock_t> timers;
 	/** Contains the results stored by calling `end` */

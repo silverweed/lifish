@@ -20,6 +20,7 @@
 using lif::debug::DebugEventHandler;
 
 static std::string _printEntitiesDetails(const lif::EntityGroup& entities);
+static void _printHelp();
 
 DebugEventHandler::DebugEventHandler(lif::GameContext& game)
 	: game(game)
@@ -41,6 +42,7 @@ DebugEventHandler::DebugEventHandler(lif::GameContext& game)
  * . : give infinite shield to player
  * + : forward one level
  * - : back one level
+ * ? : print help
  * Numpad3 : destroy all breakable walls
  * Numpad6 : flip all entities
  * Numpad7 : compute and show free tiles
@@ -56,6 +58,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 				if (w) w->get<lif::Killable>()->kill();
 			});
 			return true;
+
 		case sf::Keyboard::Numpad6:
 			game.lm.getEntities().apply([] (lif::Entity *e) {
 				auto d = e->get<lif::Drawable>();
@@ -65,6 +68,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 				}
 			});
 			return true;
+
 		case sf::Keyboard::Numpad7:
 			{
 				const auto free = lif::collision_utils::findFreeTiles(game.lm);
@@ -74,8 +78,9 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 						sf::Color(0, 160, 100, 128));
 				}
 				game.toggleDebug(lif::GameContext::DBG_NO_PAINT_CLEAR);
-				return true;
 			}
+			return true;
+
 		case sf::Keyboard::Numpad9:
 			game.lm.getEntities().apply([] (lif::Entity *e) {
 				auto d = e->get<lif::Drawable>();
@@ -85,12 +90,14 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 				}
 			});
 			return true;
+
 		case sf::Keyboard::B:
 			game.lm.getEntities().apply([] (lif::Entity *e) {
 				auto en = dynamic_cast<lif::Boss*>(e);
 				if (en) en->get<lif::Killable>()->kill();
 			});
 			return true;
+
 		case sf::Keyboard::C:
 			{
 				int i = 0;
@@ -99,28 +106,35 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 				});
 			}
 			return true;
+
 		case sf::Keyboard::F:
 			game.toggleDebug(lif::GameContext::DBG_PRINT_CD_STATS);
 			return true;
+
 		case sf::Keyboard::G:
 			game.toggleDebug(lif::GameContext::DBG_DRAW_COLLIDERS);
 			return true;
+
 		case sf::Keyboard::H:
 			game.toggleDebug(lif::GameContext::DBG_DRAW_SH_CELLS);
 			return true;
+
 		case sf::Keyboard::I:
 			game.toggleDebug(lif::GameContext::DBG_PRINT_GAME_STATS);
 			return true;
+
 		case sf::Keyboard::J:
 			game.lm.getPlayer(1)->setRemainingLives(0);
 			game.lm.getPlayer(1)->get<lif::Killable>()->kill();
 			return true;
+
 		case sf::Keyboard::K:
 			if (!game.lm.isPaused())
 				game.lm.pause();
 			else
 				game.lm.resume();
 			return true;
+
 		case sf::Keyboard::L:
 			if (game.lm.isPaused()) {
 				game.lm.tickClocks(sf::seconds(1.0 / lif::options.framerateLimit));
@@ -129,18 +143,27 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 				game.lm.pause();
 			}
 			return true;
+
 		case sf::Keyboard::M:
 			game.lm.getEntities().apply([] (lif::Entity *e) {
 				auto en = dynamic_cast<lif::Enemy*>(e);
 				if (en) en->setMorphed(!en->isMorphed());
 			});
 			return true;
+
 		case sf::Keyboard::N:
 			game.lm.getEntities().apply([] (lif::Entity *e) {
 				auto en = dynamic_cast<lif::Enemy*>(e);
 				if (en) en->get<lif::Killable>()->kill();
 			});
 			return true;
+
+		case sf::Keyboard::Slash:
+			if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+				return false;
+			_printHelp();
+			return true;
+
 		case sf::Keyboard::Period:
 			{
 				auto bns = game.lm.getPlayer(1)->get<lif::Bonusable>();
@@ -150,9 +173,11 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 					bns->giveBonus(lif::BonusType::SHIELD, sf::seconds(-1));
 			}
 			return true;
+
 		case sf::Keyboard::Add:
 			game._advanceLevel();
 			return true;
+
 		case sf::Keyboard::Subtract:
 			{
 				int lvnum = game.lm.getLevel()->getInfo().levelnum - 1;
@@ -163,9 +188,11 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 					.setVolume(lif::options.musicVolume).play();
 				return true;
 			}
+
 		case sf::Keyboard::BackSlash:
 			std::cout << _printEntitiesDetails(game.lm.getEntities());
 			break;
+
 		default:
 			break;
 		}
@@ -193,4 +220,31 @@ std::string _printEntitiesDetails(const lif::EntityGroup& entities) {
 	}
 	ss << std::endl;
 	return ss.str();
+}
+
+void _printHelp() {
+	std::cout << "\n====== DEBUG COMMANDS (with US layout): ======\n"
+		<< "B : kill all bosses\n"
+		<< "C : print all entities\n"
+		<< "F : print CD stats\n"
+		<< "G : draw colliders\n"
+		<< "H : draw SH cells\n"
+		<< "I : print game stats\n"
+		<< "J : kill player 1\n"
+		<< "K : pause game simulation\n"
+		<< "L : step game simulation (pauses if needed)\n"
+		<< "M : morph all enemies\n"
+		<< "N : kill all enemies\n"
+		<< "Q : quit game\n"
+		<< "\\ : print number of entities\n"
+		<< ". : give infinite shield to player\n"
+		<< "+ : forward one level\n"
+		<< "- : back one level\n"
+		<< "? : print help\n"
+		<< "Num0 : toggle draw stats display\n"
+		<< "Numpad3 : destroy all breakable walls\n"
+		<< "Numpad6 : flip all entities\n"
+		<< "Numpad7 : compute and show free tiles\n"
+		<< "Numpad9 : rotate all entities of pi/4\n"
+		<< std::endl;
 }

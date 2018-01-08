@@ -328,8 +328,9 @@ int main(int argc, char **argv) {
 		++cycle;
 		if (lif::options.printDrawStats && cycle % 50 == 0) {
 			std::ios::fmtflags flags(std::cout.flags());
-			std::cout << std::setfill(' ') << std::scientific << std::setprecision(4)
-				<< ">> Draw: " << std::setw(6) << dbgStats.timer.safeGet("draw") << std::endl;
+			std::cout //<< std::setfill(' ') << std::scientific << std::setprecision(4)
+				<< ">> Draw: " << std::setw(6) << dbgStats.timer.safeGet("draw") * 1000
+				<< " ms" << std::endl;
 			std::cout.flags(flags);
 		}
 #	endif
