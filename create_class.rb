@@ -59,6 +59,7 @@ if options[:parent]
 	derived = ": public lif::#{options[:parent]} "
 	constr = "\n\t: lif::#{options[:parent]}()\n"
 	includes = "\n#include \"#{options[:parent]}.hpp\"\n"
+	func_impl = "\n\nvoid #{clsname}::update() {\n\tlif::#{options[:parent]}::update();\n}"
 end
 
 TEMPLATE_HPP = "#pragma once

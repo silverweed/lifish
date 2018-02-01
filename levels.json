@@ -44,7 +44,7 @@
 			"ai": 0,
 			"speed": 1,
 			"attack": {
-				"id": 1,
+				"id": 10,
 				"type": ["simple"],
 				"fireRate": 2
 			}

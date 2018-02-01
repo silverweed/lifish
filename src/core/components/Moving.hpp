@@ -56,7 +56,7 @@ public:
 
 	float getSpeed() const { return speed; }
 	float getOriginalSpeed() const { return originalSpeed; }
-	/** Sets the base speed of this entity. This differs from `setDashing`, as it is just a
+	/** Sets the base speed of this entity. This differs from `setDashing`, as that is just a
 	 *  temporary effect (used for example in DASHING shooting attacks).
 	 *  If `relativeToOriginal` is true, then `speed` is interpreted as a multiplier to the
 	 *  original speed (i.e. passing `speed = 0.5` will halve the speed.)

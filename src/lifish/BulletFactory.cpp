@@ -5,6 +5,7 @@
 #include "AxisMoving.hpp"
 #include "AxisBullet.hpp"
 #include "FreeBullet.hpp"
+#include "Rocket.hpp"
 #include "collision_layers.hpp"
 
 using lif::BulletFactory;
@@ -31,6 +32,8 @@ std::map<unsigned, const lif::BulletInfo> bulletsInfo = {
 	{ 7, lif::BulletInfo{ 7, 4, 1.3f, -1 } },
 	// grenade
 	{ 9, lif::BulletInfo{ 9, 2, 1.f, 6 * lif::TILE_SIZE } },
+	// rocket
+	{ 10, lif::BulletInfo{ 10, 1, 0.2f, -1 } },
 	/// FreeBullets
 	// star
 	{ 101, lif::BulletInfo{ 101, 4, 1.1f, -1, lif::c_layers::BOSS_BULLETS } },
@@ -67,6 +70,16 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 		}
 	case 9:
 		return std::unique_ptr<lif::Bullet>(new lif::Grenade(pos, target, bulletsInfo[infoId], source));
+	case 10:
+		{
+			auto dir = lif::getDirection(lif::tile(pos), lif::tile(target));
+			if (dir == lif::Direction::NONE && source != nullptr) {
+				const auto moving = source->get<lif::AxisMoving>();
+				if (moving != nullptr)
+					dir = moving->getDirection();
+			}
+			return std::unique_ptr<lif::Bullet>(new lif::Rocket(pos, dir, bulletsInfo[infoId], source));
+		}
 	case 101:
 	case 102:
 	case 104:
