@@ -33,3 +33,4 @@ tests/*.x
 .lifish_*.txt
 assets/final
 .DS_Store
+lvtest.json
