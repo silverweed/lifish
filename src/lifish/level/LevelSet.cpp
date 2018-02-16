@@ -39,10 +39,10 @@ void LevelSet::loadFromFile(const std::string& path) {
 	 * }
 	 */
 	for (const auto& trackinfo : tracksdata) {
-		auto loop = trackinfo["loop"];
-		float loopstart = loop["start"];
+		const auto loop = trackinfo["loop"];
+		const float loopstart = loop["start"];
 		float looplength = -1;
-		auto len = loop.find("length");
+		const auto len = loop.find("length");
 		if (len != loop.end()) {
 			looplength = *len;
 		} else {
@@ -75,8 +75,8 @@ void LevelSet::loadFromFile(const std::string& path) {
 		enemies[enemynum].ai = enemyinfo["ai"];
 		enemies[enemynum].speed = enemyinfo["speed"];
 
-		auto atk = enemyinfo["attack"];
-		auto atktype = atk["type"];
+		const auto atk = enemyinfo["attack"];
+		const auto atktype = atk["type"];
 
 		enemies[enemynum].attack.type = static_cast<lif::AttackType>(0);
 		for (unsigned i = 0; i < atktype.size(); ++i) {

@@ -61,6 +61,7 @@ auto EntityGroup::getEntitiesAtTile(const sf::Vector2i& tile) const -> std::vect
 
 auto EntityGroup::getCollidersIntersecting(const sf::FloatRect& rect) const -> std::vector<lif::Collider*> {
 	std::vector<lif::Collider*> clds;
+	clds.reserve(collidingEntities.size());
 	for (auto& e : collidingEntities) {
 		if (e.expired()) continue;
 		auto cld = e.lock();

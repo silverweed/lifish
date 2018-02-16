@@ -25,6 +25,7 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 
 	// Draw according to z-index
 	std::unordered_map<int, std::vector<const lif::Drawable*>> toDraw;
+	toDraw.reserve(owner.entities.size());
 
 	int minZ = 0, maxZ = 0;
 	owner.entities.mtxLock();

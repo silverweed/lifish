@@ -66,7 +66,7 @@ std::unordered_set<unsigned> SHContainer::_getIdFor(const lif::Collider& obj) co
 
 auto SHContainer::getNearby(const lif::Collider& obj) const -> std::vector<std::weak_ptr<lif::Collider>> {
 	std::vector<std::weak_ptr<lif::Collider>> nearby;
-	nearby.reserve(512);
+	nearby.reserve(64);
 
 	auto ids = _getIdFor(obj);
 	for (auto id : ids) {

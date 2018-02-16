@@ -174,6 +174,11 @@ void GodEyeBoss::_shakeWalls() {
 	std::vector<lif::FixedWall*> fixed;
 	std::vector<lif::Torch*> torches;
 	std::vector<lif::Spikes*> spikes;
+	const auto maxSize = lm.getEntities().size();
+	breakables.reserve(maxSize);
+	fixed.reserve(maxSize);
+	torches.reserve(maxSize);
+	spikes.reserve(maxSize);
 
 	const auto lvWidth = lm.getLevel()->getInfo().width;
 	const auto lvHeight = lm.getLevel()->getInfo().height;
