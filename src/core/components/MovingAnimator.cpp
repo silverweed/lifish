@@ -44,7 +44,7 @@ void MovingAnimator::update() {
 
 	if (!moving->isMoving()) {
 		if (prev != lif::Direction::NONE) {
-			animated->setAnimation("idle");
+			animated->setAnimation("idle_" + lif::directionToString(prev));
 			sprite.play();
 		}
 		prev = dir;

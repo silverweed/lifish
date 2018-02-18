@@ -34,7 +34,7 @@ void Controllable::update() {
 			return;
 	}
 
-	lif::Direction dir(lif::Direction::NONE);
+	auto dir = lif::Direction::NONE;
 
 	usedBomb = false;
 

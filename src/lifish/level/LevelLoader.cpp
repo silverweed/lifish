@@ -76,7 +76,7 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				if (!is_game_over(id)) {
 					lm.players[id]->setWinning(false);
 					lm.players[id]->setPosition(pos);
-					lm.players[id]->get<lif::Animated>()->setAnimation("idle");
+					lm.players[id]->get<lif::Animated>()->setAnimation("idle_down");
 					lm.players[id]->get<lif::Moving>()->stop();
 					entities.add(lm.players[id]);
 					entities.add(new lif::Flash(pos));
