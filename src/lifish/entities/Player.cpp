@@ -178,7 +178,10 @@ void Player::update() {
 		if (dir != lif::Direction::NONE)
 			animated->setAnimation("walk_" + lif::directionToString(dir));
 		else {
-			animated->setAnimation("idle_" + lif::directionToString(moving->getPrevDirection()));
+			const auto prevdir = moving->getPrevDirection() == lif::Direction::NONE
+						? "down"
+						: lif::directionToString(moving->getPrevDirection());
+			animated->setAnimation("idle_" + prevdir);
 			moving->stop();
 		}
 	}

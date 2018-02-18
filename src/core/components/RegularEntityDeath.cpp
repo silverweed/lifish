@@ -78,7 +78,7 @@ void RegularEntityDeath::resurrect() {
 	for (auto anim : animated) {
 		if (!anim->hasAnimation("death")) continue;
 		auto& animSprite = anim->getSprite();
-		anim->setAnimation("idle");
+		anim->setAnimation("idle_down");
 		animSprite.play();
 	}
 }

@@ -170,7 +170,7 @@ constexpr T lerp(T a, T b, float alpha) {
 	return a * (1 - alpha) + b * alpha;
 }
 
-/** Plays a brief sound */
+/** Plays a brief sound (BLOCKING) */
 void testMusic();
 
 } // end namespace lif
