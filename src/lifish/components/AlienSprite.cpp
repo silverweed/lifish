@@ -23,7 +23,10 @@ AlienSprite::AlienSprite(lif::Entity& owner)
 	auto& a_left = animated->addAnimation("walk_left");
 	auto& a_right = animated->addAnimation("walk_right");
 	auto& a_death = animated->addAnimation("death");
-	animated->addAnimation("idle", { sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE) });
+	animated->addAnimation("idle_down", { sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE) });
+	animated->addAnimation("idle_up", { sf::IntRect(4 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE) });
+	animated->addAnimation("idle_right", { sf::IntRect(8 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE) });
+	animated->addAnimation("idle_left", { sf::IntRect(3 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE) });
 
 	a_down.addFrame(sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE));
 	a_down.addFrame(sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE));

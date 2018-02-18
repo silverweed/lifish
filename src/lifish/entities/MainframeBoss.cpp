@@ -20,6 +20,7 @@
 #include "Scored.hpp"
 #include "Surge.hpp"
 #include "SurgeWarn.hpp"
+#include "Fixed.hpp"
 #include "BulletFactory.hpp"
 #include "conf/boss.hpp"
 #include <cassert>
@@ -44,6 +45,7 @@ MainframeBoss::MainframeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 	, lm(lm)
 	, shieldSprite(SHIELD_DIAMETER / 2)
 {
+	addComponent<lif::Fixed>(*this);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "mainframe_boss.png"));
 	animated->setFrameTime("idle", IDLE_FRAME_TIME);
 	animated->addAnimation("idle", {

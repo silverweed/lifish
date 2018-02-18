@@ -140,7 +140,10 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 					TILE_SIZE));
 	}
 
-	animated->addAnimation("idle", { sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE) });
+	animated->addAnimation("idle_down", { sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE) });
+	animated->addAnimation("idle_up", { sf::IntRect(0, TILE_SIZE, TILE_SIZE, TILE_SIZE) });
+	animated->addAnimation("idle_right", { sf::IntRect(0, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE) });
+	animated->addAnimation("idle_left", { sf::IntRect(0, 3 * TILE_SIZE, TILE_SIZE, TILE_SIZE) });
 	animated->setFrameTime("shoot_down", sf::seconds(0.4));
 	animated->addAnimation("shoot_down", { sf::IntRect(0, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE) });
 	animated->setFrameTime("shoot_up", sf::seconds(0.4));

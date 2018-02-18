@@ -375,6 +375,9 @@ bool LevelManager::canGo(const lif::AxisMoving& am, const lif::Direction dir) co
 	for (const auto cld : entities.getCollidersIntersecting(sf::FloatRect(
 			iposx * TILE_SIZE, iposy * TILE_SIZE, TILE_SIZE, TILE_SIZE)))
 	{
+		if (cld->getOwner().get<lif::Fixed>() == nullptr)
+			continue;
+
 		if (collider->isSolidFor(*cld))
 			return false;
 	}

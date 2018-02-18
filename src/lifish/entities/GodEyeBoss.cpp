@@ -22,6 +22,7 @@
 #include "Bonusable.hpp"
 #include "BufferedSpawner.hpp"
 #include "Flare.hpp"
+#include "Fixed.hpp"
 #include "game.hpp"
 #include "conf/boss.hpp"
 #include "camera_utils.hpp"
@@ -60,6 +61,7 @@ GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 	: lif::Boss(pos)
 	, lm(lm)
 {
+	addComponent<lif::Fixed>(*this);
 	spriteBg = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "god_eye_boss.png"));
 	spriteBg->addAnimation("idle", {
 		sf::IntRect(0 * SIZE.x, 0 * SIZE.y, SIZE.x, SIZE.y),
