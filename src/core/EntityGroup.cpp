@@ -128,7 +128,9 @@ void EntityGroup::_checkKilled() {
 				continue;
 			}
 
-			auto eit = std::find_if(entities.begin(), entities.end(), [klb] (const auto& ptr) {
+			auto eit = std::find_if(entities.begin(), entities.end(),
+				[klb] (const std::shared_ptr<lif::Entity>& ptr)
+			{
 				return ptr.get() == &klb->getOwner();
 			});
 			if (eit != entities.end()) {
