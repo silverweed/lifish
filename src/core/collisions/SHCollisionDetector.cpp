@@ -26,10 +26,10 @@ void SHContainer::clear() {
 void SHContainer::insert(std::weak_ptr<lif::Collider> obj) {
 	if (obj.expired()) return;
 
-	auto cld = obj.lock().get();
+	const auto cld = obj.lock();
 	if (!cld->isActive()) return;
 
-	auto ids = _getIdFor(*cld);
+	const auto ids = _getIdFor(*cld);
 	for (auto id : ids) {
 		buckets[id].emplace_back(obj);
 	}
@@ -68,7 +68,7 @@ auto SHContainer::getNearby(const lif::Collider& obj) const -> std::vector<std::
 	std::vector<std::weak_ptr<lif::Collider>> nearby;
 	nearby.reserve(64);
 
-	auto ids = _getIdFor(obj);
+	const auto ids = _getIdFor(obj);
 	for (auto id : ids) {
 		//std::cerr << id << ": " << buckets[id].size() << std::endl;
 		for (auto& cld : buckets[id]) {
@@ -113,7 +113,7 @@ void SHCollisionDetector::update() {
 	 * 1) has it reached the level boundaries?
 	 * 2) is there another non-trasparent entity occupying the cell ahead?
 	 */
-	auto& colliding = group.getColliding();
+	const auto& colliding = group.getColliding();
 	for (auto it = colliding.begin(); it != colliding.end(); ++it) {
 		// No need to check for expired, as EntityGroup prunes them before we're called
 		auto collider = it->lock();
@@ -134,7 +134,7 @@ void SHCollisionDetector::update() {
 #endif
 
 	// Collision detection loop
-	auto& all = container.getAll();
+	const auto& all = container.getAll();
 	for (auto it = all.begin(); it != all.end(); ++it) {
 		auto collider = it->lock();
 

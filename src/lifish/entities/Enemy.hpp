@@ -50,7 +50,7 @@ class Enemy : public lif::Entity {
 
 	friend class EnemyDrawableProxy;
 
-	std::unique_ptr<lif::EnemyDrawableProxy> drawProxy;
+	std::unique_ptr<const lif::EnemyDrawableProxy> drawProxy;
 
 	bool shootingAnim = false;
 

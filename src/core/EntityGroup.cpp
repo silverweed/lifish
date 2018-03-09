@@ -36,14 +36,14 @@ void EntityGroup::updateAll() {
 
 void EntityGroup::remove(const lif::Entity& entity) {
 	mtxLock();
-	std::remove_if(entities.begin(), entities.end(), [entity] (std::shared_ptr<lif::Entity> e) {
+	std::remove_if(entities.begin(), entities.end(), [entity] (const auto& e) {
 		return e.get() == &entity;
 	});
 	_pruneAll();
 	mtxUnlock();
 }
 
-void EntityGroup::remove(const std::shared_ptr<lif::Entity>& entity) {
+void EntityGroup::remove(const std::shared_ptr<const lif::Entity>& entity) {
 	mtxLock();
 	std::remove(entities.begin(), entities.end(), entity);
 	_pruneAll();
@@ -128,9 +128,7 @@ void EntityGroup::_checkKilled() {
 				continue;
 			}
 
-			auto eit = std::find_if(entities.begin(), entities.end(),
-					[klb] (std::shared_ptr<lif::Entity> ptr)
-			{
+			auto eit = std::find_if(entities.begin(), entities.end(), [klb] (const auto& ptr) {
 				return ptr.get() == &klb->getOwner();
 			});
 			if (eit != entities.end()) {
@@ -155,9 +153,7 @@ void EntityGroup::_checkDead() {
 		auto tmp = it->lock();
 		if (!tmp->isKillInProgress()) {
 			// kill function has ended, we can safely destroy this.
-			auto eit = std::find_if(entities.begin(), entities.end(),
-					[tmp] (std::shared_ptr<lif::Entity>& ptr)
-			{
+			auto eit = std::find_if(entities.begin(), entities.end(), [tmp] (const auto& ptr) {
 				return ptr.get() == &tmp->getOwner();
 			});
 			if (eit != entities.end()) {

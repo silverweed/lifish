@@ -10,8 +10,8 @@ class EntityGroup;
 
 class DroppingTextManager final : private sf::NonCopyable {
 	std::shared_ptr<lif::DroppingSprite> gameOverText,
-	                                      extraGameText,
-	                                      hurryUpText;
+	                                     extraGameText,
+	                                     hurryUpText;
 
 public:
 	enum class Text {

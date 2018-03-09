@@ -92,7 +92,7 @@ public:
 
 	/** Removes an entity from all internal collections. */
 	void remove(const lif::Entity& entity);
-	void remove(const std::shared_ptr<lif::Entity>& entity);
+	void remove(const std::shared_ptr<const lif::Entity>& entity);
 
 	/** Removes all entities from this EntityGroup. */
 	void clear();
