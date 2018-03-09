@@ -62,7 +62,7 @@ public:
 	sf::Vector2f getOffset() const { return offset; }
 	void setOffset(const sf::Vector2f& off) { offset = off; }
 
-	virtual sf::Vector2f getSize() const { return size; }
+	sf::Vector2f getSize() const { return size; }
 	void setSize(const sf::Vector2f& sz) { size = sz; }
 
 	/** If a Collider is phantom, it won't be automatically managed by EntityGroup
@@ -97,17 +97,17 @@ public:
 	void setAtLimit(bool b) { atLimit = b; }
 
 	/** @return whether this Collider intersects `other` */
-	virtual bool contains(const lif::Collider& other) const;
+	bool contains(const lif::Collider& other) const;
 
 	/** @return whether this Collider is either "at limit" or has more than 0 colliding Colliders */
-	virtual bool isColliding() const;
+	bool isColliding() const;
 	/** Like `isColliding`, but only account for colliders which are solid for this one */
-	virtual bool collidesWithSolid() const;
+	bool collidesWithSolid() const;
 
 	/** @return the bounding box of this Collider */
-	virtual sf::FloatRect getRect() const;
+	sf::FloatRect getRect() const;
 
-	virtual void update() override;
+	void update() override;
 
 	std::string toString() const override;
 

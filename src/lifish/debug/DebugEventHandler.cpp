@@ -176,6 +176,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 
 		case sf::Keyboard::Add:
 			game._advanceLevel();
+			game.getWLHandler().state = lif::WinLoseHandler::State::DEFAULT;
 			return true;
 
 		case sf::Keyboard::Subtract:
@@ -186,6 +187,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 				game.lm.setLevel(game.ls, lvnum);
 				lif::musicManager->set(game.lm.getLevel()->get<lif::Music>()->getMusic())
 					.setVolume(lif::options.musicVolume).play();
+				game.getWLHandler().state = lif::WinLoseHandler::State::DEFAULT;
 				return true;
 			}
 

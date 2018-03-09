@@ -11,6 +11,11 @@ class LevelManager;
 class Level;
 class SidePanel;
 class WindowContext;
+#ifndef RELEASE
+namespace debug {
+	class DebugEventHandler;
+}
+#endif
 
 /**
  * This class handles the winning and losing conditions and switching
@@ -30,6 +35,11 @@ public:
 	};
 
 private:
+
+#ifndef RELEASE
+	friend class lif::debug::DebugEventHandler;
+#endif
+
 	State state = State::DEFAULT;
 
 	lif::LevelManager& lm;
