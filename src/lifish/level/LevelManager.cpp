@@ -305,7 +305,7 @@ void LevelManager::_checkResurrect() {
 	unsigned living_players = 0;
 
 	for (unsigned i = 0; i < players.size(); ++i) {
-		auto player = players[i];
+		const auto& player = players[i];
 		if (player == nullptr)
 			continue;
 
@@ -322,7 +322,7 @@ void LevelManager::_checkResurrect() {
 		gameOver = true;
 }
 
-bool LevelManager::_tryResurrectPlayer(std::shared_ptr<lif::Player> player) {
+bool LevelManager::_tryResurrectPlayer(const std::shared_ptr<lif::Player>& player) {
 	if (player == nullptr)
 		return false;
 	if (player->getInfo().remainingLives > 0) {

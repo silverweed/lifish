@@ -12,6 +12,7 @@ using lif::ui::ControlsScreen;
 using lif::ui::Interactable;
 using Action = lif::ui::Action;
 using namespace lif::controls;
+using namespace std::literals::string_literals;
 
 ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2u& size)
 	: lif::ui::Screen(window, size)
@@ -179,7 +180,7 @@ Action ControlsScreen::_selectPlayer(int id) {
 
 	const auto used = lif::controls::useJoystick[selectedPlayer-1];
 	interactables["joystick_toggle"]->getText()->setString(used == -1 ? "NO" :
-			std::string("Joystick") + lif::to_string(used));
+			"Joystick"s + lif::to_string(used));
 
 	return Action::DO_NOTHING;
 }

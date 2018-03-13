@@ -24,6 +24,7 @@
 
 using lif::Player;
 using lif::TILE_SIZE;
+using namespace std::literals::string_literals;
 
 const sf::Time Player::DEATH_TIME = sf::milliseconds(5000);
 
@@ -59,17 +60,14 @@ void Player::_init() {
 	}, lif::c_layers::PLAYERS);
 	moving = addComponent<lif::AxisMoving>(*this, lif::conf::player::DEFAULT_SPEED);
 	moving->setFastTurn(true);
-	animated = addComponent<lif::Animated>(*this, lif::getAsset("final", std::string("player") +
-				lif::to_string(info.id) + std::string(".png")));
+	animated = addComponent<lif::Animated>(*this, lif::getAsset("final", "player"s +
+				lif::to_string(info.id) + ".png"s));
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::PLAYERS);
 	addComponent<lif::Drawable>(*this, drawProxy);
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("death", lif::getAsset("test", std::string("player")
-					+ lif::to_string(info.id) + std::string("_death.ogg"))),
-		std::make_pair("hurt", lif::getAsset("test", std::string("player")
-					+ lif::to_string(info.id) + std::string("_hurt.ogg"))),
-		std::make_pair("win", lif::getAsset("test", std::string("player")
-				+ lif::to_string(info.id) + std::string("_win.ogg"))),
+		std::make_pair("death", lif::getAsset("test", "player"s + lif::to_string(info.id) + "_death.ogg"s)),
+		std::make_pair("hurt", lif::getAsset("test", "player"s + lif::to_string(info.id) + "_hurt.ogg"s)),
+		std::make_pair("win", lif::getAsset("test", "player"s + lif::to_string(info.id) + "_win.ogg"s)),
 	});
 	killable = addComponent<lif::Killable>(*this, [this] () {
 		// on kill

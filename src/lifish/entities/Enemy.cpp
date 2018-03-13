@@ -33,6 +33,7 @@
 using lif::Enemy;
 using lif::TILE_SIZE;
 using lif::Direction;
+using namespace std::literals::string_literals;
 
 Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& info)
 	: lif::Entity(pos)
@@ -42,14 +43,11 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 {
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::ENEMIES);
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("death", lif::getAsset("test", std::string("enemy")
-					+ lif::to_string(id) + std::string("_death.ogg"))),
-		std::make_pair("yell", lif::getAsset("test", std::string("enemy")
-					+ lif::to_string(id) + std::string("_yell.ogg"))),
+		std::make_pair("death", lif::getAsset("test", "enemy"s + lif::to_string(id) + "_death.ogg"s)),
+		std::make_pair("yell", lif::getAsset("test", "enemy"s + lif::to_string(id) + "_yell.ogg"s)),
 		// Note: this is an invalid sound if enemy.attackType is not CONTACT. This is not an issue,
 		// since in that case the sound never gets played, so the cache doesn't even load it.
-		std::make_pair("attack", lif::getAsset("test", std::string("enemy")
-					+ lif::to_string(id) + std::string("_attack.ogg")))
+		std::make_pair("attack", lif::getAsset("test", "enemy"s + lif::to_string(id) + "_attack.ogg"s))
 	});
 	addComponent<lif::Lifed>(*this, 1, [this] (int, int newLife) {
 		// on hurt
@@ -66,7 +64,7 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	moving = addComponent<lif::AxisMoving>(*this,
 			lif::conf::enemy::BASE_SPEED * originalSpeed, lif::Direction::DOWN);
 	animated = addComponent<lif::Animated>(*this,
-			lif::getAsset("graphics", std::string("enemy") + lif::to_string(id) + std::string(".png")));
+			lif::getAsset("graphics", "enemy") + lif::to_string(id) + ".png"s);
 	yellClock = addComponent<lif::Clock>(*this);
 	dashClock = addComponent<lif::Clock>(*this);
 	alienSprite = addComponent<lif::AlienSprite>(*this);

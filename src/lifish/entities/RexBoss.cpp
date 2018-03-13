@@ -34,6 +34,7 @@
 using lif::RexBoss;
 using lif::TILE_SIZE;
 using namespace lif::conf::boss::rex_boss;
+using namespace std::literals::string_literals;
 using StateFunction = lif::ai::StateFunction;
 
 constexpr auto MIN_STEPS = 4;
@@ -57,8 +58,8 @@ RexBoss::RexBoss(const sf::Vector2f& pos)
 	attackClock = addComponent<lif::Clock>(*this);
 	sighted = addComponent<lif::FreeSighted>(*this);
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("death", lif::getAsset("sounds", std::string("rex_death.ogg"))),
-		std::make_pair("hurt", lif::getAsset("sounds", std::string("rex_hurt.ogg")))
+		std::make_pair("death", lif::getAsset("sounds", "rex_death.ogg")),
+		std::make_pair("hurt", lif::getAsset("sounds", "rex_hurt.ogg"))
 	});
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "rex_boss.png"));
 	animated->addAnimation("start", { sf::IntRect(0, 0, SIZE.x, SIZE.y) });

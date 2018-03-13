@@ -56,8 +56,8 @@ MainframeBoss::MainframeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 		sf::IntRect(4 * SIZE.x, 0, SIZE.x, SIZE.y),
 	}, true);
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("death", lif::getAsset("sounds", std::string("mainframe_death.ogg"))),
-		std::make_pair("hurt", lif::getAsset("sounds", std::string("mainframe_hurt.ogg")))
+		std::make_pair("death", lif::getAsset("sounds", "mainframe_death.ogg")),
+		std::make_pair("hurt", lif::getAsset("sounds", "mainframe_hurt.ogg"))
 	});
 	addComponent<lif::Lifed>(*this, LIFE);
 	addComponent<lif::Scored>(*this, VALUE);

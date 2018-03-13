@@ -84,7 +84,7 @@ class LevelManager final : public lif::BaseLevelManager, public sf::Drawable {
 	/** If player has continues left, resurrect it and return true.
 	 *  Else, remove it from `players` and return false.
 	 */
-	bool _tryResurrectPlayer(std::shared_ptr<lif::Player> player);
+	bool _tryResurrectPlayer(const std::shared_ptr<lif::Player>& player);
 	void _checkSpecialConditions();
 	void _triggerHurryUp();
 	void _triggerHurryUpWarning();

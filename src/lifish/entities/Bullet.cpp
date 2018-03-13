@@ -14,6 +14,7 @@
 #include "conf/bullet.hpp"
 
 using lif::Bullet;
+using namespace std::literals::string_literals;
 
 Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif::Entity *const source)
 	: lif::Entity(pos)
@@ -23,10 +24,8 @@ Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif:
 	, speed(_info.speed)
 {
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("hit", lif::getAsset("test", std::string("bullet")
-					+ lif::to_string(info.dataId) + std::string("_hit.ogg"))),
-		std::make_pair("shot", lif::getAsset("test", std::string("bullet")
-					+ lif::to_string(info.dataId) + std::string("_shot.ogg")))
+		std::make_pair("hit", lif::getAsset("test", "bullet"s + lif::to_string(info.dataId) + "_hit.ogg"s)),
+		std::make_pair("shot", lif::getAsset("test", "bullet"s + lif::to_string(info.dataId) + "_shot.ogg"s))
 	});
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::BULLETS);
 	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& e) {

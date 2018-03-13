@@ -22,8 +22,8 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	: lif::Boss(pos)
 {
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("death", lif::getAsset("test", std::string("alienboss_death.ogg"))),
-		std::make_pair("hurt", lif::getAsset("test", std::string("alienboss_hurt.ogg")))
+		std::make_pair("death", lif::getAsset("test", "alienboss_death.ogg")),
+		std::make_pair("hurt", lif::getAsset("test", "alienboss_hurt.ogg"))
 	});
 	const sf::Vector2f size(3 * lif::TILE_SIZE, 3 * lif::TILE_SIZE);
 	_addDefaultCollider(size);

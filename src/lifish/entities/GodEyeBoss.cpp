@@ -100,8 +100,8 @@ GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 			_onHurt();
 	});
 	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("death", lif::getAsset("sounds", std::string("god_eye_death.ogg"))),
-		std::make_pair("hurt", lif::getAsset("sounds", std::string("god_eye_hurt.ogg")))
+		std::make_pair("death", lif::getAsset("sounds", "god_eye_death.ogg")),
+		std::make_pair("hurt", lif::getAsset("sounds", "god_eye_hurt.ogg"))
 	});
 
 	_addDefaultCollider(SIZE);
