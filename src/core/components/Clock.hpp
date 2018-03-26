@@ -37,6 +37,10 @@ public:
 	sf::Time add(sf::Time time) {
 		return clock.add(time);
 	}
+
+	bool isRunning() const {
+		return clock.isRunning();
+	}
 };
 
 }

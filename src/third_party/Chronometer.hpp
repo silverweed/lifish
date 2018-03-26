@@ -92,7 +92,7 @@ namespace sftools
         }
 
 	sf::Time restart() {
-		return reset(true);
+		return reset(isRunning());
 	}
 
         /*!

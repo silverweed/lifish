@@ -29,7 +29,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 	metadata["path"] = path;
 
 	// load tracks data
-	const auto tracksdata = levelJSON["tracks"];
+	const auto& tracksdata = levelJSON["tracks"];
 	unsigned tracknum = 1;
 	/* trackinfo = {
 	 *	"loop": {
@@ -39,7 +39,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 	 * }
 	 */
 	for (const auto& trackinfo : tracksdata) {
-		const auto loop = trackinfo["loop"];
+		const auto& loop = trackinfo["loop"];
 		const float loopstart = loop["start"];
 		float looplength = -1;
 		const auto len = loop.find("length");
@@ -53,16 +53,15 @@ void LevelSet::loadFromFile(const std::string& path) {
 	}
 
 	// load enemies data
-	const auto enemydata = levelJSON["enemies"];
+	const auto& enemydata = levelJSON["enemies"];
 	unsigned enemynum = 0;
 	/* enemyinfo = {
 	 *	"ai": uint,
 	 *	"speed": uint,
 	 *	"attack": {
-	 *		"type": string,
-	 *		"damage": int,
+	 *		"type": [string],
 	 *		"id": uint           [opt]
-	 *		"speed": float,      [opt]
+	 *		"contactDamage": int [opt]
 	 *		"fireRate": float,   [opt]
 	 *		"blockTime": float,  [opt]
 	 *		"range": float,      [opt, default=-1]
@@ -75,13 +74,13 @@ void LevelSet::loadFromFile(const std::string& path) {
 		enemies[enemynum].ai = enemyinfo["ai"];
 		enemies[enemynum].speed = enemyinfo["speed"];
 
-		const auto atk = enemyinfo["attack"];
-		const auto atktype = atk["type"];
+		const auto& atk = enemyinfo["attack"];
+		const auto& atktype = atk["type"];
 
 		enemies[enemynum].attack.type = static_cast<lif::AttackType>(0);
 		for (unsigned i = 0; i < atktype.size(); ++i) {
 			AttackType type;
-			const auto at = atktype[i].get<std::string>();
+			const auto& at = atktype[i].get<std::string>();
 			if (!lif::stringToAttackType(at, type))
 				throw std::invalid_argument(at.c_str());
 
@@ -128,7 +127,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 
 
 	// load levels data
-	const auto levelsdata = levelJSON["levels"];
+	const auto& levelsdata = levelJSON["levels"];
 
 	unsigned lvnum = 1;
 	/* lvinfo = {
