@@ -17,6 +17,7 @@
 
 // Define extern variables of core.hpp
 char lif::pwd[lif::PWD_BUFSIZE];
+std::string lif::assetDir;
 lif::GameCache lif::cache;
 std::default_random_engine lif::rng;
 lif::Options lif::options;
@@ -96,5 +97,13 @@ bool lif::initCore() {
 		rng.seed(std::chrono::system_clock::now().time_since_epoch().count());
 	}
 	_initOptions();
-	return _initPwd();
+	if (!_initPwd())
+		return false;
+
+	// Fill the assetDir variable once and for all
+	std::stringstream ss;
+	ss << pwd << DIRSEP << "assets" << DIRSEP;
+	assetDir = ss.str();
+
+	return true;
 }

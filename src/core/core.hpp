@@ -48,6 +48,9 @@ constexpr auto JOYSTICK_INPUT_THRESHOLD = 50;
 /** The executable working directory */
 extern char pwd[PWD_BUFSIZE];
 
+/** The assets base directory */
+extern std::string assetDir;
+
 /** Global game cache (caches textures in memory for faster loading) */
 extern lif::GameCache cache;
 
@@ -84,10 +87,8 @@ extern int exitCode;
 /*                         GLOBAL FUNCTIONS                                 */
 /****************************************************************************/
 
-inline std::string getAssetDir() {
-	std::stringstream ss;
-	ss << pwd << DIRSEP << "assets" << DIRSEP;
-	return ss.str();
+constexpr const std::string& getAssetDir() {
+	return assetDir;
 }
 
 /** Returns the asset found under assetDir/{path args joined by DIRSEP} */
