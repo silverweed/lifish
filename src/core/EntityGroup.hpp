@@ -79,11 +79,11 @@ public:
 
 	/** Applies a function to all entities  */
 	template<class T, typename... Args>
-	void apply(const T& func, Args&... args);
+	void apply(const T& func, Args&&... args);
 
 	/** Applies a function to all entities (const version) */
 	template<class T, typename... Args>
-	void apply(const T& func, Args&... args) const;
+	void apply(const T& func, Args&&... args) const;
 
 	lif::Entity* add(lif::Entity *entity);
 
@@ -145,14 +145,14 @@ public:
 ///// Implementation /////
 
 template<class T, typename... Args>
-void EntityGroup::apply(const T& func, Args&... args) {
+void EntityGroup::apply(const T& func, Args&&... args) {
 	for (auto& e : entities)
-		func(e.get(), args...);
+		func(e.get(), std::forward<Args>(args)...);
 }
 template<class T, typename... Args>
-void EntityGroup::apply(const T& func, Args&... args) const {
+void EntityGroup::apply(const T& func, Args&&... args) const {
 	for (auto& e : entities)
-		func(e.get(), args...);
+		func(e.get(), std::forward<Args>(args)...);
 }
 
 template<class T>

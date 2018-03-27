@@ -23,8 +23,8 @@ protected:
 	std::vector<std::unique_ptr<lif::EventHandler>> handlers;
 
 	template<class T, class... Args>
-	void _addHandler(Args... args) {
-		handlers.emplace_back(new T(args...));
+	void _addHandler(Args&&... args) {
+		handlers.emplace_back(new T(std::forward<Args>(args)...));
 	}
 public:
 	void handleEvents(sf::Window& window);

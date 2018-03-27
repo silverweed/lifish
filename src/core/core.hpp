@@ -92,8 +92,9 @@ inline std::string getAssetDir() {
 
 /** Returns the asset found under assetDir/{path args joined by DIRSEP} */
 template<class...Args>
-inline std::string getAsset(Args... path) {
+inline std::string getAsset(Args&&... path) {
 	std::string result = getAssetDir();
+	// Concatenate args into 'result'
 	const int unpack[] { 0, (result += path, result += DIRSEP, 0)... };
 	static_cast<void>(unpack);
 	result.resize(result.length() - 1); // Strip final '/'

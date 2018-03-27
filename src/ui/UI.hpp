@@ -46,7 +46,7 @@ public:
 			ss << "Added 2 screens of type " << T::SCREEN_NAME << "!";
 			throw std::logic_error(ss.str());
 		}
-		screens[T::SCREEN_NAME] = std::make_unique<T>(args...);
+		screens[T::SCREEN_NAME] = std::make_unique<T>(std::forward<Args>(args)...);
 	}
 
 	/** The size of the UI is used to construct any screen loaded via `load`.
