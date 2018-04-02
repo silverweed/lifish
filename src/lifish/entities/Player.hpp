@@ -76,13 +76,9 @@ class Player : public lif::Entity {
 
 	friend class lif::PlayerDrawProxy;
 
-	constexpr static int WALK_N_FRAMES = 8;
-	constexpr static int DEATH_N_FRAMES = 3;
-	constexpr static int IDLE_N_FRAMES = 20;
-	const static sf::Time DEATH_TIME;
-
 	/** If true, idle animation is winning animation */
 	bool winning = false;
+	bool isHurt = false;
 
 	lif::AxisMoving *moving = nullptr;
 	lif::Animated *animated = nullptr;
@@ -96,9 +92,11 @@ class Player : public lif::Entity {
 	PlayerDrawProxy drawProxy;
 
 	void _init();
+	void _setupAnimations();
 	void _kill();
 	void _hurt();
 	void _checkCollision(lif::Collider& cld);
+	std::string _getDirectionString() const;
 
 public:
 	/** Creates a player with the default state and id `id` */

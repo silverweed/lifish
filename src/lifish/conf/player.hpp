@@ -18,7 +18,7 @@ namespace conf {
 		constexpr unsigned short N_EXTRA_LETTERS = 5;
 		const sf::Time DEATH_TIME = sf::seconds(5);
 		const sf::Time DEATH_STOP_ANIM_TIME = sf::seconds(2);
-		const sf::Time HURT_ANIM_DURATION = sf::milliseconds(120);
+		const sf::Time HURT_ANIM_DURATION = sf::milliseconds(140);
 		const sf::Time RESURRECT_SHIELD_TIME = sf::seconds(5);
 		const sf::Time DAMAGE_SHIELD_TIME = sf::seconds(1);
 	}

@@ -80,7 +80,8 @@ void AxisMoving::update() {
 		realign();
 	}
 
-	prevDirection = direction;
+	if (direction != lif::Direction::NONE)
+		prevDirection = direction;
 }
 
 // Realigns the entity by "bouncing it back" to the tile it occupies the most.
@@ -111,7 +112,7 @@ void AxisMoving::realign() {
 
 void AxisMoving::stop() {
 	lif::Moving::stop();
-	direction = prevDirection = lif::Direction::NONE;
+	direction = lif::Direction::NONE;
 	if (autoRealign)
 		realign();
 }
