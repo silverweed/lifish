@@ -33,12 +33,12 @@ public:
 	};
 private:
 #ifndef RELEASE
-       friend class lif::debug::DebugEventHandler;
-#endif
+	friend class lif::debug::DebugEventHandler;
 
 	unsigned debug = 0;
 	unsigned cycle = 0;
 
+#endif
 	mutable sf::RenderTexture gameRenderTex;
 	mutable sf::RenderTexture sidePanelRenderTex;
 

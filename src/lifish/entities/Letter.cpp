@@ -32,9 +32,9 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	, id(_id)
 {
 	addComponent<lif::Scored>(*this, 100);
-	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("grab", lif::getAsset("test", "letter_grab.ogg"))
-	});
+	addComponent<lif::Sounded>(*this,
+		lif::sid("grab"), lif::getAsset("test", "letter_grab.ogg")
+	);
 	transitionClock = addComponent<lif::Clock>(*this);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("test", "extra_letters.png"));
 	addComponent<lif::Drawable>(*this, *animated);
@@ -60,7 +60,7 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	auto& animatedSprite = animated->getSprite();
 
 	for (unsigned i = 0; i < N_EXTRA_LETTERS; ++i) {
-		auto& anim = animated->addAnimation(lif::to_string(i));
+		auto& anim = animated->addAnimation(static_cast<StringId>(i));
 		// Total different frames are 4 * N_EXTRA_LETTERS
 		// (full letter + 3 transitions to next, cyclic).
 		// Here, animations[i] is _5_ frames long, because it contains:
@@ -90,7 +90,7 @@ void Letter::update() {
 	if (!animatedSprite.isPlaying() && transitioning) {
 		transitioning = false;
 		id = (id + 1) % N_EXTRA_LETTERS;
-		animatedSprite.setAnimation(*get<lif::Animated>()->getAnimation(lif::to_string(id)));
+		animatedSprite.setAnimation(*get<lif::Animated>()->getAnimation(static_cast<StringId>(id)));
 		animatedSprite.pause();
 	} else if (transitionClock->getElapsedTime() >= TRANSITION_DELAY) {
 		transitionClock->restart();

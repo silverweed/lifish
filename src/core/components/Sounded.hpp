@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 #include "Component.hpp"
+#include "sid.hpp"
 
 /**
  * An object which has one or more sounds associated with it.
@@ -10,26 +11,43 @@
 namespace lif {
 
 class Sounded : public lif::Component {
-	std::unordered_map<std::string, std::string> soundFiles;
-public:
-	using SoundList = std::initializer_list<std::pair<std::string, std::string>>;
+	// soundName => soundFile
+	std::unordered_map<lif::StringId, std::string> soundFiles;
 
-	explicit Sounded(lif::Entity& owner, SoundList _soundFiles)
+	template <typename...Args>
+	void _addSounds(lif::StringId k, const std::string& v, Args... args) {
+		static_assert(sizeof...(args) % 2 == 0, "addSounds() must be given an even number of args!");
+		soundFiles[k] = v;
+		_addSounds(std::forward<Args>(args)...);
+	}
+
+	void _addSounds() {}
+public:
+
+	template <typename...Args>
+	explicit Sounded(lif::Entity& owner, Args... _soundFiles)
 		: lif::Component(owner)
 	{
 		_declComponent<Sounded>();
-		for (auto& s : _soundFiles)
-			soundFiles[s.first] = s.second;
+		_addSounds(std::forward<Args>(_soundFiles)...);
 	}
 
-	std::string getSoundFile(std::string name) const {
+	std::string getSoundFile(lif::StringId name) const {
 		auto it = soundFiles.find(name);
 		if (it == soundFiles.end()) return "";
 		return it->second;
 	}
 
-	void setSoundFile(std::string name, std::string file) {
+	std::string getSoundFile(const char *name) const {
+		return getSoundFile(lif::sid(name));
+	}
+
+	void setSoundFile(lif::StringId name, const std::string& file) {
 		soundFiles[name] = file;
+	}
+
+	void setSoundFile(const char *name, const std::string& file) {
+		setSoundFile(lif::sid(name), file);
 	}
 };
 

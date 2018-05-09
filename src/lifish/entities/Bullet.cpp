@@ -23,10 +23,10 @@ Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif:
 	, source(source)
 	, speed(_info.speed)
 {
-	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("hit", lif::getAsset("test", "bullet"s + lif::to_string(info.dataId) + "_hit.ogg"s)),
-		std::make_pair("shot", lif::getAsset("test", "bullet"s + lif::to_string(info.dataId) + "_shot.ogg"s))
-	});
+	addComponent<lif::Sounded>(*this,
+		lif::sid("hit"), lif::getAsset("test", "bullet"s + lif::to_string(info.dataId) + "_hit.ogg"s),
+		lif::sid("shot"), lif::getAsset("test", "bullet"s + lif::to_string(info.dataId) + "_shot.ogg"s)
+	);
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::BULLETS);
 	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& e) {
 		// on collision

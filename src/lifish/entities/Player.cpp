@@ -69,11 +69,11 @@ void Player::_init() {
 				lif::to_string(info.id) + ".png"s));
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::PLAYERS);
 	addComponent<lif::Drawable>(*this, drawProxy);
-	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("death", lif::getAsset("test", "player"s + lif::to_string(info.id) + "_death.ogg"s)),
-		std::make_pair("hurt", lif::getAsset("test", "player"s + lif::to_string(info.id) + "_hurt.ogg"s)),
-		std::make_pair("win", lif::getAsset("test", "player"s + lif::to_string(info.id) + "_win.ogg"s)),
-	});
+	addComponent<lif::Sounded>(*this,
+		lif::sid("death"), lif::getAsset("test", "player"s + lif::to_string(info.id) + "_death.ogg"s),
+		lif::sid("hurt"), lif::getAsset("test", "player"s + lif::to_string(info.id) + "_hurt.ogg"s),
+		lif::sid("win"), lif::getAsset("test", "player"s + lif::to_string(info.id) + "_win.ogg"s)
+	);
 	killable = addComponent<lif::Killable>(*this, [this] () {
 		// on kill
 		_kill();
@@ -124,18 +124,27 @@ void Player::update() {
 		isHurt = false;
 		const auto dir = moving->getDirection();
 		if (dir != lif::Direction::NONE)
-			animated->setAnimation("walk_" + lif::directionToString(dir));
+			animated->setAnimation(lif::sid("walk_" + lif::directionToString(dir)));
 		else {
 			const auto prevdir = moving->getPrevDirection() == lif::Direction::NONE
 						? "down"
 						: lif::directionToString(moving->getPrevDirection());
-			animated->setAnimation("idle_" + prevdir);
+			animated->setAnimation(lif::sid("idle_" + prevdir));
 			moving->stop();
 		}
 	}
 
-	if (winning && lif::startsWith(animated->getAnimationName(), "idle"))
+	if (winning && _isIdleAnim())
 		animated->setAnimation("win");
+}
+
+bool Player::_isIdleAnim() const {
+	static StringId iup = lif::sid("idle_up"),
+	                ileft = lif::sid("idle_left"),
+	                idown = lif::sid("idle_down"),
+	                iright = lif::sid("idle_righe");
+	const auto anim = animated->getAnimationName();
+	return anim == iup || anim == ileft || anim == idown || anim == iright;
 }
 
 void Player::setWinning(bool b) {
@@ -229,7 +238,7 @@ void Player::resurrect() {
 
 void Player::_hurt() {
 	isHurt = true;
-	animated->setAnimation("hurt_" + _getDirectionString());
+	animated->setAnimation(lif::sid("hurt_" + _getDirectionString()));
 	moving->block(lif::conf::player::HURT_ANIM_DURATION);
 	hurtClock->restart();
 	bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::player::DAMAGE_SHIELD_TIME);

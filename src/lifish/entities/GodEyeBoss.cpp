@@ -99,10 +99,10 @@ GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 		else
 			_onHurt();
 	});
-	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("death", lif::getAsset("sounds", "god_eye_death.ogg")),
-		std::make_pair("hurt", lif::getAsset("sounds", "god_eye_hurt.ogg"))
-	});
+	addComponent<lif::Sounded>(*this,
+		lif::sid("death"), lif::getAsset("sounds", "god_eye_death.ogg"),
+		lif::sid("hurt"), lif::getAsset("sounds", "god_eye_hurt.ogg")
+	);
 
 	_addDefaultCollider(SIZE);
 	// Boss is only vulnerable when shield is down

@@ -97,6 +97,7 @@ class Player : public lif::Entity {
 	void _hurt();
 	void _checkCollision(lif::Collider& cld);
 	std::string _getDirectionString() const;
+	bool _isIdleAnim() const;
 
 public:
 	/** Creates a player with the default state and id `id` */

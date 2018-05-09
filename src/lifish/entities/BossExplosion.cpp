@@ -15,9 +15,9 @@ BossExplosion::BossExplosion(const sf::Vector2f& pos)
 {
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("test", "bossbullet.png"));
 	addComponent<lif::Drawable>(*this, *animated);
-	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("explode", lif::getAsset("test", "bossbullet_hit.ogg"))
-	});
+	addComponent<lif::Sounded>(*this,
+		lif::sid("explode"), lif::getAsset("test", "bossbullet_hit.ogg")
+	);
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::BOSS_EXPLOSIONS);
 
 	animated->addAnimation("explosion", {

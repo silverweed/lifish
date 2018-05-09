@@ -42,13 +42,13 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	, originalSpeed(info.speed)
 {
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::ENEMIES);
-	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("death", lif::getAsset("test", "enemy"s + lif::to_string(id) + "_death.ogg"s)),
-		std::make_pair("yell", lif::getAsset("test", "enemy"s + lif::to_string(id) + "_yell.ogg"s)),
+	addComponent<lif::Sounded>(*this,
+		lif::sid("death"), lif::getAsset("test", "enemy"s + lif::to_string(id) + "_death.ogg"s),
+		lif::sid("yell"), lif::getAsset("test", "enemy"s + lif::to_string(id) + "_yell.ogg"s),
 		// Note: this is an invalid sound if enemy.attackType is not CONTACT. This is not an issue,
 		// since in that case the sound never gets played, so the cache doesn't even load it.
-		std::make_pair("attack", lif::getAsset("test", "enemy"s + lif::to_string(id) + "_attack.ogg"s))
-	});
+		lif::sid("attack"), lif::getAsset("test", "enemy"s + lif::to_string(id) + "_attack.ogg"s)
+	);
 	addComponent<lif::Lifed>(*this, 1, [this] (int, int newLife) {
 		// on hurt
 		if (newLife <= 0)
@@ -172,7 +172,7 @@ void Enemy::update() {
 		if (moving->getDirection() == lif::Direction::NONE)
 			animated->setAnimation("walk_down");
 		else
-			animated->setAnimation("walk_" + lif::directionToString(moving->getDirection()));
+			animated->setAnimation(lif::sid("walk_" + lif::directionToString(moving->getDirection())));
 		animated->getSprite().setLooped(true);
 		animated->getSprite().play();
 		shootingAnim = false;
@@ -189,7 +189,8 @@ void Enemy::_checkShoot() {
 		const auto entity = pair.first;
 		if (_inRange(entity) && ai->getLevelManager()->isPlayer(*entity)) {
 			if (!shootingAnim) {
-				animated->setAnimation("shoot_" + lif::directionToString(moving->getDirection()));
+				animated->setAnimation(lif::sid(
+						"shoot_" + lif::directionToString(moving->getDirection())));
 				animated->getSprite().play();
 				animated->getSprite().setLooped(false, false);
 				shootingAnim = true;

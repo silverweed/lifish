@@ -14,49 +14,50 @@ void GameCache::setMaxParallelSounds(std::size_t n) {
 	sounds.reserve(maxParallelSounds);
 }
 
-sf::Texture* GameCache::loadTexture(const std::string& texture_name) {
+sf::Texture* GameCache::loadTexture(const std::string& textureName) {
 	// Check if image is already in cache
-	auto it = textures.find(texture_name);
+	const auto nameSid = sid(textureName);
+	auto it = textures.find(nameSid);
 	if (it != textures.end())
 		return &it->second;
 
 	// Not in cache: load from file
-	auto& txt = textures[texture_name];
-	if (!txt.loadFromFile(texture_name)) {
-		std::cerr << "[GameCache.cpp] Error: couldn't load texture "
-			<< texture_name << " from file!" << std::endl;
+	auto& txt = textures[nameSid];
+	if (!txt.loadFromFile(textureName)) {
+		std::cerr << "[GameCache.cpp] Error: couldn't load texture " << textureName << " from file!\r\n";
 	}
 #ifndef RELEASE
 	else {
-		std::cerr << "[GameCache] Loaded " << texture_name << std::endl;
+		std::cerr << "[GameCache] Loaded " << textureName << std::endl;
 	}
 #endif
 	return &txt;
 }
 
-bool GameCache::loadSound(sf::Sound& sound, const std::string& sound_name) {
+bool GameCache::loadSound(sf::Sound& sound, const std::string& soundName) {
 	// Check if sound buffer is already in cache
-	auto it = soundBuffers.find(sound_name);
+	const auto nameSid = sid(soundName);
+	auto it = soundBuffers.find(nameSid);
 	if (it != soundBuffers.end()) {
 		sound.setBuffer(it->second);
 		return true;
 	}
 	// Load from file and update the cache
-	auto& buf = soundBuffers[sound_name];
-	if (!buf.loadFromFile(sound_name)) {
-		std::cerr << "[GameCache.cpp] Error: couldn't load sound " << sound_name << " from file!" << std::endl;
+	auto& buf = soundBuffers[nameSid];
+	if (!buf.loadFromFile(soundName)) {
+		std::cerr << "[GameCache.cpp] Error: couldn't load sound " << soundName << " from file!\r\n";
 		return false;
 	}
 #ifndef RELEASE
 	else {
-		std::cerr << "[GameCache] Loaded " << sound_name << std::endl;
+		std::cerr << "[GameCache] Loaded " << soundName << std::endl;
 	}
 #endif
 	sound.setBuffer(buf);
 	return true;
 }
 
-void GameCache::playSound(const std::string& sound_name) {
+void GameCache::playSound(const std::string& soundName) {
 	if (lif::options.soundsMute) return;
 
 	unsigned idx = 0;
@@ -76,27 +77,27 @@ void GameCache::playSound(const std::string& sound_name) {
 
 	// Replace this dead sound with the new one
 	auto& sound = sounds[idx];
-	if (!loadSound(sound, sound_name))
+	if (!loadSound(sound, soundName))
 		return;
 
 	sound.setVolume(lif::options.soundsVolume);
 	sound.play();
 }
 
-sf::Font* GameCache::loadFont(const std::string& font_name) {
-	auto it = fonts.find(font_name);
+sf::Font* GameCache::loadFont(const std::string& fontName) {
+	const auto nameSid = sid(fontName);
+	auto it = fonts.find(nameSid);
 	if (it != fonts.end())
 		return &it->second;
 
 	// Load from file and update the cache
-	auto& font = fonts[font_name];
-	if (!font.loadFromFile(font_name)) {
-		std::cerr << "[GameCache.cpp] Error: couldn't load font "
-			<< font_name << " from file!" << std::endl;
+	auto& font = fonts[nameSid];
+	if (!font.loadFromFile(fontName)) {
+		std::cerr << "[GameCache.cpp] Error: couldn't load font " << fontName << " from file!\r\n";
 	}
 #ifndef RELEASE
 	else {
-		std::cerr << "[GameCache] Loaded " << font_name << std::endl;
+		std::cerr << "[GameCache] Loaded " << fontName << std::endl;
 	}
 #endif
 	return &font;

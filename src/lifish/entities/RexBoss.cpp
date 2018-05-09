@@ -57,10 +57,10 @@ RexBoss::RexBoss(const sf::Vector2f& pos)
 	animClock = addComponent<lif::Clock>(*this);
 	attackClock = addComponent<lif::Clock>(*this);
 	sighted = addComponent<lif::FreeSighted>(*this);
-	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("death", lif::getAsset("sounds", "rex_death.ogg")),
-		std::make_pair("hurt", lif::getAsset("sounds", "rex_hurt.ogg"))
-	});
+	addComponent<lif::Sounded>(*this,
+		lif::sid("death"), lif::getAsset("sounds", "rex_death.ogg"),
+		lif::sid("hurt"), lif::getAsset("sounds", "rex_hurt.ogg")
+	);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "rex_boss.png"));
 	animated->addAnimation("start", { sf::IntRect(0, 0, SIZE.x, SIZE.y) });
 	animated->addAnimation("walk_up", { sf::IntRect(0, 0, SIZE.x, SIZE.y) });
@@ -327,7 +327,7 @@ StateFunction RexBoss::_updateMissilesRecover() {
 }
 
 StateFunction RexBoss::_updateDying() {
-	if (animated->getAnimationName() != "death") {
+	if (animated->getAnimationName() != lif::sid("death")) {
 		killable->kill();
 		animated->setAnimation("death");
 		animated->getSprite().setLooped(false);
@@ -406,7 +406,7 @@ int RexBoss::_checkAttackCondition() const {
 
 void RexBoss::_kill() {
 	moving->setActive(false);
-	if (animated->getAnimationName() != "death") {
+	if (animated->getAnimationName() != lif::sid("death")) {
 		animated->setAnimation("death");
 		animated->getSprite().setLooped(false);
 		animated->getSprite().play();

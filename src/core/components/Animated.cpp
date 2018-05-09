@@ -6,24 +6,22 @@
 
 using lif::Animated;
 
-Animated::Animated(lif::Entity& owner, const std::string& texture_name)
+Animated::Animated(lif::Entity& owner, const std::string& textureName)
 	: lif::Component(owner)
 {
 	_declComponent<Animated>();
-	texture = lif::cache.loadTexture(texture_name);
+	texture = lif::cache.loadTexture(textureName);
 	frameClock = addComponent<lif::Clock>(*this);
 }
 
-Animation& Animated::addAnimation(const std::string& name) {
+Animation& Animated::addAnimation(StringId name) {
 	auto& anim = animations[name];
 	anim.setSpriteSheet(*texture);
 
 	return anim;
 }
 
-Animation& Animated::addAnimation(const std::string& name,
-		std::initializer_list<sf::IntRect> frames, bool set)
-{
+Animation& Animated::addAnimation(StringId name, std::initializer_list<sf::IntRect> frames, bool set) {
 	auto& anim = addAnimation(name);
 
 	for (auto& frame : frames)
@@ -39,7 +37,7 @@ void Animated::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(animatedSprite, states);
 }
 
-Animation* Animated::getAnimation(const std::string& name) {
+Animation* Animated::getAnimation(StringId name) {
 	auto it = animations.find(name);
 	if (it == animations.end())
 		return nullptr;
@@ -47,21 +45,21 @@ Animation* Animated::getAnimation(const std::string& name) {
 	return &it->second;
 }
 
-std::string Animated::getAnimationName() const {
+lif::StringId Animated::getAnimationName() const {
 	for (const auto& anim : animations)
 		if (&anim.second == animatedSprite.getAnimation())
 			return anim.first;
-	return "";
+	return lif::sid("");
 }
 
-bool Animated::hasAnimation(const std::string& name) const {
+bool Animated::hasAnimation(StringId name) const {
 	return animations.find(name) != animations.end();
 }
 
-void Animated::setAnimation(const std::string& name) {
+void Animated::setAnimation(StringId name) {
 	auto anim = getAnimation(name);
 	if (anim == nullptr)
-		throw std::invalid_argument("Animation set to non-existing `" + name + "`!");
+		throw std::invalid_argument("Animation set to non-existing `" + lif::sidToString(name) + "`!");
 
 	setAnimation(*anim);
 
@@ -86,7 +84,7 @@ void Animated::update() {
 	animatedSprite.update(frameClock->restart());
 }
 
-bool Animated::isPlaying(const std::string& name) {
+bool Animated::isPlaying(StringId name) {
 	return getAnimation(name) == animatedSprite.getAnimation() && animatedSprite.isPlaying();
 }
 
@@ -94,6 +92,6 @@ void Animated::setDefaultFrameTime(sf::Time time) {
 	defaultFrameTime = time;
 }
 
-void Animated::setFrameTime(const std::string& name, sf::Time time) {
+void Animated::setFrameTime(StringId name, sf::Time time) {
 	frameTimes[name] = time;
 }

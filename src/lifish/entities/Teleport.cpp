@@ -39,9 +39,9 @@ Teleport::Teleport(const sf::Vector2f& pos)
 			sf::IntRect(0, 0, lif::TILE_SIZE, lif::TILE_SIZE)
 		});
 	});
-	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("warp", lif::getAsset("test", "teleport.ogg"))
-	});
+	addComponent<lif::Sounded>(*this,
+		lif::sid("warp"), lif::getAsset("test", "teleport.ogg")
+	);
 
 	auto& anim = animated->addAnimation("teleport");
 	for (unsigned i = 0; i < N_ANIM_FRAMES; ++i)

@@ -112,7 +112,7 @@ StateFunction HauntingSpiritBoss::_updateStart() {
 		get<lif::FreeSighted>()->setActive(true);
 		return BIND(_updateSearching);
 
-	} else if (animated->getAnimationName() == "idle") {
+	} else if (animated->getAnimationName() == lif::sid("idle")) {
 		animated->getSprite().setLooped(false, false);
 		animated->setAnimation("start");
 		animated->getSprite().play();
@@ -155,7 +155,7 @@ StateFunction HauntingSpiritBoss::_updateSelectNewStatue() {
 
 StateFunction HauntingSpiritBoss::_updateTransitioningBegin() {
 	// Task: play the transitioning animation and set the next haunted statue as `possessed`
-	if (animated->getAnimationName() != "transition") {
+	if (animated->getAnimationName() != lif::sid("transition")) {
 		animated->setAnimation("transition");
 		animated->getSprite().setLooped(false, false);
 		animated->getSprite().play();
@@ -236,7 +236,7 @@ StateFunction HauntingSpiritBoss::_updateHaunting() {
 
 StateFunction HauntingSpiritBoss::_updateDying() {
 	// Task: play death animation
-	if (animated->getAnimationName() != "death") {
+	if (animated->getAnimationName() != lif::sid("death")) {
 		killable->kill();
 		animated->setAnimation("death");
 		animated->getSprite().setLooped(false);

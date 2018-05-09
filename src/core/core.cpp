@@ -1,7 +1,9 @@
 #include "core.hpp"
 #include "Options.hpp"
 #include "GameCache.hpp"
-#include "DebugPainter.hpp"
+#ifndef RELEASE
+	#include "DebugPainter.hpp"
+#endif
 #include <cstring>
 #include <chrono>
 

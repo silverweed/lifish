@@ -35,9 +35,9 @@ Bonus::Bonus(const sf::Vector2f& pos, const lif::BonusType type)
 	addComponent<lif::Drawable>(*this, *sprite);
 	addComponent<lif::Scored>(*this, lif::conf::bonus::VALUE);
 	expireClock = addComponent<lif::Clock>(*this);
-	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("grab", lif::getAsset("test", "bonus_grab.ogg"))
-	});
+	addComponent<lif::Sounded>(*this,
+		lif::sid("grab"), lif::getAsset("test", "bonus_grab.ogg")
+	);
 	addComponent<lif::Temporary>(*this, [this] () {
 		// expire condition
 		return grabbable->isGrabbed() || expireClock->getElapsedTime() > EXPIRE_TIME;

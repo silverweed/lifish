@@ -26,7 +26,9 @@
 #include <cassert>
 #include <random>
 #include <cstdlib>
-#include "DebugPainter.hpp"
+#ifndef RELEASE
+	#include "DebugPainter.hpp"
+#endif
 
 #define BIND(f) std::bind(&MainframeBoss:: f, this)
 
@@ -55,10 +57,10 @@ MainframeBoss::MainframeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 		sf::IntRect(3 * SIZE.x, 0, SIZE.x, SIZE.y),
 		sf::IntRect(4 * SIZE.x, 0, SIZE.x, SIZE.y),
 	}, true);
-	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("death", lif::getAsset("sounds", "mainframe_death.ogg")),
-		std::make_pair("hurt", lif::getAsset("sounds", "mainframe_hurt.ogg"))
-	});
+	addComponent<lif::Sounded>(*this,
+		lif::sid("death"), lif::getAsset("sounds", "mainframe_death.ogg"),
+		lif::sid("hurt"), lif::getAsset("sounds", "mainframe_hurt.ogg")
+	);
 	addComponent<lif::Lifed>(*this, LIFE);
 	addComponent<lif::Scored>(*this, VALUE);
 	clock = addComponent<lif::Clock>(*this);

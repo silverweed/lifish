@@ -23,9 +23,9 @@ Coin::Coin(const sf::Vector2f& pos)
 {
 	addComponent<lif::Fixed>(*this);
 	addComponent<lif::Scored>(*this, VALUE);
-	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("grab", lif::getAsset("sounds", "coin.ogg"))
-	});
+	addComponent<lif::Sounded>(*this,
+		lif::sid("grab"), lif::getAsset("sounds", "coin.ogg")
+	);
 	grabClock = addComponent<lif::Clock>(*this);
 	std::string texname = lif::getAsset("graphics", "coin.png");
 	animated = addComponent<lif::Animated>(*this, texname);

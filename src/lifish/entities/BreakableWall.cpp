@@ -59,9 +59,9 @@ void BreakableWall::_setupComponents(unsigned life, unsigned int score) {
 	addComponent<lif::Fixed>(*this);
 	addComponent<lif::Scored>(*this, score);
 	addComponent<lif::Lifed>(*this, life);
-	addComponent<lif::Sounded>(*this, lif::Sounded::SoundList {
-		std::make_pair("death", lif::getAsset("sounds", "wall_break.ogg"))
-	});
+	addComponent<lif::Sounded>(*this,
+		lif::sid("death"), lif::getAsset("sounds", "wall_break.ogg")
+	);
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::WALLS);
 	addComponent<lif::Killable>(*this, [this] () {
 		// on kill
