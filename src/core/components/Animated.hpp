@@ -43,6 +43,10 @@ public:
 
 	/** If an animation tagged `name` exists, returns it. Else returns nullptr */
 	Animation* getAnimation(StringId name);
+	Animation* getAnimation(const char *name) { return getAnimation(lif::sid(name)); }
+	const Animation* getAnimation(StringId name) const { return getAnimation(name); }
+	const Animation* getAnimation(const char *name) const { return getAnimation(lif::sid(name)); }
+
 	StringId getAnimationName() const;
 	bool hasAnimation(StringId name) const;
 	bool hasAnimation(const char *name) const { return hasAnimation(lif::sid(name)); }
@@ -62,8 +66,8 @@ public:
 	void setFrameTime(const char *name, sf::Time time) { setFrameTime(lif::sid(name), time); }
 
 	/** Returns true if cur animation == `name` and animatedSprite is playing */
-	bool isPlaying(StringId name);
-	bool isPlaying(const char *name) { return isPlaying(lif::sid(name)); }
+	bool isPlaying(StringId name) const;
+	bool isPlaying(const char *name) const { return isPlaying(lif::sid(name)); }
 
 	sf::Texture* getTexture() const { return texture; }
 	void setTexture(sf::Texture *t) { texture = t; }

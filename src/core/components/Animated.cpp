@@ -84,7 +84,7 @@ void Animated::update() {
 	animatedSprite.update(frameClock->restart());
 }
 
-bool Animated::isPlaying(StringId name) {
+bool Animated::isPlaying(StringId name) const {
 	return getAnimation(name) == animatedSprite.getAnimation() && animatedSprite.isPlaying();
 }
 
