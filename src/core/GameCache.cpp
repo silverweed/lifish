@@ -16,7 +16,7 @@ void GameCache::setMaxParallelSounds(std::size_t n) {
 
 sf::Texture* GameCache::loadTexture(const std::string& textureName) {
 	// Check if image is already in cache
-	const auto nameSid = sid(textureName);
+	const auto nameSid = lif::sid(textureName);
 	auto it = textures.find(nameSid);
 	if (it != textures.end())
 		return &it->second;
@@ -36,7 +36,7 @@ sf::Texture* GameCache::loadTexture(const std::string& textureName) {
 
 bool GameCache::loadSound(sf::Sound& sound, const std::string& soundName) {
 	// Check if sound buffer is already in cache
-	const auto nameSid = sid(soundName);
+	const auto nameSid = lif::sid(soundName);
 	auto it = soundBuffers.find(nameSid);
 	if (it != soundBuffers.end()) {
 		sound.setBuffer(it->second);
@@ -85,7 +85,7 @@ void GameCache::playSound(const std::string& soundName) {
 }
 
 sf::Font* GameCache::loadFont(const std::string& fontName) {
-	const auto nameSid = sid(fontName);
+	const auto nameSid = lif::sid(fontName);
 	auto it = fonts.find(nameSid);
 	if (it != fonts.end())
 		return &it->second;
