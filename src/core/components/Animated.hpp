@@ -42,9 +42,7 @@ public:
 	}
 
 	/** If an animation tagged `name` exists, returns it. Else returns nullptr */
-	Animation* getAnimation(StringId name);
-	Animation* getAnimation(const char *name) { return getAnimation(lif::sid(name)); }
-	const Animation* getAnimation(StringId name) const { return getAnimation(name); }
+	const Animation* getAnimation(StringId name) const;
 	const Animation* getAnimation(const char *name) const { return getAnimation(lif::sid(name)); }
 
 	StringId getAnimationName() const;

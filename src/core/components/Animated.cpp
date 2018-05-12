@@ -37,7 +37,7 @@ void Animated::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(animatedSprite, states);
 }
 
-Animation* Animated::getAnimation(StringId name) {
+const Animation* Animated::getAnimation(StringId name) const {
 	auto it = animations.find(name);
 	if (it == animations.end())
 		return nullptr;
@@ -57,7 +57,7 @@ bool Animated::hasAnimation(StringId name) const {
 }
 
 void Animated::setAnimation(StringId name) {
-	auto anim = getAnimation(name);
+	auto anim = const_cast<Animation*>(getAnimation(name));
 	if (anim == nullptr)
 		throw std::invalid_argument("Animation set to non-existing `" + lif::sidToString(name) + "`!");
 
