@@ -6,6 +6,7 @@
 #include <iterator>
 #include <unordered_set>
 #include <functional>
+#include <type_traits>
 #include <algorithm>
 #include <SFML/System/NonCopyable.hpp>
 #include "Entity.hpp"
@@ -22,6 +23,16 @@ namespace lif {
 
 class CollisionDetector;
 class LevelRenderer;
+
+template<typename T1, typename T2>
+constexpr auto is_same_v = std::is_same<T1, T2>::value;
+
+template<typename F, typename...Args>
+using result_t = typename std::result_of<F(lif::Entity*, Args&&...)>::type;
+
+template<typename F, typename R, typename...Args>
+using returns_t = typename std::enable_if<is_same_v<result_t<F, Args...>, R>, std::nullptr_t>::type;
+
 
 /**
  * A container for Entities, providing convenient methods for operating
@@ -72,33 +83,66 @@ class EntityGroup final : private sf::NonCopyable {
 
 	lif::Entity* _putInAux(lif::Entity *entity);
 public:
+	static constexpr bool APPLY_PROCEED = false;
+	static constexpr bool APPLY_EXIT = true;
+
 	/**
 	 * Constructs the EntityGroup as the owner of its entities.
 	 */
 	explicit EntityGroup();
 
-	/** Applies a function to all entities  */
-	template<class T, typename... Args>
-	void apply(const T& func, Args&&... args);
+	/** Applies a function to all entities.
+	 *  If the passed function returns APPLY_EXIT for an Entity,
+	 *  this function will return without processing additional entities.
+	 */
+	template<typename F, typename...Args, returns_t<F, bool, Args...> = nullptr>
+	void apply(const F& func, Args&&... args) {
+		for (auto& e : entities)
+			if (func(e.get(), std::forward<Args>(args)...))
+				return;
+	}
 
-	/** Applies a function to all entities (const version) */
-	template<class T, typename... Args>
-	void apply(const T& func, Args&&... args) const;
+	/** Applies a function to all entities. */
+	template<typename F, typename...Args, returns_t<F, void, Args...> = nullptr>
+	void apply(const F& func, Args&&... args) {
+		for (auto& e : entities)
+			func(e.get(), std::forward<Args>(args)...);
+	}
 
+	/** @see apply */
+	template<typename F, typename...Args, returns_t<F, bool, Args...> = nullptr>
+	auto apply(const F& func, Args&&... args) const {
+		for (auto& e : entities)
+			if (func(e.get(), std::forward<Args>(args)...))
+				return;
+	}
+
+	/** @see apply */
+	template<typename F, typename...Args, returns_t<F, void, Args...> = nullptr>
+	auto apply(const F& func, Args&&... args) const {
+		for (auto& e : entities)
+			func(e.get(), std::forward<Args>(args)...);
+	}
+
+	/** Adds an entity to this group. */
 	lif::Entity* add(lif::Entity *entity);
 
-	template<class T>
+	/** @see add */
+	template<typename T>
 	lif::Entity* add(std::shared_ptr<T> entity);
 
 	/** Removes an entity from all internal collections. */
 	void remove(const lif::Entity& entity);
+	/** @see remove */
 	void remove(const std::shared_ptr<const lif::Entity>& entity);
 
 	/** Removes all entities from this EntityGroup. */
 	void clear();
 
-	template<class T>
+	/** @return the number of entities of type T in this group */
+	template<typename T>
 	size_t size() const;
+	/** @return the total number of entitiies in this group */
 	size_t size() const { return entities.size(); }
 
 	/** Explicitly request that all expired weak_ptr's are pruned. This is done
@@ -111,6 +155,7 @@ public:
 	void validate();
 	/** Explicitly request that the internal helper lists are updated. */
 	void checkAll();
+	/** Calls `update` for every entity in this group */
 	void updateAll();
 
 	auto getColliding() -> std::vector<std::weak_ptr<lif::Collider>>& {
@@ -144,25 +189,14 @@ public:
 
 ///// Implementation /////
 
-template<class T, typename... Args>
-void EntityGroup::apply(const T& func, Args&&... args) {
-	for (auto& e : entities)
-		func(e.get(), std::forward<Args>(args)...);
-}
-template<class T, typename... Args>
-void EntityGroup::apply(const T& func, Args&&... args) const {
-	for (auto& e : entities)
-		func(e.get(), std::forward<Args>(args)...);
-}
-
-template<class T>
+template<typename T>
 lif::Entity* EntityGroup::add(std::shared_ptr<T> entity) {
 	entity->init();
 	entities.emplace_back(entity);
 	return _putInAux(entities.back().get());
 }
 
-template<class T>
+template<typename T>
 size_t EntityGroup::size() const {
 	return std::count_if(entities.begin(), entities.end(), [] (const auto& e) {
 		return dynamic_cast<const T*>(e.get()) != nullptr;

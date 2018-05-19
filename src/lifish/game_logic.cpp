@@ -42,37 +42,39 @@ void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm
 	if (controllable->hasFocus()
 		&& !blm.isInputDisabled()
 		&& lm.canDeployBomb(*player)
-		&& controllable->hasQueuedBombCommand()
-		&& lm.canDeployBombAt(lif::tile2(player->getPosition())))
+		&& controllable->hasQueuedBombCommand())
 	{
 		if (pinfo.powers.throwableBomb) {
+			std::cerr << "deployed = " << lm.bombsDeployedBy(pinfo.id) << "\n";
+			std::cerr << "latest = " << latestDetonation[pinfo.id-1].getElapsedTime().asSeconds() << "\n";
 			if (lm.bombsDeployedBy(pinfo.id) > 0) {
-				bool found = false;
-				lm.getEntities().apply([&found, id = pinfo.id] (lif::Entity *e) {
-					if (found) return;
-					auto bomb = dynamic_cast<lif::Bomb*>(e);
-					if (bomb == nullptr) return;
-					const auto source = dynamic_cast<const lif::Player*>(bomb->getSourceEntity());
-					if (source == nullptr || source->getInfo().id != id) return;
-					if (bomb->getCurrentFuse() > sf::seconds(0.5)) {
-						bomb->ignite();
-						found = true;
-						latestDetonation[id-1].restart();
-					}
-				});
+				auto bomb = lm.getFirstValidBomb(pinfo.id);
+				if (bomb == nullptr)
+					throw std::logic_error("Player deployed some bomb, but none found?!");
+
+				bomb->ignite();
+				latestDetonation[pinfo.id-1].restart();
+
+				std::cerr << "1\n";
 				return;
+
 			} else if (latestDetonation[pinfo.id-1].getElapsedTime() < sf::seconds(0.5)) {
+				std::cerr << "2\n";
 				return;
 			}
+		} else if (!lm.canDeployBombAt(lif::tile2(player->getPosition()))) {
+			// doing this check only if !throwableBomb, else the player wouldn't be
+			// able to detonate a bomb while on the same tile as it
+			return;
 		}
+
 		auto bomb = new lif::Bomb(lif::aligned2(player->getPosition()),
 					player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius,
 					pinfo.powers.incendiaryBomb);
 		lif::cache.playSound(bomb->get<lif::Sounded>()->getSoundFile("fuse"));
 		if (pinfo.powers.throwableBomb) {
 			bomb->addComponent<lif::AxisMoving>(*bomb, lif::conf::player::DEFAULT_SPEED * 1.5,
-				player->get<lif::AxisMoving>()->getDirection())
-				->setAutoRealign(false);
+				player->get<lif::AxisMoving>()->getPrevDirection());
 			bomb->setPosition(static_cast<sf::Vector2f>(lif::tile2(player->getPosition()))
 					* static_cast<float>(lif::TILE_SIZE));
 		}

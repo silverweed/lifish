@@ -140,6 +140,8 @@ public:
 	bool canDeployBombAt(const sf::Vector2i& tile) const;
 	/** @return the number of bombs currently deployed by id-th player */
 	int bombsDeployedBy(int id) const;
+	/** @return the first valid bomb deployed by id-th player, or nullptr if there are none */
+	lif::Bomb* getFirstValidBomb(int id) const;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void update() override;

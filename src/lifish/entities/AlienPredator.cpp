@@ -110,17 +110,15 @@ sf::Vector2f AlienPredator::_findTunneledPosition(const lif::LevelManager& lm) c
 
 	// Then exclude all tiles occupied by solid entities or nearby moving solid entities
 	lm.getEntities().apply([this, &tiles] (const lif::Entity *e) {
-		if (tiles.size() == 0) return;
-
 		const auto cld = e->get<lif::Collider>();
 		if (cld == nullptr || !cld->isSolidFor(*collider))
-			return;
+			return lif::EntityGroup::APPLY_PROCEED;
 
 		sf::Vector2i etile(lif::tile(e->getPosition()));
 		tiles.remove(etile);
 		const auto mv = e->get<lif::AxisMoving>();
 		if (mv == nullptr)
-			return;
+			return lif::EntityGroup::APPLY_PROCEED;
 
 		for (unsigned i = 0; i < 3; ++i) {
 			switch (mv->getDirection()) {
@@ -137,10 +135,14 @@ sf::Vector2f AlienPredator::_findTunneledPosition(const lif::LevelManager& lm) c
 				++etile.x;
 				break;
 			default:
-				return;
+				return lif::EntityGroup::APPLY_PROCEED;
 			}
 			tiles.remove(etile);
 		}
+
+		if (tiles.size() == 0) return lif::EntityGroup::APPLY_EXIT;
+
+		return lif::EntityGroup::APPLY_PROCEED;
 	});
 
 	if (tiles.size() == 0)

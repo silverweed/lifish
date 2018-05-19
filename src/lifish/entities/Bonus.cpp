@@ -11,6 +11,8 @@
 #include "Collider.hpp"
 #include "game.hpp"
 #include "conf/bonus.hpp"
+#include "ZIndexed.hpp"
+#include "conf/zindex.hpp"
 
 using lif::Bonus;
 using lif::TILE_SIZE;
@@ -20,6 +22,7 @@ Bonus::Bonus(const sf::Vector2f& pos, const lif::BonusType type)
 	: lif::Entity(pos)
 	, type(type)
 {
+	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::EXPLOSIONS);
 	sprite = addComponent<lif::Sprite>(*this,
 				lif::getAsset("graphics", "bonuses.png"),
 				sf::IntRect(

@@ -158,10 +158,11 @@ void LevelManager::resetPlayerPersistentData() {
 
 bool LevelManager::canDeployBomb(const lif::Player& player) const {
 	const auto pinfo = player.getInfo();
+	if (pinfo.powers.throwableBomb)
+		return true;
+
 	const bool mostly_aligned = lif::length(player.getPosition() - lif::aligned2(player.getPosition())) < 8;
-	return pinfo.powers.throwableBomb
-		? true
-		: /*player.isAligned() &&*/ mostly_aligned && bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs;
+	return /*player.isAligned() &&*/ mostly_aligned && bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs;
 }
 
 bool LevelManager::canDeployBombAt(const sf::Vector2i& tile) const {
@@ -191,11 +192,26 @@ int LevelManager::bombsDeployedBy(int id) const {
 	});
 }
 
+lif::Bomb* LevelManager::getFirstValidBomb(int id) const {
+	const auto& pbombs = bombs[id - 1];
+	for (unsigned i = 0; i < pbombs.size(); ++i) {
+		if (!pbombs[i].expired()) {
+			const auto& bomb = pbombs[i].lock();
+			if (bomb != nullptr)
+				return bomb.get();
+		}
+	}
+	return nullptr;
+}
+
 bool LevelManager::isLevelClear() const {
 	bool clear = true;
 	entities.apply([&clear] (const lif::Entity *e) {
-		if (clear && e->get<lif::Foe>() != nullptr)
+		if (e->get<lif::Foe>() != nullptr) {
 			clear = false;
+			return lif::EntityGroup::APPLY_EXIT;
+		}
+		return lif::EntityGroup::APPLY_PROCEED;
 	});
 	return clear;
 }
@@ -273,17 +289,16 @@ void LevelManager::_endExtraGame() {
 
 bool LevelManager::_shouldTriggerExtraGame() const {
 	bool there_are_coins = false;
-
 	entities.apply([&there_are_coins] (const lif::Entity *e) {
-		if (there_are_coins) return;
-
 		auto coin = dynamic_cast<const lif::Coin*>(e);
-		if (coin == nullptr) return;
+		if (coin == nullptr) return lif::EntityGroup::APPLY_PROCEED;
 
 		if (!coin->get<lif::Killable>()->isKilled()) {
 			there_are_coins = true;
-			return;
+			return lif::EntityGroup::APPLY_EXIT;
 		}
+
+		return lif::EntityGroup::APPLY_PROCEED;
 	});
 
 	return !there_are_coins;

@@ -8,7 +8,7 @@ std::discrete_distribution<unsigned> lif::conf::bonus::distribution {
 	1,	// armor
 	7,	// quick fuse
 	3,	// incendiary bomb
-	1,	// throwable bomb
+	100000,	// throwable bomb
 	10,	// shield
 	10,	// speedy
 	3,	// zapper
