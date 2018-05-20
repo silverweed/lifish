@@ -14,14 +14,14 @@ Animated::Animated(lif::Entity& owner, const std::string& textureName)
 	frameClock = addComponent<lif::Clock>(*this);
 }
 
-Animation& Animated::addAnimation(StringId name) {
+Animation& Animated::addAnimation(lif::StringId name) {
 	auto& anim = animations[name];
 	anim.setSpriteSheet(*texture);
 
 	return anim;
 }
 
-Animation& Animated::addAnimation(StringId name, std::initializer_list<sf::IntRect> frames, bool set) {
+Animation& Animated::addAnimation(lif::StringId name, std::initializer_list<sf::IntRect> frames, bool set) {
 	auto& anim = addAnimation(name);
 
 	for (auto& frame : frames)
@@ -37,7 +37,7 @@ void Animated::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(animatedSprite, states);
 }
 
-const Animation* Animated::getAnimation(StringId name) const {
+const Animation* Animated::getAnimation(lif::StringId name) const {
 	auto it = animations.find(name);
 	if (it == animations.end())
 		return nullptr;
@@ -52,11 +52,11 @@ lif::StringId Animated::getAnimationName() const {
 	return lif::sid("");
 }
 
-bool Animated::hasAnimation(StringId name) const {
+bool Animated::hasAnimation(lif::StringId name) const {
 	return animations.find(name) != animations.end();
 }
 
-void Animated::setAnimation(StringId name) {
+void Animated::setAnimation(lif::StringId name) {
 	auto anim = const_cast<Animation*>(getAnimation(name));
 	if (anim == nullptr)
 		throw std::invalid_argument("Animation set to non-existing `" + lif::sidToString(name) + "`!");
@@ -84,7 +84,7 @@ void Animated::update() {
 	animatedSprite.update(frameClock->restart());
 }
 
-bool Animated::isPlaying(StringId name) const {
+bool Animated::isPlaying(lif::StringId name) const {
 	return getAnimation(name) == animatedSprite.getAnimation() && animatedSprite.isPlaying();
 }
 
@@ -92,6 +92,6 @@ void Animated::setDefaultFrameTime(sf::Time time) {
 	defaultFrameTime = time;
 }
 
-void Animated::setFrameTime(StringId name, sf::Time time) {
+void Animated::setFrameTime(lif::StringId name, sf::Time time) {
 	frameTimes[name] = time;
 }

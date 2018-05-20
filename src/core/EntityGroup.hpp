@@ -111,16 +111,16 @@ public:
 
 	/** @see apply */
 	template<typename F, typename...Args, returns_t<F, bool, Args...> = nullptr>
-	auto apply(const F& func, Args&&... args) const {
-		for (auto& e : entities)
+	void apply(const F& func, Args&&... args) const {
+		for (const auto& e : entities)
 			if (func(e.get(), std::forward<Args>(args)...))
 				return;
 	}
 
 	/** @see apply */
 	template<typename F, typename...Args, returns_t<F, void, Args...> = nullptr>
-	auto apply(const F& func, Args&&... args) const {
-		for (auto& e : entities)
+	void apply(const F& func, Args&&... args) const {
+		for (const auto& e : entities)
 			func(e.get(), std::forward<Args>(args)...);
 	}
 

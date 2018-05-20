@@ -75,6 +75,11 @@ if(NOT RELEASE)
 	)
 	set(LIFISH_SRC ${LIFISH_SRC} ${LIFISH_DEBUG_SRC})
 endif()
+
+if(MSVC)
+	include_directories(src/third_party/msvc)
+endif()
+
 # Remove files which aren't being used for now
 list(REMOVE_ITEM LIFISH_SRC
 	"${CMAKE_SOURCE_DIR}/src/core/collisions/SimpleCollisionDetector.cpp"
@@ -187,7 +192,11 @@ if(RELEASE)
 	# Disable assertions
 	add_definitions(-DNDEBUG=1)
 	add_definitions(-DRELEASE=1)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORTIFY_SOURCE=2 -O2 -Wall -pedantic -Wextra")
+	if(MSVC)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORTIFY_SOURCE=2 /O2 /MP /W2 /std:c++14")
+	else()
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORTIFY_SOURCE=2 -O2 -Wall -pedantic -Wextra")
+	endif()
 
 	# Hardening
 	if(NOT ${HAS_CHECK_CXX} STREQUAL "")
@@ -204,7 +213,11 @@ if(RELEASE)
 	endif()
 else()
 	message(STATUS "Compiling in DEBUG mode")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -Wall -pedantic -Wextra")
+	if(MSVC)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Od /MP /W2 /std:c++14")
+	else()
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -ggdb -Wall -pedantic -Wextra")
+	endif()
 
 	# Profiling tools
 	if(${GPROF})

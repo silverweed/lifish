@@ -1,7 +1,7 @@
 #include "SaveDataBrowser.hpp"
 #include "core.hpp"
 #include "utils.hpp"
-#include <dirent.h>
+#include "dirent.h"
 #include <cstdlib>
 #include <cstring>
 

@@ -11,16 +11,21 @@
 #define DIRENT_H
 
 /*
- * Include windows.h without Windows Sockets 1.1 to prevent conflicts with
- * Windows Sockets 2.0.
+ * Define architecture flags so we don't need to include windows.h.
+ * Avoiding windows.h makes it simpler to use windows sockets in conjunction
+ * with dirent.h.
  */
-#ifndef WIN32_LEAN_AND_MEAN
-#   define WIN32_LEAN_AND_MEAN
+#if !defined(_68K_) && !defined(_MPPC_) && !defined(_X86_) && !defined(_IA64_) && !defined(_AMD64_) && defined(_M_IX86)
+#   define _X86_
 #endif
-#include <windows.h>
+#if !defined(_68K_) && !defined(_MPPC_) && !defined(_X86_) && !defined(_IA64_) && !defined(_AMD64_) && defined(_M_AMD64)
+#define _AMD64_
+#endif
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <windef.h>
+#include <winbase.h>
 #include <wchar.h>
 #include <string.h>
 #include <stdlib.h>
@@ -341,16 +346,8 @@ _wopendir(
         dirp->patt = NULL;
         dirp->cached = 0;
 
-        /* Compute the length of full path plus zero terminator
-         *
-         * Note that on WinRT there's no way to convert relative paths
-         * into absolute paths, so just assume its an absolute path.
-         */
-#       if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
-            n = wcslen(dirname);
-#       else
-            n = GetFullPathNameW (dirname, 0, NULL, NULL);
-#       endif
+        /* Compute the length of full path plus zero terminator */
+        n = GetFullPathNameW (dirname, 0, NULL, NULL);
 
         /* Allocate room for absolute directory name and search pattern */
         dirp->patt = (wchar_t*) malloc (sizeof (wchar_t) * n + 16);
@@ -360,15 +357,8 @@ _wopendir(
              * Convert relative directory name to an absolute one.  This
              * allows rewinddir() to function correctly even when current
              * working directory is changed between opendir() and rewinddir().
-             *
-             * Note that on WinRT there's no way to convert relative paths
-             * into absolute paths, so just assume its an absolute path.
              */
-#           if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)
-                wcsncpy_s(dirp->patt, n+1, dirname, n);
-#           else
-                n = GetFullPathNameW (dirname, n, dirp->patt, NULL);
-#           endif
+            n = GetFullPathNameW (dirname, n, dirp->patt, NULL);
             if (n > 0) {
                 wchar_t *p;
 
@@ -444,11 +434,11 @@ _wreaddir(
     if (datap) {
         size_t n;
         DWORD attr;
-
+        
         /* Pointer to directory entry to return */
         entp = &dirp->ent;
 
-        /*
+        /* 
          * Copy file name as wide-character string.  If the file name is too
          * long to fit in to the destination buffer, then truncate file name
          * to PATH_MAX characters and zero-terminate the buffer.
@@ -550,9 +540,7 @@ dirent_first(
     WIN32_FIND_DATAW *datap;
 
     /* Open directory and retrieve the first entry */
-    dirp->handle = FindFirstFileExW(
-        dirp->patt, FindExInfoStandard, &dirp->data,
-        FindExSearchNameMatch, NULL, 0);
+    dirp->handle = FindFirstFileW (dirp->patt, &dirp->data);
     if (dirp->handle != INVALID_HANDLE_VALUE) {
 
         /* a directory entry is now waiting in memory */
@@ -606,12 +594,12 @@ dirent_next(
     return p;
 }
 
-/*
+/* 
  * Open directory stream using plain old C-string.
  */
 static DIR*
 opendir(
-    const char *dirname)
+    const char *dirname) 
 {
     struct DIR *dirp;
     int error;
@@ -643,7 +631,7 @@ opendir(
             }
 
         } else {
-            /*
+            /* 
              * Cannot convert file name to wide-character string.  This
              * occurs if the string contains invalid multi-byte sequences or
              * the output buffer is too small to contain the resulting
@@ -681,7 +669,7 @@ opendir(
  */
 static struct dirent*
 readdir(
-    DIR *dirp)
+    DIR *dirp) 
 {
     WIN32_FIND_DATAW *datap;
     struct dirent *entp;
@@ -696,7 +684,7 @@ readdir(
         error = dirent_wcstombs_s(
             &n, dirp->ent.d_name, PATH_MAX, datap->cFileName, PATH_MAX);
 
-        /*
+        /* 
          * If the file name cannot be represented by a multi-byte string,
          * then attempt to use old 8+3 file name.  This allows traditional
          * Unix-code to access some file names despite of unicode
@@ -708,7 +696,7 @@ readdir(
          */
         if (error  &&  datap->cAlternateFileName[0] != '\0') {
             error = dirent_wcstombs_s(
-                &n, dirp->ent.d_name, PATH_MAX,
+                &n, dirp->ent.d_name, PATH_MAX, 
                 datap->cAlternateFileName, PATH_MAX);
         }
 
@@ -736,7 +724,7 @@ readdir(
             entp->d_reclen = sizeof (struct dirent);
 
         } else {
-            /*
+            /* 
              * Cannot convert file name to multi-byte string so construct
              * an errornous directory entry and return that.  Note that
              * we cannot return NULL as that would stop the processing
@@ -764,7 +752,7 @@ readdir(
  */
 static int
 closedir(
-    DIR *dirp)
+    DIR *dirp) 
 {
     int ok;
     if (dirp) {
@@ -791,7 +779,7 @@ closedir(
  */
 static void
 rewinddir(
-    DIR* dirp)
+    DIR* dirp) 
 {
     /* Rewind wide-character string directory stream */
     _wrewinddir (dirp->wdirp);
@@ -883,7 +871,7 @@ dirent_wcstombs_s(
             mbstr[n] = '\0';
         }
 
-        /* Length of resulting multi-bytes string WITH zero-terminator */
+        /* Lenght of resulting multi-bytes string WITH zero-terminator */
         if (pReturnValue) {
             *pReturnValue = n + 1;
         }

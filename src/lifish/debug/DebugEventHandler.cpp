@@ -74,7 +74,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 				const auto free = lif::collision_utils::findFreeTiles(game.lm);
 				for (const auto& tile : free) {
 					lif::debugPainter->addRectangleAt(
-						sf::Vector2f(tile * lif::TILE_SIZE), {lif::TILE_SIZE, lif::TILE_SIZE},
+						sf::Vector2f(tile * lif::TILE_SIZE), sf::Vector2f(lif::TILE_SIZE, lif::TILE_SIZE),
 						sf::Color(0, 160, 100, 128));
 				}
 				game.toggleDebug(lif::GameContext::DBG_NO_PAINT_CLEAR);
