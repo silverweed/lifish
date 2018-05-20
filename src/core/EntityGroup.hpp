@@ -30,14 +30,14 @@ class LevelRenderer;
  */
 class EntityGroup final : private sf::NonCopyable {
 
-	template<typename T1, typename T2>
-	static constexpr auto is_same_v = std::is_same<T1, T2>::value;
-
 	template<typename F, typename...Args>
 	using result_t = typename std::result_of<F(lif::Entity*, Args&&...)>::type;
 
 	template<typename F, typename R, typename...Args>
-	using returns_t = typename std::enable_if<is_same_v<result_t<F, Args...>, R>, std::nullptr_t>::type;
+	using returns_t = typename std::enable_if<std::is_same<
+		result_t<F, Args...>, 
+		R
+		>::value, std::nullptr_t>::type;
 
 
 	bool alreadyPrunedThisUpdate = false,
