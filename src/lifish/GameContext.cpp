@@ -285,25 +285,32 @@ static float getPercentage(const lif::debug::Stats& stats, const char *totn, con
 
 void GameContext::_printGameStats() const {
 	const auto& dbgStats = lm.getStats();
-	const auto timers = { "tot", "reset_align", "validate", "cd", "logic", "ent_update", "checks" };
+	static const auto timers = { "tot", "reset_align", "validate", "cd", "logic", "ent_update", "checks" };
 	std::stringstream ss;
 	ss << "-------------";
-	ss << std::setfill(' ') << std::scientific << std::setprecision(3);
+	ss << std::setfill(' ') << std::setprecision(3);
 	for (const auto& t : timers) {
 		char percentage[21] = {0};
 		const float ratio = getPercentage(dbgStats, "tot", t, percentage);
 		ss << "\r\n | " << std::left << std::setw(12) << t << ": "
-			<< std::setw(7) << dbgStats.timer.safeGet(t) << " " << percentage
+			<< std::setw(7) << dbgStats.timer.safeGet(t) * 1000 << "ms " << percentage
 			<< (ratio >= 0 ? " " + lif::to_string(static_cast<int>(ratio*100)) + "%" : "");
 	}
-	ss << "\r\n -- logic: --";
+	ss << "\r\n\r\n-- logic: --";
+	static const std::array<const char*, 4> logicName = {{
+		"bombDeploy",
+		"bonusGrab",
+		"scoredKlb",
+		"spawning"
+	}};
 	for (unsigned i = 0; i < lif::game_logic::functions.size(); ++i) {
 		std::stringstream t;
 		t << "logic_" << i;
 		char percentage[21] = {0};
 		const float ratio = getPercentage(dbgStats, "logic", t.str().c_str(), percentage);
-		ss << "\r\n | " << i << ": " << std::setw(7) << dbgStats.timer.safeGet(t.str())
-			<< " " << percentage
+		ss << "\r\n | " << std::left << std::setw(12) << logicName[i] << ": "
+			<< std::setw(7) << dbgStats.timer.safeGet(t.str()) * 1000
+			<< "ms " << percentage
 			<< (ratio >= 0 ? " " + lif::to_string(static_cast<int>(ratio*100)) + "%" : "");
 	}
 	ss << std::endl;

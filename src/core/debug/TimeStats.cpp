@@ -3,11 +3,11 @@
 
 using lif::debug::TimeStats;
 
-clock_t TimeStats::start(std::string name) {
+clock_t TimeStats::start(const std::string& name) {
 	return timers[name] = clock();
 }
 
-double TimeStats::end(std::string name) {
+double TimeStats::end(const std::string& name) {
 	auto it = timers.find(name);
 	if (it == timers.end())
 		throw std::logic_error(name + ": end() called without start()!");
@@ -15,7 +15,7 @@ double TimeStats::end(std::string name) {
 	return results[name] = double(clock() - it->second) / CLOCKS_PER_SEC;
 }
 
-double TimeStats::get(std::string name) const {
+double TimeStats::get(const std::string& name) const {
 	{
 		// Check if a result was already saved for this timer
 		auto it = results.find(name);
@@ -31,15 +31,15 @@ double TimeStats::get(std::string name) const {
 	return double(clock() - it->second) / CLOCKS_PER_SEC;
 }
 
-double TimeStats::safeGet(std::string name) const {
+double TimeStats::safeGet(const std::string& name) const {
 	try {
 		return get(name);
-	} catch (std::exception) {
+	} catch (const std::exception&) {
 		return -1;
 	}
 }
 
-void TimeStats::set(std::string name, double amt) {
+void TimeStats::set(const std::string& name, double amt) {
 	results[name] = amt;
 }
 
