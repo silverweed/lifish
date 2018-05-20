@@ -36,7 +36,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Entity *const source,
 	);
 	killable = addComponent<lif::Temporary>(*this, [this] () {
 		// Expire condition
-		return fuseClock->getElapsedTime() >= fuseTime;
+		return fuseClock->getElapsedTime() >= fuseTime && isAligned();
 	}, [this] () {
 		// On kill
 		exploded = true;

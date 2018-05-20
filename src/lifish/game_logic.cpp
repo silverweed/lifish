@@ -30,8 +30,8 @@
 using EntityList = std::vector<lif::Entity*>;
 
 void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm, EntityList& tbspawned) {
-	// Used for throwable bombs' detonators
-	static std::array<sf::Clock, lif::MAX_PLAYERS> latestDetonation;
+	// Used for throwable bombs
+	static std::array<sf::Clock, lif::MAX_PLAYERS> latestBomb;
 
 	auto& lm = static_cast<lif::LevelManager&>(blm);
 	if (!lm.isPlayer(*e)) return;
@@ -45,23 +45,23 @@ void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm
 		&& controllable->hasQueuedBombCommand())
 	{
 		if (pinfo.powers.throwableBomb) {
-			std::cerr << "deployed = " << lm.bombsDeployedBy(pinfo.id) << "\n";
-			std::cerr << "latest = " << latestDetonation[pinfo.id-1].getElapsedTime().asSeconds() << "\n";
+			if (latestBomb[pinfo.id-1].getElapsedTime() < sf::seconds(0.5))
+				return;
+
+			latestBomb[pinfo.id-1].restart();
+
 			if (lm.bombsDeployedBy(pinfo.id) > 0) {
 				auto bomb = lm.getFirstValidBomb(pinfo.id);
 				if (bomb == nullptr)
 					throw std::logic_error("Player deployed some bomb, but none found?!");
 
 				bomb->ignite();
-				latestDetonation[pinfo.id-1].restart();
 
 				std::cerr << "1\n";
 				return;
 
-			} else if (latestDetonation[pinfo.id-1].getElapsedTime() < sf::seconds(0.5)) {
-				std::cerr << "2\n";
-				return;
 			}
+
 		} else if (!lm.canDeployBombAt(lif::tile2(player->getPosition()))) {
 			// doing this check only if !throwableBomb, else the player wouldn't be
 			// able to detonate a bomb while on the same tile as it
