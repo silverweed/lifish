@@ -19,7 +19,6 @@
 #include "Sounded.hpp"
 #include "Drawable.hpp"
 #include "Enemy.hpp"
-#include "Bonusable.hpp"
 #include "BufferedSpawner.hpp"
 #include "Flare.hpp"
 #include "Fixed.hpp"
@@ -114,7 +113,6 @@ GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 	//addComponent<lif::LightSource>(*this, 2 * TILE_SIZE, sf::Color(128, 128, 128))
 			//->setPosition(sf::Vector2f(TILE_SIZE, TILE_SIZE));
 	addComponent<lif::Drawable>(*this, *this);
-	addComponent<lif::Bonusable>(*this);
 }
 
 void GodEyeBoss::update() {

@@ -8,6 +8,7 @@
 #include "Letter.hpp"
 #include "Shooting.hpp"
 #include "Spawning.hpp"
+#include "Bonusable.hpp"
 #include "RegularEntityDeath.hpp"
 #include "Killable.hpp"
 #include "Clock.hpp"
@@ -49,12 +50,15 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 		// since in that case the sound never gets played, so the cache doesn't even load it.
 		lif::sid("attack"), lif::getAsset("test", "enemy"s + lif::to_string(id) + "_attack.ogg"s)
 	);
-	addComponent<lif::Lifed>(*this, 1, [this] (int, int newLife) {
+	addComponent<lif::Lifed>(*this, lif::conf::enemy::BASE_LIFE, [this] (int damage, int newLife) {
 		// on hurt
 		if (newLife <= 0)
 			killable->kill();
+		else if (damage > 0)
+			bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::enemy::DAMAGE_SHIELD_TIME);
 	});
 	addComponent<lif::Foe>(*this);
+	bonusable = addComponent<lif::Bonusable>(*this);
 	if (info.ai >= lif::ai_functions.size()) {
 		std::stringstream ss;
 		ss << "invalid AI number for Enemy: " << lif::to_string(info.ai+1) << "/" << lif::ai_functions.size();
@@ -230,9 +234,19 @@ lif::EnemyDrawableProxy::EnemyDrawableProxy(const lif::Enemy& e)
 {}
 
 void lif::EnemyDrawableProxy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	if (enemy.isMorphed()) {
-		target.draw(morphedAnim, states);
-	} else {
-		target.draw(*enemy.animated, states);
+	const auto& anim = enemy.isMorphed() ? morphedAnim : *enemy.animated;
+	target.draw(anim, states);
+
+	if (enemy.bonusable->hasBonus(lif::BonusType::SHIELD)) {
+		const float s = enemy.bonusable->getElapsedTime(lif::BonusType::SHIELD).asSeconds();
+		const float diff = s - std::floor(s);
+		if (enemy.bonusable->getRemainingTime(lif::BonusType::SHIELD) > sf::seconds(3)
+				|| 4 * diff - std::floor(4 * diff) < 0.5)
+		{
+			AnimatedSprite shieldSprite(anim.getSprite());
+			// TODO: scale & offset
+			shieldSprite.setColor(sf::Color(200, 0, 200, 180));
+			target.draw(shieldSprite, states);
+		}
 	}
 }

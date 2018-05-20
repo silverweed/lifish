@@ -1,19 +1,19 @@
 #include "bonus.hpp"
 
-/** Relative bonus probabilities */
+/** Relative bonus probabilities (order is important) */
 std::discrete_distribution<unsigned> lif::conf::bonus::distribution {
-	10,	// max bombs
-	10,	// max range
+	20,	// max bombs
+	20,	// max range
+	14,	// quick fuse
+	20,	// shield
+	20,	// speedy
+	3,	// incendiary bomb
+	1,	// throwable bomb
 	1,	// absorb
 	1,	// armor
-	7,	// quick fuse
-	3,	// incendiary bomb
-	100000,	// throwable bomb
-	10,	// shield
-	10,	// speedy
-	3,	// zapper
-	2,	// sudden death
-	10,	// health small
-	7,	// health full
-	808	// no bonus
+	6,	// zapper
+	4,	// sudden death
+	20,	// health small
+	14,	// health full
+	3000	// no bonus
 };

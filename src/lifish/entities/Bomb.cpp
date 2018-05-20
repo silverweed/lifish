@@ -50,7 +50,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Entity *const source,
 	}, lif::c_layers::BOMBS);
 	addComponent<lif::Drawable>(*this, *animated);
 	addComponent<lif::Spawning>(*this, [this] () {
-		return new lif::Explosion(position, radius, sourceEntity, incendiary);
+		return new lif::Explosion(position, radius, sourceEntity, incendiary, lif::conf::bomb::EXPL_DAMAGE);
 	});
 	addComponent<lif::LightSource>(*this, 0);
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::BOMBS);

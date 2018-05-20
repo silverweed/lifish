@@ -7,17 +7,18 @@ namespace lif {
 class LevelManager;
 class Player;
 
+// Order is important! When changed, also change assets/bonuses.png
 enum class BonusType {
 	// "Permanent" bonuses
 	MAX_BOMBS,
 	MAX_RANGE,
-	ABSORB,
-	ARMOR,
 	QUICK_FUSE,
-	INCENDIARY_BOMB,
-	THROWABLE_BOMB,
 	SHIELD,
 	SPEEDY,
+	INCENDIARY_BOMB,
+	THROWABLE_BOMB,
+	ABSORB,
+	ARMOR,
 	// One-time bonuses
 	ZAPPER,
 	SUDDEN_DEATH,

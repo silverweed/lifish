@@ -9,6 +9,7 @@
 namespace lif {
 
 class AI;
+class Bonusable;
 class Enemy;
 class Collider;
 class Animated;
@@ -71,6 +72,7 @@ protected:
 	lif::MovingAnimator *movingAnimator = nullptr;
 	lif::AxisSighted *sighted = nullptr;
 	lif::RegularEntityDeath *death = nullptr;
+	lif::Bonusable *bonusable = nullptr;
 
 	lif::Clock *yellClock = nullptr,
 		   *dashClock = nullptr;

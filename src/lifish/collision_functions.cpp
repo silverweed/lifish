@@ -2,6 +2,7 @@
 #include "utils.hpp"
 #include "Player.hpp"
 #include "Killable.hpp"
+#include "Bonusable.hpp"
 #include "Scored.hpp"
 #include "Explosion.hpp"
 #include "Lifed.hpp"
@@ -16,10 +17,15 @@ CollisionFunc lif::hurtByExplosions(lif::Entity& e, unsigned opts) {
 	if (lifed == nullptr)
 		throw std::invalid_argument("Entity given to `hurtByExplosions` has no Lifed!");
 	auto scored = e.get<lif::Scored>();
+	auto bonusable = e.get<lif::Bonusable>();
 
-	return [&e, killable, lifed, scored, opts] (lif::Collider& cld) {
+	return [&e, killable, lifed, scored, bonusable, opts] (lif::Collider& cld) {
 		// Check valid hit
 		if (cld.getLayer() != lif::c_layers::EXPLOSIONS || killable->isKilled())
+			return;
+
+		// Check shield
+		if (bonusable != nullptr && bonusable->hasBonus(lif::BonusType::SHIELD))
 			return;
 
 		auto& expl = static_cast<lif::Explosion&>(cld.getOwnerRW());

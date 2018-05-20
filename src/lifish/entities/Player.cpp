@@ -183,6 +183,8 @@ void Player::_checkCollision(lif::Collider& cld) {
 			break;
 		}
 	case L::EXPLOSIONS:
+		damage = 1; // player explosions always deal 1 damage per tick
+		break;
 	case L::ENEMY_EXPLOSIONS:
 		damage = static_cast<const lif::Explosion&>(cld.getOwner()).getDamage();
 		break;
