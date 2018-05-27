@@ -2,13 +2,16 @@
 
 #include <array>
 #include "Screen.hpp"
-#include "ShadedText.hpp"
 
 namespace sf {
+
 class RectangleShape;
+
 }
 
 namespace lif {
+
+class ShadedText;
 
 namespace ui {
 

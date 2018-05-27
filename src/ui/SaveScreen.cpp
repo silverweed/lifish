@@ -2,6 +2,7 @@
 #include "Interactable.hpp"
 #include "game.hpp"
 #include "utils.hpp"
+#include "ShadedText.hpp"
 #include "GameCache.hpp"
 #include "input_utils.hpp"
 

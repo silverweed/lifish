@@ -93,7 +93,7 @@ list(REMOVE_ITEM LIFISH_SRC
 # Platform-specific source
 if(MSYS)
 	include_directories(src)
-	file(GLOB WIN_LIFISH_SRC src/win/*.cpp)	
+	file(GLOB WIN_LIFISH_SRC src/win/*.cpp)
 	add_definitions(-D_WIN32_WINNT=_WIN32_WINNT_VISTA)
 	set(LIFISH_SRC ${LIFISH_SRC} ${WIN_LIFISH_SRC})
 endif()
@@ -109,7 +109,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # Add git commit information (thanks, hamcha)
 include(FindGit OPTIONAL)
 if(GIT_FOUND)
-	execute_process(WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND 
+	execute_process(WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND
 	               ${GIT_EXECUTABLE} describe --always --long --dirty
                        OUTPUT_VARIABLE CURRENTREV
                        OUTPUT_STRIP_TRAILING_WHITESPACE)
