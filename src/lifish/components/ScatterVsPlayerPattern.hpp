@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ShootingPattern.hpp"
 #include "Angle.hpp"
+#include "ShootingPattern.hpp"
 
 namespace lif {
 
@@ -24,7 +24,7 @@ class ScatterVsPlayerPattern : public lif::ShootingPattern {
 
 	/** @return The CW angle between the v-axis and the given position */
 	lif::Angle _calcAngle(const sf::Vector2f& pos) const;
-	void _shoot();
+	void _shoot(const sf::Vector2f& target);
 	void _reset() override;
 public:
 	sf::Time timeBetweenShots = sf::seconds(0.5);

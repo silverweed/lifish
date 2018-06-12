@@ -1,8 +1,8 @@
 #include "ScatterVsPlayerPattern.hpp"
-#include "Clock.hpp"
-#include "FreeSighted.hpp"
-#include "FreeBullet.hpp"
 #include "BulletFactory.hpp"
+#include "Clock.hpp"
+#include "FreeBullet.hpp"
+#include "FreeSighted.hpp"
 #include "Player.hpp"
 #include <cmath>
 
@@ -27,19 +27,16 @@ lif::Entity* ScatterVsPlayerPattern::init() {
 
 void ScatterVsPlayerPattern::update() {
 	lif::Component::update();
-	if (!positionLocked) {
-		// Find out player position; will keep using that until reset.
-		auto player = sighted->nearest<lif::Player>();
-		if (player == nullptr) {
-			setActive(false);
-			return;
-		}
-		playerAngle = _calcAngle(player->getPosition()
-				+ sf::Vector2f(lif::TILE_SIZE / 2, lif::TILE_SIZE / 2));
-		positionLocked = true;
+
+	// Note: this pointer is only valid until next update
+	auto player = sighted->nearest<lif::Player>();
+	if (player == nullptr) {
+		setActive(false);
+		return;
 	}
+
 	if (shootClock->getElapsedTime() > timeBetweenShots) {
-		_shoot();
+		_shoot(player->getPosition());
 		if (++shotsFired == consecutiveShots)
 			setActive(false);
 		else
@@ -58,11 +55,13 @@ void ScatterVsPlayerPattern::_reset() {
 	positionLocked = false;
 }
 
-void ScatterVsPlayerPattern::_shoot() {
+void ScatterVsPlayerPattern::_shoot(const sf::Vector2f& target) {
 	// Fire a bullet in a random direction inside the cone with angle
 	// `scatterAngle` and centered towards `playerPos`.
-	playerAngle = _calcAngle(sighted->nearest<lif::Player>()->getPosition());
-	std::uniform_real_distribution<double> scatter(-scatterAngle.asRadians() / 2, scatterAngle.asRadians() / 2);
+	const auto playerAngle = _calcAngle(target);
+	const auto halfScatter = scatterAngle.asRadians() / 2;
+	std::uniform_real_distribution<double> scatter(-halfScatter, halfScatter);
+
 	addSpawned(lif::BulletFactory::create(bulletId, owner.getPosition(),
-				playerAngle + lif::radians(scatter(lif::rng)), &owner));
+			playerAngle + lif::radians(scatter(lif::rng)), &owner));
 }

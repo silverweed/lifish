@@ -28,7 +28,7 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 {
 	get<lif::ZIndexed>()->setZIndex(lif::conf::zindex::HAUNTING_SPIRIT_BOSS);
 	// This boss has no Lifed component: it dies when there are no HauntedStatues left in the level.
-	addComponent<lif::FreeSighted>(*this)->setActive(false);
+	addComponent<lif::FreeSighted>(*this);
 	addComponent<lif::Scored>(*this, lif::conf::boss::haunting_spirit_boss::VALUE);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "haunting_spirit_boss.png"));
 	const auto size = 4 * lif::TILE_SIZE;
@@ -112,7 +112,6 @@ StateFunction HauntingSpiritBoss::_updateStart() {
 		animated->getSprite().setLooped(true);
 		animated->setAnimation("idle");
 		animated->getSprite().play();
-		get<lif::FreeSighted>()->setActive(true);
 		return BIND(_updateSearching);
 
 	} else if (animated->getAnimationName() == lif::sid("idle")) {
@@ -136,7 +135,6 @@ StateFunction HauntingSpiritBoss::_updateSearching() {
 			if (!statue->isPossessed())
 				statues.emplace_back(statue->getShared<lif::Killable>());
 	}
-	sighted->setActive(false); // no need for this anymore.
 	return BIND(_updateSelectNewStatue);
 }
 
@@ -226,7 +224,7 @@ StateFunction HauntingSpiritBoss::_updateHaunting() {
 	if (hauntClock->getElapsedTime() > lif::conf::boss::haunting_spirit_boss::CHANGE_STATUE_DELAY) {
 		get<lif::Drawable>()->setActive(true);
 		statue.setPossessed(false);
-		return BIND(_updateSelectNewStatue);;
+		return BIND(_updateSelectNewStatue);
 	}
 	if (atkClock->getElapsedTime() > lif::conf::boss::haunting_spirit_boss::PATTERN_SHOOT_DELAY) {
 		curShootPattern->resetAndPlay();
