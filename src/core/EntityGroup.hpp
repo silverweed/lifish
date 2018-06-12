@@ -1,20 +1,20 @@
 #pragma once
 
-#include <memory>
-#include <vector>
-#include <array>
-#include <iterator>
-#include <unordered_set>
-#include <functional>
-#include <type_traits>
-#include <algorithm>
-#include <SFML/System/NonCopyable.hpp>
+#include "Collider.hpp"
 #include "Entity.hpp"
-#include "Temporary.hpp"
+#include "Fixed.hpp"
 #include "Killable.hpp"
 #include "Moving.hpp"
-#include "Collider.hpp"
-#include "Fixed.hpp"
+#include "Temporary.hpp"
+#include <SFML/System/NonCopyable.hpp>
+#include <algorithm>
+#include <array>
+#include <functional>
+#include <iterator>
+#include <memory>
+#include <type_traits>
+#include <unordered_set>
+#include <vector>
 #ifdef MULTITHREADED
 #	include <mutex>
 #endif
@@ -35,7 +35,7 @@ class EntityGroup final : private sf::NonCopyable {
 
 	template<typename F, typename R, typename...Args>
 	using returns_t = typename std::enable_if<std::is_same<
-		result_t<F, Args...>, 
+		result_t<F, Args...>,
 		R
 		>::value, std::nullptr_t>::type;
 
@@ -171,9 +171,6 @@ public:
 	 *  the caller should *not* retain them.
 	 */
 	auto getCollidersIntersecting(const sf::FloatRect& rect) const -> std::vector<lif::Collider*>;
-
-	/** @return all entities whose tile is `tile` */
-	auto getEntitiesAtTile(const sf::Vector2i& tile) const -> std::vector<std::weak_ptr<lif::Entity>>;
 
 	inline void mtxLock() const {
 #ifdef MULTITHREADED

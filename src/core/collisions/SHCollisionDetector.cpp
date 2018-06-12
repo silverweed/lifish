@@ -1,8 +1,8 @@
 #include "SHCollisionDetector.hpp"
-#include "EntityGroup.hpp"
-#include "collision_utils.hpp"
 #include "AxisMoving.hpp"
 #include "Direction.hpp"
+#include "EntityGroup.hpp"
+#include "collision_utils.hpp"
 #include <iostream>
 
 using namespace lif::collision_utils;
@@ -36,8 +36,8 @@ void SHContainer::insert(std::weak_ptr<lif::Collider> obj) {
 	all.emplace_back(obj);
 }
 
-std::unordered_set<unsigned> SHContainer::_getIdFor(const lif::Collider& obj) const {
-	std::unordered_set<unsigned> ids;
+std::vector<unsigned> SHContainer::_getIdFor(const lif::Collider& obj) const {
+	std::vector<unsigned> ids;
 
 	const auto pos = obj.getPosition();
 	const auto size = obj.getSize();
@@ -52,14 +52,17 @@ std::unordered_set<unsigned> SHContainer::_getIdFor(const lif::Collider& obj) co
 	// Insert the object in all the buckets within its vertices
 	for (int i = upleft.x; i <= downright.x; ++i)
 		for (int j = upleft.y; j <= downright.y; ++j)
-			ids.insert(j * subdivisions + i);
+			ids.emplace_back(j * subdivisions + i);
 
-	for (auto it = ids.begin(); it != ids.end(); ) {
-		if (*it >= buckets.size())
-			it = ids.erase(it);
-		else
-			++it;
-	}
+	ids.erase(std::remove_if(ids.begin(), ids.end(), [size = buckets.size()] (auto i) {
+		return i >= size;
+	}), ids.end());
+
+#ifndef RELEASE
+	// Check all elements are unique
+	std::sort(ids.begin(), ids.end());
+	assert(std::adjacent_find(ids.begin(), ids.end()) == ids.end());
+#endif
 
 	return ids;
 }

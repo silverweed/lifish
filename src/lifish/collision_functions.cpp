@@ -1,11 +1,11 @@
 #include "collision_functions.hpp"
-#include "utils.hpp"
-#include "Player.hpp"
-#include "Killable.hpp"
 #include "Bonusable.hpp"
-#include "Scored.hpp"
 #include "Explosion.hpp"
+#include "Killable.hpp"
 #include "Lifed.hpp"
+#include "Player.hpp"
+#include "Scored.hpp"
+#include "utils.hpp"
 
 using CollisionFunc = lif::Collider::CollisionFunc;
 
@@ -43,7 +43,11 @@ CollisionFunc lif::hurtByExplosions(lif::Entity& e, unsigned opts) {
 			return;
 
 		// Deal damage
-		if (lifed->decLife(expl.getDamage()) <= 0)
+		auto dmg = expl.getDamage();
+		if ((opts & CFO_1_DMG_PER_HIT))
+			dmg = std::min(1, dmg);
+
+		if (lifed->decLife(dmg) <= 0)
 			killable->kill();
 		expl.dealDamageTo(e);
 

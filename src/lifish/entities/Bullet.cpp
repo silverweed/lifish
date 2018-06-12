@@ -1,17 +1,17 @@
-#include <algorithm>
 #include "Bullet.hpp"
-#include "AxisMoving.hpp"
 #include "Animated.hpp"
-#include "Sounded.hpp"
-#include "GameCache.hpp"
+#include "AxisMoving.hpp"
 #include "Collider.hpp"
 #include "Drawable.hpp"
-#include "ZIndexed.hpp"
-#include "game.hpp"
+#include "GameCache.hpp"
+#include "Sounded.hpp"
 #include "Temporary.hpp"
-#include "utils.hpp"
-#include "conf/zindex.hpp"
+#include "ZIndexed.hpp"
 #include "conf/bullet.hpp"
+#include "conf/zindex.hpp"
+#include "game.hpp"
+#include "utils.hpp"
+#include <algorithm>
 
 using lif::Bullet;
 using namespace std::literals::string_literals;
@@ -27,7 +27,8 @@ Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif:
 		lif::sid("hit"), lif::getAsset("test", "bullet"s + lif::to_string(info.dataId) + "_hit.ogg"s),
 		lif::sid("shot"), lif::getAsset("test", "bullet"s + lif::to_string(info.dataId) + "_shot.ogg"s)
 	);
-	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::BULLETS);
+	addComponent<lif::ZIndexed>(*this, info.dataId > 100
+			? lif::conf::zindex::BOSS_BULLETS :lif::conf::zindex::BULLETS);
 	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& e) {
 		// on collision
 		// Note: the default layer doesn't automatically destroy a Bullet for

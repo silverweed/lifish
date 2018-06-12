@@ -2,8 +2,8 @@
 #include "Component.hpp"
 #include "Killable.hpp"
 #include <algorithm>
-#include <sstream>
 #include <iostream>
+#include <sstream>
 
 using lif::EntityGroup;
 
@@ -48,15 +48,6 @@ void EntityGroup::remove(const std::shared_ptr<const lif::Entity>& entity) {
 	std::remove(entities.begin(), entities.end(), entity);
 	_pruneAll();
 	mtxUnlock();
-}
-
-auto EntityGroup::getEntitiesAtTile(const sf::Vector2i& tile) const -> std::vector<std::weak_ptr<lif::Entity>> {
-	std::vector<std::weak_ptr<lif::Entity>> ents;
-	for (auto& e : entities) {
-		if (lif::tile(e->getPosition()) == tile)
-			ents.emplace_back(e);
-	}
-	return ents;
 }
 
 auto EntityGroup::getCollidersIntersecting(const sf::FloatRect& rect) const -> std::vector<lif::Collider*> {
@@ -105,18 +96,17 @@ void EntityGroup::_pruneAll() {
 }
 
 void EntityGroup::_pruneColliding() {
-	for (auto it = collidingEntities.begin(); it != collidingEntities.end(); ) {
-		if (it->expired())
-			it = collidingEntities.erase(it);
-		else
-			++it;
-	}
+	collidingEntities.erase(std::remove_if(collidingEntities.begin(), collidingEntities.end(), [] (auto it) {
+		return it.expired();
+	}), collidingEntities.end());
 }
 
 void EntityGroup::_checkKilled() {
-	for (auto it = killables.begin(); it != killables.end(); ) {
+	// see https://www.quora.com/What-is-the-best-way-to-iterate-through-a-vector-while-popping-certain-elements-out-in-C++
+	auto w = killables.begin();
+	for (auto it = w; it != killables.end(); ++it) {
 		if (it->expired()) {
-			it = killables.erase(it);
+			// erase
 			continue;
 		}
 		auto klb = it->lock();
@@ -124,7 +114,7 @@ void EntityGroup::_checkKilled() {
 			if (klb->isKillInProgress()) {
 				// Will be finalized later
 				dying.emplace_back(klb);
-				it = killables.erase(it);
+				// erase
 				continue;
 			}
 
@@ -138,20 +128,23 @@ void EntityGroup::_checkKilled() {
 				entities.erase(eit);
 				mtxUnlock();
 			}
+			// erase
 
-			it = killables.erase(it);
 		} else {
-			++it;
+			if (it != w)
+				*w = std::move(*it);
+			++w;
 		}
 	}
+	killables.erase(w, killables.end());
 }
 
 void EntityGroup::_checkDead() {
-	for (auto it = dying.begin(); it != dying.end(); ) {
-		if (it->expired()) {
-			it = dying.erase(it);
+	auto w = dying.begin();
+	for (auto it = w; it != dying.end(); ++it) {
+		if (it->expired())
 			continue;
-		}
+
 		auto tmp = it->lock();
 		if (!tmp->isKillInProgress()) {
 			// kill function has ended, we can safely destroy this.
@@ -164,9 +157,11 @@ void EntityGroup::_checkDead() {
 				mtxUnlock();
 			}
 
-			it = dying.erase(it);
 		} else {
-			++it;
+			if (it != w)
+				*w = std::move(*it);
+			++w;
 		}
 	}
+	dying.erase(w, dying.end());
 }

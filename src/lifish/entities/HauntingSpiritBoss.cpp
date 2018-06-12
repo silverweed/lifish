@@ -1,19 +1,21 @@
 #include "HauntingSpiritBoss.hpp"
-#include "HauntedStatue.hpp"
-#include "Collider.hpp"
-#include "Animated.hpp"
-#include "Drawable.hpp"
-#include "Clock.hpp"
-#include "FreeSighted.hpp"
-#include "CircleShootingPattern.hpp"
-#include "ScatterVsPlayerPattern.hpp"
-#include "Killable.hpp"
-#include "Scored.hpp"
 #include "Angle.hpp"
+#include "Animated.hpp"
+#include "CircleShootingPattern.hpp"
+#include "Clock.hpp"
+#include "Collider.hpp"
+#include "Drawable.hpp"
+#include "FreeSighted.hpp"
+#include "HauntedStatue.hpp"
+#include "Killable.hpp"
+#include "ScatterVsPlayerPattern.hpp"
+#include "Scored.hpp"
+#include "ZIndexed.hpp"
+#include "camera_utils.hpp"
 #include "conf/boss.hpp"
+#include "conf/zindex.hpp"
 #include "core.hpp"
 #include <algorithm>
-#include "camera_utils.hpp"
 #include <cassert>
 
 #define BIND(f) std::bind(&HauntingSpiritBoss:: f, this)
@@ -24,6 +26,7 @@ using StateFunction = lif::ai::StateFunction;
 HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	: lif::Boss(pos)
 {
+	get<lif::ZIndexed>()->setZIndex(lif::conf::zindex::HAUNTING_SPIRIT_BOSS);
 	// This boss has no Lifed component: it dies when there are no HauntedStatues left in the level.
 	addComponent<lif::FreeSighted>(*this)->setActive(false);
 	addComponent<lif::Scored>(*this, lif::conf::boss::haunting_spirit_boss::VALUE);
@@ -139,12 +142,10 @@ StateFunction HauntingSpiritBoss::_updateSearching() {
 
 StateFunction HauntingSpiritBoss::_updateSelectNewStatue() {
 	// Task: select a statue to possess
-	for (auto it = statues.begin(); it != statues.end(); ) {
-		if (it->expired())
-			it = statues.erase(it);
-		else
-			++it;
-	}
+	statues.erase(std::remove_if(statues.begin(), statues.end(), [] (auto it) {
+		return it.expired();
+	}), statues.end());
+
 	if (statues.size() == 0) {
 		return BIND(_updateDying);
 	}
@@ -217,7 +218,7 @@ StateFunction HauntingSpiritBoss::_updateHaunting() {
 		// (the pattern is selected now so we can change the spirit's color)
 		selectedNewPattern = true;
 		std::uniform_int_distribution<unsigned> dist(0, shootPatterns.size() - 1);
-		const auto idx = dist(lif::rng);
+		const auto idx = 2;//dist(lif::rng);
 		curShootPattern = shootPatterns[idx];
 		statue.setSpiritColor(shootColors[idx]);
 	}

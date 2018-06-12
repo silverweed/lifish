@@ -1,17 +1,17 @@
 #include "HauntedStatue.hpp"
 #include "Animated.hpp"
-#include "Drawable.hpp"
 #include "Collider.hpp"
-#include "core.hpp"
-#include "HurtDrawProxy.hpp"
-#include "ZIndexed.hpp"
+#include "Drawable.hpp"
 #include "Fixed.hpp"
+#include "HurtDrawProxy.hpp"
 #include "Killable.hpp"
 #include "Lifed.hpp"
+#include "ZIndexed.hpp"
 #include "collision_functions.hpp"
 #include "collision_layers.hpp"
-#include "conf/zindex.hpp"
 #include "conf/boss.hpp"
+#include "conf/zindex.hpp"
+#include "core.hpp"
 
 using lif::HauntedStatue;
 using lif::TILE_SIZE;
@@ -56,7 +56,7 @@ HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : lif::Entity(pos) {
 			get<lif::HurtDrawProxy>()->hurt();
 	});
 	addComponent<lif::Drawable>(*this, *this);
-	auto hurt_by_explosions = lif::hurtByExplosions(*this, lif::CFO_ONLY_ADJACENT);
+	auto hurt_by_explosions = lif::hurtByExplosions(*this, lif::CFO_ONLY_ADJACENT | lif::CFO_1_DMG_PER_HIT);
 	addComponent<lif::Collider>(*this, [this, hurt_by_explosions] (lif::Collider& cld) {
 		// on collision
 		if (!possessed) return;

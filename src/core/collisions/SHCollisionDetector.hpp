@@ -1,10 +1,9 @@
 #pragma once
 
-#include <vector>
-#include <unordered_set>
-#include <memory>
-#include <SFML/System/Vector2.hpp>
 #include "CollisionDetector.hpp"
+#include <SFML/System/Vector2.hpp>
+#include <memory>
+#include <vector>
 
 namespace lif {
 
@@ -27,8 +26,8 @@ class SHContainer final {
 	std::vector<Bucket> buckets;
 	Bucket all;
 
-	/** @return An unordered_set of bucket indexes for the buckets containing `obj`. */
-	std::unordered_set<unsigned> _getIdFor(const lif::Collider& obj) const;
+	/** @return A vector of bucket indexes for the buckets containing `obj`. */
+	std::vector<unsigned> _getIdFor(const lif::Collider& obj) const;
 
 public:
 	SHContainer(const sf::Vector2f& levelSize, unsigned subdivisions);
