@@ -1,12 +1,12 @@
 #include "RegularEntityDeath.hpp"
-#include "Sounded.hpp"
-#include "Clock.hpp"
 #include "Animated.hpp"
-#include "Killable.hpp"
-#include "MovingAnimator.hpp"
 #include "AxisMoving.hpp"
+#include "Clock.hpp"
 #include "Collider.hpp"
 #include "GameCache.hpp"
+#include "Killable.hpp"
+#include "MovingAnimator.hpp"
+#include "Sounded.hpp"
 #include "core.hpp"
 #include <exception>
 
@@ -28,8 +28,11 @@ lif::Entity* RegularEntityDeath::init() {
 
 void RegularEntityDeath::kill() {
 	// Stop all moving components
+	lif::Direction prevDir = lif::Direction::NONE;
 	auto moving = owner.getAllRecursive<lif::AxisMoving>();
 	for (auto mv : moving) {
+		if (prevDir == lif::Direction::NONE)
+			prevDir = mv->getPrevDirection();
 		origAutoRealign[mv] = mv->isAutoRealignEnabled();
 		mv->setAutoRealign(false);
 		mv->stop();
@@ -43,9 +46,16 @@ void RegularEntityDeath::kill() {
 	// Switch to death animation
 	auto animated = owner.getAllRecursive<lif::Animated>();
 	for (auto anim : animated) {
-		if (!anim->hasAnimation("death")) continue;
+		bool hasDirectionalDeathAnim = anim->hasAnimation("death_down");
+		if (!anim->hasAnimation("death") && !hasDirectionalDeathAnim)
+			continue;
 		auto& animSprite = anim->getSprite();
-		anim->setAnimation("death");
+		if (hasDirectionalDeathAnim) {
+			const auto a = "death_" + lif::directionToStringOr(prevDir, "down");
+			anim->setAnimation(lif::sid("death_" + lif::directionToStringOr(prevDir, "down")));
+		} else {
+			anim->setAnimation("death");
+		}
 		animSprite.play();
 	}
 
@@ -76,7 +86,7 @@ void RegularEntityDeath::resurrect() {
 	// Switch to idle animation
 	auto animated = owner.getAllRecursive<lif::Animated>();
 	for (auto anim : animated) {
-		if (!anim->hasAnimation("death")) continue;
+		if (!anim->hasAnimation("idle_down")) continue;
 		auto& animSprite = anim->getSprite();
 		anim->setAnimation("idle_down");
 		animSprite.play();

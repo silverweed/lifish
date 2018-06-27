@@ -1,7 +1,7 @@
 #pragma once
 
-#include <unordered_map>
 #include "Component.hpp"
+#include <unordered_map>
 
 namespace lif {
 

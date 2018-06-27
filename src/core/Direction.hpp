@@ -1,7 +1,8 @@
 #pragma once
 
-#include <ostream>
 #include <SFML/System/Vector2.hpp>
+#include <ostream>
+#include <string>
 
 namespace lif {
 
@@ -22,6 +23,12 @@ inline std::string directionToString(Direction dir) {
 	case Direction::RIGHT: return "right";
 	default:               return "none";
 	}
+}
+
+inline std::string directionToStringOr(Direction dir, const std::string& dflt) {
+	if (dir == Direction::NONE)
+		return dflt;
+	return directionToString(dir);
 }
 
 inline std::ostream& operator<<(std::ostream& stream, Direction dir) {

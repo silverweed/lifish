@@ -1,36 +1,40 @@
 #include "Player.hpp"
-#include "Lifed.hpp"
-#include "Sounded.hpp"
-#include "Shooting.hpp"
-#include "MovingAnimator.hpp"
-#include "Clock.hpp"
-#include "AxisMoving.hpp"
-#include "Collider.hpp"
 #include "Animated.hpp"
-#include "RegularEntityDeath.hpp"
-#include "Bonusable.hpp"
-#include "Drawable.hpp"
-#include "Bullet.hpp"
-#include "Explosion.hpp"
-#include "Killable.hpp"
-#include "Controllable.hpp"
-#include "GameCache.hpp"
-#include "ZIndexed.hpp"
-#include "BufferedSpawner.hpp"
 #include "ArmorFX.hpp"
-#include "utils.hpp"
+#include "AxisMoving.hpp"
+#include "Bonusable.hpp"
+#include "BufferedSpawner.hpp"
+#include "Bullet.hpp"
+#include "Clock.hpp"
+#include "Collider.hpp"
+#include "Controllable.hpp"
+#include "Drawable.hpp"
+#include "Explosion.hpp"
+#include "GameCache.hpp"
+#include "Killable.hpp"
+#include "Lifed.hpp"
+#include "MovingAnimator.hpp"
+#include "RegularEntityDeath.hpp"
+#include "Shooting.hpp"
+#include "Sounded.hpp"
+#include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
+#include "utils.hpp"
 #include <sstream>
 
 using lif::Player;
 using lif::TILE_SIZE;
 using namespace std::literals::string_literals;
 
+/** How long does the player stay dead before resurrecting */
 static const sf::Time DEATH_TIME = sf::seconds(5);
+static const sf::Time DEATH_FRAME_TIME = sf::milliseconds(100);
+static const sf::Time IDLE_FRAME_TIME = sf::milliseconds(200);
+static const sf::Time WIN_FRAME_TIME = sf::milliseconds(50);
 static constexpr int WALK_N_FRAMES = 8;
-static constexpr int DEATH_N_FRAMES = 3;
+static constexpr int DEATH_N_FRAMES = 8;
 static constexpr int IDLE_N_FRAMES = 4;
-static const sf::Time IDLE_TIME = sf::seconds(0.20);
+static constexpr int WIN_N_FRAMES = 6;
 
 
 Player::Player(const sf::Vector2f& pos, const lif::PlayerInfo& info)
@@ -91,16 +95,6 @@ void Player::_init() {
 	addComponent<lif::BufferedSpawner>(*this);
 
 	_setupAnimations();
-
-	auto& animatedSprite = animated->getSprite();
-	animated->setDefaultFrameTime(sf::seconds(0.08));
-	animated->setFrameTime("idle_down", IDLE_TIME);
-	animated->setFrameTime("idle_up", IDLE_TIME);
-	animated->setFrameTime("idle_left", IDLE_TIME);
-	animated->setFrameTime("idle_right", IDLE_TIME);
-	animated->setAnimation("idle_down");
-	animatedSprite.setLooped(true, false);
-	animatedSprite.play();
 }
 
 void Player::update() {
@@ -126,35 +120,37 @@ void Player::update() {
 		if (dir != lif::Direction::NONE)
 			animated->setAnimation(lif::sid("walk_" + lif::directionToString(dir)));
 		else {
-			const auto prevdir = moving->getPrevDirection() == lif::Direction::NONE
-						? "down"
-						: lif::directionToString(moving->getPrevDirection());
-			animated->setAnimation(lif::sid("idle_" + prevdir));
+			animated->setAnimation(lif::sid("idle_" +
+				lif::directionToStringOr(moving->getPrevDirection(), "down")));
 			moving->stop();
 		}
 	}
-
-	if (winning && _isIdleAnim())
-		animated->setAnimation("win");
 }
 
 bool Player::_isIdleAnim() const {
-	static StringId iup = lif::sid("idle_up"),
-	                ileft = lif::sid("idle_left"),
-	                idown = lif::sid("idle_down"),
-	                iright = lif::sid("idle_righe");
+	static lif::StringId iup = lif::sid("idle_up"),
+	                     ileft = lif::sid("idle_left"),
+	                     idown = lif::sid("idle_down"),
+	                     iright = lif::sid("idle_right");
 	const auto anim = animated->getAnimationName();
 	return anim == iup || anim == ileft || anim == idown || anim == iright;
 }
 
 void Player::setWinning(bool b) {
-	winning = b;
+	if (b) {
+		animated->setAnimation("win");
+		moving->block(sf::seconds(99));
+	} else {
+		animated->setAnimation("idle_down");
+		moving->block(sf::Time::Zero);
+	}
 }
 
 void Player::_kill() {
 	get<lif::Controllable>()->setActive(false);
 	get<lif::Bonusable>()->reset();
 	info.reset(false);
+	animated->getSprite().setLooped(false, false);
 	death->kill();
 }
 
@@ -223,7 +219,7 @@ void Player::dealDamage(int damage, bool ignoreArmor, bool shortShield) {
 
 	auto lifed = get<lif::Lifed>();
 	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("hurt"));
-	lifed->decLife(damage);
+	lifed->decLife(damage * 333);
 
 	// Give shield after receiving damage
 	bonusable->giveBonus(lif::BonusType::SHIELD,
@@ -234,6 +230,7 @@ void Player::resurrect() {
 	get<lif::Lifed>()->setLife(lif::conf::player::MAX_LIFE);
 	moving->realign();
 	killable->resurrect();
+	animated->getSprite().setLooped(true, false);
 	death->resurrect();
 	get<lif::Controllable>()->setActive(true);
 }
@@ -252,10 +249,7 @@ std::string Player::_getDirectionString() const {
 	if (dir != lif::Direction::NONE)
 		return lif::directionToString(dir);
 
-	const auto prevdir = moving->getPrevDirection() == lif::Direction::NONE
-				? "down"
-				: lif::directionToString(moving->getPrevDirection());
-	return prevdir;
+	return lif::directionToStringOr(moving->getPrevDirection(), "down");
 }
 
 void Player::_setupAnimations() {
@@ -272,12 +266,37 @@ void Player::_setupAnimations() {
 		a_left.addFrame(sf::IntRect(i * TILE_SIZE, 3 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 	}
 
-	auto& a_death = animated->addAnimation("death");
-	auto& a_win = animated->addAnimation("win");
+	auto& a_death_down = animated->addAnimation("death_down");
+	auto& a_death_up = animated->addAnimation("death_up");
+	auto& a_death_right = animated->addAnimation("death_right");
+	auto& a_death_left = animated->addAnimation("death_left");
 
-	for (int i = 0; i < DEATH_N_FRAMES; ++i)
-		a_death.addFrame(sf::IntRect(i * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
-	a_win.addFrame(sf::IntRect(DEATH_N_FRAMES * TILE_SIZE, 4 * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+	for (int i = 0; i < DEATH_N_FRAMES; ++i) {
+		a_death_down.addFrame(sf::IntRect(
+			i * TILE_SIZE,
+			7 * TILE_SIZE,
+			TILE_SIZE, TILE_SIZE));
+		a_death_up.addFrame(sf::IntRect(
+			i * TILE_SIZE,
+			8 * TILE_SIZE,
+			TILE_SIZE, TILE_SIZE));
+		a_death_right.addFrame(sf::IntRect(
+			i * TILE_SIZE,
+			9 * TILE_SIZE,
+			TILE_SIZE, TILE_SIZE));
+		a_death_left.addFrame(sf::IntRect(
+			i * TILE_SIZE,
+			10 * TILE_SIZE,
+			TILE_SIZE, TILE_SIZE));
+	}
+
+	auto& a_win = animated->addAnimation("win");
+	for (int i = 0; i < WIN_N_FRAMES; ++i) {
+		a_win.addFrame(sf::IntRect(
+			i * TILE_SIZE,
+			11 * TILE_SIZE,
+			TILE_SIZE, TILE_SIZE));
+	}
 
 	auto& a_idle_up = animated->addAnimation("idle_up");
 	auto& a_idle_down = animated->addAnimation("idle_down");
@@ -322,6 +341,21 @@ void Player::_setupAnimations() {
 		3 * TILE_SIZE,
 		6 * TILE_SIZE,
 		TILE_SIZE, TILE_SIZE));
+
+	auto& animatedSprite = animated->getSprite();
+	animated->setDefaultFrameTime(sf::seconds(0.08));
+	animated->setFrameTime("idle_down", IDLE_FRAME_TIME);
+	animated->setFrameTime("idle_up", IDLE_FRAME_TIME);
+	animated->setFrameTime("idle_left", IDLE_FRAME_TIME);
+	animated->setFrameTime("idle_right", IDLE_FRAME_TIME);
+	animated->setFrameTime("death_down", DEATH_FRAME_TIME);
+	animated->setFrameTime("death_up", DEATH_FRAME_TIME);
+	animated->setFrameTime("death_left", DEATH_FRAME_TIME);
+	animated->setFrameTime("death_right", DEATH_FRAME_TIME);
+	animated->setFrameTime("win", WIN_FRAME_TIME);
+	animated->setAnimation("idle_down");
+	animatedSprite.setLooped(true, false);
+	animatedSprite.play();
 }
 
 //// PlayerDrawProxy ////
@@ -331,16 +365,17 @@ lif::PlayerDrawProxy::PlayerDrawProxy(const Player& player)
 
 void lif::PlayerDrawProxy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(*player.animated, states);
-	if (player.bonusable->hasBonus(lif::BonusType::SHIELD)) {
-		const float s = player.bonusable->getElapsedTime(lif::BonusType::SHIELD).asSeconds();
-		const float diff = s - std::floor(s);
-		if (player.bonusable->getRemainingTime(lif::BonusType::SHIELD) > sf::seconds(3)
-				|| 4 * diff - std::floor(4 * diff) < 0.5)
-		{
-			AnimatedSprite shieldSprite(player.animated->getSprite());
-			// TODO: scale & offset
-			shieldSprite.setColor(sf::Color(0, 255, 0, 180));
-			target.draw(shieldSprite, states);
-		}
+	if (player.killable->isKilled() || !player.bonusable->hasBonus(lif::BonusType::SHIELD))
+		return;
+
+	const float s = player.bonusable->getElapsedTime(lif::BonusType::SHIELD).asSeconds();
+	const float diff = s - std::floor(s);
+	if (player.bonusable->getRemainingTime(lif::BonusType::SHIELD) > sf::seconds(3)
+			|| 4 * diff - std::floor(4 * diff) < 0.5)
+	{
+		AnimatedSprite shieldSprite(player.animated->getSprite());
+		// TODO: scale & offset
+		shieldSprite.setColor(sf::Color(0, 255, 0, 180));
+		target.draw(shieldSprite, states);
 	}
 }

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <array>
 #include "Entity.hpp"
-#include "game.hpp"
-#include "conf/player.hpp"
 #include "conf/bomb.hpp"
+#include "conf/player.hpp"
+#include "game.hpp"
+#include <array>
 
 namespace lif {
 
@@ -76,8 +76,6 @@ class Player : public lif::Entity {
 
 	friend class lif::PlayerDrawProxy;
 
-	/** If true, idle animation is winning animation */
-	bool winning = false;
 	bool isHurt = false;
 
 	lif::AxisMoving *moving = nullptr;

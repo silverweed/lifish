@@ -1,20 +1,20 @@
 #include "DebugEventHandler.hpp"
-#include "Killable.hpp"
-#include "game.hpp"
-#include "DebugPainter.hpp"
-#include "Player.hpp"
-#include "BreakableWall.hpp"
-#include "Drawable.hpp"
-#include "Options.hpp"
-#include "Music.hpp"
-#include "Boss.hpp"
-#include "Enemy.hpp"
 #include "Bonusable.hpp"
-#include "MusicManager.hpp"
+#include "Boss.hpp"
+#include "BreakableWall.hpp"
+#include "DebugPainter.hpp"
+#include "Drawable.hpp"
+#include "Enemy.hpp"
 #include "GameContext.hpp"
+#include "Killable.hpp"
+#include "Music.hpp"
+#include "MusicManager.hpp"
+#include "Options.hpp"
+#include "Player.hpp"
 #include "collision_utils.hpp"
-#include <iostream>
+#include "game.hpp"
 #include <iomanip>
+#include <iostream>
 #include <map>
 
 using lif::debug::DebugEventHandler;
@@ -124,8 +124,8 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			return true;
 
 		case sf::Keyboard::J:
-			game.lm.getPlayer(1)->setRemainingLives(0);
-			game.lm.getPlayer(1)->get<lif::Killable>()->kill();
+			game.lm.getPlayer(2)->setRemainingLives(0);
+			game.lm.getPlayer(2)->get<lif::Killable>()->kill();
 			return true;
 
 		case sf::Keyboard::K:

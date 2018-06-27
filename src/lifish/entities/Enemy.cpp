@@ -1,31 +1,31 @@
 #include "Enemy.hpp"
-#include "Foe.hpp"
-#include "AxisMoving.hpp"
-#include "Drawable.hpp"
-#include "Player.hpp"
-#include "Scored.hpp"
-#include "ai_functions.hpp"
-#include "Letter.hpp"
-#include "Shooting.hpp"
-#include "Spawning.hpp"
-#include "Bonusable.hpp"
-#include "RegularEntityDeath.hpp"
-#include "Killable.hpp"
-#include "Clock.hpp"
-#include "Animated.hpp"
-#include "MovingAnimator.hpp"
 #include "AI.hpp"
-#include "AlienSprite.hpp"
-#include "AxisSighted.hpp"
-#include "Lifed.hpp"
-#include "LevelManager.hpp"
-#include "Explosion.hpp"
-#include "Sounded.hpp"
-#include "collision_functions.hpp"
-#include "Collider.hpp"
-#include "ZIndexed.hpp"
 #include "Absorbable.hpp"
+#include "AlienSprite.hpp"
+#include "Animated.hpp"
+#include "AxisMoving.hpp"
+#include "AxisSighted.hpp"
+#include "Bonusable.hpp"
+#include "Clock.hpp"
+#include "Collider.hpp"
+#include "Drawable.hpp"
+#include "Explosion.hpp"
+#include "Foe.hpp"
+#include "Killable.hpp"
+#include "Letter.hpp"
+#include "LevelManager.hpp"
+#include "Lifed.hpp"
 #include "LightSource.hpp"
+#include "MovingAnimator.hpp"
+#include "Player.hpp"
+#include "RegularEntityDeath.hpp"
+#include "Scored.hpp"
+#include "Shooting.hpp"
+#include "Sounded.hpp"
+#include "Spawning.hpp"
+#include "ZIndexed.hpp"
+#include "ai_functions.hpp"
+#include "collision_functions.hpp"
 #include "conf/enemy.hpp"
 #include "conf/zindex.hpp"
 #include "utils.hpp"
@@ -168,15 +168,11 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 void Enemy::update() {
 	lif::Entity::update();
 
-	if (moving->getDirection() != lif::Direction::NONE) {
+	if (moving->getDirection() != lif::Direction::NONE)
 		_checkShoot();
-	}
 
 	if (shootingAnim && !animated->getSprite().isPlaying()) {
-		if (moving->getDirection() == lif::Direction::NONE)
-			animated->setAnimation("walk_down");
-		else
-			animated->setAnimation(lif::sid("walk_" + lif::directionToString(moving->getDirection())));
+		animated->setAnimation(lif::sid("walk_" + lif::directionToStringOr(moving->getDirection(), "down")));
 		animated->getSprite().setLooped(true);
 		animated->getSprite().play();
 		shootingAnim = false;
