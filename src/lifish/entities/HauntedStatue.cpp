@@ -49,7 +49,7 @@ HauntedStatue::HauntedStatue(const sf::Vector2f& pos) : lif::Entity(pos) {
 		// is kill in progress
 		return animated->getSprite().isPlaying();
 	});
-	addComponent<lif::Lifed>(*this, 1,// lif::conf::boss::haunting_spirit_boss::HAUNTED_STATUE_LIFE,
+	addComponent<lif::Lifed>(*this, lif::conf::boss::haunting_spirit_boss::HAUNTED_STATUE_LIFE,
 	[this] (int damage, int) {
 		// on hurt
 		if (damage > 0)
