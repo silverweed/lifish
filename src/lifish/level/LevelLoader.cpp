@@ -232,7 +232,8 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 	if (level.hasEffect("darkness")) {
 		// In case of darkness, we need the Players to have an AxisSighted component
 		for (size_t i = 0; i < lm.players.size(); ++i) {
-			if (lm.players[i] == nullptr) continue;
+			if (lm.players[i] == nullptr || lm.players[i]->get<lif::AxisSighted>() != nullptr)
+				continue;
 			auto sighted = lm.players[i]->addComponent<lif::AxisSighted>(*lm.players[i]);
 			sighted->init();
 			sighted->setEntityGroup(&lm.entities);
