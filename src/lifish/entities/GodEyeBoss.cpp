@@ -214,9 +214,12 @@ void GodEyeBoss::_shakeWalls() {
 	// them according to the new one. No wall is created or destroyed in the process, as
 	// every configuration has the same number of objects.
 	// If an object would be moved onto a player, it is not placed.
-	std::vector<int> possibleConfigs = { 0, 1, 2, 3 };
-	possibleConfigs.erase(std::remove(possibleConfigs.begin(), possibleConfigs.end(), lvConfiguration));
-	static std::uniform_int_distribution<> newLevelConfigDist(0, 2);
+	std::vector<int> possibleConfigs;
+	possibleConfigs.reserve(LEVEL_CONFIGURATIONS.size() - 1);
+	for (unsigned i = 0; i < LEVEL_CONFIGURATIONS.size(); ++i)
+		if (i != lvConfiguration)
+			possibleConfigs.emplace_back(i);
+	std::uniform_int_distribution<> newLevelConfigDist(0, possibleConfigs.size() - 1);
 	lvConfiguration = static_cast<LevelConfiguration>(possibleConfigs[newLevelConfigDist(lif::rng)]);
 
 	assert(0 <= lvConfiguration && "Invalid new configuration!");
