@@ -247,7 +247,14 @@ StateFunction HauntingSpiritBoss::_updateHaunting() {
 		selectedNewPattern = false;
 	} else if (!showedAtkCue && atkClock->getElapsedTime() > PATTERN_SHOOT_DELAY - sf::seconds(0.75)) {
 		// Give a visual cue of the incoming attack
-		auto blink = new lif::Blink(position - sf::Vector2f(BOSS_SIZE * 0.25, BOSS_SIZE * 0.25));
+		auto blink = new lif::OneShotFX(position - sf::Vector2f(BOSS_SIZE * 0.25, BOSS_SIZE * 0.25),
+			"blink.png", {
+				sf::IntRect(0 * 2 * lif::TILE_SIZE, 0, 2 * lif::TILE_SIZE, 2 * lif::TILE_SIZE),
+				sf::IntRect(1 * 2 * lif::TILE_SIZE, 0, 2 * lif::TILE_SIZE, 2 * lif::TILE_SIZE),
+				sf::IntRect(2 * 2 * lif::TILE_SIZE, 0, 2 * lif::TILE_SIZE, 2 * lif::TILE_SIZE),
+				sf::IntRect(3 * 2 * lif::TILE_SIZE, 0, 2 * lif::TILE_SIZE, 2 * lif::TILE_SIZE),
+				sf::IntRect(4 * 2 * lif::TILE_SIZE, 0, 2 * lif::TILE_SIZE, 2 * lif::TILE_SIZE),
+			});
 		blink->get<lif::Animated>()->getSprite().setColor(shootColors[curShootIdx]);
 		spawner->addSpawned(blink);
 		showedAtkCue = true;
