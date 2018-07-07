@@ -219,7 +219,7 @@ void Player::dealDamage(int damage, bool ignoreArmor, bool shortShield) {
 
 	auto lifed = get<lif::Lifed>();
 	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("hurt"));
-	lifed->decLife(damage * 333);
+	lifed->decLife(damage);
 
 	// Give shield after receiving damage
 	bonusable->giveBonus(lif::BonusType::SHIELD,

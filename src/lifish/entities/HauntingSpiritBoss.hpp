@@ -9,12 +9,12 @@
 namespace lif {
 
 class Animated;
+class BufferedSpawner;
 class Clock;
 class ShootingPattern;
 
 class HauntingSpiritBoss : public lif::Boss {
 
-	bool selectedNewPattern = false;
 	std::vector<std::weak_ptr<lif::Killable>> statues;
 	std::weak_ptr<lif::Killable> targetStatue;
 	/**
@@ -24,9 +24,13 @@ class HauntingSpiritBoss : public lif::Boss {
 	 */
 	std::array<lif::ShootingPattern*, 3> shootPatterns;
 	std::array<sf::Color, 3> shootColors;
+	int curShootIdx = 0;
+	bool selectedNewPattern = false;
+	bool showedAtkCue = false;
 
 	lif::ShootingPattern *curShootPattern = nullptr;
 	lif::Animated *animated = nullptr;
+	lif::BufferedSpawner *spawner = nullptr;
 	lif::Clock *animClock = nullptr,
 	           *atkClock = nullptr,   // used for shooting
 	           *hauntClock = nullptr; // used for changing haunted statue after delay

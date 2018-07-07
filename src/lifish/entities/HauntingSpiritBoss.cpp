@@ -1,6 +1,7 @@
 #include "HauntingSpiritBoss.hpp"
 #include "Angle.hpp"
 #include "Animated.hpp"
+#include "Blink.hpp"
 #include "CircleShootingPattern.hpp"
 #include "Clock.hpp"
 #include "Collider.hpp"
@@ -22,6 +23,9 @@
 
 using lif::HauntingSpiritBoss;
 using StateFunction = lif::ai::StateFunction;
+using namespace lif::conf::boss::haunting_spirit_boss;
+
+const auto BOSS_SIZE = 4 * lif::TILE_SIZE;
 
 HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	: lif::Boss(pos)
@@ -29,44 +33,44 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	get<lif::ZIndexed>()->setZIndex(lif::conf::zindex::HAUNTING_SPIRIT_BOSS);
 	// This boss has no Lifed component: it dies when there are no HauntedStatues left in the level.
 	addComponent<lif::FreeSighted>(*this);
-	addComponent<lif::Scored>(*this, lif::conf::boss::haunting_spirit_boss::VALUE);
+	addComponent<lif::Scored>(*this, VALUE);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "haunting_spirit_boss.png"));
-	const auto size = 4 * lif::TILE_SIZE;
+	spawner = addComponent<lif::BufferedSpawner>(*this);
 	// This is needed by parent class
 	collider = addComponent<lif::Collider>(*this, lif::c_layers::DEFAULT,
-				sf::Vector2f(size, size),
-				sf::Vector2f(-size/2, -size/2), true);
+				sf::Vector2f(BOSS_SIZE, BOSS_SIZE),
+				sf::Vector2f(-BOSS_SIZE/2, -BOSS_SIZE/2), true);
 	collider->setActive(false);
 	animated->addAnimation("idle", {
-		sf::IntRect(0 * size, 0, size, size),
-		sf::IntRect(1 * size, 0, size, size),
-		sf::IntRect(2 * size, 0, size, size),
-		sf::IntRect(3 * size, 0, size, size),
-		sf::IntRect(4 * size, 0, size, size),
-		sf::IntRect(5 * size, 0, size, size)
+		sf::IntRect(0 * BOSS_SIZE, 0, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(1 * BOSS_SIZE, 0, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(2 * BOSS_SIZE, 0, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(3 * BOSS_SIZE, 0, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(4 * BOSS_SIZE, 0, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(5 * BOSS_SIZE, 0, BOSS_SIZE, BOSS_SIZE)
 	}, true);
 	animated->addAnimation("start", {
-		sf::IntRect(0 * size, size, size, size),
-		sf::IntRect(1 * size, size, size, size),
-		sf::IntRect(2 * size, size, size, size),
-		sf::IntRect(3 * size, size, size, size),
-		sf::IntRect(4 * size, size, size, size),
-		sf::IntRect(5 * size, size, size, size)
+		sf::IntRect(0 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(1 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(2 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(3 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(4 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(5 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE, BOSS_SIZE)
 	});
 	animated->addAnimation("transition", {
-		sf::IntRect(0 * size, 2 * size, size, size),
-		sf::IntRect(1 * size, 2 * size, size, size),
-		sf::IntRect(2 * size, 2 * size, size, size),
+		sf::IntRect(0 * BOSS_SIZE, 2 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(1 * BOSS_SIZE, 2 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(2 * BOSS_SIZE, 2 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
 	});
 	animated->addAnimation("death", {
-		sf::IntRect(0 * size, 3 * size, size, size),
-		sf::IntRect(1 * size, 3 * size, size, size),
-		sf::IntRect(2 * size, 3 * size, size, size),
-		sf::IntRect(3 * size, 3 * size, size, size),
-		sf::IntRect(4 * size, 3 * size, size, size),
-		sf::IntRect(5 * size, 3 * size, size, size),
+		sf::IntRect(0 * BOSS_SIZE, 3 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(1 * BOSS_SIZE, 3 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(2 * BOSS_SIZE, 3 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(3 * BOSS_SIZE, 3 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(4 * BOSS_SIZE, 3 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
+		sf::IntRect(5 * BOSS_SIZE, 3 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
 	});
-	animated->getSprite().setOrigin(size/2, size/2);
+	animated->getSprite().setOrigin(BOSS_SIZE/2, BOSS_SIZE/2);
 	animClock = addComponent<lif::Clock>(*this);
 	hauntClock = addComponent<lif::Clock>(*this);
 	atkClock = addComponent<lif::Clock>(*this);
@@ -77,7 +81,7 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 	circle->bulletsPerShot = 6;
 	circle->rotationPerShot = lif::radians(lif::PI / 5.);
 	shootPatterns[0] = circle;
-	shootColors[0] = sf::Color::White;
+	shootColors[0] = sf::Color(191, 15, 255);
 	auto spiral = addComponent<lif::CircleShootingPattern>(*this, 102);
 	spiral->consecutiveShots = 50;
 	spiral->timeBetweenShots = sf::seconds(0.1);
@@ -215,20 +219,28 @@ StateFunction HauntingSpiritBoss::_updateHaunting() {
 		// actually start shooting only after PATTERN_SHOOT_DELAY
 		// (the pattern is selected now so we can change the spirit's color)
 		selectedNewPattern = true;
+		showedAtkCue = false;
 		std::uniform_int_distribution<unsigned> dist(0, shootPatterns.size() - 1);
-		const auto idx = 2;//dist(lif::rng);
-		curShootPattern = shootPatterns[idx];
-		statue.setSpiritColor(shootColors[idx]);
+		curShootIdx = dist(lif::rng);
+		curShootPattern = shootPatterns[curShootIdx];
+		statue.setSpiritColor(shootColors[curShootIdx]);
 	}
 	// We haunted this statue long enough: select a new one
-	if (hauntClock->getElapsedTime() > lif::conf::boss::haunting_spirit_boss::CHANGE_STATUE_DELAY) {
+	if (hauntClock->getElapsedTime() > CHANGE_STATUE_DELAY) {
 		get<lif::Drawable>()->setActive(true);
 		statue.setPossessed(false);
 		return BIND(_updateSelectNewStatue);
 	}
-	if (atkClock->getElapsedTime() > lif::conf::boss::haunting_spirit_boss::PATTERN_SHOOT_DELAY) {
+	// Waiting for next attack
+	if (atkClock->getElapsedTime() > PATTERN_SHOOT_DELAY) {
 		curShootPattern->resetAndPlay();
 		selectedNewPattern = false;
+	} else if (!showedAtkCue && atkClock->getElapsedTime() > PATTERN_SHOOT_DELAY - sf::seconds(0.75)) {
+		// Give a visual cue of the incoming attack
+		auto blink = new lif::Blink(position - sf::Vector2f(BOSS_SIZE * 0.25, BOSS_SIZE * 0.25));
+		blink->get<lif::Animated>()->getSprite().setColor(shootColors[curShootIdx]);
+		spawner->addSpawned(blink);
+		showedAtkCue = true;
 	}
 	return std::move(stateFunction);
 }
