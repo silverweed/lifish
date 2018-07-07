@@ -151,8 +151,18 @@ StateFunction HauntingSpiritBoss::_updateSelectNewStatue() {
 	if (statues.size() == 0) {
 		return BIND(_updateDying);
 	}
-	std::uniform_int_distribution<> dist(0, statues.size() - 1);
-	targetStatue = statues[dist(lif::rng)];
+	std::shuffle(statues.begin(), statues.end(), lif::rng);
+	// Among the shuffled statues, try to select one in the opposite row than the current.
+	for (auto it = statues.begin(); it != statues.end(); ++it) {
+		assert(!it->expired());
+		if (std::abs(it->lock()->getOwner().getPosition().x - position.x) > lif::TILE_SIZE) {
+			targetStatue = *it;
+			break;
+		}
+	}
+	if (targetStatue.expired())
+		targetStatue = statues[0];
+
 	return BIND(_updateTransitioningBegin);
 }
 
