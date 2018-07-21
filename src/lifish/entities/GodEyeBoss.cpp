@@ -1,6 +1,8 @@
 #include "GodEyeBoss.hpp"
 #include "Lifed.hpp"
+#include "Bomb.hpp"
 #include "collision_utils.hpp"
+#include "Bonusable.hpp"
 #include "LevelManager.hpp"
 #include "Animated.hpp"
 #include "Controllable.hpp"
@@ -167,6 +169,7 @@ void GodEyeBoss::_shakeWalls() {
 			continue;
 		player->setPosition(lif::aligned2(player->getPosition()));
 		player->get<lif::Moving>()->stop();
+		player->get<lif::Bonusable>()->giveBonus(lif::BonusType::SHIELD, SHAKE_DURATION);
 		player->get<lif::Controllable>()->disableFor(SHAKE_DURATION);
 	}
 
@@ -206,6 +209,10 @@ void GodEyeBoss::_shakeWalls() {
 		if (auto w = dynamic_cast<lif::Spikes*>(e)) {
 			spikes.emplace_back(w);
 			e->setPosition(sf::Vector2f(0, 0));
+			return;
+		}
+		if (auto b = dynamic_cast<lif::Bomb*>(e)) {
+			b->ignite();
 			return;
 		}
 	});
