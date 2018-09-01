@@ -4,6 +4,7 @@
 #include "Collider.hpp"
 #include "Drawable.hpp"
 #include "FreeSighted.hpp"
+#include "HurtDrawProxy.hpp"
 #include "Killable.hpp"
 #include "Lifed.hpp"
 #include "Player.hpp"
@@ -26,11 +27,12 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 		lif::sid("hurt"), lif::getAsset("sounds", "alienboss_hurt.ogg")
 	);
 	const sf::Vector2f size(3 * lif::TILE_SIZE, 3 * lif::TILE_SIZE);
-	_addDefaultCollider(size);
+	addComponent<lif::Drawable>(*this, *addComponent<lif::HurtDrawProxy>(*this));
+	addComponent<lif::Lifed>(*this, LIFE);
 	addComponent<lif::Scored>(*this, VALUE);
+	_addDefaultCollider(size);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "alien_boss.png"));
 	animated->addAnimation("idle", { sf::IntRect(0, 0, size.x, size.y) }, true);
-	addComponent<lif::Lifed>(*this, LIFE);
 	shootClock = addComponent<lif::Clock>(*this);
 
 	lif::Attack attack;

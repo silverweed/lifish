@@ -1,36 +1,36 @@
 #include "LevelLoader.hpp"
-#include "game.hpp"
-#include "LevelSet.hpp"
-#include "Player.hpp"
-#include "Animated.hpp"
-#include "Level.hpp"
-#include "LevelManager.hpp"
-#include "FixedWall.hpp"
-#include "AxisSighted.hpp"
-#include "Teleport.hpp"
-#include "BreakableWall.hpp"
-//#include "AlienBoss.hpp"
-#include "Flash.hpp"
 #include "AI.hpp"
-#include "TransparentWall.hpp"
-#include "Coin.hpp"
-#include "Lifed.hpp"
-#include "EnemyFactory.hpp"
 #include "AcidPond.hpp"
-#include "LevelEffects.hpp"
+#include "AlienBoss.hpp"
+#include "Animated.hpp"
+#include "AxisSighted.hpp"
+#include "BreakableWall.hpp"
+#include "Cage.hpp"
+#include "Coin.hpp"
+#include "DroppingBomb.hpp"
+#include "EnemyFactory.hpp"
+#include "FixedWall.hpp"
+#include "Flare.hpp"
+#include "Flash.hpp"
+#include "GodEyeBoss.hpp"
 #include "HauntedStatue.hpp"
 #include "HauntingSpiritBoss.hpp"
-#include "Spikes.hpp"
-#include "Torch.hpp"
-#include "Sprite.hpp"
-#include "Cage.hpp"
-#include "DroppingBomb.hpp"
-#include "TimedLaser.hpp"
 #include "LeapingMovement.hpp"
-#include "RexBoss.hpp"
-#include "GodEyeBoss.hpp"
+#include "Level.hpp"
+#include "LevelEffects.hpp"
+#include "LevelManager.hpp"
+#include "LevelSet.hpp"
+#include "Lifed.hpp"
 #include "MainframeBoss.hpp"
-#include "Flare.hpp"
+#include "Player.hpp"
+#include "RexBoss.hpp"
+#include "Spikes.hpp"
+#include "Sprite.hpp"
+#include "Teleport.hpp"
+#include "TimedLaser.hpp"
+#include "Torch.hpp"
+#include "TransparentWall.hpp"
+#include "game.hpp"
 #include <iostream>
 
 using lif::TILE_SIZE;
@@ -147,14 +147,9 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 					break;
 				}
 
-			//case EntityType::ALIEN_BOSS:
-				//{
-					//auto boss = new lif::AlienBoss(curPos);
-					//for (auto s : boss->getAllRecursive<lif::Sighted>())
-						//s->setEntityGroup(&lm.entities);
-					//entities.add(boss);
-				//}
-				//break;
+			case EntityType::ALIEN_BOSS:
+				addBoss<lif::AlienBoss>(entities, curPos);
+				break;
 
 			case EntityType::HAUNTING_SPIRIT_BOSS:
 				addBoss<lif::HauntingSpiritBoss>(entities, curPos);

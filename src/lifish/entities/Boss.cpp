@@ -114,12 +114,12 @@ void Boss::_addDefaultCollider(const sf::Vector2f& size) {
 			_checkCollision(coll);
 	}, lif::c_layers::BOSSES, size);
 	if (get<lif::HurtDrawProxy>() == nullptr) {
-		throw std::logic_error("You need to add a HurtDrawProxy to this Boss.");
+		throw std::logic_error("You need to add a HurtDrawProxy to this Boss before calling _addDefaultCollider.");
 	}
 	if (get<lif::Lifed>() == nullptr) {
-		throw std::logic_error("You need to add a Lifed to this Boss.");
+		throw std::logic_error("You need to add a Lifed to this Boss before calling _addDefaultCollider.");
 	}
 	if (get<lif::Sounded>() == nullptr) {
-		throw std::logic_error("You need to add a Sounded to this Boss.");
+		throw std::logic_error("You need to add a Sounded to this Boss before calling _addDefaultCollider.");
 	}
 }

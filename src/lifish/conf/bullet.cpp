@@ -9,23 +9,23 @@ std::map<unsigned, const lif::BulletData> lif::conf::bullet::data = {
 	// shot
 	{ 1, { "shot.png", 7, 1, 4, 1 } },
 	// fireball
-	{ 2, { "shot.png", 13, 1, 4, 1 } },
+	{ 2, { "fireball.png", 13, 1, 4, 1 } },
 	// MG shot
-	{ 3, { "mgshot.png", 10, 1, 5, 4 } },
+	{ 3, { "mg_shot.png", 10, 1, 5, 4 } },
 	// lightbolt
-	{ 4, { "shot.png", 13, 1, 4, 1 } },
+	{ 4, { "lightbolt.png", 13, 1, 4, 1 } },
 	// flame
-	{ 5, { "shot.png", 32, 4, 0, 1 } },
+	{ 5, { "flame.png", 32, 4, 0, 1 } },
 	// plasma
-	{ 6, { "shot.png", 12, 1, 4, 1 } },
+	{ 6, { "plasma.png", 12, 1, 4, 1 } },
 	// magma
-	{ 7, { "shot.png", 26, 1, 4, 4 } },
+	{ 7, { "magma.png", 26, 1, 4, 4 } },
 	// rocket
-	{ 8, { "shot.png", /*TODO*/32, 2, 4, 4 } },
+	{ 8, { "bullet8.png", /*TODO*/32, 2, 4, 4 } },
 	// grenade
-	{ 9, { "grenade.png", 32, 1, 1, 1 } },
+	{ 9, { "bullet9.png", 32, 1, 1, 1 } },
 	// rocket
-	{ 10, { "shot.png", 7, 1, 4, 1 } },
+	{ 10, { "bullet10.png", 7, 1, 4, 1 } },
 	//// FreeBullets ////
 	// star
 	{ 101, { "shot.png", 20, 2, 5, 0 } },

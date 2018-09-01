@@ -1,13 +1,13 @@
 #include "EnemyFactory.hpp"
-#include "Wisp.hpp"
-#include "AlienPredator.hpp"
 #include "AI.hpp"
-#include "collision_layers.hpp"
-#include "LevelManager.hpp"
-#include "Level.hpp"
-#include "Sighted.hpp"
-#include "LevelSet.hpp"
+#include "AlienPredator.hpp"
 #include "LeapingMovement.hpp"
+#include "Level.hpp"
+#include "LevelManager.hpp"
+#include "LevelSet.hpp"
+#include "Sighted.hpp"
+#include "Wisp.hpp"
+#include "collision_layers.hpp"
 
 using lif::EnemyFactory;
 
@@ -18,12 +18,12 @@ std::unique_ptr<lif::Enemy> EnemyFactory::create(lif::LevelManager& lm, unsigned
 
 	// Some enemies have their own classes, others are just 'Enemy'
 	switch (id) {
-	case 5:
-		enemy = std::make_unique<lif::Wisp>(pos, info);
-		break;
-	case 10:
-		enemy = std::make_unique<lif::AlienPredator>(pos, info);
-		break;
+	//case 5:
+		//enemy = std::make_unique<lif::Wisp>(pos, info);
+		//break;
+	//case 10:
+		//enemy = std::make_unique<lif::AlienPredator>(pos, info);
+		//break;
 	default:
 		enemy = std::make_unique<lif::Enemy>(pos, id, info);
 		break;
@@ -34,8 +34,8 @@ std::unique_ptr<lif::Enemy> EnemyFactory::create(lif::LevelManager& lm, unsigned
 	sighted->setOpaque({ lif::c_layers::BREAKABLES, lif::c_layers::UNBREAKABLES });
 
 	// FIXME
-	if (id == 4)
-		enemy->addComponent<lif::LeapingMovement>(*enemy, sf::seconds(0.2))->init();
+	//if (id == 4)
+		//enemy->addComponent<lif::LeapingMovement>(*enemy, sf::seconds(0.2))->init();
 
 	return enemy;
 }
