@@ -6,27 +6,67 @@
 	"comment": "Created with LifishEdit 0.8.1",
 	"tracks": [
 		{
-			"name": "DMZ beat",
-			"author": "Giacomo Parolini",
+			"name": "Go For It",
+			"author": "George E. Kouba, Jr.",
 			"loop": {
-				"start": 7.386,
-				"length": 44.279
+				"start": 0,
+				"length": 0
 			}
 		},
 		{
-			"name": "Spirit Party",
-			"author": "Luca Barazzetta",
+			"name": "What Goes Around",
+			"author": "George E. Kouba, Jr.",
 			"loop": {
-				"start": 3.428,
-				"length": 106.3
+				"start": 0,
+				"length": 0
 			}
 		},
 		{
-			"name": "Tick Tock",
-			"author": "Luca Barazzetta",
+			"name": "Bomber Boy",
+			"author": "George E. Kouba, Jr.",
 			"loop": {
-				"start": 3.428,
-				"length": 96.0
+				"start": 0,
+				"length": 0
+			}
+		},
+		{
+			"name": "Smoak Et",
+			"author": "George E. Kouba, Jr.",
+			"loop": {
+				"start": 0,
+				"length": 0
+			}
+		},
+		{
+			"name": "Terminate",
+			"author": "George E. Kouba, Jr.",
+			"loop": {
+				"start": 0,
+				"length": 0
+			}
+		},
+		{
+			"name": "Fused",
+			"author": "George E. Kouba, Jr.",
+			"loop": {
+				"start": 0,
+				"length": 0
+			}
+		},
+		{
+			"name": "BoomRunner",
+			"author": "George E. Kouba, Jr.",
+			"loop": {
+				"start": 0,
+				"length": 0
+			}
+		},
+		{
+			"name": "Boom Forever",
+			"author": "George E. Kouba, Jr.",
+			"loop": {
+				"start": 0,
+				"length": 0
 			}
 		}
 	],
@@ -636,7 +676,7 @@
 		{
 			"time": 240,
 			"num": 31,
-			"music": 3,
+			"music": 4,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -651,7 +691,7 @@
 		{
 			"time": 240,
 			"num": 32,
-			"music": 3,
+			"music": 4,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -666,7 +706,7 @@
 		{
 			"time": 240,
 			"num": 33,
-			"music": 3,
+			"music": 4,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -681,7 +721,7 @@
 		{
 			"time": 240,
 			"num": 34,
-			"music": 3,
+			"music": 4,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -696,7 +736,7 @@
 		{
 			"time": 240,
 			"num": 35,
-			"music": 3,
+			"music": 4,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -711,7 +751,7 @@
 		{
 			"time": 240,
 			"num": 36,
-			"music": 3,
+			"music": 4,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -726,7 +766,7 @@
 		{
 			"time": 240,
 			"num": 37,
-			"music": 3,
+			"music": 4,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -741,7 +781,7 @@
 		{
 			"time": 240,
 			"num": 38,
-			"music": 3,
+			"music": 4,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -756,7 +796,7 @@
 		{
 			"time": 240,
 			"num": 39,
-			"music": 3,
+			"music": 4,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -771,7 +811,7 @@
 		{
 			"time": 240,
 			"num": 40,
-			"music": 3,
+			"music": 4,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -786,7 +826,7 @@
 		{
 			"time": 300,
 			"num": 41,
-			"music": 3,
+			"music": 5,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -801,7 +841,7 @@
 		{
 			"time": 300,
 			"num": 42,
-			"music": 3,
+			"music": 5,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -816,7 +856,7 @@
 		{
 			"time": 300,
 			"num": 43,
-			"music": 3,
+			"music": 5,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -831,7 +871,7 @@
 		{
 			"time": 300,
 			"num": 44,
-			"music": 3,
+			"music": 5,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -846,7 +886,7 @@
 		{
 			"time": 300,
 			"num": 45,
-			"music": 3,
+			"music": 5,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -861,7 +901,7 @@
 		{
 			"time": 300,
 			"num": 46,
-			"music": 3,
+			"music": 5,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -876,7 +916,7 @@
 		{
 			"time": 300,
 			"num": 47,
-			"music": 3,
+			"music": 5,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -891,7 +931,7 @@
 		{
 			"time": 300,
 			"num": 48,
-			"music": 3,
+			"music": 5,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -906,7 +946,7 @@
 		{
 			"time": 300,
 			"num": 49,
-			"music": 3,
+			"music": 5,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -921,7 +961,7 @@
 		{
 			"time": 300,
 			"num": 50,
-			"music": 3,
+			"music": 5,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -936,7 +976,7 @@
 		{
 			"time": 300,
 			"num": 51,
-			"music": 3,
+			"music": 6,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -951,7 +991,7 @@
 		{
 			"time": 300,
 			"num": 52,
-			"music": 3,
+			"music": 6,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -966,7 +1006,7 @@
 		{
 			"time": 300,
 			"num": 53,
-			"music": 3,
+			"music": 6,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -981,7 +1021,7 @@
 		{
 			"time": 300,
 			"num": 54,
-			"music": 3,
+			"music": 6,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -996,7 +1036,7 @@
 		{
 			"time": 300,
 			"num": 55,
-			"music": 3,
+			"music": 6,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1011,7 +1051,7 @@
 		{
 			"time": 300,
 			"num": 56,
-			"music": 3,
+			"music": 6,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1026,7 +1066,7 @@
 		{
 			"time": 300,
 			"num": 57,
-			"music": 3,
+			"music": 6,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1041,7 +1081,7 @@
 		{
 			"time": 300,
 			"num": 58,
-			"music": 3,
+			"music": 6,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1056,7 +1096,7 @@
 		{
 			"time": 300,
 			"num": 59,
-			"music": 3,
+			"music": 6,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1071,7 +1111,7 @@
 		{
 			"time": 300,
 			"num": 60,
-			"music": 3,
+			"music": 6,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1086,7 +1126,7 @@
 		{
 			"time": 300,
 			"num": 61,
-			"music": 3,
+			"music": 7,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1101,7 +1141,7 @@
 		{
 			"time": 300,
 			"num": 62,
-			"music": 3,
+			"music": 7,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1116,7 +1156,7 @@
 		{
 			"time": 300,
 			"num": 63,
-			"music": 3,
+			"music": 7,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1131,7 +1171,7 @@
 		{
 			"time": 300,
 			"num": 64,
-			"music": 3,
+			"music": 7,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1146,7 +1186,7 @@
 		{
 			"time": 300,
 			"num": 65,
-			"music": 3,
+			"music": 7,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1161,7 +1201,7 @@
 		{
 			"time": 300,
 			"num": 66,
-			"music": 3,
+			"music": 7,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1176,7 +1216,7 @@
 		{
 			"time": 300,
 			"num": 67,
-			"music": 3,
+			"music": 7,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1191,7 +1231,7 @@
 		{
 			"time": 300,
 			"num": 68,
-			"music": 3,
+			"music": 7,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1206,7 +1246,7 @@
 		{
 			"time": 300,
 			"num": 69,
-			"music": 3,
+			"music": 7,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1221,7 +1261,7 @@
 		{
 			"time": 300,
 			"num": 70,
-			"music": 3,
+			"music": 7,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1236,7 +1276,7 @@
 		{
 			"time": 300,
 			"num": 71,
-			"music": 3,
+			"music": 8,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1251,7 +1291,7 @@
 		{
 			"time": 300,
 			"num": 72,
-			"music": 3,
+			"music": 8,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1266,7 +1306,7 @@
 		{
 			"time": 300,
 			"num": 73,
-			"music": 3,
+			"music": 8,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1281,7 +1321,7 @@
 		{
 			"time": 300,
 			"num": 74,
-			"music": 3,
+			"music": 8,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1296,7 +1336,7 @@
 		{
 			"time": 300,
 			"num": 75,
-			"music": 3,
+			"music": 8,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1311,7 +1351,7 @@
 		{
 			"time": 300,
 			"num": 76,
-			"music": 3,
+			"music": 8,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1326,7 +1366,7 @@
 		{
 			"time": 300,
 			"num": 77,
-			"music": 3,
+			"music": 8,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1341,7 +1381,7 @@
 		{
 			"time": 300,
 			"num": 78,
-			"music": 3,
+			"music": 8,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1356,7 +1396,7 @@
 		{
 			"time": 300,
 			"num": 79,
-			"music": 3,
+			"music": 8,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
@@ -1371,7 +1411,7 @@
 		{
 			"time": 300,
 			"num": 80,
-			"music": 3,
+			"music": 8,
 			"width": 15,
 			"height": 13,
 			"tileIDs": {
