@@ -1,18 +1,18 @@
 #include "GameContext.hpp"
-#include "Killable.hpp"
-#include "SHCollisionDetector.hpp"
-#include "Music.hpp"
 #include "BaseEventHandler.hpp"
-#include "Options.hpp"
-#include "core.hpp"
-#include "contexts.hpp"
-#include "input_utils.hpp"
-#include "MusicManager.hpp"
 #include "Bonusable.hpp"
-#include "bonus_type.hpp"
-#include "SaveManager.hpp"
-#include "Player.hpp"
 #include "Controllable.hpp"
+#include "Killable.hpp"
+#include "Music.hpp"
+#include "MusicManager.hpp"
+#include "Options.hpp"
+#include "Player.hpp"
+#include "SHCollisionDetector.hpp"
+#include "SaveManager.hpp"
+#include "bonus_type.hpp"
+#include "contexts.hpp"
+#include "core.hpp"
+#include "input_utils.hpp"
 #ifndef RELEASE
 #	include <iostream>
 #	include <iomanip>
@@ -21,9 +21,9 @@
 #	include "game_logic.hpp"
 #	include "DebugPainter.hpp"
 #endif
-#include "GlobalDataPipe.hpp"
 #include "CameraShake.hpp"
 #include "CameraShakeRequest.hpp"
+#include "GlobalDataPipe.hpp"
 
 using lif::GameContext;
 
@@ -62,13 +62,15 @@ void GameContext::_initLM(const sf::Window& window, short lvnum) {
 
 	lm.setLevel(ls, lvnum);
 
-	const auto level = lm.getLevel();
-	if (level == nullptr)
+	if (lm.getLevel() == nullptr)
 		throw std::invalid_argument("Level " + lif::to_string(lvnum) + " not found in levelset!");
+}
 
+void GameContext::onLevelStart() {
 	// Setup the music
-	lif::musicManager->set(level->get<lif::Music>()->getMusic())
-			.setVolume(lif::options.musicVolume).play();
+	lif::musicManager->set(lm.getLevel()->get<lif::Music>()->getMusic())
+		.setVolume(lif::options.musicVolume)
+		.play();
 
 	// Ensure lm is not paused
 	lm.resume();
@@ -106,6 +108,7 @@ void GameContext::update() {
 		return;
 	case S::ADVANCED_LEVEL:
 		_advanceLevel();
+		onLevelStart();
 		break;
 	case S::EXIT_GAME:
 		newContext = lif::CTX_UI;
@@ -221,9 +224,9 @@ void GameContext::_advanceLevel() {
 	if (level == nullptr)
 		throw std::logic_error("No levels found after " + lif::to_string(lvnum)
 				+ " but end game not triggered!");
-	lif::musicManager->set(level->get<lif::Music>()->getMusic())
-		.setVolume(lif::options.musicVolume)
-		.play();
+	//lif::musicManager->set(level->get<lif::Music>()->getMusic())
+		//.setVolume(lif::options.musicVolume)
+		//.play();
 
 	// If level has a cutscene, play it
 	if (level->getInfo().cutscenePre.length() > 0)

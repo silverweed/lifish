@@ -367,9 +367,10 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 		cur_context->resetNewContext();
 		switch (nc) {
 		case lif::CTX_UI:
-			if (cur_context == game.get() && game->getLM().isGameOver())
+			if (cur_context == game.get() && game->getLM().isGameOver()) {
 				ui.setCurrent("home");
-			else
+				game.reset();
+			} else
 				ui.setCurrent("pause");
 			break;
 		case lif::CTX_INTERLEVEL:
@@ -398,6 +399,12 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 			}
 			break;
 		case lif::CTX_GAME:
+			if (cur_context == contexts[lif::CTX_INTERLEVEL]
+					&& game->getLM().getLevel()->getInfo().levelnum == args.start_level)
+			{
+				// New level just started
+				game->onLevelStart();
+			}
 			// Keep inputs disabled for a brief period after switching back in game.
 			// This prevents accidental placement of bombs and similar.
 			game->getLM().disableInputFor(sf::seconds(0.5));

@@ -176,6 +176,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 
 		case sf::Keyboard::Add:
 			game._advanceLevel();
+			game.onLevelStart();
 			game.getWLHandler().state = lif::WinLoseHandler::State::DEFAULT;
 			return true;
 
