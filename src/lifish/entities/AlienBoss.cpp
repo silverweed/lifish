@@ -1,16 +1,16 @@
 #include "AlienBoss.hpp"
-#include "Player.hpp"
-#include "Killable.hpp"
-#include "Collider.hpp"
-#include "Sounded.hpp"
-#include "Clock.hpp"
-#include "ShootingPoint.hpp"
-#include "FreeSighted.hpp"
-#include "Drawable.hpp"
-#include "Lifed.hpp"
-#include "Scored.hpp"
 #include "Animated.hpp"
+#include "Clock.hpp"
+#include "Collider.hpp"
+#include "Drawable.hpp"
+#include "FreeSighted.hpp"
+#include "Killable.hpp"
+#include "Lifed.hpp"
+#include "Player.hpp"
+#include "Scored.hpp"
 #include "Shooting.hpp"
+#include "ShootingPoint.hpp"
+#include "Sounded.hpp"
 #include "conf/boss.hpp"
 #include "shoot_utils.hpp"
 #include <iostream>
@@ -22,13 +22,13 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	: lif::Boss(pos)
 {
 	addComponent<lif::Sounded>(*this,
-		lif::sid("death"), lif::getAsset("test", "alienboss_death.ogg"),
-		lif::sid("hurt"), lif::getAsset("test", "alienboss_hurt.ogg")
+		lif::sid("death"), lif::getAsset("sounds", "alienboss_death.ogg"),
+		lif::sid("hurt"), lif::getAsset("sounds", "alienboss_hurt.ogg")
 	);
 	const sf::Vector2f size(3 * lif::TILE_SIZE, 3 * lif::TILE_SIZE);
 	_addDefaultCollider(size);
 	addComponent<lif::Scored>(*this, VALUE);
-	animated = addComponent<lif::Animated>(*this, lif::getAsset("test", "alien_boss.png"));
+	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "alien_boss.png"));
 	animated->addAnimation("idle", { sf::IntRect(0, 0, size.x, size.y) }, true);
 	addComponent<lif::Lifed>(*this, LIFE);
 	shootClock = addComponent<lif::Clock>(*this);

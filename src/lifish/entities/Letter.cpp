@@ -1,18 +1,18 @@
 #include "Letter.hpp"
-#include "game.hpp"
-#include "Scored.hpp"
-#include "Clock.hpp"
-#include "Grabbable.hpp"
 #include "Animated.hpp"
-#include "Drawable.hpp"
-#include "Sounded.hpp"
+#include "Clock.hpp"
 #include "Collider.hpp"
-#include "Temporary.hpp"
-#include "Player.hpp"
-#include "utils.hpp"
-#include "conf/zindex.hpp"
-#include "conf/player.hpp"
+#include "Drawable.hpp"
 #include "GameCache.hpp"
+#include "Grabbable.hpp"
+#include "Player.hpp"
+#include "Scored.hpp"
+#include "Sounded.hpp"
+#include "Temporary.hpp"
+#include "conf/player.hpp"
+#include "conf/zindex.hpp"
+#include "game.hpp"
+#include "utils.hpp"
 #include <random>
 
 using lif::Letter;
@@ -33,10 +33,10 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 {
 	addComponent<lif::Scored>(*this, 100);
 	addComponent<lif::Sounded>(*this,
-		lif::sid("grab"), lif::getAsset("test", "letter_grab.ogg")
+		lif::sid("grab"), lif::getAsset("sounds", "letter_grab.ogg")
 	);
 	transitionClock = addComponent<lif::Clock>(*this);
-	animated = addComponent<lif::Animated>(*this, lif::getAsset("test", "extra_letters.png"));
+	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "extra_letters.png"));
 	addComponent<lif::Drawable>(*this, *animated);
 	addComponent<lif::Killable>(*this);
 	addComponent<lif::Collider>(*this, [this] (lif::Collider& coll) {

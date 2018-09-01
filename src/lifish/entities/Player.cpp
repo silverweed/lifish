@@ -32,9 +32,9 @@ static const sf::Time DEATH_FRAME_TIME = sf::milliseconds(100);
 static const sf::Time IDLE_FRAME_TIME = sf::milliseconds(200);
 static const sf::Time WIN_FRAME_TIME = sf::milliseconds(50);
 static constexpr int WALK_N_FRAMES = 8;
-static constexpr int DEATH_N_FRAMES = 8;
-static constexpr int IDLE_N_FRAMES = 4;
-static constexpr int WIN_N_FRAMES = 6;
+static constexpr int DEATH_N_FRAMES = 3;
+static constexpr int IDLE_N_FRAMES = 1;
+static constexpr int WIN_N_FRAMES = 1;
 
 
 Player::Player(const sf::Vector2f& pos, const lif::PlayerInfo& info)
@@ -69,14 +69,14 @@ void Player::_init() {
 	}, lif::c_layers::PLAYERS);
 	moving = addComponent<lif::AxisMoving>(*this, lif::conf::player::DEFAULT_SPEED);
 	moving->setFastTurn(true);
-	animated = addComponent<lif::Animated>(*this, lif::getAsset("final", "player"s +
+	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "player"s +
 				lif::to_string(info.id) + ".png"s));
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::PLAYERS);
 	addComponent<lif::Drawable>(*this, drawProxy);
 	addComponent<lif::Sounded>(*this,
-		lif::sid("death"), lif::getAsset("test", "player"s + lif::to_string(info.id) + "_death.ogg"s),
-		lif::sid("hurt"), lif::getAsset("test", "player"s + lif::to_string(info.id) + "_hurt.ogg"s),
-		lif::sid("win"), lif::getAsset("test", "player"s + lif::to_string(info.id) + "_win.ogg"s)
+		lif::sid("death"), lif::getAsset("sounds", "player"s + lif::to_string(info.id) + "_death.ogg"s),
+		lif::sid("hurt"), lif::getAsset("sounds", "player"s + lif::to_string(info.id) + "_hurt.ogg"s),
+		lif::sid("win"), lif::getAsset("sounds", "player"s + lif::to_string(info.id) + "_win.ogg"s)
 	);
 	killable = addComponent<lif::Killable>(*this, [this] () {
 		// on kill
@@ -125,6 +125,9 @@ void Player::update() {
 			moving->stop();
 		}
 	}
+
+	if (winning && _isIdleAnim())
+		animated->setAnimation("win");
 }
 
 bool Player::_isIdleAnim() const {
@@ -137,9 +140,9 @@ bool Player::_isIdleAnim() const {
 }
 
 void Player::setWinning(bool b) {
+	winning = b;
 	if (b) {
 		animated->setAnimation("win");
-		moving->block(sf::seconds(99));
 	} else {
 		animated->setAnimation("idle_down");
 		moving->block(sf::Time::Zero);
@@ -150,7 +153,7 @@ void Player::_kill() {
 	get<lif::Controllable>()->setActive(false);
 	get<lif::Bonusable>()->reset();
 	info.reset(false);
-	animated->getSprite().setLooped(false, false);
+	animated->getSprite().setLooped(true);
 	death->kill();
 }
 
@@ -274,27 +277,27 @@ void Player::_setupAnimations() {
 	for (int i = 0; i < DEATH_N_FRAMES; ++i) {
 		a_death_down.addFrame(sf::IntRect(
 			i * TILE_SIZE,
-			7 * TILE_SIZE,
+			4 * TILE_SIZE,
 			TILE_SIZE, TILE_SIZE));
 		a_death_up.addFrame(sf::IntRect(
 			i * TILE_SIZE,
-			8 * TILE_SIZE,
+			4 * TILE_SIZE,
 			TILE_SIZE, TILE_SIZE));
 		a_death_right.addFrame(sf::IntRect(
 			i * TILE_SIZE,
-			9 * TILE_SIZE,
+			4 * TILE_SIZE,
 			TILE_SIZE, TILE_SIZE));
 		a_death_left.addFrame(sf::IntRect(
 			i * TILE_SIZE,
-			10 * TILE_SIZE,
+			4 * TILE_SIZE,
 			TILE_SIZE, TILE_SIZE));
 	}
 
 	auto& a_win = animated->addAnimation("win");
 	for (int i = 0; i < WIN_N_FRAMES; ++i) {
 		a_win.addFrame(sf::IntRect(
-			i * TILE_SIZE,
-			11 * TILE_SIZE,
+			3 * TILE_SIZE,
+			4 * TILE_SIZE,
 			TILE_SIZE, TILE_SIZE));
 	}
 
@@ -305,19 +308,19 @@ void Player::_setupAnimations() {
 	for (int i = 0; i < IDLE_N_FRAMES; ++i) {
 		a_idle_down.addFrame(sf::IntRect(
 			i * TILE_SIZE,
-			4 * TILE_SIZE,
+			0 * TILE_SIZE,
 			TILE_SIZE, TILE_SIZE));
 		a_idle_up.addFrame(sf::IntRect(
 			(i + IDLE_N_FRAMES) * TILE_SIZE,
-			4 * TILE_SIZE,
+			0 * TILE_SIZE,
 			TILE_SIZE, TILE_SIZE));
 		a_idle_right.addFrame(sf::IntRect(
 			i * TILE_SIZE,
-			5 * TILE_SIZE,
+			0 * TILE_SIZE,
 			TILE_SIZE, TILE_SIZE));
 		a_idle_left.addFrame(sf::IntRect(
 			(i + IDLE_N_FRAMES) * TILE_SIZE,
-			5 * TILE_SIZE,
+			0 * TILE_SIZE,
 			TILE_SIZE, TILE_SIZE));
 	}
 
@@ -326,20 +329,20 @@ void Player::_setupAnimations() {
 	auto& a_hurt_left = animated->addAnimation("hurt_left");
 	auto& a_hurt_right = animated->addAnimation("hurt_right");
 	a_hurt_down.addFrame(sf::IntRect(
-		0,
-		6 * TILE_SIZE,
+		4 * TILE_SIZE,
+		4 * TILE_SIZE,
 		TILE_SIZE, TILE_SIZE));
 	a_hurt_up.addFrame(sf::IntRect(
-		TILE_SIZE,
-		6 * TILE_SIZE,
+		4 * TILE_SIZE,
+		4 * TILE_SIZE,
 		TILE_SIZE, TILE_SIZE));
 	a_hurt_right.addFrame(sf::IntRect(
-		2 * TILE_SIZE,
-		6 * TILE_SIZE,
+		4 * TILE_SIZE,
+		4 * TILE_SIZE,
 		TILE_SIZE, TILE_SIZE));
 	a_hurt_left.addFrame(sf::IntRect(
-		3 * TILE_SIZE,
-		6 * TILE_SIZE,
+		4 * TILE_SIZE,
+		4 * TILE_SIZE,
 		TILE_SIZE, TILE_SIZE));
 
 	auto& animatedSprite = animated->getSprite();

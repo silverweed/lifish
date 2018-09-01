@@ -1,18 +1,18 @@
 #include "Bonus.hpp"
-#include "Drawable.hpp"
-#include "Sounded.hpp"
-#include "Sprite.hpp"
-#include "Grabbable.hpp"
 #include "Clock.hpp"
+#include "Collider.hpp"
+#include "Drawable.hpp"
+#include "Grabbable.hpp"
 #include "Player.hpp"
 #include "Scored.hpp"
-#include "collision_layers.hpp"
+#include "Sounded.hpp"
+#include "Sprite.hpp"
 #include "Temporary.hpp"
-#include "Collider.hpp"
-#include "game.hpp"
-#include "conf/bonus.hpp"
 #include "ZIndexed.hpp"
+#include "collision_layers.hpp"
+#include "conf/bonus.hpp"
 #include "conf/zindex.hpp"
+#include "game.hpp"
 
 using lif::Bonus;
 using lif::TILE_SIZE;
@@ -39,7 +39,7 @@ Bonus::Bonus(const sf::Vector2f& pos, const lif::BonusType type)
 	addComponent<lif::Scored>(*this, lif::conf::bonus::VALUE);
 	expireClock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Sounded>(*this,
-		lif::sid("grab"), lif::getAsset("test", "bonus_grab.ogg")
+		lif::sid("grab"), lif::getAsset("sounds", "bonus_grab.ogg")
 	);
 	addComponent<lif::Temporary>(*this, [this] () {
 		// expire condition

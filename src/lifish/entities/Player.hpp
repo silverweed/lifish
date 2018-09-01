@@ -77,6 +77,7 @@ class Player : public lif::Entity {
 	friend class lif::PlayerDrawProxy;
 
 	bool isHurt = false;
+	bool winning = false;
 
 	lif::AxisMoving *moving = nullptr;
 	lif::Animated *animated = nullptr;

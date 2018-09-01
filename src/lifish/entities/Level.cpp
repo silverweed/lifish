@@ -1,13 +1,13 @@
 #include "Level.hpp"
-#include "game.hpp"
-#include "GameCache.hpp"
-#include "LevelSet.hpp"
-#include "utils.hpp"
-#include "LoopingMusic.hpp"
 #include "Drawable.hpp"
-#include "ShadedText.hpp"
-#include "Music.hpp"
+#include "GameCache.hpp"
 #include "LevelNumText.hpp"
+#include "LevelSet.hpp"
+#include "LoopingMusic.hpp"
+#include "Music.hpp"
+#include "ShadedText.hpp"
+#include "game.hpp"
+#include "utils.hpp"
 #include <sstream>
 
 using lif::Level;

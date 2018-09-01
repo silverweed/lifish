@@ -1,16 +1,16 @@
 #include "Teleport.hpp"
 #include "Animated.hpp"
+#include "AxisMoving.hpp"
 #include "Clock.hpp"
-#include "game.hpp"
+#include "Collider.hpp"
+#include "Drawable.hpp"
+#include "Fixed.hpp"
 #include "GameCache.hpp"
 #include "OneShotFX.hpp"
-#include "Drawable.hpp"
-#include "Collider.hpp"
-#include "AxisMoving.hpp"
-#include "Fixed.hpp"
-#include "Spawning.hpp"
 #include "Sounded.hpp"
+#include "Spawning.hpp"
 #include "conf/teleport.hpp"
+#include "game.hpp"
 
 using lif::Teleport;
 using lif::TILE_SIZE;
@@ -40,7 +40,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 		});
 	});
 	addComponent<lif::Sounded>(*this,
-		lif::sid("warp"), lif::getAsset("test", "teleport.ogg")
+		lif::sid("warp"), lif::getAsset("sounds", "teleport.ogg")
 	);
 
 	auto& anim = animated->addAnimation("teleport");

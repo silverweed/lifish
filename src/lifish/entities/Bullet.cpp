@@ -24,8 +24,8 @@ Bullet::Bullet(const sf::Vector2f& pos, const lif::BulletInfo& _info, const lif:
 	, speed(_info.speed)
 {
 	addComponent<lif::Sounded>(*this,
-		lif::sid("hit"), lif::getAsset("test", "bullet"s + lif::to_string(info.dataId) + "_hit.ogg"s),
-		lif::sid("shot"), lif::getAsset("test", "bullet"s + lif::to_string(info.dataId) + "_shot.ogg"s)
+		lif::sid("hit"), lif::getAsset("sounds", "bullet"s + lif::to_string(info.dataId) + "_hit.ogg"s),
+		lif::sid("shot"), lif::getAsset("sounds", "bullet"s + lif::to_string(info.dataId) + "_shot.ogg"s)
 	);
 	addComponent<lif::ZIndexed>(*this, info.dataId > 100
 			? lif::conf::zindex::BOSS_BULLETS :lif::conf::zindex::BULLETS);

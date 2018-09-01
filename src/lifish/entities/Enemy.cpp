@@ -44,11 +44,11 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 {
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::ENEMIES);
 	addComponent<lif::Sounded>(*this,
-		lif::sid("death"), lif::getAsset("test", "enemy"s + lif::to_string(id) + "_death.ogg"s),
-		lif::sid("yell"), lif::getAsset("test", "enemy"s + lif::to_string(id) + "_yell.ogg"s),
+		lif::sid("death"), lif::getAsset("sounds", "enemy"s + lif::to_string(id) + "_death.ogg"s),
+		lif::sid("yell"), lif::getAsset("sounds", "enemy"s + lif::to_string(id) + "_yell.ogg"s),
 		// Note: this is an invalid sound if enemy.attackType is not CONTACT. This is not an issue,
 		// since in that case the sound never gets played, so the cache doesn't even load it.
-		lif::sid("attack"), lif::getAsset("test", "enemy"s + lif::to_string(id) + "_attack.ogg"s)
+		lif::sid("attack"), lif::getAsset("sounds", "enemy"s + lif::to_string(id) + "_attack.ogg"s)
 	);
 	addComponent<lif::Lifed>(*this, lif::conf::enemy::BASE_LIFE, [this] (int damage, int newLife) {
 		// on hurt

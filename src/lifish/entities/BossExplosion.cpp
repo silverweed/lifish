@@ -1,9 +1,9 @@
 #include "BossExplosion.hpp"
-#include "Drawable.hpp"
 #include "Animated.hpp"
-#include "ZIndexed.hpp"
+#include "Drawable.hpp"
 #include "Sounded.hpp"
 #include "Temporary.hpp"
+#include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
 #include "utils.hpp"
 #include <random>
@@ -21,7 +21,7 @@ BossExplosion::BossExplosion(const sf::Vector2f& pos)
 	})
 {
 	addComponent<lif::Sounded>(*this,
-		lif::sid("explode"), lif::getAsset("test", "bossbullet_hit.ogg")
+		lif::sid("explode"), lif::getAsset("sounds", "bossbullet_hit.ogg")
 	);
 	get<lif::ZIndexed>()->setZIndex(lif::conf::zindex::BOSS_EXPLOSIONS);
 	std::uniform_int_distribution<unsigned char> dist(100, 232);
