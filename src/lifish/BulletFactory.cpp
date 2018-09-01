@@ -1,12 +1,12 @@
 #include "BulletFactory.hpp"
+#include "AxisBullet.hpp"
+#include "AxisMoving.hpp"
+#include "FreeBullet.hpp"
 #include "Grenade.hpp"
 #include "Missile.hpp"
-#include "utils.hpp"
-#include "AxisMoving.hpp"
-#include "AxisBullet.hpp"
-#include "FreeBullet.hpp"
 #include "Rocket.hpp"
 #include "collision_layers.hpp"
+#include "utils.hpp"
 
 using lif::BulletFactory;
 
@@ -19,11 +19,11 @@ std::map<unsigned, const lif::BulletInfo> bulletsInfo = {
 	// shot
 	{ 1, lif::BulletInfo{ 1, 1, 1.3f, -1 } },
 	// fireball
-	{ 2, lif::BulletInfo{ 2, 2, 0.9f, -1 } },
+	{ 2, lif::BulletInfo{ 2, 2, 1.1f, -1 } },
 	// MG shot
 	{ 3, lif::BulletInfo{ 3, 2, 1.3f, -1 } },
 	// lightbolt
-	{ 4, lif::BulletInfo{ 4, 3, 0.9f, -1 } },
+	{ 4, lif::BulletInfo{ 4, 3, 1.1f, -1 } },
 	// flame
 	{ 5, lif::BulletInfo{ 5, 3, 0.66f, 4 * lif::TILE_SIZE } },
 	// plasma

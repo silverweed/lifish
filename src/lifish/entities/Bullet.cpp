@@ -109,7 +109,7 @@ void Bullet::_setup() {
 		a_destroy.addFrame(sf::IntRect(
 				(data.nMotionFrames + i) * TILE_SIZE,
 				0,
-				data.size, data.size));
+				TILE_SIZE, TILE_SIZE));
 
 	auto& animatedSprite = animated->getSprite();
 	animatedSprite.setAnimation(a_move);

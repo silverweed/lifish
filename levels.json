@@ -91,7 +91,7 @@
 				"type": [
 					"simple"
 				],
-				"id": 10,
+				"id": 1,
 				"fireRate": 2.0
 			}
 		},
@@ -184,7 +184,8 @@
 					"blocking"
 				],
 				"id": 6,
-				"fireRate": 2.0
+				"fireRate": 8.0,
+				"blockTime": 150.0
 			}
 		},
 		{

@@ -15,7 +15,7 @@ std::map<unsigned, const lif::BulletData> lif::conf::bullet::data = {
 	// lightbolt
 	{ 4, { "lightbolt.png", 13, 1, 4, 1 } },
 	// flame
-	{ 5, { "flame.png", 32, 4, 0, 1 } },
+	{ 5, { "flame.png", 32, 4, 0, 4 } },
 	// plasma
 	{ 6, { "plasma.png", 12, 1, 4, 1 } },
 	// magma
