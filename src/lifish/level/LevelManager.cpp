@@ -1,26 +1,26 @@
 #include "LevelManager.hpp"
-#include "game_logic.hpp"
-#include "Enemy.hpp"
-#include "Clock.hpp"
 #include "AxisMoving.hpp"
+#include "Bomb.hpp"
+#include "Bonusable.hpp"
+#include "Clock.hpp"
+#include "Coin.hpp"
+#include "Controllable.hpp"
+#include "Enemy.hpp"
 #include "Explosion.hpp"
 #include "Foe.hpp"
+#include "Letter.hpp"
+#include "Level.hpp"
+#include "LevelLoader.hpp"
+#include "LevelSet.hpp"
+#include "Lifed.hpp"
 #include "Options.hpp"
 #include "Player.hpp"
-#include "Bomb.hpp"
-#include "Level.hpp"
-#include "Shooting.hpp"
-#include "Lifed.hpp"
 #include "SaveManager.hpp"
-#include "Letter.hpp"
-#include "LevelLoader.hpp"
-#include "Coin.hpp"
-#include "Bonusable.hpp"
-#include "Controllable.hpp"
-#include "LevelSet.hpp"
+#include "Shooting.hpp"
 #include "core.hpp"
-#include <memory>
+#include "game_logic.hpp"
 #include <cassert>
+#include <memory>
 
 using lif::LevelManager;
 
@@ -117,7 +117,7 @@ void LevelManager::setNextLevel() {
 	if (level == nullptr)
 		throw std::logic_error("Called LevelManager::setNextLevel() with null level!");
 	short lvnum = level->getInfo().levelnum + 1;
-	if (lvnum >= level->getLevelSet().getLevelsNum())
+	if (lvnum > level->getLevelSet().getLevelsNum())
 		lvnum = 1;
 	setLevel(level->getLevelSet(), lvnum);
 }
