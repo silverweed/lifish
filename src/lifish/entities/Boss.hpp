@@ -1,8 +1,8 @@
 #pragma once
 
-#include <memory>
-#include <SFML/Graphics.hpp>
 #include "Entity.hpp"
+#include <SFML/Graphics.hpp>
+#include <memory>
 
 namespace lif {
 
@@ -32,10 +32,10 @@ protected:
 
 
 	void _checkCollision(lif::Collider& coll);
+
 	/** Resets deathClock */
 	virtual void _kill();
-	/** `true` while deathClock->getElapsedTime() < lif::conf::boss::DEATH_TIME */
-	bool _killInProgress() const;
+
 	/** Convenient function to add a collider which just calls _checkCollision */
 	void _addDefaultCollider(const sf::Vector2f& size);
 

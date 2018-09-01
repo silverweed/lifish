@@ -1,25 +1,25 @@
 #include "Boss.hpp"
-#include "ZIndexed.hpp"
-#include "game.hpp"
-#include "Bonusable.hpp"
-#include "Player.hpp"
-#include "Drawable.hpp"
+#include "Absorbable.hpp"
 #include "Animated.hpp"
-#include "Clock.hpp"
+#include "Bonusable.hpp"
 #include "BossExplosion.hpp"
-#include "Spawning.hpp"
+#include "Clock.hpp"
 #include "Collider.hpp"
+#include "Drawable.hpp"
+#include "Explosion.hpp"
+#include "Foe.hpp"
+#include "GameCache.hpp"
 #include "HurtDrawProxy.hpp"
 #include "Killable.hpp"
-#include "GameCache.hpp"
-#include "Sounded.hpp"
-#include "Explosion.hpp"
 #include "Lifed.hpp"
-#include "conf/zindex.hpp"
+#include "Player.hpp"
+#include "Sounded.hpp"
+#include "Spawning.hpp"
+#include "ZIndexed.hpp"
 #include "conf/boss.hpp"
 #include "conf/player.hpp"
-#include "Foe.hpp"
-#include "Absorbable.hpp"
+#include "conf/zindex.hpp"
+#include "game.hpp"
 #include <cassert>
 
 using lif::Boss;
@@ -37,7 +37,7 @@ Boss::Boss(const sf::Vector2f& pos)
 		_kill();
 	}, [this] () {
 		// kill in progress
-		return _killInProgress();
+		return deathClock->getElapsedTime() < lif::conf::boss::DEATH_TIME;
 	});
 	addComponent<lif::Spawning>(*this, [this] (const lif::Spawning&) {
 		return killable && killable->isKilled()
@@ -69,10 +69,6 @@ lif::Entity* Boss::init() {
 void Boss::_kill() {
 	deathClock->restart();
 	collider->setLayer(lif::c_layers::DEFAULT);
-}
-
-bool Boss::_killInProgress() const {
-	return deathClock->getElapsedTime() < lif::conf::boss::DEATH_TIME;
 }
 
 void Boss::_checkCollision(lif::Collider& coll) {
@@ -114,7 +110,8 @@ void Boss::_checkCollision(lif::Collider& coll) {
 void Boss::_addDefaultCollider(const sf::Vector2f& size) {
 	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& coll) {
 		// on collision
-		_checkCollision(coll);
+		if (!(killable && killable->isKilled()))
+			_checkCollision(coll);
 	}, lif::c_layers::BOSSES, size);
 	if (get<lif::HurtDrawProxy>() == nullptr) {
 		throw std::logic_error("You need to add a HurtDrawProxy to this Boss.");
