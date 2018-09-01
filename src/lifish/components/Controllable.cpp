@@ -70,7 +70,7 @@ void Controllable::update() {
 		}
 	}
 
-	if (owner.isAligned() || dir == lif::oppositeDirection(moving->getDirection()))
+	if (owner.isAligned())// || dir == lif::oppositeDirection(moving->getDirection()))
 		moving->setDirection(dir);
 }
 

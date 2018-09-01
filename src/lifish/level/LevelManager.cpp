@@ -8,6 +8,7 @@
 #include "Enemy.hpp"
 #include "Explosion.hpp"
 #include "Foe.hpp"
+#include "GameCache.hpp"
 #include "Letter.hpp"
 #include "Level.hpp"
 #include "LevelLoader.hpp"
@@ -161,7 +162,7 @@ bool LevelManager::canDeployBomb(const lif::Player& player) const {
 	if (pinfo.powers.throwableBomb)
 		return true;
 
-	const bool mostly_aligned = lif::length(player.getPosition() - lif::aligned2(player.getPosition())) < 8;
+	const bool mostly_aligned = lif::length(player.getPosition() - lif::aligned2(player.getPosition())) < 4;
 	return /*player.isAligned() &&*/ mostly_aligned && bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs;
 }
 
@@ -244,6 +245,7 @@ void LevelManager::_spawnBomb(lif::Bomb *b) {
 
 void LevelManager::_triggerHurryUpWarning() {
 	dropTextManager.trigger(lif::DroppingTextManager::Text::HURRY_UP);
+	lif::cache.playSound(lif::getAsset("sounds", lif::HURRY_UP_SOUND));
 	hurryUpWarningGiven = true;
 }
 
@@ -267,6 +269,7 @@ void LevelManager::_triggerExtraGame() {
 		enemy->setMorphed(true);
 	});
 	dropTextManager.trigger(lif::DroppingTextManager::Text::EXTRA_GAME);
+	lif::cache.playSound(lif::getAsset("sounds", lif::EXTRA_GAME_SOUND));
 	levelTime->startExtraGame();
 	extraGameTriggered = extraGame = true;
 }
