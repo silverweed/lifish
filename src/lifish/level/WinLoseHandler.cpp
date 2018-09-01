@@ -1,18 +1,18 @@
 #include "WinLoseHandler.hpp"
-#include "MusicManager.hpp"
-#include "LevelManager.hpp"
-#include "GameCache.hpp"
-#include "Killable.hpp"
 #include "Bonusable.hpp"
 #include "Controllable.hpp"
-#include "Music.hpp"
-#include "Options.hpp"
-#include "game.hpp"
+#include "GameCache.hpp"
+#include "Killable.hpp"
 #include "Level.hpp"
+#include "LevelManager.hpp"
 #include "LevelSet.hpp"
+#include "Music.hpp"
+#include "MusicManager.hpp"
+#include "Options.hpp"
 #include "Player.hpp"
-#include "Sounded.hpp"
 #include "SidePanel.hpp"
+#include "Sounded.hpp"
+#include "game.hpp"
 #include <iostream>
 
 using lif::WinLoseHandler;
@@ -89,6 +89,8 @@ void WinLoseHandler::_checkCondition() {
 	if (lm.isGameOver()) {
 		state = State::HANDLING_LOSS;
 		lm.dropTextManager.trigger(lif::DroppingTextManager::Text::GAME_OVER);
+		lif::musicManager->stop();
+		lif::cache.playSound(lif::getAsset("sounds", lif::GAME_OVER_SOUND));
 		_handleLoss();
 	} else if (lm.isLevelClear()) {
 		state = State::HANDLING_WIN;

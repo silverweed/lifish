@@ -1,13 +1,13 @@
 #pragma once
 
+#include "LevelManager.hpp"
+#include "LevelSet.hpp"
+#include "SidePanel.hpp"
+#include "WinLoseHandler.hpp"
+#include "WindowContext.hpp"
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-#include "WindowContext.hpp"
-#include "LevelSet.hpp"
-#include "LevelManager.hpp"
-#include "WinLoseHandler.hpp"
-#include "SidePanel.hpp"
 
 namespace lif {
 
@@ -67,6 +67,8 @@ public:
 	const lif::SidePanel& getSidePanel() const { return sidePanel; }
 
 	void loadGame(const lif::SaveData& saveData);
+	/** Called by `main` after `GET READY` screen */
+	void onLevelStart();
 
 	void update() override;
 	bool handleEvent(sf::Window& window, sf::Event evt) override;
