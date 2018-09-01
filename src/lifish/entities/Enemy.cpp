@@ -220,6 +220,12 @@ bool Enemy::_inRange(const lif::Entity *const e) const {
 
 void Enemy::setMorphed(bool b) {
 	morphed = b;
+	if (b) {
+		get<lif::Sounded>()->setSoundFile("death", lif::getAsset("sounds", "alien_death.ogg"));
+	} else {
+		get<lif::Sounded>()->setSoundFile("death",
+			lif::getAsset("sounds", "enemy"s + lif::to_string(id) + "_death.ogg"s));
+	}
 }
 
 //////// EnemyDrawableProxy //////////

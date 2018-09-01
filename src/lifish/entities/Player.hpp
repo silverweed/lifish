@@ -108,7 +108,7 @@ public:
 
 	const lif::PlayerInfo& getInfo() const { return info; }
 	lif::PlayerPowers& getPowers() { return info.powers; }
-	void setExtra(int n, bool e) { info.extra[n] = e; }
+	void setExtra(int n, bool e);
 	void setRemainingLives(int l) { info.remainingLives = l; }
 
 	void setWinning(bool b);

@@ -361,6 +361,18 @@ void Player::_setupAnimations() {
 	animatedSprite.play();
 }
 
+void Player::setExtra(int n, bool e) {
+	info.extra[n] = e;
+	if (std::accumulate(std::begin(info.extra), std::end(info.extra), true, [] (bool acc, bool b) {
+		return acc && b;
+	}) == true)
+	{
+		setRemainingLives(info.remainingLives + 1);
+		info.extra.fill(false);
+		lif::cache.playSound(lif::getAsset("sounds", lif::EXTRA_LIFE_SOUND));
+	}
+}
+
 //// PlayerDrawProxy ////
 lif::PlayerDrawProxy::PlayerDrawProxy(const Player& player)
 	: player(player)
