@@ -55,8 +55,8 @@ void Level::_loadTextures() {
 void Level::_loadTiles() {
 	// Background
 	bgSprite.setTexture(*bgTexture);
-	bgSprite.setTextureRect(sf::IntRect(0, 0, TILE_SIZE * info.width, TILE_SIZE * info.height));
-	bgSprite.setPosition(TILE_SIZE, TILE_SIZE);
+	bgSprite.setTextureRect(sf::IntRect(0, 0, TILE_SIZE * (2 + info.width), TILE_SIZE * (2 + info.height)));
+	bgSprite.setPosition(0, 0);
 
 	// Border
 	borderSprite.setTexture(*borderTexture);

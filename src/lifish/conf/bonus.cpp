@@ -3,8 +3,8 @@
 /** Relative bonus probabilities (order is important) */
 std::discrete_distribution<unsigned> lif::conf::bonus::distribution {
 	20,	// max bombs
-	20,	// max range
 	14,	// quick fuse
+	20,	// max range
 	20,	// shield
 	20,	// speedy
 	6,	// zapper
@@ -15,5 +15,5 @@ std::discrete_distribution<unsigned> lif::conf::bonus::distribution {
 	0,	// throwable bomb
 	0,	// absorb
 	0,	// armor
-	2994	// no bonus
+	1380	// no bonus
 };

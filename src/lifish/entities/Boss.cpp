@@ -69,6 +69,7 @@ lif::Entity* Boss::init() {
 void Boss::_kill() {
 	deathClock->restart();
 	collider->setLayer(lif::c_layers::DEFAULT);
+	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("death"));
 }
 
 void Boss::_checkCollision(lif::Collider& coll) {

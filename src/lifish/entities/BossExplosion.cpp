@@ -21,7 +21,7 @@ BossExplosion::BossExplosion(const sf::Vector2f& pos)
 	})
 {
 	addComponent<lif::Sounded>(*this,
-		lif::sid("explode"), lif::getAsset("sounds", "bossbullet_hit.ogg")
+		lif::sid("explode"), lif::getAsset("sounds", "bullet101_hit.ogg")
 	);
 	get<lif::ZIndexed>()->setZIndex(lif::conf::zindex::BOSS_EXPLOSIONS);
 	std::uniform_int_distribution<unsigned char> dist(100, 232);

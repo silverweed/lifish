@@ -2,6 +2,7 @@
 #include "Clock.hpp"
 #include "Collider.hpp"
 #include "Drawable.hpp"
+#include "GameCache.hpp"
 #include "Grabbable.hpp"
 #include "Player.hpp"
 #include "Scored.hpp"
@@ -63,4 +64,5 @@ void Bonus::update() {
 void Bonus::_grab(lif::Player& player) {
 	get<lif::Scored>()->setTarget(player.getInfo().id);
 	grabbable->setGrabbingEntity(&player);
+	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("grab"));
 }

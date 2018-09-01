@@ -28,7 +28,7 @@ std::map<unsigned, const lif::BulletData> lif::conf::bullet::data = {
 	{ 10, { "bullet10.png", 7, 1, 4, 1 } },
 	//// FreeBullets ////
 	// star
-	{ 101, { "shot.png", 20, 2, 5, 0 } },
+	{ 101, { "bossbullet.png", 20, 2, 5, 0 } },
 	// spirit bullets
 	{ 102, { "spirit_bullets.png", 16, 2, 3, 0 } },
 	// missile

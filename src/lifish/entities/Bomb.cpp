@@ -1,19 +1,19 @@
 #include "Bomb.hpp"
-#include "Sounded.hpp"
-#include "Player.hpp"
-#include "ZIndexed.hpp"
-#include "Drawable.hpp"
-#include "Spawning.hpp"
-#include "Clock.hpp"
 #include "Animated.hpp"
-#include "Temporary.hpp"
-#include "GameCache.hpp"
-#include "Explosion.hpp"
+#include "Clock.hpp"
 #include "Collider.hpp"
-#include "game.hpp"
+#include "Drawable.hpp"
+#include "Explosion.hpp"
 #include "Fixed.hpp"
+#include "GameCache.hpp"
 #include "LightSource.hpp"
+#include "Player.hpp"
+#include "Sounded.hpp"
+#include "Spawning.hpp"
+#include "Temporary.hpp"
+#include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
+#include "game.hpp"
 
 using lif::Bomb;
 using lif::TILE_SIZE;
@@ -63,17 +63,9 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Entity *const source,
 		sf::IntRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
 		sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE)
 	});
-	auto& a_fast_idle = animated->addAnimation("fast_idle", {
-		sf::IntRect(0, TILE_SIZE, TILE_SIZE, TILE_SIZE),
-		sf::IntRect(TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE)
-	});
-	animated->addAnimation("fast_exploding", {
-		sf::IntRect(TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE),
-		sf::IntRect(2 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE)
-	});
 	auto& animatedSprite = animated->getSprite();
 
-	animatedSprite.setAnimation(fuseTime < DEFAULT_FUSE ? a_fast_idle : a_normal_idle);
+	animatedSprite.setAnimation(a_normal_idle);
 	animatedSprite.setLooped(true);
 	animatedSprite.setFrameTime(sf::seconds(0.05));
 	animatedSprite.play();
@@ -84,8 +76,7 @@ void Bomb::update() {
 	if (!switched && fuseTime - fuseClock->getElapsedTime() < sf::seconds(2)
 			&& !killable->isKilled())
 	{
-		animated->setAnimation(fuseTime < DEFAULT_FUSE && !ignited
-				? "fast_exploding" : "normal_exploding");
+		animated->setAnimation("normal_exploding");
 		switched = true;
 	}
 }

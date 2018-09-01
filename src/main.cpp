@@ -8,38 +8,38 @@
  * https://silverweed.github.io/lifish-license.txt
  * or in the LICENSE file in this repository's root directory.
 */
-#include <memory>
-#include <cstdlib>
-#include <algorithm>
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <SFML/Window.hpp>
-#include "LevelManager.hpp"
-#include "WinLoseHandler.hpp"
-#include "Interactable.hpp"
-#include "Player.hpp"
-#include "JoystickManager.hpp"
-#include "Music.hpp"
-#include "SidePanel.hpp"
-#include "LevelSet.hpp"
 #include "Bonusable.hpp"
 #include "Boss.hpp"
-#include "UI.hpp"
-#include "game.hpp"
-#include "Options.hpp"
 #include "Controllable.hpp"
 #include "ControlsScreen.hpp"
-#include "PreferencesScreen.hpp"
-#include "LoadScreen.hpp"
-#include "SaveScreen.hpp"
-#include "MusicManager.hpp"
+#include "CutsceneBuilder.hpp"
+#include "CutscenePlayer.hpp"
+#include "FPSDisplayer.hpp"
 #include "GameCache.hpp"
 #include "GameContext.hpp"
+#include "Interactable.hpp"
+#include "JoystickManager.hpp"
+#include "LevelManager.hpp"
+#include "LevelSet.hpp"
+#include "LoadScreen.hpp"
+#include "Music.hpp"
+#include "MusicManager.hpp"
+#include "Options.hpp"
+#include "Player.hpp"
+#include "PreferencesScreen.hpp"
+#include "SaveScreen.hpp"
+#include "SidePanel.hpp"
+#include "UI.hpp"
+#include "WinLoseHandler.hpp"
 #include "contexts.hpp"
-#include "CutscenePlayer.hpp"
-#include "CutsceneBuilder.hpp"
-#include "FPSDisplayer.hpp"
+#include "game.hpp"
+#include <SFML/Window.hpp>
+#include <algorithm>
+#include <cstdlib>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <memory>
 
 #ifdef MULTITHREADED
 #	ifdef SFML_SYSTEM_LINUX
@@ -192,8 +192,8 @@ int main(int argc, char **argv) {
 	args.start_level = 1;
 	args.fps = 120;
 	args.levelset_name = "";
-	args.mute_music = true; // FIXME
-	args.mute_sounds = true; // FIXME
+	args.mute_music = false;
+	args.mute_sounds = false;
 #ifndef RELEASE
 	args.start_from_home = false; // FIXME
 #endif
