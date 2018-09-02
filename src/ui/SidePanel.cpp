@@ -1,10 +1,10 @@
 #include "SidePanel.hpp"
+#include "Bonusable.hpp"
 #include "GameCache.hpp"
 #include "LevelManager.hpp"
-#include "Bonusable.hpp"
-#include "ShadedText.hpp"
-#include "Player.hpp"
 #include "Lifed.hpp"
+#include "Player.hpp"
+#include "ShadedText.hpp"
 #include <iomanip>
 
 using lif::SidePanel;
@@ -38,7 +38,7 @@ SidePanel::SidePanel(const lif::LevelManager& lm)
 	}
 
 	// Load EXTRA letters
-	extraLettersTexture = lif::cache.loadTexture(lif::getAsset("test", "extra_icons.png"));
+	extraLettersTexture = lif::cache.loadTexture(lif::getAsset("graphics", "extra_icons.png"));
 	extraLettersTexture->setSmooth(true);
 	for (unsigned i = 0; i < extraLettersSprite.size(); ++i) {
 		extraLettersSprite[i].setTexture(*extraLettersTexture);
@@ -101,14 +101,13 @@ void SidePanel::_drawHealthSprites(sf::RenderTarget& window, sf::RenderStates st
 	}
 }
 
-void SidePanel::_drawExtraLetters(sf::RenderTarget& window, sf::RenderStates states,
-		const lif::Player& player) const
-{
-	sf::Vector2f pos(EXTRA_LETTERS_POS_X, player.getInfo().id == 1
-			? EXTRA_LETTERS_POS_Y_1 : EXTRA_LETTERS_POS_Y_2);
+void SidePanel::_drawExtraLetters(sf::RenderTarget& window, sf::RenderStates states, const lif::Player& player) const {
+
+	sf::Vector2f pos(EXTRA_LETTERS_POS_X, player.getInfo().id == 1 ? EXTRA_LETTERS_POS_Y_1 : EXTRA_LETTERS_POS_Y_2);
+
 	for (unsigned j = 0; j < player.getInfo().extra.size(); ++j) {
 		const auto i = player.getInfo().extra[j] ? j + 1 : 0;
-		sf::Sprite sprite(extraLettersTexture[i], extraLettersSprite[i].getTextureRect());
+		auto& sprite = const_cast<sf::Sprite&>(extraLettersSprite[i]);
 		sprite.setPosition(pos + sf::Vector2f(j * EXTRA_LETTERS_WIDTH, 0));
 		_drawWithShadow(window, states, sprite);
 	}
