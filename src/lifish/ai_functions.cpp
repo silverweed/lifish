@@ -1,17 +1,17 @@
 #include "ai_functions.hpp"
-#include "ai_helpers.hpp"
-#include "LevelManager.hpp"
 #include "AxisMoving.hpp"
-#include "GameCache.hpp"
-#include "utils.hpp"
 #include "AxisSighted.hpp"
-#include "game.hpp"
+#include "Collider.hpp"
+#include "Enemy.hpp"
+#include "GameCache.hpp"
+#include "LevelManager.hpp"
 #include "Shooting.hpp"
 #include "Sounded.hpp"
-#include "Enemy.hpp"
-#include "Collider.hpp"
-#include <random>
+#include "ai_helpers.hpp"
+#include "game.hpp"
+#include "utils.hpp"
 #include <exception>
+#include <random>
 
 #include <iostream>
 
@@ -169,9 +169,13 @@ AIBoundFunction lif::ai_follow(lif::Entity& entity) {
 
 		auto sp = seeingPlayer(lm, *sighted);
 		if (sp != lif::Direction::NONE) {
-			auto sounded = entity.get<lif::Sounded>();
-			if (sounded != nullptr)
-				lif::cache.playSound(sounded->getSoundFile("yell"));
+			//auto shooting = entity.get<lif::Shooting>();
+			//if (shooting != nullptr && !shooting->isRecharging()) {
+				//auto sounded = entity.get<lif::Sounded>();
+				//if (sounded != nullptr) {
+					//lif::cache.playSound(sounded->getSoundFile("yell"));
+				//}
+			//}
 			NEW_DIRECTION(sp)
 		}
 

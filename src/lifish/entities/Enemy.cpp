@@ -11,6 +11,7 @@
 #include "Drawable.hpp"
 #include "Explosion.hpp"
 #include "Foe.hpp"
+#include "GameCache.hpp"
 #include "Killable.hpp"
 #include "Letter.hpp"
 #include "LevelManager.hpp"
@@ -29,6 +30,7 @@
 #include "conf/enemy.hpp"
 #include "conf/zindex.hpp"
 #include "utils.hpp"
+#include <random>
 #include <sstream>
 
 using lif::Enemy;
@@ -43,7 +45,7 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	, originalSpeed(info.speed)
 {
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::ENEMIES);
-	addComponent<lif::Sounded>(*this,
+	sounded = addComponent<lif::Sounded>(*this,
 		lif::sid("death"), lif::getAsset("sounds", "enemy"s + lif::to_string(id) + "_death.ogg"s),
 		lif::sid("yell"), lif::getAsset("sounds", "enemy"s + lif::to_string(id) + "_yell.ogg"s),
 		// Note: this is an invalid sound if enemy.attackType is not CONTACT. This is not an issue,
@@ -69,7 +71,6 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 			lif::conf::enemy::BASE_SPEED * originalSpeed, lif::Direction::DOWN);
 	animated = addComponent<lif::Animated>(*this,
 			lif::getAsset("graphics", "enemy") + lif::to_string(id) + ".png"s);
-	yellClock = addComponent<lif::Clock>(*this);
 	dashClock = addComponent<lif::Clock>(*this);
 	alienSprite = addComponent<lif::AlienSprite>(*this);
 	addComponent<lif::Scored>(*this, id * 100);
@@ -163,6 +164,11 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	animatedSprite.setAnimation(a_down);
 	animatedSprite.setLooped(true);
 	animatedSprite.pause();
+
+	if (info.ai <= 1) {
+		yellClock = addComponent<lif::Clock>(*this);
+		nextYellTime = getNextYellTime();
+	}
 }
 
 void Enemy::update() {
@@ -177,6 +183,12 @@ void Enemy::update() {
 		animated->getSprite().play();
 		shootingAnim = false;
 	}
+
+	if (yellClock != nullptr && yellClock->getElapsedTime() >= nextYellTime) {
+		yellClock->restart();
+		nextYellTime = getNextYellTime();
+		lif::cache.playSound(sounded->getSoundFile("yell"));
+	}
 }
 
 void Enemy::_checkShoot() {
@@ -188,15 +200,19 @@ void Enemy::_checkShoot() {
 	for (const auto& pair : entitiesSeen) {
 		const auto entity = pair.first;
 		if (_inRange(entity) && ai->getLevelManager()->isPlayer(*entity)) {
-			if (!shootingAnim) {
-				animated->setAnimation(lif::sid(
-						"shoot_" + lif::directionToString(moving->getDirection())));
-				animated->getSprite().play();
-				animated->getSprite().setLooped(false, false);
-				shootingAnim = true;
+			if (!entity->get<lif::Killable>()->isKilled()) {
+				if (!shootingAnim) {
+					animated->setAnimation(lif::sid(
+							"shoot_" + lif::directionToString(moving->getDirection())));
+					animated->getSprite().play();
+					animated->getSprite().setLooped(false, false);
+					shootingAnim = true;
+				}
+				shooting->shoot(entity->getPosition());
+				if (info.ai > 2)
+					lif::cache.playSound(sounded->getSoundFile("yell"));
+				return;
 			}
-			shooting->shoot(entity->getPosition());
-			return;
 		}
 	}
 }
@@ -221,11 +237,17 @@ bool Enemy::_inRange(const lif::Entity *const e) const {
 void Enemy::setMorphed(bool b) {
 	morphed = b;
 	if (b) {
-		get<lif::Sounded>()->setSoundFile("death", lif::getAsset("sounds", "alien_death.ogg"));
+		sounded->setSoundFile("death", lif::getAsset("sounds", "alien_death.ogg"));
 	} else {
-		get<lif::Sounded>()->setSoundFile("death",
+		sounded->setSoundFile("death",
 			lif::getAsset("sounds", "enemy"s + lif::to_string(id) + "_death.ogg"s));
 	}
+}
+
+sf::Time Enemy::getNextYellTime() const {
+	using namespace lif::conf::enemy;
+	static std::uniform_real_distribution<float> d(YELL_INTERVAL_MIN.asSeconds(), YELL_INTERVAL_MAX.asSeconds());
+	return sf::seconds(d(lif::rng));
 }
 
 //////// EnemyDrawableProxy //////////

@@ -10,6 +10,8 @@ namespace conf {
 		constexpr auto BASE_LIFE = 3;
 		const sf::Time DEATH_TIME = sf::seconds(2);
 		const sf::Time DAMAGE_SHIELD_TIME = sf::seconds(1);
+		const sf::Time YELL_INTERVAL_MIN = sf::seconds(7);
+		const sf::Time YELL_INTERVAL_MAX = sf::seconds(40);
 
 		namespace wisp {
 			/** Wisp's speed in walls is (1 - IN_WALL_SPEED_REDUCTION) * speed */

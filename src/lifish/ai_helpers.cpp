@@ -1,7 +1,7 @@
 #include "ai_helpers.hpp"
-#include "LevelManager.hpp"
 #include "AxisMoving.hpp"
 #include "AxisSighted.hpp"
+#include "LevelManager.hpp"
 
 using D = lif::Direction;
 
@@ -42,8 +42,10 @@ lif::Direction seeingPlayer(const lif::LevelManager& lm, const lif::AxisSighted&
 	for (unsigned i = 0; i < directions.size(); ++i) {
 		for (const auto& pair : seen[i]) {
 			if (lm.isPlayer(*pair.first) && pair.second < dist) {
-				dir = static_cast<lif::Direction>(i);
-				dist = pair.second;
+				if (!pair.first->get<lif::Killable>()->isKilled()) {
+					dir = static_cast<lif::Direction>(i);
+					dist = pair.second;
+				}
 			}
 		}
 	}

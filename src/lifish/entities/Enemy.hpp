@@ -1,10 +1,10 @@
 #pragma once
 
-#include <memory>
-#include <SFML/System.hpp>
-#include "Entity.hpp"
 #include "Attack.hpp"
+#include "Entity.hpp"
 #include "game.hpp"
+#include <SFML/System.hpp>
+#include <memory>
 
 namespace lif {
 
@@ -12,6 +12,7 @@ class AI;
 class Bonusable;
 class Enemy;
 class Collider;
+class Sounded;
 class Animated;
 class Clock;
 class Killable;
@@ -55,9 +56,10 @@ class Enemy : public lif::Entity {
 
 	bool shootingAnim = false;
 
+	sf::Time getNextYellTime() const;
+
 protected:
 	constexpr static unsigned short WALK_N_FRAMES = 4;
-	constexpr static int YELL_DELAY = 1000;
 
 	const unsigned short id;
 	const lif::EnemyInfo info;
@@ -73,6 +75,7 @@ protected:
 	lif::AxisSighted *sighted = nullptr;
 	lif::RegularEntityDeath *death = nullptr;
 	lif::Bonusable *bonusable = nullptr;
+	lif::Sounded *sounded = nullptr;
 
 	lif::Clock *yellClock = nullptr,
 		   *dashClock = nullptr;
@@ -83,6 +86,8 @@ protected:
 	lif::AlienSprite *alienSprite = nullptr;
 
 	const float originalSpeed;
+
+	sf::Time nextYellTime;
 
 	/** Used to perform some actions before calling 'hurtByExplosions'.
 	 *  @return true if 'hurtByExplosions' should NOT be called.

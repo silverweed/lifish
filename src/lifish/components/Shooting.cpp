@@ -1,9 +1,9 @@
 #include "Shooting.hpp"
-#include "Clock.hpp"
 #include "AxisMoving.hpp"
+#include "BulletFactory.hpp"
+#include "Clock.hpp"
 #include "GameCache.hpp"
 #include "Sounded.hpp"
-#include "BulletFactory.hpp"
 #include "utils.hpp"
 #include <exception>
 
