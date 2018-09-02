@@ -63,6 +63,8 @@ class Player;
 
 class PlayerDrawProxy : public sf::Drawable {
 	const lif::Player& player;
+	sf::Shader shieldShader;
+
 public:
 	explicit PlayerDrawProxy(const lif::Player& player);
 

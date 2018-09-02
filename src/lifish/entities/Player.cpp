@@ -69,7 +69,7 @@ void Player::_init() {
 	}, lif::c_layers::PLAYERS);
 	moving = addComponent<lif::AxisMoving>(*this, lif::conf::player::DEFAULT_SPEED);
 	moving->setFastTurn(true);
-	animated = addComponent<lif::Animated>(*this, lif::getAsset("final", "player"s +
+	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "player"s +
 				lif::to_string(info.id) + ".png"s));
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::PLAYERS);
 	addComponent<lif::Drawable>(*this, drawProxy);
@@ -373,7 +373,25 @@ void Player::setExtra(int n, bool e) {
 //// PlayerDrawProxy ////
 lif::PlayerDrawProxy::PlayerDrawProxy(const Player& player)
 	: player(player)
-{}
+{
+	const std::string SHIELD_SHADER =
+		"uniform sampler2D texture;                             "
+		"                                                       "
+		"void main() {                                          "
+		"    vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);"
+		"                                                       "
+		"    pixel.r = 0.0f;                                    "
+		"    pixel.g = 0.8f;                                    "
+		"    pixel.b = 0.0f;                                    "
+		"    pixel.a *= 0.5f;                                    "
+		"                                                       "
+		"    gl_FragColor = pixel;                              "
+		"}                                                      ";
+
+	if (!shieldShader.loadFromMemory(SHIELD_SHADER, sf::Shader::Fragment)) {
+		std::cerr << "[ ERROR ] Failed to load shield shader from memory!\n";
+	}
+}
 
 void lif::PlayerDrawProxy::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(*player.animated, states);
@@ -387,7 +405,13 @@ void lif::PlayerDrawProxy::draw(sf::RenderTarget& target, sf::RenderStates state
 	{
 		AnimatedSprite shieldSprite(player.animated->getSprite());
 		// TODO: scale & offset
-		shieldSprite.setColor(sf::Color(0, 255, 0, 180));
-		target.draw(shieldSprite, states);
+		shieldSprite.setScale(1.2, 1.2);
+		shieldSprite.setPosition(shieldSprite.getPosition() - sf::Vector2f(3, 3));
+		if (shieldShader.isAvailable())
+			target.draw(shieldSprite, &shieldShader);
+		else {
+			shieldSprite.setColor(sf::Color(0, 235, 0, 180));
+			target.draw(shieldSprite, states);
+		}
 	}
 }
