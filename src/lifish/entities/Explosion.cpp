@@ -1,26 +1,26 @@
 #include "Explosion.hpp"
-#include "LevelManager.hpp"
-#include "Level.hpp"
-#include "BreakableWall.hpp"
-#include "Fire.hpp"
 #include "Animated.hpp"
-#include "Direction.hpp"
+#include "BreakableWall.hpp"
+#include "BufferedSpawner.hpp"
 #include "Collider.hpp"
-#include "Scored.hpp"
-#include "Player.hpp"
-#include "utils.hpp"
-#include "game.hpp"
+#include "Direction.hpp"
 #include "Drawable.hpp"
+#include "Fire.hpp"
 #include "GameCache.hpp"
+#include "Level.hpp"
+#include "LevelManager.hpp"
+#include "LightSource.hpp"
+#include "Player.hpp"
+#include "Scored.hpp"
+#include "Sounded.hpp"
 #include "Temporary.hpp"
 #include "ZIndexed.hpp"
-#include "conf/zindex.hpp"
 #include "conf/bonus.hpp"
-#include "Sounded.hpp"
-#include "BufferedSpawner.hpp"
-#include "LightSource.hpp"
-#include <list>
+#include "conf/zindex.hpp"
+#include "game.hpp"
+#include "utils.hpp"
 #include <algorithm>
+#include <list>
 
 using lif::Explosion;
 using lif::TILE_SIZE;
@@ -82,6 +82,16 @@ void Explosion::update() {
 	lif::Entity::update();
 	lightSource->setColor(sf::Color(255, 255, 255,
 		(4 - lif::abs(static_cast<signed>(explosionC->getSprite().getCurrentFrame()) - 3)) * 255 / 4.0));
+
+	if (!explosionH->isActive())
+		return;
+
+	// Deactivate the colliders slightly earlier than actuaal animation end
+	const auto sprite = explosionC->getSprite();
+	if (sprite.getAnimation()->getSize() - sprite.getCurrentFrame() < 2) {
+		explColliderH->setActive(false);
+		explColliderV->setActive(false);
+	}
 }
 
 Explosion* Explosion::propagate(lif::LevelManager& lm) {
