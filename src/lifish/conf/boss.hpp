@@ -90,11 +90,11 @@ namespace conf {
 		}
 
 		namespace big_alien_boss {
-			constexpr auto SPEED = 1.3;
+			constexpr auto SPEED = 1.0;
 			constexpr auto LIFE = 40;
 			constexpr auto VALUE = 100000;
 			constexpr auto EGG_SPEED = 1.5;
-			const sf::Time ATK_INTERVAL = sf::seconds(2);
+			const sf::Time ATK_INTERVAL = sf::seconds(5);
 		}
 	}
 }

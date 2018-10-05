@@ -153,7 +153,7 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				break;
 
 			case EntityType::BIG_ALIEN_BOSS:
-				addBoss<lif::BigAlienBoss>(entities, curPos, lm);
+				addBoss<lif::BigAlienBoss>(entities, curPos, lm)->get<lif::AI>()->setLevelManager(&lm);
 				break;
 
 			case EntityType::HAUNTING_SPIRIT_BOSS:

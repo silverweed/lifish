@@ -19,6 +19,9 @@ class BigAlienBoss : public lif::Boss {
 	lif::Animated *animated = nullptr;
 	lif::AxisMoving *moving = nullptr;
 
+	sf::Vector2f eggOffset() const;
+
+	void _kill() override;
 public:
 	explicit BigAlienBoss(const sf::Vector2f& pos, const lif::LevelManager& lm);
 

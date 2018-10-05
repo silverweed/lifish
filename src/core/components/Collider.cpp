@@ -1,6 +1,6 @@
 #include "Collider.hpp"
-#include <sstream>
 #include <algorithm>
+#include <sstream>
 
 using lif::Collider;
 
