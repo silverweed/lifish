@@ -1,17 +1,17 @@
 #include "EnemyFactory.hpp"
-#include "Wisp.hpp"
-#include "AlienPredator.hpp"
 #include "AI.hpp"
-#include "collision_layers.hpp"
-#include "LevelManager.hpp"
-#include "Level.hpp"
-#include "Sighted.hpp"
-#include "LevelSet.hpp"
+#include "AlienPredator.hpp"
 #include "LeapingMovement.hpp"
+#include "Level.hpp"
+#include "LevelManager.hpp"
+#include "LevelSet.hpp"
+#include "Sighted.hpp"
+#include "Wisp.hpp"
+#include "collision_layers.hpp"
 
 using lif::EnemyFactory;
 
-std::unique_ptr<lif::Enemy> EnemyFactory::create(lif::LevelManager& lm, unsigned id, const sf::Vector2f& pos) {
+std::unique_ptr<lif::Enemy> EnemyFactory::create(const lif::LevelManager& lm, unsigned id, const sf::Vector2f& pos) {
 
 	std::unique_ptr<lif::Enemy> enemy;
 	const auto& info = lm.getLevel()->getLevelSet().getEnemyInfo(id);
