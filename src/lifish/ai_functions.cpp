@@ -99,6 +99,7 @@ AIBoundFunction lif::ai_random_forward(lif::Entity& entity) {
 	};
 }
 
+// Mean-O-Taur AI
 AIBoundFunction lif::ai_random_forward_haunt(lif::Entity& entity) {
 	auto moving = entity.get<lif::AxisMoving>();
 	const auto collider = entity.get<lif::Collider>();
