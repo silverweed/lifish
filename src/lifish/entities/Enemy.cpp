@@ -220,7 +220,8 @@ void Enemy::_checkShoot() {
 bool Enemy::_checkCollision(lif::Collider& coll) {
 	if (coll.getLayer() == lif::c_layers::PLAYERS
 			&& (shooting->getAttack().type & lif::AttackType::CONTACT)
-			&& !shooting->isRecharging())
+			&& !shooting->isRecharging()
+			&& !coll.getOwner().get<lif::Killable>()->isKilled())
 	{
 		shooting->shoot();
 		return true;
