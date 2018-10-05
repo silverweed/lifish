@@ -4,6 +4,7 @@
 #include "AlienBoss.hpp"
 #include "Animated.hpp"
 #include "AxisSighted.hpp"
+#include "BigAlienBoss.hpp"
 #include "BreakableWall.hpp"
 #include "Cage.hpp"
 #include "Coin.hpp"
@@ -149,6 +150,10 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 
 			case EntityType::ALIEN_BOSS:
 				addBoss<lif::AlienBoss>(entities, curPos);
+				break;
+
+			case EntityType::BIG_ALIEN_BOSS:
+				addBoss<lif::BigAlienBoss>(entities, curPos, lm);
 				break;
 
 			case EntityType::HAUNTING_SPIRIT_BOSS:

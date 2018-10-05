@@ -1,6 +1,6 @@
 #include "AI.hpp"
-#include "LevelManager.hpp"
 #include "AxisMoving.hpp"
+#include "LevelManager.hpp"
 
 using lif::AI;
 
@@ -24,7 +24,7 @@ void AI::update() {
 	func(*lm);
 }
 
-void AI::setLevelManager(lif::LevelManager *_lm) {
+void AI::setLevelManager(const lif::LevelManager *_lm) {
 	lm = _lm;
 }
 

@@ -22,6 +22,7 @@ EntityType lif::entityFromLetter(const char c) {
 	case 'I': return EntityType::ENEMY9;
 	case 'J': return EntityType::ENEMY10;
 	case '*': return EntityType::ALIEN_BOSS;
+	case '/': return EntityType::BIG_ALIEN_BOSS;
 	/* Non BOOM-compatible entities */
 	case '4': return EntityType::TRANSPARENT_WALL;
 	case '5': return EntityType::ACID_POND;
@@ -56,6 +57,7 @@ std::ostream& lif::operator<<(std::ostream& stream, const EntityType& et) {
 	case EntityType::ENEMY9:               stream << 'I'; break;
 	case EntityType::ENEMY10:              stream << 'J'; break;
 	case EntityType::ALIEN_BOSS:           stream << '*'; break;
+	case EntityType::BIG_ALIEN_BOSS:           stream << '/'; break;
 	case EntityType::TRANSPARENT_WALL:     stream << '4'; break;
 	case EntityType::ACID_POND:            stream << '5'; break;
 	case EntityType::HAUNTED_STATUE:       stream << '6'; break;

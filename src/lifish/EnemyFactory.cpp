@@ -11,7 +11,7 @@
 
 using lif::EnemyFactory;
 
-std::unique_ptr<lif::Enemy> EnemyFactory::create(lif::LevelManager& lm, unsigned id, const sf::Vector2f& pos) {
+std::unique_ptr<lif::Enemy> EnemyFactory::create(const lif::LevelManager& lm, unsigned id, const sf::Vector2f& pos) {
 
 	std::unique_ptr<lif::Enemy> enemy;
 	const auto& info = lm.getLevel()->getLevelSet().getEnemyInfo(id);

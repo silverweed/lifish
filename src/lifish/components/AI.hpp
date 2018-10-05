@@ -1,8 +1,8 @@
 #pragma once
 
-#include <functional>
-#include <array>
 #include "Component.hpp"
+#include <array>
+#include <functional>
 
 namespace lif {
 
@@ -19,7 +19,7 @@ using AIFunction = std::function<AIBoundFunction(lif::Entity&)>;
 class AI : public lif::Component {
 	AIFunction ai;
 	AIBoundFunction func;
-	lif::LevelManager *lm = nullptr;
+	const lif::LevelManager *lm = nullptr;
 	lif::Moving *moving = nullptr;
 
 public:
@@ -27,7 +27,7 @@ public:
 
 	void setAI(AIFunction newAI);
 
-	void setLevelManager(lif::LevelManager *_lm);
+	void setLevelManager(const lif::LevelManager *_lm);
 	const lif::LevelManager* getLevelManager() const { return lm; }
 
 	lif::Entity* init() override;
