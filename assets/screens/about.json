@@ -50,6 +50,10 @@
 			},
 			{
 				"type": "text",
+				"string": "Code: github.com/silverweed/lifish"
+			},
+			{
+				"type": "text",
 				"name": "back",
 				"string": "Back",
 				"interactable": true,

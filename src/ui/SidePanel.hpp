@@ -38,7 +38,7 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	                          HEALTH_SYM_POS_X = 15,
 	                          HEALTH_SYM_POS_Y_1 = 91,
 	                          HEALTH_SYM_POS_Y_2 = 299,
-	                          GAME_OVER_POS_X = 24,
+	                          GAME_OVER_POS_X = 16,
 	                          EXTRA_LETTERS_WIDTH = 14,
 	                          EXTRA_LETTERS_HEIGHT = 15,
 	                          EXTRA_LETTERS_POS_X = 12,
