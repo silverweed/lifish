@@ -1,12 +1,13 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include "Component.hpp"
 #include "ShadedText.hpp"
+#include <SFML/Graphics.hpp>
 
 namespace lif {
 
 class LevelNumText : public lif::Component, public sf::Drawable {
+	sf::RectangleShape bg;
 	lif::ShadedText text;
 
 public:
