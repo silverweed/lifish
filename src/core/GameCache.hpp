@@ -1,12 +1,13 @@
 #pragma once
 
-#include <unordered_map>
-#include <string>
-#include <vector>
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/System/NonCopyable.hpp>
 #include "sid.hpp"
+#include <SFML/Audio.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/System/NonCopyable.hpp>
+#include <list>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace lif {
 
@@ -15,7 +16,7 @@ namespace lif {
  * works as an associative set name => pointer-to-resource
  */
 class GameCache final : private sf::NonCopyable {
-	std::size_t maxParallelSounds = 6;
+	std::size_t maxParallelSounds = 10;
 
 	/** The game textures */
 	std::unordered_map<lif::StringId, sf::Texture> textures;
@@ -30,7 +31,7 @@ class GameCache final : private sf::NonCopyable {
 	 *  queue as needed when `playSound()` is called. At most MAX_PARALLEL_SOUNDS
 	 *  can be playing at once.
 	 */
-	std::vector<sf::Sound> sounds;
+	std::list<sf::Sound> sounds;
 
 public:
 	explicit GameCache();
