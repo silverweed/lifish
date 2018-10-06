@@ -15,7 +15,7 @@ AlienSprite::AlienSprite(lif::Entity& owner)
 	: lif::Component(owner)
 {
 	_declComponent<AlienSprite>();
-	animated = addComponent<lif::Animated>(owner, lif::getAsset("test", "aliensprite.png"));
+	animated = addComponent<lif::Animated>(owner, lif::getAsset("graphics", "aliensprite.png"));
 	addComponent<lif::Drawable>(*this, *animated);
 
 	auto& a_down = animated->addAnimation("walk_down");

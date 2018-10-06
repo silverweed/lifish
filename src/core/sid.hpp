@@ -56,7 +56,11 @@ extern StringIdMap hashedStringDb;
 
 #ifdef RELEASE
 
+#ifdef _WIN32
+inline StringId sid(const char *buf) {
+#else
 constexpr StringId sid(const char *buf) {
+#endif
 	return hashing::fnv1_hash(buf);
 }
 

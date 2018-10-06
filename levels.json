@@ -77,10 +77,12 @@
 			"speed": 1.0,
 			"attack": {
 				"type": [
-					"simple"
+					"simple",
+					"blocking"
 				],
 				"id": 1,
-				"fireRate": 1.0
+				"fireRate": 1.0,
+				"blockTime": 180.0
 			}
 		},
 		{
@@ -89,10 +91,12 @@
 			"speed": 1.0,
 			"attack": {
 				"type": [
-					"simple"
+					"simple",
+					"blocking"
 				],
 				"id": 1,
-				"fireRate": 2.0
+				"fireRate": 2.0,
+				"blockTime": 180.0
 			}
 		},
 		{

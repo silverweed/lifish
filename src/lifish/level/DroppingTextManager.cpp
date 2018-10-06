@@ -9,11 +9,11 @@ using lif::DroppingTextManager;
 
 DroppingTextManager::DroppingTextManager()
 	: gameOverText(new lif::DroppingSprite(
-				lif::getAsset("test", "gameover.png"), sf::Vector2i(311, 59)))
+				lif::getAsset("graphics", "gameover.png"), sf::Vector2i(311, 59)))
 	, extraGameText(new lif::DroppingSprite(
-				lif::getAsset("test", "extragame.png"), sf::Vector2i(223, 156), 250.f))
+				lif::getAsset("graphics", "extragame.png"), sf::Vector2i(223, 156), 250.f))
 	, hurryUpText(new lif::DroppingSprite(
-				lif::getAsset("test", "hurryup.png"), sf::Vector2i(161, 30), 300.f))
+				lif::getAsset("graphics", "hurryup.png"), sf::Vector2i(161, 30), 300.f))
 {}
 
 void DroppingTextManager::reset() {
