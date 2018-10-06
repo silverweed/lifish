@@ -1,17 +1,14 @@
 #include "GameCache.hpp"
-#include "core.hpp"
 #include "Options.hpp"
+#include "core.hpp"
 #include <iostream>
 
 using lif::GameCache;
 
-GameCache::GameCache() {
-	sounds.reserve(maxParallelSounds);
-}
+GameCache::GameCache() {}
 
 void GameCache::setMaxParallelSounds(std::size_t n) {
 	maxParallelSounds = n;
-	sounds.reserve(maxParallelSounds);
 }
 
 sf::Texture* GameCache::loadTexture(const std::string& textureName) {
@@ -24,7 +21,7 @@ sf::Texture* GameCache::loadTexture(const std::string& textureName) {
 	// Not in cache: load from file
 	auto& txt = textures[nameSid];
 	if (!txt.loadFromFile(textureName)) {
-		std::cerr << "[GameCache.cpp] Error: couldn't load texture " << textureName << " from file!\r\n";
+		std::cerr << "[GameCache] Error: couldn't load texture " << textureName << " from file!\r\n";
 	}
 #ifndef RELEASE
 	else {
@@ -45,7 +42,7 @@ bool GameCache::loadSound(sf::Sound& sound, const std::string& soundName) {
 	// Load from file and update the cache
 	auto& buf = soundBuffers[nameSid];
 	if (!buf.loadFromFile(soundName)) {
-		std::cerr << "[GameCache.cpp] Error: couldn't load sound " << soundName << " from file!\r\n";
+		std::cerr << "[GameCache] Error: couldn't load sound " << soundName << " from file!\r\n";
 		return false;
 	}
 #ifndef RELEASE
@@ -60,23 +57,23 @@ bool GameCache::loadSound(sf::Sound& sound, const std::string& soundName) {
 void GameCache::playSound(const std::string& soundName) {
 	if (lif::options.soundsMute) return;
 
+	// Find a free slot to put this sound into, or discard oldest sound
+	auto it = sounds.begin();
 	unsigned idx = 0;
-	do {
-		if (idx == sounds.size()) {
-			// Sounds queue has less than `maxParallelSounds` sounds
-			sounds.emplace_back(sf::Sound());
+	while (it != sounds.end() && idx < maxParallelSounds) {
+		if (it->getStatus() != sf::Sound::Status::Playing) {
+			sounds.erase(it);
 			break;
 		}
-		if (sounds[idx].getStatus() != sf::Sound::Status::Playing)
-			break;
-		++idx;
-	} while (idx < maxParallelSounds);
+		++it, ++idx;
+	}
 
-	// No empty slot left
-	if (idx == maxParallelSounds) return;
-
-	// Replace this dead sound with the new one
-	auto& sound = sounds[idx];
+	// no room
+	if (idx == maxParallelSounds) {
+		sounds.pop_front();
+	}
+	sounds.push_back(sf::Sound());
+	auto& sound = sounds.back();
 	if (!loadSound(sound, soundName))
 		return;
 
