@@ -1,18 +1,27 @@
 #include "ScreenBuilder.hpp"
-#include "ScreenStyle.hpp"
-#include "Screen.hpp"
 #include "GameCache.hpp"
-#include "utils.hpp"
 #include "Interactable.hpp"
-#include <iostream>
+#include "Screen.hpp"
+#include "ScreenStyle.hpp"
+#include "game.hpp"
+#include "utils.hpp"
+#include <algorithm>
 #include <exception>
 #include <fstream>
+#include <iostream>
 #include <unordered_map>
-#include <algorithm>
-#include "game.hpp"
 
 using lif::ui::ScreenBuilder;
 using json = nlohmann::json;
+
+static const std::unordered_map<std::string, sf::Color> color_table = {
+	{ "red", sf::Color::Red },
+	{ "orange", sf::Color(255, 51, 0) },
+	{ "blue", sf::Color::Blue },
+	{ "white", sf::Color::White },
+	{ "gray", sf::Color(120, 120, 120) },
+	{ "black", sf::Color::Black },
+};
 
 static void add_style_property(lif::ui::ScreenStyle& style, const std::string& key, const json& value) {
 	if (key == "spacing")
@@ -27,7 +36,23 @@ static void add_style_property(lif::ui::ScreenStyle& style, const std::string& k
 		style.vAlign = value.get<std::string>();
 	else if (key == "h-align")
 		style.hAlign = value.get<std::string>();
-	else
+	else if (key == "color") {
+		auto it = color_table.find(value.get<std::string>());
+		if (it == color_table.end()) {
+			std::cerr << "Invalid color: " << value.get<std::string>() << std::endl;
+			return;
+		}
+		style.color = it->second;
+	} else if (key == "shadow-color") {
+		auto it = color_table.find(value.get<std::string>());
+		if (it == color_table.end()) {
+			std::cerr << "Invalid color: " << value.get<std::string>() << std::endl;
+			return;
+		}
+		style.bgcolor = it->second;
+	} else if (key == "shadow-spacing") {
+		style.shadowSpacing = value.get<int>();
+	} else
 		std::cerr << "Invalid style property: " << key << std::endl;
 }
 
@@ -123,7 +148,8 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 
 	// set shadow
 	newtxt->setShadowSpacing(3.5, 3);
-	newtxt->setBGColor(sf::Color::Black);
+	newtxt->setFGColor(style.color);
+	newtxt->setBGColor(style.bgcolor);
 	// set char size
 	newtxt->setCharacterSize(style.characterSize);
 	// set font
@@ -138,7 +164,7 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 		const auto name = text["name"].get<std::string>();
 		screen.interactables[name] = std::make_unique<lif::ui::Interactable>(newtxt);
 	} else {
-		newtxt->setShadowSpacing(2, 2);
+		newtxt->setShadowSpacing(style.shadowSpacing, style.shadowSpacing);
 		screen.nonInteractables.emplace_back(newtxt);
 	}
 }

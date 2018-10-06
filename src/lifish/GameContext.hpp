@@ -42,6 +42,8 @@ private:
 	mutable sf::RenderTexture gameRenderTex;
 	mutable sf::RenderTexture sidePanelRenderTex;
 
+	bool gameWon = false;
+
 	const sf::Window& window;
 	lif::LevelSet ls;
 	lif::LevelManager lm;
@@ -69,6 +71,9 @@ public:
 	void loadGame(const lif::SaveData& saveData);
 	/** Called by `main` after `GET READY` screen */
 	void onLevelStart();
+
+	bool isGameWon() const { return gameWon; }
+	void restart();
 
 	void update() override;
 	bool handleEvent(sf::Window& window, sf::Event evt) override;

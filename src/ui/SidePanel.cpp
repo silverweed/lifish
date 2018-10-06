@@ -14,12 +14,14 @@ SidePanel::SidePanel(const lif::LevelManager& lm)
 {
 	// Load background
 	bgTexture = lif::cache.loadTexture(lif::getAsset("graphics", "panel.png"));
+	bgTexture->setSmooth(true);
 	backgroundSprite.setTexture(*bgTexture);
 	backgroundSprite.setTextureRect(sf::IntRect(0, 0, lif::SIDE_PANEL_WIDTH, lif::SIDE_PANEL_HEIGHT));
 	backgroundSprite.setPosition(0, 0);
 
 	// Load player heads
 	playerHeadsTexture = lif::cache.loadTexture(lif::getAsset("graphics", "playerheads.png"));
+	playerHeadsTexture->setSmooth(true);
 	for (unsigned i = 0; i < playerHeadsSprite.size(); ++i) {
 		playerHeadsSprite[i].setTexture(*playerHeadsTexture);
 		playerHeadsSprite[i].setTextureRect(sf::IntRect(PLAYER_HEAD_WIDTH * i, 0,
@@ -48,6 +50,7 @@ SidePanel::SidePanel(const lif::LevelManager& lm)
 
 	// Load bonuses
 	const auto bonusesTexture = lif::cache.loadTexture(lif::getAsset("graphics", "bonuses.png"));
+	bonusesTexture->setSmooth(true);
 	for (unsigned i = 0; i < bonusesSprite.size(); ++i) {
 		sf::Vector2f pos(BONUS_ICON_POS_X, i == 0 ? BONUS_ICON_POS_Y_1 : BONUS_ICON_POS_Y_2);
 		for (unsigned j = 0; j < bonusesSprite[i].size(); ++j) {
@@ -132,9 +135,9 @@ void SidePanel::_drawTime(sf::RenderTarget& window, sf::RenderStates states) con
 	}
 
 	lif::ShadedText timeText(
-			lif::getAsset("fonts", lif::fonts::SIDE_PANEL_MONO),
+			lif::getAsset("fonts", lif::fonts::SIDE_PANEL),
 			ss.str(), TIME_POS);
-	timeText.setCharacterSize(16);
+	timeText.setCharacterSize(14);
 	timeText.setShadowSpacing(2, 2);
 	if (minutes < 1 && seconds <= 30) {
 		timeText.setColor(sf::Color(220, 0, 0, 255), sf::Color::Black);
@@ -159,9 +162,8 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			ss << "X" << (player->getInfo().remainingLives + 1);
 		}
 
-		lif::ShadedText text(lif::getAsset("fonts", lif::fonts::SIDE_PANEL_MONO), ss.str(), pos);
-		text.setCharacterSize(20);
-		text.setStyle(sf::Text::Bold);
+		lif::ShadedText text(lif::getAsset("fonts", lif::fonts::SIDE_PANEL), ss.str(), pos);
+		text.setCharacterSize(16);
 		text.setShadowSpacing(2, 2);
 		window.draw(text, states);
 
@@ -182,40 +184,45 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			pos.y = i == 0 ? BONUS_ICON_POS_Y_1 : BONUS_ICON_POS_Y_2;
 			text.setStyle(sf::Text::Regular);
 			text.setPosition(sf::Vector2f(pos.x, pos.y + BONUS_ICON_HEIGHT + 2));
-			text.setCharacterSize(11);
+			text.setCharacterSize(9);
 			text.setShadowSpacing(1, 1);
 			text.setString("x" + lif::to_string(powers.maxBombs));
 			window.draw(text, states);
 
 			// Draw bomb radius
-			text.setPosition(sf::Vector2f(pos.x + BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
+			text.setPosition(sf::Vector2f(pos.x + BONUS_ICON_WIDTH * 2, pos.y + BONUS_ICON_HEIGHT + 2));
 			text.setString("x" + lif::to_string(powers.bombRadius));
 			window.draw(text, states);
 
 			// Draw absorb
-			text.setPosition(sf::Vector2f(pos.x + 2 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
-			text.setString("+" + lif::to_string(powers.absorb));
-			window.draw(text, states);
+			//text.setPosition(sf::Vector2f(pos.x + 2 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
+			//text.setString("+" + lif::to_string(powers.absorb));
+			//window.draw(text, states);
 
 			// Draw armor
-			text.setPosition(sf::Vector2f(pos.x + 3 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
-			text.setString("+" + lif::to_string(powers.armor));
-			window.draw(text, states);
+			//text.setPosition(sf::Vector2f(pos.x + 3 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
+			//text.setString("+" + lif::to_string(powers.armor));
+			//window.draw(text, states);
 
 			// Draw bonuses
 			for (const auto& bsprite : bonusesSprite[i])
 				_drawWithShadow(window, states, bsprite);
 
 			// Draw score
-			ss.str("");
-			ss << std::setfill('0') << std::setw(7) << lm.getScore(i + 1);
 			pos.x = SCORE_POS_X;
 			pos.y = i == 0 ? SCORE_POS_Y_1 : SCORE_POS_Y_2;
 			lif::ShadedText scoreText(
-					lif::getAsset("fonts", lif::fonts::SIDE_PANEL_MONO),
-					ss.str(), pos);
+					lif::getAsset("fonts", lif::fonts::SIDE_PANEL),
+					"score", pos + sf::Vector2f(3, -19));
 			scoreText.setCharacterSize(16);
 			scoreText.setShadowSpacing(2, 2);
+			window.draw(scoreText, states);
+			ss.str("");
+			ss << std::setfill('0') << std::setw(6) << lm.getScore(i + 1);
+			//scoreText.setCharacterSize(16);
+			scoreText.setFont(lif::getAsset("fonts", lif::fonts::SIDE_PANEL_THIN));
+			scoreText.setPosition(pos);
+			scoreText.setString(ss.str());
 			window.draw(scoreText, states);
 		}
 	}

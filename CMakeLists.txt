@@ -9,7 +9,7 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(lifish)
 set(PROJECT_NAME lifish)
-set(MAJOR 1)
+set(MAJOR BOOM_1)
 set(MINOR 1)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 

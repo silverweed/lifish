@@ -17,10 +17,18 @@
 		},
 		"elements": [
 			{
+				"type": "image",
+				"src": "boom_logo.png",
+				"size": [430, 171]
+			},
+			{
 				"type": "text",
-				"string": "",
+				"string": "Remake by Silverweed",
 				"style-override": {
-					"spacing": 100
+					"shadow-spacing": 1,
+					"character-size": 12,
+					"color": "orange",
+					"spacing": -20
 				}
 			},
 			{

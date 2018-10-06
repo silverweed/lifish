@@ -155,7 +155,7 @@ static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
 	ui.setSize(lif::options.windowSize);
 
 	// load static screens
-	ui.load(window, { "home.json", "about.json", "pause.json" });
+	ui.load(window, { "home.json", "about.json", "pause.json", "win.json" });
 	// create dynamic screens
 	ui.add<lif::ui::ControlsScreen>(window, lif::options.windowSize);
 	ui.add<lif::ui::PreferencesScreen>(window, lif::options.windowSize);
@@ -367,11 +367,15 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 		cur_context->resetNewContext();
 		switch (nc) {
 		case lif::CTX_UI:
-			if (cur_context == game.get() && game->getLM().isGameOver()) {
+			if (game->getLM().isGameOver()) {
 				ui.setCurrent("home");
 				game.reset();
-			} else
+			} else if (game->isGameWon()) {
+				ui.setCurrent("win");
+				game->restart();
+			} else {
 				ui.setCurrent("pause");
+			}
 			break;
 		case lif::CTX_INTERLEVEL:
 			if (cur_context == &ui) {

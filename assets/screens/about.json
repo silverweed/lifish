@@ -18,11 +18,7 @@
 		"elements": [
 			{
 				"type": "text",
-				"string": "Work in progress"
-			},
-			{
-				"type": "text",
-				"string": "Lifish - (c) 2017 Giacomo Parolini"
+				"string": "Lifish - (c) 2018 Giacomo Parolini"
 			},
 			{
 				"type": "text",
@@ -38,15 +34,19 @@
 			},
 			{
 				"type": "text",
-				"string": "This is a pre-release! A lot of content"
+				"string": "This game uses the Lifish engine to create"
 			},
 			{
 				"type": "text",
-				"string": "is missing and there may be bugs."
+				"string": "a clone of \"BOOM\" by Federico Filipponi."
 			},
 			{
 				"type": "text",
-				"string": ""
+				"string": "Mod created by Giacomo Parolini, aka silverweed."
+			},
+			{
+				"type": "text",
+				"string": "Contact: silverweed1991@gmail.com"
 			},
 			{
 				"type": "text",
@@ -54,7 +54,8 @@
 				"string": "Back",
 				"interactable": true,
 				"style-override": {
-					"character-size": 20
+					"character-size": 20,
+					"spacing": 20
 				}
 			},
 			{

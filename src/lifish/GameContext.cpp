@@ -39,7 +39,8 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, sh
 	_addHandler<lif::debug::DebugEventHandler>(std::ref(*this));
 #endif
 	gameRenderTex.create(lif::GAME_WIDTH, lif::GAME_HEIGHT);
-	sidePanelRenderTex.create(lif::SIDE_PANEL_WIDTH, lif::GAME_HEIGHT);
+	gameRenderTex.setSmooth(true);
+	//sidePanelRenderTex.create(lif::SIDE_PANEL_WIDTH, lif::GAME_HEIGHT);
 
 	ls.loadFromFile(levelsetName);
 	_initLM(window, startLv);
@@ -100,12 +101,16 @@ void GameContext::update() {
 	switch (wlHandler.getState()) {
 		using S = lif::WinLoseHandler::State;
 	case S::ADVANCING_LEVEL:
-		// Handle cutscenePost
-		if (lm.getLevel()->getInfo().cutscenePost.length() > 0)
-			newContext = lif::CTX_CUTSCENE;
-		else
-			newContext = lif::CTX_INTERLEVEL;
-		return;
+		{
+			const auto level = lm.getLevel();
+			const auto& ls = level->getLevelSet();
+			// Handle cutscenePost
+			if (level->getInfo().cutscenePost.length() > 0)
+				newContext = lif::CTX_CUTSCENE;
+			else if (level->getInfo().levelnum < ls.getLevelsNum() - 1)
+				newContext = lif::CTX_INTERLEVEL;
+			return;
+		}
 	case S::ADVANCED_LEVEL:
 		_advanceLevel();
 		onLevelStart();
@@ -192,17 +197,18 @@ void GameContext::draw(sf::RenderTarget& window, sf::RenderStates states) const 
 	gameRenderTex.display();
 
 	// Draw the SidePanel in its render texture
-	sidePanelRenderTex.clear();
-	sidePanelRenderTex.draw(sidePanel, states);
-	sidePanelRenderTex.display();
+	//sidePanelRenderTex.clear();
+	//sidePanelRenderTex.draw(sidePanel, states);
+	//sidePanelRenderTex.display();
 
 	// Draw both textures to window
 	sf::Sprite gameSprite(gameRenderTex.getTexture());
 	gameSprite.setOrigin(origin);
 	window.draw(gameSprite, states);
+	window.draw(sidePanel, states);
 
-	sf::Sprite sidePanelSprite(sidePanelRenderTex.getTexture());
-	window.draw(sidePanelSprite, states);
+	//sf::Sprite sidePanelSprite(sidePanelRenderTex.getTexture());
+	//window.draw(sidePanelSprite, states);
 }
 
 void GameContext::_advanceLevel() {
@@ -213,8 +219,10 @@ void GameContext::_advanceLevel() {
 	const auto& ls = level->getLevelSet();
 
 	if (lvnum == ls.getLevelsNum()) {
-		// TODO game won
-		//return;
+		// game won
+		newContext = lif::CTX_UI;
+		gameWon = true;
+		return;
 	}
 
 	_resurrectDeadPlayers();
@@ -252,6 +260,11 @@ void GameContext::_resurrectDeadPlayers() {
 			bns->expireTemporaryBonuses();
 		}
 	}
+}
+
+void GameContext::restart() {
+	gameWon = false;
+	lm.setLevel(lm.getLevel()->getLevelSet(), 1);
 }
 
 #ifndef RELEASE

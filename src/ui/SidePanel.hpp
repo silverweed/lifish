@@ -1,11 +1,11 @@
 #pragma once
 
-#include <array>
-#include <SFML/Graphics.hpp>
 #include "conf/bonus.hpp"
 #include "conf/player.hpp"
 #include "game.hpp"
 #include "utils.hpp"
+#include <SFML/Graphics.hpp>
+#include <array>
 
 namespace lif {
 
@@ -31,8 +31,8 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	                          PLAYER1_HEAD_Y = 59,
 	                          PLAYER2_HEAD_Y = 268,
 	                          N_LIVES_X = 55,
-	                          N_LIVES_Y_1 = 57,
-	                          N_LIVES_Y_2 = 265,
+	                          N_LIVES_Y_1 = 60,
+	                          N_LIVES_Y_2 = 268,
 	                          HEALTH_SYM_WIDTH = 17,
 	                          HEALTH_SYM_HEIGHT = 18,
 	                          HEALTH_SYM_POS_X = 15,
@@ -53,7 +53,7 @@ class SidePanel final : public sf::Drawable, private sf::NonCopyable {
 	                          SCORE_POS_Y_1 = 195,
 	                          SCORE_POS_Y_2 = 403;
 	const sf::Color DISABLED_COLOR = sf::Color(100, 100, 100, 255);
-	const sf::Vector2f TIME_POS = sf::Vector2f(21, 230);
+	const sf::Vector2f TIME_POS = sf::Vector2f(21, 232);
 
 	/** The LevelManager this panel is connected with */
 	const lif::LevelManager& lm;

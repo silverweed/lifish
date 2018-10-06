@@ -13,10 +13,10 @@
 */
 #pragma once
 
-#include <string>
-#include <map>
-#include <SFML/Graphics.hpp>
 #include "core.hpp"
+#include <SFML/Graphics.hpp>
+#include <map>
+#include <string>
 
 /**
  * Game-specific definitions, global functions and variables
@@ -53,6 +53,7 @@ namespace fonts {
 	constexpr auto CUTSCENES       = "pf_tempesta_seven.ttf";
 	constexpr auto DEBUG_INFO      = "pf_tempesta_seven_condensed.ttf";
 	constexpr auto SIDE_PANEL      = "pf_tempesta_seven_bold.ttf";
+	constexpr auto SIDE_PANEL_THIN = "pf_tempesta_seven_condensed_bold.ttf";
 	constexpr auto SIDE_PANEL_MONO = "Hack-Regular.ttf";
 	constexpr auto SCREEN          = "pf_tempesta_seven_bold.ttf";
 }
