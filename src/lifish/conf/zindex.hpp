@@ -25,6 +25,7 @@ namespace conf {
 		constexpr int POINTS               = 42;
 		constexpr int DROPPING_TEXTS       = 42;
 		constexpr int TORCHES              = -1;
+		constexpr int UI                   = -2;
 	}
 }
 

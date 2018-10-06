@@ -10,6 +10,7 @@
 #include "Coin.hpp"
 #include "DroppingBomb.hpp"
 #include "EnemyFactory.hpp"
+#include "EnergyBar.hpp"
 #include "FixedWall.hpp"
 #include "Flare.hpp"
 #include "Flash.hpp"
@@ -153,8 +154,12 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				break;
 
 			case EntityType::BIG_ALIEN_BOSS:
-				addBoss<lif::BigAlienBoss>(entities, curPos, lm)->get<lif::AI>()->setLevelManager(&lm);
-				break;
+				{
+					auto boss = addBoss<lif::BigAlienBoss>(entities, curPos, lm);
+					boss->get<lif::AI>()->setLevelManager(&lm);
+					entities.add(boss->getShared<lif::EnergyBar>());
+					break;
+				}
 
 			case EntityType::HAUNTING_SPIRIT_BOSS:
 				addBoss<lif::HauntingSpiritBoss>(entities, curPos);

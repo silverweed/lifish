@@ -1,22 +1,33 @@
 #include "BigAlienBoss.hpp"
 #include "Animated.hpp"
 #include "AxisMoving.hpp"
+#include "Bonusable.hpp"
 #include "BufferedSpawner.hpp"
 #include "Clock.hpp"
 #include "Drawable.hpp"
 #include "Egg.hpp"
+#include "Enemy.hpp"
+#include "EnergyBar.hpp"
+#include "Explosion.hpp"
 #include "GameCache.hpp"
 #include "HurtDrawProxy.hpp"
 #include "Killable.hpp"
+#include "Level.hpp"
+#include "LevelManager.hpp"
 #include "Lifed.hpp"
 #include "MovingAnimator.hpp"
+#include "Player.hpp"
 #include "Scored.hpp"
 #include "Sounded.hpp"
+#include "Sprite.hpp"
 #include "ai_functions.hpp"
 #include "conf/boss.hpp"
 #include "conf/player.hpp"
 #include "game.hpp"
 #include <random>
+#ifndef RELEASE
+	#include "DebugPainter.hpp"
+#endif
 
 using lif::BigAlienBoss;
 
@@ -30,7 +41,9 @@ BigAlienBoss::BigAlienBoss(const sf::Vector2f& pos, const lif::LevelManager& lm)
 			lif::conf::boss::big_alien_boss::SPEED * lif::conf::player::DEFAULT_SPEED,
 			lif::Direction::DOWN);
 	addComponent<lif::AI>(*this, lif::ai_random_forward);
-	addComponent<lif::Lifed>(*this, lif::conf::boss::big_alien_boss::LIFE);
+	addComponent<lif::Lifed>(*this, lif::conf::boss::big_alien_boss::LIFE, [this] (int, int newLife) {
+		energyBar->setEnergy(newLife);
+	});
 	addComponent<lif::Scored>(*this, lif::conf::boss::big_alien_boss::VALUE);
 	attackClock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Sounded>(*this,
@@ -69,10 +82,19 @@ BigAlienBoss::BigAlienBoss(const sf::Vector2f& pos, const lif::LevelManager& lm)
 	addComponent<lif::MovingAnimator>(*this);
 	spawner = addComponent<lif::BufferedSpawner>(*this);
 
-	addComponent<lif::Drawable>(*this, *addComponent<lif::HurtDrawProxy>(*this));
+	energyBar = addComponent<lif::EnergyBar>(*this);
+	energyBar->setPosition(lif::center(
+		energyBar->get<lif::Sprite>()->getSprite().getLocalBounds(),
+		sf::FloatRect(0, 0, (lm.getLevel()->getInfo().width + 2) * lif::TILE_SIZE, 22)));
+
+	addComponent<lif::Drawable>(*this, *addComponent<lif::HurtDrawProxy>(*this));;
 
 	// Body collider
-	_addDefaultCollider(SIZE);
+	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& coll) {
+		// on collision
+		if (!(killable && killable->isKilled()))
+			_checkCollision(coll);
+	}, lif::c_layers::BOSSES, SIZE);
 }
 
 void BigAlienBoss::update() {
@@ -85,14 +107,14 @@ void BigAlienBoss::update() {
 		attackClock->restart();
 		moving->block(sf::seconds(1));
 		std::uniform_int_distribution<> dist(1, lif::N_ENEMIES);
-		auto egg = new lif::Egg(position + eggOffset(),
+		auto egg = new lif::Egg(position + _eggOffset(),
 				lif::oppositeDirection(moving->getDirection()), lm, dist(lif::rng));
 		lif::cache.playSound(egg->get<lif::Sounded>()->getSoundFile("spawn"));
 		spawner->addSpawned(egg);
 	}
 }
 
-sf::Vector2f BigAlienBoss::eggOffset() const {
+sf::Vector2f BigAlienBoss::_eggOffset() const {
 	switch (moving->getDirection()) {
 		using D = lif::Direction;
 	case D::UP:
@@ -111,4 +133,38 @@ sf::Vector2f BigAlienBoss::eggOffset() const {
 void BigAlienBoss::_kill() {
 	lif::Boss::_kill();
 	moving->setSpeed(0);
+
+	energyBar->moveOut();
+
+	// Kill every enemy on screen
+	lm.getEntities().apply([] (auto entity) {
+		auto enemy = dynamic_cast<lif::Enemy*>(entity);
+		if (enemy == nullptr) return;
+		enemy->get<lif::Killable>()->kill();
+	});
+}
+
+// This is like Boss::_checkCollision but each bomb only inflicts 1 damage
+void BigAlienBoss::_checkCollision(lif::Collider& coll) {
+	// One-shot players
+	if (coll.getLayer() == lif::c_layers::PLAYERS) {
+		auto& player = static_cast<lif::Player&>(coll.getOwnerRW());
+		if (!player.get<lif::Bonusable>()->hasBonus(lif::BonusType::SHIELD)) {
+			player.dealDamage(lif::conf::player::MAX_LIFE, true);
+		}
+		return;
+	}
+
+	if (!vulnerable || coll.getLayer() != lif::c_layers::EXPLOSIONS) return;
+
+	auto& expl = static_cast<lif::Explosion&>(coll.getOwnerRW());
+	if (expl.hasDamaged(*this)) return;
+
+	const auto damage = 1;
+	if (get<lif::Lifed>()->decLife(damage) > 0)
+		get<lif::HurtDrawProxy>()->hurt();
+	else
+		killable->kill();
+	expl.dealDamageTo(*this);
+	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("hurt"));
 }

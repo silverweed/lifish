@@ -12,12 +12,12 @@ using lif::BossExplosion;
 using lif::TILE_SIZE;
 
 BossExplosion::BossExplosion(const sf::Vector2f& pos)
-	: lif::OneShotFX(pos, "blink.png", {
-		sf::IntRect(0 * 2 * TILE_SIZE, 0, 2 * TILE_SIZE, 2 * TILE_SIZE),
-		sf::IntRect(1 * 2 * TILE_SIZE, 0, 2 * TILE_SIZE, 2 * TILE_SIZE),
-		sf::IntRect(2 * 2 * TILE_SIZE, 0, 2 * TILE_SIZE, 2 * TILE_SIZE),
-		sf::IntRect(3 * 2 * TILE_SIZE, 0, 2 * TILE_SIZE, 2 * TILE_SIZE),
-		sf::IntRect(4 * 2 * TILE_SIZE, 0, 2 * TILE_SIZE, 2 * TILE_SIZE),
+	: lif::OneShotFX(pos, "bossbullet.png", {
+		sf::IntRect(2 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
+		sf::IntRect(3 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
+		sf::IntRect(4 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
+		sf::IntRect(5 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
+		sf::IntRect(6 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
 	})
 {
 	addComponent<lif::Sounded>(*this,
@@ -25,5 +25,4 @@ BossExplosion::BossExplosion(const sf::Vector2f& pos)
 	);
 	get<lif::ZIndexed>()->setZIndex(lif::conf::zindex::BOSS_EXPLOSIONS);
 	std::uniform_int_distribution<unsigned char> dist(100, 232);
-	animated->getSprite().setColor(sf::Color(232, dist(lif::rng), 0));
 }

@@ -8,6 +8,7 @@ class Animated;
 class AxisMoving;
 class BufferedSpawner;
 class Clock;
+class EnergyBar;
 class LevelManager;
 
 class BigAlienBoss : public lif::Boss {
@@ -18,9 +19,11 @@ class BigAlienBoss : public lif::Boss {
 	lif::Clock *attackClock = nullptr;
 	lif::Animated *animated = nullptr;
 	lif::AxisMoving *moving = nullptr;
+	lif::EnergyBar *energyBar = nullptr;
 
-	sf::Vector2f eggOffset() const;
+	sf::Vector2f _eggOffset() const;
 
+	void _checkCollision(lif::Collider& coll);
 	void _kill() override;
 public:
 	explicit BigAlienBoss(const sf::Vector2f& pos, const lif::LevelManager& lm);

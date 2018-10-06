@@ -7,6 +7,7 @@
 #include "Enemy.hpp"
 #include "GameContext.hpp"
 #include "Killable.hpp"
+#include "Lifed.hpp"
 #include "Music.hpp"
 #include "MusicManager.hpp"
 #include "Options.hpp"
