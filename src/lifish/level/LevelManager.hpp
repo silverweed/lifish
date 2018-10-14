@@ -1,15 +1,16 @@
 #pragma once
 
-#include <array>
-#include <SFML/Graphics.hpp>
 #include "BaseLevelManager.hpp"
-#include "DroppingTextManager.hpp"
-#include "LevelRenderer.hpp"
-#include "LevelEffects.hpp"
-#include "LevelTime.hpp"
-#include "conf/player.hpp"
 #include "Direction.hpp"
+#include "DroppingTextManager.hpp"
+#include "LevelEffects.hpp"
+#include "LevelRenderer.hpp"
+#include "LevelTime.hpp"
+#include "bonus_type.hpp"
+#include "conf/player.hpp"
 #include "game.hpp"
+#include <SFML/Graphics.hpp>
+#include <array>
 
 namespace lif {
 
@@ -33,6 +34,7 @@ class LevelManager final : public lif::BaseLevelManager, public sf::Drawable {
 	friend class lif::LevelRenderer;
 	friend class lif::SaveManager;
 	friend class lif::WinLoseHandler;
+	friend void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& player);
 
 	/** The currently managed level */
 	std::unique_ptr<lif::Level> level;

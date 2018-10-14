@@ -72,7 +72,7 @@ void WinLoseHandler::_handleWin() {
 
 	} else if (time >= sf::seconds(1) && !levelClearSoundPlayed) {
 		lif::musicManager->stop();
-		lif::cache.playSound(lif::getAsset("test", lif::LEVEL_CLEAR_SOUND));
+		lif::cache.playSound(lif::getAsset("sounds", lif::LEVEL_CLEAR_SOUND));
 		levelClearSoundPlayed = true;
 	}
 }

@@ -1,12 +1,13 @@
 #include "bonus_type.hpp"
-#include "LevelManager.hpp"
-#include "Player.hpp"
-#include "Lifed.hpp"
-#include "BreakableWall.hpp"
-#include "Scored.hpp"
-#include "Killable.hpp"
-#include "Enemy.hpp"
+#include "Bomb.hpp"
 #include "Bonusable.hpp"
+#include "BreakableWall.hpp"
+#include "Enemy.hpp"
+#include "Killable.hpp"
+#include "LevelManager.hpp"
+#include "Lifed.hpp"
+#include "Player.hpp"
+#include "Scored.hpp"
 #include "game.hpp"
 
 using B = lif::BonusType;
@@ -55,8 +56,15 @@ void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& 
 			powers.maxBombs++;
 		break;
 	case B::QUICK_FUSE:
-		if (powers.bombFuseTime == lif::conf::bomb::DEFAULT_FUSE)
+		if (powers.bombFuseTime == lif::conf::bomb::DEFAULT_FUSE) {
 			powers.bombFuseTime = lif::conf::bomb::QUICK_FUSE;
+			// Make all current bombs quick
+			auto& bombs = lm.bombs[player.getInfo().id - 1];
+			for (auto& bomb : bombs) {
+				if (bomb.expired()) continue;
+				bomb.lock()->setFuseTime(powers.bombFuseTime);
+			}
+		}
 		break;
 	case B::MAX_RANGE:
 		if (powers.bombRadius < lif::conf::bomb::MAX_RADIUS)
