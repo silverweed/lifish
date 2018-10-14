@@ -33,7 +33,7 @@ DebugEventHandler::DebugEventHandler(lif::GameContext& game)
  * G : draw colliders
  * H : draw SH cells
  * I : print game stats
- * J : kill player 1
+ * J : kill player 2
  * K : pause game simulation
  * L : step game simulation (pauses if needed)
  * M : morph all enemies
@@ -46,6 +46,7 @@ DebugEventHandler::DebugEventHandler(lif::GameContext& game)
  * Numpad3 : destroy all breakable walls
  * Numpad6 : flip all entities
  * Numpad7 : compute and show free tiles
+ * Numpad8 : kill player 1
  * Numpad9 : rotate all entities of pi/4
  */
 bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
@@ -79,6 +80,11 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 				}
 				game.toggleDebug(lif::GameContext::DBG_NO_PAINT_CLEAR);
 			}
+			return true;
+
+		case sf::Keyboard::Numpad8:
+			game.lm.getPlayer(1)->setRemainingLives(0);
+			game.lm.getPlayer(1)->get<lif::Killable>()->kill();
 			return true;
 
 		case sf::Keyboard::Numpad9:

@@ -47,8 +47,10 @@ class LevelManager final : public lif::BaseLevelManager, public sf::Drawable {
 	bool extraGameTriggered = false;
 	/** Whether we're currently in EXTRA game or not */
 	bool extraGame = false;
-	/** This is set to `true` as soon as no players are found alive. */
+	/** This is set to `true` as soon as no players are found alive (and they have no continue). */
 	bool gameOver = false;
+	/** This is set to `true` if both player have 0 lives but some continues remaining */
+	bool mustRetry = false;
 	/** This is set to `true` when the last level is completed */
 	bool gameWon = false;
 
@@ -121,6 +123,7 @@ public:
 	void setLevel(const lif::LevelSet& ls, int lvnum);
 	/** Loads next level from `level->getLevelSet()`. Throws if `level` is currently null */
 	void setNextLevel();
+	void resetLevel();
 
 	const lif::LevelTime& getLevelTime() const { return *levelTime; }
 
@@ -129,6 +132,7 @@ public:
 	/** @return whether the current level is clear of enemies (entities marked with 'Foe'). */
 	bool isLevelClear() const;
 	bool isGameWon() const { return gameWon; }
+	bool mustRetryLevel() const { return mustRetry; }
 
 	/** @return whether the owner of `am` can proceed along direction `dir` */
 	bool canGo(const lif::AxisMoving& am, const lif::Direction dir) const;

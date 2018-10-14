@@ -42,6 +42,9 @@ private:
 	mutable sf::RenderTexture gameRenderTex;
 	mutable sf::RenderTexture sidePanelRenderTex;
 
+	bool gameWon = false;
+	bool retryingLevel = false;
+
 	const sf::Window& window;
 	lif::LevelSet ls;
 	lif::LevelManager lm;
