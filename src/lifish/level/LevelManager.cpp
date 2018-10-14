@@ -336,8 +336,17 @@ void LevelManager::_checkResurrect() {
 		}
 	}
 
-	if (living_players == 0)
+	// No players alive: if any player has at least 1 continue, retry level
+	// else, game over.
+	if (living_players == 0) {
+		for (auto cont : playerContinues) {
+			if (cont > 0) {
+				mustRetry = true;
+				return;
+			}
+		}
 		gameOver = true;
+	}
 }
 
 bool LevelManager::_tryResurrectPlayer(const std::shared_ptr<lif::Player>& player) {
@@ -432,4 +441,9 @@ void LevelManager::decPlayerContinues(int id) {
 void LevelManager::setPlayerContinues(int id, int amt) {
 	assert(0 < id && id <= lif::MAX_PLAYERS);
 	playerContinues[id - 1] = amt;
+}
+
+void LevelManager::resetLevel() {
+	mustRetry = false;
+	setLevel(level->getLevelSet(), level->getInfo().levelnum);
 }

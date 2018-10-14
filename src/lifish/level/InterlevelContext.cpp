@@ -52,6 +52,11 @@ InterlevelContext::InterlevelContext(lif::LevelManager& lm, const lif::SidePanel
 	noText.setFillColor(sf::Color(255, 255, 255, 0));
 }
 
+void InterlevelContext::setRetryingLevel() {
+	retryingLevel = true;
+	setAdvancingLevel();
+}
+
 void InterlevelContext::setAdvancingLevel() {
 	if (lm.getLevelTime().getRemainingTime() <= sf::Time::Zero) {
 		// No time remaining: skip this phase
@@ -95,7 +100,7 @@ void InterlevelContext::_setPromptContinue() {
 	while (idx < mustPromptPlayer.size() && !mustPromptPlayer[idx]) ++idx;
 	if (idx == mustPromptPlayer.size()) {
 		// all players alive or without continues: skip this phase
-		setGettingReady(lm.getLevel()->getInfo().levelnum + 1);
+		_setGettingReady();
 		return;
 	}
 	state = State::PROMPT_CONTINUE;
@@ -219,8 +224,17 @@ void InterlevelContext::_ackPromptResponse() {
 		yesText.setFillColor(sf::Color(0, 0, 0, 0));
 		noText.setFillColor(sf::Color(0, 0, 0, 0));
 		subsubtitleText.setString("");
-		setGettingReady(lm.getLevel()->getInfo().levelnum + 1);
+		_setGettingReady();
 	}
+}
+
+void InterlevelContext::_setGettingReady() {
+	int advance = 1;
+	if (retryingLevel) {
+		advance = 0;
+		retryingLevel = false;
+	}
+	setGettingReady(lm.getLevel()->getInfo().levelnum + advance);
 }
 
 bool InterlevelContext::handleEvent(sf::Window&, sf::Event event) {

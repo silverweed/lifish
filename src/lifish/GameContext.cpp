@@ -115,6 +115,10 @@ void GameContext::update() {
 		_advanceLevel();
 		onLevelStart();
 		break;
+	case S::RETRY_LEVEL:
+		retryingLevel = true;
+		newContext = lif::CTX_INTERLEVEL;
+		break;
 	case S::EXIT_GAME:
 		newContext = lif::CTX_UI;
 		break;
@@ -227,7 +231,12 @@ void GameContext::_advanceLevel() {
 
 	_resurrectDeadPlayers();
 
-	lm.setNextLevel();
+	if (retryingLevel) {
+		lm.resetLevel();
+		retryingLevel = false;
+	} else {
+		lm.setNextLevel();
+	}
 	level = lm.getLevel();
 	if (level == nullptr)
 		throw std::logic_error("No levels found after " + lif::to_string(lvnum)

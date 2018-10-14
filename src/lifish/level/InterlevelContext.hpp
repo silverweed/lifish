@@ -1,10 +1,10 @@
 #pragma once
 
-#include <array>
-#include <SFML/Graphics.hpp>
-#include <SFML/System.hpp>
 #include "WindowContext.hpp"
 #include "game.hpp"
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+#include <array>
 
 namespace lif {
 
@@ -42,10 +42,12 @@ class InterlevelContext : public lif::WindowContext {
 	unsigned short curPromptedPlayer = 0;
 	/** Whether player is selecting 'yes' or 'no' during PROMPT_CONTINUE */
 	bool yesSelected = true;
+	bool retryingLevel = false;
 
 	/** @return true if player chose to continue, else false */
 	//bool _displayContinue(sf::RenderWindow& target, const lif::SidePanel& panel, short playerId);
 	//void _displayGetReady(sf::RenderWindow& target, const lif::SidePanel& panel, short lvnum);
+	void _setGettingReady();
 	void _givePoints(int amount);
 	void _tickDistributePoints();
 	void _tickWaitDistributePoints();
@@ -63,6 +65,7 @@ public:
 
 	void setGettingReady(unsigned short lvnum);
 	void setAdvancingLevel();
+	void setRetryingLevel();
 
 	void update() override;
 	bool handleEvent(sf::Window& window, sf::Event evt) override;

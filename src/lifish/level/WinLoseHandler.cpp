@@ -32,6 +32,7 @@ void WinLoseHandler::handleWinLose() {
 		_handleLoss();
 		break;
 	case State::ADVANCING_LEVEL:
+	case State::RETRY_LEVEL:
 		state = State::ADVANCED_LEVEL;
 		break;
 	case State::ADVANCED_LEVEL:
@@ -86,7 +87,11 @@ void WinLoseHandler::_handleLoss() {
 }
 
 void WinLoseHandler::_checkCondition() {
-	if (lm.isGameOver()) {
+	if (lm.mustRetryLevel()) {
+		state = State::RETRY_LEVEL;
+		lm.levelTime->setTime(sf::Time::Zero);
+		interlevelCtx.setRetryingLevel();
+	} else if (lm.isGameOver()) {
 		state = State::HANDLING_LOSS;
 		lm.dropTextManager.trigger(lif::DroppingTextManager::Text::GAME_OVER);
 		lif::musicManager->stop();

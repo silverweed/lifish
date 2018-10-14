@@ -1,9 +1,9 @@
 #pragma once
 
-#include <memory>
-#include <SFML/Graphics.hpp>
 #include "Chronometer.hpp"
 #include "InterlevelContext.hpp"
+#include <SFML/Graphics.hpp>
+#include <memory>
 
 namespace lif {
 
@@ -29,6 +29,7 @@ public:
 		HANDLING_WIN,
 		HANDLING_LOSS,
 		ADVANCING_LEVEL,
+		RETRY_LEVEL,
 		ADVANCED_LEVEL,
 		GAME_WON,
 		EXIT_GAME
