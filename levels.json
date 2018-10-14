@@ -134,8 +134,8 @@
 					"blocking"
 				],
 				"id": 3,
-				"fireRate": 10.0,
-				"blockTime": 150.0
+				"fireRate": 7.0,
+				"blockTime": 200.0
 			}
 		},
 		{
@@ -188,8 +188,8 @@
 					"blocking"
 				],
 				"id": 6,
-				"fireRate": 8.0,
-				"blockTime": 150.0
+				"fireRate": 6.0,
+				"blockTime": 200.0
 			}
 		},
 		{

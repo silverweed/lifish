@@ -147,13 +147,14 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	animated->addAnimation("idle_up", { sf::IntRect(0, TILE_SIZE, TILE_SIZE, TILE_SIZE) });
 	animated->addAnimation("idle_right", { sf::IntRect(0, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE) });
 	animated->addAnimation("idle_left", { sf::IntRect(0, 3 * TILE_SIZE, TILE_SIZE, TILE_SIZE) });
-	animated->setFrameTime("shoot_down", sf::seconds(0.2));
+	const auto shootFrameTime = (info.attack.type & lif::AttackType::CONTACT) ? 0.1 : 0.3;
+	animated->setFrameTime("shoot_down", sf::seconds(shootFrameTime));
 	animated->addAnimation("shoot_down", { sf::IntRect(0, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE) });
-	animated->setFrameTime("shoot_up", sf::seconds(0.2));
+	animated->setFrameTime("shoot_up", sf::seconds(shootFrameTime));
 	animated->addAnimation("shoot_up", { sf::IntRect(TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE) });
-	animated->setFrameTime("shoot_right", sf::seconds(0.2));
+	animated->setFrameTime("shoot_right", sf::seconds(shootFrameTime));
 	animated->addAnimation("shoot_right", { sf::IntRect(2 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE) });
-	animated->setFrameTime("shoot_left", sf::seconds(0.2));
+	animated->setFrameTime("shoot_left", sf::seconds(shootFrameTime));
 	animated->addAnimation("shoot_left", { sf::IntRect(3 * TILE_SIZE, 2 * TILE_SIZE, TILE_SIZE, TILE_SIZE) });
 
 	auto& a_death = animated->addAnimation("death");
@@ -177,7 +178,7 @@ void Enemy::update() {
 	if (moving->getDirection() != lif::Direction::NONE)
 		_checkShoot();
 
-	if (shootingAnim && !animated->getSprite().isPlaying()) {
+	if (!shooting->isShooting() && shootingAnim && !animated->getSprite().isPlaying()) {
 		animated->setAnimation(lif::sid("walk_" + lif::directionToStringOr(moving->getDirection(), "down")));
 		animated->getSprite().setLooped(true);
 		animated->getSprite().play();
@@ -201,13 +202,7 @@ void Enemy::_checkShoot() {
 		const auto entity = pair.first;
 		if (_inRange(entity) && ai->getLevelManager()->isPlayer(*entity)) {
 			if (!entity->get<lif::Killable>()->isKilled()) {
-				if (!shootingAnim) {
-					animated->setAnimation(lif::sid(
-							"shoot_" + lif::directionToString(moving->getDirection())));
-					animated->getSprite().play();
-					animated->getSprite().setLooped(false, false);
-					shootingAnim = true;
-				}
+				_setShootAnim();
 				shooting->shoot(entity->getPosition());
 				if (info.ai > 2)
 					lif::cache.playSound(sounded->getSoundFile("yell"));
@@ -217,12 +212,23 @@ void Enemy::_checkShoot() {
 	}
 }
 
+void Enemy::_setShootAnim() {
+	if (!shootingAnim) {
+		animated->setAnimation(lif::sid(
+				"shoot_" + lif::directionToString(moving->getDirection())));
+		animated->getSprite().play();
+		animated->getSprite().setLooped(false, false);
+		shootingAnim = true;
+	}
+}
+
 bool Enemy::_checkCollision(lif::Collider& coll) {
 	if (coll.getLayer() == lif::c_layers::PLAYERS
 			&& (shooting->getAttack().type & lif::AttackType::CONTACT)
 			&& !shooting->isRecharging()
 			&& !coll.getOwner().get<lif::Killable>()->isKilled())
 	{
+		_setShootAnim();
 		shooting->shoot();
 		return true;
 	}

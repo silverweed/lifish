@@ -57,6 +57,7 @@ class Enemy : public lif::Entity {
 	bool shootingAnim = false;
 
 	sf::Time getNextYellTime() const;
+	void _setShootAnim();
 
 protected:
 	constexpr static unsigned short WALK_N_FRAMES = 4;
