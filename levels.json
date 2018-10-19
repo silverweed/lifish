@@ -95,7 +95,7 @@
 					"blocking"
 				],
 				"id": 1,
-				"fireRate": 2.0,
+				"fireRate": 1.5,
 				"blockTime": 180.0
 			}
 		},

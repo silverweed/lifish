@@ -67,8 +67,15 @@ void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& 
 		}
 		break;
 	case B::MAX_RANGE:
-		if (powers.bombRadius < lif::conf::bomb::MAX_RADIUS)
+		if (powers.bombRadius < lif::conf::bomb::MAX_RADIUS) {
 			powers.bombRadius++;
+			// Increase radius of all current bombs 
+			auto& bombs = lm.bombs[player.getInfo().id - 1];
+			for (auto& bomb : bombs) {
+				if (bomb.expired()) continue;
+				bomb.lock()->setRadius(powers.bombRadius);
+			}
+		}
 		break;
 	case B::SHIELD:
 		player.get<lif::Bonusable>()->giveBonus(B::SHIELD, lif::conf::bonus::SHIELD_DURATION);

@@ -218,6 +218,8 @@ void Enemy::_checkShoot() {
 
 void Enemy::_setShootAnim() {
 	if (!shootingAnim) {
+		if (moving->getDirection() == lif::Direction::NONE)
+			return;
 		animated->setAnimation(lif::sid(
 				"shoot_" + lif::directionToString(moving->getDirection())));
 		animated->getSprite().play();

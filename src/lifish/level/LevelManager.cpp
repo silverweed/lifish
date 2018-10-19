@@ -264,7 +264,7 @@ void LevelManager::_triggerHurryUp() {
 void LevelManager::_triggerExtraGame() {
 	entities.apply([] (lif::Entity *e) {
 		auto enemy = dynamic_cast<lif::Enemy*>(e);
-		if (enemy == nullptr) return;
+		if (enemy == nullptr || enemy->get<lif::Killable>()->isKilled()) return;
 
 		enemy->setMorphed(true);
 	});
