@@ -150,6 +150,7 @@ void Player::setWinning(bool b) {
 }
 
 void Player::_kill() {
+	isHurt = false;
 	get<lif::Controllable>()->setActive(false);
 	get<lif::Bonusable>()->reset();
 	info.reset(false);
