@@ -1,14 +1,14 @@
 #include "ShadedText.hpp"
-#include "game.hpp"
-#include "GameCache.hpp"
 #include "Drawable.hpp"
+#include "GameCache.hpp"
+#include "game.hpp"
 
 using lif::ShadedText;
 
 ShadedText::ShadedText(const std::string& fontname, const std::string& str,
 		sf::Vector2f pos, sf::Color fg, sf::Color bg)
 	: lif::Entity(pos)
-	, shadowSpacing(3.5, 3)
+	, shadowSpacing(3.5f, 3.f)
 {
 	setFont(fontname);
 	setString(str);

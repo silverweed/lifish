@@ -196,7 +196,7 @@ namespace sftools
         }
 
     private:
-        enum { STOPPED, RUNNING, PAUSED } m_state;  //!< state
+        enum { STOPPED, RUNNING, PAUSED } m_state = STOPPED;  //!< state
         sf::Time m_time;                            //!< time counter
         sf::Clock m_clock;                          //!< clock
 	float m_timeScale = 1.f;

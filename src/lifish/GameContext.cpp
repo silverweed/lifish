@@ -166,6 +166,7 @@ bool GameContext::handleEvent(sf::Window&, sf::Event event) {
 			return true;
 		case sf::Keyboard::Escape:
 			for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
+				lm.setPlayerContinues(i + 1, 0);
 				auto player = lm.getPlayer(i + 1);
 				if (player != nullptr) {
 					player->setRemainingLives(0);

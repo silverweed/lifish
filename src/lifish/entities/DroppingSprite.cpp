@@ -1,8 +1,8 @@
 #include "DroppingSprite.hpp"
-#include "Sprite.hpp"
-#include "Clock.hpp"
 #include "AxisMoving.hpp"
+#include "Clock.hpp"
 #include "Drawable.hpp"
+#include "Sprite.hpp"
 #include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
 #include "game.hpp"
@@ -45,7 +45,7 @@ void DroppingSprite::update() {
 	} else if (stoppedAtMiddle) {
 		if (pauseClock->getElapsedTime() >= PAUSE_TIME)
 			moving->setDirection(lif::Direction::DOWN);
-	} else if (position.y + height / 2 >= lif::GAME_HEIGHT / 2) {
+	} else if (position.y + height / 2 >= lif::GAME_HEIGHT / 2 - lif::TILE_SIZE) {
 		stoppedAtMiddle = true;
 		moving->stop();
 		pauseClock->restart();
