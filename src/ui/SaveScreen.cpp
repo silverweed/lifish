@@ -1,10 +1,10 @@
 #include "SaveScreen.hpp"
-#include "Interactable.hpp"
-#include "game.hpp"
-#include "utils.hpp"
-#include "ShadedText.hpp"
 #include "GameCache.hpp"
+#include "Interactable.hpp"
+#include "ShadedText.hpp"
+#include "game.hpp"
 #include "input_utils.hpp"
+#include "utils.hpp"
 
 using lif::ui::SaveScreen;
 
@@ -81,6 +81,9 @@ SaveScreen::SaveScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	bounds = text->getGlobalBounds();
 	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 3 * bounds.height));
 	interactables["back"] = std::make_unique<lif::ui::Interactable>(text);
+
+	// Transitions
+	transitions.add("save", std::make_pair(lif::Direction::DOWN, "back"));
 }
 
 void SaveScreen::update() {

@@ -1,10 +1,10 @@
 #include "Screen.hpp"
-#include "ScreenBuilder.hpp"
+#include "GameCache.hpp"
 #include "Interactable.hpp"
 #include "JoystickManager.hpp"
+#include "ScreenBuilder.hpp"
 #include "core.hpp"
 #include "utils.hpp"
-#include "GameCache.hpp"
 
 using lif::ui::Screen;
 
@@ -23,10 +23,14 @@ Screen::Screen(const std::string& layoutFileName, const sf::RenderWindow& window
 
 void Screen::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(bgSprite, states);
-	for (const auto& elem : nonInteractables)
+	for (const auto& elem : nonInteractables) {
+		assert(elem);
 		target.draw(*elem, states);
-	for (const auto& inter : interactables)
+	}
+	for (const auto& inter : interactables) {
+		assert(inter.second);
 		target.draw(*inter.second, states);
+	}
 }
 
 void Screen::update() {
