@@ -147,6 +147,7 @@ void Player::setWinning(bool b) {
 }
 
 void Player::_kill() {
+	isHurt = false;
 	get<lif::Controllable>()->setActive(false);
 	get<lif::Bonusable>()->reset();
 	info.reset(false);
@@ -202,7 +203,7 @@ void Player::_checkCollision(lif::Collider& cld) {
 	if (layer == L::EXPLOSIONS) {
 		const auto& expl = static_cast<const lif::Explosion&>(cld.getOwner());
 		const auto& sprite = expl.get<lif::Animated>()->getSprite();
-		shortShield = sprite.getCurrentFrame() != sprite.getAnimation()->getSize() - 1;
+		shortShield = sprite.getCurrentFrame() != sprite.getAnimation()->getSize() - 3;
 	}
 
 	dealDamage(damage, layer == L::EXPLOSIONS, shortShield);

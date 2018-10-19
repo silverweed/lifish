@@ -86,7 +86,7 @@ void Explosion::update() {
 	if (!explosionH->isActive())
 		return;
 
-	// Deactivate the colliders slightly earlier than actuaal animation end
+	// Deactivate the colliders slightly earlier than actual animation end
 	const auto sprite = explosionC->getSprite();
 	if (sprite.getAnimation()->getSize() - sprite.getCurrentFrame() < 2) {
 		explColliderH->setActive(false);
