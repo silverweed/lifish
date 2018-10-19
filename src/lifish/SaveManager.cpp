@@ -80,10 +80,10 @@ lif::SaveData SaveManager::loadGame(const std::string& filename) {
 			player.powers.bombRadius = powdata["bombRadius"];
 			player.powers.bombFuseTime = powdata["bombFuseTime"];
 			player.powers.maxBombs = powdata["maxBombs"];
-			player.powers.incendiaryBomb = powdata["incendiaryBomb"];
-			player.powers.throwableBomb = powdata["throwableBomb"];
-			player.powers.absorb = powdata["absorb"];
-			player.powers.armor = powdata["armor"];
+			//player.powers.incendiaryBomb = powdata["incendiaryBomb"];
+			//player.powers.throwableBomb = powdata["throwableBomb"];
+			//player.powers.absorb = powdata["absorb"];
+			//player.powers.armor = powdata["armor"];
 			const auto& exdata = pldata["extra"];
 			for (unsigned j = 0; j < player.letters.size(); ++j)
 				player.letters[j] = exdata[j];
