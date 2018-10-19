@@ -77,6 +77,7 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	movingAnimator = addComponent<lif::MovingAnimator>(*this);
 	killable = addComponent<lif::Killable>(*this, [this] () {
 		// on kill
+		animated->getSprite().setLooped(true);
 		death->kill();
 		get<lif::LightSource>()->setActive(true);
 	}, [this] () {
@@ -175,6 +176,9 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 void Enemy::update() {
 	lif::Entity::update();
 
+	if (killable->isKilled())
+		return;
+
 	if (moving->getDirection() != lif::Direction::NONE)
 		_checkShoot();
 
@@ -223,6 +227,9 @@ void Enemy::_setShootAnim() {
 }
 
 bool Enemy::_checkCollision(lif::Collider& coll) {
+	if (killable->isKilled())
+		return false;
+
 	if (coll.getLayer() == lif::c_layers::PLAYERS
 			&& (shooting->getAttack().type & lif::AttackType::CONTACT)
 			&& !shooting->isRecharging()
