@@ -126,7 +126,7 @@ void Player::update() {
 		}
 	}
 
-	if (winning && _isIdleAnim())
+	if (!killable->isKilled() && winning && _isIdleAnim())
 		animated->setAnimation("win");
 }
 
@@ -383,10 +383,10 @@ lif::PlayerDrawProxy::PlayerDrawProxy(const Player& player)
 		"void main() {                                          "
 		"    vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);"
 		"                                                       "
-		"    pixel.r = 0.0f;                                    "
-		"    pixel.g = 0.8f;                                    "
-		"    pixel.b = 0.0f;                                    "
-		"    pixel.a *= 0.5f;                                    "
+		"    pixel.r = 0.0;                                    "
+		"    pixel.g = 0.8;                                    "
+		"    pixel.b = 0.0;                                    "
+		"    pixel.a *= 0.5;                                    "
 		"                                                       "
 		"    gl_FragColor = pixel;                              "
 		"}                                                      ";
