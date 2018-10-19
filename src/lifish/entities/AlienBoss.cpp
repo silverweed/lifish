@@ -27,7 +27,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 		lif::sid("hurt"), lif::getAsset("sounds", "alienboss_hurt.ogg")
 	);
 	const sf::Vector2f size(3 * lif::TILE_SIZE, 3 * lif::TILE_SIZE);
-	addComponent<lif::Drawable>(*this, *addComponent<lif::HurtDrawProxy>(*this));
+	drawable = addComponent<lif::Drawable>(*this, *addComponent<lif::HurtDrawProxy>(*this));
 	addComponent<lif::Lifed>(*this, LIFE);
 	addComponent<lif::Scored>(*this, VALUE);
 	_addDefaultCollider(size);
@@ -48,7 +48,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 }
 
 void AlienBoss::update() {
-	lif::Entity::update();
+	lif::Boss::update();
 	if (killable->isKilled() || eyes[0]->get<lif::Shooting>()->isRecharging()) return;
 
 	if (shotsFired > 0 || shootClock->getElapsedTime() > SHOOT_INTERVAL) {

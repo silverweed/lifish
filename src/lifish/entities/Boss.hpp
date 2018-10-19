@@ -7,6 +7,7 @@
 namespace lif {
 
 class Collider;
+class Drawable;
 class Killable;
 class Clock;
 
@@ -20,11 +21,13 @@ class Clock;
  */
 class Boss : public lif::Entity {
 	lif::Clock *explClock = nullptr,
-	           *deathClock = nullptr;
+	           *deathClock = nullptr,
+	           *blinkClock = nullptr;
 
 protected:
 	lif::Killable *killable = nullptr;
 	// The following components MUST be added by children.
+	lif::Drawable *drawable = nullptr;
 	lif::Collider *collider = nullptr;
 
 	/** If `false`, boss cannot be hurt by bombs. */
@@ -39,6 +42,7 @@ protected:
 	/** Convenient function to add a collider which just calls _checkCollision */
 	void _addDefaultCollider(const sf::Vector2f& size);
 
+	virtual void update() override;
 public:
 	explicit Boss(const sf::Vector2f& pos);
 

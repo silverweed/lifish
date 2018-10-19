@@ -1,6 +1,7 @@
 #include "utils.hpp"
-#include "Options.hpp"
+#include "Component.hpp"
 #include "LoopingMusic.hpp"
+#include "Options.hpp"
 #include "ShadedText.hpp"
 #include "json.hpp"
 #include <random>

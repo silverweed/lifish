@@ -87,7 +87,7 @@ BigAlienBoss::BigAlienBoss(const sf::Vector2f& pos, const lif::LevelManager& lm)
 		energyBar->get<lif::Sprite>()->getSprite().getLocalBounds(),
 		sf::FloatRect(0, 0, (lm.getLevel()->getInfo().width + 2) * lif::TILE_SIZE, 22)));
 
-	addComponent<lif::Drawable>(*this, *addComponent<lif::HurtDrawProxy>(*this));;
+	drawable = addComponent<lif::Drawable>(*this, *addComponent<lif::HurtDrawProxy>(*this));;
 
 	// Body collider
 	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& coll) {

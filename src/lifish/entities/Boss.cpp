@@ -32,6 +32,7 @@ Boss::Boss(const sf::Vector2f& pos)
 	addComponent<lif::Foe>(*this);
 	explClock = addComponent<lif::Clock>(*this);
 	deathClock = addComponent<lif::Clock>(*this);
+	blinkClock = addComponent<lif::Clock>(*this);
 	killable = addComponent<lif::Killable>(*this, [this] () {
 		// on kill
 		_kill();
@@ -68,8 +69,20 @@ lif::Entity* Boss::init() {
 
 void Boss::_kill() {
 	deathClock->restart();
+	blinkClock->restart();
 	collider->setLayer(lif::c_layers::DEFAULT);
 	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("death"));
+}
+
+void Boss::update() {
+	lif::Entity::update();
+
+	if (killable->isKillInProgress()) {
+		if (blinkClock->getElapsedTime().asSeconds() > 0.2) {
+			drawable->setActive(!drawable->isActive());
+			blinkClock->restart();
+		}
+	}
 }
 
 void Boss::_checkCollision(lif::Collider& coll) {

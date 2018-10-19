@@ -1,12 +1,12 @@
 #pragma once
 
-#include <array>
-#include <ostream>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Graphics.hpp>
 #include "Angle.hpp"
 #include "core.hpp"
 #include "json.hpp"
+#include <SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <array>
+#include <ostream>
 
 // Enable automatic sf::Time / json conversion:
 // https://github.com/nlohmann/json#basic-usage
@@ -18,6 +18,8 @@ void from_json(const nlohmann::json& json, sf::Time& time);
 }
 
 namespace lif {
+
+class Component;
 
 template<class T, size_t ROWS, size_t COLS>
 using Matrix = std::array<std::array<T, COLS>, ROWS>;
