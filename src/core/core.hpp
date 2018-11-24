@@ -91,15 +91,23 @@ constexpr const std::string& getAssetDir() {
 	return assetDir;
 }
 
+inline void _getAssetInternal(std::stringstream&) {}
+
+template<typename... Args>
+inline void _getAssetInternal(std::stringstream& ss, const std::string& first, Args&&... rest) {
+	ss << first << DIRSEP;
+	_getAssetInternal(ss, rest...);
+}
+
 /** Returns the asset found under assetDir/{path args joined by DIRSEP} */
-template<class...Args>
+template<typename ...Args>
 inline std::string getAsset(Args&&... path) {
-	std::string result = getAssetDir();
-	// Concatenate args into 'result'
-	const int unpack[] { 0, (result += path, result += DIRSEP, 0)... };
-	static_cast<void>(unpack);
-	result.resize(result.length() - 1); // Strip final '/'
-	return result;
+	std::stringstream ss;
+	ss << getAssetDir();
+	_getAssetInternal(ss, path...);
+	auto s = ss.str();
+	s.resize(s.length() - 1);
+	return s;
 }
 
 /** Initializes runtime variables */
