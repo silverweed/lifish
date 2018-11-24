@@ -95,7 +95,7 @@ bool lif::initCore() {
 	// Seed the random engine
 	try {
 		rng.seed(std::random_device{}());
-	} catch (std::exception) {
+	} catch (const std::exception&) {
 		rng.seed(std::chrono::system_clock::now().time_since_epoch().count());
 	}
 	_initOptions();
