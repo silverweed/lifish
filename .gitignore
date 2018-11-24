@@ -34,3 +34,4 @@ tests/*.x
 assets/final
 .DS_Store
 lvtest.json
+.gdb_history
