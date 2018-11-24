@@ -105,9 +105,9 @@ void SaveScreen::onLoad() {
 	bufferText->setString("");
 }
 
-bool SaveScreen::handleEvent(sf::Window&, sf::Event event) {
+bool SaveScreen::handleEvent(sf::Window& win, sf::Event event) {
 	if (event.type != sf::Event::KeyPressed)
-		return false;
+		return Screen::handleEvent(win, event);
 
 	switch (event.key.code) {
 	case sf::Keyboard::BackSpace:

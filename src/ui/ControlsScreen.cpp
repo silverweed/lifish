@@ -1,12 +1,12 @@
 #include "ControlsScreen.hpp"
-#include "game.hpp"
-#include "controls.hpp"
 #include "Interactable.hpp"
 #include "Options.hpp"
-#include "utils.hpp"
+#include "controls.hpp"
+#include "game.hpp"
 #include "input_utils.hpp"
-#include <memory>
+#include "utils.hpp"
 #include <iostream>
+#include <memory>
 
 using lif::ui::ControlsScreen;
 using lif::ui::Interactable;
@@ -196,8 +196,8 @@ void ControlsScreen::update() {
 		changingCtrlText->setFGColor(sf::Color::Red);
 }
 
-bool ControlsScreen::handleEvent(sf::Window&, sf::Event event) {
-	if (changingCtrlText == nullptr) return false;
+bool ControlsScreen::handleEvent(sf::Window& win, sf::Event event) {
+	if (changingCtrlText == nullptr) return Screen::handleEvent(win, event);
 
 	const auto get_control = [this] (lif::ShadedText *text) {
 		using C = lif::controls::Control;
@@ -249,7 +249,7 @@ bool ControlsScreen::handleEvent(sf::Window&, sf::Event event) {
 		break;
 	}
 
-	return false;
+	return Screen::handleEvent(win, event);
 }
 
 void ControlsScreen::_resyncCommandStrings() {
