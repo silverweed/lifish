@@ -88,7 +88,7 @@ lif::SaveData SaveManager::loadGame(const std::string& filename) {
 			for (unsigned j = 0; j < player.letters.size(); ++j)
 				player.letters[j] = exdata[j];
 		}
-	} catch (std::exception& e) {
+	} catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;
 	}
 	return data;

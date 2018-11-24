@@ -134,7 +134,7 @@ static void parseArgs(int argc, char **argv, /* out */ MainArgs& args) {
 			std::cout << "--------------\r\nLevelset info:\r\n--------------\r\n"
 				<< ls.toString() << std::endl;
 			std::exit(0);
-		} catch (std::exception ex) {
+		} catch (const std::exception& ex) {
 			std::cerr << "Error: file \"" << args.levelset_name
 				<< "\" not found or with wrong format." << std::endl;
 			std::exit(1);
