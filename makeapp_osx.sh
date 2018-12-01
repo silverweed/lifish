@@ -7,7 +7,7 @@ APPNAME=Lifish
 MACOS=(lifish)
 RESOURCES=(assets levels.json)
 FRAMEWORK_PATH=/Library/Frameworks
-FRAMEWORKS=({FLAC,ogg,freetype,OpenAL,vorbis{,enc,file},sfml-{window,graphics,system}}.framework)
+FRAMEWORKS=({FLAC,ogg,freetype,OpenAL,vorbis{,enc,file},sfml-{window,graphics,system,audio}}.framework)
 
 for i in ${MACOS[@]} ${RESOURCES[@]}; do
 	[[ -e $i ]] || {
