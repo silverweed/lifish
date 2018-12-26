@@ -54,7 +54,7 @@ void GameContext::_initLM(const sf::Window& window, short lvnum) {
 
 	// Create the players
 	lm.reset();
-	lm.createNewPlayers();
+	lm.createNewPlayers(lif::options.nPlayers);
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		auto p = lm.getPlayer(i + 1);
 		if (p != nullptr)

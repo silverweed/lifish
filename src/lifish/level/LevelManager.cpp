@@ -41,6 +41,7 @@ void LevelManager::createNewPlayers(int n) {
 	for (int i = 0; i < n && i < lif::MAX_PLAYERS; ++i) {
 		// Pointers kept by LevelManager
 		players[i] = std::make_shared<lif::Player>(sf::Vector2f(0, 0), i + 1);
+		playerContinues[i] = lif::conf::player::INITIAL_CONTINUES;
 		// Pointers owned by EntityGroup
 		entities.add(players[i]);
 	}
@@ -154,7 +155,7 @@ void LevelManager::reset() {
 
 void LevelManager::resetPlayerPersistentData() {
 	score.fill(0);
-	playerContinues.fill(lif::conf::player::INITIAL_CONTINUES);
+	playerContinues.fill(0);
 }
 
 bool LevelManager::canDeployBomb(const lif::Player& player) const {

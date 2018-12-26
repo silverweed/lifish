@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Screen.hpp"
 #include "Action.hpp"
+#include "Screen.hpp"
 
 namespace lif {
 
@@ -29,6 +29,7 @@ class PreferencesScreen : public lif::ui::Screen {
 	sf::Texture *speakerTexture = nullptr;
 
 	lif::ui::Action _changeVolume(VolumeType which, VolumeAction what);
+	lif::ui::Action _changeNPlayers(int newNPlayer);
 	void _setupCallbacks();
 	void _setupTransitions();
 
