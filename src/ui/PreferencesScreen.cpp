@@ -1,13 +1,13 @@
 #include "PreferencesScreen.hpp"
-#include "game.hpp"
-#include "MusicManager.hpp"
+#include "GameCache.hpp"
 #include "Interactable.hpp"
+#include "MusicManager.hpp"
 #include "Options.hpp"
 #include "ShadedText.hpp"
-#include "GameCache.hpp"
+#include "game.hpp"
 #include "utils.hpp"
-#include <memory>
 #include <iostream>
+#include <memory>
 
 using lif::ui::PreferencesScreen;
 using lif::ui::Interactable;
@@ -42,11 +42,13 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	// Music volume
 	auto pos = text->getPosition();
 
-	text = new lif::ShadedText(font, "-", sf::Vector2f(ipadx + 150, ipady - 8));
+	const auto upperTextAlign1 = ipadx + 160;
+
+	text = new lif::ShadedText(font, "-", sf::Vector2f(upperTextAlign1, ipady - 8));
 	text->setCharacterSize(34);
 	interactables["music_volume_down"] = std::make_unique<Interactable>(text);
 
-	text = new lif::ShadedText(font, "placeholder", sf::Vector2f(ipadx + 200, ipady));
+	text = new lif::ShadedText(font, "placeholder", sf::Vector2f(upperTextAlign1 + 50, ipady));
 	// Draw the full volume bar to get the measure of this element's max width
 	// (also, the volume is maxed by default, so we don't need to do any further checks here)
 	std::stringstream ss;
@@ -60,7 +62,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	nonInteractables.emplace_back(text);
 
 	auto bounds = text->getGlobalBounds();
-	text = new lif::ShadedText(font, "+", sf::Vector2f(ipadx + 200 + bounds.width + 40, ipady - 6));
+	text = new lif::ShadedText(font, "+", sf::Vector2f(upperTextAlign1 + 50 + bounds.width + 40, ipady - 6));
 	text->setCharacterSize(30);
 	interactables["music_volume_up"] = std::make_unique<Interactable>(text);
 
@@ -79,18 +81,18 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	nonInteractables.emplace_back(text);
 
 	pos = text->getPosition();
-	text = new lif::ShadedText(font, "-", sf::Vector2f(ipadx + 150, pos.y - 8));
+	text = new lif::ShadedText(font, "-", sf::Vector2f(upperTextAlign1, pos.y - 8));
 	text->setCharacterSize(34);
 	interactables["sounds_volume_down"] = std::make_unique<Interactable>(text);
 
-	text = new lif::ShadedText(font, ss.str(), sf::Vector2f(ipadx + 200, pos.y));
+	text = new lif::ShadedText(font, ss.str(), sf::Vector2f(upperTextAlign1 + 50, pos.y));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(20);
 	soundsVolumeBar = text;
 	nonInteractables.emplace_back(text);
 
 	bounds = text->getGlobalBounds();
-	text = new lif::ShadedText(font, "+", sf::Vector2f(ipadx + 200 + bounds.width + 40, pos.y - 6));
+	text = new lif::ShadedText(font, "+", sf::Vector2f(upperTextAlign1 + 50 + bounds.width + 40, pos.y - 6));
 	text->setCharacterSize(30);
 	interactables["sounds_volume_up"] = std::make_unique<Interactable>(text);
 
@@ -103,10 +105,24 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	image->setPosition(sf::Vector2f(bounds.left + bounds.width + 20, bounds.top));
 	interactables["sounds_mute_toggle"] = std::make_unique<Interactable>(image);
 
+	// # players
+	text = new lif::ShadedText(font, "Players: ", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
+	text->setShadowSpacing(2, 2);
+	text->setCharacterSize(size);
+	nonInteractables.emplace_back(text);
+
+	pos = text->getPosition();
+	bounds = text->getGlobalBounds();
+	text = new lif::ShadedText(font, lif::to_string(lif::options.nPlayers), sf::Vector2f(upperTextAlign1, pos.y));
+	text->setCharacterSize(size);
+	interactables["n_players"] = std::make_unique<Interactable>(text);
+
+	// Controls
 	text = new lif::ShadedText(font, "Controls", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
 	text->setCharacterSize(size);
 	interactables["controls"] = std::make_unique<Interactable>(text);
 
+	// Back
 	text = new lif::ShadedText(font, "Back", pos);
 	text->setCharacterSize(size);
 	bounds = text->getGlobalBounds();
@@ -136,6 +152,11 @@ void PreferencesScreen::_setupCallbacks() {
 	callbacks["sounds_mute_toggle"] = [this] () {
 		return _changeVolume(VolumeType::SOUND, VolumeAction::MUTE_TOGGLE);
 	};
+	callbacks["n_players"] = [this] () {
+		auto n = lif::options.nPlayers + 1;
+		if (n > lif::MAX_PLAYERS) n -= lif::MAX_PLAYERS;
+		return _changeNPlayers(n);
+	};
 }
 
 void PreferencesScreen::_setupTransitions() {
@@ -146,12 +167,13 @@ void PreferencesScreen::_setupTransitions() {
 	transitions.add("music_volume_up",    std::make_pair(D::RIGHT, "music_mute_toggle"));
 	transitions.add("sounds_volume_down", std::make_pair(D::RIGHT, "sounds_volume_up"));
 	transitions.add("sounds_volume_down", std::make_pair(D::LEFT,  "sounds_mute_toggle"));
-	transitions.add("sounds_volume_down", std::make_pair(D::DOWN,  "controls"));
+	transitions.add("sounds_volume_down", std::make_pair(D::DOWN,  "n_players"));
 	transitions.add("sounds_volume_up",   std::make_pair(D::RIGHT, "sounds_mute_toggle"));
-	transitions.add("sounds_volume_up",   std::make_pair(D::DOWN,  "controls"));
-	transitions.add("sounds_mute_toggle", std::make_pair(D::DOWN,  "controls"));
+	transitions.add("sounds_volume_up",   std::make_pair(D::DOWN,  "n_players"));
+	transitions.add("sounds_mute_toggle", std::make_pair(D::DOWN,  "n_players"));
 	transitions.add("music_volume_up",    std::make_pair(D::DOWN,  "sounds_volume_up"));
 	transitions.add("music_mute_toggle",  std::make_pair(D::DOWN,  "sounds_mute_toggle"));
+	transitions.add("n_players",          std::make_pair(D::DOWN,  "controls"));
 	transitions.add("controls",           std::make_pair(D::DOWN,  "back"));
 	transitions.add("back",               std::make_pair(D::DOWN,  "music_volume_down"));
 }
@@ -210,6 +232,14 @@ Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {
 		lif::options.soundsVolume = vol * 100 / MAX_VOLUME;
 		soundsVolumeBar->setString(ss.str());
 	}
+
+	return Action::DO_NOTHING;
+}
+
+lif::ui::Action PreferencesScreen::_changeNPlayers(int newNPlayer) {
+	assert(newNPlayer > 0 && newNPlayer <= lif::MAX_PLAYERS);
+	lif::options.nPlayers = newNPlayer;
+	interactables["n_players"]->getText()->setString(lif::to_string(newNPlayer));
 
 	return Action::DO_NOTHING;
 }

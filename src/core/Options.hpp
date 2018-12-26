@@ -21,6 +21,9 @@ struct Options {
 	 *  resize the content when window is resized. Must be set manually.
 	 */
 	sf::Vector2u windowSize;
+
+	/** How many players are spawned, from 1 to MAX_PLAYERS */
+	int nPlayers = 1;
 };
 
 }
