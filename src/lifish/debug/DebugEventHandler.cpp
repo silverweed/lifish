@@ -12,6 +12,7 @@
 #include "MusicManager.hpp"
 #include "Options.hpp"
 #include "Player.hpp"
+#include "Time.hpp"
 #include "collision_utils.hpp"
 #include "game.hpp"
 #include <iomanip>
@@ -44,7 +45,9 @@ DebugEventHandler::DebugEventHandler(lif::GameContext& game)
  * + : forward one level
  * - : back one level
  * ? : print help
+ * Numpad1 : slow down time
  * Numpad3 : destroy all breakable walls
+ * Numpad4 : speed up time
  * Numpad6 : flip all entities
  * Numpad7 : compute and show free tiles
  * Numpad8 : kill player 1
@@ -54,11 +57,21 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 	switch (event.type) {
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
+		case sf::Keyboard::Numpad1:
+			lif::time.setTimeScale(std::max(0.01, lif::time.getTimeScale() - 0.1));
+			std::cout << "Time Scale = " << lif::time.getTimeScale() << "\n";
+			return true;
+
 		case sf::Keyboard::Numpad3:
 			game.lm.getEntities().apply([] (lif::Entity *e) {
 				auto w = dynamic_cast<lif::BreakableWall*>(e);
 				if (w) w->get<lif::Killable>()->kill();
 			});
+			return true;
+
+		case sf::Keyboard::Numpad4:
+			lif::time.setTimeScale(lif::time.getTimeScale() + 0.1);
+			std::cout << "Time Scale = " << lif::time.getTimeScale() << "\n";
 			return true;
 
 		case sf::Keyboard::Numpad6:

@@ -29,6 +29,7 @@
 #include "PreferencesScreen.hpp"
 #include "SaveScreen.hpp"
 #include "SidePanel.hpp"
+#include "Time.hpp"
 #include "UI.hpp"
 #include "WinLoseHandler.hpp"
 #include "contexts.hpp"
@@ -286,6 +287,8 @@ int main(int argc, char **argv) {
 #endif
 
 	while (!lif::terminated) {
+
+		lif::time.update();
 
 		///// EVENT LOOP /////
 

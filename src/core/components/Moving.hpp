@@ -28,11 +28,9 @@ protected:
 	bool moving = false;
 	float distTravelled = 0;
 
-	sf::Time blockTime;
-	bool blocked = false;
+	sf::Time blockTime = sf::Time::Zero;
+	sf::Time blockT;
 
-	lif::Clock *frameClock = nullptr,
-		   *blockClock = nullptr;
 	/** This is the _first_ collider (if any) of the owner.
 	 *  It is the sole collider used to determine if we're colliding
 	 *  with something solid for us.
@@ -79,7 +77,7 @@ public:
 	 *  Give sf::Time::Zero as argument to unblock.
 	 */
 	void block(sf::Time duration);
-	bool isBlocked() const { return blocked; }
+	bool isBlocked() const { return blockTime > sf::Time::Zero && blockT < blockTime; }
 
 	virtual void move();
 	virtual void stop();
@@ -87,7 +85,7 @@ public:
 	virtual bool isMoving() const { return moving; }
 
 	virtual lif::Entity* init() override;
-	virtual void update() override = 0;
+	virtual void update() override;
 };
 
 }

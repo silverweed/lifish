@@ -1,6 +1,7 @@
 #include "Moving.hpp"
 #include "Clock.hpp"
 #include "Collider.hpp"
+#include "Time.hpp"
 
 using lif::Moving;
 
@@ -12,8 +13,6 @@ Moving::Moving(lif::Entity& owner, float speed)
 	, speed(speed)
 {
 	_declComponent<Moving>();
-	frameClock = addComponent<lif::Clock>(*this);
-	blockClock = addComponent<lif::Clock>(*this);
 }
 
 lif::Entity* Moving::init() {
@@ -25,6 +24,12 @@ lif::Entity* Moving::init() {
 	return this;
 }
 
+void Moving::update() {
+	lif::Component::update();
+
+	blockT += lif::time.getDelta();
+}
+
 void Moving::move() {
 	moving = true;
 }
@@ -34,12 +39,9 @@ void Moving::stop() {
 }
 
 void Moving::block(sf::Time duration) {
-	if (duration <= sf::Time::Zero)
-		blocked = false;
-	else {
-		blocked = true;
+	if (duration > sf::Time::Zero) {
 		blockTime = duration;
-		blockClock->restart();
+		blockT = sf::Time::Zero;
 	}
 }
 
@@ -54,9 +56,9 @@ bool Moving::_collidesWithSolid() const {
 }
 
 bool Moving::_handleBlock() {
-	if (!blocked) return false;
-	if (blockClock->getElapsedTime() > blockTime) {
-		blocked = false;
+	if (!isBlocked()) return false;
+	if (blockT > blockTime) {
+		blockTime = sf::Time::Zero;
 		return false;
 	}
 	return true;
