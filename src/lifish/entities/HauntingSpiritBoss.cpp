@@ -2,7 +2,6 @@
 #include "Angle.hpp"
 #include "Animated.hpp"
 #include "CircleShootingPattern.hpp"
-#include "Clock.hpp"
 #include "Collider.hpp"
 #include "Drawable.hpp"
 #include "FreeSighted.hpp"
@@ -11,6 +10,7 @@
 #include "OneShotFX.hpp"
 #include "ScatterVsPlayerPattern.hpp"
 #include "Scored.hpp"
+#include "Time.hpp"
 #include "ZIndexed.hpp"
 #include "camera_utils.hpp"
 #include "conf/boss.hpp"
@@ -71,9 +71,6 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 		sf::IntRect(5 * BOSS_SIZE, 3 * BOSS_SIZE, BOSS_SIZE, BOSS_SIZE),
 	});
 	animated->getSprite().setOrigin(BOSS_SIZE/2, BOSS_SIZE/2);
-	animClock = addComponent<lif::Clock>(*this);
-	hauntClock = addComponent<lif::Clock>(*this);
-	atkClock = addComponent<lif::Clock>(*this);
 
 	auto circle = addComponent<lif::CircleShootingPattern>(*this, 102);
 	circle->consecutiveShots = 6;
@@ -103,13 +100,18 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 void HauntingSpiritBoss::update() {
 	lif::Entity::update();
 
+	const auto delta = lif::time.getDelta();
+	atkT += delta;
+	animT += delta;
+	hauntT += delta;
+
 	assert(stateFunction);
 	stateFunction = stateFunction();
 }
 
 StateFunction HauntingSpiritBoss::_updateStart() {
 	// Task: play initial animation after a delay
-	if (animClock->getElapsedTime() < sf::seconds(2))
+	if (animT < sf::seconds(2))
 		return std::move(stateFunction);
 
 	if (!animated->getSprite().isPlaying()) {
@@ -172,7 +174,7 @@ StateFunction HauntingSpiritBoss::_updateTransitioningBegin() {
 		animated->setAnimation("transition");
 		animated->getSprite().setLooped(false, false);
 		animated->getSprite().play();
-		animClock->restart();
+		animT = sf::Time::Zero;
 	}
 	if (position.y < 0) {
 		// Center on the target statue
@@ -184,7 +186,8 @@ StateFunction HauntingSpiritBoss::_updateTransitioningBegin() {
 		animated->getSprite().rotate(180);
 		return BIND(_updateTransitioningEnd);
 	} else {
-		position.y -= animClock->restart().asSeconds() * 200;
+		position.y -= animT.asSeconds() * 200;
+		animT = sf::Time::Zero;
 	}
 	return std::move(stateFunction);
 }
@@ -199,15 +202,16 @@ StateFunction HauntingSpiritBoss::_updateTransitioningEnd() {
 		animated->getSprite().setLooped(true);
 		animated->setAnimation("idle");
 		animated->getSprite().play();
-		hauntClock->restart();
-		atkClock->restart();
+		hauntT = sf::Time::Zero;
+		atkT = sf::Time::Zero;
 		static_cast<lif::HauntedStatue&>(targetStatue.lock()->getOwnerRW()).setPossessed(true);
 		get<lif::Drawable>()->setActive(false);
 		selectedNewPattern = false;
 		return BIND(_updateHaunting);
 	}
 
-	position.y += animClock->restart().asSeconds() * 200;
+	position.y += animT.asSeconds() * 200;
+	animT = sf::Time::Zero;
 
 	return std::move(stateFunction);
 }
@@ -222,7 +226,7 @@ StateFunction HauntingSpiritBoss::_updateHaunting() {
 	}
 	auto& statue = static_cast<lif::HauntedStatue&>(targetStatue.lock()->getOwnerRW());
 	if (_isShooting()) {
-		atkClock->restart();
+		atkT = sf::Time::Zero;
 		return std::move(stateFunction);
 	} else if (!selectedNewPattern) {
 		// Select the next pattern as soon as we stop shooting;
@@ -236,16 +240,16 @@ StateFunction HauntingSpiritBoss::_updateHaunting() {
 		statue.setSpiritColor(shootColors[curShootIdx]);
 	}
 	// We haunted this statue long enough: select a new one
-	if (hauntClock->getElapsedTime() > CHANGE_STATUE_DELAY) {
+	if (hauntT > CHANGE_STATUE_DELAY) {
 		get<lif::Drawable>()->setActive(true);
 		statue.setPossessed(false);
 		return BIND(_updateSelectNewStatue);
 	}
 	// Waiting for next attack
-	if (atkClock->getElapsedTime() > PATTERN_SHOOT_DELAY) {
+	if (atkT > PATTERN_SHOOT_DELAY) {
 		curShootPattern->resetAndPlay();
 		selectedNewPattern = false;
-	} else if (!showedAtkCue && atkClock->getElapsedTime() > PATTERN_SHOOT_DELAY - sf::seconds(0.75)) {
+	} else if (!showedAtkCue && atkT > PATTERN_SHOOT_DELAY - sf::seconds(0.75)) {
 		// Give a visual cue of the incoming attack
 		auto blink = new lif::OneShotFX(position - sf::Vector2f(BOSS_SIZE * 0.25, BOSS_SIZE * 0.25),
 			"blink.png", {

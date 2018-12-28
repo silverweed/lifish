@@ -3,6 +3,7 @@
 #include "Clock.hpp"
 #include "Drawable.hpp"
 #include "Sprite.hpp"
+#include "Time.hpp"
 #include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
 #include "game.hpp"
@@ -20,7 +21,6 @@ DroppingSprite::DroppingSprite(const std::string& texture_name, const sf::Vector
 	auto sprite = addComponent<lif::Sprite>(*this, texture_name,
 			sf::IntRect(0, 0, texture_rect.x, texture_rect.y));
 
-	pauseClock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Drawable>(*this, *sprite);
 	moving = addComponent<lif::AxisMoving>(*this, speed);
 	moving->setAutoRealign(false);
@@ -40,14 +40,17 @@ void DroppingSprite::reset() {
 
 void DroppingSprite::update() {
 	lif::Entity::update();
+
+	pauseT += lif::time.getDelta();
+
 	if (position.y > lif::GAME_HEIGHT + 2 * lif::TILE_SIZE) {
 		reset();
 	} else if (stoppedAtMiddle) {
-		if (pauseClock->getElapsedTime() >= PAUSE_TIME)
+		if (pauseT >= PAUSE_TIME)
 			moving->setDirection(lif::Direction::DOWN);
 	} else if (position.y + height / 2 >= lif::GAME_HEIGHT / 2 - lif::TILE_SIZE) {
 		stoppedAtMiddle = true;
 		moving->stop();
-		pauseClock->restart();
+		pauseT = sf::Time::Zero;
 	}
 }

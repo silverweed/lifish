@@ -250,7 +250,5 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 		entities.add(new lif::Flare(sf::seconds(0.07f), sf::seconds(0.7f)));
 	}
 
-	lm.levelTime->resume();
-
 	return true;
 }

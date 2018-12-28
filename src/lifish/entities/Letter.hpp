@@ -1,11 +1,10 @@
 #pragma once
 
-#include <SFML/System.hpp>
 #include "Entity.hpp"
+#include <SFML/System.hpp>
 
 namespace lif {
 
-class Clock;
 class Grabbable;
 class Animated;
 
@@ -17,9 +16,10 @@ class Letter : public lif::Entity {
 	unsigned short id;
 
 	/** The clock driving the letter's transitions */
-	lif::Clock *transitionClock = nullptr;
 	lif::Grabbable *grabbable = nullptr;
 	lif::Animated *animated = nullptr;
+
+	sf::Time transitionT = sf::Time::Zero;
 
 	/** Whether this letter is transitioning or not */
 	bool transitioning = false;

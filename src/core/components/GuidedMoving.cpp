@@ -1,5 +1,6 @@
 #include "GuidedMoving.hpp"
 #include "Clock.hpp"
+#include "Time.hpp"
 #include "utils.hpp"
 #include <algorithm>
 
@@ -17,7 +18,6 @@ GuidedMoving::GuidedMoving(lif::Entity& owner,
 {
 	_declComponent<GuidedMoving>();
 
-	clock = addComponent<lif::Clock>(*this);
 	_updatePosition();
 }
 
@@ -31,7 +31,7 @@ void GuidedMoving::update() {
 	lif::Component::update();
 
 	// Calculate this once here
-	tPerc = clock->getElapsedTime() / timeTaken;
+	tPerc += lif::time.getDelta() / timeTaken;
 
 	_updatePosition();
 }
@@ -67,9 +67,9 @@ sf::Vector2f GuidedMoving::_calcModFunc(const GuidedMoving::_ModFunc& f, float p
 }
 
 void GuidedMoving::reset() {
-	clock->restart();
+	tPerc = 0;
 }
 
 bool GuidedMoving::isAtEnd() const {
-	return clock->getElapsedTime() > timeTaken;
+	return tPerc > 1;
 }

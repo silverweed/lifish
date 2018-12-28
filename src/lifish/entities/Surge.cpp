@@ -1,15 +1,16 @@
 #include "Surge.hpp"
 #include "Animated.hpp"
+#include "Bonusable.hpp"
 #include "Clock.hpp"
 #include "Drawable.hpp"
-#include "Temporary.hpp"
-#include "Player.hpp"
 #include "Killable.hpp"
-#include "Bonusable.hpp"
+#include "Player.hpp"
+#include "Temporary.hpp"
+#include "Time.hpp"
 #include "ZIndexed.hpp"
-#include "core.hpp"
-#include "conf/zindex.hpp"
 #include "conf/boss.hpp"
+#include "conf/zindex.hpp"
+#include "core.hpp"
 
 using lif::Surge;
 
@@ -35,7 +36,6 @@ Surge::Surge(const sf::Vector2f& pos, const lif::LevelManager& lm, const lif::An
 
 	addComponent<lif::Drawable>(*this, *animated);
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::TALL_ENTITIES);
-	clock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Temporary>(*this, [this, initialRotation, spannedAngle] () -> bool {
 		return std::abs(animated->getSprite().getRotation() - initialRotation.asDegrees()) >
 			spannedAngle.asDegrees();
@@ -44,8 +44,8 @@ Surge::Surge(const sf::Vector2f& pos, const lif::LevelManager& lm, const lif::An
 
 void Surge::update() {
 	lif::Entity::update();
-	
-	animated->getSprite().rotate(rotPerSecond.asDegrees() * clock->restart().asSeconds());
+
+	animated->getSprite().rotate(rotPerSecond.asDegrees() * lif::time.getDelta().asSeconds());
 
 	_checkCollision();
 }
@@ -57,7 +57,7 @@ void Surge::_checkCollision() {
 				|| player->get<lif::Bonusable>()->hasBonus(lif::BonusType::SHIELD))
 		{
 			continue;
-		}	
+		}
 		// rotate the point to the inverse angle than the Surge
 		const auto diff = player->getPosition() - position;
 		const auto angle = -animated->getSprite().getRotation();
