@@ -1,6 +1,5 @@
 #include "CameraShake.hpp"
 #include "CameraShakeRequest.hpp"
-#include "Clock.hpp"
 #include "Temporary.hpp"
 #include "Time.hpp"
 #include "core.hpp"

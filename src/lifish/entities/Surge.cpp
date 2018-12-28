@@ -1,7 +1,6 @@
 #include "Surge.hpp"
 #include "Animated.hpp"
 #include "Bonusable.hpp"
-#include "Clock.hpp"
 #include "Drawable.hpp"
 #include "Killable.hpp"
 #include "Player.hpp"

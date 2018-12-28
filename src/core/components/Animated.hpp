@@ -11,8 +11,6 @@
 
 namespace lif {
 
-class Clock;
-
 /**
  * An Animated is a drawable object whose sprite has a certain
  * number of associated animations.

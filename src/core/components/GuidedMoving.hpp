@@ -7,8 +7,6 @@
 
 namespace lif {
 
-class Clock;
-
 /**
  * A GuidedMoving has a starting and an ending position, and will travel from the first
  * to the second one in the given time.

@@ -1,8 +1,9 @@
 #include "Fire.hpp"
 #include "Animated.hpp"
-#include "Temporary.hpp"
 #include "Drawable.hpp"
 #include "LightSource.hpp"
+#include "Temporary.hpp"
+#include "Time.hpp"
 #include "core.hpp"
 
 using lif::Fire;
@@ -20,9 +21,9 @@ Fire::Fire(const sf::Vector2f& pos, const sf::Vector2f& size, sf::Time duration)
 	addComponent<lif::LightSource>(*this, 20, sf::Color(244, 152, 56), 0.7, 15);
 	addComponent<lif::Drawable>(*this, *animated);
 	if (duration > sf::Time::Zero) {
-		sf::Clock clock;
-		addComponent<lif::Temporary>(*this, [clock, duration] () {
-			return clock.getElapsedTime() > duration;
+		const auto now = lif::time.getGameTime();
+		addComponent<lif::Temporary>(*this, [now, duration] () {
+			return lif::time.getGameTime() > now + duration;
 		});
 	}
 }

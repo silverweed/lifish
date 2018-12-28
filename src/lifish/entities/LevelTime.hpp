@@ -4,8 +4,6 @@
 
 namespace lif {
 
-class Clock;
-
 /** This class handles the level's time and the extra game's time */
 class LevelTime : public lif::Entity {
 public:

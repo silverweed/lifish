@@ -5,7 +5,6 @@
 #include "Bonusable.hpp"
 #include "BufferedSpawner.hpp"
 #include "BulletFactory.hpp"
-#include "Clock.hpp"
 #include "Collider.hpp"
 #include "Drawable.hpp"
 #include "Enemy.hpp"

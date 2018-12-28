@@ -1,7 +1,6 @@
 #include "RegularEntityDeath.hpp"
 #include "Animated.hpp"
 #include "AxisMoving.hpp"
-#include "Clock.hpp"
 #include "Collider.hpp"
 #include "GameCache.hpp"
 #include "Killable.hpp"

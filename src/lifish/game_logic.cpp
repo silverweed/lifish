@@ -1,37 +1,38 @@
 #include "game_logic.hpp"
-#include "Bomb.hpp"
-#include "Explosion.hpp"
-#include "GameCache.hpp"
+#include "AI.hpp"
 #include "AbsorbFX.hpp"
-#include "Spawning.hpp"
-#include "Killable.hpp"
+#include "Absorbable.hpp"
+#include "AxisMoving.hpp"
+#include "Bomb.hpp"
+#include "Bonus.hpp"
+#include "Bonusable.hpp"
 #include "Boss.hpp"
-#include "LevelManager.hpp"
-#include "Grabbable.hpp"
+#include "BreakableWall.hpp"
 #include "Bullet.hpp"
 #include "Controllable.hpp"
-#include "Sounded.hpp"
-#include "Lifed.hpp"
-#include "Bonusable.hpp"
 #include "Enemy.hpp"
-#include "Options.hpp"
-#include "Scored.hpp"
-#include "AI.hpp"
-#include "Points.hpp"
-#include "Player.hpp"
-#include "Bonus.hpp"
+#include "Explosion.hpp"
+#include "GameCache.hpp"
+#include "Grabbable.hpp"
+#include "Killable.hpp"
 #include "Letter.hpp"
-#include "BreakableWall.hpp"
+#include "LevelManager.hpp"
+#include "Lifed.hpp"
+#include "Options.hpp"
+#include "Player.hpp"
+#include "Points.hpp"
+#include "Scored.hpp"
 #include "ShootingPoint.hpp"
-#include "AxisMoving.hpp"
-#include "Absorbable.hpp"
+#include "Sounded.hpp"
+#include "Spawning.hpp"
+#include "Time.hpp"
 #include <array>
 
 using EntityList = std::vector<lif::Entity*>;
 
 void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm, EntityList& tbspawned) {
-	// Used for throwable bombs
-	static std::array<sf::Clock, lif::MAX_PLAYERS> latestBomb;
+	// Used for throwable bombs (pretty ugly, consider refactoring)
+	static std::array<sf::Time, lif::MAX_PLAYERS> latestBomb;
 
 	auto& lm = static_cast<lif::LevelManager&>(blm);
 	if (!lm.isPlayer(*e)) return;
@@ -45,10 +46,11 @@ void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm
 		&& controllable->hasQueuedBombCommand())
 	{
 		if (pinfo.powers.throwableBomb) {
-			if (latestBomb[pinfo.id-1].getElapsedTime() < sf::seconds(0.5))
+			const auto gameTime = lif::time.getGameTime();
+			if (gameTime - latestBomb[pinfo.id-1] < sf::seconds(0.5))
 				return;
 
-			latestBomb[pinfo.id-1].restart();
+			latestBomb[pinfo.id-1] = gameTime;
 
 			if (lm.bombsDeployedBy(pinfo.id) > 0) {
 				auto bomb = lm.getFirstValidBomb(pinfo.id);

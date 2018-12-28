@@ -1,5 +1,4 @@
 #include "Animated.hpp"
-#include "Clock.hpp"
 #include "GameCache.hpp"
 #include "Time.hpp"
 #include "core.hpp"
