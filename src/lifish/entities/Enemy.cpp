@@ -6,7 +6,6 @@
 #include "AxisMoving.hpp"
 #include "AxisSighted.hpp"
 #include "Bonusable.hpp"
-#include "Clock.hpp"
 #include "Collider.hpp"
 #include "Drawable.hpp"
 #include "Explosion.hpp"
@@ -24,6 +23,7 @@
 #include "Shooting.hpp"
 #include "Sounded.hpp"
 #include "Spawning.hpp"
+#include "Time.hpp"
 #include "ZIndexed.hpp"
 #include "ai_functions.hpp"
 #include "collision_functions.hpp"
@@ -71,7 +71,6 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 			lif::conf::enemy::BASE_SPEED * originalSpeed, lif::Direction::DOWN);
 	animated = addComponent<lif::Animated>(*this,
 			lif::getAsset("graphics", "enemy") + lif::to_string(id) + ".png"s);
-	dashClock = addComponent<lif::Clock>(*this);
 	alienSprite = addComponent<lif::AlienSprite>(*this);
 	addComponent<lif::Scored>(*this, id * 100);
 	movingAnimator = addComponent<lif::MovingAnimator>(*this);
@@ -168,13 +167,15 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	animatedSprite.pause();
 
 	if (info.ai <= 1) {
-		yellClock = addComponent<lif::Clock>(*this);
+		canYell = true;
 		nextYellTime = getNextYellTime();
 	}
 }
 
 void Enemy::update() {
 	lif::Entity::update();
+
+	yellT += lif::time.getDelta();
 
 	if (killable->isKilled())
 		return;
@@ -189,8 +190,8 @@ void Enemy::update() {
 		shootingAnim = false;
 	}
 
-	if (yellClock != nullptr && yellClock->getElapsedTime() >= nextYellTime) {
-		yellClock->restart();
+	if (canYell && yellT >= nextYellTime) {
+		yellT = sf::Time::Zero;
 		nextYellTime = getNextYellTime();
 		lif::cache.playSound(sounded->getSoundFile("yell"));
 	}

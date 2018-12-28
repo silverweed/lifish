@@ -1,19 +1,19 @@
 #include "AlienPredator.hpp"
-#include "Clock.hpp"
-#include "Shooting.hpp"
-#include "LevelManager.hpp"
-#include "Animated.hpp"
-#include "Player.hpp"
-#include "Level.hpp"
-#include "Spawning.hpp"
-#include "AxisMoving.hpp"
 #include "AI.hpp"
-#include "MovingAnimator.hpp"
 #include "AcidPond.hpp"
+#include "Animated.hpp"
+#include "AxisMoving.hpp"
+#include "Level.hpp"
+#include "LevelManager.hpp"
+#include "MovingAnimator.hpp"
+#include "Player.hpp"
+#include "Shooting.hpp"
+#include "Spawning.hpp"
 #include "Temporary.hpp"
+#include "Time.hpp"
 #include "core.hpp"
-#include <list>
 #include <limits>
+#include <list>
 
 using lif::AlienPredator;
 using lif::TILE_SIZE;
@@ -27,17 +27,17 @@ AlienPredator::AlienPredator(const sf::Vector2f& pos, const lif::EnemyInfo& info
 	addComponent<lif::Spawning>(*this, [this] () {
 		// Spawn Acid Pond on death, which persists for N seconds.
 		auto pond = new lif::AcidPond(position, sf::Vector2f(TILE_SIZE, TILE_SIZE));
-		sf::Clock clock;
-		pond->addComponent<lif::Temporary>(*pond, [clock] () {
-			return clock.getElapsedTime() > POND_LIFETIME;
+		const auto now = lif::time.getGameTime();
+		pond->addComponent<lif::Temporary>(*pond, [now] () {
+			return lif::time.getGameTime() > now + POND_LIFETIME;
 		});
 		return pond;
 	});
-	tunnelClock = addComponent<lif::Clock>(*this);
-	// Add an initial random time
-	std::uniform_real_distribution<float> dist(0, TUNNEL_PERIOD.asSeconds());
-	tunnelClock->add(sf::seconds(dist(lif::rng)));
-	tunnelAnimClock = addComponent<lif::Clock>(*this);
+	{
+		// Add an initial random time
+		std::uniform_real_distribution<float> dist(0, TUNNEL_PERIOD.asSeconds());
+		tunnelT = sf::seconds(dist(lif::rng));
+	}
 	// Add the tunneling animation
 	auto& a_tunnel = animated->addAnimation("tunnel");
 	for (unsigned i = 0; i < TUNNEL_N_FRAMES; ++i) {
@@ -51,26 +51,29 @@ AlienPredator::AlienPredator(const sf::Vector2f& pos, const lif::EnemyInfo& info
 void AlienPredator::update() {
 	lif::Enemy::update();
 
+	const auto delta = lif::time.getDelta();
+	tunnelT += delta;
+	tunnelAnimT += delta;
+
 	if (killable->isKilled())
 		return;
 
 	if (tunneling) {
-		const auto t = tunnelAnimClock->getElapsedTime();
-		if (t > TUNNEL_TRANSITION_TIME) {
+		if (tunnelAnimT > TUNNEL_TRANSITION_TIME) {
 			tunneling = false;
 			tunnelChangedPosition = false;
 			animated->setAnimation("walk_down");
-			tunnelClock->restart();
+			tunnelT = sf::Time::Zero;
 			movingAnimator->setActive(true);
 			moving->setDirection(lif::Direction::DOWN);
-		} else if (!tunnelChangedPosition && t > TUNNEL_TRANSITION_TIME / 2.f) {
+		} else if (!tunnelChangedPosition && tunnelAnimT > TUNNEL_TRANSITION_TIME / 2.f) {
 			position = _findTunneledPosition(*get<lif::AI>()->getLevelManager());
 			tunnelChangedPosition = true;
 		}
 	} else if (shooting->isShooting()) {
-		tunnelClock->restart();
-	} else if (tunnelClock->getElapsedTime() > TUNNEL_PERIOD) {
-		tunnelAnimClock->restart();
+		tunnelT = sf::Time::Zero;
+	} else if (tunnelT > TUNNEL_PERIOD) {
+		tunnelAnimT = sf::Time::Zero;
 		tunneling = true;
 		moving->stop();
 		movingAnimator->setActive(false);

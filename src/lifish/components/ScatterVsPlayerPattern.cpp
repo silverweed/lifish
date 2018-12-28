@@ -1,9 +1,9 @@
 #include "ScatterVsPlayerPattern.hpp"
 #include "BulletFactory.hpp"
-#include "Clock.hpp"
 #include "FreeBullet.hpp"
 #include "FreeSighted.hpp"
 #include "Player.hpp"
+#include "Time.hpp"
 #include <cmath>
 
 using lif::ScatterVsPlayerPattern;
@@ -12,7 +12,6 @@ ScatterVsPlayerPattern::ScatterVsPlayerPattern(lif::Entity& owner, unsigned bull
 	: lif::ShootingPattern(owner, bulletId)
 {
 	_declComponent<ScatterVsPlayerPattern>();
-	shootClock = addComponent<lif::Clock>(*this);
 }
 
 lif::Entity* ScatterVsPlayerPattern::init() {
@@ -28,6 +27,8 @@ lif::Entity* ScatterVsPlayerPattern::init() {
 void ScatterVsPlayerPattern::update() {
 	lif::Component::update();
 
+	shootT += lif::time.getDelta();
+
 	// Note: this pointer is only valid until next update
 	auto player = sighted->nearest<lif::Player>();
 	if (player == nullptr) {
@@ -35,12 +36,12 @@ void ScatterVsPlayerPattern::update() {
 		return;
 	}
 
-	if (shootClock->getElapsedTime() > timeBetweenShots) {
+	if (shootT > timeBetweenShots) {
 		_shoot(player->getPosition());
 		if (++shotsFired == consecutiveShots)
 			setActive(false);
 		else
-			shootClock->restart();
+			shootT = sf::Time::Zero;
 	}
 }
 
@@ -50,7 +51,7 @@ lif::Angle ScatterVsPlayerPattern::_calcAngle(const sf::Vector2f& pos) const {
 }
 
 void ScatterVsPlayerPattern::_reset() {
-	shootClock->restart();
+	shootT = sf::Time::Zero;
 	shotsFired = 0;
 	positionLocked = false;
 }

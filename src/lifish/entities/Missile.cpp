@@ -1,15 +1,15 @@
 #include "Missile.hpp"
-#include "Killable.hpp"
-#include "core.hpp"
-#include "Drawable.hpp"
-#include "Collider.hpp"
-#include "Clock.hpp"
 #include "Animated.hpp"
+#include "Collider.hpp"
+#include "Drawable.hpp"
+#include "Killable.hpp"
+#include "Spawning.hpp"
 #include "Targeter.hpp"
 #include "Temporary.hpp"
-#include "Spawning.hpp"
-#include <tuple>
+#include "Time.hpp"
+#include "core.hpp"
 #include <random>
+#include <tuple>
 
 using lif::Missile;
 
@@ -45,8 +45,6 @@ Missile::Missile(const sf::Vector2f& pos, const sf::Vector2f& target,
 		return targeter;
 	});
 
-	clock = addComponent<lif::Clock>(*this);
-
 	drawable = get<lif::Drawable>();
 	drawable->setRotOrigin(data.size / 2, data.size / 2);
 	rotRate = lif::degrees(180) / sf::seconds(1.0 / info.speed).asSeconds() * (target.x >= pos.x ? -1 : 1);
@@ -59,6 +57,6 @@ void Missile::update() {
 		collider->setActive(true);
 		get<lif::Killable>()->kill();
 	} else {
-		drawable->setRotation(drawable->getRotation() + rotRate * clock->restart().asSeconds());
+		drawable->setRotation(drawable->getRotation() + rotRate * lif::time.getDelta().asSeconds());
 	}
 }

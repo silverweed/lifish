@@ -1,6 +1,5 @@
 #include "AlienBoss.hpp"
 #include "Animated.hpp"
-#include "Clock.hpp"
 #include "Collider.hpp"
 #include "Drawable.hpp"
 #include "FreeSighted.hpp"
@@ -12,6 +11,7 @@
 #include "Shooting.hpp"
 #include "ShootingPoint.hpp"
 #include "Sounded.hpp"
+#include "Time.hpp"
 #include "conf/boss.hpp"
 #include "shoot_utils.hpp"
 #include <iostream>
@@ -33,7 +33,7 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	_addDefaultCollider(size);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "alien_boss.png"));
 	animated->addAnimation("idle", { sf::IntRect(0, 0, size.x, size.y) }, true);
-	shootClock = addComponent<lif::Clock>(*this);
+	addComponent<lif::Lifed>(*this, LIFE);
 
 	lif::Attack attack;
 	attack.type = lif::AttackType::SIMPLE;
@@ -50,11 +50,13 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 void AlienBoss::update() {
 	lif::Boss::update();
 
-	if ((canShoot && shootClock->getElapsedTime() > CAN_SHOOT_INTERVAL)
-		|| (!canShoot && shootClock->getElapsedTime() > CANNOT_SHOOT_INTERVAL))
+	shootT += lif::time.getDelta();
+
+	if ((canShoot && shootT > CAN_SHOOT_INTERVAL)
+		|| (!canShoot && shootT > CANNOT_SHOOT_INTERVAL))
 	{
 		canShoot = !canShoot;
-		shootClock->restart();
+		shootT = sf::Time::Zero;
 	}
 
 	if (killable->isKilled() || eyes[0]->get<lif::Shooting>()->isRecharging()

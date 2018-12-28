@@ -77,7 +77,7 @@ MainframeBoss::MainframeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 }
 
 void MainframeBoss::update() {
-	lif::Entity::update();
+	lif::Boss::update();
 
 	const auto delta = lif::time.getDelta();
 	sparkT += delta;

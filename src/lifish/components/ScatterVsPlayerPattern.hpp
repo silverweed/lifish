@@ -5,7 +5,6 @@
 
 namespace lif {
 
-class Clock;
 class FreeSighted;
 
 /**
@@ -19,8 +18,9 @@ class ScatterVsPlayerPattern : public lif::ShootingPattern {
 	 *  Note that this angle only gets updated _once_per_reset_.
 	 */
 	lif::Angle playerAngle;
-	lif::Clock *shootClock = nullptr;
 	lif::FreeSighted *sighted = nullptr;
+
+	sf::Time shootT;
 
 	/** @return The CW angle between the v-axis and the given position */
 	lif::Angle _calcAngle(const sf::Vector2f& pos) const;

@@ -9,7 +9,6 @@ namespace lif {
 class Collider;
 class Drawable;
 class Killable;
-class Clock;
 
 /** The base class for Bosses.
  *  IMPORTANT: all subclasses MUST define the following components:
@@ -20,9 +19,9 @@ class Clock;
  *		- hurt (only if the Boss can collide and be damaged)
  */
 class Boss : public lif::Entity {
-	lif::Clock *explClock = nullptr,
-	           *deathClock = nullptr,
-	           *blinkClock = nullptr;
+	sf::Time explT,
+	         deathT,
+	         blinkT;
 
 protected:
 	lif::Killable *killable = nullptr;
@@ -42,11 +41,11 @@ protected:
 	/** Convenient function to add a collider which just calls _checkCollision */
 	void _addDefaultCollider(const sf::Vector2f& size);
 
-	virtual void update() override;
 public:
 	explicit Boss(const sf::Vector2f& pos);
 
 	lif::Entity* init() override;
+	void update() override;
 };
 
 }

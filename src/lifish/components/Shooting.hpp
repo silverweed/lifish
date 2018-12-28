@@ -1,16 +1,15 @@
 #pragma once
 
+#include "Angle.hpp"
+#include "Attack.hpp"
+#include "BufferedSpawner.hpp"
+#include "Component.hpp"
+#include "Direction.hpp"
 #include <exception>
 #include <memory>
-#include "Component.hpp"
-#include "Attack.hpp"
-#include "Direction.hpp"
-#include "Angle.hpp"
-#include "BufferedSpawner.hpp"
 
 namespace lif {
 
-class Clock;
 class FreeBullet;
 class AxisMoving;
 
@@ -36,8 +35,9 @@ protected:
 	float fireRateMult = 1;
 	sf::Vector2f offset;
 
-	lif::Clock *rechargeClock = nullptr;
 	lif::AxisMoving *ownerMoving = nullptr;
+
+	sf::Time rechargeT;
 
 
 	void _checkBlock();

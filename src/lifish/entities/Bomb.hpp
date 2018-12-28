@@ -1,13 +1,12 @@
 #pragma once
 
-#include <SFML/System.hpp>
 #include "Entity.hpp"
 #include "conf/bomb.hpp"
+#include <SFML/System.hpp>
 
 namespace lif {
 
 class Player;
-class Clock;
 class Animated;
 class Killable;
 
@@ -16,8 +15,8 @@ class Killable;
  * where the bomb was deployed.
  */
 class Bomb : public lif::Entity {
-	lif::Clock *fuseClock = nullptr;
 	sf::Time fuseTime;
+	sf::Time fuseT;
 	unsigned short radius;
 
 	bool ignited = false;

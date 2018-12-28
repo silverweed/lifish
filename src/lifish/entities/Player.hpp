@@ -10,9 +10,7 @@ namespace lif {
 
 class Bonusable;
 class Killable;
-class Clock;
 class MovingAnimator;
-class Clock;
 class AxisMoving;
 class Collider;
 class Animated;
@@ -87,7 +85,8 @@ class Player : public lif::Entity {
 	lif::MovingAnimator *movingAnimator = nullptr;
 	lif::Killable *killable = nullptr;
 	lif::RegularEntityDeath *death = nullptr;
-	lif::Clock *hurtClock = nullptr;
+
+	sf::Time hurtT;
 
 	lif::PlayerInfo info;
 	PlayerDrawProxy drawProxy;

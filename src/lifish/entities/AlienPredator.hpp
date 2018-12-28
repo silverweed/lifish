@@ -1,19 +1,18 @@
 #pragma once
 
-#include <SFML/System.hpp>
 #include "Enemy.hpp"
+#include <SFML/System.hpp>
 
 namespace lif {
 
 class LevelManager;
-class Clock;
 
 /**
  * An Enemy which tunnels through map periodically and spawns an Acid Pond when dying.
  */
 class AlienPredator : public lif::Enemy {
-	lif::Clock *tunnelClock = nullptr,     // keeps track of seconds since latest tunneling
-	            *tunnelAnimClock = nullptr; // used for tunneling animation
+	sf::Time tunnelT,
+	         tunnelAnimT;
 	bool tunneling = false,
 	     tunnelChangedPosition = false;
 

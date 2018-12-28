@@ -1,9 +1,9 @@
 #include "RexFlame.hpp"
 #include "Collider.hpp"
-#include "Sprite.hpp"
-#include "Clock.hpp"
 #include "Drawable.hpp"
+#include "Sprite.hpp"
 #include "Temporary.hpp"
+#include "Time.hpp"
 #include "conf/boss.hpp"
 
 using lif::RexFlame;
@@ -17,18 +17,21 @@ RexFlame::RexFlame(const sf::Vector2f& pos, const sf::Vector2f& size)
 		sprites[i] = sprite;
 	}
 
-	spriteClock = addComponent<lif::Clock>(*this);
-	durationClock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Temporary>(*this, [this] () {
-		return this->durationClock->getElapsedTime() > lif::conf::boss::rex_boss::FLAME_DAMAGE_TIME;
+		return durationT > lif::conf::boss::rex_boss::FLAME_DAMAGE_TIME;
 	});
 	addComponent<lif::Drawable>(*this, *this);
 }
 
 void RexFlame::update() {
 	lif::Pond::update();
-	if (spriteClock->getElapsedTime() > sf::milliseconds(100)) {
-		spriteClock->restart();
+
+	const auto delta = lif::time.getDelta();
+	spriteT += delta;
+	durationT += delta;
+
+	if (spriteT > sf::milliseconds(100)) {
+		spriteT = sf::Time::Zero;
 		++spriteOffset;
 	}
 }

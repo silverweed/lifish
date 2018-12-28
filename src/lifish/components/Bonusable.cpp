@@ -1,5 +1,6 @@
 #include "Bonusable.hpp"
-#include "Clock.hpp"
+#include "Time.hpp"
+#include "core.hpp"
 
 using lif::Bonusable;
 
@@ -7,21 +8,28 @@ Bonusable::Bonusable(lif::Entity& owner)
 	: lif::Component(owner)
 {
 	_declComponent<Bonusable>();
-	for (unsigned i = 0; i < bonusClock.size(); ++i)
-		bonusClock[i] = addComponent<lif::Clock>(*this);
 	bonusTime.fill(sf::Time::Zero);
+	bonusT.fill(sf::Time::Zero);
+}
+
+void Bonusable::update() {
+	lif::Component::update();
+
+	const auto delta = lif::time.getDelta();
+	for (auto& t : bonusT)
+		t += delta;
 }
 
 void Bonusable::giveBonus(lif::BonusType type, const sf::Time& time) {
 	const auto i = static_cast<std::size_t>(type);
 	bonusTime[i] = time;
-	bonusClock[i]->restart();
+	bonusT[i] = sf::Time::Zero;
 }
 
 bool Bonusable::hasBonus(lif::BonusType type) const {
 	const auto i = static_cast<std::size_t>(type);
 	return bonusTime[i] < sf::Time::Zero ||
-		(bonusTime[i] > sf::Time::Zero && bonusClock[i]->getElapsedTime() <= bonusTime[i]);
+		(bonusTime[i] > sf::Time::Zero && bonusT[i] <= bonusTime[i]);
 }
 
 sf::Time Bonusable::getTime(lif::BonusType type) const {
@@ -29,12 +37,12 @@ sf::Time Bonusable::getTime(lif::BonusType type) const {
 }
 
 sf::Time Bonusable::getElapsedTime(lif::BonusType type) const {
-	return bonusClock[static_cast<std::size_t>(type)]->getElapsedTime();
+	return bonusT[static_cast<std::size_t>(type)];
 }
 
 sf::Time Bonusable::getRemainingTime(lif::BonusType type) const {
 	const auto i = static_cast<std::size_t>(type);
-	return std::max(sf::Time::Zero, bonusTime[i] - bonusClock[i]->getElapsedTime());
+	return std::max(sf::Time::Zero, bonusTime[i] - bonusT[i]);
 }
 
 void Bonusable::reset() {

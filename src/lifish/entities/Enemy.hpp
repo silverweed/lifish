@@ -14,7 +14,6 @@ class Enemy;
 class Collider;
 class Sounded;
 class Animated;
-class Clock;
 class Killable;
 class MovingAnimator;
 class AlienSprite;
@@ -56,6 +55,9 @@ class Enemy : public lif::Entity {
 
 	bool shootingAnim = false;
 
+	bool canYell = false;
+	sf::Time yellT;
+
 	sf::Time getNextYellTime() const;
 	void _setShootAnim();
 
@@ -78,8 +80,6 @@ protected:
 	lif::Bonusable *bonusable = nullptr;
 	lif::Sounded *sounded = nullptr;
 
-	lif::Clock *yellClock = nullptr,
-		   *dashClock = nullptr;
 	sf::Time morphDuration;
 
 	/** True when the enemy is morphed into a harmless Alien during EXTRA game */

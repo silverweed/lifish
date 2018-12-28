@@ -111,7 +111,7 @@ RexBoss::RexBoss(const sf::Vector2f& pos)
 }
 
 void RexBoss::update() {
-	lif::Entity::update();
+	lif::Boss::update();
 
 	const auto delta = lif::time.getDelta();
 	atkT += delta;

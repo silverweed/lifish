@@ -5,7 +5,6 @@
 #include "Bonusable.hpp"
 #include "BufferedSpawner.hpp"
 #include "Bullet.hpp"
-#include "Clock.hpp"
 #include "Collider.hpp"
 #include "Controllable.hpp"
 #include "Drawable.hpp"
@@ -17,6 +16,7 @@
 #include "RegularEntityDeath.hpp"
 #include "Shooting.hpp"
 #include "Sounded.hpp"
+#include "Time.hpp"
 #include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
 #include "utils.hpp"
@@ -90,7 +90,6 @@ void Player::_init() {
 				lif::controls::players[info.id-1],
 				lif::controls::useJoystick[info.id-1],
 				lif::controls::joystickBombKey[info.id-1]);
-	hurtClock = addComponent<lif::Clock>(*this);
 	death = addComponent<lif::RegularEntityDeath>(*this, lif::conf::player::DEATH_TIME);
 	addComponent<lif::BufferedSpawner>(*this);
 
@@ -99,6 +98,8 @@ void Player::_init() {
 
 void Player::update() {
 	lif::Entity::update();
+
+	hurtT += lif::time.getDelta();
 
 	// Check for speedy bonus
 	if (bonusable->hasBonus(lif::BonusType::SPEEDY) && !moving->isDashing())
@@ -112,7 +113,7 @@ void Player::update() {
 		// Reset animation after death
 		animated->getSprite().stop();
 		animated->getSprite().setFrame(1);
-	} else if (isHurt && hurtClock->getElapsedTime() > lif::conf::player::HURT_ANIM_DURATION)
+	} else if (isHurt && hurtT > lif::conf::player::HURT_ANIM_DURATION)
 	{
 		// Restore walk/idle animation after hurt
 		isHurt = false;
@@ -243,7 +244,7 @@ void Player::_hurt() {
 	isHurt = true;
 	animated->setAnimation(lif::sid("hurt_" + _getDirectionString()));
 	moving->block(lif::conf::player::HURT_ANIM_DURATION);
-	hurtClock->restart();
+	hurtT = sf::Time::Zero;
 	bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::player::DAMAGE_SHIELD_TIME);
 	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("hurt"));
 }

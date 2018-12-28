@@ -1,7 +1,7 @@
 #include "CircleShootingPattern.hpp"
-#include "FreeBullet.hpp"
-#include "Clock.hpp"
 #include "BulletFactory.hpp"
+#include "FreeBullet.hpp"
+#include "Time.hpp"
 #include "core.hpp"
 
 using lif::CircleShootingPattern;
@@ -10,23 +10,24 @@ CircleShootingPattern::CircleShootingPattern(lif::Entity& owner, unsigned bullet
 	: lif::ShootingPattern(owner, bulletId)
 {
 	_declComponent<CircleShootingPattern>();
-	shootClock = addComponent<lif::Clock>(*this);
 }
 
 void CircleShootingPattern::update() {
 	lif::Component::update();
 
-	if (shootClock->getElapsedTime() > timeBetweenShots) {
+	shootT += lif::time.getDelta();
+
+	if (shootT > timeBetweenShots) {
 		_shoot();
 		if (++shotsFired == consecutiveShots)
 			setActive(false);
 		else
-			shootClock->restart();
+			shootT = sf::Time::Zero;
 	}
 }
 
 void CircleShootingPattern::_reset() {
-	shootClock->restart();
+	shootT = sf::Time::Zero;
 	shotsFired = 0;
 	if (randomizeShootAngle) {
 		std::uniform_real_distribution<double> dist(0, 360);
