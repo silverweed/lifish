@@ -1,16 +1,16 @@
 #include "AlienBoss.hpp"
-#include "Player.hpp"
-#include "Killable.hpp"
-#include "Collider.hpp"
-#include "Sounded.hpp"
-#include "Clock.hpp"
-#include "ShootingPoint.hpp"
-#include "FreeSighted.hpp"
-#include "Drawable.hpp"
-#include "Lifed.hpp"
-#include "Scored.hpp"
 #include "Animated.hpp"
+#include "Clock.hpp"
+#include "Collider.hpp"
+#include "Drawable.hpp"
+#include "FreeSighted.hpp"
+#include "Killable.hpp"
+#include "Lifed.hpp"
+#include "Player.hpp"
+#include "Scored.hpp"
 #include "Shooting.hpp"
+#include "ShootingPoint.hpp"
+#include "Sounded.hpp"
 #include "conf/boss.hpp"
 #include "shoot_utils.hpp"
 #include <iostream>
@@ -46,14 +46,23 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 }
 
 void AlienBoss::update() {
-	lif::Entity::update();
-	if (killable->isKilled() || eyes[0]->get<lif::Shooting>()->isRecharging()) return;
+	lif::Boss::update();
 
-	if (shotsFired > 0 || shootClock->getElapsedTime() > SHOOT_INTERVAL) {
+	if ((canShoot && shootClock->getElapsedTime() > CAN_SHOOT_INTERVAL)
+		|| (!canShoot && shootClock->getElapsedTime() > CANNOT_SHOOT_INTERVAL))
+	{
+		canShoot = !canShoot;
+		shootClock->restart();
+	}
+
+	if (killable->isKilled() || eyes[0]->get<lif::Shooting>()->isRecharging()
+		|| eyes[1]->get<lif::Shooting>()->isRecharging())
+	{
+		return;
+	}
+
+	if (canShoot) {
 		for (auto eye : eyes)
 			lif::shootToNearestPlayer(*eye);
-		shotsFired = (shotsFired + 1) % N_SHOTS;
-		if (shotsFired == 0)
-			shootClock->restart();
 	}
 }

@@ -12,9 +12,9 @@ namespace conf {
 		namespace alien_boss {
 			constexpr auto VALUE = 5000;
 			constexpr auto LIFE = 20;
-			const sf::Time SHOOT_INTERVAL = sf::seconds(2);
+			const sf::Time CAN_SHOOT_INTERVAL = sf::seconds(1.2);
+			const sf::Time CANNOT_SHOOT_INTERVAL = sf::seconds(2.4);
 			const sf::Time SHOOT_SHORT_INTERVAL = sf::milliseconds(400);
-			constexpr auto N_SHOTS = 3;
 			constexpr float SIGHT_RADIUS = 9;
 		}
 
