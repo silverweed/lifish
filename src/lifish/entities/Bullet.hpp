@@ -7,7 +7,6 @@ namespace lif {
 
 class Collider;
 class Moving;
-class Clock;
 
 /**
  * All this data is biunivocal with the bullet's dataId. A bullet's dataId simultaneously

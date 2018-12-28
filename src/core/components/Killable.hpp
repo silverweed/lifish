@@ -1,7 +1,7 @@
 #pragma once
 
-#include <functional>
 #include "Component.hpp"
+#include <functional>
 
 namespace lif {
 
@@ -10,8 +10,8 @@ protected:
 	using OnKillCallback = std::function<void()>;
 	using CheckKillCallback = std::function<bool()>;
 
+	sf::Time deathTime;
 	bool killed = false;
-	sf::Clock deathClock;
 
 	/** Function to be called on kill() */
 	OnKillCallback onKill;
@@ -34,7 +34,7 @@ public:
 	bool isKillInProgress() const;
 
 	/** @return The time passed since kill() was called last. Only valid if `isKilled()`. */
-	sf::Time timeSinceDeath() const { return deathClock.getElapsedTime(); }
+	sf::Time timeSinceDeath() const;
 };
 
 }

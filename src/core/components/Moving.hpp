@@ -5,7 +5,6 @@
 
 namespace lif {
 
-class Clock;
 class Collider;
 
 /**

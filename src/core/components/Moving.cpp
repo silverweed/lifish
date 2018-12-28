@@ -1,5 +1,4 @@
 #include "Moving.hpp"
-#include "Clock.hpp"
 #include "Collider.hpp"
 #include "Time.hpp"
 

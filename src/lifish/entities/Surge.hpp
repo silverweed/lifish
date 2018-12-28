@@ -7,7 +7,6 @@
 namespace lif {
 
 class Animated;
-class Clock;
 
 class Surge : public lif::Entity {
 

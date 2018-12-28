@@ -2,7 +2,6 @@
 #include "AxisMoving.hpp"
 #include "Bomb.hpp"
 #include "Bonusable.hpp"
-#include "Clock.hpp"
 #include "Coin.hpp"
 #include "Controllable.hpp"
 #include "Enemy.hpp"
