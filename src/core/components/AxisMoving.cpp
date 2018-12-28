@@ -1,8 +1,9 @@
 #include "AxisMoving.hpp"
-#include "core.hpp"
-#include "utils.hpp"
 #include "Clock.hpp"
 #include "Shooting.hpp"
+#include "Time.hpp"
+#include "core.hpp"
+#include "utils.hpp"
 #include <exception>
 
 using lif::AxisMoving;
@@ -19,15 +20,11 @@ AxisMoving::AxisMoving(lif::Entity& owner, float speed, lif::Direction dir)
 }
 
 void AxisMoving::update() {
-	lif::Component::update();
+	lif::Moving::update();
 	if (!moving || _handleBlock()) return;
 
 	sf::Vector2f shift(0.f, 0.f);
-	sf::Time frameTime = frameClock->restart();
-
-	// Cap frameTime to a maximum to avoid excessive "jumps" due to lag.
-	if (frameTime > MAX_FRAME_TIME)
-		frameTime = MAX_FRAME_TIME;
+	const auto frameTime = lif::time.getDelta();
 
 	const float effSpeed = _effectiveSpeed();
 

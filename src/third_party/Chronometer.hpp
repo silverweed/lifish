@@ -183,6 +183,11 @@ namespace sftools
 	    m_timeScale = scale;
 	}
 
+	float getTimeScale() const
+	{
+		return m_timeScale;
+	}
+
         /*!
          @brief Implicit conversion to sf::Time
 

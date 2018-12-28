@@ -1,10 +1,11 @@
 #pragma once
 
 /** General-purpose game setup */
-#include <string>
+#include <SFML/System.hpp>
+#include <chrono>
 #include <random>
 #include <sstream>
-#include <SFML/System.hpp>
+#include <string>
 
 // Fallback in case the game wasn't compiled properly with cmake
 #ifndef VERSION
@@ -22,6 +23,8 @@ class GameCache;
 #ifdef MULTITHREADED
 class WindowContext;
 #endif
+template<typename ClockType>
+class Time;
 
 /****************************************************************************/
 /*                         GLOBAL DEFINITIONS                               */
@@ -59,6 +62,9 @@ extern std::default_random_engine rng;
 
 /** The game options */
 extern lif::Options options;
+
+/** The time manager */
+extern lif::Time<std::chrono::high_resolution_clock> time;
 
 /** Pointer to an unowned MusicManager, which *MUST* be created in the main function.
  *  Allows easy access to the music manager throughout the code, but since the object

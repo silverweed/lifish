@@ -1,11 +1,12 @@
 #include "core.hpp"
-#include "Options.hpp"
 #include "GameCache.hpp"
+#include "Options.hpp"
+#include "Time.hpp"
 #ifndef RELEASE
 	#include "DebugPainter.hpp"
 #endif
-#include <cstring>
 #include <chrono>
+#include <cstring>
 
 #if defined(SFML_SYSTEM_MACOS)
 #	include <mach-o/dyld.h>
@@ -25,6 +26,7 @@ std::default_random_engine lif::rng;
 lif::Options lif::options;
 bool lif::terminated = false;
 int lif::exitCode = 0;
+lif::Time<std::chrono::high_resolution_clock> lif::time;
 lif::MusicManager *lif::musicManager = nullptr;
 #ifdef MULTITHREADED
 lif::WindowContext *lif::curContext = nullptr;
