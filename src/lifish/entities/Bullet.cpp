@@ -83,7 +83,8 @@ void Bullet::_destroy() {
 		animatedSprite.stop();
 		animated->setAnimation("destroy");
 		animatedSprite.play();
-		position = lif::aligned(position);
+		position.x -= (TILE_SIZE - data.size) / 2;
+		position.y -= (TILE_SIZE - data.size) / 2;
 	}
 }
 

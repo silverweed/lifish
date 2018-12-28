@@ -1,7 +1,7 @@
 #pragma once
 
-#include <functional>
 #include "Component.hpp"
+#include <functional>
 
 namespace lif {
 
@@ -31,7 +31,6 @@ protected:
 	sf::Time blockTime;
 	bool blocked = false;
 
-	sf::Vector2f prevAlign;
 	lif::Clock *frameClock = nullptr,
 		   *blockClock = nullptr;
 	/** This is the _first_ collider (if any) of the owner.

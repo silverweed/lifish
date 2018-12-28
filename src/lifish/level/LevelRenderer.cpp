@@ -1,9 +1,9 @@
 #include "LevelRenderer.hpp"
-#include "LevelManager.hpp"
-#include "Level.hpp"
 #include "Drawable.hpp"
-#include "Sprite.hpp"
+#include "Level.hpp"
+#include "LevelManager.hpp"
 #include "LevelNumText.hpp"
+#include "Sprite.hpp"
 #include "ZIndexed.hpp"
 #include <unordered_map>
 #include <vector>

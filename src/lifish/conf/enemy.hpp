@@ -6,7 +6,7 @@ namespace lif {
 
 namespace conf {
 	namespace enemy {
-		constexpr float BASE_SPEED = 75.f;
+		constexpr float BASE_SPEED = 65.f;
 		constexpr auto BASE_LIFE = 3;
 		const sf::Time DEATH_TIME = sf::seconds(2);
 		const sf::Time DAMAGE_SHIELD_TIME = sf::seconds(1);
