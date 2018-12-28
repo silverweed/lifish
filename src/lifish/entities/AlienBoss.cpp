@@ -49,13 +49,22 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 
 void AlienBoss::update() {
 	lif::Boss::update();
-	if (killable->isKilled() || eyes[0]->get<lif::Shooting>()->isRecharging()) return;
 
-	if (shotsFired > 0 || shootClock->getElapsedTime() > SHOOT_INTERVAL) {
+	if ((canShoot && shootClock->getElapsedTime() > CAN_SHOOT_INTERVAL)
+		|| (!canShoot && shootClock->getElapsedTime() > CANNOT_SHOOT_INTERVAL))
+	{
+		canShoot = !canShoot;
+		shootClock->restart();
+	}
+
+	if (killable->isKilled() || eyes[0]->get<lif::Shooting>()->isRecharging()
+		|| eyes[1]->get<lif::Shooting>()->isRecharging())
+	{
+		return;
+	}
+
+	if (canShoot) {
 		for (auto eye : eyes)
 			lif::shootToNearestPlayer(*eye);
-		shotsFired = (shotsFired + 1) % N_SHOTS;
-		if (shotsFired == 0)
-			shootClock->restart();
 	}
 }
