@@ -4,7 +4,6 @@
 
 namespace lif {
 
-class Clock;
 class AxisMoving;
 
 /**
@@ -19,7 +18,7 @@ class DroppingSprite : public lif::Entity {
 	const sf::Vector2f origPosition;
 	const float height;
 
-	lif::Clock *pauseClock = nullptr;
+	sf::Time pauseT;
 	lif::AxisMoving *moving = nullptr;
 	bool stoppedAtMiddle = false;
 	bool playing = false;

@@ -4,7 +4,6 @@
 
 namespace lif {
 
-class Clock;
 class LightSource;
 
 class Flare : public lif::Entity {
@@ -14,7 +13,7 @@ class Flare : public lif::Entity {
 
 	bool bursting = true;
 	lif::LightSource *light = nullptr;
-	lif::Clock *lightClock = nullptr;
+	sf::Time lightT = sf::Time::Zero;
 
 public:
 	explicit Flare(sf::Time burstTime, sf::Time decayTime);

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Entity.hpp"
 #include "Angle.hpp"
+#include "Entity.hpp"
 #include "LevelManager.hpp"
 
 namespace lif {
@@ -16,8 +16,7 @@ class Surge : public lif::Entity {
 	lif::Angle rotPerSecond;
 
 	lif::Animated *animated = nullptr;
-	lif::Clock *clock = nullptr;
-	
+
 	/** Check if any player collides with the Surge. We must do this manually,
 	 *  as the collision detection system doesn't support non-axis-aligned colliders.
 	 */

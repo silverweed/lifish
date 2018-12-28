@@ -1,7 +1,7 @@
 #include "HurtDrawProxy.hpp"
-#include "conf/global.hpp"
-#include "Clock.hpp"
 #include "Animated.hpp"
+#include "Time.hpp"
+#include "conf/global.hpp"
 
 using lif::HurtDrawProxy;
 
@@ -9,8 +9,7 @@ HurtDrawProxy::HurtDrawProxy(lif::Entity& owner, lif::Animated *animated)
 	: lif::Component(owner)
 {
 	_declComponent<HurtDrawProxy>();
-	hurtClock = addComponent<lif::Clock>(*this);
-	hurtClock->add(lif::conf::HURT_TIME);
+	hurtT = lif::conf::HURT_TIME;
 	if (animated)
 		this->animated = animated;
 }
@@ -23,6 +22,12 @@ lif::Entity* HurtDrawProxy::init() {
 			throw std::invalid_argument("Owner of HurtDrawProxy has no Animated!");
 	}
 	return this;
+}
+
+void HurtDrawProxy::update() {
+	lif::Component::update();
+
+	hurtT += lif::time.getDelta();
 }
 
 void HurtDrawProxy::draw(sf::RenderTarget& window, sf::RenderStates states) const {
@@ -41,9 +46,9 @@ void HurtDrawProxy::draw(sf::RenderTarget& window, sf::RenderStates states) cons
 }
 
 void HurtDrawProxy::hurt() {
-	hurtClock->restart();
+	hurtT = sf::Time::Zero;
 }
 
 bool HurtDrawProxy::isHurt() const {
-	return hurtClock->getElapsedTime() < lif::conf::HURT_TIME;
+	return hurtT < lif::conf::HURT_TIME;
 }

@@ -2,9 +2,10 @@
 #include "CameraShakeRequest.hpp"
 #include "Clock.hpp"
 #include "Temporary.hpp"
+#include "Time.hpp"
+#include "core.hpp"
 #include <cmath>
 #include <random>
-#include "core.hpp"
 
 using lif::CameraShake;
 
@@ -23,10 +24,8 @@ CameraShake::CameraShake(sf::RenderTarget& target,
 	, yFrequency(yFrequency)
 	, fadeFactor(fadeFactor)
 {
-	shakeClock = addComponent<lif::Clock>(*this);
-	expireClock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Temporary>(*this, [this, duration] () {
-		return expireClock->getElapsedTime() > duration;
+		return expireT > duration;
 	}, [this] () {
 		// on kill
 		auto view = this->target.getView();
@@ -44,10 +43,14 @@ CameraShake::CameraShake(sf::RenderTarget& target, const lif::CameraShakeRequest
 void CameraShake::update() {
 	lif::Entity::update();
 
+	const auto delta = lif::time.getDelta();
+	expireT += delta;
+	shakeT += delta;
+
 	if (stopUpdating) return;
 
 	auto view = target.getView();
-	const auto t = shakeClock->getElapsedTime().asSeconds();
+	const auto t = shakeT.asSeconds();
 	const auto fade = std::max(0.1f, std::pow(t + 1, fadeFactor));
 	auto newX = xAmplitude * std::sin(t * xFrequency + offX) / fade;
 	auto newY = yAmplitude * std::sin(t * yFrequency + offY) / fade;

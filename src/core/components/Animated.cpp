@@ -1,6 +1,7 @@
 #include "Animated.hpp"
 #include "Clock.hpp"
 #include "GameCache.hpp"
+#include "Time.hpp"
 #include "core.hpp"
 #include "utils.hpp"
 
@@ -11,7 +12,6 @@ Animated::Animated(lif::Entity& owner, const std::string& textureName)
 {
 	_declComponent<Animated>();
 	texture = lif::cache.loadTexture(textureName);
-	frameClock = addComponent<lif::Clock>(*this);
 }
 
 Animation& Animated::addAnimation(lif::StringId name) {
@@ -81,7 +81,7 @@ void Animated::update() {
 		animatedSprite.setPosition(position);
 	else
 		animatedSprite.setPosition(owner.getPosition());
-	animatedSprite.update(frameClock->restart());
+	animatedSprite.update(lif::time.getDelta());
 }
 
 bool Animated::isPlaying(lif::StringId name) const {

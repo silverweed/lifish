@@ -1,18 +1,18 @@
 #include "Letter.hpp"
-#include "game.hpp"
-#include "Scored.hpp"
-#include "Clock.hpp"
-#include "Grabbable.hpp"
 #include "Animated.hpp"
-#include "Drawable.hpp"
-#include "Sounded.hpp"
 #include "Collider.hpp"
-#include "Temporary.hpp"
-#include "Player.hpp"
-#include "utils.hpp"
-#include "conf/zindex.hpp"
-#include "conf/player.hpp"
+#include "Drawable.hpp"
 #include "GameCache.hpp"
+#include "Grabbable.hpp"
+#include "Player.hpp"
+#include "Scored.hpp"
+#include "Sounded.hpp"
+#include "Temporary.hpp"
+#include "Time.hpp"
+#include "conf/player.hpp"
+#include "conf/zindex.hpp"
+#include "game.hpp"
+#include "utils.hpp"
 #include <random>
 
 using lif::Letter;
@@ -35,7 +35,6 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 	addComponent<lif::Sounded>(*this,
 		lif::sid("grab"), lif::getAsset("test", "letter_grab.ogg")
 	);
-	transitionClock = addComponent<lif::Clock>(*this);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("test", "extra_letters.png"));
 	addComponent<lif::Drawable>(*this, *animated);
 	addComponent<lif::Killable>(*this);
@@ -86,14 +85,16 @@ Letter::Letter(const sf::Vector2f& pos, unsigned short _id)
 
 void Letter::update() {
 	lif::Entity::update();
+	transitionT += lif::time.getDelta();
+
 	auto& animatedSprite = animated->getSprite();
 	if (!animatedSprite.isPlaying() && transitioning) {
 		transitioning = false;
 		id = (id + 1) % N_EXTRA_LETTERS;
 		animatedSprite.setAnimation(*get<lif::Animated>()->getAnimation(static_cast<StringId>(id)));
 		animatedSprite.pause();
-	} else if (transitionClock->getElapsedTime() >= TRANSITION_DELAY) {
-		transitionClock->restart();
+	} else if (transitionT >= TRANSITION_DELAY) {
+		transitionT = sf::Time::Zero;
 		transitioning = true;
 		animatedSprite.play();
 	}

@@ -1,6 +1,8 @@
 #include "LevelTime.hpp"
-#include "conf/global.hpp"
 #include "Clock.hpp"
+#include "Time.hpp"
+#include "conf/global.hpp"
+#include "core.hpp"
 
 using lif::LevelTime;
 
@@ -8,61 +10,35 @@ LevelTime::LevelTime(sf::Time time)
 	: lif::Entity()
 	, initialTime(time)
 {
-	clock = addComponent<lif::Clock>(*this);
-	extraGameClock = addComponent<lif::Clock>(*this);
-}
-
-sf::Time LevelTime::getRemainingTime() const {
-	return initialTime - clock->getElapsedTime();
-}
-
-sf::Time LevelTime::getRemainingExtraGameTime() const {
-	return lif::conf::EXTRA_GAME_DURATION - extraGameClock->getElapsedTime();
+	reset();
 }
 
 void LevelTime::startExtraGame() {
-	extraGameClock->restart();
+	extraGameRemainingTime = lif::conf::EXTRA_GAME_DURATION;
 }
 
 void LevelTime::setTime(sf::Time time) {
 	initialTime = time;
 	reset();
-	pause();
 }
 
 void LevelTime::update() {
 	lif::Entity::update();
 	if (isHurryUp) return;
 
-	int diff = static_cast<int>(getRemainingTime().asSeconds());
-
-	if (diff <= 0) {
-		isHurryUp = true;
-		hurryUpResponse = HurryUpResponse::HURRY_UP_ON;
-	} else if (diff <= 30 && !hurryUpWarningGiven) {
-		hurryUpWarningGiven = true;
-		hurryUpResponse = HurryUpResponse::HURRY_UP_NEAR;
-	}
+	const auto delta = lif::time.getDelta();
+	remainingTime -= delta;
+	if (extraGameRemainingTime > sf::Time::Zero)
+		extraGameRemainingTime -= delta;
 }
 
 LevelTime::HurryUpResponse LevelTime::checkHurryUp() const {
-	return hurryUpResponse;
+	return remainingTime > sf::seconds(30) ? HurryUpResponse::HURRY_UP_OFF
+		: remainingTime > sf::Time::Zero ? HurryUpResponse::HURRY_UP_NEAR
+		: HurryUpResponse::HURRY_UP_ON;
 }
 
 void LevelTime::reset() {
-	isHurryUp = false;
-	hurryUpWarningGiven = false;
-	hurryUpResponse = HurryUpResponse::HURRY_UP_OFF;
-	clock->restart();
-	extraGameClock->restart();
-}
-
-void LevelTime::pause() {
-	clock->pause();
-	extraGameClock->pause();
-}
-
-void LevelTime::resume() {
-	clock->resume();
-	extraGameClock->resume();
+	remainingTime = initialTime;
+	extraGameRemainingTime = sf::Time::Zero;
 }

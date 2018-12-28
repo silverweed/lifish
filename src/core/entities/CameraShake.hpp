@@ -1,7 +1,7 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include "Entity.hpp"
+#include <SFML/Graphics.hpp>
 
 namespace lif {
 
@@ -21,9 +21,8 @@ class CameraShake : public lif::Entity {
 	            fadeFactor;
 	bool stopUpdating = false;
 
-	lif::Clock *shakeClock = nullptr,
-	           *expireClock = nullptr;
-
+	sf::Time shakeT = sf::Time::Zero,
+	         expireT = sf::Time::Zero;
 public:
 	/** Constructs a CameraShake for `target`. Amplitudes are relative, so they should range from 0 to 1 inclusive.
 	 *  Frequencies are in hertz. The shake is modulated by a 1/t^e factor, where e = `fadeFactor`.

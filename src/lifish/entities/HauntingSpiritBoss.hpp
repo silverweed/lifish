@@ -1,16 +1,15 @@
 #pragma once
 
-#include <array>
-#include <memory>
 #include "Boss.hpp"
 #include "game.hpp"
 #include "state_function.hpp"
+#include <array>
+#include <memory>
 
 namespace lif {
 
 class Animated;
 class BufferedSpawner;
-class Clock;
 class ShootingPattern;
 
 class HauntingSpiritBoss : public lif::Boss {
@@ -31,9 +30,10 @@ class HauntingSpiritBoss : public lif::Boss {
 	lif::ShootingPattern *curShootPattern = nullptr;
 	lif::Animated *animated = nullptr;
 	lif::BufferedSpawner *spawner = nullptr;
-	lif::Clock *animClock = nullptr,
-	           *atkClock = nullptr,   // used for shooting
-	           *hauntClock = nullptr; // used for changing haunted statue after delay
+
+	sf::Time atkT = sf::Time::Zero,
+	         animT = sf::Time::Zero,
+	         hauntT = sf::Time::Zero;
 
 	lif::ai::StateFunction stateFunction = std::bind(&HauntingSpiritBoss::_updateStart, this);
 

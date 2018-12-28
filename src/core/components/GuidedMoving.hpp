@@ -1,9 +1,9 @@
 #pragma once
 
+#include "Moving.hpp"
 #include <functional>
 #include <initializer_list>
 #include <tuple>
-#include "Moving.hpp"
 
 namespace lif {
 
@@ -37,8 +37,6 @@ protected:
 	const sf::Time timeTaken;
 	std::vector<ModFunc> modfuncs;
 	float tPerc;
-
-	lif::Clock *clock = nullptr;
 
 public:
 	explicit GuidedMoving(lif::Entity& owner,

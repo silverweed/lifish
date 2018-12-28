@@ -1,13 +1,13 @@
 #pragma once
 
+#include "AnimatedSprite.hpp"
+#include "Animation.hpp"
+#include "Component.hpp"
+#include "sid.hpp"
+#include <SFML/Graphics.hpp>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <SFML/Graphics.hpp>
-#include "Component.hpp"
-#include "AnimatedSprite.hpp"
-#include "Animation.hpp"
-#include "sid.hpp"
 
 namespace lif {
 
@@ -20,7 +20,6 @@ class Clock;
 class Animated : public lif::Component, public sf::Drawable {
 protected:
 	sf::Texture *texture;
-	lif::Clock *frameClock = nullptr;
 	std::unordered_map<lif::StringId, Animation> animations;
 	std::unordered_map<lif::StringId, sf::Time> frameTimes;
 	sf::Time defaultFrameTime = sf::Time::Zero;

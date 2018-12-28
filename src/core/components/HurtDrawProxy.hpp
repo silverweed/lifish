@@ -1,12 +1,11 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include "Component.hpp"
+#include <SFML/Graphics.hpp>
 
 namespace lif {
 
 class Animated;
-class Clock;
 
 /**
  * This class can be used as a lif::Drawable to provide the "hurt effect"
@@ -15,7 +14,7 @@ class Clock;
  */
 class HurtDrawProxy : public lif::Component, public sf::Drawable {
 	lif::Animated *animated = nullptr;
-	lif::Clock *hurtClock = nullptr;
+	sf::Time hurtT = sf::Time::Zero;
 
 public:
 	/** `owner` must have an Animated component */
@@ -26,6 +25,7 @@ public:
 	bool isHurt() const;
 
 	lif::Entity* init() override;
+	void update() override;
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 

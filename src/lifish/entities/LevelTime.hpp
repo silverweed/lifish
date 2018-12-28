@@ -16,9 +16,10 @@ public:
 	};
 
 private:
-	lif::Clock *clock = nullptr,
-		   *extraGameClock = nullptr;
 	sf::Time initialTime;
+	sf::Time remainingTime;
+	sf::Time extraGameRemainingTime = sf::Time::Zero;
+
 	bool isHurryUp = false;
 	bool hurryUpWarningGiven = false;
 	HurryUpResponse hurryUpResponse = HurryUpResponse::HURRY_UP_OFF;
@@ -29,15 +30,14 @@ public:
 	/** Sets the initialTime to `time`, resets and pauses the clock */
 	void setTime(sf::Time time);
 	/** Gets the remaining level time */
-	sf::Time getRemainingTime() const;
+	sf::Time getRemainingTime() const { return remainingTime; }
 	HurryUpResponse checkHurryUp() const;
-	void pause();
-	void resume();
+
 	void reset();
 
 	/** Resets the extraGameClock */
 	void startExtraGame();
-	sf::Time getRemainingExtraGameTime() const;
+	sf::Time getRemainingExtraGameTime() const { return extraGameRemainingTime; }
 
 	void update() override;
 };
