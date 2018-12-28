@@ -59,13 +59,6 @@ public:
 	float getTimeScale() const {
 		return timeScale;
 	}
-
-	void setPaused(bool p) {
-		if (p)
-			clock.pause();
-		else
-			clock.resume();
-	}
 };
 
 }
