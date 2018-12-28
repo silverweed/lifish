@@ -98,7 +98,7 @@ HauntingSpiritBoss::HauntingSpiritBoss(const sf::Vector2f& pos)
 }
 
 void HauntingSpiritBoss::update() {
-	lif::Entity::update();
+	lif::Boss::update();
 
 	const auto delta = lif::time.getDelta();
 	atkT += delta;

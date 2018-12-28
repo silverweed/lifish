@@ -3,7 +3,6 @@
 #include "Animated.hpp"
 #include "Bonusable.hpp"
 #include "BossExplosion.hpp"
-#include "Clock.hpp"
 #include "Collider.hpp"
 #include "Drawable.hpp"
 #include "Explosion.hpp"
@@ -15,6 +14,7 @@
 #include "Player.hpp"
 #include "Sounded.hpp"
 #include "Spawning.hpp"
+#include "Time.hpp"
 #include "ZIndexed.hpp"
 #include "conf/boss.hpp"
 #include "conf/player.hpp"
@@ -30,20 +30,18 @@ Boss::Boss(const sf::Vector2f& pos)
 {
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::BOSSES);
 	addComponent<lif::Foe>(*this);
-	explClock = addComponent<lif::Clock>(*this);
-	deathClock = addComponent<lif::Clock>(*this);
 	killable = addComponent<lif::Killable>(*this, [this] () {
 		// on kill
 		_kill();
 	}, [this] () {
 		// kill in progress
-		return deathClock->getElapsedTime() < lif::conf::boss::DEATH_TIME;
+		return deathT < lif::conf::boss::DEATH_TIME;
 	});
 	addComponent<lif::Spawning>(*this, [this] (const lif::Spawning&) {
 		return killable && killable->isKilled()
-			&& explClock->getElapsedTime() >= sf::milliseconds(100);
+			&& explT >= sf::milliseconds(100);
 	}, [this] () {
-		explClock->restart();
+		explT = sf::Time::Zero;
 		// Calculate a random location inside the boss
 		const auto bpos = collider->getPosition();
 		std::uniform_real_distribution<float> distX(-0.5 * TILE_SIZE,
@@ -66,8 +64,16 @@ lif::Entity* Boss::init() {
 	return this;
 }
 
+void Boss::update() {
+	lif::Entity::update();
+
+	const auto delta = lif::time.getDelta();
+	explT += delta;
+	deathT += delta;
+}
+
 void Boss::_kill() {
-	deathClock->restart();
+	deathT = sf::Time::Zero;
 	collider->setLayer(lif::c_layers::DEFAULT);
 }
 

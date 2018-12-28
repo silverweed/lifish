@@ -8,7 +8,6 @@ namespace lif {
 
 class Collider;
 class Killable;
-class Clock;
 
 /** The base class for Bosses.
  *  IMPORTANT: all subclasses MUST define the following components:
@@ -19,8 +18,8 @@ class Clock;
  *		- hurt (only if the Boss can collide and be damaged)
  */
 class Boss : public lif::Entity {
-	lif::Clock *explClock = nullptr,
-	           *deathClock = nullptr;
+	sf::Time explT,
+	         deathT;
 
 protected:
 	lif::Killable *killable = nullptr;
@@ -43,6 +42,7 @@ public:
 	explicit Boss(const sf::Vector2f& pos);
 
 	lif::Entity* init() override;
+	void update() override;
 };
 
 }

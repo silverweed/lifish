@@ -1,39 +1,39 @@
 #include "GodEyeBoss.hpp"
-#include "Lifed.hpp"
-#include "Bomb.hpp"
-#include "collision_utils.hpp"
-#include "Bonusable.hpp"
-#include "LevelManager.hpp"
 #include "Animated.hpp"
-#include "Controllable.hpp"
-#include "Torch.hpp"
-#include "Spikes.hpp"
-#include "EnemyFactory.hpp"
-#include "FixedWall.hpp"
+#include "Bomb.hpp"
+#include "Bonusable.hpp"
 #include "BreakableWall.hpp"
+#include "BufferedSpawner.hpp"
 #include "Collider.hpp"
-#include "Level.hpp"
-#include "HurtDrawProxy.hpp"
-#include "Player.hpp"
-#include "FreeSighted.hpp"
-#include "Clock.hpp"
-#include "LightSource.hpp"
-#include "Sounded.hpp"
+#include "Controllable.hpp"
 #include "Drawable.hpp"
 #include "Enemy.hpp"
-#include "BufferedSpawner.hpp"
-#include "Flare.hpp"
+#include "EnemyFactory.hpp"
 #include "Fixed.hpp"
-#include "game.hpp"
-#include "conf/boss.hpp"
+#include "FixedWall.hpp"
+#include "Flare.hpp"
+#include "FreeSighted.hpp"
+#include "HurtDrawProxy.hpp"
+#include "Level.hpp"
+#include "LevelManager.hpp"
+#include "Lifed.hpp"
+#include "LightSource.hpp"
+#include "Player.hpp"
+#include "Sounded.hpp"
+#include "Spikes.hpp"
+#include "Time.hpp"
+#include "Torch.hpp"
 #include "camera_utils.hpp"
+#include "collision_utils.hpp"
+#include "conf/boss.hpp"
 #include "entity_type.hpp"
+#include "game.hpp"
 #include "spawn_functions.hpp"
+#include <algorithm>
+#include <array>
 #include <cmath>
 #include <random>
-#include <array>
 #include <string>
-#include <algorithm>
 #include <vector>
 
 using lif::GodEyeBoss;
@@ -90,7 +90,6 @@ GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 	shield->getSprite().setColor(sf::Color(255, 255, 255, 100));
 	shield->setPosition(position + sf::Vector2f{ TILE_SIZE * 3/2, TILE_SIZE * 3/2 });
 	shield->getSprite().setOrigin(SHIELD_SIZE * 0.5f);
-	shieldAlphaClock = addComponent<lif::Clock>(*this);
 
 	hurtDrawProxy = addComponent<lif::HurtDrawProxy>(*this, spriteBg);
 	addComponent<lif::Lifed>(*this, LIFE, [this] (int, int) {
@@ -109,7 +108,6 @@ GodEyeBoss::GodEyeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 	// Boss is only vulnerable when shield is down
 	vulnerable = false;
 
-	attackClock = addComponent<lif::Clock>(*this);
 	sighted = addComponent<lif::FreeSighted>(*this);
 	addComponent<lif::BufferedSpawner>(*this);
 	//addComponent<lif::LightSource>(*this, 2 * TILE_SIZE, sf::Color(128, 128, 128))
@@ -150,8 +148,8 @@ void GodEyeBoss::_updateShield() {
 	vulnerable = sighted->nearest<lif::Enemy>() == nullptr;
 	if (!vulnerable) {
 		shield->getSprite().setColor(sf::Color(255, 255, 255,
-				100 + 30 * std::sin(5 * shieldAlphaClock->getElapsedTime().asSeconds())));
-		const auto sc = 1 + 0.1 * std::sin(8 * shieldAlphaClock->getElapsedTime().asSeconds());
+				100 + 30 * std::sin(5 * shieldAlphaT.asSeconds())));
+		const auto sc = 1 + 0.1 * std::sin(8 * shieldAlphaT.asSeconds());
 		shield->getSprite().setScale(sc, sc);
 	} else {
 		shield->getSprite().setColor(sf::Color(255, 255, 255, 0));

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <memory>
-#include <SFML/System.hpp>
-#include "Entity.hpp"
 #include "Attack.hpp"
+#include "Entity.hpp"
 #include "game.hpp"
+#include <SFML/System.hpp>
+#include <memory>
 
 namespace lif {
 
@@ -13,7 +13,6 @@ class Bonusable;
 class Enemy;
 class Collider;
 class Animated;
-class Clock;
 class Killable;
 class MovingAnimator;
 class AlienSprite;
@@ -74,8 +73,6 @@ protected:
 	lif::RegularEntityDeath *death = nullptr;
 	lif::Bonusable *bonusable = nullptr;
 
-	lif::Clock *yellClock = nullptr,
-		   *dashClock = nullptr;
 	sf::Time morphDuration;
 
 	/** True when the enemy is morphed into a harmless Alien during EXTRA game */

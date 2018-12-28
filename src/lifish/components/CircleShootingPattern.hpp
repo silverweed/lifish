@@ -1,12 +1,10 @@
 #pragma once
 
-#include <SFML/System.hpp>
-#include "ShootingPattern.hpp"
 #include "Angle.hpp"
+#include "ShootingPattern.hpp"
+#include <SFML/System.hpp>
 
 namespace lif {
-
-class Clock;
 
 /**
  * Shoots bullets in a circular fashion:
@@ -19,7 +17,7 @@ class Clock;
 class CircleShootingPattern : public lif::ShootingPattern {
 	unsigned short shotsFired = 0;
 
-	lif::Clock *shootClock = nullptr;
+	sf::Time shootT;
 
 	void _shoot();
 	void _reset() override;

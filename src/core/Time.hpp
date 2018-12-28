@@ -35,7 +35,7 @@ public:
 	}
 
 	sf::Time getGameTime() const {
-		return gameTime;
+		return sf::microseconds(gameTime);
 	}
 
 	sf::Time getDelta() const {
@@ -49,8 +49,7 @@ public:
 	}
 
 	void addTime(sf::Time t) {
-		clock.add(t);
-		update();
+		gameTime += t.asMicroseconds();
 	}
 
 	void setTimeScale(float scale) {

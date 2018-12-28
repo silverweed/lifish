@@ -1,9 +1,9 @@
 #include "Shooting.hpp"
-#include "Clock.hpp"
 #include "AxisMoving.hpp"
+#include "BulletFactory.hpp"
 #include "GameCache.hpp"
 #include "Sounded.hpp"
-#include "BulletFactory.hpp"
+#include "Time.hpp"
 #include "utils.hpp"
 #include <exception>
 
@@ -18,7 +18,6 @@ Shooting::Shooting(lif::Entity& owner, const lif::Attack& attack)
 {
 	_declComponent<Shooting>();
 	position = owner.getPosition();
-	rechargeClock = addComponent<lif::Clock>(*this);
 }
 
 lif::Entity* Shooting::init() {
@@ -27,7 +26,7 @@ lif::Entity* Shooting::init() {
 	if (ownerMoving != nullptr) {
 		ownerMoving->setOnDashChange([this] (float old, float _new) {
 			if (old != 0 && _new == 0)
-				rechargeClock->restart();
+				rechargeT = sf::Time::Zero;
 		});
 	}
 	return this;
@@ -66,12 +65,15 @@ void Shooting::shoot(lif::Angle angle) {
 
 bool Shooting::isRecharging() const {
 	return attack.fireRate > 0 &&
-		rechargeClock->getElapsedTime().asSeconds() < 1. / (fireRateMult * attack.fireRate);
+		rechargeT.asSeconds() < 1. / (fireRateMult * attack.fireRate);
 }
 
 void Shooting::update() {
 	lif::Component::update();
-	if (shooting && rechargeClock->getElapsedTime() > SHOOT_FRAME_TIME) {
+
+	rechargeT += lif::time.getDelta();
+
+	if (shooting && rechargeT > SHOOT_FRAME_TIME) {
 		shooting = false;
 	}
 }
@@ -94,14 +96,14 @@ sf::Vector2f Shooting::getPosition() const {
 std::unique_ptr<lif::Bullet> Shooting::_doShoot(std::unique_ptr<lif::Bullet>&& bullet) {
 	shooting = true;
 	lif::cache.playSound(bullet->get<lif::Sounded>()->getSoundFile("shot"));
-	rechargeClock->restart();
+	rechargeT = sf::Time::Zero;
 	return std::move(bullet);
 }
 
 void Shooting::_contactAttack() {
 	shooting = true;
 	lif::cache.playSound(owner.get<lif::Sounded>()->getSoundFile("attack"));
-	rechargeClock->restart();
+	rechargeT = sf::Time::Zero;
 	attackAlign = lif::tile(owner.getPosition());
 	if (ownerMoving != nullptr) {
 		switch (ownerMoving->getDirection()) {

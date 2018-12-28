@@ -5,7 +5,6 @@
 namespace lif {
 
 class Animated;
-class Clock;
 class FreeSighted;
 class HurtDrawProxy;
 class LevelManager;
@@ -26,9 +25,9 @@ class GodEyeBoss : public lif::Boss, public sf::Drawable {
 	              *shield = nullptr;
 	lif::HurtDrawProxy *hurtDrawProxy = nullptr;
 	lif::FreeSighted *sighted = nullptr;
-	lif::Clock *shieldAlphaClock = nullptr,
-	           *attackClock = nullptr;
-	
+
+	sf::Time shieldAlphaT;
+
 	int timesHurt = 0;
 
 	void _updatePupilPos();

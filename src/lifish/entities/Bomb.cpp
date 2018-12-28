@@ -1,19 +1,19 @@
 #include "Bomb.hpp"
-#include "Sounded.hpp"
-#include "Player.hpp"
-#include "ZIndexed.hpp"
-#include "Drawable.hpp"
-#include "Spawning.hpp"
-#include "Clock.hpp"
 #include "Animated.hpp"
-#include "Temporary.hpp"
-#include "GameCache.hpp"
-#include "Explosion.hpp"
 #include "Collider.hpp"
-#include "game.hpp"
+#include "Drawable.hpp"
+#include "Explosion.hpp"
 #include "Fixed.hpp"
+#include "GameCache.hpp"
 #include "LightSource.hpp"
+#include "Player.hpp"
+#include "Sounded.hpp"
+#include "Spawning.hpp"
+#include "Temporary.hpp"
+#include "Time.hpp"
+#include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
+#include "game.hpp"
 
 using lif::Bomb;
 using lif::TILE_SIZE;
@@ -28,15 +28,13 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Entity *const source,
 	, incendiary(isIncendiary)
 	, sourceEntity(source)
 {
-	//addComponent<lif::Fixed>(*this);
-	fuseClock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Sounded>(*this,
 		lif::sid("explosion"), lif::getAsset("sounds", "explosion.ogg"),
 		lif::sid("fuse"), lif::getAsset("sounds", "fuse.ogg")
 	);
 	killable = addComponent<lif::Temporary>(*this, [this] () {
 		// Expire condition
-		return fuseClock->getElapsedTime() >= fuseTime && isAligned();
+		return fuseT >= fuseTime && isAligned();
 	}, [this] () {
 		// On kill
 		exploded = true;
@@ -81,7 +79,8 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Entity *const source,
 
 void Bomb::update() {
 	lif::Entity::update();
-	if (!switched && fuseTime - fuseClock->getElapsedTime() < sf::seconds(2)
+	fuseT += lif::time.getDelta();
+	if (!switched && fuseTime - fuseT < sf::seconds(2)
 			&& !killable->isKilled())
 	{
 		animated->setAnimation(fuseTime < DEFAULT_FUSE && !ignited
@@ -92,10 +91,10 @@ void Bomb::update() {
 
 void Bomb::ignite() {
 	fuseTime = sf::milliseconds(50);
-	fuseClock->restart();
+	fuseT = sf::Time::Zero;
 	ignited = true;
 }
 
 sf::Time Bomb::getCurrentFuse() const {
-	return fuseClock->getElapsedTime();
+	return fuseT;
 }

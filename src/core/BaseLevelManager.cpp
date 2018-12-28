@@ -1,6 +1,7 @@
 #include "BaseLevelManager.hpp"
-#include "Clock.hpp"
 #include "AxisMoving.hpp"
+#include "Clock.hpp"
+#include "Time.hpp"
 
 using lif::BaseLevelManager;
 
@@ -76,29 +77,17 @@ void BaseLevelManager::reset() {
 }
 
 void BaseLevelManager::pause() {
-	entities.apply([] (lif::Entity *e) {
-		auto clocks = e->getAllRecursive<lif::Clock>();
-		for (auto clock : clocks)
-			clock->pause();
-	});
+	lif::time.setTimeScale(0);
 	paused = true;
 }
 
 void BaseLevelManager::resume() {
-	entities.apply([] (lif::Entity *e) {
-		auto clocks = e->getAllRecursive<lif::Clock>();
-		for (auto clock : clocks)
-			clock->resume();
-	});
+	lif::time.setTimeScale(1);
 	paused = false;
 }
 
 void BaseLevelManager::tickClocks(const sf::Time& delta) {
-	entities.apply([delta] (lif::Entity *e) {
-		auto clocks = e->getAllRecursive<lif::Clock>();
-		for (auto clock : clocks)
-			clock->add(delta);
-	});
+	lif::time.addTime(delta);
 }
 
 void BaseLevelManager::disableInputFor(const sf::Time& time) {

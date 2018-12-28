@@ -6,7 +6,6 @@
 #include "AxisMoving.hpp"
 #include "AxisSighted.hpp"
 #include "Bonusable.hpp"
-#include "Clock.hpp"
 #include "Collider.hpp"
 #include "Drawable.hpp"
 #include "Explosion.hpp"
@@ -69,8 +68,6 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 			lif::conf::enemy::BASE_SPEED * originalSpeed, lif::Direction::DOWN);
 	animated = addComponent<lif::Animated>(*this,
 			lif::getAsset("graphics", "enemy") + lif::to_string(id) + ".png"s);
-	yellClock = addComponent<lif::Clock>(*this);
-	dashClock = addComponent<lif::Clock>(*this);
 	alienSprite = addComponent<lif::AlienSprite>(*this);
 	addComponent<lif::Scored>(*this, id * 100);
 	movingAnimator = addComponent<lif::MovingAnimator>(*this);
