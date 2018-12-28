@@ -1,13 +1,13 @@
 #include "TimedLaser.hpp"
-#include "Clock.hpp"
 #include "Animated.hpp"
+#include "Collider.hpp"
 #include "Drawable.hpp"
-#include "game.hpp"
-#include "Temporary.hpp"
 #include "Lifed.hpp"
+#include "Temporary.hpp"
+#include "Time.hpp"
 #include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
-#include "Collider.hpp"
+#include "game.hpp"
 
 using lif::TimedLaser;
 using lif::TILE_SIZE;
@@ -25,7 +25,6 @@ TimedLaser::TimedLaser(unsigned short rowCol,
 {
 	const bool isVert = ori == TimedLaser::Orientation::VERTICAL;
 
-	clock = addComponent<lif::Clock>(*this);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "timed_laser.png"));
 	animated->addAnimation("warn_blink", {
 		sf::IntRect(0 * TILE_SIZE, isVert * TILE_SIZE, TILE_SIZE, TILE_SIZE),
@@ -75,7 +74,9 @@ TimedLaser::TimedLaser(unsigned short rowCol,
 void TimedLaser::update() {
 	lif::Entity::update();
 
-	if (isWarning && clock->getElapsedTime() > warnDuration) {
+	const auto delta = lif::time.getDelta();
+	warnT += delta;
+	if (isWarning && warnT > warnDuration) {
 		isWarning = false;
 		animated->getSprite().stop();
 	}
@@ -83,7 +84,7 @@ void TimedLaser::update() {
 	if (!isWarning) {
 		auto& sprite = animated->getSprite();
 		auto col = sprite.getColor();
-		col.a -= clock->restart().asSeconds();
+		col.a -= delta.asSeconds();
 		sprite.setColor(col);
 	}
 }

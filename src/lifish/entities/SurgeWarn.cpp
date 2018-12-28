@@ -1,9 +1,9 @@
 #include "SurgeWarn.hpp"
 #include "Drawable.hpp"
-#include "ZIndexed.hpp"
-#include "Clock.hpp"
 #include "Sprite.hpp"
 #include "Temporary.hpp"
+#include "Time.hpp"
+#include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
 #include "core.hpp"
 
@@ -20,9 +20,8 @@ SurgeWarn::SurgeWarn(const sf::Vector2f& pos, const sf::Time& duration, const li
 	sprite->getSprite().setColor(sf::Color(255, 255, 255, 20));
 	sprite->getSprite().setOrigin(SIZE.x * 0.5, SIZE.y * 0.5);
 	sprite->getSprite().setRotation(rotation.asDegrees());
-	clock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Temporary>(*this, [this] () {
-		return clock->getElapsedTime() > this->duration;
+		return t > this->duration;
 	});
 	addComponent<lif::Drawable>(*this, *sprite);
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::TALL_ENTITIES);
@@ -31,5 +30,6 @@ SurgeWarn::SurgeWarn(const sf::Vector2f& pos, const sf::Time& duration, const li
 void SurgeWarn::update() {
 	lif::Entity::update();
 
-	sprite->getSprite().setColor(sf::Color(255, 255, 255, 20 + (clock->getElapsedTime() / duration) * 235));
+	t += lif::time.getDelta();
+	sprite->getSprite().setColor(sf::Color(255, 255, 255, 20 + (t / duration) * 235));
 }

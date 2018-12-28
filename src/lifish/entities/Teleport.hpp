@@ -5,7 +5,6 @@
 namespace lif {
 
 class Animated;
-class Clock;
 class Collider;
 
 /**
@@ -21,11 +20,11 @@ class Teleport : public lif::Entity {
 	/** Used by Spawning to spawn flashes */
 	bool mustSpawnFlash = false;
 
-	/** Time to wait before reactivating */
-	lif::Clock *disableClock = nullptr;
 	lif::Collider *collider = nullptr;
 	lif::Animated *animated = nullptr;
 
+	/** Time to wait before reactivating */
+	sf::Time disableT = sf::Time::Zero;
 
 	void _warp(lif::Collider& cld);
 

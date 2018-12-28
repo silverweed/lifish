@@ -1,13 +1,13 @@
 #include "Fog.hpp"
-#include "Sprite.hpp"
-#include "ZIndexed.hpp"
-#include "Clock.hpp"
-#include "FreeMoving.hpp"
-#include "utils.hpp"
 #include "Drawable.hpp"
+#include "FreeMoving.hpp"
 #include "GameCache.hpp"
-#include "game.hpp"
+#include "Sprite.hpp"
+#include "Time.hpp"
+#include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
+#include "game.hpp"
+#include "utils.hpp"
 #include <SFML/System.hpp>
 #include <random>
 
@@ -30,7 +30,6 @@ Fog::Fog(float speed, sf::Time alphaDt)
 	std::uniform_real_distribution<float> dist(-1, 1);
 	const sf::Vector2f velocity(dist(lif::rng), dist(lif::rng));
 	moving = addComponent<lif::FreeMoving>(*this, speed, velocity);
-	clock = addComponent<lif::Clock>(*this);
 
 	// Set the initial position
 	position.x = lif::TILE_SIZE - lif::GAME_WIDTH;
@@ -41,9 +40,11 @@ Fog::Fog(float speed, sf::Time alphaDt)
 void Fog::update() {
 	lif::Entity::update();
 
+	t += lif::time.getDelta();
+
 	// Fade in/out sprite
-	if (clock->getElapsedTime() >= alphaDt) {
-		clock->restart();
+	if (t >= alphaDt) {
+		t = sf::Time::Zero;
 		auto c = sprite->getSprite().getColor();
 		if (fading) {
 			c.a -= 1;

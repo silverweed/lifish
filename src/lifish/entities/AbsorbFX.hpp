@@ -1,13 +1,12 @@
 #pragma once
 
+#include "Entity.hpp"
+#include <SFML/Graphics.hpp>
 #include <array>
 #include <memory>
-#include <SFML/Graphics.hpp>
-#include "Entity.hpp"
 
 namespace lif {
 
-class Clock;
 class Sprite;
 
 class AbsorbFX : public lif::Entity, public sf::Drawable {
@@ -16,8 +15,6 @@ class AbsorbFX : public lif::Entity, public sf::Drawable {
 	bool expired = false;
 
 	std::array<lif::Sprite*, 3> sprites;
-
-	lif::Clock *clock = nullptr;
 
 public:
 	explicit AbsorbFX(const sf::Vector2f& pos, std::weak_ptr<const lif::Entity> target);
