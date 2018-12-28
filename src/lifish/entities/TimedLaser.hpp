@@ -1,13 +1,12 @@
 #pragma once
 
-#include <vector>
-#include <initializer_list>
 #include "Entity.hpp"
 #include "collision_layers.hpp"
+#include <initializer_list>
+#include <vector>
 
 namespace lif {
 
-class Clock;
 class Animated;
 
 /**
@@ -28,8 +27,9 @@ private:
 	std::vector<lif::Entity*> dmgEntities;
 	bool isWarning = true;
 
-	lif::Clock *clock = nullptr;
 	lif::Animated *animated = nullptr;
+
+	sf::Time warnT = sf::Time::Zero;
 
 	void _giveWarning();
 public:

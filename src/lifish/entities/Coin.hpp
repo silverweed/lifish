@@ -1,11 +1,10 @@
 #pragma once
 
-#include <SFML/System.hpp>
 #include "Entity.hpp"
+#include <SFML/System.hpp>
 
 namespace lif {
 
-class Clock;
 class Grabbable;
 class Animated;
 
@@ -15,7 +14,7 @@ class Animated;
  */
 class Coin : public lif::Entity {
 
-	lif::Clock *grabClock;
+	sf::Time grabT;
 	lif::Grabbable *grabbable = nullptr;
 
 	lif::Animated *animated = nullptr;
@@ -24,6 +23,8 @@ class Coin : public lif::Entity {
 
 public:
 	explicit Coin(const sf::Vector2f& pos);
+
+	void update() override;
 };
 
 }

@@ -1,31 +1,31 @@
 #include "MainframeBoss.hpp"
-#include "game.hpp"
 #include "Animated.hpp"
-#include "TimedLaser.hpp"
-#include "Player.hpp"
-#include "Bullet.hpp"
 #include "Bonusable.hpp"
 #include "BufferedSpawner.hpp"
+#include "Bullet.hpp"
+#include "BulletFactory.hpp"
+#include "Drawable.hpp"
+#include "Enemy.hpp"
+#include "Fixed.hpp"
+#include "HurtDrawProxy.hpp"
+#include "Killable.hpp"
+#include "Level.hpp"
+#include "Lifed.hpp"
 #include "LightSource.hpp"
 #include "OneShotFX.hpp"
-#include "Clock.hpp"
-#include "Killable.hpp"
-#include "Enemy.hpp"
-#include "Level.hpp"
-#include "spawn_functions.hpp"
-#include "HurtDrawProxy.hpp"
-#include "Drawable.hpp"
-#include "Lifed.hpp"
-#include "Sounded.hpp"
+#include "Player.hpp"
 #include "Scored.hpp"
+#include "Sounded.hpp"
 #include "Surge.hpp"
 #include "SurgeWarn.hpp"
-#include "Fixed.hpp"
-#include "BulletFactory.hpp"
+#include "Time.hpp"
+#include "TimedLaser.hpp"
 #include "conf/boss.hpp"
+#include "game.hpp"
+#include "spawn_functions.hpp"
 #include <cassert>
-#include <random>
 #include <cstdlib>
+#include <random>
 #ifndef RELEASE
 	#include "DebugPainter.hpp"
 #endif
@@ -63,8 +63,6 @@ MainframeBoss::MainframeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 	);
 	addComponent<lif::Lifed>(*this, LIFE);
 	addComponent<lif::Scored>(*this, VALUE);
-	clock = addComponent<lif::Clock>(*this);
-	sparkClock = addComponent<lif::Clock>(*this);
 	spawner = addComponent<lif::BufferedSpawner>(*this);
 
 	hurtDrawProxy = addComponent<lif::HurtDrawProxy>(*this);
@@ -80,6 +78,10 @@ MainframeBoss::MainframeBoss(const sf::Vector2f& pos, lif::LevelManager& lm)
 
 void MainframeBoss::update() {
 	lif::Entity::update();
+
+	const auto delta = lif::time.getDelta();
+	sparkT += delta;
+	atkT += delta;
 
 	if (killable->isKilled())
 		return;
@@ -113,14 +115,14 @@ void MainframeBoss::_checkShieldCollision() {
 }
 
 StateFunction MainframeBoss::_updateIdle() {
-	if (clock->getElapsedTime() > IDLE_TIME) {
+	if (atkT > IDLE_TIME) {
 		/// Choose attack
 		const auto nEnemies = lm.getEntities().size<lif::Enemy>();
 		std::uniform_int_distribution<> dist(0, static_cast<int>(AttackType::N_ATTACKS) - 1
 				- (nEnemies > 2) // disable SPAWN_ZAPS if there are too many enemies
 		);
 		auto atkType = dist(lif::rng);
-		clock->restart();
+		atkT = sf::Time::Zero;
 		switch (static_cast<AttackType>(atkType)) {
 		case AttackType::ROTATING_SURGE:
 			return BIND(_updateSurgeEntering);
@@ -147,23 +149,23 @@ StateFunction MainframeBoss::_updateSurgeEntering() {
 	nextAttackAngle = lif::degrees(angleDist(lif::rng));
 	// spawn visual warning of surge
 	spawner->addSpawned(new lif::SurgeWarn(position + SIZE * 0.5f, SURGE_WINDUP_TIME, nextAttackAngle));
-	clock->restart();
+	atkT = sf::Time::Zero;
 	return BIND(_updateSurgeWindup);
 }
 
 StateFunction MainframeBoss::_updateSurgeWindup() {
-	if (clock->getElapsedTime() > SURGE_WINDUP_TIME) {
+	if (atkT > SURGE_WINDUP_TIME) {
 		spawner->addSpawned(new lif::Surge(position + SIZE * 0.5f, lm, nextAttackAngle,
 				SURGE_ROT_PER_SECOND, SURGE_SPANNED_ANGLE));
-		clock->restart();
+		atkT = sf::Time::Zero;
 		return BIND(_updateSurgeRecover);
 	}
 	return std::move(stateFunction);
 }
 
 StateFunction MainframeBoss::_updateSurgeRecover() {
-	if (clock->getElapsedTime() > SURGE_RECOVER_TIME) {
-		clock->restart();
+	if (atkT > SURGE_RECOVER_TIME) {
+		atkT = sf::Time::Zero;
 		_resetIdleAnim();
 		return BIND(_updateIdle);
 	}
@@ -174,13 +176,13 @@ StateFunction MainframeBoss::_updateLightningEntering() {
 	animated->setFrameTime("idle", sf::milliseconds(30));
 	animated->setAnimation("idle");
 	animated->getSprite().setColor(sf::Color(200, 255, 0));
-	clock->restart();
+	atkT = sf::Time::Zero;
 	return BIND(_updateLightningWindup);
 }
 
 StateFunction MainframeBoss::_updateLightningWindup() {
-	if (clock->getElapsedTime() > LIGHTNING_WINDUP_TIME) {
-		clock->restart();
+	if (atkT > LIGHTNING_WINDUP_TIME) {
+		atkT = sf::Time::Zero;
 		nShots = 0;
 		return BIND(_updateLightningShooting);
 	}
@@ -189,24 +191,24 @@ StateFunction MainframeBoss::_updateLightningWindup() {
 
 StateFunction MainframeBoss::_updateLightningShooting() {
 	if (nShots == LIGHTNING_N_SHOTS) {
-		clock->restart();
+		atkT = sf::Time::Zero;
 		_resetIdleAnim();
 		return BIND(_updateLightningRecover);
 	}
-	if (clock->getElapsedTime() > LIGHTNING_SHOOT_DELAY) {
+	if (atkT > LIGHTNING_SHOOT_DELAY) {
 		const auto angle = lif::degrees(angleDist(lif::rng));
 		const auto pos = lif::towards(position + (SIZE - sf::Vector2f(TILE_SIZE, TILE_SIZE)) * 0.5f,
 				angle, 40);
 		spawner->addSpawned(lif::BulletFactory::create(104, pos, angle, this));
 		++nShots;
-		clock->restart();
+		atkT = sf::Time::Zero;
 	}
 	return std::move(stateFunction);
 }
 
 StateFunction MainframeBoss::_updateLightningRecover() {
-	if (clock->getElapsedTime() > LIGHTNING_RECOVERY_TIME) {
-		clock->restart();
+	if (atkT > LIGHTNING_RECOVERY_TIME) {
+		atkT = sf::Time::Zero;
 		return BIND(_updateIdle);
 	}
 	return std::move(stateFunction);
@@ -216,33 +218,33 @@ StateFunction MainframeBoss::_updateShieldEntering() {
 	animated->setFrameTime("idle", sf::milliseconds(500));
 	animated->setAnimation("idle");
 	animated->getSprite().setColor(sf::Color(0, 80, 200));
-	clock->restart();
+	atkT = sf::Time::Zero;
 	return BIND(_updateShieldWindup);
 }
 
 StateFunction MainframeBoss::_updateShieldWindup() {
-	if (clock->getElapsedTime() > SHIELD_WINDUP_TIME) {
-		clock->restart();
+	if (atkT > SHIELD_WINDUP_TIME) {
+		atkT = sf::Time::Zero;
 		vulnerable = false;
 		return BIND(_updateShieldDamage);
 	}
 
 	auto col = shieldSprite.getFillColor();
-	col.a = (clock->getElapsedTime() / SHIELD_WINDUP_TIME) * 180;
+	col.a = (atkT / SHIELD_WINDUP_TIME) * 180;
 	shieldSprite.setFillColor(col);
 
 	return std::move(stateFunction);
 }
 
 StateFunction MainframeBoss::_updateShieldDamage() {
-	if (clock->getElapsedTime() > SHIELD_DAMAGE_TIME) {
-		clock->restart();
+	if (atkT > SHIELD_DAMAGE_TIME) {
+		atkT = sf::Time::Zero;
 		_resetIdleAnim();
 		vulnerable = true;
 		return BIND(_updateShieldRecover);
 	}
-	if (sparkClock->getElapsedTime() > sf::milliseconds(60)) {
-		sparkClock->restart();
+	if (sparkT > sf::milliseconds(60)) {
+		sparkT = sf::Time::Zero;
 		auto pos = position + sf::Vector2f(SIZE.x - SHIELD_DIAMETER, SIZE.y - SHIELD_DIAMETER);
 		static std::uniform_real_distribution<float> posDist(0, SHIELD_DIAMETER);
 		pos.x += posDist(lif::rng);
@@ -270,13 +272,13 @@ StateFunction MainframeBoss::_updateShieldDamage() {
 }
 
 StateFunction MainframeBoss::_updateShieldRecover() {
-	if (clock->getElapsedTime() > SHIELD_RECOVERY_TIME) {
-		clock->restart();
+	if (atkT > SHIELD_RECOVERY_TIME) {
+		atkT = sf::Time::Zero;
 		return BIND(_updateIdle);
 	}
 
 	auto col = shieldSprite.getFillColor();
-	col.a = (1 - clock->getElapsedTime() / SHIELD_RECOVERY_TIME) * 180;
+	col.a = (1 - atkT / SHIELD_RECOVERY_TIME) * 180;
 	shieldSprite.setFillColor(col);
 
 	return std::move(stateFunction);
@@ -286,7 +288,7 @@ StateFunction MainframeBoss::_updateLasersEntering() {
 	animated->setFrameTime("idle", sf::milliseconds(40));
 	animated->setAnimation("idle");
 	animated->getSprite().setColor(sf::Color(255, 40, 0));
-	clock->restart();
+	atkT = sf::Time::Zero;
 	nShots = 0;
 	const auto lifePerc = get<lif::Lifed>()->getRemainingLifePerc();
 	lasersNShots = lif::lerp(LASERS_MIN_N_SHOTS, LASERS_MAX_N_SHOTS, 1 - lifePerc);
@@ -296,12 +298,12 @@ StateFunction MainframeBoss::_updateLasersEntering() {
 
 StateFunction MainframeBoss::_updateLasersShooting() {
 	if (nShots > lasersNShots) {
-		clock->restart();
+		atkT = sf::Time::Zero;
 		_resetIdleAnim();
 		return BIND(_updateLasersRecover);
 	}
-	if (clock->getElapsedTime() > lasersShootDelay) {
-		clock->restart();
+	if (atkT > lasersShootDelay) {
+		atkT = sf::Time::Zero;
 		const auto lvinfo = lm.getLevel()->getInfo();
 		const auto nRows = lvinfo.width;
 		const auto nCols = lvinfo.height;
@@ -322,8 +324,8 @@ StateFunction MainframeBoss::_updateLasersShooting() {
 }
 
 StateFunction MainframeBoss::_updateLasersRecover() {
-	if (clock->getElapsedTime() > LASERS_RECOVERY_TIME) {
-		clock->restart();
+	if (atkT > LASERS_RECOVERY_TIME) {
+		atkT = sf::Time::Zero;
 		return BIND(_updateIdle);
 	}
 	return std::move(stateFunction);
@@ -333,19 +335,19 @@ StateFunction MainframeBoss::_updateSpawnZapsEntering() {
 	animated->setFrameTime("idle", sf::milliseconds(40));
 	animated->setAnimation("idle");
 	animated->getSprite().setColor(sf::Color(255, 0, 200));
-	clock->restart();
+	atkT = sf::Time::Zero;
 	nShots = 0;
 	return BIND(_updateSpawnZapsShooting);
 }
 
 StateFunction MainframeBoss::_updateSpawnZapsShooting() {
 	if (nShots > N_SPAWNED_ENEMIES) {
-		clock->restart();
+		atkT = sf::Time::Zero;
 		_resetIdleAnim();
 		return BIND(_updateSpawnZapsRecover);
 	}
-	if (clock->getElapsedTime() > ZAPS_SPAWN_DELAY) {
-		clock->restart();
+	if (atkT > ZAPS_SPAWN_DELAY) {
+		atkT = sf::Time::Zero;
 
 		auto spawner = get<lif::BufferedSpawner>();
 		// TODO: add cool spawn effect
@@ -356,8 +358,8 @@ StateFunction MainframeBoss::_updateSpawnZapsShooting() {
 }
 
 StateFunction MainframeBoss::_updateSpawnZapsRecover() {
-	if (clock->getElapsedTime() > ZAPS_RECOVERY_TIME) {
-		clock->restart();
+	if (atkT > ZAPS_RECOVERY_TIME) {
+		atkT = sf::Time::Zero;
 		return BIND(_updateIdle);
 	}
 	return std::move(stateFunction);

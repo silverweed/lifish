@@ -5,7 +5,6 @@
 namespace lif {
 
 class FreeMoving;
-class Clock;
 class Sprite;
 
 class Fog : public lif::Entity {
@@ -14,7 +13,8 @@ class Fog : public lif::Entity {
 
 	lif::FreeMoving *moving = nullptr;
 	lif::Sprite *sprite = nullptr;
-	lif::Clock *clock = nullptr;
+
+	sf::Time t = sf::Time::Zero;
 
 	bool fading = false;
 

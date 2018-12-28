@@ -7,7 +7,6 @@
 namespace lif {
 
 class Animated;
-class Clock;
 class BufferedSpawner;
 class HurtDrawProxy;
 class LightSource;
@@ -37,13 +36,14 @@ class MainframeBoss : public lif::Boss, public sf::Drawable {
 
 	sf::CircleShape shieldSprite;
 
-	lif::Clock *clock = nullptr,
-	           *sparkClock = nullptr;
+	sf::Time atkT = sf::Time::Zero,
+	         sparkT = sf::Time::Zero;
+
 	lif::Animated *animated = nullptr;
 	lif::BufferedSpawner *spawner = nullptr;
 	lif::HurtDrawProxy *hurtDrawProxy = nullptr;
 	lif::LightSource *lightSource = nullptr;
-	
+
 	lif::ai::StateFunction stateFunction = std::bind(&MainframeBoss::_updateIdle, this);
 
 	void _resetIdleAnim();

@@ -1,11 +1,11 @@
 #include "AbsorbFX.hpp"
-#include "Clock.hpp"
-#include "Sprite.hpp"
-#include "utils.hpp"
 #include "Drawable.hpp"
-#include "ZIndexed.hpp"
+#include "Sprite.hpp"
 #include "Temporary.hpp"
+#include "Time.hpp"
+#include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
+#include "utils.hpp"
 
 using lif::AbsorbFX;
 
@@ -25,7 +25,6 @@ AbsorbFX::AbsorbFX(const sf::Vector2f& pos, std::weak_ptr<const lif::Entity> tar
 	}
 	addComponent<lif::Drawable>(*this, *this);
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::FLASHES);
-	clock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Temporary>(*this, [this] () { return expired; });
 }
 
@@ -35,7 +34,7 @@ void AbsorbFX::update() {
 		expired = true;
 		return;
 	}
-	const auto dt = clock->restart().asSeconds();
+	const auto dt = lif::time.getDelta().asSeconds();
 	const auto& trg = target.lock();
 	if (lif::sqrDistance(trg->getPosition(), position) < lif::TILE_SIZE / 10.0) {
 		expired = true;

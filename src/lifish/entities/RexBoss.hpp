@@ -1,16 +1,15 @@
 #pragma once
 
-#include <array>
-#include "game.hpp"
 #include "Boss.hpp"
 #include "Direction.hpp"
+#include "game.hpp"
 #include "state_function.hpp"
+#include <array>
 
 namespace lif {
 
 class Animated;
 class AxisMoving;
-class Clock;
 class FreeSighted;
 class Collider;
 class BufferedSpawner;
@@ -34,8 +33,9 @@ class RexBoss : public lif::Boss {
 
 	lif::Direction flameDirection = lif::Direction::NONE;
 
-	lif::Clock *animClock = nullptr,
-	           *attackClock = nullptr;
+	sf::Time animT = sf::Time::Zero,
+	         atkT = sf::Time::Zero;
+
 	lif::Animated *animated = nullptr;
 	lif::AxisMoving *moving = nullptr;
 	lif::FreeSighted *sighted = nullptr;
@@ -48,7 +48,7 @@ class RexBoss : public lif::Boss {
 		std::bind(&RexBoss::_updateFlameEntering, this),
 		std::bind(&RexBoss::_updateMissilesEntering, this),
 	}};
-	
+
 	void _kill() override;
 
 	lif::ai::StateFunction _updateStart();

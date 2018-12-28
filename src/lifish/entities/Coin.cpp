@@ -1,16 +1,16 @@
 #include "Coin.hpp"
+#include "Animated.hpp"
+#include "Collider.hpp"
+#include "Drawable.hpp"
+#include "Fixed.hpp"
+#include "GameCache.hpp"
+#include "Grabbable.hpp"
+#include "Killable.hpp"
+#include "Player.hpp"
 #include "Scored.hpp"
 #include "Sounded.hpp"
+#include "Time.hpp"
 #include "game.hpp"
-#include "GameCache.hpp"
-#include "Killable.hpp"
-#include "Drawable.hpp"
-#include "Clock.hpp"
-#include "Animated.hpp"
-#include "Grabbable.hpp"
-#include "Collider.hpp"
-#include "Player.hpp"
-#include "Fixed.hpp"
 
 using lif::Coin;
 using lif::TILE_SIZE;
@@ -26,7 +26,6 @@ Coin::Coin(const sf::Vector2f& pos)
 	addComponent<lif::Sounded>(*this,
 		lif::sid("grab"), lif::getAsset("sounds", "coin.ogg")
 	);
-	grabClock = addComponent<lif::Clock>(*this);
 	std::string texname = lif::getAsset("graphics", "coin.png");
 	animated = addComponent<lif::Animated>(*this, texname);
 	lif::cache.loadTexture(texname)->setSmooth(true);
@@ -45,7 +44,7 @@ Coin::Coin(const sf::Vector2f& pos)
 		_grab();
 	}, [this] () {
 		// is kill in progress
-		return grabbable->isGrabbed() && grabClock->getElapsedTime() < GRAB_TIME;
+		return grabbable->isGrabbed() && grabT < GRAB_TIME;
 	});
 
 	auto& anim = animated->addAnimation("spin");
@@ -64,7 +63,13 @@ Coin::Coin(const sf::Vector2f& pos)
 void Coin::_grab() {
 	if (!grabbable->isGrabbed()) {
 		grabbable->grab();
-		grabClock->restart();
+		grabT = sf::Time::Zero;
 		animated->getSprite().play();
 	}
+}
+
+void Coin::update() {
+	lif::Entity::update();
+
+	grabT += lif::time.getDelta();
 }

@@ -1,16 +1,16 @@
 #include "Teleport.hpp"
 #include "Animated.hpp"
-#include "Clock.hpp"
-#include "game.hpp"
+#include "AxisMoving.hpp"
+#include "Collider.hpp"
+#include "Drawable.hpp"
+#include "Fixed.hpp"
 #include "GameCache.hpp"
 #include "OneShotFX.hpp"
-#include "Drawable.hpp"
-#include "Collider.hpp"
-#include "AxisMoving.hpp"
-#include "Fixed.hpp"
-#include "Spawning.hpp"
 #include "Sounded.hpp"
+#include "Spawning.hpp"
+#include "Time.hpp"
 #include "conf/teleport.hpp"
+#include "game.hpp"
 
 using lif::Teleport;
 using lif::TILE_SIZE;
@@ -20,7 +20,6 @@ Teleport::Teleport(const sf::Vector2f& pos)
 {
 	addComponent<lif::Fixed>(*this);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "teleport.png"));
-	disableClock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Drawable>(*this, *animated);
 	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& c) {
 		_warp(c);
@@ -56,7 +55,8 @@ Teleport::Teleport(const sf::Vector2f& pos)
 
 void Teleport::update() {
 	lif::Entity::update();
-	if (disabled && disableClock->getElapsedTime() >= lif::conf::teleport::COOLDOWN_TIME
+	disableT += lif::time.getDelta();
+	if (disabled && disableT >= lif::conf::teleport::COOLDOWN_TIME
 			&& collider->getColliding().size() == 0)
 	{
 		disabled = false;
@@ -67,7 +67,7 @@ void Teleport::update() {
 void Teleport::disable() {
 	disabled = true;
 	animated->getSprite().pause();
-	disableClock->restart();
+	disableT = sf::Time::Zero;
 }
 
 void Teleport::_warp(lif::Collider& cld) {
