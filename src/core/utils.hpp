@@ -172,6 +172,11 @@ constexpr T lerp(T a, T b, float alpha) {
 	return a * (1 - alpha) + b * alpha;
 }
 
+template<typename T>
+constexpr int sign(T x) {
+	return (x > 0) - (x < 0);
+}
+
 /** Plays a brief sound (BLOCKING) */
 void testMusic();
 
