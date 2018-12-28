@@ -187,8 +187,8 @@ void InterlevelContext::_tickDistributePoints() {
 	} else {
 		bonusTime -= sf::seconds(1);
 		levelTime.setTime(bonusTime);
-		bonusPoints += 100;
-		_givePoints(100);
+		bonusPoints += 10;
+		_givePoints(10);
 	}
 	subtitleText.setString(lif::to_string(bonusPoints));
 	const auto bounds = subtitleText.getGlobalBounds();
