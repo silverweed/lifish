@@ -22,10 +22,10 @@ namespace conf {
 		constexpr int FOG                  = 12;
 		constexpr int BOSS_EXPLOSIONS      = 20;
 		constexpr int FLASHES              = 20;
-		constexpr int POINTS               = 42;
 		constexpr int DROPPING_TEXTS       = 42;
 		constexpr int TORCHES              = -1;
 		constexpr int UI                   = -2;
+		constexpr int POINTS               = -3;
 	}
 }
 
