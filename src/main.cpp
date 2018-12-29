@@ -231,6 +231,7 @@ int main(int argc, char **argv) {
 	lif::options.vsync = true;
 	lif::options.framerateLimit = args.fps;
 	window.setFramerateLimit(lif::options.framerateLimit);
+	window.setVerticalSyncEnabled(lif::options.vsync);
 	window.setJoystickThreshold(lif::JOYSTICK_INPUT_THRESHOLD);
 	const sf::Vector2f fps_pos(
 			lif::WINDOW_WIDTH - lif::TILE_SIZE * 8,
