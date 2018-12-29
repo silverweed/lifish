@@ -1,17 +1,15 @@
 #include "Points.hpp"
-#include "Direction.hpp"
-#include "game.hpp"
-#include "Temporary.hpp"
-#include "utils.hpp"
-#include "conf/zindex.hpp"
 #include "AxisMoving.hpp"
+#include "Direction.hpp"
 #include "Drawable.hpp"
+#include "Temporary.hpp"
 #include "ZIndexed.hpp"
+#include "conf/zindex.hpp"
+#include "game.hpp"
+#include "utils.hpp"
 
 using lif::Points;
 
-// Note: putting this in the class declaration causes some compilers
-// (notably: clang) to give 'undefined reference'
 constexpr static float SPEED = 30.f;
 
 Points::Points(const sf::Vector2f& pos, const std::string& str, sf::Color color, unsigned short charSize)
