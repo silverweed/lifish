@@ -51,7 +51,7 @@ void Bonus::update() {
 	lif::Entity::update();
 	const auto delta = lif::time.getDelta();
 	expireT += delta;
-	const float s = delta.asSeconds();
+	const auto s = expireT.asSeconds();
 	if (EXPIRE_TIME.asSeconds() - s <= 3.) {
 		const float diff = s - std::floor(s);
 		if (5 * diff - std::floor(5 * diff) < 0.5)
