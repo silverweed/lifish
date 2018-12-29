@@ -182,8 +182,8 @@ void InterlevelContext::_tickDistributePoints() {
 	if (bonusTime > sf::seconds(60)) {
 		bonusTime -= sf::seconds(60);
 		levelTime.setTime(bonusTime);
-		bonusPoints += 1000;
-		_givePoints(1000);
+		bonusPoints += 600;
+		_givePoints(600);
 	} else {
 		bonusTime -= sf::seconds(1);
 		levelTime.setTime(bonusTime);
