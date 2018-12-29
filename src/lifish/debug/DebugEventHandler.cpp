@@ -156,7 +156,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 
 		case sf::Keyboard::L:
 			if (game.lm.isPaused()) {
-				game.lm.tickClocks(sf::seconds(1.0 / lif::options.framerateLimit));
+				lif::time.addTime(sf::seconds(1.0 / lif::options.framerateLimit));
 				game.lm.update();
 			} else {
 				game.lm.pause();

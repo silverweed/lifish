@@ -1,13 +1,14 @@
 #include "InterlevelContext.hpp"
-#include "contexts.hpp"
-#include "Level.hpp"
 #include "BaseEventHandler.hpp"
-#include "LevelManager.hpp"
-#include "Killable.hpp"
-#include "Player.hpp"
 #include "GameCache.hpp"
-#include "SidePanel.hpp"
 #include "JoystickManager.hpp"
+#include "Killable.hpp"
+#include "Level.hpp"
+#include "LevelManager.hpp"
+#include "Player.hpp"
+#include "SidePanel.hpp"
+#include "Time.hpp"
+#include "contexts.hpp"
 #include "input_utils.hpp"
 #include <iostream>
 
@@ -58,13 +59,15 @@ void InterlevelContext::setRetryingLevel() {
 }
 
 void InterlevelContext::setAdvancingLevel() {
+	lif::time.resume();
+
 	if (lm.getLevelTime().getRemainingTime() <= sf::Time::Zero) {
 		// No time remaining: skip this phase
 		_setPromptContinue();
 		return;
 	}
 	state = State::DISTRIBUTING_POINTS;
-	lastTickTime = clock.restart();
+	lastTickTime = time = sf::Time::Zero;
 	bonusPoints = 0;
 	bonusTime = sf::Time::Zero;
 	centralText.setString("TIME BONUS!");
@@ -76,8 +79,10 @@ void InterlevelContext::setAdvancingLevel() {
 }
 
 void InterlevelContext::setGettingReady(unsigned short lvnum) {
+	lif::time.resume();
+
 	state = State::GETTING_READY;
-	clock.restart();
+	time = sf::Time::Zero;
 	centralText.setString("LEVEL " + lif::to_string(lvnum));
 	auto bounds = centralText.getGlobalBounds();
 	centralText.setPosition(lif::center(bounds, WIN_BOUNDS));
@@ -104,7 +109,7 @@ void InterlevelContext::_setPromptContinue() {
 		return;
 	}
 	state = State::PROMPT_CONTINUE;
-	clock.restart();
+	time = sf::Time::Zero;
 	_preparePromptContinue(idx);
 }
 
@@ -131,6 +136,7 @@ void InterlevelContext::_preparePromptContinue(unsigned short idx) {
 }
 
 void InterlevelContext::update() {
+	time += lif::time.getDelta();
 	switch (state) {
 	case State::DISTRIBUTING_POINTS:
 		_tickDistributePoints();
@@ -157,8 +163,6 @@ void InterlevelContext::update() {
 }
 
 void InterlevelContext::_tickDistributePoints() {
-	const auto time = clock.getElapsedTime();
-
 	// Wait 2 seconds before starting updating score
 	if (time < sf::seconds(2)) return;
 
@@ -171,7 +175,7 @@ void InterlevelContext::_tickDistributePoints() {
 			bonusTime = sf::seconds(static_cast<int>(lm.getLevelTime().getRemainingTime().asSeconds()));
 		} else {
 			// Pass to next phase
-			clock.restart();
+			time = sf::Time::Zero;
 			state = State::WAIT_DISTRIBUTING_POINTS;
 			return;
 		}
@@ -198,12 +202,12 @@ void InterlevelContext::_tickDistributePoints() {
 }
 
 void InterlevelContext::_tickGettingReady() {
-	if (clock.getElapsedTime() > sf::seconds(3))
+	if (time > sf::seconds(3))
 		newContext = lif::CTX_GAME;
 }
 
 void InterlevelContext::_tickWaitDistributePoints() {
-	if (clock.getElapsedTime() > sf::seconds(2))
+	if (time > sf::seconds(2))
 		_setPromptContinue();
 }
 

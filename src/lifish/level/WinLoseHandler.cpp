@@ -12,6 +12,7 @@
 #include "Player.hpp"
 #include "SidePanel.hpp"
 #include "Sounded.hpp"
+#include "Time.hpp"
 #include "game.hpp"
 #include <iostream>
 
@@ -24,6 +25,7 @@ WinLoseHandler::WinLoseHandler(lif::LevelManager& lm, const lif::SidePanel& side
 {}
 
 void WinLoseHandler::handleWinLose() {
+	time += lif::time.getDelta();
 	switch (state) {
 	case State::HANDLING_WIN:
 		_handleWin();
@@ -45,7 +47,6 @@ void WinLoseHandler::handleWinLose() {
 }
 
 void WinLoseHandler::_handleWin() {
-	const auto time = clock.getElapsedTime();
 	if (time >= sf::seconds(4)) {
 		levelClearSoundPlayed = false;
 		playerWinSoundPlayed = false;
@@ -99,7 +100,7 @@ void WinLoseHandler::_checkCondition() {
 		_handleLoss();
 	} else if (lm.isLevelClear()) {
 		state = State::HANDLING_WIN;
-		clock.restart();
+		time = sf::Time::Zero;
 		_handleWin();
 	}
 }
