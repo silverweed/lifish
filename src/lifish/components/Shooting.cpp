@@ -114,11 +114,12 @@ void Shooting::_contactAttack() {
 		default: break;
 		}
 	}
+	// TODO: set attack animation
 	if (attack.type & lif::AttackType::RANGED) {
 		auto moving = ownerMoving == nullptr ? owner.get<lif::Moving>() : ownerMoving;
 		if (moving == nullptr)
 			throw std::logic_error("Called shoot() for a dashing attack on a non-Moving owner!");
-		moving->setDashing(4);
+		moving->setDashing(3);
 	}
 }
 

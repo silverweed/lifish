@@ -10,7 +10,6 @@ class Animated;
 class ShootingPoint;
 
 class AlienBoss : public lif::Boss {
-	unsigned short shotsFired = 0;
 	lif::Animated *animated = nullptr;
 	std::array<lif::ShootingPoint*, 2> eyes;
 

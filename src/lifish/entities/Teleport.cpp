@@ -49,7 +49,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 	auto& animatedSprite = animated->getSprite();
 	animatedSprite.setAnimation(anim);
 	animatedSprite.setLooped(true);
-	animatedSprite.setFrameTime(sf::seconds(0.15));
+	animatedSprite.setFrameTime(sf::seconds(0.07));
 	animatedSprite.play();
 }
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "conf/enemy.hpp"
-
 namespace lif {
 
 namespace conf {
@@ -10,7 +8,7 @@ namespace conf {
 		const sf::Time QUICK_FUSE = DEFAULT_FUSE / 2.f;
 		constexpr auto DEFAULT_RADIUS = 2;
 		constexpr auto MAX_RADIUS = 4;
-		constexpr auto EXPL_DAMAGE = lif::conf::enemy::BASE_LIFE;
+		constexpr auto EXPL_DAMAGE = 1;
 	}
 }
 
