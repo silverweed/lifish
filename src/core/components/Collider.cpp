@@ -53,8 +53,27 @@ void Collider::update() {
 bool Collider::collidesWithSolid() const {
 	if (atLimit) return true;
 	for (auto c : colliding)
-		if (!c.expired() && c.lock().get()->isSolidFor(*this))
+		if (!c.expired() && c.lock()->isSolidFor(*this))
 			return true;
+	return false;
+}
+
+bool Collider::collidesWithSolid(const sf::Vector2f& direction) const {
+	if (atLimit) return true;
+
+	const auto ownerPos = getOwner().getPosition();
+	for (auto c : colliding) {
+		if (c.expired())
+			continue;
+
+		const auto cld = c.lock();
+		if (!cld->isSolidFor(*this))
+			continue;
+
+		const auto othowner = cld->getOwner();
+		if (lif::dot(othowner.getPosition() - ownerPos, direction) > 0)
+			return true;
+	}
 	return false;
 }
 

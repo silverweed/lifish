@@ -1,7 +1,7 @@
 #include "collision_utils.hpp"
 #include "AxisMoving.hpp"
-#include "Collider.hpp"
 #include "BaseLevelManager.hpp"
+#include "Collider.hpp"
 
 using lif::TILE_SIZE;
 

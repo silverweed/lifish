@@ -1,4 +1,5 @@
 #include "Shooting.hpp"
+#include "Animated.hpp"
 #include "AxisMoving.hpp"
 #include "BulletFactory.hpp"
 #include "GameCache.hpp"
@@ -114,12 +115,17 @@ void Shooting::_contactAttack() {
 		default: break;
 		}
 	}
-	// TODO: set attack animation
+
+	// Dashing attack
 	if (attack.type & lif::AttackType::RANGED) {
-		auto moving = ownerMoving == nullptr ? owner.get<lif::Moving>() : ownerMoving;
-		if (moving == nullptr)
+		if (ownerMoving == nullptr)
 			throw std::logic_error("Called shoot() for a dashing attack on a non-Moving owner!");
-		moving->setDashing(3);
+		ownerMoving->setDashing(3);
+		auto anim = owner.get<lif::Animated>();
+		if (anim != nullptr) {
+			anim->setAnimation(lif::sid("shoot_" + lif::directionToString(ownerMoving->getDirection())));
+			anim->getSprite().setLooped(true);
+		}
 	}
 }
 

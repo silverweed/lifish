@@ -37,7 +37,7 @@ protected:
 	lif::Collider *collider = nullptr;
 
 
-	bool _collidesWithSolid() const;
+	bool _collidesWithSolid(const sf::Vector2f& direction) const;
 	/** Checks if entity is blocked and unblocks it if block expired.
 	 *  @return true if entity is still blocked, false otherwise.
 	 */

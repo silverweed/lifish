@@ -33,7 +33,6 @@ AlienBoss::AlienBoss(const sf::Vector2f& pos)
 	_addDefaultCollider(size);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "alien_boss.png"));
 	animated->addAnimation("idle", { sf::IntRect(0, 0, size.x, size.y) }, true);
-	addComponent<lif::Lifed>(*this, LIFE);
 
 	lif::Attack attack;
 	attack.type = lif::AttackType::SIMPLE;

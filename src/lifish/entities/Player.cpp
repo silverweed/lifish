@@ -62,11 +62,12 @@ void Player::_init() {
 		else if (damage > 0)
 			_hurt();
 	});
-	addComponent<lif::Collider>(*this, [this] (lif::Collider& cld) {
+	auto collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& cld) {
 		// on collision
 		if (!killable->isKilled())
 			_checkCollision(cld);
 	}, lif::c_layers::PLAYERS);
+	collider->setForceAck(true);
 	moving = addComponent<lif::AxisMoving>(*this, lif::conf::player::DEFAULT_SPEED);
 	moving->setFastTurn(false);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "player"s +

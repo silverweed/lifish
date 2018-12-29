@@ -68,7 +68,7 @@ void AxisMoving::update() {
 		}
 	}
 
-	if (!_collidesWithSolid()) {
+	if (!_collidesWithSolid(lif::directionToVersor(direction))) {
 		owner.setPosition(owner.getPosition() + shift * frameTime.asSeconds());
 		if (delta > 1 && ensureAlign)
 			_ensureAlign();

@@ -76,6 +76,11 @@ inline sf::Vector2f aligned2(const sf::Vector2f& pos) {
 }
 
 template<typename T>
+inline float dot(const sf::Vector2<T>& a, const sf::Vector2<T>& b) {
+	return a.x * b.x + a.y * b.y;
+}
+
+template<typename T>
 constexpr std::ostream& operator<<(std::ostream& stream, sf::Vector2<T> vec) {
 	return stream << "(" << vec.x << ", " << vec.y << ")";
 }
@@ -103,7 +108,7 @@ constexpr float sqrDistance(sf::Vector2<T> a, sf::Vector2<R> b) {
 
 template<typename T>
 constexpr float length(sf::Vector2<T> v) {
-	return std::sqrt(v.x * v.x + v.y * v.y);
+	return std::sqrt(lif::dot(v, v));
 }
 
 template<typename T, typename R>

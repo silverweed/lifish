@@ -1,10 +1,10 @@
 #pragma once
 
-#include <functional>
-#include <memory>
-#include <SFML/Graphics.hpp>
 #include "Component.hpp"
 #include "collision_layers.hpp"
+#include <SFML/Graphics.hpp>
+#include <functional>
+#include <memory>
 
 namespace lif {
 
@@ -103,6 +103,7 @@ public:
 	bool isColliding() const;
 	/** Like `isColliding`, but only account for colliders which are solid for this one */
 	bool collidesWithSolid() const;
+	bool collidesWithSolid(const sf::Vector2f& direction) const;
 
 	/** @return the bounding box of this Collider */
 	sf::FloatRect getRect() const;

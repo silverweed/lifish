@@ -1,10 +1,11 @@
 #include "DebugRenderer.hpp"
-#include "SHCollisionDetector.hpp"
-#include "EntityGroup.hpp"
 #include "DebugPainter.hpp"
+#include "EntityGroup.hpp"
+#include "SHCollisionDetector.hpp"
 #include <sstream>
 
 #define COLLIDER_REGULAR_COLOR sf::Color(255, 0, 255, 110)
+#define COLLIDER_COLLIDING_COLOR sf::Color(255, 0, 5, 180)
 #define COLLIDER_PHANTOM_COLOR sf::Color(194, 194, 194, 110)
 #define COLLIDER_INACTIVE_COLOR sf::Color(194, 194, 194, 92)
 
@@ -16,7 +17,9 @@ void DebugRenderer::drawColliders(const lif::EntityGroup& group) {
 			const auto color = c->isActive()
 						? c->isPhantom()
 							? COLLIDER_PHANTOM_COLOR
-							: COLLIDER_REGULAR_COLOR
+							: c->getColliding().size() > 0
+								? COLLIDER_COLLIDING_COLOR
+								: COLLIDER_REGULAR_COLOR
 						: COLLIDER_INACTIVE_COLOR;
 			lif::debugPainter->addRectangleAt(
 				c->getPosition(), sf::Vector2f(c->getRect().width, c->getRect().height),
