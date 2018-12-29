@@ -1,6 +1,5 @@
 #include "DroppingSprite.hpp"
 #include "AxisMoving.hpp"
-#include "Clock.hpp"
 #include "Drawable.hpp"
 #include "Sprite.hpp"
 #include "Time.hpp"

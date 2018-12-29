@@ -7,7 +7,6 @@ namespace lif {
 class Animated;
 class AxisMoving;
 class BufferedSpawner;
-class Clock;
 class EnergyBar;
 class LevelManager;
 
@@ -16,10 +15,11 @@ class BigAlienBoss : public lif::Boss {
 	const lif::LevelManager& lm;
 
 	lif::BufferedSpawner *spawner = nullptr;
-	lif::Clock *attackClock = nullptr;
 	lif::Animated *animated = nullptr;
 	lif::AxisMoving *moving = nullptr;
 	lif::EnergyBar *energyBar = nullptr;
+
+	sf::Time atkT;
 
 	sf::Vector2f _eggOffset() const;
 

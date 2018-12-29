@@ -5,7 +5,6 @@
 
 namespace lif {
 
-class Clock;
 class Sprite;
 
 /** Keeps track of the final boss's health */
@@ -15,7 +14,6 @@ class EnergyBar : public lif::Component, public sf::Drawable {
 
 	lif::Sprite *bar = nullptr;
 	lif::Sprite *emptyBar = nullptr;
-	lif::Clock *moveClock = nullptr;
 	bool moving = false;
 
 public:

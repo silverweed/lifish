@@ -23,8 +23,8 @@ class InterlevelContext : public lif::WindowContext {
 		GETTING_READY
 	} state = State::DISTRIBUTING_POINTS;
 
-	sf::Clock clock;
 	sf::Time lastTickTime;
+	sf::Time time;
 	sf::Font interlevelFont;
 
 	sf::Text centralText;

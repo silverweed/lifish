@@ -1,7 +1,7 @@
 #include "EnergyBar.hpp"
-#include "Clock.hpp"
 #include "Drawable.hpp"
 #include "Sprite.hpp"
+#include "Time.hpp"
 #include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
 #include "game.hpp"
@@ -19,7 +19,6 @@ EnergyBar::EnergyBar(lif::Entity& owner)
 			lif::getAsset("graphics", "energy_bar_empty.png"), sf::IntRect(0, 0, 285, 20));
 	addComponent<lif::Drawable>(*this, *this);
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::UI);
-	moveClock = addComponent<lif::Clock>(*this);
 }
 
 void EnergyBar::setEnergy(int amt) {
@@ -36,10 +35,9 @@ void EnergyBar::update() {
 
 	if (!moving) return;
 
-	setPosition(getPosition() - sf::Vector2f(0, SPEED) * moveClock->restart().asSeconds());
+	setPosition(getPosition() - sf::Vector2f(0, SPEED) * lif::time.getDelta().asSeconds());
 }
 
 void EnergyBar::moveOut() {
 	moving = true;
-	moveClock->restart();
 }

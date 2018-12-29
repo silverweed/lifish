@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Chronometer.hpp"
 #include "InterlevelContext.hpp"
 #include <SFML/Graphics.hpp>
 #include <memory>
@@ -45,7 +44,7 @@ private:
 
 	lif::LevelManager& lm;
 	lif::InterlevelContext interlevelCtx;
-	sftools::Chronometer clock;
+	sf::Time time;
 	bool levelClearSoundPlayed = false,
 	     playerWinSoundPlayed = false;
 

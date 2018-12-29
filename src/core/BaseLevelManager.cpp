@@ -77,17 +77,13 @@ void BaseLevelManager::reset() {
 }
 
 void BaseLevelManager::pause() {
-	lif::time.setTimeScale(0);
+	lif::time.pause();
 	paused = true;
 }
 
 void BaseLevelManager::resume() {
-	lif::time.setTimeScale(1);
+	lif::time.resume();
 	paused = false;
-}
-
-void BaseLevelManager::tickClocks(const sf::Time& delta) {
-	lif::time.addTime(delta);
 }
 
 void BaseLevelManager::disableInputFor(const sf::Time& time) {

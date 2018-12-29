@@ -3,7 +3,6 @@
 #include "AxisMoving.hpp"
 #include "Bonusable.hpp"
 #include "BufferedSpawner.hpp"
-#include "Clock.hpp"
 #include "Drawable.hpp"
 #include "Egg.hpp"
 #include "Enemy.hpp"
@@ -20,6 +19,7 @@
 #include "Scored.hpp"
 #include "Sounded.hpp"
 #include "Sprite.hpp"
+#include "Time.hpp"
 #include "ai_functions.hpp"
 #include "conf/boss.hpp"
 #include "conf/player.hpp"
@@ -45,7 +45,6 @@ BigAlienBoss::BigAlienBoss(const sf::Vector2f& pos, const lif::LevelManager& lm)
 		energyBar->setEnergy(newLife);
 	});
 	addComponent<lif::Scored>(*this, lif::conf::boss::big_alien_boss::VALUE);
-	attackClock = addComponent<lif::Clock>(*this);
 	addComponent<lif::Sounded>(*this,
 		lif::sid("death"), lif::getAsset("sounds", "big_alien_boss_death.ogg"),
 		lif::sid("hurt"), lif::getAsset("sounds", "big_alien_boss_hurt.ogg")
@@ -103,8 +102,10 @@ void BigAlienBoss::update() {
 	if (killable->isKilled())
 		return;
 
-	if (attackClock->getElapsedTime() > lif::conf::boss::big_alien_boss::ATK_INTERVAL) {
-		attackClock->restart();
+	atkT += lif::time.getDelta();
+
+	if (atkT > lif::conf::boss::big_alien_boss::ATK_INTERVAL) {
+		atkT = sf::Time::Zero;
 		moving->block(sf::seconds(1));
 		std::uniform_int_distribution<> dist(1, lif::N_ENEMIES);
 		auto egg = new lif::Egg(position + _eggOffset(),

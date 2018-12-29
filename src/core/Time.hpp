@@ -14,11 +14,14 @@ class Time final {
 
 	ClockType clock;
 	float timeScale = 1;
+	float prevTimeScale = 1;
 
 	// in microseconds
 	TimeType gameTime = 0;
 	TimeType prevFrameTime = 0;
 	TimeType realTime = 0;
+
+	bool skipFrameLock = false;
 
 public:
 	explicit Time()
@@ -32,6 +35,8 @@ public:
 
 		prevFrameTime = gameTime;
 		gameTime += static_cast<TimeType>(delta * timeScale);
+
+		skipFrameLock = false;
 	}
 
 	sf::Time getGameTime() const {
@@ -42,14 +47,16 @@ public:
 		static constexpr TimeType MAX_FRAME_TIME = 1'000'000 / 30;
 
 		auto deltaInUs = gameTime - prevFrameTime;
-		if (deltaInUs > MAX_FRAME_TIME)
-			deltaInUs = MAX_FRAME_TIME;
+		if (!skipFrameLock && deltaInUs > MAX_FRAME_TIME * timeScale)
+			deltaInUs = MAX_FRAME_TIME * timeScale;
 
 		return sf::microseconds(deltaInUs);
 	}
 
 	void addTime(sf::Time t) {
+		prevFrameTime = gameTime;
 		gameTime += t.asMicroseconds();
+		skipFrameLock = true;
 	}
 
 	void setTimeScale(float scale) {
@@ -58,6 +65,15 @@ public:
 
 	float getTimeScale() const {
 		return timeScale;
+	}
+
+	void pause() {
+		prevTimeScale = timeScale;
+		timeScale = 0;
+	}
+
+	void resume() {
+		timeScale = prevTimeScale;
 	}
 };
 
