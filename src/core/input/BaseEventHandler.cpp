@@ -1,6 +1,6 @@
 #include "BaseEventHandler.hpp"
-#include "core.hpp"
 #include "Options.hpp"
+#include "core.hpp"
 #include <SFML/Graphics.hpp>
 
 using lif::BaseEventHandler;
@@ -18,6 +18,7 @@ bool BaseEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 		case sf::Keyboard::V:
 			lif::options.vsync = !lif::options.vsync;
 			window.setFramerateLimit(lif::options.vsync ? lif::options.framerateLimit : 0);
+			window.setVerticalSyncEnabled(lif::options.vsync);
 			return true;
 #ifndef RELEASE
 		case sf::Keyboard::Q:
