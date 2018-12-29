@@ -4,17 +4,16 @@
 </a>
 
 ## ABOUT ##
-Lifish is an arcade old-style game inspired by Factor Software's BOOM.
+Lifish is a work-in-progress arcade old-style game inspired by Factor Software's BOOM. 
 
-Coded with [vim](http://www.vim.org/).
+The Lifish engine was used to create [BOOM Remake](https://silverweed.github.io/boom), a faithful remake of the original BOOM game.
 
-Lifish comes with a (Work In Progress) level editor, currently working only on Linux and MacOS: [LifishEdit](https://github.com/silverweed/lifish-edit)
+Lifish comes with a (Work In Progress) level editor, currently working only on Linux and MacOS: [LifishEdit](https://github.com/silverweed/lifish-edit). This also works for the BOOM Remake mod.
 
-### Planned release ###
-Once the main work is done (read: the assets), the game will be released 
-for the current platforms:
+### Main game planned release ###
+Once the main work is done, Lifish will be released for the current platforms:
 
-* Windows Vista or later 64 bit (if you want 32 bit, you can build it yourself)
+* Windows 64 bit (probably >= Vista)
 * Linux (somewhat recent versions of `libc` and `libstdc++` are needed; to be precise,
   your distro must support `GLIBC_2.17` and `GLIBCXX_3.4.20`.)
 * OS X
@@ -23,10 +22,6 @@ for the current platforms:
 See later for instructions on how to build the game from the sources.
 
 ## Building ##
-
-### Note about assets ###
-The graphics and sounds you'll find in `assets` is a placeholder. No graphic asset is even close to being final, and the final
-assets won't be uploaded on this repo, as they'll be available for purchase in the official release.
 
 ### DEPENDENCIES ###
 
@@ -56,7 +51,16 @@ at the moment it's not really a good idea to do so, as:
 If launched from the command line, `lifish` accepts a bunch of parameters (see `lifish -h` for details).
 It also accepts an optional argument which is the path of the level JSON to use (default: `lifish.json`).
 
+### Note about assets ###
+The graphics and sounds you'll find in `assets` are placeholder. No graphic asset is even close to being final, and the final
+assets won't be uploaded on this repo, as they'll be available for purchase in the official release.
+
 ## LICENSE ##
-Copyright (c) Giacomo Parolini, 2017
+Copyright (c) Giacomo Parolini, 2018
 
 See the LICENSE file for licensing information.
+
+### Other ###
+
+Coded with [vim](http://www.vim.org/).
+
