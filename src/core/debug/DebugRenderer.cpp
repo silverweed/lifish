@@ -11,8 +11,8 @@
 using lif::debug::DebugRenderer;
 
 void DebugRenderer::drawColliders(const lif::EntityGroup& group) {
-	group.apply([] (const lif::Entity *e) {
-		for (const auto c : e->getAllRecursive<lif::Collider>()) {
+	group.apply([] (const lif::Entity& e) {
+		for (const auto c : e.getAllRecursive<lif::Collider>()) {
 			const auto color = c->isActive()
 						? c->isPhantom()
 							? COLLIDER_PHANTOM_COLOR

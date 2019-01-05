@@ -5,7 +5,7 @@
 #include "BaseLevelManager.hpp"
 
 #define DEF_LOGIC(name) \
-	void name(lif::Entity *e, lif::BaseLevelManager& lm, std::vector<lif::Entity*>& tbspawned)
+	void name(lif::Entity& e, lif::BaseLevelManager& lm, std::vector<lif::Entity*>& tbspawned)
 
 namespace lif {
 

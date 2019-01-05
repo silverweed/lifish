@@ -112,14 +112,14 @@ sf::Vector2f AlienPredator::_findTunneledPosition(const lif::LevelManager& lm) c
 	}
 
 	// Then exclude all tiles occupied by solid entities or nearby moving solid entities
-	lm.getEntities().apply([this, &tiles] (const lif::Entity *e) {
-		const auto cld = e->get<lif::Collider>();
+	lm.getEntities().apply([this, &tiles] (const lif::Entity& e) {
+		const auto cld = e.get<lif::Collider>();
 		if (cld == nullptr || !cld->isSolidFor(*collider))
 			return lif::EntityGroup::APPLY_PROCEED;
 
-		sf::Vector2i etile(lif::tile(e->getPosition()));
+		sf::Vector2i etile(lif::tile(e.getPosition()));
 		tiles.remove(etile);
-		const auto mv = e->get<lif::AxisMoving>();
+		const auto mv = e.get<lif::AxisMoving>();
 		if (mv == nullptr)
 			return lif::EntityGroup::APPLY_PROCEED;
 

@@ -79,33 +79,33 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 					lm.players[id]->get<lif::Animated>()->setAnimation("idle_down");
 					lm.players[id]->get<lif::Moving>()->stop();
 					entities.add(lm.players[id]);
-					entities.add(new lif::Flash(pos));
+					entities.add<lif::Flash>(pos);
 				}
 			};
 
 			switch (level.getTile(left, top)) {
 			case EntityType::FIXED:
-				entities.add(new lif::FixedWall(curPos, level.getInfo().tileIDs.fixed));
+				entities.add<lif::FixedWall>(curPos, level.getInfo().tileIDs.fixed);
 				break;
 
 			case EntityType::BREAKABLE:
-				entities.add(new lif::BreakableWall(curPos, level.getInfo().tileIDs.breakable));
+				entities.add<lif::BreakableWall>(curPos, level.getInfo().tileIDs.breakable);
 				break;
 
 			case EntityType::TRANSPARENT_WALL:
-				entities.add(new lif::TransparentWall(curPos));
+				entities.add<lif::TransparentWall>(curPos);
 				break;
 
 			case EntityType::ACID_POND:
-				entities.add(new lif::AcidPond(curPos, sf::Vector2f(TILE_SIZE, TILE_SIZE)));
+				entities.add<lif::AcidPond>(curPos, sf::Vector2f(TILE_SIZE, TILE_SIZE));
 				break;
 
 			case EntityType::COIN:
-				entities.add(new lif::Coin(curPos));
+				entities.add<lif::Coin>(curPos);
 				break;
 
 			case EntityType::HAUNTED_STATUE:
-				entities.add(new lif::HauntedStatue(curPos));
+				entities.add<lif::HauntedStatue>(curPos);
 				break;
 
 			case EntityType::PLAYER1:
@@ -117,16 +117,13 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				break;
 
 			case EntityType::SPIKES:
-				entities.add(new lif::Spikes(curPos));
+				entities.add<lif::Spikes>(curPos);
 				break;
 
 			case EntityType::TORCH:
-				{
-					auto torch = new lif::Torch(curPos);
-					torch->fixOrientation(level);
-					entities.add(torch);
-					break;
-				}
+				entities.add<lif::Torch>(curPos)
+					->fixOrientation(level);
+				break;
 
 			case EntityType::TELEPORT:
 				{
@@ -242,7 +239,7 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				lif::c_layers::UNBREAKABLES
 			});
 		}
-		entities.add(new lif::Flare(sf::seconds(0.07f), sf::seconds(0.7f)));
+		entities.add<lif::Flare>(sf::seconds(0.07f), sf::seconds(0.7f));
 	}
 
 	return true;

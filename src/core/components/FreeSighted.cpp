@@ -17,16 +17,16 @@ void FreeSighted::update() {
 	seen.clear();
 
 	const auto sqrVR = visionRadius * lif::TILE_SIZE * visionRadius * lif::TILE_SIZE;
-	entities->apply([this, sqrVR] (lif::Entity *e) {
+	entities->apply([this, sqrVR] (lif::Entity& e) {
 		// Don't see self
-		if (e == &owner)
+		if (&e == &owner)
 			return;
-		const auto dist = lif::sqrDistance(e->getPosition(), owner.getPosition());
+		const auto dist = lif::sqrDistance(e.getPosition(), owner.getPosition());
 		if (visionRadius > 0 && dist > sqrVR)
 			return;
 		// Only see living entities
-		const auto killable = e->get<lif::Killable>();
+		const auto killable = e.get<lif::Killable>();
 		if (killable == nullptr || !killable->isKilled())
-			seen.emplace_back(e, dist);
+			seen.emplace_back(&e, dist);
 	});
 }

@@ -14,11 +14,11 @@ void BaseLevelManager::update() {
 	DBGSTART("reset_align");
 
 	// Set prevAligns for aligned entities
-	entities.apply([] (lif::Entity *e) {
-		if (!e->isAligned()) return;
-		auto moving = e->get<lif::AxisMoving>();
+	entities.apply([] (lif::Entity& e) {
+		if (!e.isAligned()) return;
+		auto moving = e.get<lif::AxisMoving>();
 		if (moving == nullptr) return;
-		moving->setPrevAlign(lif::tile(e->getPosition()));
+		moving->setPrevAlign(lif::tile(e.getPosition()));
 	});
 
 	DBGEND("reset_align");

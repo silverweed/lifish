@@ -62,8 +62,8 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			return true;
 
 		case sf::Keyboard::Numpad3:
-			game.lm.getEntities().apply([] (lif::Entity *e) {
-				auto w = dynamic_cast<lif::BreakableWall*>(e);
+			game.lm.getEntities().apply([] (lif::Entity& e) {
+				auto w = dynamic_cast<lif::BreakableWall*>(&e);
 				if (w) w->get<lif::Killable>()->kill();
 			});
 			return true;
@@ -74,8 +74,8 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			return true;
 
 		case sf::Keyboard::Numpad6:
-			game.lm.getEntities().apply([] (lif::Entity *e) {
-				auto d = e->get<lif::Drawable>();
+			game.lm.getEntities().apply([] (lif::Entity& e) {
+				auto d = e.get<lif::Drawable>();
 				if (d) {
 					d->setScaleOrigin(lif::TILE_SIZE/2, lif::TILE_SIZE/2);
 					d->setScale(-d->getScale().x, 1);
@@ -101,8 +101,8 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			return true;
 
 		case sf::Keyboard::Numpad9:
-			game.lm.getEntities().apply([] (lif::Entity *e) {
-				auto d = e->get<lif::Drawable>();
+			game.lm.getEntities().apply([] (lif::Entity& e) {
+				auto d = e.get<lif::Drawable>();
 				if (d) {
 					d->setRotOrigin(lif::TILE_SIZE/2, lif::TILE_SIZE/2);
 					d->setRotation(d->getRotation() + lif::degrees(90));
@@ -111,8 +111,8 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			return true;
 
 		case sf::Keyboard::B:
-			game.lm.getEntities().apply([] (lif::Entity *e) {
-				auto en = dynamic_cast<lif::Boss*>(e);
+			game.lm.getEntities().apply([] (lif::Entity& e) {
+				auto en = dynamic_cast<lif::Boss*>(&e);
 				if (en) en->get<lif::Killable>()->kill();
 			});
 			return true;
@@ -120,8 +120,8 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 		case sf::Keyboard::C:
 			{
 				int i = 0;
-				game.lm.getEntities().apply([&i] (const lif::Entity *e) {
-					std::cout << i++ << ": " << e->toString() << std::endl;
+				game.lm.getEntities().apply([&i] (const lif::Entity& e) {
+					std::cout << i++ << ": " << e.toString() << std::endl;
 				});
 			}
 			return true;
@@ -164,15 +164,15 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			return true;
 
 		case sf::Keyboard::M:
-			game.lm.getEntities().apply([] (lif::Entity *e) {
-				auto en = dynamic_cast<lif::Enemy*>(e);
+			game.lm.getEntities().apply([] (lif::Entity& e) {
+				auto en = dynamic_cast<lif::Enemy*>(&e);
 				if (en) en->setMorphed(!en->isMorphed());
 			});
 			return true;
 
 		case sf::Keyboard::N:
-			game.lm.getEntities().apply([] (lif::Entity *e) {
-				auto en = dynamic_cast<lif::Enemy*>(e);
+			game.lm.getEntities().apply([] (lif::Entity& e) {
+				auto en = dynamic_cast<lif::Enemy*>(&e);
 				if (en) en->get<lif::Killable>()->kill();
 			});
 			return true;
@@ -227,9 +227,9 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 std::string _printEntitiesDetails(const lif::EntityGroup& entities) {
 	std::map<std::string, unsigned> count;
 	std::size_t largest = 1;
-	entities.apply([&count, &largest] (const lif::Entity *e) {
+	entities.apply([&count, &largest] (const lif::Entity& e) {
 		++count["all"];
-		const auto tname = e->getTypeName();
+		const auto tname = e.getTypeName();
 		++count[tname];
 		largest = std::max(largest, tname.length() + 1);
 	});

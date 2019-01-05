@@ -29,11 +29,11 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 
 	int minZ = 0, maxZ = 0;
 	owner.entities.mtxLock();
-	owner.entities.apply([&toDraw, &minZ, &maxZ] (const lif::Entity *e) {
-		const auto d = e->get<lif::Drawable>();
+	owner.entities.apply([&toDraw, &minZ, &maxZ] (const lif::Entity& e) {
+		const auto d = e.get<lif::Drawable>();
 		if (d == nullptr)
 			return;
-		const auto zidx = e->get<lif::ZIndexed>();
+		const auto zidx = e.get<lif::ZIndexed>();
 		if (zidx != nullptr) {
 			const auto z = zidx->getZIndex();
 			if (z < minZ) minZ = z;
