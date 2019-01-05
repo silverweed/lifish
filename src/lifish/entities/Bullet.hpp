@@ -35,7 +35,7 @@ struct BulletData {
  */
 struct BulletInfo {
 	/** Determines the bullet's data */
-	unsigned short dataId;
+	unsigned short dataId = 0;
 	/** The damage to deal to the impacted Entity */
 	int damage = 1;
 	/** Bullet speed, relative to players' base speed (1 means "as fast as players").

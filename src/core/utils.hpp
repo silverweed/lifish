@@ -123,8 +123,8 @@ inline Angle angleBetween(sf::Vector2<T> a, sf::Vector2<R> b) {
 constexpr Angle angleBetween(sf::Vector2<T> a, sf::Vector2<R> b) {
 #endif
 	// calculate angle with ppos: a = pi - arctan(dy / dx)
-	const double dx = b.x - a.x,
-	             dy = b.y - a.y;
+	const double dx = static_cast<double>(b.x) - static_cast<double>(a.x),
+	             dy = static_cast<double>(b.y) - static_cast<double>(a.y);
 	return lif::radians(lif::PI / 2. + std::atan2(dy, dx));
 }
 
@@ -141,7 +141,7 @@ inline sf::Vector2f normalized(const sf::Vector2<T>& v) {
  */
 template<typename T, typename R>
 constexpr float centerX(sf::Rect<T> innerBounds, sf::Rect<R> outerBounds) {
-	return outerBounds.left + (outerBounds.width - innerBounds.width) / 2.;
+	return outerBounds.left + (outerBounds.width - innerBounds.width) / 2.f;
 }
 
 /** @return A float indicating the Y coordinate where `innerBounds` is to be positioned in
@@ -149,7 +149,7 @@ constexpr float centerX(sf::Rect<T> innerBounds, sf::Rect<R> outerBounds) {
  */
 template<typename T, typename R>
 constexpr float centerY(sf::Rect<T> innerBounds, sf::Rect<R> outerBounds) {
-	return outerBounds.top + (outerBounds.height - innerBounds.height) / 2.;
+	return outerBounds.top + (outerBounds.height - innerBounds.height) / 2.f;
 }
 
 /** Given a starting point `start`, returns the point which is at `extent` distance from it,

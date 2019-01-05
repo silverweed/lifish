@@ -214,10 +214,13 @@ void ScreenBuilder::_fixAlign(lif::ui::Screen& screen) {
 
 	for (auto& pair : toBeAligned) {
 		auto& e = pair.first;
+		if (!e)
+			continue;
 		unsigned row = pair.second;
 		const float xOffset = rowAligns[row] == "left" ? H_PADDING
 					: rowAligns[row] == "right" ? (screen.size.x - rowWidths[row] - H_PADDING)
 					: (screen.size.x - rowWidths[row]) / 2;
+		
 		if (auto text = dynamic_cast<lif::ShadedText*>(e)) {
 			text->setPosition(text->getPosition() + sf::Vector2f(xOffset, yOffset));
 		} else {

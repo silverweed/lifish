@@ -34,7 +34,7 @@ public:
 		realTime = now;
 
 		prevFrameTime = gameTime;
-		gameTime += static_cast<TimeType>(delta * timeScale);
+		gameTime += static_cast<TimeType>(delta * static_cast<double>(timeScale));
 
 		skipFrameLock = false;
 	}
@@ -48,7 +48,7 @@ public:
 
 		auto deltaInUs = gameTime - prevFrameTime;
 		if (!skipFrameLock && deltaInUs > MAX_FRAME_TIME * timeScale)
-			deltaInUs = MAX_FRAME_TIME * timeScale;
+			deltaInUs = MAX_FRAME_TIME * static_cast<double>(timeScale);
 
 		return sf::microseconds(deltaInUs);
 	}

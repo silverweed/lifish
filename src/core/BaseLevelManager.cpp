@@ -41,7 +41,7 @@ void BaseLevelManager::update() {
 #ifndef RELEASE
 	int i = 0;
 #endif
-	for (auto logic : logicFunctions) {
+	for (const auto& logic : logicFunctions) {
 #ifndef RELEASE
 		std::stringstream n;
 		n << "logic_" << i;

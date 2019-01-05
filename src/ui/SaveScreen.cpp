@@ -13,6 +13,8 @@ static const sf::Time CURSOR_BLINK_TIME = sf::seconds(1);
 SaveScreen::SaveScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	: lif::ui::Screen(window, sz)
 {
+	buffer.fill('\0');
+
 	name = SCREEN_NAME;
 	parent = "home";
 	_loadBGSprite(lif::getAsset("graphics", "screenbg1.png"));

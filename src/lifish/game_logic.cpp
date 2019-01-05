@@ -47,10 +47,10 @@ void lif::game_logic::bombDeployLogic(lif::Entity *e, lif::BaseLevelManager& blm
 	{
 		if (pinfo.powers.throwableBomb) {
 			const auto gameTime = lif::time.getGameTime();
-			if (gameTime - latestBomb[pinfo.id-1] < sf::seconds(0.5))
+			if (gameTime - latestBomb[pinfo.id - 1] < sf::seconds(0.5))
 				return;
 
-			latestBomb[pinfo.id-1] = gameTime;
+			latestBomb[pinfo.id - 1] = gameTime;
 
 			if (lm.bombsDeployedBy(pinfo.id) > 0) {
 				auto bomb = lm.getFirstValidBomb(pinfo.id);

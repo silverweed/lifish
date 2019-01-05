@@ -59,9 +59,11 @@ template<class T>
 std::vector<T*> Entity::getAllRecursive() const {
 	std::vector<T*> all;
 	for (auto ptr : compSet) {
-		T* derived = nullptr;
-		if (ptr && (derived = dynamic_cast<T*>(ptr)))
+		if (!ptr)
+				continue;
+		if (T* derived = dynamic_cast<T*>(ptr))
 			all.emplace_back(derived);
+
 		auto sub = ptr->getAllRecursive<T>();
 		all.insert(all.end(), sub.begin(), sub.end());
 	}

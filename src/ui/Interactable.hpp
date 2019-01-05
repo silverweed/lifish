@@ -16,7 +16,7 @@ class Interactable : public sf::Drawable, public lif::WithOrigin {
 		TEXT, SPRITE
 	};
 	union {
-		lif::ShadedText *text;
+		lif::ShadedText *text = nullptr;
 		sf::Sprite *sprite;
 	};
 	const Type type;

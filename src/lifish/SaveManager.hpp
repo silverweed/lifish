@@ -12,17 +12,17 @@ namespace lif {
 class LevelManager;
 
 struct PlayerSaveData {
-	int continues;
-	int remainingLives;
-	int life;
+	int continues = 0;
+	int remainingLives = 0;
+	int life = 0;
 	lif::PlayerPowers powers;
 	std::array<bool, lif::conf::player::N_EXTRA_LETTERS> letters;
-	unsigned score;
+	unsigned score = 0;
 };
 
 struct SaveData {
 	std::string levelSet;
-	unsigned short level;
+	unsigned short level = 0;
 	std::array<PlayerSaveData, lif::MAX_PLAYERS> players;
 };
 

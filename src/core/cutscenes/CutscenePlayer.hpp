@@ -27,7 +27,7 @@ class CutscenePlayer final : public lif::WindowContext {
 
 	sf::Clock fadeClock;
 	mutable sf::RectangleShape fadeSprite;
-	bool fadingIn;
+	bool fadingIn = false;
 
 	void _startFadeIn();
 	void _startFadeOut();
