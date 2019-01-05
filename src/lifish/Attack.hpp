@@ -46,7 +46,7 @@ inline bool stringToAttackType(const std::string& str, AttackType& type) {
 
 /** Information about how an entity attacks */
 struct Attack {
-	lif::AttackType type;
+	lif::AttackType type = lif::AttackType::SIMPLE;
 
 	/** Damage dealt by the entity itself colliding with the player */
 	int contactDamage = 1;
@@ -57,7 +57,7 @@ struct Attack {
 	/** Cooldown is 1/fireRate s. If AI is ai_follow_dash, determines
 	 *  the cooldown between two dashes.
 	 */
-	float fireRate;
+	float fireRate = 1;
 
 	/** If attacktype is SIMPLE | BLOCKING, this is the time
 	 *  the enemy stops after shooting (should be more than Shooting::SHOOT_FRAME_TIME);

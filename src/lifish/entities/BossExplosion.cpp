@@ -24,6 +24,6 @@ BossExplosion::BossExplosion(const sf::Vector2f& pos)
 		lif::sid("explode"), lif::getAsset("test", "bossbullet_hit.ogg")
 	);
 	get<lif::ZIndexed>()->setZIndex(lif::conf::zindex::BOSS_EXPLOSIONS);
-	std::uniform_int_distribution<unsigned char> dist(100, 232);
+	std::uniform_int_distribution<> dist(100, 232);
 	animated->getSprite().setColor(sf::Color(232, dist(lif::rng), 0));
 }

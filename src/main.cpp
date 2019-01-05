@@ -56,13 +56,13 @@
 #endif
 
 struct MainArgs {
-	short start_level;
+	short start_level = 1;
 	std::string levelset_name;
-	bool mute_sounds;
-	bool mute_music;
-	int fps;
+	bool mute_sounds = false;
+	bool mute_music = false;
+	int fps = 60;
 #ifndef RELEASE
-	bool start_from_home;
+	bool start_from_home = false;
 #endif
 };
 

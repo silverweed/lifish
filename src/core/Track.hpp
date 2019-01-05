@@ -10,7 +10,9 @@ namespace lif {
  */
 struct Track {
 	std::string name;
-	float loopstart, loopend, looplength;
+	float loopstart = 0,
+	      loopend = 0,
+	      looplength = 0;
 };
 
 Track getNthTrack(int num, float start, float length);

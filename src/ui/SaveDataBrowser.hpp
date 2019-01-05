@@ -15,7 +15,7 @@ protected:
 	struct SaveFile {
 		std::string displayName;
 		std::string path;
-		int level;
+		int level = 0;
 	};
 
 	SaveDataBrowser();

@@ -30,16 +30,6 @@ class LevelRenderer;
  */
 class EntityGroup final : private sf::NonCopyable {
 
-	template<typename F, typename...Args>
-	using result_t = typename std::result_of<F(lif::Entity*, Args&&...)>::type;
-
-	template<typename F, typename R, typename...Args>
-	using returns_t = typename std::enable_if<std::is_same<
-		result_t<F, Args...>,
-		R
-		>::value, std::nullptr_t>::type;
-
-
 	bool alreadyPrunedThisUpdate = false,
 	     alreadyCheckedThisUpdate = false;
 
@@ -95,7 +85,11 @@ public:
 	 *  If the passed function returns APPLY_EXIT for an Entity,
 	 *  this function will return without processing additional entities.
 	 */
-	template<typename F, typename...Args, returns_t<F, bool, Args...> = nullptr>
+
+	template<typename F, typename...Args,
+		typename std::enable_if<std::is_same<
+			typename std::result_of<F(lif::Entity*, Args&&...)>::type, bool>::value,
+				std::nullptr_t>::type = nullptr>
 	void apply(const F& func, Args&&... args) {
 		for (auto& e : entities)
 			if (func(e.get(), std::forward<Args>(args)...))
@@ -103,14 +97,20 @@ public:
 	}
 
 	/** Applies a function to all entities. */
-	template<typename F, typename...Args, returns_t<F, void, Args...> = nullptr>
+    template<typename F, typename...Args,
+		typename std::enable_if<std::is_same<
+			typename std::result_of<F(lif::Entity*, Args&&...)>::type, void>::value,
+				std::nullptr_t>::type = nullptr>
 	void apply(const F& func, Args&&... args) {
 		for (auto& e : entities)
 			func(e.get(), std::forward<Args>(args)...);
 	}
 
 	/** @see apply */
-	template<typename F, typename...Args, returns_t<F, bool, Args...> = nullptr>
+    template<typename F, typename...Args,
+		typename std::enable_if<std::is_same<
+			typename std::result_of<F(lif::Entity*, Args&&...)>::type, bool>::value,
+				std::nullptr_t>::type = nullptr>
 	void apply(const F& func, Args&&... args) const {
 		for (const auto& e : entities)
 			if (func(e.get(), std::forward<Args>(args)...))
@@ -118,7 +118,10 @@ public:
 	}
 
 	/** @see apply */
-	template<typename F, typename...Args, returns_t<F, void, Args...> = nullptr>
+    template<typename F, typename...Args,
+		typename std::enable_if<std::is_same<
+			typename std::result_of<F(lif::Entity*, Args&&...)>::type, void>::value,
+				std::nullptr_t>::type = nullptr>
 	void apply(const F& func, Args&&... args) const {
 		for (const auto& e : entities)
 			func(e.get(), std::forward<Args>(args)...);

@@ -67,7 +67,7 @@ lif::SaveData SaveManager::loadGame(const std::string& filename) {
 	try {
 		nlohmann::json load = nlohmann::json::parse(std::ifstream(filename));
 
-		data.levelSet = load["levelSet"];
+		data.levelSet = load["levelSet"].get<std::string>();
 		data.level = load["level"];
 		for (unsigned i = 0; i < data.players.size(); ++i) {
 			auto& player = data.players[i];

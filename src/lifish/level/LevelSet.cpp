@@ -152,7 +152,7 @@ void LevelSet::loadFromFile(const std::string& path) {
 		info.levelnum          = lvnum++;
 		info.time              = lvinfo["time"];
 		info.track             = tracks[lvinfo["music"].get<unsigned short>()-1];
-		info.tilemap           = lvinfo["tilemap"];
+		info.tilemap           = lvinfo["tilemap"].get<std::string>();
 		info.width             = lvinfo["width"];
 		info.height            = lvinfo["height"];
 		info.tileIDs.border    = lvinfo["tileIDs"]["border"];
