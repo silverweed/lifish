@@ -100,8 +100,8 @@ void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& 
 		break;
 		*/
 	case B::ZAPPER:
-		lm.getEntities().apply([&lm] (lif::Entity *e) {
-			auto brk = dynamic_cast<lif::BreakableWall*>(e);
+		lm.getEntities().apply([&lm] (lif::Entity& e) {
+			auto brk = dynamic_cast<lif::BreakableWall*>(&e);
 			if (brk == nullptr) return;
 
 			auto klb = brk->get<lif::Killable>();
@@ -114,8 +114,8 @@ void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& 
 		});
 		break;
 	case B::SUDDEN_DEATH:
-		lm.getEntities().apply([&lm] (lif::Entity *e) {
-			auto enemy = dynamic_cast<lif::Enemy*>(e);
+		lm.getEntities().apply([&lm] (lif::Entity& e) {
+			auto enemy = dynamic_cast<lif::Enemy*>(&e);
 			if (enemy == nullptr) return;
 
 			auto klb = enemy->get<lif::Killable>();

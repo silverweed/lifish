@@ -57,17 +57,17 @@ void AxisSighted::_fillLine(lif::Direction dir) {
 
 	seen[dir].clear();
 
-	entities->apply([&] (const lif::Entity *ptr) {
-		if (ptr == &owner)
+	entities->apply([&] (const lif::Entity& e) {
+		if (&e == &owner)
 			return;
-		const auto etile = lif::tile2(ptr->getPosition());
+		const auto etile = lif::tile2(e.getPosition());
 		if (!same_line(etile, mtile)) return;
 		const auto dist = lif::manhattanDistance(etile, mtile);
 		if (visionRadius < 0 || dist <= visionRadius) {
 			// Only see living entities (including those who are killed but whose kill is in progress)
-			const auto killable = ptr->get<lif::Killable>();
+			const auto killable = e.get<lif::Killable>();
 			if (killable == nullptr || !killable->isKilled() || killable->isKillInProgress())
-				seen[dir].emplace_back(const_cast<lif::Entity*>(ptr), dist);
+				seen[dir].emplace_back(const_cast<lif::Entity*>(&e), dist);
 		}
 	});
 

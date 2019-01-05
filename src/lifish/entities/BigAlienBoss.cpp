@@ -139,7 +139,7 @@ void BigAlienBoss::_kill() {
 
 	// Kill every enemy on screen
 	lm.getEntities().apply([] (auto entity) {
-		auto enemy = dynamic_cast<lif::Enemy*>(entity);
+		auto enemy = dynamic_cast<lif::Enemy*>(&entity);
 		if (enemy == nullptr) return;
 		enemy->get<lif::Killable>()->kill();
 	});

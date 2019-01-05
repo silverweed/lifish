@@ -185,31 +185,31 @@ void GodEyeBoss::_shakeWalls() {
 	const auto lvHeight = lm.getLevel()->getInfo().height;
 
 	// Collect all entities to move
-	lm.getEntities().apply([lvWidth, lvHeight, &breakables, &fixed, &torches, &spikes] (lif::Entity *e) {
-		if (auto w = dynamic_cast<lif::FixedWall*>(e)) {
+	lm.getEntities().apply([lvWidth, lvHeight, &breakables, &fixed, &torches, &spikes] (lif::Entity& e) {
+		if (auto w = dynamic_cast<lif::FixedWall*>(&e)) {
 			fixed.emplace_back(w);
-			e->setPosition(sf::Vector2f(0, 0));
+			e.setPosition(sf::Vector2f(0, 0));
 			return;
 		}
-		if (auto w = dynamic_cast<lif::BreakableWall*>(e)) {
+		if (auto w = dynamic_cast<lif::BreakableWall*>(&e)) {
 			breakables.emplace_back(w);
-			e->setPosition(sf::Vector2f(0, 0));
+			e.setPosition(sf::Vector2f(0, 0));
 			return;
 		}
-		if (auto w = dynamic_cast<lif::Torch*>(e)) {
-			const auto pos = e->getPosition();
+		if (auto w = dynamic_cast<lif::Torch*>(&e)) {
+			const auto pos = e.getPosition();
 			if (pos.x * pos.y <= 0 || pos.x > lvWidth * TILE_SIZE || pos.y > lvHeight * TILE_SIZE)
 				return;
 			torches.emplace_back(w);
-			e->setPosition(sf::Vector2f(0, 0));
+			e.setPosition(sf::Vector2f(0, 0));
 			return;
 		}
-		if (auto w = dynamic_cast<lif::Spikes*>(e)) {
+		if (auto w = dynamic_cast<lif::Spikes*>(&e)) {
 			spikes.emplace_back(w);
-			e->setPosition(sf::Vector2f(0, 0));
+			e.setPosition(sf::Vector2f(0, 0));
 			return;
 		}
-		if (auto b = dynamic_cast<lif::Bomb*>(e)) {
+		if (auto b = dynamic_cast<lif::Bomb*>(&e)) {
 			b->ignite();
 			return;
 		}

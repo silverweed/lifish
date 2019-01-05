@@ -34,11 +34,11 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 			drawSelectiveLayers = drawSelectiveLayers,
 			layersToDraw = &layersToDraw,
 #endif
-			&toDraw, &minZ, &maxZ] (const lif::Entity *e) {
-		const auto d = e->get<lif::Drawable>();
+			&toDraw, &minZ, &maxZ] (const lif::Entity& e) {
+		const auto d = e.get<lif::Drawable>();
 		if (d == nullptr)
 			return;
-		const auto zidx = e->get<lif::ZIndexed>();
+		const auto zidx = e.get<lif::ZIndexed>();
 #ifndef RELEASE
 		if (zidx && drawSelectiveLayers && layersToDraw->find(zidx->getZIndex()) == layersToDraw->end())
 			return;

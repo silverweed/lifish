@@ -207,8 +207,8 @@ lif::Bomb* LevelManager::getFirstValidBomb(int id) const {
 
 bool LevelManager::isLevelClear() const {
 	bool clear = true;
-	entities.apply([&clear] (const lif::Entity *e) {
-		if (e->get<lif::Foe>() != nullptr) {
+	entities.apply([&clear] (const lif::Entity& e) {
+		if (e.get<lif::Foe>() != nullptr) {
 			clear = false;
 			return lif::EntityGroup::APPLY_EXIT;
 		}
@@ -250,8 +250,8 @@ void LevelManager::_triggerHurryUpWarning() {
 }
 
 void LevelManager::_triggerHurryUp() {
-	entities.apply([] (lif::Entity *e) {
-		auto enemy = dynamic_cast<lif::Enemy*>(e);
+	entities.apply([] (lif::Entity& e) {
+		auto enemy = dynamic_cast<lif::Enemy*>(&e);
 		if (enemy == nullptr) return;
 
 		auto moving = enemy->get<lif::Moving>();
@@ -262,8 +262,9 @@ void LevelManager::_triggerHurryUp() {
 }
 
 void LevelManager::_triggerExtraGame() {
-	entities.apply([] (lif::Entity *e) {
-		auto enemy = dynamic_cast<lif::Enemy*>(e);
+	entities.apply([] (lif::Entity& e) {
+		auto enemy = dynamic_cast<lif::Enemy*>(&e);
+		if (enemy == nullptr) return;
 		if (enemy == nullptr || enemy->get<lif::Killable>()->isKilled()) return;
 
 		enemy->setMorphed(true);
@@ -275,13 +276,13 @@ void LevelManager::_triggerExtraGame() {
 }
 
 void LevelManager::_endExtraGame() {
-	entities.apply([] (lif::Entity *e) {
-		if (auto letter = dynamic_cast<lif::Letter*>(e)) {
+	entities.apply([] (lif::Entity& e) {
+		if (auto letter = dynamic_cast<lif::Letter*>(&e)) {
 			letter->get<lif::Killable>()->kill();
 			return;
 		}
 
-		auto enemy = dynamic_cast<lif::Enemy*>(e);
+		auto enemy = dynamic_cast<lif::Enemy*>(&e);
 		if (enemy == nullptr) return;
 
 		enemy->setMorphed(false);
@@ -291,20 +292,20 @@ void LevelManager::_endExtraGame() {
 }
 
 bool LevelManager::_shouldTriggerExtraGame() const {
-	bool there_are_coins = false;
-	entities.apply([&there_are_coins] (const lif::Entity *e) {
-		auto coin = dynamic_cast<const lif::Coin*>(e);
+	bool thereAreCoins = false;
+	entities.apply([&thereAreCoins] (const lif::Entity& e) {
+		auto coin = dynamic_cast<const lif::Coin*>(&e);
 		if (coin == nullptr) return lif::EntityGroup::APPLY_PROCEED;
 
 		if (!coin->get<lif::Killable>()->isKilled()) {
-			there_are_coins = true;
+			thereAreCoins = true;
 			return lif::EntityGroup::APPLY_EXIT;
 		}
 
 		return lif::EntityGroup::APPLY_PROCEED;
 	});
 
-	return !there_are_coins;
+	return !thereAreCoins;
 }
 
 void LevelManager::_checkSpecialConditions() {

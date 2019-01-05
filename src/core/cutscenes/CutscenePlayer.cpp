@@ -49,8 +49,8 @@ void CutscenePlayer::update() {
 }
 
 void CutscenePlayer::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	entities.apply([&target, states] (const lif::Entity *e) {
-		target.draw(*e->get<lif::Sprite>(), states);
+	entities.apply([&target, states] (const lif::Entity& e) {
+		target.draw(*e.get<lif::Sprite>(), states);
 	});
 	target.draw(curSubtitle, states);
 	_applyFade(target, states);

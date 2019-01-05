@@ -88,43 +88,43 @@ public:
 
 	template<typename F, typename...Args,
 		typename std::enable_if<std::is_same<
-			typename std::result_of<F(lif::Entity*, Args&&...)>::type, bool>::value,
+			typename std::result_of<F(lif::Entity&, Args&&...)>::type, bool>::value,
 				std::nullptr_t>::type = nullptr>
 	void apply(const F& func, Args&&... args) {
 		for (auto& e : entities)
-			if (func(e.get(), std::forward<Args>(args)...))
+			if (func(*e, std::forward<Args>(args)...))
 				return;
 	}
 
 	/** Applies a function to all entities. */
     template<typename F, typename...Args,
 		typename std::enable_if<std::is_same<
-			typename std::result_of<F(lif::Entity*, Args&&...)>::type, void>::value,
+			typename std::result_of<F(lif::Entity&, Args&&...)>::type, void>::value,
 				std::nullptr_t>::type = nullptr>
 	void apply(const F& func, Args&&... args) {
 		for (auto& e : entities)
-			func(e.get(), std::forward<Args>(args)...);
+			func(*e, std::forward<Args>(args)...);
 	}
 
 	/** @see apply */
     template<typename F, typename...Args,
 		typename std::enable_if<std::is_same<
-			typename std::result_of<F(lif::Entity*, Args&&...)>::type, bool>::value,
+			typename std::result_of<F(lif::Entity&, Args&&...)>::type, bool>::value,
 				std::nullptr_t>::type = nullptr>
 	void apply(const F& func, Args&&... args) const {
 		for (const auto& e : entities)
-			if (func(e.get(), std::forward<Args>(args)...))
+			if (func(*e, std::forward<Args>(args)...))
 				return;
 	}
 
 	/** @see apply */
     template<typename F, typename...Args,
 		typename std::enable_if<std::is_same<
-			typename std::result_of<F(lif::Entity*, Args&&...)>::type, void>::value,
+			typename std::result_of<F(lif::Entity&, Args&&...)>::type, void>::value,
 				std::nullptr_t>::type = nullptr>
 	void apply(const F& func, Args&&... args) const {
 		for (const auto& e : entities)
-			func(e.get(), std::forward<Args>(args)...);
+			func(*e, std::forward<Args>(args)...);
 	}
 
 	/** Adds an entity to this group. */
@@ -132,7 +132,11 @@ public:
 
 	/** @see add */
 	template<typename T>
-	lif::Entity* add(std::shared_ptr<T> entity);
+	T* add(std::shared_ptr<T> entity);
+
+	/* Creates an entity of type T and adds it to this group. */
+	template<typename T, typename...Args>
+	T* add(Args&&... args);
 
 	/** Removes an entity from all internal collections. */
 	void remove(const lif::Entity& entity);
@@ -190,10 +194,17 @@ public:
 ///// Implementation /////
 
 template<typename T>
-lif::Entity* EntityGroup::add(std::shared_ptr<T> entity) {
+T* EntityGroup::add(std::shared_ptr<T> entity) {
 	entity->init();
 	entities.emplace_back(entity);
-	return _putInAux(entities.back().get());
+	return static_cast<T*>(_putInAux(entities.back().get()));
+}
+
+template<typename T, typename...Args>
+T* EntityGroup::add(Args&&... args) {
+	entities.emplace_back(std::make_shared<T>(std::forward<Args>(args)...));
+	entities.back()->init();
+	return static_cast<T*>(_putInAux(entities.back().get()));
 }
 
 template<typename T>
