@@ -1,3 +1,4 @@
+#include "config.h"
 #include "core.hpp"
 #include "GameCache.hpp"
 #include "Options.hpp"
@@ -106,7 +107,7 @@ bool lif::initCore() {
 
 	// Fill the assetDir variable once and for all
 	std::stringstream ss;
-	ss << pwd << DIRSEP << "assets" << DIRSEP;
+	ss << pwd << DIRSEP << ".." << DIRSEP << LIFISH_ASSETS_DIR << DIRSEP;
 	assetDir = ss.str();
 
 	return true;

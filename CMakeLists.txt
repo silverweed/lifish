@@ -255,3 +255,19 @@ if(MSYS)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows")
 	endif()
 endif()
+
+# Installation
+if (MSVC)
+	install(TARGETS ${PROJECT_NAME} DESTINATION lifish)
+	set(LIFISH_ASSETS_PARENT_DIR lifish)
+else()
+	install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+	set(LIFISH_ASSETS_PARENT_DIR "usr/share/lifish")
+endif()
+install(DIRECTORY assets DESTINATION ${LIFISH_ASSETS_PARENT_DIR})
+file(TO_NATIVE_PATH "${LIFISH_ASSETS_PARENT_DIR}/assets" LIFISH_ASSETS_DIR)
+install(FILES levels.json DESTINATION ${LIFISH_ASSETS_DIR})
+
+include_directories(${CMAKE_BINARY_DIR})
+file(TO_NATIVE_PATH "src/lifish/conf/config.in" CONFIG_FILE)
+configure_file(${CONFIG_FILE} config.h) # requires LIFISH_ASSETS_PARENT_DIR

@@ -1,0 +1,3 @@
+#pragma once
+
+#cmakedefine LIFISH_ASSETS_DIR "@LIFISH_ASSETS_DIR@" 

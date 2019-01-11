@@ -32,6 +32,7 @@
 #include "Time.hpp"
 #include "UI.hpp"
 #include "WinLoseHandler.hpp"
+#include "config.h"
 #include "contexts.hpp"
 #include "game.hpp"
 #include <SFML/Window.hpp>
@@ -221,7 +222,7 @@ int main(int argc, char **argv) {
 	if (args.mute_music)
 		lif::options.musicVolume = 0;
 	if (args.levelset_name.length() < 1)
-		args.levelset_name = std::string(lif::pwd) + lif::DIRSEP + std::string("levels.json");
+		args.levelset_name = std::string(lif::pwd) + lif::DIRSEP + ".." + lif::DIRSEP + LIFISH_ASSETS_DIR + lif::DIRSEP + "levels.json";
 
 	// Create the game window
 	lif::options.windowSize = sf::Vector2u(lif::WINDOW_WIDTH, lif::WINDOW_HEIGHT);
