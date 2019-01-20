@@ -146,7 +146,8 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 
 	// set shadow
 	newtxt->setShadowSpacing(3.5, 3);
-	newtxt->setBGColor(sf::Color::Black);
+	newtxt->setFGColor(style.color);
+	newtxt->setBGColor(style.bgcolor);
 	// set char size
 	newtxt->setCharacterSize(style.characterSize);
 	// set font
@@ -161,7 +162,7 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 		const auto name = text["name"].get<std::string>();
 		screen.interactables[name] = std::make_unique<lif::ui::Interactable>(newtxt);
 	} else {
-		newtxt->setShadowSpacing(2, 2);
+		newtxt->setShadowSpacing(style.shadowSpacing, style.shadowSpacing);
 		screen.nonInteractables.emplace_back(newtxt);
 	}
 }
@@ -217,7 +218,7 @@ void ScreenBuilder::_fixAlign(lif::ui::Screen& screen) {
 		const float xOffset = rowAligns[row] == "left" ? H_PADDING
 					: rowAligns[row] == "right" ? (screen.size.x - rowWidths[row] - H_PADDING)
 					: (screen.size.x - rowWidths[row]) / 2;
-		
+
 		if (auto text = dynamic_cast<lif::ShadedText*>(e)) {
 			text->setPosition(text->getPosition() + sf::Vector2f(xOffset, yOffset));
 		} else {
