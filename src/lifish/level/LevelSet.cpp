@@ -14,10 +14,6 @@ static constexpr const char* AVAIL_METADATA[] = {
 	"author", "created", "difficulty", "comment", "name"
 };
 
-LevelSet::LevelSet(const std::string& path) {
-	loadFromFile(path);
-}
-
 bool LevelSet::loadFromFile(const std::string& path) {
 	{
 		// Check file exists

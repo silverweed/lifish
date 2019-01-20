@@ -24,10 +24,6 @@ class LevelSet final : public lif::Stringable, private sf::NonCopyable {
 	std::unordered_map<std::string, std::string> metadata;
 
 public:
-	LevelSet() {}
-	LevelSet(const std::string& jsonPath);
-	~LevelSet() {}
-
 	bool loadFromFile(const std::string& jsonPath);
 
 	/** Constructs the i-th level (starting from 1) and returns it if init() is successful. */

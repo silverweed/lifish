@@ -130,13 +130,13 @@ static void parseArgs(int argc, char **argv, /* out */ MainArgs& args) {
 	}
 
 	if (print_level_info) {
-		try {
-			lif::LevelSet ls(args.levelsetName);
+		lif::LevelSet ls;
+		if (ls.loadFromFile(args.levelsetName)) {
 			std::cout << "--------------\r\nLevelset info:\r\n--------------\r\n"
 				<< ls.toString() << std::endl;
 			std::exit(0);
-		} catch (const std::exception&) {
-			std::cerr << "Error: file \"" << args.levelsetName
+		} else {
+			std::cerr << "Error: levels file \"" << args.levelsetName
 				<< "\" not found or with wrong format." << std::endl;
 			std::exit(1);
 		}
