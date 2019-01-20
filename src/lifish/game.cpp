@@ -1,12 +1,14 @@
 #include "game.hpp"
 #include "LoopingMusic.hpp"
-#include "controls.hpp"
 #include "collision_layers.hpp"
-#include <string>
+#include "conf/player.hpp"
+#include "controls.hpp"
+#include <array>
 #include <cstring>
 #include <sstream>
-#include <array>
-#include "conf/player.hpp"
+#include <string>
+
+const char* lif::levelSetName = nullptr;
 
 bool lif::init() {
 	if (!lif::initCore()) return false;

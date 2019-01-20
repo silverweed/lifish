@@ -56,17 +56,17 @@
 #endif
 
 struct MainArgs {
-	short start_level = 1;
-	std::string levelset_name;
-	bool mute_sounds = false;
-	bool mute_music = false;
+	short startLevel = 1;
+	std::string levelsetName;
+	bool muteSounds = false;
+	bool muteMusic = false;
 	int fps = 60;
 #ifndef RELEASE
-	bool start_from_home = false;
+	bool startFromHome = false;
 #endif
 };
 
-inline lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
+static lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 		std::array<lif::WindowContext*, 4>& contexts, lif::WindowContext *cur_context,
 		std::unique_ptr<lif::GameContext>& game, const MainArgs& args);
 
@@ -82,15 +82,15 @@ static void parseArgs(int argc, char **argv, /* out */ MainArgs& args) {
 				break;
 			case 'l':
 				if (i < argc - 1)
-					args.start_level = std::atoi(argv[++i]);
+					args.startLevel = std::atoi(argv[++i]);
 				else
 					std::cerr << "[ WARNING ] Expected numeral after -l flag" << std::endl;
 				break;
 			case 's':
-				args.mute_sounds = !args.mute_sounds;
+				args.muteSounds = !args.muteSounds;
 				break;
 			case 'm':
-				args.mute_music = !args.mute_music;
+				args.muteMusic = !args.muteMusic;
 				break;
 			case 'f':
 				if (i < argc - 1)
@@ -100,7 +100,7 @@ static void parseArgs(int argc, char **argv, /* out */ MainArgs& args) {
 				break;
 #ifndef RELEASE
 			case 'u':
-				args.start_from_home = true;
+				args.startFromHome = true;
 				break;
 #endif
 			case 'v':
@@ -124,19 +124,19 @@ static void parseArgs(int argc, char **argv, /* out */ MainArgs& args) {
 				std::exit(1);
 			}
 		} else {
-			args.levelset_name = std::string(argv[i]);
+			args.levelsetName = std::string(argv[i]);
 		}
 		++i;
 	}
 
 	if (print_level_info) {
 		try {
-			lif::LevelSet ls(args.levelset_name);
+			lif::LevelSet ls(args.levelsetName);
 			std::cout << "--------------\r\nLevelset info:\r\n--------------\r\n"
 				<< ls.toString() << std::endl;
 			std::exit(0);
-		} catch (const std::exception& ex) {
-			std::cerr << "Error: file \"" << args.levelset_name
+		} catch (const std::exception&) {
+			std::cerr << "Error: file \"" << args.levelsetName
 				<< "\" not found or with wrong format." << std::endl;
 			std::exit(1);
 		}
@@ -156,7 +156,7 @@ static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
 	ui.setSize(lif::options.windowSize);
 
 	// load static screens
-	ui.load(window, { "home.json", "about.json", "pause.json", "win.json" });
+	ui.load(window, { "home.json", "about.json", "pause.json", "win.json", "error.json" });
 	// create dynamic screens
 	ui.add<lif::ui::ControlsScreen>(window, lif::options.windowSize);
 	ui.add<lif::ui::PreferencesScreen>(window, lif::options.windowSize);
@@ -190,15 +190,18 @@ int main(int argc, char **argv) {
 #endif
 	// Argument parsing
 	MainArgs args;
-	args.start_level = 1;
+	args.startLevel = 1;
 	args.fps = 120;
-	args.levelset_name = "";
-	args.mute_music = false;
-	args.mute_sounds = false;
+	args.levelsetName = "";
+	args.muteMusic = false;
+	args.muteSounds = false;
 #ifndef RELEASE
-	args.start_from_home = false; // FIXME
+	args.startFromHome = false; // FIXME
 #endif
 	parseArgs(argc, argv, args);
+
+	// Must be done before UI initializes
+	lif::levelSetName = args.levelsetName.c_str();
 
 	// Create the MusicManager
 	lif::MusicManager mm;
@@ -216,12 +219,12 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	if (args.mute_sounds)
+	if (args.muteSounds)
 		lif::options.soundsVolume = 0;
-	if (args.mute_music)
+	if (args.muteMusic)
 		lif::options.musicVolume = 0;
-	if (args.levelset_name.length() < 1)
-		args.levelset_name = std::string(lif::pwd) + lif::DIRSEP + std::string("levels.json");
+	if (args.levelsetName.length() < 1)
+		args.levelsetName = std::string(lif::pwd) + lif::DIRSEP + std::string("levels.json");
 
 	// Create the game window
 	lif::options.windowSize = sf::Vector2u(lif::WINDOW_WIDTH, lif::WINDOW_HEIGHT);
@@ -265,8 +268,8 @@ int main(int argc, char **argv) {
 	// Note: this is always assumed non-null throughout the program
 	lif::WindowContext *cur_context = contexts[lif::CTX_UI];
 #ifndef RELEASE
-	if (!args.start_from_home) {
-		game.reset(new lif::GameContext(window, args.levelset_name, args.start_level));
+	if (!args.startFromHome) {
+		game.reset(new lif::GameContext(window, args.levelsetName, args.startLevel));
 		game->setOrigin(origin);
 		// Adjust context pointers
 		contexts[lif::CTX_GAME] = game.get();
@@ -286,6 +289,11 @@ int main(int argc, char **argv) {
 	sf::Clock frame_clock;
 	std::thread rendering_thread(rendering_loop, std::ref(window));
 #endif
+
+	if (!game || !game->isLevelSetGood()) {
+		cur_context = contexts[lif::CTX_UI];
+		ui.setCurrent("error");
+	}
 
 	while (!lif::terminated) {
 
@@ -384,11 +392,11 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 		case lif::CTX_INTERLEVEL:
 			if (cur_context == &ui) {
 				// We got here from the start menu (via StartGame or LoadGame)
-				int startLv = args.start_level;
+				int startLv = args.startLevel;
 				if (!game) {
 					// Game just started: create a new GameContext
 					game.reset(new lif::GameContext(window,
-						args.levelset_name, args.start_level));
+						args.levelsetName, args.startLevel));
 					// Adjust the origin to make room for side panel
 					const sf::Vector2f origin(-lif::SIDE_PANEL_WIDTH, 0);
 					game->setOrigin(origin);
@@ -408,7 +416,7 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 			break;
 		case lif::CTX_GAME:
 			if (cur_context == contexts[lif::CTX_INTERLEVEL]
-					&& game->getLM().getLevel()->getInfo().levelnum == args.start_level)
+					&& game->getLM().getLevel()->getInfo().levelnum == args.startLevel)
 			{
 				// New level just started
 				game->onLevelStart();

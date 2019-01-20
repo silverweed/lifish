@@ -14,14 +14,17 @@
 using lif::ui::ScreenBuilder;
 using json = nlohmann::json;
 
-static const std::unordered_map<std::string, sf::Color> color_table = {
-	{ "red", sf::Color::Red },
-	{ "orange", sf::Color(255, 51, 0) },
-	{ "blue", sf::Color::Blue },
-	{ "white", sf::Color::White },
-	{ "gray", sf::Color(120, 120, 120) },
-	{ "black", sf::Color::Black },
-};
+static sf::Color colorFromName(const std::string& name) {
+	if (name == "red") return sf::Color::Red;
+	else if (name == "orange") return sf::Color(255, 51, 0);
+	else if (name == "blue") return sf::Color::Blue;
+	else if (name == "white") return sf::Color::White;
+	else if (name == "gray") return sf::Color(120, 120, 120);
+	else if (name == "yellow") return sf::Color::Yellow;
+	else if (name == "black") return sf::Color::Black;
+	// TODO return arbitrary color from hex
+	return sf::Color::Black;
+}
 
 static void add_style_property(lif::ui::ScreenStyle& style, const std::string& key, const json& value) {
 	if (key == "spacing")
@@ -37,19 +40,9 @@ static void add_style_property(lif::ui::ScreenStyle& style, const std::string& k
 	else if (key == "h-align")
 		style.hAlign = value.get<std::string>();
 	else if (key == "color") {
-		auto it = color_table.find(value.get<std::string>());
-		if (it == color_table.end()) {
-			std::cerr << "Invalid color: " << value.get<std::string>() << std::endl;
-			return;
-		}
-		style.color = it->second;
+		style.color = colorFromName(value.get<std::string>());
 	} else if (key == "shadow-color") {
-		auto it = color_table.find(value.get<std::string>());
-		if (it == color_table.end()) {
-			std::cerr << "Invalid color: " << value.get<std::string>() << std::endl;
-			return;
-		}
-		style.bgcolor = it->second;
+		style.bgcolor = colorFromName(value.get<std::string>());
 	} else if (key == "shadow-spacing") {
 		style.shadowSpacing = value.get<int>();
 	} else
@@ -71,6 +64,11 @@ static std::string convert_special_string(const std::string& s) {
 			" (multithread)"
 #endif
 			;
+	} else if (s == "{{LEVEL_SET}}") {
+		const auto lsName = lif::levelSetName;
+		if (!lsName)
+			return "<No levelset loaded>";
+		return "'" + std::string{ lsName } + "'";
 	}
 	return s;
 }
@@ -220,7 +218,7 @@ void ScreenBuilder::_fixAlign(lif::ui::Screen& screen) {
 		const float xOffset = rowAligns[row] == "left" ? H_PADDING
 					: rowAligns[row] == "right" ? (screen.size.x - rowWidths[row] - H_PADDING)
 					: (screen.size.x - rowWidths[row]) / 2;
-		
+
 		if (auto text = dynamic_cast<lif::ShadedText*>(e)) {
 			text->setPosition(text->getPosition() + sf::Vector2f(xOffset, yOffset));
 		} else {

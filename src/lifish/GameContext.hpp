@@ -42,14 +42,15 @@ private:
 	mutable sf::RenderTexture gameRenderTex;
 	mutable sf::RenderTexture sidePanelRenderTex;
 
-	bool gameWon = false;
-	bool retryingLevel = false;
-
 	const sf::Window& window;
 	lif::LevelSet ls;
 	lif::LevelManager lm;
 	lif::SidePanel sidePanel;
 	lif::WinLoseHandler wlHandler;
+
+	bool gameWon = false;
+	bool retryingLevel = false;
+	bool levelSetGood = false;
 
 	void _initLM(const sf::Window& window, short lvnum);
 	void _advanceLevel();
@@ -75,6 +76,8 @@ public:
 
 	bool isGameWon() const { return gameWon; }
 	void restart();
+
+	bool isLevelSetGood() const { return levelSetGood; }
 
 	void update() override;
 	bool handleEvent(sf::Window& window, sf::Event evt) override;

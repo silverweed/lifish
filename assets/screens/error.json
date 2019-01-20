@@ -1,0 +1,68 @@
+{
+	"name": "error",
+	"parent": null,
+	"bg": "screenbg1.png",
+	"layout": {
+		"styles": {
+			"default": {
+				"font": "pf_tempesta_seven_bold.ttf",
+				"character-size": 18,
+				"spacing": 15
+			},
+			"error": {
+				"font": "pf_tempesta_seven_bold.ttf",
+				"character-size": 22,
+				"spacing": 50
+			},
+			"exit": {
+				"font": "pf_tempesta_seven_bold.ttf",
+				"character-size": 24,
+				"spacing": 60
+			},
+			"version": {
+				"font": "pf_tempesta_seven_bold.ttf",
+				"character-size": 10,
+				"spacing": 5
+			}
+		},
+		"elements": [
+			{
+				"type": "text",
+				"string": "FATAL ERROR",
+				"interactable": false,
+				"style": "error"
+			},
+			{
+				"type": "text",
+				"string": "Selected LevelSet",
+				"interactable": false
+			},
+			{
+				"type": "text",
+				"string": "{{LEVEL_SET}}",
+				"style-override": {
+					"color": "yellow"
+				},
+				"interactable": false
+			},
+			{
+				"type": "text",
+				"string": "does not exist or has bad format.",
+				"interactable": false
+			},
+			{
+				"type": "text",
+				"name": "exit",
+				"string": "Exit",
+				"interactable": true,
+				"style": "exit"
+			},
+			{
+				"type": "text",
+				"string": "{{FULL_VERSION}}",
+				"style": "version",
+				"position": [ 5, -18 ]
+			}
+		]
+	}
+}

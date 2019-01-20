@@ -42,8 +42,9 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, sh
 	gameRenderTex.setSmooth(true);
 	//sidePanelRenderTex.create(lif::SIDE_PANEL_WIDTH, lif::GAME_HEIGHT);
 
-	ls.loadFromFile(levelsetName);
-	_initLM(window, startLv);
+	levelSetGood = ls.loadFromFile(levelsetName);
+	if (levelSetGood)
+		_initLM(window, startLv);
 }
 
 void GameContext::_initLM(const sf::Window& window, short lvnum) {

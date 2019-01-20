@@ -1,14 +1,14 @@
 #pragma once
 
+#include "Enemy.hpp"
+#include "Level.hpp"
+#include "Stringable.hpp"
+#include "Track.hpp"
+#include <SFML/System/NonCopyable.hpp>
 #include <memory>
 #include <string>
-#include <vector>
 #include <unordered_map>
-#include <SFML/System/NonCopyable.hpp>
-#include "Level.hpp"
-#include "Track.hpp"
-#include "Stringable.hpp"
-#include "Enemy.hpp"
+#include <vector>
 
 namespace lif {
 
@@ -28,8 +28,7 @@ public:
 	LevelSet(const std::string& jsonPath);
 	~LevelSet() {}
 
-	// FIXME: make this return a bool
-	void loadFromFile(const std::string& jsonPath);
+	bool loadFromFile(const std::string& jsonPath);
 
 	/** Constructs the i-th level (starting from 1) and returns it if init() is successful. */
 	std::unique_ptr<Level> getLevel(unsigned i) const;
