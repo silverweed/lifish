@@ -23,7 +23,6 @@ void LevelTime::setTime(sf::Time time) {
 
 void LevelTime::update() {
 	lif::Entity::update();
-	if (isHurryUp) return;
 
 	const auto delta = lif::time.getDelta();
 	remainingTime -= delta;

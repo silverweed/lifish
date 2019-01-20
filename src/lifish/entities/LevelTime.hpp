@@ -6,6 +6,11 @@ namespace lif {
 
 /** This class handles the level's time and the extra game's time */
 class LevelTime : public lif::Entity {
+
+	sf::Time initialTime;
+	sf::Time remainingTime;
+	sf::Time extraGameRemainingTime = sf::Time::Zero;
+
 public:
 	enum class HurryUpResponse {
 		HURRY_UP_ON,
@@ -13,16 +18,6 @@ public:
 		HURRY_UP_OFF
 	};
 
-private:
-	sf::Time initialTime;
-	sf::Time remainingTime;
-	sf::Time extraGameRemainingTime = sf::Time::Zero;
-
-	bool isHurryUp = false;
-	bool hurryUpWarningGiven = false;
-	HurryUpResponse hurryUpResponse = HurryUpResponse::HURRY_UP_OFF;
-
-public:
 	explicit LevelTime(sf::Time time = sf::Time::Zero);
 
 	/** Sets the initialTime to `time`, resets and pauses the clock */
