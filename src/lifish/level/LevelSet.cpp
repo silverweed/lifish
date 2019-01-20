@@ -18,7 +18,14 @@ LevelSet::LevelSet(const std::string& path) {
 	loadFromFile(path);
 }
 
-void LevelSet::loadFromFile(const std::string& path) {
+bool LevelSet::loadFromFile(const std::string& path) {
+	{
+		// Check file exists
+		std::ifstream file(path);
+		if (!file.good())
+			return false;
+	}
+
 	json levelJSON = json::parse(std::ifstream(path));
 
 	// load metadata
@@ -173,6 +180,8 @@ void LevelSet::loadFromFile(const std::string& path) {
 			info.cutscenePost = it->get<std::string>();
 		levels.emplace_back(info);
 	}
+
+	return true;
 }
 
 std::unique_ptr<Level> LevelSet::getLevel(unsigned num) const {

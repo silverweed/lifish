@@ -1,18 +1,30 @@
 #include "ScreenBuilder.hpp"
-#include "ScreenStyle.hpp"
-#include "Screen.hpp"
 #include "GameCache.hpp"
-#include "utils.hpp"
 #include "Interactable.hpp"
-#include <iostream>
+#include "Screen.hpp"
+#include "ScreenStyle.hpp"
+#include "game.hpp"
+#include "utils.hpp"
+#include <algorithm>
 #include <exception>
 #include <fstream>
+#include <iostream>
 #include <unordered_map>
-#include <algorithm>
-#include "game.hpp"
 
 using lif::ui::ScreenBuilder;
 using json = nlohmann::json;
+
+static sf::Color colorFromName(const std::string& name) {
+	if (name == "red") return sf::Color::Red;
+	else if (name == "orange") return sf::Color(255, 51, 0);
+	else if (name == "blue") return sf::Color::Blue;
+	else if (name == "white") return sf::Color::White;
+	else if (name == "gray") return sf::Color(120, 120, 120);
+	else if (name == "yellow") return sf::Color::Yellow;
+	else if (name == "black") return sf::Color::Black;
+	// TODO return arbitrary color from hex
+	return sf::Color::Black;
+}
 
 static void add_style_property(lif::ui::ScreenStyle& style, const std::string& key, const json& value) {
 	if (key == "spacing")
@@ -27,7 +39,13 @@ static void add_style_property(lif::ui::ScreenStyle& style, const std::string& k
 		style.vAlign = value.get<std::string>();
 	else if (key == "h-align")
 		style.hAlign = value.get<std::string>();
-	else
+	else if (key == "color") {
+		style.color = colorFromName(value.get<std::string>());
+	} else if (key == "shadow-color") {
+		style.bgcolor = colorFromName(value.get<std::string>());
+	} else if (key == "shadow-spacing") {
+		style.shadowSpacing = value.get<int>();
+	} else
 		std::cerr << "Invalid style property: " << key << std::endl;
 }
 
@@ -46,6 +64,11 @@ static std::string convert_special_string(const std::string& s) {
 			" (multithread)"
 #endif
 			;
+	} else if (s == "{{LEVEL_SET}}") {
+		const auto lsName = lif::levelSetName;
+		if (!lsName)
+			return "<No levelset loaded>";
+		return "'" + std::string{ lsName } + "'";
 	}
 	return s;
 }

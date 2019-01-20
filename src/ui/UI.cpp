@@ -1,12 +1,12 @@
-#include "Interactable.hpp"
-#include "utils.hpp"
-#include "input_utils.hpp"
 #include "UI.hpp"
-#include "contexts.hpp"
-#include "Screen.hpp"
 #include "BaseEventHandler.hpp"
-#include "screen_callbacks.hpp"
+#include "Interactable.hpp"
 #include "SaveScreen.hpp"
+#include "Screen.hpp"
+#include "contexts.hpp"
+#include "input_utils.hpp"
+#include "screen_callbacks.hpp"
+#include "utils.hpp"
 #include <exception>
 #include <iostream>
 
@@ -22,12 +22,12 @@ void UI::load(const sf::RenderWindow& window, std::initializer_list<std::string>
 			std::cerr << "[ WARNING ] Screen " << name << " already loaded: skipping." << std::endl;
 			continue;
 		}
-		auto screen = new lif::ui::Screen(name, window, size);
+		auto screen = std::make_unique<lif::ui::Screen>(name, window, size);
 		if (curScreen == nullptr) {
-			curScreen = screen;
+			curScreen = screen.get();
 			curScreen->setOrigin(origin);
 		}
-		screens[screen->getName()] = std::unique_ptr<lif::ui::Screen>(screen);
+		screens[screen->getName()] = std::move(screen);
 	}
 }
 

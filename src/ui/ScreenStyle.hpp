@@ -12,6 +12,9 @@ struct ScreenStyle {
 	std::string font;
 	unsigned int characterSize = 0;
 	std::string vAlign, hAlign;
+	sf::Color color = sf::Color::White;
+	sf::Color bgcolor = sf::Color::Black;
+	int shadowSpacing = 2;
 };
 
 }

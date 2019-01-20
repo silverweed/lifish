@@ -65,8 +65,11 @@ constexpr auto LEVEL_CLEAR_SOUND = "levelclear.ogg";
 constexpr auto TIME_BONUS_SOUND  = "timebonus.ogg";
 
 /****************************************************************************/
-/*                         GLOBAL VARIABLES                                 */
+/*                  GLOBAL VARIABLES AND FUNCTIONS                          */
 /****************************************************************************/
+
+// UGLY: currently only used by ScreenBuilder (more precisely, from error.json)
+extern const char* levelSetName;
 
 bool init();
 
