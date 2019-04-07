@@ -51,7 +51,7 @@ sf::View BaseEventHandler::_keepRatio(const sf::Event::SizeEvent& size, const sf
 		viewport.top = (1.f - viewport.height) / 2.f;
 	}
 
-	sf::View view(sf::FloatRect(0, 0, designedsize.x , designedsize.y));
+	sf::View view(sf::FloatRect(0, 0, designedsize.x, designedsize.y));
 	view.setViewport(viewport);
 
 	return view;
