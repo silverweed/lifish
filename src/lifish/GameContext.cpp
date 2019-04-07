@@ -8,7 +8,7 @@
 #include "Options.hpp"
 #include "Player.hpp"
 #include "SHCollisionDetector.hpp"
-#include "SaveManager.hpp"
+#include "save_load.hpp"
 #include "bonus_type.hpp"
 #include "contexts.hpp"
 #include "core.hpp"

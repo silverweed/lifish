@@ -56,7 +56,7 @@ lif::ui::Screen::Callback SaveDataBrowser::_createDeleteCallback(const std::stri
 
 lif::ui::Screen::Callback SaveDataBrowser::_createLoadCallback(const std::string& path) {
 	return [this, path] () {
-		loadedData = lif::SaveManager::loadGame(path);
+		loadedData = lif::loadGame(path);
 		return lif::ui::Action::LOAD_GAME;
 	};
 }

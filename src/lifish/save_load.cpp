@@ -1,4 +1,4 @@
-#include "SaveManager.hpp"
+#include "save_load.hpp"
 #include "LevelManager.hpp"
 #include "Player.hpp"
 #include "Level.hpp"
@@ -8,9 +8,7 @@
 #include "utils.hpp"
 #include <iostream>
 
-using lif::SaveManager;
-
-bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager& lm) {
+bool lif::saveGame(const std::string& filename, const lif::LevelManager& lm) {
 	std::ofstream saveFile(filename);
 
 	nlohmann::json save;
@@ -62,7 +60,7 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 	return true;
 }
 
-lif::SaveData SaveManager::loadGame(const std::string& filename) {
+lif::SaveData lif::loadGame(const std::string& filename) {
 	lif::SaveData data;
 	try {
 		nlohmann::json load = nlohmann::json::parse(std::ifstream(filename));

@@ -27,8 +27,6 @@ struct SaveData {
 };
 
 /**
- * Serializes the game state into JSON data or
- * deserializes those data from a file.
  * Save file format: {
  *     levelSet: string,
  *     level: int,
@@ -52,17 +50,13 @@ struct SaveData {
  *    ]
  * }
  */
-class SaveManager {
-public:
-	SaveManager() = delete;
 
-	/** Saves the game state into `filename` */
-	static bool saveGame(const std::string& filename, const lif::LevelManager& lm);
+/** Saves the game state into `filename` */
+bool saveGame(const std::string& filename, const lif::LevelManager& lm);
 
-	/** Loads a game state saved in `filename` into `lm` and `start_level`.
-	 *  Save data validation is NOT performed by this method.
-	 */
-	static lif::SaveData loadGame(const std::string& filename);
-};
+/** Loads a game state saved in `filename` into `lm` and `start_level`.
+ *  Save data validation is NOT performed by this method.
+ */
+lif::SaveData loadGame(const std::string& filename);
 
 }

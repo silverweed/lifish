@@ -312,7 +312,7 @@ int main(int argc, char **argv) {
 
 		if (ui.mustSaveGame()) {
 			const auto saveName = ui.getSaveName() + ".lifish";
-			lif::SaveManager::saveGame(saveName, game->getLM());
+			lif::saveGame(saveName, game->getLM());
 			std::cerr << "Saved game in " << saveName << "." << std::endl;
 		}
 

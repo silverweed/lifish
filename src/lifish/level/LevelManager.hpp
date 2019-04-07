@@ -16,7 +16,6 @@ namespace lif {
 struct SaveData;
 class LevelLoader;
 class LevelSet;
-class SaveManager;
 class WinLoseHandler;
 class Player;
 class Bomb;
@@ -29,9 +28,10 @@ class AxisMoving;
  */
 class LevelManager final : public lif::BaseLevelManager, public sf::Drawable {
 
+	friend bool saveGame(const std::string& fileName, const lif::LevelManager& lm);
+
 	friend class lif::LevelLoader;
 	friend class lif::LevelRenderer;
-	friend class lif::SaveManager;
 	friend class lif::WinLoseHandler;
 
 	/** The currently managed level */
