@@ -26,10 +26,11 @@ fi
 	exit 3
 }
 
-cp -r assets $DIR
-cp levels.json $DIR
-cp lifish $DIR
-cp windows/libs/* $DIR
+mkdir "$DIR/assets"
+cp -r assets/{fonts,graphics,music,screens,sounds} "$DIR/assets"
+cp levels.json "$DIR"
+cp lifish "$DIR"
+cp windows/libs/* "$DIR"
 
 pushd "$DIR"
 
@@ -47,9 +48,8 @@ popd
 echo "Created app in $DIR."
 echo Compressing...
 
-rm -f "$DIR.tar.xz" 2>/dev/null
-tar cf "$DIR.tar" "$DIR"
-xz "$DIR.tar"
+rm -f "$DIR.zip" 2>/dev/null
+powershell -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('$DIR', '$DIR.zip'); }" 
 
 rm -rf "$DIR"
 echo Done.

@@ -5,7 +5,7 @@
 
 APPNAME=Lifish
 MACOS=(lifish)
-RESOURCES=(assets levels.json)
+RESOURCES=(assets/{fonts,graphics,sounds,screens,music} levels.json)
 FRAMEWORK_PATH=/Library/Frameworks
 FRAMEWORKS=({FLAC,ogg,freetype,OpenAL,vorbis{,enc,file},sfml-{window,graphics,system,audio}}.framework)
 
