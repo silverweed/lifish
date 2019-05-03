@@ -5,6 +5,7 @@
 #include "Options.hpp"
 #include "ShadedText.hpp"
 #include "game.hpp"
+#include "preferences_persistence.hpp"
 #include "utils.hpp"
 #include <iostream>
 #include <memory>
@@ -129,8 +130,20 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 3 * bounds.height));
 	interactables["back"] = std::make_unique<Interactable>(text);
 
+	_adjustPreferences();
 	_setupCallbacks();
 	_setupTransitions();
+}
+
+void PreferencesScreen::_adjustPreferences() {
+	relMusicVolume = static_cast<short>(MAX_VOLUME * lif::options.musicVolume / 100.f);
+	relSoundVolume = static_cast<short>(MAX_VOLUME * lif::options.soundsVolume / 100.f);
+	_setVolumeBar(VolumeType::MUSIC);
+	_setVolumeBar(VolumeType::SOUND);
+	if (lif::options.soundsMute)
+		interactables["sounds_mute_toggle"]->getSprite()->setTextureRect(
+				sf::IntRect(lif::options.soundsMute ? SPEAKER_SPRITE_SIZE : 0,
+					0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
 }
 
 void PreferencesScreen::_setupCallbacks() {
@@ -141,7 +154,7 @@ void PreferencesScreen::_setupCallbacks() {
 		return _changeVolume(VolumeType::MUSIC, VolumeAction::LOWER);
 	};
 	callbacks["music_mute_toggle"] = [this] () {
-		return _changeVolume(VolumeType::MUSIC, VolumeAction::MUTE_TOGGLE);
+		return _muteToggle(VolumeType::MUSIC);
 	};
 	callbacks["sounds_volume_up"] = [this] () {
 		return _changeVolume(VolumeType::SOUND, VolumeAction::RAISE);
@@ -150,7 +163,7 @@ void PreferencesScreen::_setupCallbacks() {
 		return _changeVolume(VolumeType::SOUND, VolumeAction::LOWER);
 	};
 	callbacks["sounds_mute_toggle"] = [this] () {
-		return _changeVolume(VolumeType::SOUND, VolumeAction::MUTE_TOGGLE);
+		return _muteToggle(VolumeType::SOUND);
 	};
 	callbacks["n_players"] = [this] () {
 		auto n = lif::options.nPlayers + 1;
@@ -179,45 +192,53 @@ void PreferencesScreen::_setupTransitions() {
 }
 
 Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {
-	// TODO better mute handling
-	if (what == VolumeAction::MUTE_TOGGLE) {
-		switch (which) {
-		case VolumeType::MUSIC:
-			if (prevMusicVolume < 0) {
-				// unmute->mute
-				prevMusicVolume = lif::options.musicVolume;
-				lif::options.musicVolume = 0;
-			} else {
-				// mute->unmute
-				lif::options.musicVolume = prevMusicVolume;
-				prevMusicVolume = -1;
-			}
-			interactables["music_mute_toggle"]->getSprite()->setTextureRect(
-					sf::IntRect(prevMusicVolume >= 0 ? SPEAKER_SPRITE_SIZE : 0,
-						0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
-			if (lif::musicManager != nullptr)
-				lif::musicManager->setVolume(lif::options.musicVolume);
-			break;
-		case VolumeType::SOUND:
-			lif::options.soundsMute = !lif::options.soundsMute;
-			interactables["sounds_mute_toggle"]->getSprite()->setTextureRect(
-					sf::IntRect(lif::options.soundsMute ? SPEAKER_SPRITE_SIZE : 0,
-						0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
-			break;
-		default:
-			break;
-		}
-
-		return Action::DO_NOTHING;
-	}
-	short &vol = which == VolumeType::MUSIC ? relMusicVolume : relSoundVolume;
+	short& vol = which == VolumeType::MUSIC ? relMusicVolume : relSoundVolume;
 	const bool raise = what == VolumeAction::RAISE;
 
 	if ((raise && vol == MAX_VOLUME) || (!raise && vol == 0))
 		return Action::DO_NOTHING;
 
 	vol += (raise ? 1 : -1);
+	_setVolumeBar(which);
 
+	return Action::DO_NOTHING;
+}
+
+Action PreferencesScreen::_muteToggle(VolumeType which) {
+	// TODO better mute handling
+	// Why do we handle music mute differently from sound?
+	switch (which) {
+	case VolumeType::MUSIC:
+		if (prevMusicVolume < 0) {
+			// unmute->mute
+			prevMusicVolume = lif::options.musicVolume;
+			lif::options.musicVolume = 0;
+		} else {
+			// mute->unmute
+			lif::options.musicVolume = prevMusicVolume;
+			prevMusicVolume = -1;
+		}
+		interactables["music_mute_toggle"]->getSprite()->setTextureRect(
+				sf::IntRect(prevMusicVolume >= 0 ? SPEAKER_SPRITE_SIZE : 0,
+					0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
+		if (lif::musicManager != nullptr)
+			lif::musicManager->setVolume(lif::options.musicVolume);
+		break;
+	case VolumeType::SOUND:
+		lif::options.soundsMute = !lif::options.soundsMute;
+		interactables["sounds_mute_toggle"]->getSprite()->setTextureRect(
+				sf::IntRect(lif::options.soundsMute ? SPEAKER_SPRITE_SIZE : 0,
+					0, SPEAKER_SPRITE_SIZE, SPEAKER_SPRITE_SIZE));
+		break;
+	default:
+		break;
+	}
+
+	return Action::DO_NOTHING;
+}
+
+void PreferencesScreen::_setVolumeBar(VolumeType which) {
+	const auto vol = which == VolumeType::MUSIC ? relMusicVolume : relSoundVolume;
 	std::stringstream ss;
 	for (int i = 0; i < vol; ++i) {
 		ss << "|";
@@ -232,8 +253,6 @@ Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {
 		lif::options.soundsVolume = vol * 100 / MAX_VOLUME;
 		soundsVolumeBar->setString(ss.str());
 	}
-
-	return Action::DO_NOTHING;
 }
 
 lif::ui::Action PreferencesScreen::_changeNPlayers(int newNPlayer) {
@@ -242,4 +261,9 @@ lif::ui::Action PreferencesScreen::_changeNPlayers(int newNPlayer) {
 	interactables["n_players"]->getText()->setString(lif::to_string(newNPlayer));
 
 	return Action::DO_NOTHING;
+}
+
+void PreferencesScreen::onUnload() {
+	lif::ui::Screen::onUnload();
+	lif::savePreferences(lif::PREFERENCES_SAVE_FILE_NAME);
 }

@@ -162,6 +162,7 @@ void UI::_processAction(lif::ui::Action action) {
 void UI::setCurrent(const std::string& name, bool overrideParent) {
 	if (name.length() == 0) return;
 
+	curScreen->onUnload();
 	const auto oldScreen = curScreen->getName();
 	const auto it = screens.find(name);
 	if (it == screens.end())

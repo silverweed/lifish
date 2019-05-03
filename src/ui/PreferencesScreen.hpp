@@ -2,6 +2,7 @@
 
 #include "Action.hpp"
 #include "Screen.hpp"
+#include "game.hpp"
 
 namespace lif {
 
@@ -30,6 +31,10 @@ class PreferencesScreen : public lif::ui::Screen {
 
 	lif::ui::Action _changeVolume(VolumeType which, VolumeAction what);
 	lif::ui::Action _changeNPlayers(int newNPlayer);
+	lif::ui::Action _muteToggle(VolumeType which);
+	void _setVolumeBar(VolumeType which);
+	/** Adjust the initial values of preferences based on what we may have loaded from persistent preferences. */
+	void _adjustPreferences();
 	void _setupCallbacks();
 	void _setupTransitions();
 
@@ -37,6 +42,8 @@ public:
 	static constexpr const char *SCREEN_NAME = "preferences";
 
 	explicit PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& size);
+
+	void onUnload() override;
 };
 
 }

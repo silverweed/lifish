@@ -34,6 +34,7 @@
 #include "WinLoseHandler.hpp"
 #include "contexts.hpp"
 #include "game.hpp"
+#include "preferences_persistence.hpp"
 #include <SFML/Window.hpp>
 #include <algorithm>
 #include <cstdlib>
@@ -218,6 +219,9 @@ int main(int argc, char **argv) {
 		std::cerr << "[ FATAL ] Failed to initialize the game!" << std::endl;
 		return 1;
 	}
+
+	// Must be done AFTER lif::init() but BEFORE the UI initializes!
+	lif::loadPreferences(lif::PREFERENCES_SAVE_FILE_NAME);
 
 	if (args.muteSounds)
 		lif::options.soundsVolume = 0;

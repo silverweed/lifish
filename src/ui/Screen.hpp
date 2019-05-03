@@ -1,15 +1,15 @@
 #pragma once
 
-#include <string>
-#include <functional>
-#include <SFML/Graphics.hpp>
-#include <unordered_map>
-#include <memory>
-#include <vector>
-#include "ScreenStyle.hpp"
 #include "Action.hpp"
-#include "WindowContext.hpp"
+#include "ScreenStyle.hpp"
 #include "TransitionGraph.hpp"
+#include "WindowContext.hpp"
+#include <SFML/Graphics.hpp>
+#include <functional>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace lif {
 
@@ -108,6 +108,7 @@ public:
 	virtual void update() override;
 	/** Called whenever the screen is displayed */
 	virtual void onLoad();
+	virtual void onUnload() {}
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void setOrigin(const sf::Vector2f& pos) override;
