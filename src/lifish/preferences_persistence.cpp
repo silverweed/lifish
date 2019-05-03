@@ -3,6 +3,7 @@
 #include "controls.hpp"
 #include "game.hpp"
 #include "json.hpp"
+#include "utils.hpp"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -60,7 +61,7 @@ void lif::loadPreferences(const char *fname) {
 	try {
 		json in = json::parse(file);
 
-		lif::options.nPlayers = in["nPlayers"];
+		lif::options.nPlayers = lif::clamp<int>(in["nPlayers"], 1, lif::MAX_PLAYERS);
 		lif::options.musicVolume = in["musicVolume"].get<int>() * 0.01f;
 		lif::options.soundsVolume = in["soundVolume"].get<int>() * 0.01f;
 		lif::options.soundsMute = in["soundMuted"];
