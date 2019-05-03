@@ -1,11 +1,11 @@
 #pragma once
 
-#include <memory>
-#include <unordered_map>
-#include <SFML/Graphics.hpp>
-#include "WindowContext.hpp"
 #include "LoadScreen.hpp"
+#include "WindowContext.hpp"
+#include <SFML/Graphics.hpp>
+#include <memory>
 #include <sstream>
+#include <unordered_map>
 
 namespace lif {
 

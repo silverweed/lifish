@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Screen.hpp"
 #include "SaveDataBrowser.hpp"
+#include "Screen.hpp"
 
 namespace lif {
 
@@ -17,6 +17,6 @@ public:
 	void onLoad() override;
 };
 
-}
+} // end namespace ui
 
-}
+} // end namespace lif

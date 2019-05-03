@@ -35,3 +35,5 @@ assets/final
 .DS_Store
 lvtest.json
 .gdb_history
+.vscode
+.lif_prefs.json
