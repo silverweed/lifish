@@ -5,11 +5,12 @@
 
 APPNAME=Lifish
 MACOS=(lifish)
-RESOURCES=(assets/{fonts,graphics,sounds,screens,music} levels.json)
+RESOURCES=(levels.json)
+ASSETS=(assets/fonts assets/graphics assets/sounds assets/screens assets/music)
 FRAMEWORK_PATH=/Library/Frameworks
 FRAMEWORKS=({FLAC,ogg,freetype,OpenAL,vorbis{,enc,file},sfml-{window,graphics,system,audio}}.framework)
 
-for i in ${MACOS[@]} ${RESOURCES[@]}; do
+for i in ${MACOS[@]} ${RESOURCES[@]};  do
 	[[ -e $i ]] || {
 		echo "$i not found in this directory." >&2
 		exit 1
@@ -56,6 +57,8 @@ EOF
 
 cp -r ${MACOS[@]} "$APPNAME.app"/Contents/MacOS/.
 cp -r ${RESOURCES[@]} "$APPNAME.app"/Contents/Resources/.
+mkdir "$APPNAME.app"/Contents/Resources/assets
+cp -r ${ASSETS[@]} "$APPNAME.app"/Contents/Resources/assets/
 cp osx/Lifish.icns Lifish.app/Contents/Resources/.
 
 pushd "$APPNAME.app"/Contents/MacOS
