@@ -280,6 +280,11 @@ int main(int argc, char **argv) {
 		contexts[lif::CTX_INTERLEVEL] = &game->getWLHandler()
 						.getInterlevelContext();
 		cur_context = contexts[lif::CTX_GAME];
+
+		if (!game || !game->isLevelSetGood()) {
+			cur_context = contexts[lif::CTX_UI];
+			ui.setCurrent("error");
+		}
 	}
 	lif::debug::Stats dbgStats;
 	unsigned cycle = 0;
@@ -293,11 +298,6 @@ int main(int argc, char **argv) {
 	sf::Clock frame_clock;
 	std::thread rendering_thread(rendering_loop, std::ref(window));
 #endif
-
-	if (!game || !game->isLevelSetGood()) {
-		cur_context = contexts[lif::CTX_UI];
-		ui.setCurrent("error");
-	}
 
 	while (!lif::terminated) {
 
@@ -401,6 +401,13 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 					// Game just started: create a new GameContext
 					game.reset(new lif::GameContext(window,
 						args.levelsetName, args.startLevel));
+
+					if (!game || !game->isLevelSetGood()) {
+						cur_context = contexts[lif::CTX_UI];
+						ui.setCurrent("error");
+						return cur_context;;
+					}
+
 					// Adjust the origin to make room for side panel
 					const sf::Vector2f origin(-lif::SIDE_PANEL_WIDTH, 0);
 					game->setOrigin(origin);

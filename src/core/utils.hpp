@@ -182,6 +182,11 @@ constexpr int sign(T x) {
 	return (x > 0) - (x < 0);
 }
 
+template<typename T>
+constexpr T clamp(T val, T min, T max) {
+	return std::max(std::min(val, max), min);
+}
+
 /** Plays a brief sound (BLOCKING) */
 void testMusic();
 
