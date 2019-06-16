@@ -9,6 +9,7 @@
 #include "SidePanel.hpp"
 #include "Time.hpp"
 #include "contexts.hpp"
+#include "controls.hpp"
 #include "input_utils.hpp"
 #include <iostream>
 
@@ -169,10 +170,10 @@ void InterlevelContext::_tickDistributePoints() {
 	// Wait 60ms before next update
 	if (bonusPoints > 0 && time - lastTickTime < sf::milliseconds(60)) return;
 
-	if (bonusTime == sf::Time::Zero) {
+	if (bonusTime <= sf::Time::Zero) {
 		if (bonusPoints == 0) {
-			// First assignment of bonusTime: truncate decimals of remaining time
-			bonusTime = sf::seconds(static_cast<int>(lm.getLevelTime().getRemainingTime().asSeconds()));
+			// First assignment of bonusTime
+			bonusTime = sf::milliseconds(lm.getLevelTime().getRemainingTime().asMilliseconds());
 		} else {
 			// Pass to next phase
 			time = sf::Time::Zero;
@@ -202,6 +203,16 @@ void InterlevelContext::_tickDistributePoints() {
 }
 
 void InterlevelContext::_tickGettingReady() {
+	// Skip this phase if player clicks mouse or bomb button
+	if (time > sf::milliseconds(300) &&
+		(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) ||
+		std::any_of(std::begin(lif::controls::players), std::end(lif::controls::players), [] (const auto& keys) {
+			return sf::Keyboard::isKeyPressed(keys[lif::controls::CTRL_BOMB]);
+		}))
+	) {
+		time = sf::seconds(4);
+	}
+
 	if (time > sf::seconds(3))
 		newContext = lif::CTX_GAME;
 }
