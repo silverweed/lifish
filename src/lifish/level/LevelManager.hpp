@@ -24,6 +24,12 @@ class Bomb;
 class Level;
 class AxisMoving;
 
+#ifndef RELEASE
+namespace debug {
+class DebugEventHandler;
+}
+#endif
+
 /** The class that manages all the level's entities and events.
  *  In particular, its update() method updates all entities,
  *  the collisions and the game logic.
@@ -35,6 +41,9 @@ class LevelManager final : public lif::BaseLevelManager, public sf::Drawable {
 	friend class lif::SaveManager;
 	friend class lif::WinLoseHandler;
 	friend void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& player);
+#ifndef RELEASE
+	friend class lif::debug::DebugEventHandler;
+#endif
 
 	/** The currently managed level */
 	std::unique_ptr<lif::Level> level;
