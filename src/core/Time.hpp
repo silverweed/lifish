@@ -20,6 +20,7 @@ class Time final {
 	TimeType gameTime = 0;
 	TimeType prevFrameTime = 0;
 	TimeType realTime = 0;
+	TimeType prevRealTime = 0;
 
 	bool skipFrameLock = false;
 
@@ -31,6 +32,7 @@ public:
 	void update() {
 		const auto now = std::chrono::duration_cast<std::chrono::microseconds>(clock.now() - zeroTime).count();
 		const auto delta = now - realTime;
+		prevRealTime = realTime;
 		realTime = now;
 
 		prevFrameTime = gameTime;
@@ -51,6 +53,10 @@ public:
 			deltaInUs = MAX_FRAME_TIME * static_cast<double>(timeScale);
 
 		return sf::microseconds(deltaInUs);
+	}
+
+	sf::Time getRealDelta() const {
+		return sf::microseconds(realTime - prevRealTime);
 	}
 
 	void addTime(sf::Time t) {

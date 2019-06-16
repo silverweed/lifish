@@ -212,7 +212,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			pos.x = SCORE_POS_X;
 			pos.y = i == 0 ? SCORE_POS_Y_1 : SCORE_POS_Y_2;
 			lif::ShadedText scoreText(
-					lif::getAsset("fonts", lif::fonts::SIDE_PANEL_MONO),
+					*lif::cache.loadFont(lif::getAsset("fonts", lif::fonts::SIDE_PANEL_MONO)),
 					ss.str(), pos);
 			scoreText.setCharacterSize(16);
 			scoreText.setShadowSpacing(2, 2);

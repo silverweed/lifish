@@ -1,6 +1,6 @@
 #include "DebugPainter.hpp"
 
-using lif::DebugPainter;
+using lif::debug::DebugPainter;
 
 void DebugPainter::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	for (auto& item : items)

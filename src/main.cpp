@@ -53,6 +53,7 @@
 #ifndef RELEASE
 #	include "Stats.hpp"
 #	include "DebugPainter.hpp"
+#	include "FadeoutTextManager.hpp"
 #	include <cassert>
 #endif
 
@@ -208,17 +209,21 @@ int main(int argc, char **argv) {
 	lif::MusicManager mm;
 	lif::musicManager = &mm;
 
-#ifndef RELEASE
-	// Create the DebugPainter
-	lif::DebugPainter debugPainter;
-	lif::debugPainter = &debugPainter;
-#endif
-
 	// Initialize game variables
 	if (!lif::init()) {
 		std::cerr << "[ FATAL ] Failed to initialize the game!" << std::endl;
 		return 1;
 	}
+
+#ifndef RELEASE
+	// Create debug utils
+	lif::debug::DebugPainter debugPainter;
+	lif::debugPainter = &debugPainter;
+
+	lif::debug::FadeoutTextManager fadeoutTextMgr(
+			*lif::cache.loadFont(lif::getAsset("fonts", lif::fonts::DEBUG_INFO)), sf::seconds(5));
+	lif::fadeoutTextMgr = &fadeoutTextMgr;
+#endif
 
 	// Must be done AFTER lif::init() but BEFORE the UI initializes!
 	lif::loadPreferences(lif::PREFERENCES_SAVE_FILE_NAME);
@@ -323,6 +328,9 @@ int main(int argc, char **argv) {
 		///// LOGIC LOOP /////
 
 		cur_context->update();
+#ifndef RELEASE
+		fadeoutTextMgr.update();
+#endif
 
 		///// RENDERING LOOP //////
 
@@ -332,6 +340,9 @@ int main(int argc, char **argv) {
 #	endif
 		window.clear();
 		window.draw(*cur_context);
+#	ifndef RELEASE
+		window.draw(fadeoutTextMgr);
+#	endif
 
 		fpsDisplayer.update();
 		if (lif::options.showFPS)

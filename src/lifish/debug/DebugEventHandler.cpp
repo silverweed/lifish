@@ -5,6 +5,7 @@
 #include "DebugPainter.hpp"
 #include "Drawable.hpp"
 #include "Enemy.hpp"
+#include "FadeoutTextManager.hpp"
 #include "GameContext.hpp"
 #include "Killable.hpp"
 #include "Music.hpp"
@@ -56,10 +57,15 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 	switch (event.type) {
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
-		case sf::Keyboard::Numpad1:
-			lif::time.setTimeScale(std::max(0.01, lif::time.getTimeScale() - 0.1));
-			std::cout << "Time Scale = " << lif::time.getTimeScale() << "\n";
-			return true;
+
+		case sf::Keyboard::PageDown:
+			{
+				lif::time.setTimeScale(std::max(0.01, lif::time.getTimeScale() - 0.1));
+				std::stringstream ss;
+				ss << "Time Scale = " << std::setprecision(2) << lif::time.getTimeScale();
+				lif::fadeoutTextMgr->add(ss.str());
+				return true;
+			}
 
 		case sf::Keyboard::Numpad3:
 			game.lm.getEntities().apply([] (lif::Entity& e) {
@@ -68,10 +74,14 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			});
 			return true;
 
-		case sf::Keyboard::Numpad4:
-			lif::time.setTimeScale(lif::time.getTimeScale() + 0.1);
-			std::cout << "Time Scale = " << lif::time.getTimeScale() << "\n";
-			return true;
+		case sf::Keyboard::PageUp:
+			{
+				lif::time.setTimeScale(std::max(0.01, lif::time.getTimeScale() + 0.1));
+				std::stringstream ss;
+				ss << "Time Scale = " << std::setprecision(2) << lif::time.getTimeScale();
+				lif::fadeoutTextMgr->add(ss.str());
+				return true;
+			}
 
 		case sf::Keyboard::Numpad6:
 			game.lm.getEntities().apply([] (lif::Entity& e) {
@@ -268,5 +278,7 @@ void _printHelp() {
 		<< "Numpad6 : flip all entities\n"
 		<< "Numpad7 : compute and show free tiles\n"
 		<< "Numpad9 : rotate all entities of pi/4\n"
+		<< "PageDown : slow down time\n"
+		<< "PageUp   : speed up time\n"
 		<< std::endl;
 }

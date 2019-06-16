@@ -73,9 +73,14 @@ extern lif::Time<std::chrono::high_resolution_clock> time;
 extern lif::MusicManager *musicManager;
 
 #ifndef RELEASE
+namespace debug {
 class DebugPainter;
+class FadeoutTextManager;
+}
+
 /** See musicManager */
-extern lif::DebugPainter *debugPainter;
+extern lif::debug::DebugPainter *debugPainter;
+extern lif::debug::FadeoutTextManager *fadeoutTextMgr;
 #endif
 
 #ifdef MULTITHREADED
