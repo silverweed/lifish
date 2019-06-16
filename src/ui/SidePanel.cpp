@@ -220,7 +220,7 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			ss.str("");
 			ss << std::setfill('0') << std::setw(6) << lm.getScore(i + 1);
 			//scoreText.setCharacterSize(16);
-			scoreText.setFont(lif::getAsset("fonts", lif::fonts::SIDE_PANEL_THIN));
+			scoreText.setFont(*lif::cache.loadFont(lif::getAsset("fonts", lif::fonts::SIDE_PANEL_THIN)));
 			scoreText.setPosition(pos);
 			scoreText.setString(ss.str());
 			window.draw(scoreText, states);

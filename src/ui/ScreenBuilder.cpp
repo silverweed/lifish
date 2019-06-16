@@ -151,7 +151,7 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 	// set char size
 	newtxt->setCharacterSize(style.characterSize);
 	// set font
-	newtxt->setFont(lif::getAsset("fonts", style.font));
+	newtxt->setFont(*lif::cache.loadFont(lif::getAsset("fonts", style.font)));
 	// set string
 	newtxt->setString(convert_special_string(text["string"].get<std::string>()));
 

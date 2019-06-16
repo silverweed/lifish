@@ -2,11 +2,12 @@
 #include "GameCache.hpp"
 #include "Options.hpp"
 #include "Time.hpp"
-#ifndef RELEASE
-	#include "DebugPainter.hpp"
-#endif
 #include <chrono>
 #include <cstring>
+#ifndef RELEASE
+#	include "DebugPainter.hpp"
+#	include "FadeoutTextManager.hpp"
+#endif
 
 #if defined(SFML_SYSTEM_MACOS)
 #	include <mach-o/dyld.h>
@@ -32,7 +33,8 @@ lif::MusicManager *lif::musicManager = nullptr;
 lif::WindowContext *lif::curContext = nullptr;
 #endif
 #ifndef RELEASE
-lif::DebugPainter *lif::debugPainter = nullptr;
+lif::debug::DebugPainter *lif::debugPainter = nullptr;
+lif::debug::FadeoutTextManager *lif::fadeoutTextMgr = nullptr;
 #endif
 
 static void _initOptions() {

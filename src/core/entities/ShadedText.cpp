@@ -5,12 +5,12 @@
 
 using lif::ShadedText;
 
-ShadedText::ShadedText(const std::string& fontname, const std::string& str,
+ShadedText::ShadedText(const sf::Font& font, const std::string& str,
 		sf::Vector2f pos, sf::Color fg, sf::Color bg)
 	: lif::Entity(pos)
 	, shadowSpacing(3.5f, 3.f)
 {
-	setFont(fontname);
+	setFont(font);
 	setString(str);
 	fgtext.setPosition(pos);
 	bgtext.setPosition(pos + shadowSpacing);
@@ -20,10 +20,14 @@ ShadedText::ShadedText(const std::string& fontname, const std::string& str,
 	addComponent<lif::Drawable>(*this, *this);
 }
 
-void ShadedText::setFont(const std::string& fontname) {
-	auto font = lif::cache.loadFont(fontname);
-	fgtext.setFont(*font);
-	bgtext.setFont(*font);
+ShadedText::ShadedText(const std::string& fontname, const std::string& str,
+		sf::Vector2f pos, sf::Color fg, sf::Color bg)
+	: ShadedText(*lif::cache.loadFont(fontname), str, pos, fg, bg)
+{}
+
+void ShadedText::setFont(const sf::Font& font) {
+	fgtext.setFont(font);
+	bgtext.setFont(font);
 }
 
 void ShadedText::setStyle(sf::Text::Style style) {
