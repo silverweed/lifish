@@ -13,6 +13,9 @@
 #include "contexts.hpp"
 #include "core.hpp"
 #include "input_utils.hpp"
+#include "CameraShake.hpp"
+#include "CameraShakeRequest.hpp"
+#include "GlobalDataPipe.hpp"
 #ifndef RELEASE
 #	include <iostream>
 #	include <iomanip>
@@ -21,9 +24,6 @@
 #	include "game_logic.hpp"
 #	include "DebugPainter.hpp"
 #endif
-#include "CameraShake.hpp"
-#include "CameraShakeRequest.hpp"
-#include "GlobalDataPipe.hpp"
 
 using lif::GameContext;
 
@@ -100,6 +100,7 @@ void GameContext::update() {
 	wlHandler.handleWinLose();
 	switch (wlHandler.getState()) {
 		using S = lif::WinLoseHandler::State;
+
 	case S::ADVANCING_LEVEL:
 		// Handle cutscenePost
 		if (lm.getLevel()->getInfo().cutscenePost.length() > 0)
@@ -107,17 +108,21 @@ void GameContext::update() {
 		else
 			newContext = lif::CTX_INTERLEVEL;
 		return;
+
 	case S::ADVANCED_LEVEL:
 		_advanceLevel();
 		onLevelStart();
 		break;
+
 	case S::RETRY_LEVEL:
 		retryingLevel = true;
 		newContext = lif::CTX_INTERLEVEL;
 		break;
+
 	case S::EXIT_GAME:
 		newContext = lif::CTX_UI;
 		break;
+
 	default:
 		break;
 	}

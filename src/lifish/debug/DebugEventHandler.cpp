@@ -14,7 +14,9 @@
 #include "Player.hpp"
 #include "Time.hpp"
 #include "collision_utils.hpp"
+#include "conf/zindex.hpp"
 #include "game.hpp"
+#include "input_utils.hpp"
 #include <iomanip>
 #include <iostream>
 #include <map>
@@ -52,9 +54,34 @@ DebugEventHandler::DebugEventHandler(lif::GameContext& game)
  * Numpad7 : compute and show free tiles
  * Numpad8 : kill player 1
  * Numpad9 : rotate all entities of pi/4
+ * Ctrl+Alt+# : only draw layer #
+ * Ctrl+Alt+Shift+#: add layer # to drawn ones
+ * Ctrl+Alt+R : reset drawn layers
  */
 bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
+
+	const bool ctrl = sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) ||
+				sf::Keyboard::isKeyPressed(sf::Keyboard::RControl);
+	const bool shift = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ||
+				sf::Keyboard::isKeyPressed(sf::Keyboard::RShift);
+	const bool alt = sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt) ||
+				sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt);
+
 	switch (event.type) {
+	case sf::Event::KeyReleased:
+		switch (event.key.code) {
+			case sf::Keyboard::LControl:
+			case sf::Keyboard::LAlt:
+				if (changingDrawnLayers) {
+					_finalizeChangeDrawLayers();
+				}
+				return true;
+
+			default:
+				break;
+		}
+		break;
+
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
 
@@ -188,7 +215,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			return true;
 
 		case sf::Keyboard::Slash:
-			if (!sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+			if (!shift)
 				return false;
 			_printHelp();
 			return true;
@@ -204,12 +231,14 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			return true;
 
 		case sf::Keyboard::Add:
+		case sf::Keyboard::Equal:
 			game._advanceLevel();
 			game.onLevelStart();
 			game.getWLHandler().state = lif::WinLoseHandler::State::DEFAULT;
 			return true;
 
 		case sf::Keyboard::Subtract:
+		case sf::Keyboard::Dash:
 			{
 				int lvnum = game.lm.getLevel()->getInfo().levelnum - 1;
 				if (lvnum < 1)
@@ -225,6 +254,44 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			std::cout << _printEntitiesDetails(game.lm.getEntities());
 			break;
 
+		case sf::Keyboard::Num0:
+			if (!ctrl || !alt)
+			{
+				lif::options.printDrawStats = !lif::options.printDrawStats;
+				return true;
+			}
+			// fallthrough
+		case sf::Keyboard::Num1:
+		case sf::Keyboard::Num2:
+		case sf::Keyboard::Num3:
+		case sf::Keyboard::Num4:
+		case sf::Keyboard::Num5:
+		case sf::Keyboard::Num6:
+		case sf::Keyboard::Num7:
+		case sf::Keyboard::Num8:
+		case sf::Keyboard::Num9:
+		case sf::Keyboard::R:
+			if (!ctrl || !alt)
+			{
+				return false;
+			}
+			return _changeDrawnLayers(event.key.code);
+
+		case sf::Keyboard::S:
+			if (ctrl && alt) {
+				game.getLM().renderer.setDrawSelectiveLayers(true);
+				lif::fadeoutTextMgr->add("Enable Selective Layers Drawing. Tab to switch");
+				return true;
+			}
+			break;
+
+		case sf::Keyboard::Tab:
+			if (game.getLM().renderer.isSelectiveLayerDrawingEnabled()) {
+				_cycleDrawnLayer();
+				return true;
+			}
+			break;
+
 		default:
 			break;
 		}
@@ -232,6 +299,68 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 		break;
 	}
 	return false;
+}
+
+bool DebugEventHandler::_changeDrawnLayers(sf::Keyboard::Key key) {
+
+	// Ctrl+Alt+R = reset
+	if (key == sf::Keyboard::Key::R) {
+		isResetDrawnLayers = true;
+		isAddDrawnLayers = false;
+		drawnLayerBuf = 0;
+		changingDrawnLayers = true;
+		return true;
+	}
+
+	const auto n = lif::kb::keyToNumber(key);
+	if (n < 0)
+		return false;
+
+	if (!changingDrawnLayers) {
+		drawnLayerBuf = n;
+		changingDrawnLayers = true;
+	} else {
+		drawnLayerBuf = drawnLayerBuf * 10 + n;
+	}
+
+	isAddDrawnLayers = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+
+	return true;
+}
+
+void DebugEventHandler::_finalizeChangeDrawLayers() {
+	auto& renderer = game.getLM().renderer;
+
+	if (isResetDrawnLayers) {
+		renderer.setDrawSelectiveLayers(false);
+		lif::fadeoutTextMgr->add("Reset Selective Layers Drawing");
+	} else {
+		renderer.setDrawSelectiveLayers(true);
+		if (!isAddDrawnLayers)
+			renderer.resetDrawnLayers();
+		const auto& drawn = renderer.addDrawnLayer(drawnLayerBuf);
+		std::stringstream ss;
+		ss << "Selective Drawing Layers: ";
+		for (auto layer : drawn)
+			ss << layer << ", ";
+		const auto s = ss.str();
+		lif::fadeoutTextMgr->add(s.substr(0, s.length() - 2));
+	}
+	changingDrawnLayers = false;
+	isResetDrawnLayers = false;
+	isAddDrawnLayers = false;
+}
+
+void DebugEventHandler::_cycleDrawnLayer() {
+	using namespace std::string_literals;
+
+	auto& renderer = game.getLM().renderer;
+	const auto& all = lif::conf::zindex::ALL;
+
+	drawnLayerIdx = (drawnLayerIdx + 1) % all.size();
+	renderer.resetDrawnLayers();
+	renderer.addDrawnLayer(all[drawnLayerIdx]);
+	lif::fadeoutTextMgr->add("Selective Drawing Layer: "s + lif::conf::zindex::layerName(all[drawnLayerIdx]));
 }
 
 std::string _printEntitiesDetails(const lif::EntityGroup& entities) {
@@ -280,5 +409,10 @@ void _printHelp() {
 		<< "Numpad9 : rotate all entities of pi/4\n"
 		<< "PageDown : slow down time\n"
 		<< "PageUp   : speed up time\n"
+		<< "Ctrl+Alt+Num : draw layer Num\n"
+		<< "Ctrl+Alt+Shift+Num : draw also layer Num\n"
+		<< "Ctrl+Alt+R : reset selective layer drawing\n"
+		<< "Ctrl+Alt+S : enable selective layer drawing\n"
+		<< "Tab        : cycle drawn layer (if selective layer drawing is enabled)\n"
 		<< std::endl;
 }

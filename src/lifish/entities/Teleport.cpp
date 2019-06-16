@@ -9,7 +9,9 @@
 #include "Sounded.hpp"
 #include "Spawning.hpp"
 #include "Time.hpp"
+#include "ZIndexed.hpp"
 #include "conf/teleport.hpp"
+#include "conf/zindex.hpp"
 #include "game.hpp"
 
 using lif::Teleport;
@@ -24,6 +26,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& c) {
 		_warp(c);
 	}, lif::c_layers::TELEPORTS);
+	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::TELEPORTS);
 	addComponent<lif::Spawning>(*this, [this] (const lif::Spawning&) {
 		return mustSpawnFlash;
 	}, [this] () {

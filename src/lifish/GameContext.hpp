@@ -26,9 +26,12 @@ class GameContext : public lif::WindowContext {
 public:
 	enum : unsigned {
 		DBG_DRAW_COLLIDERS   = 1,
+		/** Draw cells used for Spatial Hashing collision detection */
 		DBG_DRAW_SH_CELLS    = 1 << 1,
+		/** Print collision detection stats */
 		DBG_PRINT_CD_STATS   = 1 << 2,
 		DBG_PRINT_GAME_STATS = 1 << 3,
+		/** Don't clear shapes drawn by the DebugPainter */
 		DBG_NO_PAINT_CLEAR   = 1 << 4
 	};
 private:

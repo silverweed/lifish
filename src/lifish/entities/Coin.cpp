@@ -10,6 +10,8 @@
 #include "Scored.hpp"
 #include "Sounded.hpp"
 #include "Time.hpp"
+#include "ZIndexed.hpp"
+#include "conf/zindex.hpp"
 #include "game.hpp"
 
 using lif::Coin;
@@ -31,6 +33,7 @@ Coin::Coin(const sf::Vector2f& pos)
 	lif::cache.loadTexture(texname)->setSmooth(true);
 	addComponent<lif::Drawable>(*this, *animated);
 	grabbable = addComponent<lif::Grabbable>(*this);
+	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::COINS);
 	addComponent<lif::Collider>(*this, [this] (lif::Collider& coll) {
 		if (coll.getLayer() != lif::c_layers::PLAYERS || grabbable->isGrabbed())
 			return;

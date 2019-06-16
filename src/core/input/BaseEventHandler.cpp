@@ -24,9 +24,6 @@ bool BaseEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 		case sf::Keyboard::Q:
 			lif::terminated = true;
 			return true;
-		case sf::Keyboard::Num0:
-			lif::options.printDrawStats = !lif::options.printDrawStats;
-			return true;
 #endif
 		default:
 			break;
