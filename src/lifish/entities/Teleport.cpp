@@ -56,11 +56,18 @@ Teleport::Teleport(const sf::Vector2f& pos)
 void Teleport::update() {
 	lif::Entity::update();
 	disableT += lif::time.getDelta();
-	if (disabled && disableT >= lif::conf::teleport::COOLDOWN_TIME
-			&& collider->getColliding().size() == 0)
+	if (disabled &&
+		disableT >= lif::conf::teleport::COOLDOWN_TIME)
 	{
 		disabled = false;
 		animated->getSprite().play();
+
+		for (auto& cld : collider->getColliding()) {
+			if (auto c = cld.lock()) {
+				_warp(*c);
+				break;
+			}
+		}
 	}
 }
 

@@ -57,7 +57,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 	switch (event.type) {
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
-		case sf::Keyboard::Numpad1:
+		case sf::Keyboard::PageDown:
 			lif::time.setTimeScale(std::max(0.01, lif::time.getTimeScale() - 0.1));
 			std::cout << "Time Scale = " << lif::time.getTimeScale() << "\n";
 			return true;
@@ -69,7 +69,7 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			});
 			return true;
 
-		case sf::Keyboard::Numpad4:
+		case sf::Keyboard::PageUp:
 			lif::time.setTimeScale(lif::time.getTimeScale() + 0.1);
 			std::cout << "Time Scale = " << lif::time.getTimeScale() << "\n";
 			return true;
@@ -265,9 +265,11 @@ void _printHelp() {
 		<< "- : back one level\n"
 		<< "? : print help\n"
 		<< "Num0 : toggle draw stats display\n"
-		<< "Numpad3 : destroy all breakable walls\n"
-		<< "Numpad6 : flip all entities\n"
-		<< "Numpad7 : compute and show free tiles\n"
-		<< "Numpad9 : rotate all entities of pi/4\n"
+		<< "PageDown : slow down time\n"
+		<< "Numpad3  : destroy all breakable walls\n"
+		<< "PageUp   : speed up time\n"
+		<< "Numpad6  : flip all entities\n"
+		<< "Numpad7  : compute and show free tiles\n"
+		<< "Numpad9  : rotate all entities of pi/4\n"
 		<< std::endl;
 }
