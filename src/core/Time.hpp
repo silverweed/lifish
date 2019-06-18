@@ -74,7 +74,8 @@ public:
 	}
 
 	void pause() {
-		prevTimeScale = timeScale;
+		if (timeScale != 0)
+			prevTimeScale = timeScale;
 		timeScale = 0;
 	}
 
