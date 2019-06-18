@@ -177,19 +177,20 @@ void Player::_checkCollision(lif::Collider& cld) {
 	switch (layer) {
 	case L::ENEMIES:
 	case L::ENEMIES_IGNORE_BREAKABLES:
-		if (cld.getOwner().get<lif::Killable>()->isKilled())
-			return;
-		{
+		if (!cld.getOwner().get<lif::Killable>()->isKilled()) {
 			const auto shooting = cld.getOwner().get<lif::Shooting>();
-			damage = shooting->getAttack().contactDamage;
-			break;
+			damage = shooting != nullptr ? shooting->getAttack().contactDamage : 1;
 		}
+		break;
+
 	case L::EXPLOSIONS:
 		damage = 1; // player explosions always deal 1 damage per tick
 		break;
+
 	case L::ENEMY_EXPLOSIONS:
 		damage = static_cast<const lif::Explosion&>(cld.getOwner()).getDamage();
 		break;
+
 	case L::ENEMY_BULLETS:
 	case L::BOSS_BULLETS:
 		{
@@ -197,8 +198,9 @@ void Player::_checkCollision(lif::Collider& cld) {
 			if (bullet.hasDealtDamage()) return;
 			damage = bullet.getInfo().damage;
 			bullet.dealDamage();
-			break;
 		}
+		break;
+
 	default:
 		return;
 	}
