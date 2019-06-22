@@ -25,7 +25,11 @@ protected:
 	float speed;
 
 	bool moving = false;
+	/** How many pixels did this entity move so far. For AxisMoving, calling setDirection() resets this value.
+	 *  Used for AI.
+	 */
 	float distTravelled = 0;
+	float distTravelledThisFrame = 0;
 
 	sf::Time blockTime = sf::Time::Zero;
 	sf::Time blockT;
@@ -61,6 +65,8 @@ public:
 
 	float getDistTravelled() const { return distTravelled; }
 	void setDistTravelled(float d) { distTravelled = d; }
+	float getDistTravelledThisFrame() const { return distTravelledThisFrame; }
+	void resetDistTravelledThisFrame() { distTravelledThisFrame = 0; }
 
 	/** Make this entity dash, i.e. temporarily increase its speed by `mult * originalSpeed`.
 	 *  Passing `0` as argument cancels the dash.

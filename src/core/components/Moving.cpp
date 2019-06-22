@@ -27,6 +27,7 @@ void Moving::update() {
 	lif::Component::update();
 
 	blockT += lif::time.getDelta();
+	distTravelledThisFrame = 0;
 }
 
 void Moving::move() {

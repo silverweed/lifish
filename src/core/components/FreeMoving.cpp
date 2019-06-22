@@ -23,10 +23,14 @@ void FreeMoving::update() {
 
 	shift += velocity * effSpeed;
 
+	const auto prevPos = owner.getPosition();
+
 	if (!_collidesWithSolid(velocity)) {
 		owner.setPosition(owner.getPosition() + shift * frameTime.asSeconds());
 		distTravelled += speed * frameTime.asSeconds();
 	}
+
+	distTravelledThisFrame = lif::length(owner.getPosition() - prevPos);
 }
 
 void FreeMoving::setVelocity(const sf::Vector2f& vel) {

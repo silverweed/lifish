@@ -13,6 +13,8 @@ class Collider;
 class Teleport : public lif::Entity {
 	static constexpr unsigned int N_ANIM_FRAMES = 8;
 
+	std::weak_ptr<lif::Collider> scheduledWarpCld;
+
 	/** The Teleport this one teleports to */
 	Teleport *_next = nullptr;
 

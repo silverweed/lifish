@@ -20,7 +20,7 @@ using lif::TILE_SIZE;
 Teleport::Teleport(const sf::Vector2f& pos)
 	: lif::Entity(pos)
 {
-	addComponent<lif::Fixed>(*this);
+	//addComponent<lif::Fixed>(*this);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "teleport.png"));
 	addComponent<lif::Drawable>(*this, *animated);
 	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& c) {
@@ -62,14 +62,13 @@ void Teleport::update() {
 	if (disabled &&
 		disableT >= lif::conf::teleport::COOLDOWN_TIME)
 	{
-		disabled = false;
-		animated->getSprite().play();
-
-		for (auto& cld : collider->getColliding()) {
-			if (auto c = cld.lock()) {
-				_warp(*c);
-				break;
-			}
+		if (collider->getColliding().size() == 0) {
+			disabled = false;
+			animated->getSprite().play();
+		} else if (auto c = scheduledWarpCld.lock()) {
+			disabled = false;
+			_warp(*c);
+			scheduledWarpCld.reset();
 		}
 	}
 }
@@ -81,7 +80,33 @@ void Teleport::disable() {
 }
 
 void Teleport::_warp(lif::Collider& cld) {
-	if (disabled) return;
+	if (disabled) {
+		if (!scheduledWarpCld.lock()) {
+			const auto am = cld.getOwner().get<lif::AxisMoving>();
+			if (am != nullptr && am->getDistTravelledThisFrame() > 1) {
+				bool ok = true;
+				// UGLY HACK:
+				// check if the potential scheduled collider is being "pushed" by someone.
+				// If that is the case, the distTravelledThisFrame is spurious, so pretend the
+				// guy is still. This is an edge case, so we may want to do something different
+				// eventually.
+				if (cld.getLayer() == lif::c_layers::PLAYERS) {
+					for (auto c : cld.getColliding()) {
+						auto other = c.lock();
+						if (other && other->isSolidFor(cld) &&
+								other->getOwner().get<lif::AxisMoving>() != nullptr)
+						{
+							ok = false;
+							break;
+						}
+					}
+				}
+				if (ok)
+					scheduledWarpCld = cld.getOwner().getShared<lif::Collider>();
+			}
+		}
+		return;
+	}
 
 	const auto& entity = cld.getOwner();
 	auto am = entity.get<lif::AxisMoving>();
@@ -97,7 +122,7 @@ void Teleport::_warp(lif::Collider& cld) {
 			continue;
 
 		bool isGood = true;
- 		for (const auto& oth :  nxt->get<lif::Collider>()->getColliding()) {
+ 		for (const auto& oth : nxt->collider->getColliding()) {
 			const auto other = oth.lock();
 			if (other && layer == other->getLayer()) {
 				isGood = false;
@@ -111,6 +136,9 @@ void Teleport::_warp(lif::Collider& cld) {
 
 	if (nxt == nullptr || nxt == this) return;
 
+	if (auto mov = cld.getOwner().get<lif::Moving>()) {
+		mov->resetDistTravelledThisFrame();
+	}
 	cld.getOwnerRW().setPosition(nxt->getPosition());
 	if (am != nullptr) {
 		am->setPrevAlign(lif::tile(nxt->getPosition()));
