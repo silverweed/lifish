@@ -24,7 +24,7 @@ bool lif::saveGame(const std::string& filename, const lif::LevelManager& lm) {
 		if (player == nullptr) {
 			// Only save the score
 			save["players"][i] = {
-				{ "continues", 0 },
+				{ "continues", -1 },
 				{ "score", lm.getScore(i + 1) }
 			};
 			continue;
@@ -70,10 +70,13 @@ lif::SaveData lif::loadGame(const std::string& filename) {
 		for (unsigned i = 0; i < data.players.size(); ++i) {
 			auto& player = data.players[i];
 			const auto& pldata = load["players"][i];
+			player.score = pldata["score"];
 			player.continues = pldata["continues"];
+			if (player.continues < 0)
+				continue;
+
 			player.remainingLives = pldata["remainingLives"];
 			player.life = pldata["life"];
-			player.score = pldata["score"];
 			const auto& powdata = pldata["powers"];
 			player.powers.bombRadius = powdata["bombRadius"];
 			player.powers.bombFuseTime = powdata["bombFuseTime"];

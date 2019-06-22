@@ -29,7 +29,7 @@ bool LevelSet::loadFromFile(const std::string& path) {
 		if (levelJSON.find(key) != levelJSON.end())
 			metadata[key] = levelJSON[(std::string)key].get<std::string>();
 	}
-	metadata["path"] = path;
+	metadata["path"] = lif::toRelativePath(path);
 
 	// load tracks data
 	const auto& tracksdata = levelJSON["tracks"];

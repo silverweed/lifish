@@ -3,6 +3,7 @@
 #include "AxisMoving.hpp"
 #include "Bomb.hpp"
 #include "Bonusable.hpp"
+#include "Animated.hpp"
 #include "Coin.hpp"
 #include "Controllable.hpp"
 #include "Enemy.hpp"
@@ -49,15 +50,29 @@ void LevelManager::createNewPlayers(int n) {
 
 void LevelManager::loadGame(const lif::SaveData& saveData) {
 	// TODO validate saveData
-	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
+	for (unsigned i = 0; i < std::min<unsigned>({
+		static_cast<unsigned>(saveData.players.size()), 
+		lif::MAX_PLAYERS, 
+		static_cast<unsigned>(lif::options.nPlayers)
+	}); ++i) 
+	{
 		const auto& pdata = saveData.players[i];
 		auto& player = players[i];
 		// Continues
 		playerContinues[i] = pdata.continues;
-		// Remaining Lives
-		player->setRemainingLives(pdata.remainingLives);
-		// Current health
-		player->get<lif::Lifed>()->setLife(pdata.life);
+
+		if (player.get() == nullptr)
+			continue;
+
+		if (playerContinues[i] < 0) {
+			player->setRemainingLives(0);
+			player->get<lif::Lifed>()->setLife(0);
+			player->get<lif::Animated>()->setActive(false);
+			player->get<lif::Killable>()->kill();
+		} else {	
+			player->setRemainingLives(pdata.remainingLives);
+			player->get<lif::Lifed>()->setLife(pdata.life);
+		}
 		// Powers
 		auto& powers = player->getPowers();
 		powers.bombFuseTime = pdata.powers.bombFuseTime;

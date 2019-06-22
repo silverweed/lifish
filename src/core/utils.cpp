@@ -3,6 +3,7 @@
 #include "Options.hpp"
 #include "ShadedText.hpp"
 #include "json.hpp"
+#include <cassert>
 #include <random>
 
 using json = nlohmann::json;
@@ -34,6 +35,16 @@ void lif::testMusic() {
 	sample.stop();
 }
 
+std::string lif::toRelativePath(const std::string& path) {
+	auto idx = strnlen(lif::pwd, lif::PWD_BUFSIZE);
+
+	if (idx >= path.length()) return path;
+
+	while (idx < path.length() && path[idx] == lif::DIRSEP)
+		++idx;
+
+	return idx < path.length() ? path.substr(idx) : "";
+}
 
 sf::View lif::keepRatio(const sf::Vector2f& size, const sf::Vector2u& designedsize) {
 	sf::FloatRect viewport(0.f, 0.f, 1.f, 1.f);

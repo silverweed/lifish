@@ -183,6 +183,11 @@ constexpr T clamp(T val, T min, T max) {
 	return std::max(std::min(val, max), min);
 }
 
+/** Given a path starting from lif::pwd, returns the path relative to it.
+ *  e.g. /path/to/lif/assets/foo -> assets/foo
+ */
+std::string toRelativePath(const std::string& path);
+
 /** Plays a brief sound (BLOCKING) */
 void testMusic();
 
