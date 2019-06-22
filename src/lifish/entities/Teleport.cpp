@@ -89,11 +89,24 @@ void Teleport::_warp(lif::Collider& cld) {
 		return;
 	}
 
+	// Find the first viable teleport to warp to.
 	Teleport *nxt = _next;
+	const auto layer = cld.getLayer();
 	for ( ; nxt != nullptr && nxt != this; nxt = nxt->next()) {
-		if (nxt->isDisabled() || nxt->get<lif::Collider>()->getColliding().size() > 0)
+		if (nxt->isDisabled())
 			continue;
-		break;
+
+		bool isGood = true;
+ 		for (const auto& oth :  nxt->get<lif::Collider>()->getColliding()) {
+			const auto other = oth.lock();
+			if (other && layer == other->getLayer()) {
+				isGood = false;
+				break;
+			}
+		}
+
+		if (isGood)
+			break;
 	}
 
 	if (nxt == nullptr || nxt == this) return;
