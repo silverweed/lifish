@@ -5,6 +5,7 @@
 #include "ShadedText.hpp"
 #include "json.hpp"
 #include <random>
+#include <cassert>
 
 using json = nlohmann::json;
 
@@ -23,4 +24,15 @@ void lif::testMusic() {
 	sample.setVolume(lif::options.musicVolume);
 	sf::sleep(sf::milliseconds(200));
 	sample.stop();
+}
+
+std::string lif::toRelativePath(const std::string& path) {
+	auto idx = strnlen(lif::pwd, lif::PWD_BUFSIZE);
+
+	if (idx >= path.length()) return path;
+
+	while (idx < path.length() && path[idx] == lif::DIRSEP)
+		++idx;
+
+	return idx < path.length() ? path.substr(idx) : ""; 
 }

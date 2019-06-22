@@ -37,7 +37,11 @@ namespace conf {
 			FLASHES, DROPPING_TEXTS, TORCHES, UI, POINTS
 		}};
 
+#ifndef _WIN32
 		constexpr const char* layerName(int layer) {
+#else
+		inline const char* layerName(int layer) {
+#endif
 			switch (layer) {
 			case PONDS: return "Ponds";
 			case EXPLOSIONS: return "Explosions";
