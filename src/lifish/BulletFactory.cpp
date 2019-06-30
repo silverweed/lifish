@@ -2,9 +2,6 @@
 #include "AxisBullet.hpp"
 #include "AxisMoving.hpp"
 #include "FreeBullet.hpp"
-#include "Grenade.hpp"
-#include "Missile.hpp"
-#include "Rocket.hpp"
 #include "collision_layers.hpp"
 #include "utils.hpp"
 
@@ -69,9 +66,9 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 				, bulletsInfo[infoId], source));
 		}
 	case 9:
-		return std::unique_ptr<lif::Bullet>(new lif::Grenade(pos, target, bulletsInfo[infoId], source));
+		//return std::unique_ptr<lif::Bullet>(new lif::Grenade(pos, target, bulletsInfo[infoId], source));
 	case 10:
-		{
+		/*{
 			auto dir = lif::getDirection(lif::tile(pos), lif::tile(target));
 			if (dir == lif::Direction::NONE && source != nullptr) {
 				const auto moving = source->get<lif::AxisMoving>();
@@ -79,14 +76,14 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 					dir = moving->getDirection();
 			}
 			return std::unique_ptr<lif::Bullet>(new lif::Rocket(pos, dir, bulletsInfo[infoId], source));
-		}
+		}*/
 	case 101:
 	case 102:
 	case 104:
 		return std::unique_ptr<lif::Bullet>(new lif::FreeBullet(pos,
 			lif::angleBetween(pos, target), bulletsInfo[infoId], source));
 	case 103:
-		return std::unique_ptr<lif::Bullet>(new lif::Missile(pos, target, bulletsInfo[infoId], source));
+		//return std::unique_ptr<lif::Bullet>(new lif::Missile(pos, target, bulletsInfo[infoId], source));
 	default:
 		throw std::invalid_argument("No bullet with id " + lif::to_string(infoId) + "!");
 	}

@@ -4,7 +4,6 @@
 #include "AxisSighted.hpp"
 #include "Player.hpp"
 #include "Level.hpp"
-#include "Fog.hpp"
 #include "game.hpp"
 #include "LightSource.hpp"
 
@@ -18,10 +17,10 @@ LevelEffects::LevelEffects(const sf::Vector2u& windowSize) {
 std::set<lif::Entity*> LevelEffects::getEffectEntities(const lif::Level& level) {
 	std::set<lif::Entity*> entities;
 
-	const auto& effects = level.getInfo().effects;
-	if (effects.find("fog") != effects.end()) {
-		entities.insert(new lif::Fog);
-	}
+	//const auto& effects = level.getInfo().effects;
+	//if (effects.find("fog") != effects.end()) {
+	//	entities.insert(new lif::Fog);
+	//}
 
 	return entities;
 }

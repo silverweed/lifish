@@ -5,7 +5,6 @@
 #include "Collider.hpp"
 #include "Direction.hpp"
 #include "Drawable.hpp"
-#include "Fire.hpp"
 #include "GameCache.hpp"
 #include "Level.hpp"
 #include "LevelManager.hpp"
@@ -66,10 +65,12 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 	}, [this] () {
 		// on kill: spawn fire if incendiary
 		if (spawner == nullptr) return;
+		/*
 		spawner->addSpawned(new lif::Fire(explColliderH->getPosition(),
 					explColliderH->getSize(), lif::conf::bonus::FIRE_DURATION));
 		spawner->addSpawned(new lif::Fire(explColliderV->getPosition(),
 					explColliderV->getSize(), lif::conf::bonus::FIRE_DURATION));
+					*/
 	});
 
 	if (isIncendiary)

@@ -1,12 +1,9 @@
 #include "EnemyFactory.hpp"
 #include "AI.hpp"
-#include "AlienPredator.hpp"
-#include "LeapingMovement.hpp"
 #include "Level.hpp"
 #include "LevelManager.hpp"
 #include "LevelSet.hpp"
 #include "Sighted.hpp"
-#include "Wisp.hpp"
 #include "collision_layers.hpp"
 
 using lif::EnemyFactory;
