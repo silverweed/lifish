@@ -1,10 +1,12 @@
 #include "Screen.hpp"
 #include "GameCache.hpp"
+#include "ShadedText.hpp"
 #include "Interactable.hpp"
 #include "JoystickManager.hpp"
 #include "ScreenBuilder.hpp"
 #include "core.hpp"
 #include "utils.hpp"
+#include <cassert>
 
 using lif::ui::Screen;
 
@@ -196,5 +198,13 @@ void Screen::_updateItrScale() {
 	} else if (itrScale < 1.3f) {
 		_setItrScale(std::min(1.3f, itrScale + itrScaleClock.restart().asSeconds() * SCALE_SPEED));
 		if (itrScale >= 1.3f) itrScaleMid = true;
+	}
+}
+
+void Screen::updateDynamicText(const std::string& name, const std::string& value) {
+	auto it = dynamicTexts.find(name);
+	if (it != dynamicTexts.end()) {
+		assert(it->second != nullptr && "Null dynamic text entry?");
+		it->second->setString(value);
 	}
 }

@@ -164,6 +164,26 @@ static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
 	ui.add<lif::ui::PreferencesScreen>(window, lif::options.windowSize);
 	ui.add<lif::ui::LoadScreen>(window, lif::options.windowSize);
 	ui.add<lif::ui::SaveScreen>(window, lif::options.windowSize);
+
+	// Setup dynamic texts for static screens
+	{
+		const auto fullVersion =
+			"lifish v." VERSION " rev." COMMIT
+#ifdef RELEASE
+				" RELEASE"
+#endif
+#ifndef ARCH
+				" (unknown arch)"
+#else
+				" (" ARCH " bit)"
+#endif
+#ifdef MULTITHREADED
+				" (multithread)"
+#endif
+				;
+
+		ui.setDynamicText("FULL_VERSION", fullVersion);
+	}
 }
 
 #ifdef MULTITHREADED
@@ -201,9 +221,6 @@ int main(int argc, char **argv) {
 	args.startFromHome = false; // FIXME
 #endif
 	parseArgs(argc, argv, args);
-
-	// Must be done before UI initializes
-	lif::levelSetName = args.levelsetName.c_str();
 
 	// Create the MusicManager
 	lif::MusicManager mm;
@@ -259,6 +276,7 @@ int main(int argc, char **argv) {
 	// Setup UI
 	auto& ui = lif::ui::UI::getInstance();
 	setupUI(ui, window);
+	ui.setDynamicText("LEVEL_SET", args.levelsetName);
 
 	// Create pointer to game context
 	std::unique_ptr<lif::GameContext> game;
@@ -421,7 +439,13 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 				}
 				if (ui.mustLoadGame()) {
 					const auto save_data = ui.getLoadedData();
+					ui.setDynamicText("LEVEL_SET", save_data.levelSet);
 					game->loadGame(save_data);
+					if (!game->isLevelSetGood()) {
+						cur_context = contexts[lif::CTX_UI];
+						ui.setCurrent("error");
+						return cur_context;
+					}
 					startLv = save_data.level;
 				}
 				contexts[lif::CTX_GAME] = game.get();

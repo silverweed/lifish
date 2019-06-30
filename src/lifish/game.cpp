@@ -8,8 +8,6 @@
 #include <sstream>
 #include <string>
 
-const char* lif::levelSetName = nullptr;
-
 bool lif::init() {
 	if (!lif::initCore()) return false;
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {

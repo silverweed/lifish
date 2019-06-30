@@ -9,6 +9,8 @@
 
 namespace lif {
 
+class ShadedText;
+
 namespace ui {
 
 class Screen;
@@ -32,6 +34,7 @@ class ScreenBuilder final : private sf::NonCopyable {
 	void _addImage(lif::ui::Screen& screen, const nlohmann::json& screenJSON);
 	void _fixAlign(lif::ui::Screen& screen);
 	void _calcTransitions(lif::ui::Screen& screen);
+	std::string _maybeInsertDynamicText(const std::string& s, lif::ui::Screen& screen, lif::ShadedText *text);
 
 public:
 	explicit ScreenBuilder() {}

@@ -182,3 +182,8 @@ std::string UI::getCurrent() const {
 	if (curScreen == nullptr) return "";
 	return curScreen->getName();
 }
+
+void UI::setDynamicText(const std::string& name, const std::string& value) {
+	for (auto& screen : screens)
+		screen.second->updateDynamicText(name, value);
+}
