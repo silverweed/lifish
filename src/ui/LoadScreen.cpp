@@ -77,7 +77,7 @@ void LoadScreen::onLoad() {
 
 	sf::Vector2f pos(25, 75);
 
-	auto saves = browseSaveData(lif::pwd);
+	auto saves = browseSaveData(lif::getSaveDir());
 	if (saves.size() == 0) {
 		auto text = new lif::ShadedText(font, "No save data", pos);
 		text->setCharacterSize(size);
@@ -107,7 +107,7 @@ void LoadScreen::onLoad() {
 		// Setup load button
 		text = new lif::ShadedText(font,
 			save.displayName.substr(0, lif::ui::SaveScreen::MAX_SAVE_FILE_NAME_LEN)
-				+ " (lv " + lif::to_string(save.level) + ")",
+				+ " (lv " + lif::to_string(save.level) + ", " + lif::to_string(save.nPlayers) + "P)",
 			pos + sf::Vector2f(35, 0));
 		text->setCharacterSize(size);
 		const auto lcbname = _newUniqueId();

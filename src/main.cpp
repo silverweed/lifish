@@ -409,14 +409,16 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 				// We got here from the start menu (via StartGame or LoadGame)
 				int startLv = args.startLevel;
 				if (!game) {
-					// Game just started: create a new GameContext
-					game.reset(new lif::GameContext(window,
-						args.levelsetName, args.startLevel));
+					// If we're going to load a game, make GameContext skip LevelManager initialization
+					// on construction (it will initialize it on loadGame).
+					const auto& lsName = ui.mustLoadGame() ? "" : args.levelsetName;
 
-					if (!game || !game->isLevelSetGood()) {
+					// Game just started: create a new GameContext
+					game.reset(new lif::GameContext(window, lsName, args.startLevel)); 
+					if (!game || (!ui.mustLoadGame() && !game->isLevelSetGood())) {
 						cur_context = contexts[lif::CTX_UI];
 						ui.setCurrent("error");
-						return cur_context;;
+						return cur_context;
 					}
 
 					// Adjust the origin to make room for side panel
@@ -426,6 +428,11 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 				if (ui.mustLoadGame()) {
 					const auto save_data = ui.getLoadedData();
 					game->loadGame(save_data);
+					if (!game->isLevelSetGood()) {
+						cur_context = contexts[lif::CTX_UI];
+						ui.setCurrent("error");
+						return cur_context;
+					}
 					startLv = save_data.level;
 				}
 				contexts[lif::CTX_GAME] = game.get();

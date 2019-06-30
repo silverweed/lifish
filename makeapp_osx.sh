@@ -57,12 +57,13 @@ EOF
 
 cp -r ${MACOS[@]} "$APPNAME.app"/Contents/MacOS/.
 cp -r ${RESOURCES[@]} "$APPNAME.app"/Contents/Resources/.
-mkdir "$APPNAME.app"/Contents/Resources/assets
+mkdir "$APPNAME.app"/Contents/Resources/{assets,saves}
 cp -r ${ASSETS[@]} "$APPNAME.app"/Contents/Resources/assets/
 cp osx/Lifish.icns Lifish.app/Contents/Resources/.
 
 pushd "$APPNAME.app"/Contents/MacOS
 ln -s ../Resources/assets
+ln -s ../Resources/saves
 ln -s ../Resources/levels.json
 
 popd

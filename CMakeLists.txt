@@ -13,6 +13,13 @@ set(MAJOR BOOM_1)
 set(MINOR 2)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
+# Note: thid is here just because I broke my toolchain on mac, and now SFML fails to link with
+# the framework pulled by Homebrew. Therefore, I force SFML_ROOT to a manually-downloaded version
+# of SFML 2.4.2, but that will only work with this directive on.
+if (APPLE)
+	cmake_policy(SET CMP0074 NEW)
+endif()
+
 # detect architecture
 if(CMAKE_SIZEOF_VOID_P MATCHES 8)
 	set(TARGET_ARCH 64)
