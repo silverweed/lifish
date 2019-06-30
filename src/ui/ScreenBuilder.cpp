@@ -49,7 +49,9 @@ static void addStyleProperty(lif::ui::ScreenStyle& style, const std::string& key
 		std::cerr << "Invalid style property: " << key << std::endl;
 }
 
-std::string ScreenBuilder::_maybeInsertDynamicText(const std::string& s, lif::ui::Screen& screen, lif::ShadedText *text) {
+std::string ScreenBuilder::_maybeInsertDynamicText(const std::string& s,
+		lif::ui::Screen& screen, lif::ShadedText *text)
+{
 	const auto len = s.length();
 	if (len > 4 && s[0] == '{' && s[1] == '{' && s[len - 1] == '}' && s[len - 2] == '}') {
 		assert(text != nullptr);

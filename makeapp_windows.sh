@@ -26,7 +26,7 @@ fi
 	exit 3
 }
 
-mkdir "$DIR/assets"
+mkdir "$DIR"/{assets,saves}
 cp -r assets/{fonts,graphics,music,screens,sounds} "$DIR/assets"
 cp levels.json "$DIR"
 cp lifish "$DIR"
@@ -49,7 +49,7 @@ echo "Created app in $DIR."
 echo Compressing...
 
 rm -f "$DIR.zip" 2>/dev/null
-powershell -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('$DIR', '$DIR.zip'); }" 
+powershell -nologo -noprofile -command "& { Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::CreateFromDirectory('$DIR', '$DIR.zip'); }"
 
 rm -rf "$DIR"
 echo Done.

@@ -26,7 +26,7 @@ fi
 	exit 3
 }
 
-mkdir "$DIR/assets"
+mkdir "$DIR"/{assets,saves}
 cp -r assets/{fonts,graphics,music,screens,sounds} "$DIR/assets"
 cp levels.json $DIR
 cp lifish $DIR
