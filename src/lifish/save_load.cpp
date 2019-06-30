@@ -1,5 +1,6 @@
 #include "save_load.hpp"
 #include "LevelManager.hpp"
+#include "Options.hpp"
 #include "Player.hpp"
 #include "Level.hpp"
 #include "LevelSet.hpp"
@@ -13,10 +14,9 @@ bool lif::saveGame(const std::string& filename, const lif::LevelManager& lm) {
 
 	nlohmann::json save;
 
-	// Current levelset
 	save["levelSet"] = lm.getLevel()->getLevelSet().getMeta("path");
-	// Current level
 	save["level"] = lm.getLevel()->getInfo().levelnum;
+	save["nPlayers"] = lif::options.nPlayers;
 
 	const auto& players = lm.players;
 	for (unsigned i = 0; i < players.size(); ++i) {
@@ -67,6 +67,7 @@ lif::SaveData lif::loadGame(const std::string& filename) {
 
 		data.levelSet = load["levelSet"].get<std::string>();
 		data.level = load["level"];
+		data.nPlayers = load["nPlayers"];
 		for (unsigned i = 0; i < data.players.size(); ++i) {
 			auto& player = data.players[i];
 			const auto& pldata = load["players"][i];

@@ -128,7 +128,7 @@ void UI::_processAction(lif::ui::Action action) {
 		break;
 	case Action::SAVE_GAME:
 		saveGame = true;
-		saveName = static_cast<lif::ui::SaveScreen*>(curScreen)->getPrompt();
+		saveName = lif::getSaveDir() + static_cast<lif::ui::SaveScreen*>(curScreen)->getPrompt();
 		setCurrentToParent();
 		break;
 	case Action::LOAD_GAME:

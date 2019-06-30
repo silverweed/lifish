@@ -16,6 +16,7 @@ protected:
 		std::string displayName;
 		std::string path;
 		int level = 0;
+		int nPlayers = 0;
 	};
 
 	SaveDataBrowser();

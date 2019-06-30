@@ -29,13 +29,13 @@
 #include "PreferencesScreen.hpp"
 #include "SaveScreen.hpp"
 #include "SidePanel.hpp"
-#include "utils.hpp"
 #include "Time.hpp"
 #include "UI.hpp"
 #include "WinLoseHandler.hpp"
 #include "contexts.hpp"
 #include "game.hpp"
 #include "preferences_persistence.hpp"
+#include "utils.hpp"
 #include <SFML/Window.hpp>
 #include <algorithm>
 #include <cstdlib>

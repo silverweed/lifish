@@ -26,6 +26,7 @@ auto SaveDataBrowser::browseSaveData(std::string path) const -> std::vector<Save
 			try {
 				auto savejson = nlohmann::json::parse(std::ifstream(file.path));
 				file.level = savejson["level"];
+				file.nPlayers = savejson["nPlayers"];
 				files.emplace_back(file);
 			} catch (const std::exception& e) {
 				file.level = 0;

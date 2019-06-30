@@ -78,7 +78,9 @@ void GameContext::onLevelStart() {
 }
 
 void GameContext::loadGame(const lif::SaveData& saveData) {
-	ls.loadFromFile(saveData.levelSet);
+	levelSetGood = ls.loadFromFile(std::string(lif::pwd) + DIRSEP + saveData.levelSet);
+	if (!levelSetGood) return;
+	lif::options.nPlayers = saveData.nPlayers;
 	_initLM(window, saveData.level);
 	lm.loadGame(saveData);
 }

@@ -50,6 +50,8 @@ extern char pwd[PWD_BUFSIZE];
 
 /** The assets base directory */
 extern std::string assetDir;
+/** The save directory */
+extern std::string saveDir;
 
 /** Global game cache (caches textures in memory for faster loading) */
 extern lif::GameCache cache;
@@ -90,6 +92,10 @@ extern int exitCode;
 
 constexpr const std::string& getAssetDir() {
 	return assetDir;
+}
+
+constexpr const std::string& getSaveDir() {
+	return saveDir;
 }
 
 inline void _getAssetInternal(std::stringstream&) {}

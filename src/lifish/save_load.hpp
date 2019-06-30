@@ -23,6 +23,7 @@ struct PlayerSaveData {
 struct SaveData {
 	std::string levelSet;
 	unsigned short level = 0;
+	unsigned short nPlayers = 0;
 	std::array<PlayerSaveData, lif::MAX_PLAYERS> players;
 };
 
@@ -30,6 +31,7 @@ struct SaveData {
  * Save file format: {
  *     levelSet: string,
  *     level: int,
+ *     nPlayers: int,
  *     players: [
  *        {
  *            continues: int,
