@@ -26,7 +26,7 @@ static sf::Color colorFromName(const std::string& name) {
 	return sf::Color::Black;
 }
 
-static void add_style_property(lif::ui::ScreenStyle& style, const std::string& key, const json& value) {
+static void addStyleProperty(lif::ui::ScreenStyle& style, const std::string& key, const json& value) {
 	if (key == "spacing")
 		style.spacing = value.get<int>();
 	else if (key == "interactable")
@@ -49,26 +49,12 @@ static void add_style_property(lif::ui::ScreenStyle& style, const std::string& k
 		std::cerr << "Invalid style property: " << key << std::endl;
 }
 
-static std::string convert_special_string(const std::string& s) {
-	if (s == "{{FULL_VERSION}}") {
-		return "lifish v." VERSION " rev." COMMIT
-#ifdef RELEASE
-			" RELEASE"
-#endif
-#ifndef ARCH
-			" (unknown arch)"
-#else
-			" (" ARCH " bit)"
-#endif
-#ifdef MULTITHREADED
-			" (multithread)"
-#endif
-			;
-	} else if (s == "{{LEVEL_SET}}") {
-		const auto lsName = lif::levelSetName;
-		if (!lsName)
-			return "<No levelset loaded>";
-		return "'" + std::string{ lsName } + "'";
+std::string ScreenBuilder::_maybeInsertDynamicText(const std::string& s, lif::ui::Screen& screen, lif::ShadedText *text) {
+	const auto len = s.length();
+	if (len > 4 && s[0] == '{' && s[1] == '{' && s[len - 1] == '}' && s[len - 2] == '}') {
+		assert(text != nullptr);
+		const auto name = s.substr(2, len - 4);
+		screen.dynamicTexts[name] = text;
 	}
 	return s;
 }
@@ -77,7 +63,7 @@ void ScreenBuilder::_parseStyles(lif::ui::Screen& screen, const json& stylesJSON
 	for (auto it = stylesJSON.begin(); it != stylesJSON.end(); ++it) {
 		auto style = it.value();
 		for (auto sit = style.begin(); sit != style.end(); ++sit)
-			add_style_property(screen.styles[it.key()], sit.key(), sit.value());
+			addStyleProperty(screen.styles[it.key()], sit.key(), sit.value());
 	}
 }
 
@@ -107,7 +93,7 @@ void ScreenBuilder::_parseStyles(lif::ui::Screen& screen, const json& stylesJSON
 		auto it = obj.find("style-override"); \
 		if (it != obj.end()) \
 			for (auto sit = it->begin(); sit != it->end(); ++sit) \
-				add_style_property(style, sit.key(), sit.value()); \
+				addStyleProperty(style, sit.key(), sit.value()); \
 	} \
 
 #define COMPUTE_POSITION(obj) \
@@ -153,7 +139,7 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 	// set font
 	newtxt->setFont(*lif::cache.loadFont(lif::getAsset("fonts", style.font)));
 	// set string
-	newtxt->setString(convert_special_string(text["string"].get<std::string>()));
+	newtxt->setString(_maybeInsertDynamicText(text["string"].get<std::string>(), screen, newtxt));
 
 	// set position
 	COMPUTE_POSITION(newtxt)

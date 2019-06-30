@@ -60,6 +60,13 @@ public:
 	void setCurrentToParent();
 	void fireClick();
 
+	/** Static screens may have text content of the form {{NAME}}: in that case, that text
+	 *  is interpreted as a 'dynamic text', and can be changed after the screen was created.
+	 *  Calling this method sets all dynamic texts called 'name' to the new string 'value'.
+	 *  This can also be done on a per-screen basis via Screen::updateDynamicText.
+	 */
+	void setDynamicText(const std::string& name, const std::string& value);
+
 	bool mustQuitGame() const { return quitGame; }
 	bool mustLoadGame() const { return loadGame; }
 	bool mustSaveGame() const { return saveGame; }

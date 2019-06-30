@@ -69,9 +69,6 @@ constexpr auto TIME_BONUS_SOUND  = "timebonus.ogg";
 /*                  GLOBAL VARIABLES AND FUNCTIONS                          */
 /****************************************************************************/
 
-// UGLY: currently only used by ScreenBuilder (more precisely, from error.json)
-extern const char* levelSetName;
-
 bool init();
 
 std::string gameInfo();

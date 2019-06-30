@@ -13,6 +13,8 @@
 
 namespace lif {
 
+class ShadedText;
+
 namespace ui {
 
 class ScreenBuilder;
@@ -31,6 +33,7 @@ private:
 	float itrScale = 0;
 	sf::Clock itrScaleClock;
 	bool itrScaleMid = false;
+	std::unordered_map<std::string, lif::ShadedText*> dynamicTexts;
 
 	void _saveMousePos(int x, int y);
 	void _setItrScale(float x);
@@ -91,6 +94,8 @@ public:
 
 	/** @return The name of the selected element, if any (else "") */
 	std::string getSelected() const;
+
+	void updateDynamicText(const std::string& name, const std::string& value);
 
 	bool isUsingJoystick() const { return usingJoystick; }
 

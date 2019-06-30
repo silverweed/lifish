@@ -183,8 +183,7 @@ std::string UI::getCurrent() const {
 	return curScreen->getName();
 }
 
-//void UI::setDynamicText(const std::string& name, const std::string& value) {
-//	for (auto& screen : screens) {
-//		screen.second->updateDynamicText(name, value);
-//	}
-//}
+void UI::setDynamicText(const std::string& name, const std::string& value) {
+	for (auto& screen : screens)
+		screen.second->updateDynamicText(name, value);
+}
