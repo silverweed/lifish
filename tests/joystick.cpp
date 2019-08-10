@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
 	J::update();
 	auto id = J::getIdentification(N);
 	std::cout << "Joystick: \n"
-		<< " [vendor: " << id.vendorId << ", product: " << id.productId << "]" 
+		<< " [vendor: " << id.vendorId << ", product: " << id.productId << "]"
 		<< "\nhas axis {"
 		<< "\n\tX: " << J::hasAxis(N, J::X)
 		<< "\n\tY: " << J::hasAxis(N, J::Y)
@@ -26,6 +26,8 @@ int main(int argc, char **argv) {
 		<< "\n\tR: " << J::hasAxis(N, J::R)
 		<< "\n\tU: " << J::hasAxis(N, J::U)
 		<< "\n\tV: " << J::hasAxis(N, J::V)
+		<< "\n\tPovX: " << J::hasAxis(N, J::PovX)
+		<< "\n\tPovY: " << J::hasAxis(N, J::PovY)
 		<< "\n}"
 		<< "\n# buttons: " << J::getButtonCount(N)
 		<< std::endl;
@@ -40,14 +42,16 @@ int main(int argc, char **argv) {
 				std::cout << NORMAL;
 			std::cout << J::isButtonPressed(N, i) << NORMAL << ", ";
 		}
-		
+
 		std::cout << "| AXS: ";
 		std::cout << "X:" << J::getAxisPosition(N, J::X) << ", ";
 		std::cout << "Y:" << J::getAxisPosition(N, J::Y) << ", ";
 		std::cout << "Z:" << J::getAxisPosition(N, J::Z) << ", ";
 		std::cout << "R:" << J::getAxisPosition(N, J::R) << ", ";
 		std::cout << "U:" << J::getAxisPosition(N, J::U) << ", ";
-		std::cout << "V:" << J::getAxisPosition(N, J::V);
-		std::cout << "            \r";	
+		std::cout << "V:" << J::getAxisPosition(N, J::V) << ", ";
+		std::cout << "PovX:" << J::getAxisPosition(N, J::PovX) << ", ";
+		std::cout << "PovY:" << J::getAxisPosition(N, J::PovY);
+		std::cout << "            \r";
 	}
 }
