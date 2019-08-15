@@ -14,6 +14,10 @@ using lif::ui::PreferencesScreen;
 using lif::ui::Interactable;
 using Action = lif::ui::Action;
 
+static inline const char* getFullscreenText() {
+	return lif::options.fullscreen ? "YES" : "NO";
+}
+
 PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	: lif::ui::Screen(window, sz)
 {
@@ -25,6 +29,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	 *
 	 * MUSIC: - ||||||| + (m)
 	 * FX:    - ||||||| + (m)
+	 * Fullscreen: yes/no
 	 * Controls
 	 *
 	 * Exit
@@ -43,7 +48,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	// Music volume
 	auto pos = text->getPosition();
 
-	const auto upperTextAlign1 = ipadx + 160;
+	const auto upperTextAlign1 = ipadx + 200;
 
 	text = new lif::ShadedText(font, "-", sf::Vector2f(upperTextAlign1, ipady - 8));
 	text->setCharacterSize(34);
@@ -118,7 +123,21 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	text->setCharacterSize(size);
 	interactables["n_players"] = std::make_unique<Interactable>(text);
 
+	// Fullscreen
+	text = new lif::ShadedText(font, "Fullscreen", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
+	text->setShadowSpacing(2, 2);
+	text->setCharacterSize(size);
+	nonInteractables.emplace_back(text);
+
+	pos = text->getPosition();
+	bounds = text->getGlobalBounds();
+	text = new lif::ShadedText(font, getFullscreenText(), sf::Vector2f(upperTextAlign1, pos.y));
+	text->setCharacterSize(size);
+	interactables["fullscreen"] = std::make_unique<Interactable>(text);
+
 	// Controls
+	pos = text->getPosition();
+	bounds = text->getGlobalBounds();
 	text = new lif::ShadedText(font, "Controls", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
 	text->setCharacterSize(size);
 	interactables["controls"] = std::make_unique<Interactable>(text);
@@ -169,6 +188,11 @@ void PreferencesScreen::_setupCallbacks() {
 		auto n = lif::options.nPlayers + 1;
 		if (n > lif::MAX_PLAYERS) n -= lif::MAX_PLAYERS;
 		return _changeNPlayers(n);
+	};
+	callbacks["fullscreen"] = [this] () {
+		lif::options.fullscreen = !lif::options.fullscreen;
+		interactables["fullscreen"]->getText()->setString(getFullscreenText());
+		return Action::DO_NOTHING;
 	};
 }
 

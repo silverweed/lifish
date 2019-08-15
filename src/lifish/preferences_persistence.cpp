@@ -32,6 +32,7 @@ void lif::savePreferences(const char *fname) {
 	out["musicVolume"] = static_cast<int>(100 * lif::options.musicVolume);
 	out["soundVolume"] = static_cast<int>(100 * lif::options.soundsVolume);
 	out["soundMuted"] = lif::options.soundsMute;
+	out["fullscreen"] = lif::options.fullscreen;
 
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		out["controls"][i] = {
@@ -45,7 +46,7 @@ void lif::savePreferences(const char *fname) {
 		};
 	}
 
-	file << out;
+	file << out.dump(8) << "\n";
 }
 
 void lif::loadPreferences(const char *fname) {
@@ -65,6 +66,7 @@ void lif::loadPreferences(const char *fname) {
 		lif::options.musicVolume = in["musicVolume"].get<int>() * 0.01f;
 		lif::options.soundsVolume = in["soundVolume"].get<int>() * 0.01f;
 		lif::options.soundsMute = in["soundMuted"];
+		lif::options.fullscreen = in["fullscreen"];
 
 		for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 			const auto& ctrls = in["controls"][i];

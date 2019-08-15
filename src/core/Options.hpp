@@ -21,6 +21,8 @@ struct Options {
 	/** How many players are spawned, from 1 to MAX_PLAYERS */
 	int nPlayers = 1;
 
+	bool fullscreen = false;
+
 #ifndef RELEASE
 	bool showFPS = false;
 	/** If true, print to console time stats for the drawing phase */
