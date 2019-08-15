@@ -40,10 +40,5 @@ std::string lif::gameInfo() {
 #elif !defined(SFML_SYSTEM_WINDOWS)
 	ss << "    | NFD support: no\r\n";
 #endif
-#ifdef MULTITHREADED
-	ss << "    | Multithreaded: yes\r\n";
-#else
-	ss << "    | Multithreaded: no\r\n";
-#endif
 	return ss.str();
 }

@@ -43,13 +43,6 @@
 #include <iostream>
 #include <memory>
 
-#ifdef MULTITHREADED
-#	ifdef SFML_SYSTEM_LINUX
-#		include <X11/Xlib.h>
-#	endif
-#	include <thread>
-#endif
-
 #ifndef RELEASE
 #	include "Stats.hpp"
 #	include "DebugPainter.hpp"
@@ -177,29 +170,11 @@ static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
 #else
 				" (" ARCH " bit)"
 #endif
-#ifdef MULTITHREADED
-				" (multithread)"
-#endif
 				;
 
 		ui.setDynamicText("FULL_VERSION", fullVersion);
 	}
 }
-
-#ifdef MULTITHREADED
-static void renderingLoop(sf::RenderWindow& window) {
-	static const sf::Vector2f fps_pos(
-			lif::WINDOW_WIDTH - lif::TILE_SIZE * 8;
-			lif::WINDOW_HEIGHT - lif::TILE_SIZE);
-	while (!lif::terminated) {
-		window.clear();
-		window.draw(*lif::curContext);
-		lif::maybeShowFPS(window, fps_pos);
-		window.display();
-	}
-	window.close();
-}
-#endif
 
 int main(int argc, char **argv) {
 	// Duplicate stderr to file for logging
@@ -207,9 +182,6 @@ int main(int argc, char **argv) {
 	//auto errbuf = std::cerr.rdbuf();
 	//std::cerr.rdbuf(errFile.rdbuf());
 
-#if defined(MULTITHREADED) && defined(SFML_SYSTEM_LINUX)
-	XInitThreads();
-#endif
 	// Argument parsing
 	MainArgs args;
 	parseArgs(argc, argv, args);
@@ -305,15 +277,6 @@ int main(int argc, char **argv) {
 	unsigned cycle = 0;
 #endif
 
-#ifdef MULTITHREADED
-	lif::curContext = cur_context;
-	// Start the rendering thread
-	window.setActive(false);
-	const sf::Time frame_time_limit = sf::seconds(1 / 60.);
-	sf::Clock frame_clock;
-	std::thread rendering_thread(rendering_loop, std::ref(window));
-#endif
-
 	while (!lif::terminated) {
 
 		lif::time.update();
@@ -344,23 +307,22 @@ int main(int argc, char **argv) {
 
 		///// RENDERING LOOP //////
 
-#ifndef MULTITHREADED
-#	ifndef RELEASE
+#ifndef RELEASE
 		dbgStats.timer.start("draw");
-#	endif
+#endif
 		window.clear();
 		window.draw(*cur_context);
-#	ifndef RELEASE
+#ifndef RELEASE
 		window.draw(fadeoutTextMgr);
 
 		fpsDisplayer.update();
 		if (lif::options.showFPS)
 			window.draw(fpsDisplayer);
-#	endif
+#endif
 
 		window.display();
 
-#	ifndef RELEASE
+#ifndef RELEASE
 		dbgStats.timer.end("draw");
 		++cycle;
 		if (lif::options.printDrawStats && cycle % 50 == 0) {
@@ -370,18 +332,11 @@ int main(int argc, char **argv) {
 				<< " ms" << std::endl;
 			std::cout.flags(flags);
 		}
-#	endif
-#else
-		// Just wait for the vsync
-		sf::sleep(frame_time_limit - frame_clock.restart());
 #endif
 	} // end game loop
 
-#ifndef MULTITHREADED
 	window.close();
-#else
-	rendering_thread.join();
-#endif
+
 	// Perform cleanup
 	mm.stop();
 	lif::cache.finalize();
@@ -485,9 +440,6 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 		}
 		cur_context = contexts[nc];
 		cur_context->setActive(true);
-#ifdef MULTITHREADED
-		lif::curContext = cur_context;
-#endif
 	}
 	return cur_context;
 }

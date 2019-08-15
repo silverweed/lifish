@@ -3,9 +3,6 @@
 #include "EntityGroup.hpp"
 #include "SHCollisionDetector.hpp"
 #include <SFML/System/NonCopyable.hpp>
-#ifdef MULTITHREADED
-#	include <mutex>
-#endif
 #ifndef RELEASE
 #	include "Stats.hpp"
 #	define DBGSTART(name) \
@@ -37,21 +34,6 @@ protected:
 
 	sf::Time inputDisableTime = sf::Time::Zero;
 	sf::Clock inputDisableClock;
-
-#ifdef MULTITHREADED
-	mutable std::mutex lvMutex;
-#endif
-	inline void _mtxLock() const {
-#ifdef MULTITHREADED
-		lvMutex.lock();
-#endif
-	}
-
-	inline void _mtxUnlock() const {
-#ifdef MULTITHREADED
-		lvMutex.unlock();
-#endif
-	}
 
 #ifndef RELEASE
 	lif::debug::Stats dbgStats;

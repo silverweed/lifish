@@ -29,9 +29,6 @@ bool lif::terminated = false;
 int lif::exitCode = 0;
 lif::Time<std::chrono::high_resolution_clock> lif::time;
 lif::MusicManager *lif::musicManager = nullptr;
-#ifdef MULTITHREADED
-lif::WindowContext *lif::curContext = nullptr;
-#endif
 #ifndef RELEASE
 lif::debug::DebugPainter *lif::debugPainter = nullptr;
 lif::debug::FadeoutTextManager *lif::fadeoutTextMgr = nullptr;

@@ -15,9 +15,6 @@
 #include <type_traits>
 #include <unordered_set>
 #include <vector>
-#ifdef MULTITHREADED
-#	include <mutex>
-#endif
 
 namespace lif {
 
@@ -32,10 +29,6 @@ class EntityGroup final : private sf::NonCopyable {
 
 	bool alreadyPrunedThisUpdate = false,
 	     alreadyCheckedThisUpdate = false;
-
-#ifdef MULTITHREADED
-	mutable std::mutex mutex;
-#endif
 
 	/** All the entities (owning references) */
 	std::vector<std::shared_ptr<lif::Entity>> entities;
@@ -178,17 +171,6 @@ public:
 	 *  the caller should *not* retain them.
 	 */
 	auto getCollidersIntersecting(const sf::FloatRect& rect) const -> std::vector<lif::Collider*>;
-
-	inline void mtxLock() const {
-#ifdef MULTITHREADED
-		mutex.lock();
-#endif
-	}
-	inline void mtxUnlock() const {
-#ifdef MULTITHREADED
-		mutex.unlock();
-#endif
-	}
 };
 
 ///// Implementation /////

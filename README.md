@@ -41,12 +41,6 @@ chapter (included -- you can skip the *First steps* section, as all the listed d
 aren't required). Remember to `cmake -G "MSYS Makefiles" .`, otherwise cmake will probably
 generate a VS makefile.
 
-#### Multithreaded mode ####
-The game can be compiled in multithreaded mode (separate logic and rendering), but
-at the moment it's not really a good idea to do so, as:
-- the framerate probably won't improve (and it needs not, should be already smooth 120fps)
-- odd behaviours and occasional crashes may occur.
-
 ### Command line parameters ###
 If launched from the command line, `lifish` accepts a bunch of parameters (see `lifish -h` for details).
 It also accepts an optional argument which is the path of the level JSON to use (default: `lifish.json`).

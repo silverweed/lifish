@@ -35,19 +35,15 @@ void EntityGroup::updateAll() {
 }
 
 void EntityGroup::remove(const lif::Entity& entity) {
-	mtxLock();
 	std::remove_if(entities.begin(), entities.end(), [entity] (const auto& e) {
 		return e.get() == &entity;
 	});
 	_pruneAll();
-	mtxUnlock();
 }
 
 void EntityGroup::remove(const std::shared_ptr<const lif::Entity>& entity) {
-	mtxLock();
 	std::remove(entities.begin(), entities.end(), entity);
 	_pruneAll();
-	mtxUnlock();
 }
 
 auto EntityGroup::getCollidersIntersecting(const sf::FloatRect& rect) const -> std::vector<lif::Collider*> {
@@ -63,9 +59,7 @@ auto EntityGroup::getCollidersIntersecting(const sf::FloatRect& rect) const -> s
 }
 
 void EntityGroup::clear() {
-	mtxLock();
 	entities.clear();
-	mtxUnlock();
 	collidingEntities.clear();
 }
 
@@ -124,9 +118,7 @@ void EntityGroup::_checkKilled() {
 				return ptr.get() == &klb->getOwner();
 			});
 			if (eit != entities.end()) {
-				mtxLock();
 				entities.erase(eit);
-				mtxUnlock();
 			}
 			// erase
 
@@ -152,9 +144,7 @@ void EntityGroup::_checkDead() {
 				return ptr.get() == &tmp->getOwner();
 			});
 			if (eit != entities.end()) {
-				mtxLock();
 				entities.erase(eit);
-				mtxUnlock();
 			}
 
 		} else {
