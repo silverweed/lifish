@@ -15,6 +15,9 @@ namespace sf {
 void to_json(nlohmann::json& json, const sf::Time& time);
 void from_json(const nlohmann::json& json, sf::Time& time);
 
+void to_json(nlohmann::json& json, const sf::VideoMode& vm);
+void from_json(const nlohmann::json& json, sf::VideoMode& vm);
+
 }
 
 namespace lif {

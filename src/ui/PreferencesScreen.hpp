@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include "Action.hpp"
 #include "Screen.hpp"
 #include "game.hpp"
@@ -16,6 +17,12 @@ class PreferencesScreen : public lif::ui::Screen {
 
 	constexpr static unsigned MAX_VOLUME = 15;
 	constexpr static unsigned SPEAKER_SPRITE_SIZE = 25;
+
+	std::vector<sf::VideoMode> fullscreenModes;
+	int fullscreenModeIdx = 0;
+
+	int desiredFullscreenModeIdx = 0;
+	bool desiredFullscreen;
 
 	/** Hook for the music volume bar (used in draw()) */
 	lif::ShadedText *musicVolumeBar = nullptr;
@@ -38,11 +45,23 @@ class PreferencesScreen : public lif::ui::Screen {
 	void _setupCallbacks();
 	void _setupTransitions();
 
+	const char* _getFullscreenText() const {
+		return desiredFullscreen ? "YES" : "NO";
+	}
+
+	std::string _getFullscreenResText() const {
+		const auto& vm = fullscreenModes[desiredFullscreenModeIdx];
+		std::stringstream ss;
+		ss << vm.width << "x" << vm.height << ":" << vm.bitsPerPixel;
+		return desiredFullscreen ? ss.str() : "-";
+	}
+
 public:
 	static constexpr const char *SCREEN_NAME = "preferences";
 
 	explicit PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& size);
 
+	void onLoad() override;
 	void onUnload() override;
 };
 
