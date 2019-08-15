@@ -1,4 +1,3 @@
-#include "LevelRenderer.hpp"
 #include "Drawable.hpp"
 #include "Level.hpp"
 #include "LevelManager.hpp"
@@ -15,20 +14,17 @@ LevelRenderer::LevelRenderer(lif::LevelManager& owner)
 {}
 
 void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	owner._mtxLock();
 	const auto level = owner.getLevel();
 	if (level == nullptr || !level->isInitialized()) return;
 
 	// Draw the level background
 	target.draw(level->getBackground(), states);
-	owner._mtxUnlock();
 
 	// Draw according to z-index
 	std::unordered_map<int, std::vector<const lif::Drawable*>> toDraw;
 	toDraw.reserve(owner.entities.size());
 
 	int minZ = 0, maxZ = 0;
-	owner.entities.mtxLock();
 	owner.entities.apply([
 #ifndef RELEASE
 			drawSelectiveLayers = drawSelectiveLayers,
@@ -60,26 +56,19 @@ void LevelRenderer::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 			target.draw(*d, states);
 	}
 
-	owner.entities.mtxUnlock();
 
 	// Draw the level border
-	owner._mtxLock();
 	target.draw(level->getBorder(), states);
-	owner._mtxUnlock();
 
 	// Draw entities above border
-	owner.entities.mtxLock();
 	for (int i = std::min(maxZ, -1); i >= minZ; --i) {
 		const auto it = toDraw.find(i);
 		if (it == toDraw.end()) continue;
 		for (const auto d : it->second)
 			target.draw(*d, states);
 	}
-	owner.entities.mtxUnlock();
 
-	owner._mtxLock();
 	const auto levelnumtext = level->get<lif::LevelNumText>();
 	if (levelnumtext != nullptr)
 		target.draw(*levelnumtext, states);
-	owner._mtxUnlock();
 }

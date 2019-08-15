@@ -4,7 +4,6 @@
 # Command-line switches:
 # - RELEASE: compile in release mode (optimization, hardening and no debug)
 # - USE_STATIC_SFML: force to use static SFML libs and dependencies (default on windows)
-# - MULTITHREADED: use multithreaded rendering (unstable, do NOT use)
 
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 project(lifish)
@@ -174,22 +173,6 @@ if(USE_STATIC_SFML)
 	if(UNIX AND NOT APPLE)
 		find_package(X11 REQUIRED)
 		target_link_libraries(${PROJECT_NAME} ${X11_LIBRARIES} ${X11_Xrandr_LIB})
-	endif()
-endif()
-
-# Use separate threads for logic and rendering (experimental)
-if(MULTITHREADED)
-	message(STATUS "Compiling in MULTITHREADED mode")
-	add_definitions(-DMULTITHREADED=1)
-
-	find_package(Threads REQUIRED)
-	include_directories(${Threads_INCLUDE_DIR})
-	target_link_libraries(${PROJECT_NAME} ${CMAKE_THREAD_LIBS_INIT})
-
-	if(UNIX AND NOT APPLE)
-		find_package(X11 REQUIRED)
-		include_directories(${X11_INCLUDE_DIR})
-		target_link_libraries(${PROJECT_NAME} ${X11_LIBRARIES})
 	endif()
 endif()
 

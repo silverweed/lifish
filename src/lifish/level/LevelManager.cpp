@@ -141,7 +141,6 @@ void LevelManager::setNextLevel() {
 }
 
 void LevelManager::setLevel(const lif::LevelSet& ls, int lvnum) {
-	_mtxLock();
 	level = ls.getLevel(lvnum);
 	const auto lvinfo = level->getInfo();
 	effects.setEffects(lvinfo.effects);
@@ -149,7 +148,6 @@ void LevelManager::setLevel(const lif::LevelSet& ls, int lvnum) {
 	cd.setLevelLimit(sf::FloatRect(lif::TILE_SIZE, lif::TILE_SIZE,
 				(lvinfo.width + 1) * lif::TILE_SIZE,
 				(lvinfo.height + 1) * lif::TILE_SIZE));
-	_mtxUnlock();
 	// Don't trigger EXTRA game if there were no coins in the level
 	if (entities.size<lif::Coin>() == 0)
 		extraGameTriggered = true;

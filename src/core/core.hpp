@@ -20,9 +20,6 @@ namespace lif {
 struct Options;
 class MusicManager;
 class GameCache;
-#ifdef MULTITHREADED
-class WindowContext;
-#endif
 template<typename ClockType>
 class Time;
 
@@ -83,13 +80,6 @@ class FadeoutTextManager;
 /** See musicManager */
 extern lif::debug::DebugPainter *debugPainter;
 extern lif::debug::FadeoutTextManager *fadeoutTextMgr;
-#endif
-
-#ifdef MULTITHREADED
-/** Pointer to the current WindowContext (unowned), used by the rendering thread
- *  to draw the correct context with no hassle.
- */
-extern lif::WindowContext *curContext;
 #endif
 
 /** If true, the game exits after the current loop */
