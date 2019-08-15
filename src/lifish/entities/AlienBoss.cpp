@@ -52,7 +52,7 @@ void AlienBoss::update() {
 	shootT += lif::time.getDelta();
 
 	if ((canShoot && shootT > CAN_SHOOT_INTERVAL)
-		|| (!canShoot && shootT > CANNOT_SHOOT_INTERVAL))
+		|| (!canShoot && shootT > CANNOT_SHOOT_INTERVAL * shootIntervalMul))
 	{
 		canShoot = !canShoot;
 		shootT = sf::Time::Zero;

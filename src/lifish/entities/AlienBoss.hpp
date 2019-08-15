@@ -13,13 +13,16 @@ class AlienBoss : public lif::Boss {
 	lif::Animated *animated = nullptr;
 	std::array<lif::ShootingPoint*, 2> eyes;
 
-	bool canShoot = false;
 	sf::Time shootT;
+	bool canShoot = false;
+	float shootIntervalMul = 1.f;
 
 public:
 	explicit AlienBoss(const sf::Vector2f& pos);
 
 	void update() override;
+
+	void setShootIntervalMul(float mul) { shootIntervalMul = mul; }
 };
 
 }

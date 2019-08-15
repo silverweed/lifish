@@ -1,4 +1,5 @@
 #include "LevelManager.hpp"
+#include "AlienBoss.hpp"
 #include "Animated.hpp"
 #include "AxisMoving.hpp"
 #include "Bomb.hpp"
@@ -268,12 +269,13 @@ void LevelManager::_triggerHurryUpWarning() {
 
 void LevelManager::_triggerHurryUp() {
 	entities.apply([] (lif::Entity& e) {
-		auto enemy = dynamic_cast<lif::Enemy*>(&e);
-		if (enemy == nullptr) return;
-
-		auto moving = enemy->get<lif::Moving>();
-		moving->setSpeed(moving->getOriginalSpeed() * 2);
-		enemy->get<lif::Shooting>()->setFireRateMult(2);
+		if (auto enemy = dynamic_cast<lif::Enemy*>(&e)) {
+			auto moving = enemy->get<lif::Moving>();
+			moving->setSpeed(moving->getOriginalSpeed() * 2);
+			enemy->get<lif::Shooting>()->setFireRateMult(2);
+		} else if (auto boss = dynamic_cast<lif::AlienBoss*>(&e)) {
+			boss->setShootIntervalMul(0.5f);
+		}
 	});
 	hurryUp = true;
 }
