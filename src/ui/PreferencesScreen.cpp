@@ -14,10 +14,6 @@ using lif::ui::PreferencesScreen;
 using lif::ui::Interactable;
 using Action = lif::ui::Action;
 
-static inline const char* getFullscreenText() {
-	return lif::options.fullscreen ? "YES" : "NO";
-}
-
 PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	: lif::ui::Screen(window, sz)
 {
@@ -25,14 +21,18 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	parent = "home";
 	_loadBGSprite(lif::getAsset("graphics", "screenbg1.png"));
 
+	// Gather fullscreen modes
+	fullscreenModes = sf::VideoMode::getFullscreenModes();
+
 	/* Layout:
 	 *
 	 * MUSIC: - ||||||| + (m)
 	 * FX:    - ||||||| + (m)
 	 * Fullscreen: yes/no
+	 * Resolution: res
 	 * Controls
 	 *
-	 * Exit
+	 * OK   Back 
 	 */
 	const auto font = lif::getAsset("fonts", lif::fonts::SCREEN);
 	const auto win_bounds = sf::FloatRect(0, 0, sz.x, sz.y);
@@ -131,27 +131,65 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 
 	pos = text->getPosition();
 	bounds = text->getGlobalBounds();
-	text = new lif::ShadedText(font, getFullscreenText(), sf::Vector2f(upperTextAlign1, pos.y));
+	text = new lif::ShadedText(font, _getFullscreenText(), sf::Vector2f(upperTextAlign1, pos.y));
 	text->setCharacterSize(size);
 	interactables["fullscreen"] = std::make_unique<Interactable>(text);
 
-	// Controls
+	// Fullscreen resolution
 	pos = text->getPosition();
 	bounds = text->getGlobalBounds();
+	text = new lif::ShadedText(font, "Fllscr.Res.", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
+	text->setShadowSpacing(2, 2);
+	text->setCharacterSize(size);
+	nonInteractables.emplace_back(text);
+
+	pos = text->getPosition();
+	bounds = text->getGlobalBounds();
+	text = new lif::ShadedText(font, _getFullscreenResText(), sf::Vector2f(upperTextAlign1, pos.y));
+	text->setCharacterSize(size);
+	interactables["fullscreen_res"] = std::make_unique<Interactable>(text);
+
+	// Controls
 	text = new lif::ShadedText(font, "Controls", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
 	text->setCharacterSize(size);
 	interactables["controls"] = std::make_unique<Interactable>(text);
 
-	// Back
-	text = new lif::ShadedText(font, "Back", pos);
+	// Confirm
+	text = new lif::ShadedText(font, "OK", pos);
 	text->setCharacterSize(size);
 	bounds = text->getGlobalBounds();
-	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 3 * bounds.height));
+	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x - 100,
+				win_bounds.height - 3 * bounds.height));
+	interactables["confirm"] = std::make_unique<Interactable>(text);
+
+	// Back
+	text = new lif::ShadedText(font, "Cancel", pos);
+	text->setCharacterSize(size);
+	bounds = text->getGlobalBounds();
+	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x + 100, win_bounds.height - 3 * bounds.height));
 	interactables["back"] = std::make_unique<Interactable>(text);
 
 	_adjustPreferences();
 	_setupCallbacks();
 	_setupTransitions();
+}
+
+void PreferencesScreen::onLoad() {
+	lif::ui::Screen::onLoad();
+	desiredFullscreen = lif::options.fullscreen;
+	
+	if (desiredFullscreen) {
+		const auto& vm = lif::options.videoMode;
+		for (unsigned i = 0; i < fullscreenModes.size(); ++i) {
+			if (vm == fullscreenModes[i]) {
+				desiredFullscreenModeIdx = i;
+				break;
+			}
+		}
+	}
+
+	interactables["fullscreen"]->getText()->setString(_getFullscreenText());
+	interactables["fullscreen_res"]->getText()->setString(_getFullscreenResText());
 }
 
 void PreferencesScreen::_adjustPreferences() {
@@ -190,9 +228,22 @@ void PreferencesScreen::_setupCallbacks() {
 		return _changeNPlayers(n);
 	};
 	callbacks["fullscreen"] = [this] () {
-		lif::options.fullscreen = !lif::options.fullscreen;
-		interactables["fullscreen"]->getText()->setString(getFullscreenText());
+		desiredFullscreen = !desiredFullscreen;
+		interactables["fullscreen"]->getText()->setString(_getFullscreenText());
+		interactables["fullscreen_res"]->getText()->setString(_getFullscreenResText());
 		return Action::DO_NOTHING;
+	};
+	callbacks["fullscreen_res"] = [this] () {
+		if (desiredFullscreen) {
+			desiredFullscreenModeIdx = (desiredFullscreenModeIdx + 1) % fullscreenModes.size();
+			interactables["fullscreen_res"]->getText()->setString(_getFullscreenResText());
+		}
+		return Action::DO_NOTHING;
+	};
+	callbacks["confirm"] = [this] () {
+		lif::options.fullscreen = desiredFullscreen;
+		lif::options.videoMode = fullscreenModes[desiredFullscreenModeIdx];
+		return Action::SWITCH_TO_PARENT;
 	};
 }
 

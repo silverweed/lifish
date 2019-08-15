@@ -15,6 +15,16 @@ void sf::from_json(const json& j, sf::Time& time) {
 	time = sf::milliseconds(j);
 }
 
+void sf::to_json(json& j, const sf::VideoMode& vm) {
+	j = { vm.width, vm.height, vm.bitsPerPixel };
+}
+
+void sf::from_json(const json& j, sf::VideoMode& vm) {
+	vm.width = j[0];
+	vm.height = j[1];
+	vm.bitsPerPixel = j[2];
+}
+
 void lif::testMusic() {
 	sf::Music sample;
 	sample.openFromFile(lif::getAsset("music", "music1.ogg"));

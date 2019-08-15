@@ -149,14 +149,9 @@ static void loadIcon(sf::Window& window) {
 
 static void createRenderWindow(sf::Window& window) {
 
-	sf::VideoMode videoMode(lif::options.windowSize.x, lif::options.windowSize.y);
-
-	if (lif::options.fullscreen) {
-		for (const auto& mode : sf::VideoMode::getFullscreenModes()) {
-			videoMode = mode;
-			break;
-		}
-	}
+	const sf::VideoMode videoMode = lif::options.fullscreen
+		? lif::options.videoMode
+		: sf::VideoMode(lif::options.windowSize.x, lif::options.windowSize.y);
 
 	window.create(
 		videoMode,
@@ -198,6 +193,7 @@ static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
 }
 
 int main(int argc, char **argv) {
+
 	// Argument parsing
 	MainArgs args;
 	parseArgs(argc, argv, args);

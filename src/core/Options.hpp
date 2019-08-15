@@ -21,6 +21,8 @@ struct Options {
 	/** How many players are spawned, from 1 to MAX_PLAYERS */
 	int nPlayers = 1;
 
+	/** Only used if fullscreen == true */
+	sf::VideoMode videoMode;
 	bool fullscreen = false;
 
 #ifndef RELEASE
