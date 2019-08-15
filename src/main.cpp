@@ -147,6 +147,27 @@ static void loadIcon(sf::Window& window) {
 	}
 }
 
+static void createRenderWindow(sf::Window& window) {
+
+	sf::VideoMode videoMode(lif::options.windowSize.x, lif::options.windowSize.y);
+
+	if (lif::options.fullscreen) {
+		for (const auto& mode : sf::VideoMode::getFullscreenModes()) {
+			videoMode = mode;
+			break;
+		}
+	}
+
+	window.create(
+		videoMode,
+		"Lifish " VERSION,
+		sf::Style::Default | (lif::options.fullscreen * sf::Style::Fullscreen));
+
+	window.setFramerateLimit(lif::options.framerateLimit);
+	window.setVerticalSyncEnabled(lif::options.vsync);
+	window.setJoystickThreshold(lif::JOYSTICK_INPUT_THRESHOLD);
+}
+
 static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
 	ui.setSize(lif::options.windowSize);
 
@@ -177,11 +198,6 @@ static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
 }
 
 int main(int argc, char **argv) {
-	// Duplicate stderr to file for logging
-	//std::ofstream errFile(".lifish_err.txt");
-	//auto errbuf = std::cerr.rdbuf();
-	//std::cerr.rdbuf(errFile.rdbuf());
-
 	// Argument parsing
 	MainArgs args;
 	parseArgs(argc, argv, args);
@@ -218,18 +234,16 @@ int main(int argc, char **argv) {
 
 	// Create the game window
 	lif::options.windowSize = sf::Vector2u(lif::WINDOW_WIDTH, lif::WINDOW_HEIGHT);
-	sf::RenderWindow window(
-			sf::VideoMode(lif::options.windowSize.x, lif::options.windowSize.y),
-			"Lifish " VERSION);
 	lif::options.vsync = true;
 	lif::options.framerateLimit = args.fps;
-	window.setFramerateLimit(lif::options.framerateLimit);
-	window.setVerticalSyncEnabled(lif::options.vsync);
-	window.setJoystickThreshold(lif::JOYSTICK_INPUT_THRESHOLD);
-	const sf::Vector2f fps_pos(
+
+	sf::RenderWindow window;
+	createRenderWindow(window);
+
+	const sf::Vector2f fpsPos(
 			lif::WINDOW_WIDTH - lif::TILE_SIZE * 8,
 			lif::WINDOW_HEIGHT - lif::TILE_SIZE);
-	lif::FPSDisplayer fpsDisplayer(fps_pos, lif::getAsset("fonts", lif::fonts::DEBUG_INFO));
+	lif::FPSDisplayer fpsDisplayer(fpsPos, lif::getAsset("fonts", lif::fonts::DEBUG_INFO));
 #ifndef RELEASE
 	lif::options.showFPS = true;
 #endif
@@ -276,6 +290,8 @@ int main(int argc, char **argv) {
 	lif::debug::Stats dbgStats;
 	unsigned cycle = 0;
 #endif
+
+	bool wasWindowFullscreen = lif::options.fullscreen;
 
 	while (!lif::terminated) {
 
@@ -333,6 +349,14 @@ int main(int argc, char **argv) {
 			std::cout.flags(flags);
 		}
 #endif
+
+		// Handle fullscreen
+		if (wasWindowFullscreen != lif::options.fullscreen) {
+			createRenderWindow(window);
+		}
+
+		wasWindowFullscreen = lif::options.fullscreen;
+
 	} // end game loop
 
 	window.close();
@@ -340,9 +364,6 @@ int main(int argc, char **argv) {
 	// Perform cleanup
 	mm.stop();
 	lif::cache.finalize();
-
-	// Restore stream buffers
-	//std::cerr.rdbuf(errbuf);
 
 	return lif::exitCode;
 }
