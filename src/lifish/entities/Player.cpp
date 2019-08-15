@@ -8,6 +8,7 @@
 #include "Collider.hpp"
 #include "Controllable.hpp"
 #include "Drawable.hpp"
+#include "Enemy.hpp"
 #include "Explosion.hpp"
 #include "GameCache.hpp"
 #include "Killable.hpp"
@@ -178,6 +179,12 @@ void Player::_checkCollision(lif::Collider& cld) {
 	case L::ENEMIES:
 	case L::ENEMIES_IGNORE_BREAKABLES:
 		if (!cld.getOwner().get<lif::Killable>()->isKilled()) {
+			if (const auto enemy = dynamic_cast<const lif::Enemy*>(&cld.getOwner())) {
+				if (enemy->isMorphed()) {
+					damage = 1;
+					break;
+				}
+			}
 			const auto shooting = cld.getOwner().get<lif::Shooting>();
 			damage = shooting != nullptr ? shooting->getAttack().contactDamage : 1;
 		}

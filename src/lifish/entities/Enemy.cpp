@@ -230,7 +230,7 @@ void Enemy::_setShootAnim() {
 }
 
 bool Enemy::_checkCollision(lif::Collider& coll) {
-	if (killable->isKilled())
+	if (killable->isKilled() || morphed)
 		return false;
 
 	if (coll.getLayer() == lif::c_layers::PLAYERS

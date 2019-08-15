@@ -195,8 +195,12 @@ AIBoundFunction lif::ai_follow_dash(lif::Entity& entity) {
 	const auto sighted = entity.get<lif::AxisSighted>();
 	const auto shooting = entity.get<lif::Shooting>();
 	if (moving == nullptr || collider == nullptr || sighted == nullptr || shooting == nullptr)
-		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has "
+		throw std::invalid_argument("Entity passed to ai_follow_dash has "
 				"no Moving, Collider, AxisSighted or Shooting component!");
+	// Ugly!
+	if (dynamic_cast<lif::Enemy*>(&entity) == nullptr)
+		throw std::invalid_argument("Entity passed to ai_follow_dash is not an Enemy!");
+
 	moving->setAutoRealign(false);
 	moving->setDistTravelled(3);
 
@@ -218,8 +222,9 @@ AIBoundFunction lif::ai_follow_dash(lif::Entity& entity) {
 			SAME_DIRECTION
 
 		auto sp = seeingPlayer(lm, *sighted);
+		const auto enemy = static_cast<const lif::Enemy*>(&entity);
 		if (sp != lif::Direction::NONE) {
-			if (!shooting->isRecharging()) {
+			if (!shooting->isRecharging() && !enemy->isMorphed()) {
 				shooting->shoot(moving->getOwner().getPosition());
 				auto sounded = entity.get<lif::Sounded>();
 				if (sounded != nullptr)
