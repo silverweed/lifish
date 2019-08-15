@@ -21,7 +21,7 @@ class FadeoutTextManager : public sf::Drawable {
 	};
 
 	const sf::Font& font;
-	lif::FixedSizeCircularBuffer<FadeoutText, 32> texts;
+	lif::FixedSizeCircularBuffer<FadeoutText, 20> texts;
 	sf::Time fadeoutTime;
 
 public:
