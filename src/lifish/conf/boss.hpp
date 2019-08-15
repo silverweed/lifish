@@ -8,6 +8,7 @@ namespace lif {
 namespace conf {
 	namespace boss {
 		const sf::Time DEATH_TIME = sf::seconds(4);
+		const auto MAX_TILES_CONSIDERED_FOR_BOMB_DAMAGE = 5;
 
 		namespace alien_boss {
 			constexpr auto VALUE = 5000;
