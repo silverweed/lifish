@@ -212,14 +212,6 @@ int main(int argc, char **argv) {
 #endif
 	// Argument parsing
 	MainArgs args;
-	args.startLevel = 1;
-	args.fps = 120;
-	args.levelsetName = "";
-	args.muteMusic = false;
-	args.muteSounds = false;
-#ifndef RELEASE
-	args.startFromHome = false; // FIXME
-#endif
 	parseArgs(argc, argv, args);
 
 	// Create the MusicManager
@@ -360,11 +352,11 @@ int main(int argc, char **argv) {
 		window.draw(*cur_context);
 #	ifndef RELEASE
 		window.draw(fadeoutTextMgr);
-#	endif
 
 		fpsDisplayer.update();
 		if (lif::options.showFPS)
 			window.draw(fpsDisplayer);
+#	endif
 
 		window.display();
 
@@ -423,14 +415,16 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 				// We got here from the start menu (via StartGame or LoadGame)
 				int startLv = args.startLevel;
 				if (!game) {
-					// Game just started: create a new GameContext
-					game.reset(new lif::GameContext(window,
-						args.levelsetName, args.startLevel));
+					// If we're going to load a game, make GameContext skip LevelManager
+					// initialization on construction (it will initialize it on loadGame).
+					const auto& lsName = ui.mustLoadGame() ? "" : args.levelsetName;
 
-					if (!game || !game->isLevelSetGood()) {
+					// Game just started: create a new GameContext
+					game.reset(new lif::GameContext(window, lsName, args.startLevel));
+					if (!game || (!ui.mustLoadGame() && !game->isLevelSetGood())) {
 						cur_context = contexts[lif::CTX_UI];
 						ui.setCurrent("error");
-						return cur_context;;
+						return cur_context;
 					}
 
 					// Adjust the origin to make room for side panel

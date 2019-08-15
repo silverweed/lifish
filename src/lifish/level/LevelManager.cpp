@@ -1,4 +1,5 @@
 #include "LevelManager.hpp"
+#include "Animated.hpp"
 #include "AxisMoving.hpp"
 #include "Bomb.hpp"
 #include "Bonusable.hpp"
@@ -14,10 +15,11 @@
 #include "Lifed.hpp"
 #include "Options.hpp"
 #include "Player.hpp"
-#include "save_load.hpp"
 #include "Shooting.hpp"
 #include "core.hpp"
 #include "game_logic.hpp"
+#include "save_load.hpp"
+#include "utils.hpp"
 #include <cassert>
 #include <memory>
 
@@ -161,8 +163,9 @@ bool LevelManager::canDeployBomb(const lif::Player& player) const {
 	if (pinfo.powers.throwableBomb)
 		return true;
 
-	const bool mostly_aligned = lif::length(player.getPosition() - lif::aligned2(player.getPosition())) < 8;
-	return /*player.isAligned() &&*/ mostly_aligned && bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs;
+	const bool mostlyAligned = lif::manhattanDistance(
+			player.getPosition(), lif::aligned2(player.getPosition())) < 4;
+	return mostlyAligned && bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs;
 }
 
 bool LevelManager::canDeployBombAt(const sf::Vector2i& tile) const {
