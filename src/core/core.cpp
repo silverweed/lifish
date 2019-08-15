@@ -45,7 +45,6 @@ static void _initOptions() {
 	options.musicVolume = 100;
 	options.soundsVolume = 100;
 	options.soundsMute = false;
-	options.showFPS = false;
 	options.vsync = true;
 	options.framerateLimit = 60;
 	options.windowSize = sf::Vector2u(640, 480);

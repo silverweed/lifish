@@ -167,7 +167,7 @@ static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
 
 	// Setup dynamic texts for static screens
 	{
-		const auto fullVersion = 
+		const auto fullVersion =
 			"lifish v." VERSION " rev." COMMIT
 #ifdef RELEASE
 				" RELEASE"
@@ -212,14 +212,6 @@ int main(int argc, char **argv) {
 #endif
 	// Argument parsing
 	MainArgs args;
-	args.startLevel = 1;
-	args.fps = 120;
-	args.levelsetName = "";
-	args.muteMusic = false;
-	args.muteSounds = false;
-#ifndef RELEASE
-	args.startFromHome = false; // FIXME
-#endif
 	parseArgs(argc, argv, args);
 
 	// Create the MusicManager
@@ -360,11 +352,11 @@ int main(int argc, char **argv) {
 		window.draw(*cur_context);
 #	ifndef RELEASE
 		window.draw(fadeoutTextMgr);
-#	endif
 
 		fpsDisplayer.update();
 		if (lif::options.showFPS)
 			window.draw(fpsDisplayer);
+#	endif
 
 		window.display();
 
@@ -432,7 +424,7 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 					const auto& lsName = ui.mustLoadGame() ? "" : args.levelsetName;
 
 					// Game just started: create a new GameContext
-					game.reset(new lif::GameContext(window, lsName, args.startLevel)); 
+					game.reset(new lif::GameContext(window, lsName, args.startLevel));
 					if (!game || (!ui.mustLoadGame() && !game->isLevelSetGood())) {
 						cur_context = contexts[lif::CTX_UI];
 						ui.setCurrent("error");

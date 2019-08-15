@@ -10,10 +10,6 @@ struct Options {
 	float soundsVolume = 0;
 	bool soundsMute = false;
 
-	bool showFPS = false;
-	/** If true, print to console time stats for the drawing phase */
-	bool printDrawStats = false;
-
 	bool vsync = true;
 	int framerateLimit = 60;
 
@@ -24,6 +20,13 @@ struct Options {
 
 	/** How many players are spawned, from 1 to MAX_PLAYERS */
 	int nPlayers = 1;
+
+#ifndef RELEASE
+	bool showFPS = false;
+	/** If true, print to console time stats for the drawing phase */
+	bool printDrawStats = false;
+#endif
+
 };
 
 }

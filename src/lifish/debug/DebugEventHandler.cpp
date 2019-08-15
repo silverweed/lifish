@@ -48,9 +48,9 @@ DebugEventHandler::DebugEventHandler(lif::GameContext& game)
  * + : forward one level
  * - : back one level
  * ? : print help
- * Numpad1 : slow down time
+ * PageDown : slow down time
  * Numpad3 : destroy all breakable walls
- * Numpad4 : speed up time
+ * PageUp : speed up time
  * Numpad6 : flip all entities
  * Numpad7 : compute and show free tiles
  * Numpad8 : kill player 1

@@ -26,13 +26,16 @@ void DebugRenderer::drawColliders(const lif::EntityGroup& group) {
 				color,
 				1, sf::Color(color.r + 40, color.g + 40, color.b + 40, 240));
 			std::stringstream ss;
-			const auto p = sf::Vector2i(c->getPosition());
-			const auto s = c->getSize();
-			ss << p.x << "," << p.y << "\n" << s.x << "," << s.y;
-			if (c->getOwner().isAligned())
-				ss << "\n A";
+			const auto& pos = c->getPosition();
+			const auto p = sf::Vector2i(pos);
+			const auto t = lif::tile(pos);
+			const auto t2 = lif::tile2(pos);
+			ss << p.x << "," << p.y << "\n " << t.x << "," << t.y << "\n " << t2.x << "," << t2.y;
 			lif::debugPainter->addTextAt(c->getPosition() + sf::Vector2f(1, 1), ss.str(), 6,
 					sf::Color(140, 140, 140));
+			if (c->getOwner().isAligned())
+				lif::debugPainter->addTextAt(c->getPosition() + c->getSize() - sf::Vector2f(7, 9),
+					"A", 6, sf::Color(140, 140, 140));
 		}
 	});
 }

@@ -1,8 +1,8 @@
 #include "LevelManager.hpp"
+#include "Animated.hpp"
 #include "AxisMoving.hpp"
 #include "Bomb.hpp"
 #include "Bonusable.hpp"
-#include "Animated.hpp"
 #include "Coin.hpp"
 #include "Controllable.hpp"
 #include "Enemy.hpp"
@@ -20,6 +20,7 @@
 #include "Shooting.hpp"
 #include "core.hpp"
 #include "game_logic.hpp"
+#include "utils.hpp"
 #include <cassert>
 #include <memory>
 
@@ -50,10 +51,10 @@ void LevelManager::createNewPlayers(int n) {
 void LevelManager::loadGame(const lif::SaveData& saveData) {
 	// TODO validate saveData
 	for (unsigned i = 0; i < std::min<unsigned>({
-		static_cast<unsigned>(saveData.players.size()), 
-		lif::MAX_PLAYERS, 
+		static_cast<unsigned>(saveData.players.size()),
+		lif::MAX_PLAYERS,
 		static_cast<unsigned>(lif::options.nPlayers)
-	}); ++i) 
+	}); ++i)
 	{
 		const auto& pdata = saveData.players[i];
 		auto& player = players[i];
@@ -68,7 +69,7 @@ void LevelManager::loadGame(const lif::SaveData& saveData) {
 			player->get<lif::Lifed>()->setLife(0);
 			player->get<lif::Animated>()->setActive(false);
 			player->get<lif::Killable>()->kill();
-		} else {	
+		} else {
 			player->setRemainingLives(pdata.remainingLives);
 			player->get<lif::Lifed>()->setLife(pdata.life);
 		}
@@ -177,8 +178,9 @@ bool LevelManager::canDeployBomb(const lif::Player& player) const {
 	if (pinfo.powers.throwableBomb)
 		return true;
 
-	const bool mostly_aligned = lif::length(player.getPosition() - lif::aligned2(player.getPosition())) < 4;
-	return /*player.isAligned() &&*/ mostly_aligned && bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs;
+	const bool mostlyAligned = lif::manhattanDistance(
+			player.getPosition(), lif::aligned2(player.getPosition())) < 4;
+	return mostlyAligned && bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs;
 }
 
 bool LevelManager::canDeployBombAt(const sf::Vector2i& tile) const {

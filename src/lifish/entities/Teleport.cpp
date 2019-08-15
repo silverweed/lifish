@@ -13,6 +13,7 @@
 #include "conf/teleport.hpp"
 #include "conf/zindex.hpp"
 #include "game.hpp"
+#include "utils.hpp"
 
 using lif::Teleport;
 using lif::TILE_SIZE;
@@ -110,8 +111,12 @@ void Teleport::_warp(lif::Collider& cld) {
 
 	const auto& entity = cld.getOwner();
 	auto am = entity.get<lif::AxisMoving>();
-	if (am != nullptr && !(entity.isAligned() && lif::tile(entity.getPosition()) == lif::tile(position))) {
-		return;
+
+	if (am != nullptr) {
+		const auto& epos = entity.getPosition();
+		const bool mostlyAligned = lif::manhattanDistance(epos, lif::aligned2(epos)) < 4;
+		if (!(mostlyAligned && lif::tile2(entity.getPosition()) == lif::tile2(position)))
+			return;
 	}
 
 	// Find the first viable teleport to warp to.
