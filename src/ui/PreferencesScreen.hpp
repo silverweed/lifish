@@ -19,7 +19,6 @@ class PreferencesScreen : public lif::ui::Screen {
 	constexpr static unsigned SPEAKER_SPRITE_SIZE = 25;
 
 	std::vector<sf::VideoMode> fullscreenModes;
-	int fullscreenModeIdx = 0;
 
 	int desiredFullscreenModeIdx = 0;
 	bool desiredFullscreen;
