@@ -207,7 +207,8 @@ void Player::_checkCollision(lif::Collider& cld) {
 		shortShield = sprite.getCurrentFrame() != sprite.getAnimation()->getSize() - 3;
 	}
 
-	dealDamage(damage, layer == L::EXPLOSIONS, shortShield);
+	if (damage > 0)
+		dealDamage(damage, layer == L::EXPLOSIONS, shortShield);
 }
 
 void Player::dealDamage(int damage, bool ignoreArmor, bool shortShield) {
