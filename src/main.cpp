@@ -29,6 +29,7 @@
 #include "PreferencesScreen.hpp"
 #include "SaveScreen.hpp"
 #include "SidePanel.hpp"
+#include "utils.hpp"
 #include "Time.hpp"
 #include "UI.hpp"
 #include "WinLoseHandler.hpp"
@@ -161,6 +162,9 @@ static void createRenderWindow(sf::Window& window) {
 	window.setFramerateLimit(lif::options.framerateLimit);
 	window.setVerticalSyncEnabled(lif::options.vsync);
 	window.setJoystickThreshold(lif::JOYSTICK_INPUT_THRESHOLD);
+
+	static_cast<sf::RenderWindow&>(window).setView(lif::keepRatio(
+		sf::Vector2f(videoMode.width, videoMode.height), lif::options.windowSize));
 }
 
 static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
@@ -288,6 +292,7 @@ int main(int argc, char **argv) {
 #endif
 
 	bool wasWindowFullscreen = lif::options.fullscreen;
+	sf::VideoMode curVideoMode = lif::options.videoMode;
 
 	while (!lif::terminated) {
 
@@ -347,11 +352,12 @@ int main(int argc, char **argv) {
 #endif
 
 		// Handle fullscreen
-		if (wasWindowFullscreen != lif::options.fullscreen) {
+		if (wasWindowFullscreen != lif::options.fullscreen || curVideoMode != lif::options.videoMode) {
 			createRenderWindow(window);
 		}
 
 		wasWindowFullscreen = lif::options.fullscreen;
+		curVideoMode = lif::options.videoMode;
 
 	} // end game loop
 

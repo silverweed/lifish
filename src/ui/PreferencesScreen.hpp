@@ -22,6 +22,12 @@ class PreferencesScreen : public lif::ui::Screen {
 
 	int desiredFullscreenModeIdx = 0;
 	bool desiredFullscreen;
+	sf::Time confirmResCountdown;
+	bool mustConfirmRes = false;
+	lif::ShadedText *confirmResText = nullptr;
+	lif::ShadedText *confirmResTimeText = nullptr;
+	lif::ShadedText *confirmResYes = nullptr;
+	lif::ShadedText *confirmResNo = nullptr;
 
 	int desiredNPlayers;
 
@@ -57,6 +63,8 @@ class PreferencesScreen : public lif::ui::Screen {
 		return desiredFullscreen ? ss.str() : "-";
 	}
 
+	void _setMustConfirmRes(bool must);
+
 public:
 	static constexpr const char *SCREEN_NAME = "preferences";
 
@@ -64,6 +72,7 @@ public:
 
 	void onLoad() override;
 	void onUnload() override;
+	void update() override;
 };
 
 }

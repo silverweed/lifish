@@ -1,4 +1,5 @@
 #include "PreferencesScreen.hpp"
+#include "Time.hpp"
 #include "GameCache.hpp"
 #include "Interactable.hpp"
 #include "MusicManager.hpp"
@@ -39,6 +40,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	const auto size = 24;
 	const float ipadx = 25,
 		    ipady = 15;
+	const float rowSpacing = 20;
 
 	auto text = new lif::ShadedText(font, "Music:", sf::Vector2f(ipadx, ipady));
 	text->setShadowSpacing(2, 2);
@@ -81,7 +83,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	interactables["music_mute_toggle"] = std::make_unique<Interactable>(image);
 
 	// FX Volume
-	text = new lif::ShadedText(font, "FX:", sf::Vector2f(ipadx, ipady + bounds.height + 20));
+	text = new lif::ShadedText(font, "FX:", sf::Vector2f(ipadx, ipady + bounds.height + rowSpacing));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(size);
 	nonInteractables.emplace_back(text);
@@ -112,7 +114,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	interactables["sounds_mute_toggle"] = std::make_unique<Interactable>(image);
 
 	// # players
-	text = new lif::ShadedText(font, "Players: ", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
+	text = new lif::ShadedText(font, "Players: ", sf::Vector2f(ipadx, pos.y + bounds.height + rowSpacing));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(size);
 	nonInteractables.emplace_back(text);
@@ -124,7 +126,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	interactables["n_players"] = std::make_unique<Interactable>(text);
 
 	// Fullscreen
-	text = new lif::ShadedText(font, "Fullscreen", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
+	text = new lif::ShadedText(font, "Fullscreen", sf::Vector2f(ipadx, pos.y + bounds.height + rowSpacing));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(size);
 	nonInteractables.emplace_back(text);
@@ -138,7 +140,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	// Fullscreen resolution
 	pos = text->getPosition();
 	bounds = text->getGlobalBounds();
-	text = new lif::ShadedText(font, "Fllscr.Res.", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
+	text = new lif::ShadedText(font, "Fllscr.Res.", sf::Vector2f(ipadx, pos.y + bounds.height + rowSpacing));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(size);
 	nonInteractables.emplace_back(text);
@@ -150,17 +152,17 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	interactables["fullscreen_res"] = std::make_unique<Interactable>(text);
 
 	// Controls
-	text = new lif::ShadedText(font, "Controls", sf::Vector2f(ipadx, pos.y + bounds.height + 20));
+	text = new lif::ShadedText(font, "Controls", sf::Vector2f(ipadx, pos.y + bounds.height + rowSpacing));
 	text->setCharacterSize(size);
 	interactables["controls"] = std::make_unique<Interactable>(text);
 
-	// Confirm
+	// OK
 	text = new lif::ShadedText(font, "OK", pos);
 	text->setCharacterSize(size);
 	bounds = text->getGlobalBounds();
 	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x - 100,
 				win_bounds.height - 3 * bounds.height));
-	interactables["confirm"] = std::make_unique<Interactable>(text);
+	interactables["ok"] = std::make_unique<Interactable>(text);
 
 	// Back
 	text = new lif::ShadedText(font, "Cancel", pos);
@@ -168,6 +170,29 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	bounds = text->getGlobalBounds();
 	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x + 100, win_bounds.height - 3 * bounds.height));
 	interactables["back"] = std::make_unique<Interactable>(text);
+
+	// Confirm resolution
+	confirmResText = new lif::ShadedText(font, "Is this ok?", pos);
+	confirmResText->setCharacterSize(size);
+	bounds = confirmResText->getGlobalBounds();
+	confirmResText->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, 280));
+	confirmResText->setShadowSpacing(2, 2);
+
+	pos = confirmResText->getPosition();
+	confirmResTimeText = new lif::ShadedText(font, "", pos);
+	confirmResTimeText->setCharacterSize(size);
+	confirmResTimeText->setPosition(pos + sf::Vector2f(bounds.width + 25, 0));
+	confirmResTimeText->setShadowSpacing(2, 2);
+
+	confirmResYes = new lif::ShadedText(font, "YES", pos);
+	confirmResYes->setCharacterSize(size);
+	bounds = confirmResYes->getGlobalBounds();
+	confirmResYes->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x - bounds.width, pos.y + bounds.height + rowSpacing));
+
+	pos = confirmResYes->getPosition();
+	confirmResNo = new lif::ShadedText(font, "NO", pos);
+	confirmResNo->setCharacterSize(size);
+	confirmResNo->setPosition(sf::Vector2f(pos.x + bounds.width + 50, pos.y));
 
 	_adjustPreferences();
 	_setupCallbacks();
@@ -243,13 +268,80 @@ void PreferencesScreen::_setupCallbacks() {
 		}
 		return Action::DO_NOTHING;
 	};
-	callbacks["confirm"] = [this] () {
-		lif::options.fullscreen = desiredFullscreen;
-		lif::options.videoMode = fullscreenModes[desiredFullscreenModeIdx];
+	callbacks["ok"] = [this] () {
 		assert(desiredNPlayers > 0 && desiredNPlayers <= lif::MAX_PLAYERS);
 		lif::options.nPlayers = desiredNPlayers;
+
+		const bool wasFullscreen = lif::options.fullscreen;
+		const auto formerVideoMode = lif::options.videoMode;
+		lif::options.fullscreen = desiredFullscreen;
+		lif::options.videoMode = fullscreenModes[desiredFullscreenModeIdx];
+		if (lif::options.fullscreen != wasFullscreen || lif::options.videoMode != formerVideoMode) {
+			if (lif::options.fullscreen)
+				_setMustConfirmRes(true);
+			return Action::DO_NOTHING;
+		}
+		
 		return Action::SWITCH_TO_PARENT;
 	};
+	callbacks["confirm_res_yes"] = [this] () {
+		_setMustConfirmRes(false);
+		return Action::DO_NOTHING;
+	};
+	callbacks["confirm_res_no"] = [this] () {
+		_setMustConfirmRes(false);
+		lif::options.fullscreen = false;
+		desiredFullscreen = false;
+		interactables["fullscreen"]->getText()->setString(_getFullscreenText());
+		interactables["fullscreen_res"]->getText()->setString(_getFullscreenResText());
+		return Action::DO_NOTHING;
+	};
+}
+
+void PreferencesScreen::_setMustConfirmRes(bool must) {
+	mustConfirmRes = must;
+	if (must) {
+		confirmResCountdown = sf::seconds(5);
+		confirmResTimeText->setString(lif::to_string(static_cast<int>(confirmResCountdown.asSeconds())));
+		nonInteractables.emplace_back(confirmResText);
+		nonInteractables.emplace_back(confirmResTimeText);
+		interactables["confirm_res_yes"] = std::make_unique<Interactable>(confirmResYes);
+		interactables["confirm_res_no"] = std::make_unique<Interactable>(confirmResNo);
+	} else {
+		const auto l = nonInteractables.size();
+		assert(l > 2);
+		nonInteractables[l - 1].release();
+		nonInteractables[l - 2].release();
+		nonInteractables.pop_back();
+		nonInteractables.pop_back();
+		auto it = interactables.find("confirm_res_yes");
+		assert(it != interactables.end());
+		it->second.release();
+		interactables.erase(it);
+		it = interactables.find("confirm_res_no");
+		assert(it != interactables.end());
+		it->second.release();
+		interactables.erase(it);
+	}
+}
+
+void PreferencesScreen::update() {
+	lif::ui::Screen::update();
+
+	if (!mustConfirmRes)
+		return;
+
+
+	confirmResCountdown -= lif::time.getDelta();
+	if (confirmResCountdown <= sf::Time::Zero) {
+		_setMustConfirmRes(false);
+		lif::options.fullscreen = false;
+		desiredFullscreen = false;
+		interactables["fullscreen"]->getText()->setString(_getFullscreenText());
+		interactables["fullscreen_res"]->getText()->setString(_getFullscreenResText());
+	} else {
+		confirmResTimeText->setString(lif::to_string(static_cast<int>(confirmResCountdown.asSeconds())));
+	}
 }
 
 void PreferencesScreen::_setupTransitions() {
@@ -266,9 +358,13 @@ void PreferencesScreen::_setupTransitions() {
 	transitions.add("sounds_mute_toggle", std::make_pair(D::DOWN,  "n_players"));
 	transitions.add("music_volume_up",    std::make_pair(D::DOWN,  "sounds_volume_up"));
 	transitions.add("music_mute_toggle",  std::make_pair(D::DOWN,  "sounds_mute_toggle"));
-	transitions.add("n_players",          std::make_pair(D::DOWN,  "controls"));
-	transitions.add("controls",           std::make_pair(D::DOWN,  "back"));
+	transitions.add("n_players",          std::make_pair(D::DOWN,  "fullscreen"));
+	transitions.add("fullscreen",         std::make_pair(D::DOWN,  "fullscreen_res"));
+	transitions.add("fullscreen_res",     std::make_pair(D::DOWN,  "controls"));
+	transitions.add("controls",           std::make_pair(D::DOWN,  "ok"));
+	transitions.add("ok",                 std::make_pair(D::RIGHT, "back"));
 	transitions.add("back",               std::make_pair(D::DOWN,  "music_volume_down"));
+	transitions.add("ok",                 std::make_pair(D::DOWN,  "music_volume_down"));
 }
 
 Action PreferencesScreen::_changeVolume(VolumeType which, VolumeAction what) {

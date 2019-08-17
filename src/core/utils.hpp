@@ -198,4 +198,6 @@ std::string toRelativePath(const std::string& path);
 /** Plays a brief sound (BLOCKING) */
 void testMusic();
 
+sf::View keepRatio(const sf::Vector2f& size, const sf::Vector2u& designedsize);
+
 } // end namespace lif
