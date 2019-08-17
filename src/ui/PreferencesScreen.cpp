@@ -32,7 +32,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	 * Resolution: res
 	 * Controls
 	 *
-	 * OK   Back 
+	 * OK   Back
 	 */
 	const auto font = lif::getAsset("fonts", lif::fonts::SCREEN);
 	const auto win_bounds = sf::FloatRect(0, 0, sz.x, sz.y);
@@ -177,7 +177,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 void PreferencesScreen::onLoad() {
 	lif::ui::Screen::onLoad();
 	desiredFullscreen = lif::options.fullscreen;
-	
+
 	if (desiredFullscreen) {
 		const auto& vm = lif::options.videoMode;
 		for (unsigned i = 0; i < fullscreenModes.size(); ++i) {
@@ -188,8 +188,11 @@ void PreferencesScreen::onLoad() {
 		}
 	}
 
+	desiredNPlayers = lif::options.nPlayers;
+
 	interactables["fullscreen"]->getText()->setString(_getFullscreenText());
 	interactables["fullscreen_res"]->getText()->setString(_getFullscreenResText());
+	interactables["n_players"]->getText()->setString(lif::to_string(desiredNPlayers));
 }
 
 void PreferencesScreen::_adjustPreferences() {
@@ -223,7 +226,7 @@ void PreferencesScreen::_setupCallbacks() {
 		return _muteToggle(VolumeType::SOUND);
 	};
 	callbacks["n_players"] = [this] () {
-		auto n = lif::options.nPlayers + 1;
+		auto n = desiredNPlayers + 1;
 		if (n > lif::MAX_PLAYERS) n -= lif::MAX_PLAYERS;
 		return _changeNPlayers(n);
 	};
@@ -243,6 +246,8 @@ void PreferencesScreen::_setupCallbacks() {
 	callbacks["confirm"] = [this] () {
 		lif::options.fullscreen = desiredFullscreen;
 		lif::options.videoMode = fullscreenModes[desiredFullscreenModeIdx];
+		assert(desiredNPlayers > 0 && desiredNPlayers <= lif::MAX_PLAYERS);
+		lif::options.nPlayers = desiredNPlayers;
 		return Action::SWITCH_TO_PARENT;
 	};
 }
@@ -332,7 +337,7 @@ void PreferencesScreen::_setVolumeBar(VolumeType which) {
 
 lif::ui::Action PreferencesScreen::_changeNPlayers(int newNPlayer) {
 	assert(newNPlayer > 0 && newNPlayer <= lif::MAX_PLAYERS);
-	lif::options.nPlayers = newNPlayer;
+	desiredNPlayers = newNPlayer;
 	interactables["n_players"]->getText()->setString(lif::to_string(newNPlayer));
 
 	return Action::DO_NOTHING;

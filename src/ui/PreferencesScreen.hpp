@@ -1,9 +1,9 @@
 #pragma once
 
-#include <vector>
 #include "Action.hpp"
 #include "Screen.hpp"
 #include "game.hpp"
+#include <vector>
 
 namespace lif {
 
@@ -22,6 +22,8 @@ class PreferencesScreen : public lif::ui::Screen {
 
 	int desiredFullscreenModeIdx = 0;
 	bool desiredFullscreen;
+
+	int desiredNPlayers;
 
 	/** Hook for the music volume bar (used in draw()) */
 	lif::ShadedText *musicVolumeBar = nullptr;
