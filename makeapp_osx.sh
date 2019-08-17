@@ -3,6 +3,12 @@
 # MUST be launched from the lifish directory
 # The lifish executable MUST already exist.
 
+if [[ $# < 1 ]]; then
+	echo "Usage: $0 <version>"
+	exit 1
+fi
+
+OUT_ZIP="lifish_BOOM_${1}_osx.zip"
 APPNAME=Lifish
 MACOS=(lifish)
 RESOURCES=(assets levels.json)
@@ -64,3 +70,5 @@ ln -s ../Resources/levels.json
 
 popd
 find "$APPNAME.app" -type f -exec install_name_tool -add_rpath "@executable_path/../Frameworks" {} \; 2>&1 | grep -v "not a Mach-O"
+
+zip -r "$OUT_ZIP" "$APPNAME.app"
