@@ -1,6 +1,6 @@
 #include "utils.hpp"
-#include "Options.hpp"
 #include "LoopingMusic.hpp"
+#include "Options.hpp"
 #include "ShadedText.hpp"
 #include "json.hpp"
 #include <random>
@@ -32,4 +32,25 @@ void lif::testMusic() {
 	sample.setVolume(lif::options.musicVolume);
 	sf::sleep(sf::milliseconds(200));
 	sample.stop();
+}
+
+
+sf::View lif::keepRatio(const sf::Vector2f& size, const sf::Vector2u& designedsize) {
+	sf::FloatRect viewport(0.f, 0.f, 1.f, 1.f);
+
+	const float screenwidth = size.x / static_cast<float>(designedsize.x),
+	            screenheight = size.y / static_cast<float>(designedsize.y);
+
+	if (screenwidth > screenheight) {
+		viewport.width = screenheight / screenwidth;
+		viewport.left = (1.f - viewport.width) / 2.f;
+	} else if (screenwidth < screenheight) {
+		viewport.height = screenwidth / screenheight;
+		viewport.top = (1.f - viewport.height) / 2.f;
+	}
+
+	sf::View view(sf::FloatRect(0, 0, designedsize.x , designedsize.y));
+	view.setViewport(viewport);
+
+	return view;
 }
