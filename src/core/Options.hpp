@@ -25,8 +25,9 @@ struct Options {
 	sf::VideoMode videoMode;
 	bool fullscreen = false;
 
-#ifndef RELEASE
 	bool showFPS = false;
+
+#ifndef RELEASE
 	/** If true, print to console time stats for the drawing phase */
 	bool printDrawStats = false;
 #endif

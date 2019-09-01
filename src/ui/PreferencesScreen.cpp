@@ -31,32 +31,35 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	 * FX:    - ||||||| + (m)
 	 * Fullscreen: yes/no
 	 * Resolution: res
+	 * Show FPS: yes/no
+	 * VSync: yes/no
 	 * Controls
 	 *
 	 * OK   Back
 	 */
 	const auto font = lif::getAsset("fonts", lif::fonts::SCREEN);
-	const auto win_bounds = sf::FloatRect(0, 0, sz.x, sz.y);
-	const auto size = 24;
+	const auto winBounds = sf::FloatRect(0, 0, sz.x, sz.y);
+	const auto size = 20;
 	const float ipadx = 25,
 		    ipady = 15;
-	const float rowSpacing = 20;
+	const float rowSize = 32;
 
 	auto text = new lif::ShadedText(font, "Music:", sf::Vector2f(ipadx, ipady));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(size);
 	nonInteractables.emplace_back(text);
 
+	int nRow = 0;
+
 	// Music volume
 	auto pos = text->getPosition();
+	const auto colAlign = ipadx + 200;
 
-	const auto upperTextAlign1 = ipadx + 200;
-
-	text = new lif::ShadedText(font, "-", sf::Vector2f(upperTextAlign1, ipady - 8));
+	text = new lif::ShadedText(font, "-", sf::Vector2f(colAlign, ipady - 8));
 	text->setCharacterSize(34);
 	interactables["music_volume_down"] = std::make_unique<Interactable>(text);
 
-	text = new lif::ShadedText(font, "placeholder", sf::Vector2f(upperTextAlign1 + 50, ipady));
+	text = new lif::ShadedText(font, "placeholder", sf::Vector2f(colAlign + 50, ipady + nRow * rowSize));
 	// Draw the full volume bar to get the measure of this element's max width
 	// (also, the volume is maxed by default, so we don't need to do any further checks here)
 	std::stringstream ss;
@@ -70,7 +73,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	nonInteractables.emplace_back(text);
 
 	auto bounds = text->getGlobalBounds();
-	text = new lif::ShadedText(font, "+", sf::Vector2f(upperTextAlign1 + 50 + bounds.width + 40, ipady - 6));
+	text = new lif::ShadedText(font, "+", sf::Vector2f(colAlign + 50 + bounds.width + 40, ipady - 6));
 	text->setCharacterSize(30);
 	interactables["music_volume_up"] = std::make_unique<Interactable>(text);
 
@@ -83,24 +86,25 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	interactables["music_mute_toggle"] = std::make_unique<Interactable>(image);
 
 	// FX Volume
-	text = new lif::ShadedText(font, "FX:", sf::Vector2f(ipadx, ipady + bounds.height + rowSpacing));
+	++nRow;
+	text = new lif::ShadedText(font, "FX:", sf::Vector2f(ipadx, ipady + nRow * rowSize));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(size);
 	nonInteractables.emplace_back(text);
 
 	pos = text->getPosition();
-	text = new lif::ShadedText(font, "-", sf::Vector2f(upperTextAlign1, pos.y - 8));
+	text = new lif::ShadedText(font, "-", sf::Vector2f(colAlign, pos.y - 8));
 	text->setCharacterSize(34);
 	interactables["sounds_volume_down"] = std::make_unique<Interactable>(text);
 
-	text = new lif::ShadedText(font, ss.str(), sf::Vector2f(upperTextAlign1 + 50, pos.y));
+	text = new lif::ShadedText(font, ss.str(), sf::Vector2f(colAlign + 50, pos.y));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(20);
 	soundsVolumeBar = text;
 	nonInteractables.emplace_back(text);
 
 	bounds = text->getGlobalBounds();
-	text = new lif::ShadedText(font, "+", sf::Vector2f(upperTextAlign1 + 50 + bounds.width + 40, pos.y - 6));
+	text = new lif::ShadedText(font, "+", sf::Vector2f(colAlign + 50 + bounds.width + 40, pos.y - 6));
 	text->setCharacterSize(30);
 	interactables["sounds_volume_up"] = std::make_unique<Interactable>(text);
 
@@ -113,46 +117,27 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	image->setPosition(sf::Vector2f(bounds.left + bounds.width + 20, bounds.top));
 	interactables["sounds_mute_toggle"] = std::make_unique<Interactable>(image);
 
-	// # players
-	text = new lif::ShadedText(font, "Players: ", sf::Vector2f(ipadx, pos.y + bounds.height + rowSpacing));
-	text->setShadowSpacing(2, 2);
-	text->setCharacterSize(size);
-	nonInteractables.emplace_back(text);
+#define SIMPLE_ROW(_header, _name, _content) \
+	++nRow; \
+	text = new lif::ShadedText(font, _header, sf::Vector2f(ipadx, ipady + nRow * rowSize)); \
+	text->setShadowSpacing(2, 2); \
+	text->setCharacterSize(size); \
+	nonInteractables.emplace_back(text); \
+	\
+	pos = text->getPosition(); \
+	text = new lif::ShadedText(font, _content, sf::Vector2f(colAlign, pos.y)); \
+	text->setCharacterSize(size); \
+	interactables[_name] = std::make_unique<Interactable>(text)
 
-	pos = text->getPosition();
-	bounds = text->getGlobalBounds();
-	text = new lif::ShadedText(font, lif::to_string(lif::options.nPlayers), sf::Vector2f(upperTextAlign1, pos.y));
-	text->setCharacterSize(size);
-	interactables["n_players"] = std::make_unique<Interactable>(text);
-
-	// Fullscreen
-	text = new lif::ShadedText(font, "Fullscreen", sf::Vector2f(ipadx, pos.y + bounds.height + rowSpacing));
-	text->setShadowSpacing(2, 2);
-	text->setCharacterSize(size);
-	nonInteractables.emplace_back(text);
-
-	pos = text->getPosition();
-	bounds = text->getGlobalBounds();
-	text = new lif::ShadedText(font, _getFullscreenText(), sf::Vector2f(upperTextAlign1, pos.y));
-	text->setCharacterSize(size);
-	interactables["fullscreen"] = std::make_unique<Interactable>(text);
-
-	// Fullscreen resolution
-	pos = text->getPosition();
-	bounds = text->getGlobalBounds();
-	text = new lif::ShadedText(font, "Fllscr.Res.", sf::Vector2f(ipadx, pos.y + bounds.height + rowSpacing));
-	text->setShadowSpacing(2, 2);
-	text->setCharacterSize(size);
-	nonInteractables.emplace_back(text);
-
-	pos = text->getPosition();
-	bounds = text->getGlobalBounds();
-	text = new lif::ShadedText(font, _getFullscreenResText(), sf::Vector2f(upperTextAlign1, pos.y));
-	text->setCharacterSize(size);
-	interactables["fullscreen_res"] = std::make_unique<Interactable>(text);
+	SIMPLE_ROW("Players: ", "n_players", lif::to_string(lif::options.nPlayers));
+	SIMPLE_ROW("Fullscreen", "fullscreen", _getFullscreenText());
+	SIMPLE_ROW("Fllscr.Res.", "fullscreen_res", _getFullscreenResText());
+	SIMPLE_ROW("Show FPS", "show_fps", "");
+	SIMPLE_ROW("Vsync", "vsync", "");
 
 	// Controls
-	text = new lif::ShadedText(font, "Controls", sf::Vector2f(ipadx, pos.y + bounds.height + rowSpacing));
+	++nRow;
+	text = new lif::ShadedText(font, "Controls", sf::Vector2f(ipadx, 2 * ipady + nRow * rowSize));
 	text->setCharacterSize(size);
 	interactables["controls"] = std::make_unique<Interactable>(text);
 
@@ -160,22 +145,21 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	text = new lif::ShadedText(font, "OK", pos);
 	text->setCharacterSize(size);
 	bounds = text->getGlobalBounds();
-	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x - 100,
-				win_bounds.height - 3 * bounds.height));
+	text->setPosition(sf::Vector2f(lif::center(bounds, winBounds).x - 100, winBounds.height - 3 * bounds.height));
 	interactables["ok"] = std::make_unique<Interactable>(text);
 
 	// Back
 	text = new lif::ShadedText(font, "Cancel", pos);
 	text->setCharacterSize(size);
 	bounds = text->getGlobalBounds();
-	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x + 100, win_bounds.height - 3 * bounds.height));
+	text->setPosition(sf::Vector2f(lif::center(bounds, winBounds).x + 100, winBounds.height - 3 * bounds.height));
 	interactables["back"] = std::make_unique<Interactable>(text);
 
 	// Confirm resolution
 	confirmResText = new lif::ShadedText(font, "Is this ok?", pos);
 	confirmResText->setCharacterSize(size);
 	bounds = confirmResText->getGlobalBounds();
-	confirmResText->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, 280));
+	confirmResText->setPosition(sf::Vector2f(lif::center(bounds, winBounds).x, 280));
 	confirmResText->setShadowSpacing(2, 2);
 
 	pos = confirmResText->getPosition();
@@ -188,7 +172,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	confirmResYes->setCharacterSize(size);
 	bounds = confirmResYes->getGlobalBounds();
 	confirmResYes->setPosition(sf::Vector2f(
-		lif::center(bounds, win_bounds).x - bounds.width, pos.y + bounds.height + rowSpacing));
+		lif::center(bounds, winBounds).x - bounds.width, pos.y + bounds.height + 15));
 
 	pos = confirmResYes->getPosition();
 	confirmResNo = new lif::ShadedText(font, "NO", pos);
@@ -214,11 +198,11 @@ void PreferencesScreen::onLoad() {
 		}
 	}
 
-	desiredNPlayers = lif::options.nPlayers;
-
 	interactables["fullscreen"]->getText()->setString(_getFullscreenText());
 	interactables["fullscreen_res"]->getText()->setString(_getFullscreenResText());
-	interactables["n_players"]->getText()->setString(lif::to_string(desiredNPlayers));
+	interactables["n_players"]->getText()->setString(lif::to_string(lif::options.nPlayers));
+	interactables["show_fps"]->getText()->setString(lif::options.showFPS ? "YES" : "NO");
+	interactables["vsync"]->getText()->setString(lif::options.vsync ? "YES" : "NO");
 }
 
 void PreferencesScreen::_adjustPreferences() {
@@ -252,7 +236,7 @@ void PreferencesScreen::_setupCallbacks() {
 		return _muteToggle(VolumeType::SOUND);
 	};
 	callbacks["n_players"] = [this] () {
-		auto n = desiredNPlayers + 1;
+		auto n = lif::options.nPlayers + 1;
 		if (n > lif::MAX_PLAYERS) n -= lif::MAX_PLAYERS;
 		return _changeNPlayers(n);
 	};
@@ -269,10 +253,17 @@ void PreferencesScreen::_setupCallbacks() {
 		}
 		return Action::DO_NOTHING;
 	};
+	callbacks["show_fps"] = [this] () {
+		lif::options.showFPS = !lif::options.showFPS;
+		interactables["show_fps"]->getText()->setString(lif::options.showFPS ? "YES" : "NO");
+		return Action::DO_NOTHING;
+	};
+	callbacks["vsync"] = [this] () {
+		lif::options.vsync = !lif::options.vsync;
+		interactables["vsync"]->getText()->setString(lif::options.vsync ? "YES" : "NO");
+		return Action::DO_NOTHING;
+	};
 	callbacks["ok"] = [this] () {
-		assert(desiredNPlayers > 0 && desiredNPlayers <= lif::MAX_PLAYERS);
-		lif::options.nPlayers = desiredNPlayers;
-
 		const bool wasFullscreen = lif::options.fullscreen;
 		const auto formerVideoMode = lif::options.videoMode;
 		lif::options.fullscreen = desiredFullscreen;
@@ -361,7 +352,9 @@ void PreferencesScreen::_setupTransitions() {
 	transitions.add("music_mute_toggle",  std::make_pair(D::DOWN,  "sounds_mute_toggle"));
 	transitions.add("n_players",          std::make_pair(D::DOWN,  "fullscreen"));
 	transitions.add("fullscreen",         std::make_pair(D::DOWN,  "fullscreen_res"));
-	transitions.add("fullscreen_res",     std::make_pair(D::DOWN,  "controls"));
+	transitions.add("fullscreen_res",     std::make_pair(D::DOWN,  "show_fps"));
+	transitions.add("show_fps",           std::make_pair(D::DOWN,  "vsync"));
+	transitions.add("vsync",              std::make_pair(D::DOWN,  "controls"));
 	transitions.add("controls",           std::make_pair(D::DOWN,  "ok"));
 	transitions.add("ok",                 std::make_pair(D::RIGHT, "back"));
 	transitions.add("back",               std::make_pair(D::DOWN,  "music_volume_down"));
@@ -434,7 +427,7 @@ void PreferencesScreen::_setVolumeBar(VolumeType which) {
 
 lif::ui::Action PreferencesScreen::_changeNPlayers(int newNPlayer) {
 	assert(newNPlayer > 0 && newNPlayer <= lif::MAX_PLAYERS);
-	desiredNPlayers = newNPlayer;
+	lif::options.nPlayers = newNPlayer;
 	interactables["n_players"]->getText()->setString(lif::to_string(newNPlayer));
 
 	return Action::DO_NOTHING;

@@ -17,12 +17,12 @@ bool BaseEventHandler::handleEvent(sf::Window& window, sf::Event event) {
 		return true;
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
+#ifndef RELEASE
 		case sf::Keyboard::V:
 			lif::options.vsync = !lif::options.vsync;
 			window.setFramerateLimit(lif::options.vsync ? lif::options.framerateLimit : 0);
 			window.setVerticalSyncEnabled(lif::options.vsync);
 			return true;
-#ifndef RELEASE
 		case sf::Keyboard::Q:
 			lif::terminated = true;
 			return true;
