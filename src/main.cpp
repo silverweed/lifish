@@ -240,10 +240,7 @@ int main(int argc, char **argv) {
 	sf::RenderWindow window;
 	createRenderWindow(window);
 
-	const sf::Vector2f fpsPos(
-			lif::WINDOW_WIDTH - lif::TILE_SIZE * 8,
-			lif::WINDOW_HEIGHT - lif::TILE_SIZE);
-	lif::FPSDisplayer fpsDisplayer(fpsPos, lif::getAsset("fonts", lif::fonts::DEBUG_INFO));
+	lif::FPSDisplayer fpsDisplayer(sf::Vector2f(), lif::getAsset("fonts", lif::fonts::DEBUG_INFO));
 #ifndef RELEASE
 	lif::options.showFPS = true;
 #endif
@@ -292,6 +289,7 @@ int main(int argc, char **argv) {
 #endif
 
 	bool wasWindowFullscreen = lif::options.fullscreen;
+	bool wasVSync = lif::options.vsync;
 	sf::VideoMode curVideoMode = lif::options.videoMode;
 
 	while (!lif::terminated) {
@@ -332,10 +330,10 @@ int main(int argc, char **argv) {
 #ifndef RELEASE
 		window.draw(fadeoutTextMgr);
 
-		fpsDisplayer.update();
+#endif
+		fpsDisplayer.update(lif::options.windowSize);
 		if (lif::options.showFPS)
 			window.draw(fpsDisplayer);
-#endif
 
 		window.display();
 
@@ -356,7 +354,14 @@ int main(int argc, char **argv) {
 			createRenderWindow(window);
 		}
 
+		// Handle vsync change
+		if (wasVSync != lif::options.vsync) {
+			window.setFramerateLimit(lif::options.vsync ? lif::options.framerateLimit : 0);
+			window.setVerticalSyncEnabled(lif::options.vsync);
+		}
+
 		wasWindowFullscreen = lif::options.fullscreen;
+		wasVSync = lif::options.vsync;
 		curVideoMode = lif::options.videoMode;
 
 	} // end game loop

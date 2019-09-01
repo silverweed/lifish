@@ -1,6 +1,6 @@
 #include "FPSDisplayer.hpp"
-#include "core.hpp"
 #include "Options.hpp"
+#include "core.hpp"
 #include <sstream>
 
 using lif::FPSDisplayer;
@@ -9,10 +9,12 @@ FPSDisplayer::FPSDisplayer(const sf::Vector2f& pos, const std::string& fontname)
 	: fpsText(fontname, "-", pos)
 {
 	fpsText.setStyle(sf::Text::Style::Bold);
-	fpsText.setCharacterSize(20);
+	fpsText.setCharacterSize(16);
+	fpsText.setColor(sf::Color(0xDDDDDDEE), sf::Color(0x222222EE));
+	fpsText.setShadowSpacing(1, 1);
 }
 
-void FPSDisplayer::update() {
+void FPSDisplayer::update(const sf::Vector2u& windowBounds) {
 	const auto t = fpsClock.restart().asSeconds();
 	curTime += t;
 	++nUpdates;
@@ -25,6 +27,9 @@ void FPSDisplayer::update() {
 		nUpdates = 0;
 		curTime = 0;
 	}
+
+	const auto bounds = fpsText.getGlobalBounds();
+	fpsText.setPosition(sf::Vector2f(windowBounds.x - bounds.width - 5, windowBounds.y - bounds.height - 3));
 }
 
 void FPSDisplayer::draw(sf::RenderTarget& target, sf::RenderStates states) const {

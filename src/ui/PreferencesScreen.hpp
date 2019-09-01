@@ -29,8 +29,6 @@ class PreferencesScreen : public lif::ui::Screen {
 	lif::ShadedText *confirmResYes = nullptr;
 	lif::ShadedText *confirmResNo = nullptr;
 
-	int desiredNPlayers;
-
 	/** Hook for the music volume bar (used in draw()) */
 	lif::ShadedText *musicVolumeBar = nullptr;
 	/** Hook for the sounds volume bar (used in draw()) */
