@@ -189,6 +189,41 @@ constexpr T clamp(T val, T min, T max) {
 	return std::max(std::min(val, max), min);
 }
 
+template<typename T>
+#ifdef _MSC_VER
+inline
+#else
+constexpr
+#endif
+int nOverlappedTiles(const sf::Rect<T>& a, const sf::Rect<T>& b) {
+	const short x = std::max(a.left, b.left),
+		    wx = std::min(a.left + a.width, b.left + b.width),
+		    y = std::max(a.top, b.top),
+		    wy = std::min(a.top + a.height, b.top + b.height);
+
+	assert(x > 0 && wx > 0 && y > 0 && wy > 0);
+
+	return static_cast<int>(std::round(static_cast<float>(std::max(0, wx - x)) / lif::TILE_SIZE) *
+			std::round(static_cast<float>(std::max(0, wy - y)) / lif::TILE_SIZE));
+}
+
+template<typename T>
+#ifdef _MSC_VER
+inline
+#else
+constexpr
+#endif
+int nOverlappedPixels(const sf::Rect<T>& a, const sf::Rect<T>& b) {
+	const short x = std::max(a.left, b.left),
+		    wx = std::min(a.left + a.width, b.left + b.width),
+		    y = std::max(a.top, b.top),
+		    wy = std::min(a.top + a.height, b.top + b.height);
+
+	assert(x > 0 && wx > 0 && y > 0 && wy > 0);
+
+	return std::max(0, wx - x) * std::max(0, wy - y);
+}
+
 /** Given a path starting from lif::pwd, returns the path relative to it.
  *  e.g. /path/to/lif/assets/foo -> assets/foo
  */

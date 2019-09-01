@@ -202,7 +202,8 @@ bool Enemy::_checkCollision(lif::Collider& coll) {
 	if (coll.getLayer() == lif::c_layers::PLAYERS
 			&& (shooting->getAttack().type & lif::AttackType::CONTACT)
 			&& !shooting->isRecharging()
-			&& !coll.getOwner().get<lif::Killable>()->isKilled())
+			&& !coll.getOwner().get<lif::Killable>()->isKilled()
+			&& lif::nOverlappedPixels(coll.getRect(), collider->getRect()) > 2)
 	{
 		shooting->shoot();
 		return true;

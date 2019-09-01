@@ -1,13 +1,14 @@
 #pragma once
 
-#include <SFML/System/Time.hpp>
 #include "Angle.hpp"
+#include <SFML/System/Time.hpp>
 
 namespace lif {
 
 namespace conf {
 	namespace boss {
 		const sf::Time DEATH_TIME = sf::seconds(4);
+		const auto MAX_TILES_CONSIDERED_FOR_BOMB_DAMAGE = 5;
 
 		namespace alien_boss {
 			constexpr auto VALUE = 5000;
@@ -27,11 +28,6 @@ namespace conf {
 
 		namespace temple_boss {
 			constexpr auto CAGE_LIFE = 10;
-		}
-
-		namespace big_alien_boss {
-			constexpr auto VALUE = 50000;
-			constexpr auto LIFE = 100;
 		}
 
 		namespace rex_boss {
@@ -92,6 +88,14 @@ namespace conf {
 			constexpr auto N_SPAWNED_ENEMIES = 4;
 			const sf::Time ZAPS_SPAWN_DELAY = sf::seconds(1.5);
 			const sf::Time ZAPS_RECOVERY_TIME = sf::seconds(4);
+		}
+
+		namespace big_alien_boss {
+			constexpr auto SPEED = 1.0;
+			constexpr auto LIFE = 40;
+			constexpr auto VALUE = 100000;
+			constexpr auto EGG_SPEED = 1.5;
+			const sf::Time ATK_INTERVAL = sf::seconds(5);
 		}
 	}
 }

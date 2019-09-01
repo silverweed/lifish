@@ -84,6 +84,7 @@ class Player : public lif::Entity {
 	lif::MovingAnimator *movingAnimator = nullptr;
 	lif::Killable *killable = nullptr;
 	lif::RegularEntityDeath *death = nullptr;
+	lif::Collider *collider = nullptr;
 
 	sf::Time hurtT;
 

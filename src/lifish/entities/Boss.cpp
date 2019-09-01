@@ -92,19 +92,15 @@ void Boss::_checkCollision(lif::Collider& coll) {
 	auto& expl = static_cast<lif::Explosion&>(coll.getOwnerRW());
 	if (expl.hasDamaged(*this)) return;
 
+	const auto& explColliders = expl.getAll<lif::Collider>();
+
 	// Calculate how many explosion tiles overlap with boss's ones
 	const auto brect = collider->getRect();
-	const auto crect = coll.getRect();
-	const short x = std::max(brect.left, crect.left),
-	            wx = std::min(brect.left + brect.width, crect.left + crect.width),
-	            y = std::max(brect.top, crect.top),
-	            wy = std::min(brect.top + brect.height, crect.top + crect.height);
+	int overlapped = std::accumulate(explColliders.begin(), explColliders.end(), 0,
+		[&brect] (int acc, const auto& cld) { return acc + lif::nOverlappedTiles(brect, cld->getRect()); });
+	overlapped = std::min(overlapped, lif::conf::boss::MAX_TILES_CONSIDERED_FOR_BOMB_DAMAGE);
 
-	assert(x > 0 && wx > 0 && y > 0 && wy > 0);
-
-	const unsigned damage = std::round(static_cast<float>(wx - x) / lif::TILE_SIZE)
-				* std::round(static_cast<float>(wy - y) / lif::TILE_SIZE) * expl.getDamage();
-
+	const unsigned damage = overlapped * expl.getDamage();
 	if (get<lif::Lifed>()->decLife(damage) > 0)
 		get<lif::HurtDrawProxy>()->hurt();
 	else
