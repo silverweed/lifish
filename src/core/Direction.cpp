@@ -27,3 +27,13 @@ Direction lif::getDirection(const sf::Vector2i& from, const sf::Vector2i& to) {
 	else
 		return Direction::NONE;
 }
+
+sf::Vector2f lif::directionToVersor(Direction dir) {
+	switch (dir) {
+	case Direction::UP:    return sf::Vector2f(0, -1);
+	case Direction::DOWN:  return sf::Vector2f(0, 1);
+	case Direction::LEFT:  return sf::Vector2f(-1, 0);
+	case Direction::RIGHT: return sf::Vector2f(1, 0);
+	default: return sf::Vector2f(0, 0);
+	}
+}

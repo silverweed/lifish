@@ -1,12 +1,13 @@
 #pragma once
 
-#include <array>
-#include <ostream>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Graphics.hpp>
 #include "Angle.hpp"
 #include "core.hpp"
 #include "json.hpp"
+#include <SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <array>
+#include <cassert>
+#include <ostream>
 
 // Enable automatic sf::Time / json conversion:
 // https://github.com/nlohmann/json#basic-usage
@@ -77,6 +78,11 @@ inline sf::Vector2f aligned2(const sf::Vector2f& pos) {
 }
 
 template<typename T>
+constexpr float dot(const sf::Vector2<T>& a, const sf::Vector2<T>& b) {
+	return a.x * b.x + a.y * b.y;
+}
+
+template<typename T>
 constexpr std::ostream& operator<<(std::ostream& stream, sf::Vector2<T> vec) {
 	return stream << "(" << vec.x << ", " << vec.y << ")";
 }
@@ -104,7 +110,7 @@ constexpr float sqrDistance(sf::Vector2<T> a, sf::Vector2<R> b) {
 
 template<typename T>
 constexpr float length(sf::Vector2<T> v) {
-	return std::sqrt(v.x * v.x + v.y * v.y);
+	return std::sqrt(lif::dot(v, v));
 }
 
 template<typename T, typename R>
@@ -126,9 +132,9 @@ constexpr Angle angleBetween(sf::Vector2<T> a, sf::Vector2<R> b) {
 
 template<typename T>
 inline sf::Vector2f normalized(const sf::Vector2<T>& v) {
+	if (v.x == 0 && v.y == 0) return v;
 	const float norm = std::sqrt(v.x * v.x + v.y * v.y);
-	if (norm == 0)
-		return v;
+	assert(norm != 0);
 	return sf::Vector2f(v.x / norm, v.y / norm);
 }
 

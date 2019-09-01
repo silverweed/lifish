@@ -73,18 +73,14 @@ Direction turnRight(Direction dir, short times);
  */
 Direction getDirection(const sf::Vector2i& from, const sf::Vector2i& to);
 
+sf::Vector2f directionToVersor(Direction dir);
+
 /** Inverse function of `getDirection`: given `start` position and a direction, returns
  *  the position `scale` tiles towards that direction from it.
  */
 template<typename T>
-sf::Vector2<T> towards(const sf::Vector2<T>& start, Direction dir, float scale = 1) {
-	switch (dir) {
-	case Direction::UP:    return start + scale * sf::Vector2<T>(0, -1);
-	case Direction::DOWN:  return start + scale * sf::Vector2<T>(0, 1);
-	case Direction::LEFT:  return start + scale * sf::Vector2<T>(-1, 0);
-	case Direction::RIGHT: return start + scale * sf::Vector2<T>(1, 0);
-	default: return start;
-	}
+inline sf::Vector2<T> towards(const sf::Vector2<T>& start, Direction dir, float scale = 1) {
+	return start + scale * sf::Vector2<T>(directionToVersor(dir));
 }
 
-}
+} // end namespace lif

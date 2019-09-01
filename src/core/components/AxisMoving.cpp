@@ -47,6 +47,8 @@ void AxisMoving::update() {
 	const float delta = effSpeed * frameTime.asSeconds();
 	distTravelled += delta;
 
+	const auto prevPos = owner.getPosition();
+
 	// If "fast turn" is enabled, the unit can change to opposite direction without being aligned:
 	// this `if` makes sure that `ensureAlign` doesn't get in the way
 	if (fastTurn && direction == lif::oppositeDirection(prevDirection)) {
@@ -68,7 +70,7 @@ void AxisMoving::update() {
 		}
 	}
 
-	if (!_collidesWithSolid()) {
+	if (!_collidesWithSolid(lif::directionToVersor(direction))) {
 		owner.setPosition(owner.getPosition() + shift * frameTime.asSeconds());
 		if (delta > 1 && ensureAlign)
 			_ensureAlign();
@@ -78,6 +80,8 @@ void AxisMoving::update() {
 
 	if (direction != lif::Direction::NONE)
 		prevDirection = direction;
+
+	distTravelledThisFrame = lif::manhattanDistance(owner.getPosition(), prevPos);
 }
 
 // Realigns the entity by "bouncing it back" to the tile it occupies the most.

@@ -27,6 +27,7 @@ void Moving::update() {
 	lif::Component::update();
 
 	blockT += lif::time.getDelta();
+	distTravelledThisFrame = 0;
 }
 
 void Moving::move() {
@@ -50,8 +51,8 @@ void Moving::setDashing(float mult) {
 	dashAmount = mult;
 }
 
-bool Moving::_collidesWithSolid() const {
-	return collider != nullptr && collider->collidesWithSolid();
+bool Moving::_collidesWithSolid(const sf::Vector2f& direction) const {
+	return collider != nullptr && collider->collidesWithSolid(direction);
 }
 
 bool Moving::_handleBlock() {

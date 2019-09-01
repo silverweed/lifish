@@ -10,9 +10,9 @@ namespace conf {
 		// ZIndex < 0 will be drawn *above* the level border, with more negative Z being drawn
 		// above less negative Z.
 		constexpr int PONDS                 = 1;
-		constexpr int EXPLOSIONS            = 2;
-		constexpr int TRANSP_WALLS          = 3;
-		constexpr int TELEPORTS             = 4;
+		constexpr int TELEPORTS             = 2;
+		constexpr int EXPLOSIONS            = 3;
+		constexpr int TRANSP_WALLS          = 4;
 		constexpr int WALLS                 = 5;
 		constexpr int COINS                 = 6;
 		constexpr int BOMBS                 = 7;

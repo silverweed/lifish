@@ -1,16 +1,17 @@
 #pragma once
 
-#include <array>
-#include <SFML/Graphics.hpp>
-#include "bonus_type.hpp"
 #include "BaseLevelManager.hpp"
-#include "DroppingTextManager.hpp"
-#include "LevelRenderer.hpp"
-#include "LevelEffects.hpp"
-#include "LevelTime.hpp"
-#include "conf/player.hpp"
 #include "Direction.hpp"
+#include "DroppingTextManager.hpp"
+#include "LevelEffects.hpp"
+#include "LevelRenderer.hpp"
+#include "LevelTime.hpp"
+#include "TeleportSystem.hpp"
+#include "bonus_type.hpp"
+#include "conf/player.hpp"
 #include "game.hpp"
+#include <SFML/Graphics.hpp>
+#include <array>
 
 namespace lif {
 
@@ -50,6 +51,7 @@ class LevelManager final : public lif::BaseLevelManager, public sf::Drawable {
 	lif::LevelRenderer renderer;
 	lif::LevelEffects effects;
 	std::shared_ptr<lif::LevelTime> levelTime;
+	lif::TeleportSystem teleportSystem;
 
 	/** Whether hurry up has already been triggered or not */
 	bool hurryUp = false;

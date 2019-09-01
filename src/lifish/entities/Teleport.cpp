@@ -24,9 +24,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 	addComponent<lif::Fixed>(*this);
 	animated = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "teleport.png"));
 	addComponent<lif::Drawable>(*this, *animated);
-	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& c) {
-		_warp(c);
-	}, lif::c_layers::TELEPORTS);
+	collider = addComponent<lif::Collider>(*this, lif::c_layers::TELEPORTS);
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::TELEPORTS);
 	addComponent<lif::Spawning>(*this, [this] (const lif::Spawning&) {
 		return mustSpawnFlash;
@@ -57,53 +55,7 @@ Teleport::Teleport(const sf::Vector2f& pos)
 	animatedSprite.play();
 }
 
-void Teleport::update() {
-	lif::Entity::update();
-	disableT += lif::time.getDelta();
-	if (disabled && disableT >= lif::conf::teleport::COOLDOWN_TIME
-			&& collider->getColliding().size() == 0)
-	{
-		disabled = false;
-		animated->getSprite().play();
-	}
-}
-
-void Teleport::disable() {
-	disabled = true;
-	animated->getSprite().pause();
-	disableT = sf::Time::Zero;
-}
-
-void Teleport::_warp(lif::Collider& cld) {
-	if (disabled) return;
-
-	const auto& entity = cld.getOwner();
-	auto am = entity.get<lif::AxisMoving>();
-
-	if (am != nullptr) {
-		const auto& epos = entity.getPosition();
-		const bool mostlyAligned = lif::manhattanDistance(epos, lif::aligned2(epos)) < 4;
-		if (!(mostlyAligned && lif::tile2(entity.getPosition()) == lif::tile2(position)))
-			return;
-	}
-
-	Teleport *nxt = _next;
-	for ( ; nxt != nullptr && nxt != this; nxt = nxt->next()) {
-		if (nxt->isDisabled() || nxt->get<lif::Collider>()->getColliding().size() > 0)
-			continue;
-		break;
-	}
-
-	if (nxt == nullptr || nxt == this) return;
-
-	cld.getOwnerRW().setPosition(nxt->getPosition());
-	if (am != nullptr) {
-		am->setPrevAlign(lif::tile(nxt->getPosition()));
-	}
-
+void Teleport::triggerWarpFx() {
 	mustSpawnFlash = true;
-	nxt->mustSpawnFlash = true;
 	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("warp"));
-	disable();
-	nxt->disable();
 }
