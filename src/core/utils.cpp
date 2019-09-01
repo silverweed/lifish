@@ -4,8 +4,8 @@
 #include "Options.hpp"
 #include "ShadedText.hpp"
 #include "json.hpp"
-#include <random>
 #include <cassert>
+#include <random>
 
 using json = nlohmann::json;
 
@@ -44,7 +44,7 @@ std::string lif::toRelativePath(const std::string& path) {
 	while (idx < path.length() && path[idx] == lif::DIRSEP)
 		++idx;
 
-	return idx < path.length() ? path.substr(idx) : ""; 
+	return idx < path.length() ? path.substr(idx) : "";
 }
 
 sf::View lif::keepRatio(const sf::Vector2f& size, const sf::Vector2u& designedsize) {

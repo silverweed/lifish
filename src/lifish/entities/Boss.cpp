@@ -106,22 +106,10 @@ void Boss::_checkCollision(lif::Collider& coll) {
 
 	// Calculate how many explosion tiles overlap with boss's ones
 	const auto brect = collider->getRect();
-	int overlapped = 0;
-
-	for (const auto explColl : explColliders) {
-		const auto& crect = explColl->getRect();
-		const short x = std::max(brect.left, crect.left),
-			    wx = std::min(brect.left + brect.width, crect.left + crect.width),
-			    y = std::max(brect.top, crect.top),
-			    wy = std::min(brect.top + brect.height, crect.top + crect.height);
-
-		assert(x > 0 && wx > 0 && y > 0 && wy > 0);
-
-		overlapped += std::round(static_cast<float>(std::max(0, wx - x)) / lif::TILE_SIZE) *
-				std::round(static_cast<float>(std::max(0, wy - y)) / lif::TILE_SIZE);
-	}
-
+	int overlapped = std::accumulate(explColliders.begin(), explColliders.end(), 0,
+		[&brect] (int acc, const auto& cld) { return acc + lif::nOverlappedTiles(brect, cld->getRect()); });
 	overlapped = std::min(overlapped, lif::conf::boss::MAX_TILES_CONSIDERED_FOR_BOMB_DAMAGE);
+
 	const unsigned damage = overlapped * expl.getDamage();
 	if (get<lif::Lifed>()->decLife(damage) > 0)
 		get<lif::HurtDrawProxy>()->hurt();

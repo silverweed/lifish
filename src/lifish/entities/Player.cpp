@@ -63,7 +63,7 @@ void Player::_init() {
 		else if (damage > 0)
 			_hurt();
 	});
-	auto collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& cld) {
+	collider = addComponent<lif::Collider>(*this, [this] (lif::Collider& cld) {
 		// on collision
 		if (!killable->isKilled())
 			_checkCollision(cld);
@@ -171,6 +171,11 @@ void Player::_checkCollision(lif::Collider& cld) {
 	using L = lif::c_layers::Layer;
 
 	if (bonusable->hasBonus(lif::BonusType::SHIELD))
+		return;
+
+	// Only get damaged if we overlap for at least 2 pixels in at least 1 dimension.
+	// This avoids unexpected damage when colliding diagonally from beyond a wall.
+	if (lif::nOverlappedPixels(collider->getRect(), cld.getRect()) < 2)
 		return;
 
 	auto damage = 0;
