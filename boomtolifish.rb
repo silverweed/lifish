@@ -40,54 +40,223 @@ lifish_hash = {
 	"difficulty" => "average",
 	"tracks" => [
 		{
-			"name" => "DMZ beat",
-			"author" => "Giacomo Parolini",
+			"name" => "Go For It",
+			"author" => "George E. Kouba, Jr.",
 			"loop" => {
-				"start" => 7.386,
-				"length" => 44.279
+				"start" => 0.0,
+				"length" => 0.0
 			}
 		},
 		{
-			"name" => "Spirit Party",
-			"author" => "Luca Barazzetta",
+			"name" => "What Goes Around",
+			"author" => "George E. Kouba, Jr.",
 			"loop" => {
-				"start" => 3.428,
-				"length" => 106.3
+				"start" => 0.0,
+				"length" => 0.0
 			}
 		},
 		{
-			"name" => "Tick Tock",
-			"author" => "Luca Barazzetta",
+			"name" => "Bomber Boy",
+			"author" => "George E. Kouba, Jr.",
 			"loop" => {
-				"start" => 3.428,
-				"length" => 96.0
+				"start" => 0.0,
+				"length" => 0.0
+			}
+		},
+		{
+			"name" => "Smoak Et",
+			"author" => "George E. Kouba, Jr.",
+			"loop" => {
+				"start" => 0.0,
+				"length" => 0.0
+			}
+		},
+		{
+			"name" => "Terminate",
+			"author" => "George E. Kouba, Jr.",
+			"loop" => {
+				"start" => 0.0,
+				"length" => 0.0
+			}
+		},
+		{
+			"name" => "Fused",
+			"author" => "George E. Kouba, Jr.",
+			"loop" => {
+				"start" => 0.0,
+				"length" => 0.0
+			}
+		},
+		{
+			"name" => "BoomRunner",
+			"author" => "George E. Kouba, Jr.",
+			"loop" => {
+				"start" => 0.0,
+				"length" => 0.0
+			}
+		},
+		{
+			"name" => "Boom Forever",
+			"author" => "George E. Kouba, Jr.",
+			"loop" => {
+				"start" => 0.0,
+				"length" => 0.0
 			}
 		}
 	],
 	"enemies" => [
-		{ "ai" => 0, "speed" => 1 },  # soldier
-		{ "ai" => 0, "speed" => 1 },  # sgt. cool
-		{ "ai" => 1, "speed" => 1 },  # thick lizzy
-		{ "ai" => 2, "speed" => 2 },  # mean-o-taur
-		{ "ai" => 1, "speed" => 1 },  # gunner
-		{ "ai" => 3, "speed" => 1 },  # thing
-		{ "ai" => 4, "speed" => 1 },  # ghost
-		{ "ai" => 3, "speed" => 1 },  # smoulder
-		{ "ai" => 3, "speed" => 1 },  # skully
-		{ "ai" => 3, "speed" => 2 }   # h.r. giggler
+		{
+			"name" => "soldier",
+			"ai" => 0,
+			"speed" => 1.0,
+			"attack" => {
+				"type" => [
+					"simple",
+					"blocking"
+				],
+				"id" => 1,
+				"fireRate" => 1.0,
+				"blockTime" => 180.0
+			}
+		},
+		{
+			"name" => "sgt. cool",
+			"ai" => 0,
+			"speed" => 1.0,
+			"attack" => {
+				"type" => [
+					"simple",
+					"blocking"
+				],
+				"id" => 1,
+				"fireRate" => 1.5,
+				"blockTime" => 180.0
+			}
+		},
+		{
+			"name" => "thick lizzy",
+			"ai" => 1,
+			"speed" => 1.0,
+			"attack" => {
+				"type" => [
+					"simple",
+					"blocking"
+				],
+				"id" => 2,
+				"fireRate" => 1.0,
+				"blockTime" => 200.0
+			}
+		},
+		{
+			"name" => "mean-o-taur",
+			"ai" => 2,
+			"speed" => 2.0,
+			"attack" => {
+				"type" => [
+					"contact"
+				],
+				"contactDamage" => 2,
+				"fireRate" => 5.0
+			}
+		},
+		{
+			"name" => "gunner",
+			"ai" => 1,
+			"speed" => 1.0,
+			"attack" => {
+				"type" => [
+					"blocking"
+				],
+				"id" => 3,
+				"fireRate" => 7.0,
+				"blockTime" => 200.0
+			}
+		},
+		{
+			"name" => "thing",
+			"ai" => 3,
+			"speed" => 1.0,
+			"attack" => {
+				"type" => [
+					"simple",
+					"blocking"
+				],
+				"id" => 4,
+				"fireRate" => 1.0,
+				"blockTime" => 250.0
+			}
+		},
+		{
+			"name" => "ghost",
+			"ai" => 4,
+			"speed" => 1.0,
+			"attack" => {
+				"type" => [
+					"contact",
+					"ranged"
+				],
+				"fireRate" => 2.0
+			}
+		},
+		{
+			"name" => "smoulder",
+			"ai" => 3,
+			"speed" => 1.0,
+			"attack" => {
+				"type" => [
+					"blocking",
+					"ranged"
+				],
+				"id" => 5,
+				"fireRate" => 4.0,
+				"blockTime" => 260.0,
+				"tileRange" => 4
+			}
+		},
+		{
+			"name" => "skully",
+			"ai" => 3,
+			"speed" => 1.0,
+			"attack" => {
+				"type" => [
+					"blocking"
+				],
+				"id" => 6,
+				"fireRate" => 6.0,
+				"blockTime" => 200.0
+			}
+		},
+		{
+			"name" => "h.r. giggler",
+			"ai" => 3,
+			"speed" => 2.0,
+			"attack" => {
+				"type" => [
+					"simple",
+					"blocking"
+				],
+				"id" => 7,
+				"fireRate" => 0.7,
+				"blockTime" => 650.0
+			}
+		}
 	],
 	"levels" => []
 }
 
 boom_levels.each_with_index do |level, i|
 	lv = {
+		"num" => i + 1,
 		"time" => level["Time"],
-		"music" => [3, (i / 10).floor + 1].min, # TODO: all tracks
+		"music" => (i / 10).floor + 1,
+		"width" => 15,
+		"height" => 13,
+		"effects" => [],
 		"tileIDs" => {
-			"bg" => (i / 10).floor + 1,
-			"border" => (i / 10).floor + 1,
-			"fixed" => (i / 10).floor + 1,
-			"breakable" => (i / 10).floor + 1
+			"bg" => level["BGPatternID"],
+			"border" => level["BorderID"] + 1,
+			"fixed" => level["FixedBlockID"] + 1,
+			"breakable" => level["BreakableBlockID"] / 4 + 1
 		},
 		"tilemap" => level["GridDescString"]
 	}
