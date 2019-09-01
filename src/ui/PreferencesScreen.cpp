@@ -1,10 +1,10 @@
 #include "PreferencesScreen.hpp"
-#include "Time.hpp"
 #include "GameCache.hpp"
 #include "Interactable.hpp"
 #include "MusicManager.hpp"
 #include "Options.hpp"
 #include "ShadedText.hpp"
+#include "Time.hpp"
 #include "game.hpp"
 #include "preferences_persistence.hpp"
 #include "utils.hpp"
@@ -187,7 +187,8 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	confirmResYes = new lif::ShadedText(font, "YES", pos);
 	confirmResYes->setCharacterSize(size);
 	bounds = confirmResYes->getGlobalBounds();
-	confirmResYes->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x - bounds.width, pos.y + bounds.height + rowSpacing));
+	confirmResYes->setPosition(sf::Vector2f(
+		lif::center(bounds, win_bounds).x - bounds.width, pos.y + bounds.height + rowSpacing));
 
 	pos = confirmResYes->getPosition();
 	confirmResNo = new lif::ShadedText(font, "NO", pos);
@@ -281,7 +282,7 @@ void PreferencesScreen::_setupCallbacks() {
 				_setMustConfirmRes(true);
 			return Action::DO_NOTHING;
 		}
-		
+
 		return Action::SWITCH_TO_PARENT;
 	};
 	callbacks["confirm_res_yes"] = [this] () {

@@ -102,6 +102,7 @@ void LevelManager::removePlayer(int id) {
 void LevelManager::update() {
 	DBGSTART("lmtot");
 	BaseLevelManager::update();
+	teleportSystem.update();
 
 	DBGSTART("checks");
 
@@ -155,6 +156,8 @@ void LevelManager::setLevel(const lif::LevelSet& ls, int lvnum) {
 
 void LevelManager::reset() {
 	BaseLevelManager::reset();
+
+	teleportSystem.clear();
 
 	dropTextManager.reset();
 	// Re-add the dropping texts

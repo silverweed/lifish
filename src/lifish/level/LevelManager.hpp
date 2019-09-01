@@ -6,6 +6,7 @@
 #include "LevelEffects.hpp"
 #include "LevelRenderer.hpp"
 #include "LevelTime.hpp"
+#include "TeleportSystem.hpp"
 #include "bonus_type.hpp"
 #include "conf/player.hpp"
 #include "game.hpp"
@@ -50,6 +51,7 @@ class LevelManager final : public lif::BaseLevelManager, public sf::Drawable {
 	lif::LevelRenderer renderer;
 	lif::LevelEffects effects;
 	std::shared_ptr<lif::LevelTime> levelTime;
+	lif::TeleportSystem teleportSystem;
 
 	/** Whether hurry up has already been triggered or not */
 	bool hurryUp = false;

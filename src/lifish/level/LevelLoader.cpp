@@ -38,9 +38,6 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 
 	lm.levelTime->setTime(sf::seconds(level.getInfo().time));
 
-	lif::Teleport *firstTeleport = nullptr,
-	              *latestTeleport = nullptr;
-
 	lm.reset();
 	auto& entities = lm.getEntities();
 
@@ -115,18 +112,7 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 			case EntityType::TELEPORT:
 				{
 					auto teleport = new lif::Teleport(curPos);
-
-					// Save the first Teleport added
-					if (firstTeleport == nullptr)
-						firstTeleport = teleport;
-					else
-						teleport->linkTo(firstTeleport);
-
-					// If we had already added a Teleport, link it to this one.
-					if (latestTeleport != nullptr)
-						latestTeleport->linkTo(teleport);
-					latestTeleport = teleport;
-
+					lm.teleportSystem.add(teleport);
 					entities.add(teleport);
 					break;
 				}
