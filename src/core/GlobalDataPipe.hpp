@@ -28,7 +28,7 @@ public:
 	void add(T data) { pending.emplace_back(data); }
 	void add(T&& data) { pending.emplace_back(data); }
 	bool hasData() const { return pending.size() > 0; }
-	T& pop() { T& back = pending.back(); pending.pop_back(); return back; }
+	T pop() { T back = pending.back(); pending.pop_back(); return back; }
 	void clear() { pending.clear(); }
 };
 

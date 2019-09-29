@@ -192,7 +192,7 @@ constexpr T clamp(T val, T min, T max) {
 }
 
 template<typename T>
-#ifdef _MSC_VER
+#if defined(_WIN32) || defined(__MINGW32__)
 inline
 #else
 constexpr
@@ -210,7 +210,7 @@ int nOverlappedTiles(const sf::Rect<T>& a, const sf::Rect<T>& b) {
 }
 
 template<typename T>
-#ifdef _MSC_VER
+#if defined(_WIN32) || defined(__MINGW32__)
 inline
 #else
 constexpr
