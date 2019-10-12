@@ -9,12 +9,15 @@ if [[ $# < 1 ]]; then
 fi
 
 OUT_ZIP="lifish_BOOM_${1}_osx.zip"
-APPNAME=Lifish
+APPNAME="BOOM Remake"
 MACOS=(lifish)
 RESOURCES=(levels.json)
 ASSETS=(assets/fonts assets/graphics assets/sounds assets/screens assets/music)
 FRAMEWORK_PATH=/Library/Frameworks
-FRAMEWORKS=({FLAC,ogg,freetype,OpenAL,vorbis{,enc,file},sfml-{window,graphics,system,audio}}.framework)
+FRAMEWORKS=({FLAC,ogg,freetype,OpenAL,vorbis{,enc,file}}.framework)
+# Ugh...
+LOCAL_FRAMEWORK_PATH="../SFML-2.4.2-osx-clang/Frameworks"
+LOCAL_FRAMEWORKS=(sfml-{window,graphics,system,audio}.framework)
 
 for i in ${MACOS[@]} ${RESOURCES[@]};  do
 	[[ -e $i ]] || {
@@ -30,12 +33,23 @@ for i in ${FRAMEWORKS[@]}; do
 	}
 done
 
+# Lazy workaround to SFML 2.4.2 not being *really* installed on my machine...
+for i in ${LOCAL_FRAMEWORKS[@]}; do
+	[[ -d "$LOCAL_FRAMEWORK_PATH/$i" ]] || {
+		echo "$i not found in $LOCAL_FRAMEWORK_PATH". >&2
+		exit 1
+	}
+done
+
 set -x
 
 rm -rf "$APPNAME.app"
 mkdir -p "$APPNAME.app"/Contents/{MacOS,Resources,Frameworks}
 for i in ${FRAMEWORKS[@]}; do
 	cp -R "$FRAMEWORK_PATH/$i" "$APPNAME.app"/Contents/Frameworks/.
+done
+for i in ${LOCAL_FRAMEWORKS[@]}; do
+	cp -R "$LOCAL_FRAMEWORK_PATH/$i" "$APPNAME.app"/Contents/Frameworks/.
 done
 
 cat > "$APPNAME.app"/Contents/Info.plist <<EOF
@@ -52,11 +66,11 @@ cat > "$APPNAME.app"/Contents/Info.plist <<EOF
         <key>CFBundleName</key>
         <string>lifish</string>
         <key>CFBundleDisplayName</key>
-        <string>Lifish</string>
+        <string>BOOM Remake</string>
         <key>CFBundlePackageType</key>
         <string>APPL</string>
 	<key>CFBundleIconFile</key>
-	<string>Lifish.icns</string>
+	<string>BOOM.icns</string>
     </dict>
 </plist>
 EOF
@@ -65,7 +79,7 @@ cp -r ${MACOS[@]} "$APPNAME.app"/Contents/MacOS/.
 cp -r ${RESOURCES[@]} "$APPNAME.app"/Contents/Resources/.
 mkdir "$APPNAME.app"/Contents/Resources/{assets,saves}
 cp -r ${ASSETS[@]} "$APPNAME.app"/Contents/Resources/assets/
-cp osx/Lifish.icns Lifish.app/Contents/Resources/.
+cp osx/BOOM.icns "$APPNAME.app"/Contents/Resources/.
 
 pushd "$APPNAME.app"/Contents/MacOS
 ln -s ../Resources/assets
