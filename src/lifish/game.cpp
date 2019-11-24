@@ -8,8 +8,27 @@
 #include <sstream>
 #include <string>
 
+static std::string gGameInfo;
+
 bool lif::init() {
 	if (!lif::initCore()) return false;
+
+	{
+		std::stringstream ss;
+		ss << "lifish v." VERSION " rev." COMMIT;
+#ifdef RELEASE
+		ss << " RELEASE";
+#endif
+#ifndef ARCH
+		ss << " (unknown arch)";
+#else
+		ss << " (" ARCH " bit)";
+#endif
+		ss << " by Giacomo Parolini\r\n";
+
+		gGameInfo = ss.str();
+	}
+
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		if (sf::Joystick::isConnected(i))
 			lif::controls::useJoystick[i] = i;
@@ -23,22 +42,6 @@ bool lif::init() {
 	return true;
 }
 
-std::string lif::gameInfo() {
-	std::stringstream ss;
-	ss << "lifish v." VERSION " rev." COMMIT;
-#ifdef RELEASE
-	ss << " RELEASE";
-#endif
-#ifndef ARCH
-	ss << " (unknown arch)";
-#else
-	ss << " (" ARCH " bit)";
-#endif
-	ss << " by Giacomo Parolini\r\n";
-#ifdef HAVE_NFD
-	ss << "    | NFD support: yes\r\n";
-#elif !defined(SFML_SYSTEM_WINDOWS)
-	ss << "    | NFD support: no\r\n";
-#endif
-	return ss.str();
+const std::string& lif::gameInfo() {
+	return gGameInfo;
 }

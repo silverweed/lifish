@@ -51,6 +51,9 @@
 #	include <cassert>
 #endif
 
+// This is needed to compile with TDM-GCC.
+#define STR(x) #x
+
 struct MainArgs {
 	short startLevel = 1;
 	std::string levelsetName;
@@ -179,21 +182,7 @@ static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
 	ui.add<lif::ui::SaveScreen>(window, lif::options.windowSize);
 
 	// Setup dynamic texts for static screens
-	{
-		const auto fullVersion =
-			"lifish v." VERSION " rev." COMMIT
-#ifdef RELEASE
-				" RELEASE"
-#endif
-#ifndef ARCH
-				" (unknown arch)"
-#else
-				" (" ARCH " bit)"
-#endif
-				;
-
-		ui.setDynamicText("FULL_VERSION", fullVersion);
-	}
+	ui.setDynamicText("FULL_VERSION", lif::gameInfo());
 }
 
 int main(int argc, char **argv) {

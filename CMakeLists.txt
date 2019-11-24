@@ -5,11 +5,7 @@
 # - RELEASE: compile in release mode (optimization, hardening and no debug)
 # - USE_STATIC_SFML: force to use static SFML libs and dependencies (default on windows)
 
-if(UNIX)
-	cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
-else()
-	cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
-endif()
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 project(lifish)
 set(PROJECT_NAME lifish)
 set(MAJOR BOOM_1)
@@ -152,6 +148,7 @@ else()
 endif()
 
 add_definitions(-DVERSION="${MAJOR}.${MINOR}" -DCOMMIT="${CURRENTREV}" -DARCH="${TARGET_ARCH}")
+message(STATUS "Version is ${MAJOR}.${MINOR}")
 
 # Check for ccache
 find_program(CCACHE_FOUND ccache)
@@ -169,16 +166,8 @@ if(USE_STATIC_SFML)
 	message(STATUS "Using static SFML libs")
 	set(SFML_STATIC_LIBRARIES true)
 endif()
-if(UNIX)
-	find_package(SFML 2.5 COMPONENTS graphics window audio system REQUIRED)
-	target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-window sfml-audio sfml-system)
-	message(STATUS "Linking SFML 2.5")
-else()
-	find_package(SFML 2.4 REQUIRED graphics window audio system)
-	include_directories(${SFML_INCLUDE_DIR})
-	target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES})
-	message(STATUS "Linking SFML 2.4")
-endif()
+find_package(SFML 2.5 COMPONENTS graphics window audio system REQUIRED)
+target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-window sfml-audio sfml-system)
 if(USE_STATIC_SFML)
 	target_link_libraries(${PROJECT_NAME} ${SFML_DEPENDENCIES})
 	if(UNIX AND NOT APPLE)
@@ -264,18 +253,19 @@ else()
 	endif()
 endif()
 
-# Linker
-execute_process(
-	COMMAND ${CMAKE_C_COMPILER} -fuse-ld=gold -Wl,--version
-	ERROR_QUIET OUTPUT_VARIABLE LD_VERSION)
-if("${LD_VERSION}" MATCHES "GNU gold")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fuse-ld=gold")
-	message(STATUS "Using GNU gold as linker")
-endif()
-
 if(MSYS)
 	if(RELEASE)
 		# No terminal on windows in release mode
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows")
 	endif()
+else()
+	# Use Gold if available (but not on windows, as it breaks with --out-implib: unknown option)
+	execute_process(
+		COMMAND ${CMAKE_C_COMPILER} -fuse-ld=gold -Wl,--version
+		ERROR_QUIET OUTPUT_VARIABLE LD_VERSION)
+	if("${LD_VERSION}" MATCHES "GNU gold")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fuse-ld=gold")
+		message(STATUS "Using GNU gold as linker")
+	endif()
+
 endif()

@@ -71,6 +71,6 @@ constexpr auto TIME_BONUS_SOUND  = "timebonus.ogg";
 
 bool init();
 
-std::string gameInfo();
+const std::string& gameInfo();
 
 } // end namespace lif
