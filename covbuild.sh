@@ -11,7 +11,7 @@ PROJECT_NAME=lifish
 EMAIL=silverweed1991@gmail.com
 [[ `uname` == "FreeBSD" ]] \
 	&& COVERITY_PATH=$HOME/cov-analysis-freebsd64-8.5.0.1/bin \
-	|| COVERITY_PATH=$HOME/Public/cov-analysis-linux64-8.5.0.1/bin
+	|| COVERITY_PATH=$HOME/Public/cov-analysis-linux64-2019.03/bin
 VERSION=$(getversion)
 
 ###########
@@ -45,7 +45,7 @@ PATH=$PATH:$COVERITY_PATH
 if [[ $SKIP_BUILD != 1 ]]; then
 	[[ $SKIP_CLEAN != 1 ]] && make clean
 	rm -f ${PROJECT_NAME}.tgz
-	if (cov-build --dir cov-int make -j 4); then
+	if ($COVERITY_PATH/cov-build --dir cov-int make -j 4); then
 		tar cvfz ${PROJECT_NAME}.tgz cov-int
 	fi
 fi
