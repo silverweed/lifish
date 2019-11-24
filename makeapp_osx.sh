@@ -16,7 +16,7 @@ ASSETS=(assets/fonts assets/graphics assets/sounds assets/screens assets/music)
 FRAMEWORK_PATH=/Library/Frameworks
 FRAMEWORKS=({FLAC,ogg,freetype,OpenAL,vorbis{,enc,file}}.framework)
 # Ugh...
-LOCAL_FRAMEWORK_PATH="../SFML-2.4.2-osx-clang/Frameworks"
+LOCAL_FRAMEWORK_PATH="../SFML-2.5.1-macos-clang/Frameworks"
 LOCAL_FRAMEWORKS=(sfml-{window,graphics,system,audio}.framework)
 
 for i in ${MACOS[@]} ${RESOURCES[@]};  do
@@ -33,7 +33,7 @@ for i in ${FRAMEWORKS[@]}; do
 	}
 done
 
-# Lazy workaround to SFML 2.4.2 not being *really* installed on my machine...
+# Lazy workaround to SFML not being *really* installed on my machine...
 for i in ${LOCAL_FRAMEWORKS[@]}; do
 	[[ -d "$LOCAL_FRAMEWORK_PATH/$i" ]] || {
 		echo "$i not found in $LOCAL_FRAMEWORK_PATH". >&2
