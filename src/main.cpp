@@ -400,7 +400,7 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 					if (!game || (!ui.mustLoadGame() && !game->isLevelSetGood())) {
 						cur_context = contexts[lif::CTX_UI];
 						ui.setCurrent("error");
-						return cur_context;;
+						return cur_context;
 					}
 
 					// Adjust the origin to make room for side panel
@@ -414,7 +414,7 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 					if (!game->isLevelSetGood()) {
 						cur_context = contexts[lif::CTX_UI];
 						ui.setCurrent("error");
-						return cur_context;;
+						return cur_context;
 					}
 					startLv = save_data.level;
 				}

@@ -1,6 +1,6 @@
 {
 	"name": "error",
-	"parent": null,
+	"parent": "home",
 	"bg": "screenbg1.png",
 	"layout": {
 		"styles": {
@@ -52,8 +52,8 @@
 			},
 			{
 				"type": "text",
-				"name": "exit",
-				"string": "Exit",
+				"name": "back",
+				"string": "Back",
 				"interactable": true,
 				"style": "exit"
 			},
