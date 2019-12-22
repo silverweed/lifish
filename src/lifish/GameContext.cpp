@@ -165,17 +165,8 @@ bool GameContext::handleEvent(sf::Window&, sf::Event event) {
 	case sf::Event::KeyPressed:
 		switch (event.key.code) {
 		case sf::Keyboard::P:
-			pause_game();
-			return true;
 		case sf::Keyboard::Escape:
-			for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
-				lm.setPlayerContinues(i + 1, 0);
-				auto player = lm.getPlayer(i + 1);
-				if (player != nullptr) {
-					player->setRemainingLives(0);
-					player->get<lif::Killable>()->kill();
-				}
-			}
+			pause_game();
 			return true;
 		default:
 			break;
