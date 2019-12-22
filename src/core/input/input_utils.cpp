@@ -4,6 +4,35 @@
 //constexpr unsigned XBOX = 11;
 constexpr unsigned PS3 = 12;
 
+#ifdef IS_APPLE
+std::array<bool, sf::Keyboard::KeyCount> lif::kb::keyPressed;	
+
+bool lif::kb::isKeyPressed(sf::Keyboard::Key key) {
+	using lif::kb::keyPressed;
+
+	const int idx = static_cast<int>(key);
+	return key >= 0 && key < static_cast<int>(keyPressed.size()) ? keyPressed[idx] : false; 
+}
+
+void lif::kb::checkKeyPressed(sf::Event event) {
+	using lif::kb::keyPressed;
+
+	switch (event.type) {
+	case sf::Event::KeyPressed:
+	case sf::Event::KeyReleased: 
+		{
+			const auto key = event.key.code;
+			const int idx = static_cast<int>(key);
+			if (key >= 0 && key < static_cast<int>(keyPressed.size()))
+				keyPressed[idx] = event.type == sf::Event::KeyPressed;
+			break;
+		} 
+	default:
+		break;
+	}
+}
+#endif
+
 short lif::joystick::getButton(lif::joystick::ButtonType type, unsigned id) {
 	if (!sf::Joystick::isConnected(id)) return -1;
 	// Heuristic approach to "known" joysticks: we distinguish them by their

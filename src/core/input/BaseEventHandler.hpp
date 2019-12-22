@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <SFML/Window.hpp>
 #include "EventHandler.hpp"
 

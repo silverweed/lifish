@@ -207,7 +207,7 @@ void InterlevelContext::_tickGettingReady() {
 	if (time > sf::milliseconds(300) &&
 		(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) ||
 		std::any_of(std::begin(lif::controls::players), std::end(lif::controls::players), [] (const auto& keys) {
-			return sf::Keyboard::isKeyPressed(keys[lif::controls::CTRL_BOMB]);
+			return IS_KEY_PRESSED(keys[lif::controls::CTRL_BOMB]);
 		}))
 	) {
 		time = sf::seconds(4);

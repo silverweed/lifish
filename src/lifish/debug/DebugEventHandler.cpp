@@ -61,12 +61,12 @@ DebugEventHandler::DebugEventHandler(lif::GameContext& game)
  */
 bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 
-	const bool ctrl = sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) ||
-				sf::Keyboard::isKeyPressed(sf::Keyboard::RControl);
-	const bool shift = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ||
-				sf::Keyboard::isKeyPressed(sf::Keyboard::RShift);
-	const bool alt = sf::Keyboard::isKeyPressed(sf::Keyboard::LAlt) ||
-				sf::Keyboard::isKeyPressed(sf::Keyboard::RAlt);
+	const bool ctrl = IS_KEY_PRESSED(sf::Keyboard::LControl) ||
+				IS_KEY_PRESSED(sf::Keyboard::RControl);
+	const bool shift = IS_KEY_PRESSED(sf::Keyboard::LShift) ||
+				IS_KEY_PRESSED(sf::Keyboard::RShift);
+	const bool alt = IS_KEY_PRESSED(sf::Keyboard::LAlt) ||
+				IS_KEY_PRESSED(sf::Keyboard::RAlt);
 
 	switch (event.type) {
 	case sf::Event::KeyReleased:
@@ -323,7 +323,7 @@ bool DebugEventHandler::_changeDrawnLayers(sf::Keyboard::Key key) {
 		drawnLayerBuf = drawnLayerBuf * 10 + n;
 	}
 
-	isAddDrawnLayers = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift);
+	isAddDrawnLayers = IS_KEY_PRESSED(sf::Keyboard::LShift);
 
 	return true;
 }

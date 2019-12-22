@@ -1,5 +1,6 @@
 #include "Controllable.hpp"
 #include "AxisMoving.hpp"
+#include "input_utils.hpp"
 #include <exception>
 
 using lif::Controllable;
@@ -55,17 +56,17 @@ void Controllable::update() {
 				usedBomb = true;
 		} else {
 			if (dir == lif::Direction::NONE) {
-				if (sf::Keyboard::isKeyPressed(controls[lif::controls::CTRL_UP]))
+				if (IS_KEY_PRESSED(controls[lif::controls::CTRL_UP]))
 					dir = lif::Direction::UP;
-				else if (sf::Keyboard::isKeyPressed(controls[lif::controls::CTRL_LEFT]))
+				else if (IS_KEY_PRESSED(controls[lif::controls::CTRL_LEFT]))
 					dir = lif::Direction::LEFT;
-				else if (sf::Keyboard::isKeyPressed(controls[lif::controls::CTRL_DOWN]))
+				else if (IS_KEY_PRESSED(controls[lif::controls::CTRL_DOWN]))
 					dir = lif::Direction::DOWN;
-				else if (sf::Keyboard::isKeyPressed(controls[lif::controls::CTRL_RIGHT]))
+				else if (IS_KEY_PRESSED(controls[lif::controls::CTRL_RIGHT]))
 					dir = lif::Direction::RIGHT;
 			}
 
-			if (sf::Keyboard::isKeyPressed(controls[lif::controls::CTRL_BOMB]))
+			if (IS_KEY_PRESSED(controls[lif::controls::CTRL_BOMB]))
 				usedBomb = true;
 		}
 	}

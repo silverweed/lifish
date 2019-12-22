@@ -114,7 +114,7 @@ bool SaveScreen::handleEvent(sf::Window& win, sf::Event event) {
 	switch (event.key.code) {
 	case sf::Keyboard::BackSpace:
 		// Cancel
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+		if (IS_KEY_PRESSED(sf::Keyboard::LControl)) {
 			buffer.fill('\0');
 			bufIdx = 0;
 		} else if (bufIdx > 0) {
