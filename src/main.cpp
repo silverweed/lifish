@@ -51,9 +51,6 @@
 #	include <cassert>
 #endif
 
-// This is needed to compile with TDM-GCC.
-#define STR(x) #x
-
 struct MainArgs {
 	short startLevel = 1;
 	std::string levelsetName;

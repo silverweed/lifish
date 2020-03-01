@@ -8,26 +8,8 @@
 #include <sstream>
 #include <string>
 
-static std::string gGameInfo;
-
 bool lif::init() {
 	if (!lif::initCore()) return false;
-
-	{
-		std::stringstream ss;
-		ss << "lifish v." VERSION " rev." COMMIT;
-#ifdef RELEASE
-		ss << " RELEASE";
-#endif
-#ifndef ARCH
-		ss << " (unknown arch)";
-#else
-		ss << " (" ARCH " bit)";
-#endif
-		ss << " by Giacomo Parolini\r\n";
-
-		gGameInfo = ss.str();
-	}
 
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		if (sf::Joystick::isConnected(i))
@@ -42,6 +24,18 @@ bool lif::init() {
 	return true;
 }
 
-const std::string& lif::gameInfo() {
-	return gGameInfo;
+std::string lif::gameInfo() {
+	std::stringstream ss;
+	ss << "lifish v." VERSION " rev." COMMIT;
+#ifdef RELEASE
+	ss << " RELEASE";
+#endif
+#ifndef ARCH
+	ss << " (unknown arch)";
+#else
+	ss << " (" ARCH " bit)";
+#endif
+	ss << " by Giacomo Parolini\r\n";
+
+	return ss.str();
 }
