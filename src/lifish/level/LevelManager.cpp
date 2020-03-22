@@ -51,9 +51,9 @@ void LevelManager::createNewPlayers(int n) {
 
 void LevelManager::loadGame(const lif::SaveData& saveData) {
 	// TODO validate saveData
-	for (unsigned i = 0; i < std::min<unsigned>({
+	for (unsigned i = 0; i < std::min({
 		static_cast<unsigned>(saveData.players.size()),
-		lif::MAX_PLAYERS,
+		static_cast<unsigned>(lif::MAX_PLAYERS),
 		static_cast<unsigned>(lif::options.nPlayers)
 	}); ++i)
 	{

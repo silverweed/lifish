@@ -253,6 +253,10 @@ else()
 	endif()
 endif()
 
+if(MSVC)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244 /wd4305")
+endif()
+
 if(MSYS)
 	if(RELEASE)
 		# No terminal on windows in release mode

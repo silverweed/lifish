@@ -182,6 +182,10 @@ static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
 	ui.setDynamicText("FULL_VERSION", lif::gameInfo());
 }
 
+#if defined(_MSC_VER) && defined(RELEASE)
+// No console in release mode on windows
+#	pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif
 int main(int argc, char **argv) {
 
 	// Argument parsing
