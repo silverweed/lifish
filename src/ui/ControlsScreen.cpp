@@ -112,6 +112,17 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	text->setCharacterSize(small_size);
 	interactables["change_bomb"] = std::make_unique<Interactable>(text);
 
+	y += 2 * bounds.height;
+	text = new lif::ShadedText(font, "PAUSE: ", sf::Vector2f(ipadx, y));
+	text->setShadowSpacing(1, 1);
+	text->setCharacterSize(small_size);
+	nonInteractables.emplace_back(text);
+
+	text = new lif::ShadedText(font, "P / Esc", sf::Vector2f(x, y));
+	text->setShadowSpacing(1, 1);
+	text->setCharacterSize(small_size);
+	nonInteractables.emplace_back(text);
+
 	y += 3 * bounds.height;
 	text = new lif::ShadedText(font, "Use Joystick?", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);

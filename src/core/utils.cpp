@@ -6,6 +6,9 @@
 #include "json.hpp"
 #include <cassert>
 #include <random>
+#if defined(_WIN32) || defined(__MINGW32__)
+#	include <windows.h>
+#endif
 
 using json = nlohmann::json;
 
@@ -65,4 +68,11 @@ sf::View lif::keepRatio(const sf::Vector2f& size, const sf::Vector2u& designedsi
 	view.setViewport(viewport);
 
 	return view;
+}
+
+bool lif::createDirIfNotExisting(const std::string& path) {
+#if defined(_WIN32) || defined(__MINGW32__)
+	bool ok = !!CreateDirectory(path.c_str(), NULL);
+	return ok || GetLastError() == ERROR_ALREADY_EXISTS;
+#endif
 }

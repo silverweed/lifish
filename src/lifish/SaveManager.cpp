@@ -12,6 +12,10 @@
 using lif::SaveManager;
 
 bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager& lm) {
+	if (!lif::createDirIfNotExisting(lif::getSaveDir())) {
+		return false;
+	}
+
 	std::ofstream saveFile(filename);
 
 	nlohmann::json save;

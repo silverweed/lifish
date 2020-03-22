@@ -236,4 +236,7 @@ void testMusic();
 
 sf::View keepRatio(const sf::Vector2f& size, const sf::Vector2u& designedsize);
 
+/** Note: this will NOT create a directory recursively */
+bool createDirIfNotExisting(const std::string& path);
+
 } // end namespace lif
