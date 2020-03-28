@@ -33,6 +33,7 @@ GameContext::GameContext(sf::Window& window, const std::string& levelsetName, sh
 	, lm()
 	, sidePanel(lm)
 	, wlHandler(lm, sidePanel)
+	, gameTimer(lif::getAsset("fonts", lif::fonts::DEBUG_INFO))
 {
 	_addHandler<lif::BaseEventHandler>();
 #ifndef RELEASE
@@ -138,6 +139,7 @@ void GameContext::update() {
 	if (!lm.isPaused()) {
 		lm.update();
 		sidePanel.update();
+		gameTimer.update();
 	}
 
 #ifndef RELEASE

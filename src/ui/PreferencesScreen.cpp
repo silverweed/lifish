@@ -34,6 +34,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	 * Resolution: res
 	 * Show FPS: yes/no
 	 * VSync: yes/no
+	 * GameTimer: yes/no
 	 * Controls
 	 *
 	 * OK   Back
@@ -135,6 +136,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	SIMPLE_ROW(lif::getLocalized("fullscreen_res"), "fullscreen_res", _getFullscreenResText());
 	SIMPLE_ROW(lif::getLocalized("show_fps"), "show_fps", "");
 	SIMPLE_ROW("Vsync", "vsync", "");
+	SIMPLE_ROW(lif::getLocalized("show_game_timer"), "show_game_timer", "");
 
 	// Controls
 	++nRow;
@@ -206,6 +208,8 @@ void PreferencesScreen::onLoad() {
 			? lif::getLocalized("yes") : lif::getLocalized("no"));
 	interactables["vsync"]->getText()->setString(lif::options.vsync
 			? lif::getLocalized("yes") : lif::getLocalized("no"));
+	interactables["show_game_timer"]->getText()->setString(lif::options.showGameTimer
+			? lif::getLocalized("yes") : lif::getLocalized("no"));
 }
 
 void PreferencesScreen::_adjustPreferences() {
@@ -259,6 +263,12 @@ void PreferencesScreen::_setupCallbacks() {
 	callbacks["show_fps"] = [this] () {
 		lif::options.showFPS = !lif::options.showFPS;
 		interactables["show_fps"]->getText()->setString(lif::options.showFPS
+				? lif::getLocalized("yes") : lif::getLocalized("no"));
+		return Action::DO_NOTHING;
+	};
+	callbacks["show_game_timer"] = [this] () {
+		lif::options.showGameTimer = !lif::options.showGameTimer;
+		interactables["show_game_timer"]->getText()->setString(lif::options.showGameTimer
 				? lif::getLocalized("yes") : lif::getLocalized("no"));
 		return Action::DO_NOTHING;
 	};

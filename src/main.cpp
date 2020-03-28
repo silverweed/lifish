@@ -301,6 +301,7 @@ int main(int argc, char **argv) {
 				game.reset();
 			else if (lif::switchedLanguage) {
 				lif::switchedLanguage = false;
+				// FIXME: dynamic screens are not getting rebuilt
 				ui.rebuildStaticScreens();
 			}
 		}
@@ -335,6 +336,9 @@ int main(int argc, char **argv) {
 		fpsDisplayer.update(lif::options.windowSize);
 		if (lif::options.showFPS)
 			window.draw(fpsDisplayer);
+
+		if (game && lif::options.showGameTimer)
+			window.draw(game->getGameTimer());
 
 		window.display();
 

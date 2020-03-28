@@ -103,6 +103,10 @@
 		"en": "Show FPS",
 		"it": "Mostra FPS"
 	},
+	"show_game_timer": {
+		"en": "Show Timer",
+		"it": "Mostra Timer"
+	},
 	"fullscreen": {
 		"en": "Fullscreen",
 		"it": "Sch.Intero"

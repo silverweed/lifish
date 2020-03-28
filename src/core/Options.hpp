@@ -26,6 +26,7 @@ struct Options {
 	bool fullscreen = false;
 
 	bool showFPS = false;
+	bool showGameTimer = false;
 
 #ifndef RELEASE
 	/** If true, print to console time stats for the drawing phase */

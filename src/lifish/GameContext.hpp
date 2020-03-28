@@ -2,6 +2,7 @@
 
 #include "LevelManager.hpp"
 #include "LevelSet.hpp"
+#include "GameTimer.hpp"
 #include "SidePanel.hpp"
 #include "WinLoseHandler.hpp"
 #include "WindowContext.hpp"
@@ -47,6 +48,7 @@ private:
 	lif::LevelManager lm;
 	lif::SidePanel sidePanel;
 	lif::WinLoseHandler wlHandler;
+	lif::GameTimer gameTimer;
 
 	bool gameWon = false;
 	bool retryingLevel = false;
@@ -83,6 +85,8 @@ public:
 	bool handleEvent(sf::Window& window, sf::Event evt) override;
 	void draw(sf::RenderTarget& window, sf::RenderStates states) const override;
 	void setActive(bool b) override;
+
+	const lif::GameTimer& getGameTimer() const { return gameTimer; }
 
 #ifndef RELEASE
 	void toggleDebug(unsigned dbg);

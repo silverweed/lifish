@@ -36,6 +36,7 @@ void lif::savePreferences(const char *fname) {
 	out["fullscreen"] = lif::options.fullscreen;
 	out["videoMode"] = lif::options.videoMode;
 	out["showFPS"] = lif::options.showFPS;
+	out["showGameTimer"] = lif::options.showGameTimer;
 	out["vsync"] = lif::options.vsync;
 	out["lang"] = lif::strFromLang(lif::curLang);
 
@@ -74,6 +75,7 @@ void lif::loadPreferences(const char *fname) {
 		lif::options.fullscreen = in["fullscreen"];
 		lif::options.videoMode = in["videoMode"];
 		lif::options.showFPS = in["showFPS"];
+		lif::options.showGameTimer = in["showGameTimer"];
 		lif::options.vsync = in["vsync"];
 		lif::curLang = lif::langFromStr(in["lang"]);
 

@@ -16,13 +16,13 @@ std::map<unsigned, const lif::BulletInfo> bulletsInfo = {
 	// shot
 	{ 1, lif::BulletInfo{ 1, 1, 1.3f, -1 } },
 	// fireball
-	{ 2, lif::BulletInfo{ 2, 2, 1.1f, -1 } },
+	{ 2, lif::BulletInfo{ 2, 2, 1.15f, -1 } },
 	// MG shot
 	{ 3, lif::BulletInfo{ 3, 2, 1.3f, -1 } },
 	// lightbolt
-	{ 4, lif::BulletInfo{ 4, 3, 1.1f, -1 } },
+	{ 4, lif::BulletInfo{ 4, 3, 1.15f, -1 } },
 	// flame
-	{ 5, lif::BulletInfo{ 5, 3, 0.66f, 4 * lif::TILE_SIZE } },
+	{ 5, lif::BulletInfo{ 5, 3, 0.7f, 4 * lif::TILE_SIZE } },
 	// plasma
 	{ 6, lif::BulletInfo{ 6, 3, 1.3f, -1 } },
 	// magma
