@@ -1,4 +1,5 @@
 #include "InterlevelContext.hpp"
+#include "language.hpp"
 #include "BaseEventHandler.hpp"
 #include "GameCache.hpp"
 #include "JoystickManager.hpp"
@@ -71,7 +72,7 @@ void InterlevelContext::setAdvancingLevel() {
 	lastTickTime = time = sf::Time::Zero;
 	bonusPoints = 0;
 	bonusTime = sf::Time::Zero;
-	centralText.setString("TIME BONUS!");
+	centralText.setString(lif::getLocalized("time_bonus"));
 	auto bounds = centralText.getGlobalBounds();
 	centralText.setPosition(lif::center(bounds, WIN_BOUNDS));
 	subtitleText.setString("0");
@@ -84,10 +85,10 @@ void InterlevelContext::setGettingReady(unsigned short lvnum) {
 
 	state = State::GETTING_READY;
 	time = sf::Time::Zero;
-	centralText.setString("LEVEL " + lif::to_string(lvnum));
+	centralText.setString(lif::getLocalized("level") + " " + lif::to_string(lvnum));
 	auto bounds = centralText.getGlobalBounds();
 	centralText.setPosition(lif::center(bounds, WIN_BOUNDS));
-	subtitleText.setString("GET READY!");
+	subtitleText.setString(lif::getLocalized("get_ready"));
 	bounds = subtitleText.getGlobalBounds();
 	subtitleText.setPosition(lif::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
 }
