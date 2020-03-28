@@ -253,6 +253,8 @@ void ScreenBuilder::rebuild(lif::ui::Screen& screen) {
 		throw std::logic_error("screen passed to ScreenBuilder::rebuild was never built!");
 	const auto layout = screen.builtWithLayout;
 	screen.builtWithLayout = "";
+	screen.selected.first = "";
+	screen.selected.second = nullptr;
 	screen.nonInteractables.clear();
 	screen.transitions.clear();
 	screen.dynamicTexts.clear();
