@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Screen.hpp"
+#include "DynamicScreen.hpp"
 
 namespace lif {
 
@@ -8,7 +8,7 @@ class ShadedText;
 
 namespace ui {
 
-class ControlsScreen : public lif::ui::Screen {
+class ControlsScreen : public lif::ui::DynamicScreen {
 	/** Whose player we're changing controls */
 	int selectedPlayer = 1;
 	/** The control we're changing right now, if any */
@@ -27,6 +27,8 @@ class ControlsScreen : public lif::ui::Screen {
 
 	void _setupCallbacks();
 	void _setupTransitions();
+
+	void build() override;
 public:
 	static constexpr const char *SCREEN_NAME = "controls";
 
@@ -34,8 +36,8 @@ public:
 
 	void update() override;
 	bool handleEvent(sf::Window& window, sf::Event event) override;
+
 };
 
 }
-
 }

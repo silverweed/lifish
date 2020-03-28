@@ -189,11 +189,9 @@ void UI::setDynamicText(const std::string& name, const std::string& value) {
 		screen.second->updateDynamicText(name, value);
 }
 
-void UI::rebuildStaticScreens() {
+void UI::rebuildScreens() {
 	for (const auto& screenPair : screens) {
 		auto& screen = screenPair.second;
-		if (!screen->wasBuilt())
-			continue;
 		screen->rebuild();
 		for (const auto& textPair : dynamicTexts)
 			screen->updateDynamicText(textPair.first, textPair.second);

@@ -17,8 +17,12 @@ using lif::ui::Interactable;
 using Action = lif::ui::Action;
 
 PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
-	: lif::ui::Screen(window, sz)
+	: lif::ui::DynamicScreen(window, sz)
 {
+	build();
+}
+
+void PreferencesScreen::build() {
 	name = SCREEN_NAME;
 	parent = "home";
 	_loadBGSprite(lif::getAsset("graphics", "screenbg1.png"));
@@ -40,7 +44,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	 * OK   Back
 	 */
 	const auto font = lif::getAsset("fonts", lif::fonts::SCREEN);
-	const auto winBounds = sf::FloatRect(0, 0, sz.x, sz.y);
+	const auto winBounds = sf::FloatRect(0, 0, size.x, size.y);
 	const auto size = 20;
 	const float ipadx = 25,
 		    ipady = 15;
@@ -55,7 +59,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 
 	// Music volume
 	auto pos = text->getPosition();
-	const auto colAlign = ipadx + 200;
+	const auto colAlign = ipadx + 220;
 
 	text = new lif::ShadedText(font, "-", sf::Vector2f(colAlign, ipady - 8));
 	text->setCharacterSize(34);

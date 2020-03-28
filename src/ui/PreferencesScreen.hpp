@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Action.hpp"
-#include "Screen.hpp"
+#include "DynamicScreen.hpp"
 #include "game.hpp"
 #include <vector>
 
@@ -11,7 +11,7 @@ class ShadedText;
 
 namespace ui {
 
-class PreferencesScreen : public lif::ui::Screen {
+class PreferencesScreen : public lif::ui::DynamicScreen {
 	enum class VolumeType { MUSIC, SOUND };
 	enum class VolumeAction { RAISE, LOWER, MUTE_TOGGLE };
 
@@ -62,6 +62,8 @@ class PreferencesScreen : public lif::ui::Screen {
 	}
 
 	void _setMustConfirmRes(bool must);
+
+	void build() override;
 
 public:
 	static constexpr const char *SCREEN_NAME = "preferences";

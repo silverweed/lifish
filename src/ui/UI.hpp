@@ -77,7 +77,7 @@ public:
 	}
 	std::string getSaveName() const { return saveName; }
 
-	void rebuildStaticScreens();
+	void rebuildScreens();
 
 	/** UI-specific event loop, to be called when UI is active (instead of the main event loop) */
 	bool handleEvent(sf::Window& window, sf::Event evt) override;

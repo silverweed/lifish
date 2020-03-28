@@ -1,13 +1,15 @@
 #pragma once
 
 #include "SaveDataBrowser.hpp"
-#include "Screen.hpp"
+#include "DynamicScreen.hpp"
 
 namespace lif {
 
 namespace ui {
 
-class LoadScreen : public lif::ui::Screen, public lif::SaveDataBrowser {
+class LoadScreen : public lif::ui::DynamicScreen, public lif::SaveDataBrowser {
+	void build() override;
+
 public:
 	static constexpr const char *SCREEN_NAME = "load";
 

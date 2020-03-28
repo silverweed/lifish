@@ -18,8 +18,12 @@ namespace lif {
 }
 
 LoadScreen::LoadScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
-	: lif::ui::Screen(window, sz)
+	: lif::ui::DynamicScreen(window, sz)
 {
+	build();
+}
+
+void LoadScreen::build() {
 	name = SCREEN_NAME;
 	parent = "home";
 	_loadBGSprite(lif::getAsset("graphics", "screenbg1.png"));
@@ -33,7 +37,7 @@ LoadScreen::LoadScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	 * [Back]
 	 */
 	const auto font = lif::getAsset("fonts", lif::fonts::SCREEN);
-	const auto win_bounds = sf::FloatRect(0, 0, sz.x, sz.y);
+	const auto win_bounds = sf::FloatRect(0, 0, size.x, size.y);
 	const auto size = 24;
 	const float ipadx = 25,
 	            ipady = 15;

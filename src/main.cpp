@@ -301,8 +301,7 @@ int main(int argc, char **argv) {
 				game.reset();
 			else if (lif::switchedLanguage) {
 				lif::switchedLanguage = false;
-				// FIXME: dynamic screens are not getting rebuilt
-				ui.rebuildStaticScreens();
+				ui.rebuildScreens();
 			}
 		}
 

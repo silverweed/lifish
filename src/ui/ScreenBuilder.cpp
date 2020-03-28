@@ -252,12 +252,7 @@ void ScreenBuilder::rebuild(lif::ui::Screen& screen) {
 	if (!screen.wasBuilt())
 		throw std::logic_error("screen passed to ScreenBuilder::rebuild was never built!");
 	const auto layout = screen.builtWithLayout;
-	screen.builtWithLayout = "";
-	screen.selected.first = "";
-	screen.selected.second = nullptr;
-	screen.nonInteractables.clear();
-	screen.transitions.clear();
-	screen.dynamicTexts.clear();
+	screen.clear();
 	build(screen, layout);
 }
 
@@ -267,7 +262,6 @@ void ScreenBuilder::build(lif::ui::Screen& screen, const std::string& layoutFile
 
 	// See assets/screens/README for the layout format
 	const auto absname = lif::getAsset("screens", layoutFileName);
-	std::cerr << "Loading screen " << absname << std::endl;
 	json screenJSON = json::parse(std::ifstream(absname.c_str()));
 
 	// top-level properties

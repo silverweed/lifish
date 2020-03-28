@@ -12,8 +12,12 @@ using lif::ui::SaveScreen;
 static const sf::Time CURSOR_BLINK_TIME = sf::seconds(1);
 
 SaveScreen::SaveScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
-	: lif::ui::Screen(window, sz)
+	: lif::ui::DynamicScreen(window, sz)
 {
+	build();
+}
+
+void SaveScreen::build() {
 	buffer.fill('\0');
 
 	name = SCREEN_NAME;
@@ -30,7 +34,7 @@ SaveScreen::SaveScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	 * [Back]
 	 */
 	const auto font = lif::getAsset("fonts", lif::fonts::SCREEN);
-	const auto win_bounds = sf::FloatRect(0, 0, sz.x, sz.y);
+	const auto win_bounds = sf::FloatRect(0, 0, size.x, size.y);
 	const auto size = 24;
 
 	auto text = new lif::ShadedText(font, lif::getLocalized("insert_save_file"));

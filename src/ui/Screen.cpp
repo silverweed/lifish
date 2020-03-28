@@ -213,3 +213,12 @@ void Screen::rebuild() {
 	lif::ui::ScreenBuilder builder;
 	builder.rebuild(*this);
 }
+
+void Screen::clear() {
+	builtWithLayout = "";
+	selected.first = "";
+	selected.second = nullptr;
+	nonInteractables.clear();
+	transitions.clear();
+	dynamicTexts.clear();
+}

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <array>
-#include "Screen.hpp"
+#include "DynamicScreen.hpp"
 
 namespace sf {
 
@@ -15,7 +15,7 @@ class ShadedText;
 
 namespace ui {
 
-class SaveScreen : public lif::ui::Screen {
+class SaveScreen : public lif::ui::DynamicScreen {
 public:
 	static constexpr int MAX_SAVE_FILE_NAME_LEN = 10;
 
@@ -33,6 +33,7 @@ private:
 
 	void _updateCursorPosition();
 
+	void build() override;
 public:
 	static constexpr const char *SCREEN_NAME = "save";
 

@@ -84,11 +84,15 @@ protected:
 	 */
 	void _triggerAction(lif::ui::Action action);
 
+	virtual void clear();
+
 public:
 	explicit Screen(const std::string& layoutFileName, const sf::RenderWindow& window, const sf::Vector2u& size);
 
 	bool wasBuilt() const { return builtWithLayout.length() > 0; }
 	const std::string& getBuildLayout() const { return builtWithLayout; }
+	virtual void rebuild();
+
 	void setParent(const std::string& name) { parent = name; }
 	const std::string& getParent() const { return parent; }
 	const std::string& getName() const { return name; }
@@ -118,8 +122,6 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void setOrigin(const sf::Vector2f& pos) override;
-
-	void rebuild();
 };
 
 }

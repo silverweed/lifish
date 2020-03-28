@@ -16,8 +16,12 @@ using namespace lif::controls;
 using namespace std::literals::string_literals;
 
 ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2u& size)
-	: lif::ui::Screen(window, size)
+	: lif::ui::DynamicScreen(window, size)
 {
+	build();
+}
+
+void ControlsScreen::build() {
 	name = SCREEN_NAME;
 	parent = "preferences";
 	_loadBGSprite(lif::getAsset("graphics", "screenbg1.png"));
