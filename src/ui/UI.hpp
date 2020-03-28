@@ -18,6 +18,7 @@ class Screen;
 /** High-level interface to UI. It's a singleton class */
 class UI final : public lif::WindowContext {
 	std::unordered_map<std::string, std::unique_ptr<lif::ui::Screen>> screens;
+	std::unordered_map<std::string, std::string> dynamicTexts;
 	lif::ui::Screen *curScreen = nullptr;
 	sf::Vector2u size;
 	bool quitGame = false;
@@ -75,6 +76,8 @@ public:
 		return static_cast<lif::ui::LoadScreen*>(curScreen)->getLoadedData();
 	}
 	std::string getSaveName() const { return saveName; }
+
+	void rebuildStaticScreens();
 
 	/** UI-specific event loop, to be called when UI is active (instead of the main event loop) */
 	bool handleEvent(sf::Window& window, sf::Event evt) override;

@@ -34,6 +34,7 @@
 #include "WinLoseHandler.hpp"
 #include "contexts.hpp"
 #include "game.hpp"
+#include "language.hpp"
 #include "preferences_persistence.hpp"
 #include "utils.hpp"
 #include <SFML/Window.hpp>
@@ -212,6 +213,10 @@ int main(int argc, char **argv) {
 	lif::fadeoutTextMgr = &fadeoutTextMgr;
 #endif
 
+	if (!lif::loadL10nStrings(lif::getAsset("l10n", lif::LOCALIZATION_STRINGS_FILE))) {
+		std::cerr << "[ ERROR ] Failed to load localization strings!\n";
+	}
+
 	// Must be done AFTER lif::init() but BEFORE the UI initializes!
 	lif::loadPreferences(lif::PREFERENCES_SAVE_FILE_NAME);
 
@@ -291,8 +296,14 @@ int main(int argc, char **argv) {
 		lif::joystick::JoystickManager::getInstance().update();
 		cur_context->handleEvents(window);
 
-		if (cur_context == &ui && ui.mustQuitGame())
-			game.reset();
+		if (cur_context == &ui) {
+			if (ui.mustQuitGame())
+				game.reset();
+			else if (lif::switchedLanguage) {
+				lif::switchedLanguage = false;
+				ui.rebuildStaticScreens();
+			}
+		}
 
 		// Check context switch
 		cur_context = checkContextSwitch(window, contexts, cur_context, game, args);

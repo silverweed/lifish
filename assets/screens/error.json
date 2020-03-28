@@ -34,7 +34,7 @@
 			},
 			{
 				"type": "text",
-				"string": "Selected LevelSet",
+				"string": "!selected_levelset",
 				"interactable": false
 			},
 			{
@@ -47,7 +47,7 @@
 			},
 			{
 				"type": "text",
-				"string": "does not exist or has bad format.",
+				"string": "!levelset_noexist",
 				"interactable": false
 			},
 			{

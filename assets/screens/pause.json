@@ -18,33 +18,49 @@
 		},
 		"elements": [
 			{
+				"type": "image",
+				"name": "lang_en",
+				"src": "uk.png",
+				"size": [30, 16],
+				"interactable": true,
+				"position": [5, 5]
+			},
+			{
+				"type": "image",
+				"name": "lang_it",
+				"src": "it.png",
+				"size": [30, 16],
+				"interactable": true,
+				"position": [40, 5]
+			},
+			{
 				"type": "text",
 				"name": "resume",
-				"string": "Resume",
+				"string": "!resume",
 				"interactable": true
 			},
 			{
 				"type": "text",
 				"name": "save",
-				"string": "Save Game",
+				"string": "!save_game",
 				"interactable": true
 			},
 			{
 				"type": "text",
 				"name": "preferences",
-				"string": "Preferences",
+				"string": "!preferences",
 				"interactable": true
 			},
 			{
 				"type": "text",
 				"name": "quit",
-				"string": "Quit to Menu",
+				"string": "!quit_to_menu",
 				"interactable": true
 			},
 			{
 				"type": "text",
 				"name": "exit",
-				"string": "Exit",
+				"string": "!exit_game",
 				"interactable": true,
 				"style-override": {
 					"spacing": 45

@@ -1,5 +1,6 @@
 #include "LoadScreen.hpp"
 #include "ShadedText.hpp"
+#include "language.hpp"
 #include "Drawable.hpp"
 #include "Interactable.hpp"
 #include "game.hpp"
@@ -37,13 +38,13 @@ LoadScreen::LoadScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	const float ipadx = 25,
 	            ipady = 15;
 
-	auto text = new lif::ShadedText(font, "LOAD GAME", sf::Vector2f(ipadx, ipady));
+	auto text = new lif::ShadedText(font, lif::getLocalized("load_game"), sf::Vector2f(ipadx, ipady));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(size);
 	nonInteractables.emplace_back(text);
 
 	// Back
-	text = new lif::ShadedText(font, "Back", sf::Vector2f(ipadx, ipady));
+	text = new lif::ShadedText(font, lif::getLocalized("back"), sf::Vector2f(ipadx, ipady));
 	text->setCharacterSize(size);
 	auto bounds = text->getGlobalBounds();
 	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 3 * bounds.height));
@@ -79,7 +80,7 @@ void LoadScreen::onLoad() {
 
 	auto saves = browseSaveData(lif::getSaveDir());
 	if (saves.size() == 0) {
-		auto text = new lif::ShadedText(font, "No save data", pos);
+		auto text = new lif::ShadedText(font, lif::getLocalized("no_save_data"), pos);
 		text->setCharacterSize(size);
 		text->setShadowSpacing(2, 2);
 		text->setStyle(sf::Text::Italic);

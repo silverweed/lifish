@@ -8,6 +8,7 @@
 #include "game.hpp"
 #include "preferences_persistence.hpp"
 #include "utils.hpp"
+#include "language.hpp"
 #include <iostream>
 #include <memory>
 
@@ -44,7 +45,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 		    ipady = 15;
 	const float rowSize = 32;
 
-	auto text = new lif::ShadedText(font, "Music:", sf::Vector2f(ipadx, ipady));
+	auto text = new lif::ShadedText(font, lif::getLocalized("music") + ":", sf::Vector2f(ipadx, ipady));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(size);
 	nonInteractables.emplace_back(text);
@@ -87,7 +88,7 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 
 	// FX Volume
 	++nRow;
-	text = new lif::ShadedText(font, "FX:", sf::Vector2f(ipadx, ipady + nRow * rowSize));
+	text = new lif::ShadedText(font, lif::getLocalized("fx") + ":", sf::Vector2f(ipadx, ipady + nRow * rowSize));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(size);
 	nonInteractables.emplace_back(text);
@@ -129,15 +130,15 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	text->setCharacterSize(size); \
 	interactables[_name] = std::make_unique<Interactable>(text)
 
-	SIMPLE_ROW("Players: ", "n_players", lif::to_string(lif::options.nPlayers));
-	SIMPLE_ROW("Fullscreen", "fullscreen", _getFullscreenText());
-	SIMPLE_ROW("Fllscr.Res.", "fullscreen_res", _getFullscreenResText());
-	SIMPLE_ROW("Show FPS", "show_fps", "");
+	SIMPLE_ROW(lif::getLocalized("players") + ": ", "n_players", lif::to_string(lif::options.nPlayers));
+	SIMPLE_ROW(lif::getLocalized("fullscreen"), "fullscreen", _getFullscreenText());
+	SIMPLE_ROW(lif::getLocalized("fullscreen_res"), "fullscreen_res", _getFullscreenResText());
+	SIMPLE_ROW(lif::getLocalized("show_fps"), "show_fps", "");
 	SIMPLE_ROW("Vsync", "vsync", "");
 
 	// Controls
 	++nRow;
-	text = new lif::ShadedText(font, "Controls", sf::Vector2f(ipadx, 2 * ipady + nRow * rowSize));
+	text = new lif::ShadedText(font, lif::getLocalized("controls"), sf::Vector2f(ipadx, 2 * ipady + nRow * rowSize));
 	text->setCharacterSize(size);
 	interactables["controls"] = std::make_unique<Interactable>(text);
 
@@ -149,14 +150,14 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	interactables["ok"] = std::make_unique<Interactable>(text);
 
 	// Back
-	text = new lif::ShadedText(font, "Cancel", pos);
+	text = new lif::ShadedText(font, lif::getLocalized("cancel"), pos);
 	text->setCharacterSize(size);
 	bounds = text->getGlobalBounds();
 	text->setPosition(sf::Vector2f(lif::center(bounds, winBounds).x + 100, winBounds.height - 3 * bounds.height));
 	interactables["back"] = std::make_unique<Interactable>(text);
 
 	// Confirm resolution
-	confirmResText = new lif::ShadedText(font, "Is this ok?", pos);
+	confirmResText = new lif::ShadedText(font, lif::getLocalized("is_this_ok?"), pos);
 	confirmResText->setCharacterSize(size);
 	bounds = confirmResText->getGlobalBounds();
 	confirmResText->setPosition(sf::Vector2f(lif::center(bounds, winBounds).x, 280));
@@ -168,14 +169,14 @@ PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::V
 	confirmResTimeText->setPosition(pos + sf::Vector2f(bounds.width + 25, 0));
 	confirmResTimeText->setShadowSpacing(2, 2);
 
-	confirmResYes = new lif::ShadedText(font, "YES", pos);
+	confirmResYes = new lif::ShadedText(font, lif::getLocalized("yes"), pos);
 	confirmResYes->setCharacterSize(size);
 	bounds = confirmResYes->getGlobalBounds();
 	confirmResYes->setPosition(sf::Vector2f(
 		lif::center(bounds, winBounds).x - bounds.width, pos.y + bounds.height + 15));
 
 	pos = confirmResYes->getPosition();
-	confirmResNo = new lif::ShadedText(font, "NO", pos);
+	confirmResNo = new lif::ShadedText(font, lif::getLocalized("no"), pos);
 	confirmResNo->setCharacterSize(size);
 	confirmResNo->setPosition(sf::Vector2f(pos.x + bounds.width + 50, pos.y));
 
@@ -201,8 +202,10 @@ void PreferencesScreen::onLoad() {
 	interactables["fullscreen"]->getText()->setString(_getFullscreenText());
 	interactables["fullscreen_res"]->getText()->setString(_getFullscreenResText());
 	interactables["n_players"]->getText()->setString(lif::to_string(lif::options.nPlayers));
-	interactables["show_fps"]->getText()->setString(lif::options.showFPS ? "YES" : "NO");
-	interactables["vsync"]->getText()->setString(lif::options.vsync ? "YES" : "NO");
+	interactables["show_fps"]->getText()->setString(lif::options.showFPS
+			? lif::getLocalized("yes") : lif::getLocalized("no"));
+	interactables["vsync"]->getText()->setString(lif::options.vsync
+			? lif::getLocalized("yes") : lif::getLocalized("no"));
 }
 
 void PreferencesScreen::_adjustPreferences() {
@@ -255,12 +258,14 @@ void PreferencesScreen::_setupCallbacks() {
 	};
 	callbacks["show_fps"] = [this] () {
 		lif::options.showFPS = !lif::options.showFPS;
-		interactables["show_fps"]->getText()->setString(lif::options.showFPS ? "YES" : "NO");
+		interactables["show_fps"]->getText()->setString(lif::options.showFPS
+				? lif::getLocalized("yes") : lif::getLocalized("no"));
 		return Action::DO_NOTHING;
 	};
 	callbacks["vsync"] = [this] () {
 		lif::options.vsync = !lif::options.vsync;
-		interactables["vsync"]->getText()->setString(lif::options.vsync ? "YES" : "NO");
+		interactables["vsync"]->getText()->setString(lif::options.vsync
+				? lif::getLocalized("yes") : lif::getLocalized("no"));
 		return Action::DO_NOTHING;
 	};
 	callbacks["ok"] = [this] () {

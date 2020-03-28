@@ -209,8 +209,10 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 
 		case sf::Keyboard::N:
 			game.lm.getEntities().apply([] (lif::Entity& e) {
-				auto en = dynamic_cast<lif::Enemy*>(&e);
-				if (en) en->get<lif::Killable>()->kill();
+				if (auto en = dynamic_cast<lif::Enemy*>(&e))
+					en->get<lif::Killable>()->kill();
+				else if (auto boss = dynamic_cast<lif::Boss*>(&e))
+					boss->get<lif::Killable>()->kill();
 			});
 			return true;
 

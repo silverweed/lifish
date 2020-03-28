@@ -1,4 +1,5 @@
 #include "ControlsScreen.hpp"
+#include "language.hpp"
 #include "Interactable.hpp"
 #include "Options.hpp"
 #include "controls.hpp"
@@ -57,7 +58,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	float y = bounds.top + 3 * bounds.height,
 	      x = 180;
 	const auto small_size = 20;
-	text = new lif::ShadedText(font, "UP: ", sf::Vector2f(ipadx, y));
+	text = new lif::ShadedText(font, lif::getLocalized("up") + ": ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
 	nonInteractables.emplace_back(text);
 
@@ -69,7 +70,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	interactables["change_up"] = std::make_unique<Interactable>(text);
 
 	y += 2 * bounds.height;
-	text = new lif::ShadedText(font, "DOWN: ", sf::Vector2f(ipadx, y));
+	text = new lif::ShadedText(font, lif::getLocalized("down") + ": ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
 	nonInteractables.emplace_back(text);
 
@@ -80,7 +81,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	interactables["change_down"] = std::make_unique<Interactable>(text);
 
 	y += 2 * bounds.height;
-	text = new lif::ShadedText(font, "LEFT: ", sf::Vector2f(ipadx, y));
+	text = new lif::ShadedText(font, lif::getLocalized("left") + ": ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
 	nonInteractables.emplace_back(text);
 
@@ -91,7 +92,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	interactables["change_left"] = std::make_unique<Interactable>(text);
 
 	y += 2 * bounds.height;
-	text = new lif::ShadedText(font, "RIGHT: ", sf::Vector2f(ipadx, y));
+	text = new lif::ShadedText(font, lif::getLocalized("right") + ": ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
 	nonInteractables.emplace_back(text);
 
@@ -102,7 +103,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	interactables["change_right"] = std::make_unique<Interactable>(text);
 
 	y += 2 * bounds.height;
-	text = new lif::ShadedText(font, "BOMB: ", sf::Vector2f(ipadx, y));
+	text = new lif::ShadedText(font, lif::getLocalized("bomb") + ": ", sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
 	nonInteractables.emplace_back(text);
 
@@ -113,7 +114,7 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	interactables["change_bomb"] = std::make_unique<Interactable>(text);
 
 	y += 2 * bounds.height;
-	text = new lif::ShadedText(font, "PAUSE: ", sf::Vector2f(ipadx, y));
+	text = new lif::ShadedText(font, lif::getLocalized("pause") + ": ", sf::Vector2f(ipadx, y));
 	text->setShadowSpacing(1, 1);
 	text->setCharacterSize(small_size);
 	nonInteractables.emplace_back(text);
@@ -124,16 +125,16 @@ ControlsScreen::ControlsScreen(const sf::RenderWindow& window, const sf::Vector2
 	nonInteractables.emplace_back(text);
 
 	y += 3 * bounds.height;
-	text = new lif::ShadedText(font, "Use Joystick?", sf::Vector2f(ipadx, y));
+	text = new lif::ShadedText(font, lif::getLocalized("use_joystick?"), sf::Vector2f(ipadx, y));
 	text->setCharacterSize(small_size);
 	nonInteractables.emplace_back(text);
 
 	bounds = text->getGlobalBounds();
-	text = new lif::ShadedText(font, "NO", sf::Vector2f(bounds.left + bounds.width + 20, y));
+	text = new lif::ShadedText(font, lif::getLocalized("no"), sf::Vector2f(bounds.left + bounds.width + 20, y));
 	text->setCharacterSize(small_size);
 	interactables["joystick_toggle"] = std::make_unique<Interactable>(text);
 
-	text = new lif::ShadedText(font, "OK", sf::Vector2f(0, 0));
+	text = new lif::ShadedText(font, lif::getLocalized("ok"), sf::Vector2f(0, 0));
 	text->setCharacterSize(fontSize);
 	bounds = text->getGlobalBounds();
 	sf::FloatRect win_bounds(0, 0, size.x, size.y);

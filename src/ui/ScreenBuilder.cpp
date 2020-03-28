@@ -1,9 +1,11 @@
 #include "ScreenBuilder.hpp"
 #include "GameCache.hpp"
+#include <locale>
 #include "Interactable.hpp"
 #include "Screen.hpp"
 #include "ScreenStyle.hpp"
 #include "game.hpp"
+#include "language.hpp"
 #include "utils.hpp"
 #include <algorithm>
 #include <exception>
@@ -49,10 +51,17 @@ static void addStyleProperty(lif::ui::ScreenStyle& style, const std::string& key
 		std::cerr << "Invalid style property: " << key << std::endl;
 }
 
-std::string ScreenBuilder::_maybeInsertDynamicText(const std::string& s,
+sf::String ScreenBuilder::_maybeInsertDynamicText(const std::string& s,
 		lif::ui::Screen& screen, lif::ShadedText *text)
 {
 	const auto len = s.length();
+
+	if (len > 0 && s[0] == '!') {
+		// FIXME: handle non-ASCII text
+		// Localized string
+		return lif::getLocalized(s.substr(1));
+	}
+
 	if (len > 4 && s[0] == '{' && s[1] == '{' && s[len - 1] == '}' && s[len - 2] == '}') {
 		assert(text != nullptr);
 		const auto name = s.substr(2, len - 4);
@@ -239,6 +248,17 @@ void ScreenBuilder::_calcTransitions(lif::ui::Screen& screen) {
 	}
 }
 
+void ScreenBuilder::rebuild(lif::ui::Screen& screen) {
+	if (!screen.wasBuilt())
+		throw std::logic_error("screen passed to ScreenBuilder::rebuild was never built!");
+	const auto layout = screen.builtWithLayout;
+	screen.builtWithLayout = "";
+	screen.nonInteractables.clear();
+	screen.transitions.clear();
+	screen.dynamicTexts.clear();
+	build(screen, layout);
+}
+
 void ScreenBuilder::build(lif::ui::Screen& screen, const std::string& layoutFileName) {
 	if (screen.wasBuilt())
 		throw std::logic_error("screen passed to ScreenBuilder has already been built!");
@@ -278,7 +298,7 @@ void ScreenBuilder::build(lif::ui::Screen& screen, const std::string& layoutFile
 	// load bg sprite
 	screen._loadBGSprite(bgSpritePath);
 
-	screen.built = true;
+	screen.builtWithLayout = layoutFileName;
 
 	//std::cerr << "Screen loaded. Has " << screen.texts.size() << " texts, " << screen.images.size()
 		//<< " images and " << screen.nonInteractables.size() << " non-interactables." << std::endl;

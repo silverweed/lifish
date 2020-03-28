@@ -54,8 +54,11 @@ Are objects (indexed with their name), with those properties:
 	// valid for all elements
 	* "spacing": int,
 	* "h-align": string,	// left, right or center (default) - valid for the current row
-	
+
 	// only valid for texts
-	* "font": string,		
+	* "font": string,
 	* "character-size": uint,
 }
+
+## Localization
+If a string in "string" starts with '!', it will be used as a key for localized strings.

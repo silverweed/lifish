@@ -17,45 +17,29 @@
 		},
 		"elements": [
 			{
-				"type": "text",
-				"string": "Lifish - (c) 2018 Giacomo Parolini"
+				"type": "image",
+				"name": "lang_en",
+				"src": "uk.png",
+				"size": [30, 16],
+				"interactable": true,
+				"position": [5, 5]
+			},
+			{
+				"type": "image",
+				"name": "lang_it",
+				"src": "it.png",
+				"size": [30, 16],
+				"interactable": true,
+				"position": [40, 5]
 			},
 			{
 				"type": "text",
-				"string": "Lifish is free software, licensed under"
-			},
-			{
-				"type": "text",
-				"string": "the Lifish License"
-			},
-			{
-				"type": "text",
-				"string": "(silverweed.github.io/lifish-license.txt)"
-			},
-			{
-				"type": "text",
-				"string": "This game uses the Lifish engine to create"
-			},
-			{
-				"type": "text",
-				"string": "a clone of \"BOOM\" by Federico Filipponi."
-			},
-			{
-				"type": "text",
-				"string": "Created by Giacomo Parolini, aka silverweed."
-			},
-			{
-				"type": "text",
-				"string": "Contact: silverweed1991@gmail.com"
-			},
-			{
-				"type": "text",
-				"string": "Code: github.com/silverweed/lifish"
+				"string": "Lifish - (c) 2018 Giacomo Parolini\nLifish is free software, licensed under\nthe Lifish License\n(silverweed.github.io/lifish-license.txt)\nThis game uses the Lifish engine to create\na clone of \"BOOM\" by Federico Filipponi.\nCreated by Giacomo Parolini, aka silverweed.\n\nContact: silverweed1991@gmail.com\nCode: github.com/silverweed/lifish\n"
 			},
 			{
 				"type": "text",
 				"name": "back",
-				"string": "Back",
+				"string": "!back",
 				"interactable": true,
 				"style-override": {
 					"character-size": 20,

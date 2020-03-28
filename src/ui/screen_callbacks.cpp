@@ -1,4 +1,6 @@
 #include "screen_callbacks.hpp"
+#include "preferences_persistence.hpp"
+#include "language.hpp"
 
 using ScreenCallback = lif::ui::Screen::Callback;
 using lif::ui::Action;
@@ -16,6 +18,13 @@ static ScreenCallback cb_switchTo(const std::string& screen) {
 		return Action::SWITCH_SCREEN_OVERRIDE_PARENT;
 	};
 }
+static ScreenCallback cb_lang(lif::Language lang) {
+	return [lang] () {
+		lif::switchLanguage(lang);
+		lif::savePreferences(lif::PREFERENCES_SAVE_FILE_NAME);
+		return Action::DO_NOTHING;
+	};
+}
 
 std::unordered_map<std::string, ScreenCallback> lif::ui::screenCallbacks = {
 	{ "exit",        cb_exit },
@@ -28,5 +37,7 @@ std::unordered_map<std::string, ScreenCallback> lif::ui::screenCallbacks = {
 	{ "quit",        cb_quit },
 	{ "preferences", cb_switchTo("preferences") },
 	{ "controls",    cb_switchTo("controls") },
-	{ "resume",      cb_resume }
+	{ "resume",      cb_resume },
+	{ "lang_en",     cb_lang(lif::Language::ENGLISH) },
+	{ "lang_it",     cb_lang(lif::Language::ITALIAN) }
 };

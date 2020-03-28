@@ -33,6 +33,7 @@ private:
 	float itrScale = 0;
 	sf::Clock itrScaleClock;
 	bool itrScaleMid = false;
+	// Note: these texts are owned by either `interactables` or `nonInteractables`
 	std::unordered_map<std::string, lif::ShadedText*> dynamicTexts;
 
 	void _saveMousePos(int x, int y);
@@ -53,8 +54,7 @@ protected:
 	/** The background tile */
 	sf::Sprite bgSprite;
 
-	/** Whether this Screen was already built or not */
-	bool built = false;
+	std::string builtWithLayout = "";
 	/** If true, the elements' selection is being done via joystick, else via mouse */
 	bool usingJoystick = false;
 
@@ -87,7 +87,8 @@ protected:
 public:
 	explicit Screen(const std::string& layoutFileName, const sf::RenderWindow& window, const sf::Vector2u& size);
 
-	bool wasBuilt() const { return built; }
+	bool wasBuilt() const { return builtWithLayout.length() > 0; }
+	const std::string& getBuildLayout() const { return builtWithLayout; }
 	void setParent(const std::string& name) { parent = name; }
 	const std::string& getParent() const { return parent; }
 	const std::string& getName() const { return name; }
@@ -117,6 +118,8 @@ public:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void setOrigin(const sf::Vector2f& pos) override;
+
+	void rebuild();
 };
 
 }

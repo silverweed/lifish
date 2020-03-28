@@ -3,6 +3,7 @@
 #include "Interactable.hpp"
 #include "ShadedText.hpp"
 #include "game.hpp"
+#include "language.hpp"
 #include "input_utils.hpp"
 #include "utils.hpp"
 
@@ -32,7 +33,7 @@ SaveScreen::SaveScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	const auto win_bounds = sf::FloatRect(0, 0, sz.x, sz.y);
 	const auto size = 24;
 
-	auto text = new lif::ShadedText(font, "Insert save file name");
+	auto text = new lif::ShadedText(font, lif::getLocalized("insert_save_file"));
 	text->setShadowSpacing(2, 2);
 	text->setCharacterSize(size);
 	text->setPosition(lif::center(text->getGlobalBounds(), win_bounds) - sf::Vector2f(0, 50));
@@ -65,7 +66,7 @@ SaveScreen::SaveScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	nonInteractables.emplace_back(cursor);
 
 	// Confirm
-	text = new lif::ShadedText(font, "Save");
+	text = new lif::ShadedText(font, lif::getLocalized("do_save"));
 	text->setCharacterSize(size);
 	bounds = text->getGlobalBounds();
 	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 6 * bounds.height));
@@ -78,7 +79,7 @@ SaveScreen::SaveScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	};
 
 	// Back
-	text = new lif::ShadedText(font, "Back");
+	text = new lif::ShadedText(font, lif::getLocalized("back"));
 	text->setCharacterSize(size);
 	bounds = text->getGlobalBounds();
 	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 3 * bounds.height));
@@ -128,7 +129,7 @@ bool SaveScreen::handleEvent(sf::Window& win, sf::Event event) {
 		if (bufIdx > 0)
 			_triggerAction(lif::ui::Action::SAVE_GAME);
 		else
-			errText->setString("Invalid file name");
+			errText->setString(lif::getLocalized("invalid_file_name"));
 		return true;
 	default:
 		break;

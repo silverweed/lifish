@@ -1,5 +1,6 @@
 #include "preferences_persistence.hpp"
 #include "Options.hpp"
+#include "language.hpp"
 #include "controls.hpp"
 #include "game.hpp"
 #include "json.hpp"
@@ -36,6 +37,7 @@ void lif::savePreferences(const char *fname) {
 	out["videoMode"] = lif::options.videoMode;
 	out["showFPS"] = lif::options.showFPS;
 	out["vsync"] = lif::options.vsync;
+	out["lang"] = lif::strFromLang(lif::curLang);
 
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		out["controls"][i] = {
@@ -73,6 +75,7 @@ void lif::loadPreferences(const char *fname) {
 		lif::options.videoMode = in["videoMode"];
 		lif::options.showFPS = in["showFPS"];
 		lif::options.vsync = in["vsync"];
+		lif::curLang = lif::langFromStr(in["lang"]);
 
 		for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 			const auto& ctrls = in["controls"][i];

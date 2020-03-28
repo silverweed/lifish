@@ -34,7 +34,7 @@ class ScreenBuilder final : private sf::NonCopyable {
 	void _addImage(lif::ui::Screen& screen, const nlohmann::json& screenJSON);
 	void _fixAlign(lif::ui::Screen& screen);
 	void _calcTransitions(lif::ui::Screen& screen);
-	std::string _maybeInsertDynamicText(const std::string& s, lif::ui::Screen& screen, lif::ShadedText *text);
+	sf::String _maybeInsertDynamicText(const std::string& s, lif::ui::Screen& screen, lif::ShadedText *text);
 
 public:
 	explicit ScreenBuilder() {}
@@ -43,6 +43,7 @@ public:
 	 *  Throws is `screen` was already built.
 	 */
 	void build(lif::ui::Screen& screen, const std::string& layoutFileName);
+	void rebuild(lif::ui::Screen& screen);
 };
 
 }

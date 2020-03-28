@@ -208,3 +208,8 @@ void Screen::updateDynamicText(const std::string& name, const std::string& value
 		it->second->setString(value);
 	}
 }
+
+void Screen::rebuild() {
+	lif::ui::ScreenBuilder builder;
+	builder.rebuild(*this);
+}

@@ -31,39 +31,7 @@
 			},
 			{
 				"type": "text",
-				"string": "You reached the last of the alien infested zones"
-			},
-			{
-				"type": "text",
-				"string": "and defeated the Big Alien Boss himself."
-			},
-			{
-				"type": "text",
-				"string": "Not exactly like eating a piece of cake, eh?"
-			},
-			{
-				"type": "text",
-				"string": "Well, now the Earth is safe, you are a hero,"
-			},
-			{
-				"type": "text",
-				"string": "interviews, autographs and all the rest."
-			},
-			{
-				"type": "text",
-				"string": ""
-			},
-			{
-				"type": "text",
-				"string": "But, wait a minute?"
-			},
-			{
-				"type": "text",
-				"string": "What is that strange thing in the sky?"
-			},
-			{
-				"type": "text",
-				"string": "OH NO! NOT AGAIN!!"
+				"string": "!win_text"
 			},
 			{
 				"type": "text",
