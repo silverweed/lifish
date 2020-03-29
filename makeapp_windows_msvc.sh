@@ -27,7 +27,7 @@ fi
 }
 
 mkdir "$DIR"/{assets,saves}
-cp -r assets/{fonts,graphics,music,screens,sounds} "$DIR/assets"
+cp -r assets/{fonts,graphics,l10n,music,screens,sounds} "$DIR/assets"
 cp levels.json "$DIR"
 cp Release/lifish.exe "$DIR"
 

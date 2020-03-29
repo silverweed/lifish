@@ -12,7 +12,7 @@ OUT_ZIP="lifish_BOOM_${1}_osx.zip"
 APPNAME="BOOM Remake"
 MACOS=(lifish)
 RESOURCES=(levels.json)
-ASSETS=(assets/fonts assets/graphics assets/sounds assets/screens assets/music)
+ASSETS=(assets/fonts assets/graphics assets/sounds assets/screens assets/music assets/l10n)
 FRAMEWORK_PATH=/Library/Frameworks
 FRAMEWORKS=({FLAC,ogg,freetype,OpenAL,vorbis{,enc,file}}.framework)
 # Ugh...
