@@ -6,7 +6,7 @@
 ## ABOUT ##
 Lifish is a work-in-progress arcade old-style game inspired by Factor Software's BOOM. 
 
-The Lifish engine was used to create [BOOM Remake](https://silverweed.github.io/boom), a faithful remake of the original BOOM game.
+The Lifish engine was used to create [BOOM Remake](https://silverweed.github.io/boom), a faithful remake of the original BOOM game. The code used for BOOM Remake is under the `boom` branch.
 
 Lifish comes with a (Work In Progress) level editor, currently working only on Linux and MacOS: [LifishEdit](https://github.com/silverweed/lifish-edit). This also works for the BOOM Remake mod.
 
