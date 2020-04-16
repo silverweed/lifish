@@ -11,13 +11,13 @@ The Lifish engine was used to create [BOOM Remake](https://silverweed.github.io/
 Lifish comes with a (Work In Progress) level editor, currently working only on Linux and MacOS: [LifishEdit](https://github.com/silverweed/lifish-edit). This also works for the BOOM Remake mod.
 
 ### Main game planned release ###
-Once the main work is done, Lifish will be released for the current platforms:
+Lifish is currently on hiatus and I'm not sure if I'll ever finish it. However BOOM Remake is completed, so you can play it instead. These are the OS you can play it on:
 
 * Windows 64 bit (probably >= Vista)
 * Linux (somewhat recent versions of `libc` and `libstdc++` are needed; to be precise,
   your distro must support `GLIBC_2.17` and `GLIBCXX_3.4.20`.)
 * OS X
-* Probably FreeBSD
+* Probably BSD, but you'll have to compile it yourself.
 
 See later for instructions on how to build the game from the sources.
 
@@ -46,12 +46,9 @@ If launched from the command line, `lifish` accepts a bunch of parameters (see `
 It also accepts an optional argument which is the path of the level JSON to use (default: `lifish.json`).
 
 ### Note about assets ###
-The graphics and sounds you'll find in `assets` are placeholder. No graphic asset is even close to being final, and the final
-assets won't be uploaded on this repo, as they'll be available for purchase in the official release.
+The graphics and sounds you'll find in `assets` are placeholder. No graphic asset is even close to being final.
 
 ## LICENSE ##
-Copyright (c) Giacomo Parolini, 2018
-
 See the LICENSE file for licensing information.
 
 ### Other ###
