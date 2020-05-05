@@ -29,6 +29,7 @@ fi
 mkdir "$DIR"/{assets,saves}
 cp -r assets/{fonts,graphics,l10n,music,screens,sounds} "$DIR/assets"
 cp levels.json "$DIR"
+cp windows/libs/openal32.dll "$DIR"
 cp Release/lifish.exe "$DIR"
 
 pushd "$DIR"
