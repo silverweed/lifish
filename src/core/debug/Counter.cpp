@@ -1,5 +1,6 @@
 #include "Counter.hpp"
 #include <exception>
+#include <stdexcept>
 
 using lif::debug::Counter;
 
