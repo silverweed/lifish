@@ -1,5 +1,6 @@
 #include "TimeStats.hpp"
 #include <exception>
+#include <stdexcept>
 
 using lif::debug::TimeStats;
 
