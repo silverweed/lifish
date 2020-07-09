@@ -4,6 +4,7 @@
 #include <exception>
 #include <fstream>
 #include <iostream>
+#include <cstdlib>
 
 using json = nlohmann::json;
 using lif::LevelSet;
@@ -15,7 +16,12 @@ static constexpr const char* AVAIL_METADATA[] = {
 };
 
 LevelSet::LevelSet(const std::string& path) {
-	loadFromFile(path);
+	try {
+		loadFromFile(path);
+	} catch (const std::exception& e) {
+		std::cerr << "[ FATAL ] Failed to parse levelset: " << e.what() << "\n";
+		std::exit(1);
+	}
 }
 
 bool LevelSet::loadFromFile(const std::string& path) {
