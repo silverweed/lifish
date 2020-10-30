@@ -112,7 +112,7 @@
 		"it": "Sch.Intero"
 	},
 	"fullscreen_res": {
-		"en": "Fllscr.Res",
+		"en": "Fllscr.Res.",
 		"it": "Risoluzione"
 	},
 	"up": {
@@ -158,5 +158,9 @@
 	"time_bonus": {
 		"en": "TIME BONUS!",
 		"it": "BONUS TEMPO!"
+	},
+	"framerate_limit": {
+		"en": "Framert.Lim.",
+		"it": "Lim.Framert."
 	}
 }

@@ -16,6 +16,9 @@ using lif::ui::PreferencesScreen;
 using lif::ui::Interactable;
 using Action = lif::ui::Action;
 
+static constexpr std::array<int, 5> FRAMERATE_LIMITS = { 60, 120, 144, 240, 0 };
+static unsigned curFramerateIdx;
+
 PreferencesScreen::PreferencesScreen(const sf::RenderWindow& window, const sf::Vector2u& sz)
 	: lif::ui::DynamicScreen(window, sz)
 {
@@ -38,6 +41,7 @@ void PreferencesScreen::build() {
 	 * Resolution: res
 	 * Show FPS: yes/no
 	 * VSync: yes/no
+	 * FramerateLimit: num
 	 * GameTimer: yes/no
 	 * Controls
 	 *
@@ -140,6 +144,7 @@ void PreferencesScreen::build() {
 	SIMPLE_ROW(lif::getLocalized("fullscreen_res"), "fullscreen_res", _getFullscreenResText());
 	SIMPLE_ROW(lif::getLocalized("show_fps"), "show_fps", "");
 	SIMPLE_ROW("Vsync", "vsync", "");
+	SIMPLE_ROW(lif::getLocalized("framerate_limit"), "framerate_limit", lif::to_string(lif::options.framerateLimit));
 	SIMPLE_ROW(lif::getLocalized("show_game_timer"), "show_game_timer", "");
 
 	// Controls
@@ -280,6 +285,15 @@ void PreferencesScreen::_setupCallbacks() {
 		lif::options.vsync = !lif::options.vsync;
 		interactables["vsync"]->getText()->setString(lif::options.vsync
 				? lif::getLocalized("yes") : lif::getLocalized("no"));
+		return Action::DO_NOTHING;
+	};
+	callbacks["framerate_limit"] = [this] () {
+		curFramerateIdx = (curFramerateIdx + 1) % FRAMERATE_LIMITS.size();
+		lif::options.framerateLimit = FRAMERATE_LIMITS[curFramerateIdx];
+		const auto str =
+			lif::options.framerateLimit > 0
+				? lif::to_string(lif::options.framerateLimit) : "Unlimited";
+		interactables["framerate_limit"]->getText()->setString(str);
 		return Action::DO_NOTHING;
 	};
 	callbacks["ok"] = [this] () {

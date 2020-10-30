@@ -38,6 +38,7 @@ void lif::savePreferences(const char *fname) {
 	out["showFPS"] = lif::options.showFPS;
 	out["showGameTimer"] = lif::options.showGameTimer;
 	out["vsync"] = lif::options.vsync;
+	out["fpsLimit"] = lif::options.framerateLimit;
 	out["lang"] = lif::strFromLang(lif::curLang);
 
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
@@ -77,6 +78,7 @@ void lif::loadPreferences(const char *fname) {
 		lif::options.showFPS = in["showFPS"];
 		lif::options.showGameTimer = in["showGameTimer"];
 		lif::options.vsync = in["vsync"];
+		lif::options.framerateLimit = in["fpsLimit"];
 		lif::curLang = lif::langFromStr(in["lang"]);
 
 		for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {

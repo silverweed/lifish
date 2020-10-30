@@ -57,7 +57,7 @@ struct MainArgs {
 	std::string levelsetName;
 	bool muteSounds = false;
 	bool muteMusic = false;
-	int fps = 60;
+	int fps = -1;
 #ifndef RELEASE
 	bool startFromHome = false;
 #endif
@@ -230,7 +230,8 @@ int main(int argc, char **argv) {
 	// Create the game window
 	lif::options.windowSize = sf::Vector2u(lif::WINDOW_WIDTH, lif::WINDOW_HEIGHT);
 	lif::options.vsync = true;
-	lif::options.framerateLimit = args.fps;
+	if (args.fps >= 0)
+		lif::options.framerateLimit = args.fps;
 
 	sf::RenderWindow window;
 	createRenderWindow(window);
@@ -358,11 +359,10 @@ int main(int argc, char **argv) {
 			createRenderWindow(window);
 		}
 
-		// Handle vsync change
-		if (wasVSync != lif::options.vsync) {
-			window.setFramerateLimit(lif::options.vsync ? lif::options.framerateLimit : 0);
+		if (wasVSync != lif::options.vsync)
 			window.setVerticalSyncEnabled(lif::options.vsync);
-		}
+
+		window.setFramerateLimit(lif::options.framerateLimit);
 
 		wasWindowFullscreen = lif::options.fullscreen;
 		wasVSync = lif::options.vsync;
