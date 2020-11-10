@@ -43,7 +43,7 @@ generate a VS makefile.
 
 ### Command line parameters ###
 If launched from the command line, `lifish` accepts a bunch of parameters (see `lifish -h` for details).
-It also accepts an optional argument which is the path of the level JSON to use (default: `lifish.json`).
+It also accepts an optional argument which is the path of the level JSON to use (default: `levels.json`).
 
 ### Note about assets ###
 The graphics and sounds you'll find in `assets` are placeholder. No graphic asset is even close to being final.
