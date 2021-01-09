@@ -162,5 +162,9 @@
 	"framerate_limit": {
 		"en": "Framert.Lim.",
 		"it": "Lim.Framert."
+	},
+	"high_scores": {
+		"en": "High Scores",
+		"it": "Puinteggi Alti"
 	}
 }

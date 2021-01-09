@@ -3,10 +3,16 @@
 #include "collision_layers.hpp"
 #include "conf/player.hpp"
 #include "controls.hpp"
+#include "HighScoreManager.hpp"
 #include <array>
 #include <cstring>
 #include <sstream>
 #include <string>
+
+lif::HighScoreManager& lif::getHighScoreManager() {
+	static lif::HighScoreManager highScoreMgr;
+	return highScoreMgr;
+}
 
 bool lif::init() {
 	if (!lif::initCore()) return false;
@@ -20,6 +26,8 @@ bool lif::init() {
 
 	// Setup collision layers
 	lif::c_layers::init();
+
+	lif::getHighScoreManager().loadHighScores();
 
 	return true;
 }

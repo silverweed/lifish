@@ -1,5 +1,6 @@
 #include "InterlevelContext.hpp"
 #include "language.hpp"
+#include "HighScoreManager.hpp"
 #include "BaseEventHandler.hpp"
 #include "GameCache.hpp"
 #include "JoystickManager.hpp"
@@ -110,9 +111,16 @@ void InterlevelContext::_setPromptContinue() {
 		_setGettingReady();
 		return;
 	}
-	state = State::PROMPT_CONTINUE;
+
 	time = sf::Time::Zero;
-	_preparePromptContinue(idx);
+
+	if (lif::getHighScoreManager().isHighScore(lm.getScore(idx + 1))) {
+		state = State::PROMPT_HIGHSCORE;
+		_preparePromptHighScore(idx);
+	} else {
+		state = State::PROMPT_CONTINUE;
+		_preparePromptContinue(idx);
+	}
 }
 
 void InterlevelContext::_preparePromptContinue(unsigned short idx) {
@@ -137,6 +145,18 @@ void InterlevelContext::_preparePromptContinue(unsigned short idx) {
 	noText.setCharacterSize(13);
 }
 
+void InterlevelContext::_preparePromptHighScore(unsigned short idx) {
+	curPromptedPlayer = idx;
+	centralText.setString("P" + lif::to_string(idx+1) + " HIGHSCORE! NAME?");
+	auto bounds = centralText.getGlobalBounds();
+	centralText.setPosition(lif::center(bounds, WIN_BOUNDS));
+
+	subtitleText.setString("|");
+	bounds = subtitleText.getGlobalBounds();
+	subtitleText.setPosition(lif::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
+	subtitleText.setString("_");
+}
+
 void InterlevelContext::update() {
 	time += lif::time.getDelta();
 	switch (state) {
@@ -149,6 +169,8 @@ void InterlevelContext::update() {
 	case State::WAIT_DISTRIBUTING_POINTS:
 		_tickWaitDistributePoints();
 		// fallthrough
+	case State::PROMPT_HIGHSCORE:
+		break;
 	case State::PROMPT_CONTINUE:
 		// Selection via joystick (can't do this is the event handler since it's not an SFML event)
 		{

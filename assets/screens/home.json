@@ -67,6 +67,12 @@
 			},
 			{
 				"type": "text",
+				"name": "high_scores",
+				"string": "!high_scores",
+				"interactable": true
+			},
+			{
+				"type": "text",
 				"name": "about",
 				"string": "!about",
 				"interactable": true

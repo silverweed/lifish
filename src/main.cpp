@@ -22,6 +22,7 @@
 #include "LevelManager.hpp"
 #include "LevelSet.hpp"
 #include "LoadScreen.hpp"
+#include "HighScoreScreen.hpp"
 #include "Music.hpp"
 #include "MusicManager.hpp"
 #include "Options.hpp"
@@ -178,6 +179,7 @@ static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
 	ui.add<lif::ui::PreferencesScreen>(window, lif::options.windowSize);
 	ui.add<lif::ui::LoadScreen>(window, lif::options.windowSize);
 	ui.add<lif::ui::SaveScreen>(window, lif::options.windowSize);
+	ui.add<lif::ui::HighScoreScreen>(window, lif::options.windowSize);
 
 	// Setup dynamic texts for static screens
 	ui.setDynamicText("FULL_VERSION", lif::gameInfo());

@@ -73,4 +73,7 @@ bool init();
 
 std::string gameInfo();
 
+class HighScoreManager& getHighScoreManager();
+
+
 } // end namespace lif

@@ -36,6 +36,7 @@ std::unordered_map<std::string, ScreenCallback> lif::ui::screenCallbacks = {
 	{ "home",        cb_switchTo("home") },
 	{ "quit",        cb_quit },
 	{ "preferences", cb_switchTo("preferences") },
+	{ "high_scores", cb_switchTo("high_score") },
 	{ "controls",    cb_switchTo("controls") },
 	{ "resume",      cb_resume },
 	{ "lang_en",     cb_lang(lif::Language::ENGLISH) },

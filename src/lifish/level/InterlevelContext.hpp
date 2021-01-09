@@ -19,6 +19,7 @@ class InterlevelContext : public lif::WindowContext {
 	enum class State {
 		DISTRIBUTING_POINTS,
 		WAIT_DISTRIBUTING_POINTS,
+		PROMPT_HIGHSCORE,
 		PROMPT_CONTINUE,
 		GETTING_READY
 	} state = State::DISTRIBUTING_POINTS;
@@ -59,6 +60,7 @@ class InterlevelContext : public lif::WindowContext {
 	void _ackPromptResponse();
 	void _continueSelectYes();
 	void _continueSelectNo();
+	void _preparePromptHighScore(unsigned short i);
 
 public:
 	explicit InterlevelContext(lif::LevelManager& lm, const lif::SidePanel& sidePanel);
