@@ -46,6 +46,8 @@ void HighScoreScreen::build() {
 	auto bounds = text->getGlobalBounds();
 	text->setPosition(sf::Vector2f(lif::center(bounds, win_bounds).x, win_bounds.height - 3 * bounds.height));
 	interactables["back"] = std::make_unique<lif::ui::Interactable>(text);
+
+	nonInteractableSizeExcludingHighScores = nonInteractables.size();
 }
 
 void HighScoreScreen::onLoad() {
@@ -53,22 +55,31 @@ void HighScoreScreen::onLoad() {
 
 	const auto font = lif::getAsset("fonts", lif::fonts::SCREEN);
 	const auto win_bounds = sf::FloatRect(0, 0, size.x, size.y);
-	const auto size = 18;
+	const auto size = 14;
 
 	sf::Vector2f pos(25, 75);
 
+	nonInteractables.resize(nonInteractableSizeExcludingHighScores);
+
+	const sf::Color colors[2] = { sf::Color(255, 255, 255), sf::Color(180, 180, 180) };
+	auto colorIdx = 0;
+
 	for (const auto& entry : lif::getHighScoreManager().getSortedHighScores()) {
 		auto text = new lif::ShadedText(font, entry.name, pos);
+		text->setFGColor(colors[colorIdx]);
 		text->setShadowSpacing(1, 1);
 		text->setCharacterSize(size);
 		nonInteractables.emplace_back(text);
 
 		text = new lif::ShadedText(font, std::to_string(entry.score), pos);
+		text->setFGColor(colors[colorIdx]);
 		text->setPosition(sf::Vector2f(win_bounds.width - 250, text->getPosition().y));
 		text->setShadowSpacing(1, 1);
 		text->setCharacterSize(size);
 		nonInteractables.emplace_back(text);
 
-		pos.y += 24;
+		colorIdx = (colorIdx + 1) % 2;
+
+		pos.y += 20;
 	}
 }

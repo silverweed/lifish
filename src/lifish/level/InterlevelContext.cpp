@@ -42,9 +42,18 @@ InterlevelContext::InterlevelContext(lif::LevelManager& lm, const lif::SidePanel
 	noText.setFont(interlevelFont);
 	noText.setCharacterSize(13);
 
+	// Cursor
+	bufferText = &subtitleText;
+	bufferText->setString("D");
+	auto bounds = bufferText->getGlobalBounds();
+	charBounds = sf::Vector2f(bounds.width, bounds.height);
+	bufferText->setString("");
+	cursor.setSize(sf::Vector2f(charBounds.x, 6));
+	_updateCursorPosition();
+
 	// Position yes / no texts
 	sf::Text dummyText("YES / NO_", interlevelFont, 13);
-	auto bounds = dummyText.getGlobalBounds();
+	bounds = dummyText.getGlobalBounds();
 	dummyText.setPosition(lif::center(bounds, WIN_BOUNDS) + sf::Vector2f(0, 2 * bounds.height));
 	yesText.setString("YES");
 	yesText.setPosition(dummyText.getPosition());
@@ -64,9 +73,10 @@ void InterlevelContext::setRetryingLevel() {
 void InterlevelContext::setAdvancingLevel() {
 	lif::time.resume();
 
-	if (lm.getLevelTime().getRemainingTime() <= sf::Time::Zero) {
-		// No time remaining: skip this phase
-		_setPromptContinue();
+	const bool allPlayersDead = _calcPrompts();
+	if (lm.getLevelTime().getRemainingTime() <= sf::Time::Zero || allPlayersDead) {
+		// No time remaining or all players dead: skip this phase
+		_setNextPrompt();
 		return;
 	}
 	state = State::DISTRIBUTING_POINTS;
@@ -94,33 +104,48 @@ void InterlevelContext::setGettingReady(unsigned short lvnum) {
 	subtitleText.setPosition(lif::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
 }
 
-void InterlevelContext::_setPromptContinue() {
-	// Check if there are dead players with continues left
-	mustPromptPlayer.fill(false);
+bool InterlevelContext::_calcPrompts() {
+	const auto& highScoreMgr = lif::getHighScoreManager();
+	auto allPlayersAreDead = true;
+
+	mustPromptPlayer.fill(0);
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
 		const auto player = lm.getPlayer(i + 1);
-		if ((player == nullptr || player->get<lif::Killable>()->isKilled())
-				&& lm.getPlayerContinues(i + 1) > 0) {
-			mustPromptPlayer[i] = true;
+		if ((player == nullptr || player->get<lif::Killable>()->isKilled())) {
+			if (lm.getPlayerContinues(i + 1) > 0)
+				mustPromptPlayer[i] |= PROMPT_REVIVE;
+
+			if (highScoreMgr.isHighScore(lm.getScore(i + 1))) {
+				mustPromptPlayer[i] |= PROMPT_HIGHSCORE;
+			}
+		} else {
+			allPlayersAreDead = false;
 		}
 	}
-	unsigned idx = 0;
-	while (idx < mustPromptPlayer.size() && !mustPromptPlayer[idx]) ++idx;
-	if (idx == mustPromptPlayer.size()) {
-		// all players alive or without continues: skip this phase
-		_setGettingReady();
-		return;
-	}
 
+	return allPlayersAreDead;
+}
+
+void InterlevelContext::_setNextPrompt() {
 	time = sf::Time::Zero;
 
-	if (lif::getHighScoreManager().isHighScore(lm.getScore(idx + 1))) {
-		state = State::PROMPT_HIGHSCORE;
-		_preparePromptHighScore(idx);
-	} else {
-		state = State::PROMPT_CONTINUE;
-		_preparePromptContinue(idx);
+	for (unsigned idx = 0; idx < mustPromptPlayer.size(); ++idx) {
+		if (mustPromptPlayer[idx] & PROMPT_HIGHSCORE) {
+			mustPromptPlayer[idx] &= ~PROMPT_HIGHSCORE;
+			state = State::PROMPT_HIGHSCORE;
+			_preparePromptHighScore(idx);
+			return;
+		}
+
+		if (mustPromptPlayer[idx] & PROMPT_REVIVE) {
+			mustPromptPlayer[idx] &= ~PROMPT_REVIVE;
+			state = State::PROMPT_CONTINUE;
+			_preparePromptContinue(idx);
+			return;
+		}
 	}
+
+	_setGettingReady();
 }
 
 void InterlevelContext::_preparePromptContinue(unsigned short idx) {
@@ -153,7 +178,7 @@ void InterlevelContext::_preparePromptHighScore(unsigned short idx) {
 
 	subtitleText.setString("|");
 	bounds = subtitleText.getGlobalBounds();
-	subtitleText.setPosition(lif::center(bounds, WIN_BOUNDS) + sf::Vector2f(0.f, 2 * bounds.height));
+	subtitleText.setPosition(lif::center(bounds, WIN_BOUNDS) + sf::Vector2f(-100.0, 2 * bounds.height));
 	subtitleText.setString("_");
 }
 
@@ -236,13 +261,16 @@ void InterlevelContext::_tickGettingReady() {
 		time = sf::seconds(4);
 	}
 
-	if (time > sf::seconds(3))
+	if (time > sf::seconds(3)) {
+		if (anyNewHighScores)
+			lif::getHighScoreManager().saveHighScores();
 		newContext = lif::CTX_GAME;
+	}
 }
 
 void InterlevelContext::_tickWaitDistributePoints() {
 	if (time > sf::seconds(2))
-		_setPromptContinue();
+		_setNextPrompt();
 }
 
 void InterlevelContext::_ackPromptResponse() {
@@ -255,15 +283,10 @@ void InterlevelContext::_ackPromptResponse() {
 		++curPromptedPlayer;
 	} while (!mustPromptPlayer[curPromptedPlayer] && curPromptedPlayer < mustPromptPlayer.size());
 
-	if (curPromptedPlayer < mustPromptPlayer.size())
-		_preparePromptContinue(curPromptedPlayer);
-	else  {
-		// all due players were prompted
-		yesText.setFillColor(sf::Color(0, 0, 0, 0));
-		noText.setFillColor(sf::Color(0, 0, 0, 0));
-		subsubtitleText.setString("");
-		_setGettingReady();
-	}
+	yesText.setFillColor(sf::Color(0, 0, 0, 0));
+	noText.setFillColor(sf::Color(0, 0, 0, 0));
+	subsubtitleText.setString("");
+	_setNextPrompt();
 }
 
 void InterlevelContext::_setGettingReady() {
@@ -275,8 +298,57 @@ void InterlevelContext::_setGettingReady() {
 	setGettingReady(lm.getLevel()->getInfo().levelnum + advance);
 }
 
-bool InterlevelContext::handleEvent(sf::Window&, sf::Event event) {
-	if (state != State::PROMPT_CONTINUE) return false;
+bool InterlevelContext::_handleEventPromptHighscore(sf::Event event) {
+	if (event.type != sf::Event::KeyPressed)
+		return false;
+
+	switch (event.key.code) {
+	case sf::Keyboard::BackSpace:
+		// Cancel
+		if (IS_KEY_PRESSED(sf::Keyboard::LControl)) {
+			buffer.fill('\0');
+			bufIdx = 0;
+		} else if (bufIdx > 0) {
+			buffer[--bufIdx] = '\0';
+		}
+		bufferText->setString(std::string(buffer.data(), bufIdx));
+		_updateCursorPosition();
+		return true;
+	case sf::Keyboard::Return:
+		// Confirm
+		if (bufIdx > 0) {
+			const auto entry = lif::HighScoreEntry {
+				std::string(buffer.data(), bufIdx),
+				lm.getScore(curPromptedPlayer + 1)
+			};
+			lif::getHighScoreManager().addHighScore(entry);
+			anyNewHighScores = true;
+			cursorVisible = false;
+			buffer.fill('\0');
+			bufIdx = 0;
+			_setNextPrompt();
+			return true;
+		} else {
+			return false;
+		}
+	default:
+		break;
+	}
+
+	const char ch = lif::kb::keyToAlnum(event.key.code);
+	if (ch < 0)
+		return false;
+
+	if (bufIdx < buffer.size()) {
+		buffer[bufIdx++] = ch;
+		bufferText->setString(std::string(buffer.data(), bufIdx));
+		_updateCursorPosition();
+	}
+
+	return true;
+}
+
+bool InterlevelContext::_handleEventPromptContinue(sf::Event event) {
 	switch (event.type) {
 	case sf::Event::JoystickButtonPressed:
 		{
@@ -306,7 +378,26 @@ bool InterlevelContext::handleEvent(sf::Window&, sf::Event event) {
 	default:
 		break;
 	}
+
 	return false;
+}
+
+bool InterlevelContext::handleEvent(sf::Window&, sf::Event event) {
+	if (state == State::PROMPT_CONTINUE)
+		return _handleEventPromptContinue(event);
+
+	else if (state == State::PROMPT_HIGHSCORE)
+		return _handleEventPromptHighscore(event);
+
+	return false;
+}
+
+void InterlevelContext::_updateCursorPosition() {
+	const auto txtbounds = bufferText->getGlobalBounds();
+	cursor.setPosition(bufferText->getPosition() + sf::Vector2f(txtbounds.width, charBounds.y));
+	cursorVisible = true;
+	cursor.setFillColor(sf::Color::White);
+	cursorClock.restart();
 }
 
 void InterlevelContext::_continueSelectYes() {
@@ -331,6 +422,7 @@ void InterlevelContext::draw(sf::RenderTarget& window, sf::RenderStates states) 
 	window.draw(yesText, states);
 	window.draw(noText, states);
 	window.draw(subsubtitleText, states);
+	if (cursorVisible) window.draw(cursor, states);
 	window.draw(sidePanel, states);
 }
 

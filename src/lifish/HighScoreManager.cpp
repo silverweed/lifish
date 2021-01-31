@@ -58,5 +58,20 @@ void HighScoreManager::saveHighScores() {
 }
 
 bool HighScoreManager::isHighScore(int score) const {
-	return entries.size() < MAX_SCORES_NUM || entries[entries.size() - 1].score < static_cast<unsigned>(score);
+	return entries.size() < MAX_SCORES_NUM || entries[entries.size() - 1].score < score;
+}
+
+void HighScoreManager::addHighScore(const HighScoreEntry& entry) {
+	const auto it = std::lower_bound(entries.begin(), entries.end(), entry, [](const auto& a, const auto& b) {
+		return a.score > b.score;
+	});
+	if (it != entries.end()) {
+		entries.insert(it, entry);
+		if (entries.size() > MAX_SCORES_NUM)
+			entries.pop_back();
+
+	} else if (entries.size() < MAX_SCORES_NUM)
+		entries.push_back(entry);
+	else
+		std::cerr << "Didn't add entry to high scores: didn't find a lower score.\n";
 }

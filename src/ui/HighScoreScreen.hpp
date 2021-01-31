@@ -7,6 +7,8 @@ namespace lif {
 namespace ui {
 
 class HighScoreScreen : public lif::ui::DynamicScreen {
+	unsigned nonInteractableSizeExcludingHighScores = 0;
+
 	void build() override;
 
 public:

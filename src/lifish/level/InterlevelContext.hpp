@@ -16,6 +16,8 @@ class SidePanel;
  */
 class InterlevelContext : public lif::WindowContext {
 
+	constexpr static unsigned MAX_HIGH_SCORE_NAME_LEN = 16;
+
 	enum class State {
 		DISTRIBUTING_POINTS,
 		WAIT_DISTRIBUTING_POINTS,
@@ -23,6 +25,12 @@ class InterlevelContext : public lif::WindowContext {
 		PROMPT_CONTINUE,
 		GETTING_READY
 	} state = State::DISTRIBUTING_POINTS;
+
+	enum PromptFlags {
+		PROMPT_NONE = 0,
+		PROMPT_HIGHSCORE = 1 << 0,
+		PROMPT_REVIVE = 1 << 1,
+	};
 
 	sf::Time lastTickTime;
 	sf::Time time;
@@ -39,11 +47,21 @@ class InterlevelContext : public lif::WindowContext {
 	sf::Time bonusTime = sf::Time::Zero;
 	int bonusPoints = 0;
 	/** Whether player (i+1) needs to be prompted for continue or not */
-	std::array<bool, lif::MAX_PLAYERS> mustPromptPlayer;
+	std::array<char, lif::MAX_PLAYERS> mustPromptPlayer;
 	unsigned short curPromptedPlayer = 0;
 	/** Whether player is selecting 'yes' or 'no' during PROMPT_CONTINUE */
 	bool yesSelected = true;
 	bool retryingLevel = false;
+	bool anyNewHighScores = false;
+
+	std::array<char, MAX_HIGH_SCORE_NAME_LEN> buffer;
+	size_t bufIdx = 0;
+	sf::Text *bufferText = nullptr;
+
+	sf::RectangleShape cursor;
+	sf::Clock cursorClock;
+	bool cursorVisible = true;
+	sf::Vector2f charBounds;
 
 	/** @return true if player chose to continue, else false */
 	//bool _displayContinue(sf::RenderWindow& target, const lif::SidePanel& panel, short playerId);
@@ -53,7 +71,9 @@ class InterlevelContext : public lif::WindowContext {
 	void _tickDistributePoints();
 	void _tickWaitDistributePoints();
 	void _tickGettingReady();
-	void _setPromptContinue();
+	// Returns true if both players are dead
+	bool _calcPrompts();
+	void _setNextPrompt();
 	void _tickPromptContinue();
 	/** Sets up the window for prompting player i+1 for continue */
 	void _preparePromptContinue(unsigned short i);
@@ -61,6 +81,9 @@ class InterlevelContext : public lif::WindowContext {
 	void _continueSelectYes();
 	void _continueSelectNo();
 	void _preparePromptHighScore(unsigned short i);
+	bool _handleEventPromptContinue(sf::Event event);
+	bool _handleEventPromptHighscore(sf::Event event);
+	void _updateCursorPosition();
 
 public:
 	explicit InterlevelContext(lif::LevelManager& lm, const lif::SidePanel& sidePanel);

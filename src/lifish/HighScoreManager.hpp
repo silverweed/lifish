@@ -7,12 +7,12 @@ namespace lif {
 
 struct HighScoreEntry {
 	std::string name;
-	unsigned score;
+	int score;
 };
 
 class HighScoreManager {
 	static constexpr const char* HIGH_SCORES_FNAME = ".highscores.txt";
-	static constexpr std::size_t MAX_SCORES_NUM = 20;
+	static constexpr std::size_t MAX_SCORES_NUM = 16;
 
 	std::vector<HighScoreEntry> entries;
 
@@ -23,6 +23,8 @@ public:
 	void loadHighScores();
 
 	bool isHighScore(int score) const;
+
+	void addHighScore(const HighScoreEntry& entry);
 };
 
 }

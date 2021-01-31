@@ -5,13 +5,13 @@
 constexpr unsigned PS3 = 12;
 
 #ifdef IS_APPLE
-std::array<bool, sf::Keyboard::KeyCount> lif::kb::keyPressed;	
+std::array<bool, sf::Keyboard::KeyCount> lif::kb::keyPressed;
 
 bool lif::kb::isKeyPressed(sf::Keyboard::Key key) {
 	using lif::kb::keyPressed;
 
 	const int idx = static_cast<int>(key);
-	return key >= 0 && key < static_cast<int>(keyPressed.size()) ? keyPressed[idx] : false; 
+	return key >= 0 && key < static_cast<int>(keyPressed.size()) ? keyPressed[idx] : false;
 }
 
 void lif::kb::checkKeyPressed(sf::Event event) {
@@ -19,14 +19,14 @@ void lif::kb::checkKeyPressed(sf::Event event) {
 
 	switch (event.type) {
 	case sf::Event::KeyPressed:
-	case sf::Event::KeyReleased: 
+	case sf::Event::KeyReleased:
 		{
 			const auto key = event.key.code;
 			const int idx = static_cast<int>(key);
 			if (key >= 0 && key < static_cast<int>(keyPressed.size()))
 				keyPressed[idx] = event.type == sf::Event::KeyPressed;
 			break;
-		} 
+		}
 	default:
 		break;
 	}
@@ -232,6 +232,7 @@ char lif::kb::keyToAlnum(sf::Keyboard::Key key) {
 	case K::Num7: case K::Numpad7: return '7';
 	case K::Num8: case K::Numpad8: return '8';
 	case K::Num9: case K::Numpad9: return '9';
+	case K::Space: return ' ';
 	default: return -1;
 	}
 #undef ALPHA

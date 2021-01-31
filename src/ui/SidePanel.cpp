@@ -207,24 +207,24 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			// Draw bonuses
 			for (const auto& bsprite : bonusesSprite[i])
 				_drawWithShadow(window, states, bsprite);
-
-			// Draw score
-			pos.x = SCORE_POS_X;
-			pos.y = i == 0 ? SCORE_POS_Y_1 : SCORE_POS_Y_2;
-			lif::ShadedText scoreText(
-					lif::getAsset("fonts", lif::fonts::SIDE_PANEL),
-					"score", pos + sf::Vector2f(3, -19));
-			scoreText.setCharacterSize(16);
-			scoreText.setShadowSpacing(2, 2);
-			window.draw(scoreText, states);
-			ss.str("");
-			ss << std::setfill('0') << std::setw(6) << lm.getScore(i + 1);
-			//scoreText.setCharacterSize(16);
-			scoreText.setFont(*lif::cache.loadFont(lif::getAsset("fonts", lif::fonts::SIDE_PANEL_THIN)));
-			scoreText.setPosition(pos);
-			scoreText.setString(ss.str());
-			window.draw(scoreText, states);
 		}
+
+		// Draw score
+		pos.x = SCORE_POS_X;
+		pos.y = i == 0 ? SCORE_POS_Y_1 : SCORE_POS_Y_2;
+		lif::ShadedText scoreText(
+				lif::getAsset("fonts", lif::fonts::SIDE_PANEL),
+				"score", pos + sf::Vector2f(3, -19));
+		scoreText.setCharacterSize(16);
+		scoreText.setShadowSpacing(2, 2);
+		window.draw(scoreText, states);
+		ss.str("");
+		ss << std::setfill('0') << std::setw(6) << lm.getScore(i + 1);
+		//scoreText.setCharacterSize(16);
+		scoreText.setFont(*lif::cache.loadFont(lif::getAsset("fonts", lif::fonts::SIDE_PANEL_THIN)));
+		scoreText.setPosition(pos);
+		scoreText.setString(ss.str());
+		window.draw(scoreText, states);
 	}
 
 	_drawTime(window, states);
