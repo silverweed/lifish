@@ -4,6 +4,7 @@
 #include <fstream>
 #include <algorithm>
 #include <iostream>
+#include <array>
 
 using lif::HighScoreManager;
 
