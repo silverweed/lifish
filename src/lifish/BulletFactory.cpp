@@ -5,6 +5,8 @@
 #include "collision_layers.hpp"
 #include "utils.hpp"
 
+#include <unordered_map>
+
 using lif::BulletFactory;
 
 namespace {
@@ -63,7 +65,7 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 					dir = moving->getDirection();
 			}
 			return std::unique_ptr<lif::Bullet>(new lif::AxisBullet(pos, dir
-				, bulletsInfo[infoId], source));
+				, bulletsInfo.find(infoId)->second, source));
 		}
 	case 9:
 		//return std::unique_ptr<lif::Bullet>(new lif::Grenade(pos, target, bulletsInfo[infoId], source));
@@ -81,7 +83,7 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 	case 102:
 	case 104:
 		return std::unique_ptr<lif::Bullet>(new lif::FreeBullet(pos,
-			lif::angleBetween(pos, target), bulletsInfo[infoId], source));
+			lif::angleBetween(pos, target), bulletsInfo.find(infoId)->second, source));
 	case 103:
 		//return std::unique_ptr<lif::Bullet>(new lif::Missile(pos, target, bulletsInfo[infoId], source));
 	default:
@@ -92,11 +94,11 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Vector2f& pos,
 		lif::Angle angle, const lif::Entity *const source)
 {
-	return std::unique_ptr<lif::Bullet>(new lif::FreeBullet(pos, angle, bulletsInfo[infoId], source));
+	return std::unique_ptr<lif::Bullet>(new lif::FreeBullet(pos, angle, bulletsInfo.find(infoId)->second, source));
 }
 
 std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Vector2f& pos,
 		lif::Direction dir, const lif::Entity *const source)
 {
-	return std::unique_ptr<lif::Bullet>(new lif::AxisBullet(pos, dir, bulletsInfo[infoId], source));
+	return std::unique_ptr<lif::Bullet>(new lif::AxisBullet(pos, dir, bulletsInfo.find(infoId)->second, source));
 }

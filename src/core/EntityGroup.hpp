@@ -131,11 +131,6 @@ public:
 	template<typename T, typename...Args>
 	T* add(Args&&... args);
 
-	/** Removes an entity from all internal collections. */
-	void remove(const lif::Entity& entity);
-	/** @see remove */
-	void remove(const std::shared_ptr<const lif::Entity>& entity);
-
 	/** Removes all entities from this EntityGroup. */
 	void clear();
 
@@ -197,3 +192,4 @@ size_t EntityGroup::size() const {
 }
 
 } // end namespace lif
+

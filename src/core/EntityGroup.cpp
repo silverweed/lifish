@@ -34,18 +34,6 @@ void EntityGroup::updateAll() {
 	alreadyCheckedThisUpdate = false;
 }
 
-void EntityGroup::remove(const lif::Entity& entity) {
-	std::remove_if(entities.begin(), entities.end(), [entity] (const auto& e) {
-		return e.get() == &entity;
-	});
-	_pruneAll();
-}
-
-void EntityGroup::remove(const std::shared_ptr<const lif::Entity>& entity) {
-	std::remove(entities.begin(), entities.end(), entity);
-	_pruneAll();
-}
-
 auto EntityGroup::getCollidersIntersecting(const sf::FloatRect& rect) const -> std::vector<lif::Collider*> {
 	std::vector<lif::Collider*> clds;
 	clds.reserve(collidingEntities.size());
@@ -155,3 +143,4 @@ void EntityGroup::_checkDead() {
 	}
 	dying.erase(w, dying.end());
 }
+
