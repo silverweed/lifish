@@ -281,7 +281,7 @@ void GameContext::toggleDebug(unsigned int flag) {
 void GameContext::_printCDStats() const {
 	const auto& dbgStats = lm.getCollisionDetector().getStats();
 	std::stringstream ss;
-	ss << std::setfill(' ') << std::scientific << std::setprecision(2)
+	ss << std::setfill(' ') << std::setprecision(2)
 		<< "#checked: " << std::setw(5) << dbgStats.counter.safeGet("checked")
 		<< " | tot: " << std::setw(6) << dbgStats.timer.safeGet("tot") * 1000
 		<< " | tot_narrow: " << std::setw(6) << dbgStats.timer.safeGet("tot_narrow") * 1000
