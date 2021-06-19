@@ -295,7 +295,7 @@ Action ControlsScreen::_changeControl(const std::string& textKey) {
 }
 
 Action ControlsScreen::_toggleJoystick() {
-	// Retreive the list of connected joysticks
+	// Retrieve the list of connected joysticks
 	std::vector<int> joysticks;
 	joysticks.reserve(sf::Joystick::Count);
 

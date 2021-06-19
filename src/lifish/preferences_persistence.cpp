@@ -95,4 +95,10 @@ void lif::loadPreferences(const char *fname) {
 	} catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;
 	}
+
+	// Validate joysticks
+	for (auto& useJoy : lif::controls::useJoystick) {
+		if (useJoy >= 0 && !sf::Joystick::isConnected(useJoy))
+			useJoy = -1;
+	}
 }
