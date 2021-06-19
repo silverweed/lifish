@@ -3,6 +3,7 @@
 #
 # Command-line switches:
 # - RELEASE: compile in release mode (optimization, hardening and no debug)
+# - DEBUG_RELEASE: compile with optimization and debug
 # - USE_STATIC_SFML: force to use static SFML libs and dependencies (default on windows)
 
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
@@ -114,6 +115,7 @@ list(REMOVE_ITEM LIFISH_SRC
 	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Fog.cpp"
 	"${CMAKE_SOURCE_DIR}/src/lifish/entities/AlienPredator.cpp"
 	"${CMAKE_SOURCE_DIR}/src/lifish/entities/RexFlame.cpp"
+	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Targeter.cpp"
 	"${CMAKE_SOURCE_DIR}/src/lifish/components/LeapingMovement.cpp"
 	"${CMAKE_SOURCE_DIR}/src/lifish/components/CircleShootingPattern.cpp"
 	"${CMAKE_SOURCE_DIR}/src/lifish/components/ScatterVsPlayerPattern.cpp"
@@ -200,11 +202,15 @@ if(NOT ${HAS_CHECK_CXX} STREQUAL "")
 endif()
 
 # Debug / Release
-if(RELEASE)
-	message(STATUS "Compiling in RELEASE mode")
-	# Disable assertions
-	add_definitions(-DNDEBUG=1)
-	add_definitions(-DRELEASE=1)
+if(NOT DEBUG)
+	if (DEBUG_RELEASE)
+		message(STATUS "Compiling in DEBUG_RELEASE mode")
+	else()
+		message(STATUS "Compiling in RELEASE mode")
+		# Disable assertions
+		add_definitions(-DNDEBUG=1)
+		add_definitions(-DRELEASE=1)
+	endif()
 	if(MSVC)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_FORTIFY_SOURCE=2 /O2 /MP /W2 /std:c++14")
 	else()
