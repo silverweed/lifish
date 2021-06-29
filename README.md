@@ -4,53 +4,45 @@
 </a>
 
 ## ABOUT ##
-Lifish is a work-in-progress arcade old-style game inspired by Factor Software's BOOM. 
+This is the branch of Lifish that contains the code for [BOOM Remake](https://silverweed.github.io/boom), a faithful remake of the original BOOM game.
 
-The Lifish engine was used to create [BOOM Remake](https://silverweed.github.io/boom), a faithful remake of the original BOOM game.
+Lifish was a work-in-progress arcade game inspired by BOOM, but that project is currently in indefinite hiatus. The `boom` branch is the one that's still being occasionally updated, mostly for bugfixing, as BOOM Remake is already complete.
 
-Lifish comes with a (Work In Progress) level editor, currently working only on Linux and MacOS: [LifishEdit](https://github.com/silverweed/lifish-edit). This also works for the BOOM Remake mod.
+Lifish (and by extension, BOOM Remake) has a level editor available as a separate program, currently working only on Linux and MacOS: [LifishEdit](https://github.com/silverweed/lifish-edit). 
 
-### Main game planned release ###
-Once the main work is done, Lifish will be released for the current platforms:
+### Supported platforms ###
+BOOM Remake is known to work on the following platforms:
 
-* Windows 64 bit (probably >= Vista)
-* Linux (somewhat recent versions of `libc` and `libstdc++` are needed; to be precise,
-  your distro must support `GLIBC_2.17` and `GLIBCXX_3.4.20`.)
-* OS X
-* Probably FreeBSD
+* Windows 64 bit (>= 7)
+* Linux 64 bit (with non-ancient versions of `libc` and `libstdc++`)
+* OS X (but there are known issues with inputs for versions following Catalina)
 
-See later for instructions on how to build the game from the sources.
+### Binaries ###
+The latest "official" binaries are available [here](https://silverweed.github.io/boom/). The latest version in this repo may contain additional features that I haven't had time to polish and package yet in the release.
 
 ## Building ##
 
 ### DEPENDENCIES ###
 
-* [SFML](https://github.com/SFML/SFML) >= 2.4
+* [SFML](https://github.com/SFML/SFML) >= 2.5
 * [nlohmann/json](https://github.com/nlohmann/json) (included in the source)
 
 #### Linux, OS X, BSD, etc ####
 The game can be compiled on *nix (tested on Linux, OSX and FreeBSD) via `cmake . && make`
-(you need to have SFML >=2.4 installed).
+(you need to have SFML >=2.5 installed).
 
 #### Windows ####
-On Windows you can either use VS2015 (or later), or a Unix-like environment like MinGW-w64 (I use the TDM-GCC compiler).
-
-If you use the latter, you can follow the steps on
-[this guide](http://ascend4.org/Setting_up_a_MinGW-w64_build_environment) until the *MinGW-w64*
-chapter (included -- you can skip the *First steps* section, as all the listed dependencies like Python etc
-aren't required). Remember to `cmake -G "MSYS Makefiles" .`, otherwise cmake will probably
-generate a VS makefile.
+On Windows you can use cmake + Visual Studio.
 
 ### Command line parameters ###
 If launched from the command line, `lifish` accepts a bunch of parameters (see `lifish -h` for details).
 It also accepts an optional argument which is the path of the level JSON to use (default: `lifish.json`).
 
 ### Note about assets ###
-The graphics and sounds you'll find in `assets` are placeholder. No graphic asset is even close to being final, and the final
-assets won't be uploaded on this repo, as they'll be available for purchase in the official release.
+This repo doesn't contain the original BOOM assets. You can find them packaged with the binary releases. If you want to use them with a custom built version of the game, you can just place the `assets` folder contained in one of the releases in the repo root.
 
 ## LICENSE ##
-Copyright (c) Giacomo Parolini, 2018
+Copyright (c) Giacomo Parolini, 2021
 
 See the LICENSE file for licensing information.
 
