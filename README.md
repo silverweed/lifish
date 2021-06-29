@@ -39,7 +39,7 @@ If launched from the command line, `lifish` accepts a bunch of parameters (see `
 It also accepts an optional argument which is the path of the level JSON to use (default: `lifish.json`).
 
 ### Note about assets ###
-This repo doesn't contain the original BOOM assets. You can find them packaged with the binary releases. If you want to use them with a custom built version of the game, you can just place the `assets` folder contained in one of the releases in the repo root.
+The original BOOM assets belong to Factor Software. I don't hold any intellectual property upon them.
 
 ## LICENSE ##
 Copyright (c) Giacomo Parolini, 2021
