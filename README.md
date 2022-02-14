@@ -3,6 +3,8 @@
 	     src="https://scan.coverity.com/projects/5674/badge.svg"/>
 </a>
 
+<img src="https://silverweed.github.io/assets/img/boom/boom_screen1.png" style='height: 300px'/>
+
 ## ABOUT ##
 This is the branch of Lifish that contains the code for [BOOM Remake](https://silverweed.github.io/boom), a faithful remake of the original BOOM game.
 
