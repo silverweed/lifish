@@ -193,7 +193,8 @@ void Enemy::update() {
 	if (canYell && yellT >= nextYellTime) {
 		yellT = sf::Time::Zero;
 		nextYellTime = getNextYellTime();
-		lif::cache.playSound(sounded->getSoundFile("yell"));
+		if (!morphed)
+			lif::cache.playSound(sounded->getSoundFile("yell"));
 	}
 }
 
