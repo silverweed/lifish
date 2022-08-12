@@ -18,6 +18,7 @@
 #include "Shooting.hpp"
 #include "Sounded.hpp"
 #include "Time.hpp"
+#include "Warpable.hpp"
 #include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
 #include "utils.hpp"
@@ -75,6 +76,7 @@ void Player::_init() {
 				lif::to_string(info.id) + ".png"s));
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::PLAYERS);
 	addComponent<lif::Drawable>(*this, drawProxy);
+	addComponent<lif::Warpable>(*this);
 	addComponent<lif::Sounded>(*this,
 		lif::sid("death"), lif::getAsset("sounds", "player"s + lif::to_string(info.id) + "_death.ogg"s),
 		lif::sid("hurt"), lif::getAsset("sounds", "player"s + lif::to_string(info.id) + "_hurt.ogg"s),

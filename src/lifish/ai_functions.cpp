@@ -7,6 +7,7 @@
 #include "LevelManager.hpp"
 #include "Shooting.hpp"
 #include "Sounded.hpp"
+#include "Warpable.hpp"
 #include "ai_helpers.hpp"
 #include "game.hpp"
 #include "utils.hpp"
@@ -71,22 +72,26 @@ AIBoundFunction lif::ai_random(lif::Entity& entity) {
 AIBoundFunction lif::ai_random_forward(lif::Entity& entity) {
 	auto moving = entity.get<lif::AxisMoving>();
 	const auto collider = entity.get<lif::Collider>();
+	const auto warpable = entity.get<lif::Warpable>();
 	if (moving == nullptr || collider == nullptr)
 		throw std::invalid_argument("Entity passed to ai_random_forward has no Moving"
 				" or Collider component!");
 	moving->setAutoRealign(false);
 	moving->setDistTravelled(4);
 
-	return [&entity, moving, collider] (const lif::LevelManager& lm) {
+	return [&entity, moving, collider, warpable] (const lif::LevelManager& lm) {
 		HANDLE_NOT_MOVING;
 		HANDLE_UNALIGNED;
 		const D cur = moving->getDirection();
 		const bool colliding = collider->collidesWithSolid();
 		const D opp = lif::oppositeDirection(cur);
 		// colliding with a moving entity
-		if (colliding && lm.canGo(*moving, cur)) {
+		if (colliding && lm.canGo(*moving, cur))
 			NEW_DIRECTION(opp)
-		}
+
+		if (warpable && warpable->justWarped())
+			NEW_DIRECTION(selectRandomViable(*moving, lm, opp, lif::ai::OPPOSITE_NOT_LAST_CHOICE))
+
 		// Note: this `if` prevents the entity to change direction twice in a row even
 		// when it shouldn't (due to the fact that, if its movement is less than 1px/frame,
 		// it may be considered "aligned" again after changing direction.)
@@ -104,13 +109,14 @@ AIBoundFunction lif::ai_random_forward_haunt(lif::Entity& entity) {
 	auto moving = entity.get<lif::AxisMoving>();
 	const auto collider = entity.get<lif::Collider>();
 	auto shooting = entity.get<lif::Shooting>();
+	const auto warpable = entity.get<lif::Warpable>();
 	if (moving == nullptr || collider == nullptr || shooting == nullptr)
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving, "
 				"Shooting or Collider component!");
 	moving->setAutoRealign(false);
 	const auto random_forward = ai_random_forward(entity);
 
-	return [&entity, moving, random_forward, collider, shooting] (const lif::LevelManager& lm) {
+	return [&entity, moving, random_forward, collider, shooting, warpable] (const lif::LevelManager& lm) {
 		HANDLE_NOT_MOVING;
 		HANDLE_UNALIGNED;
 		if (shooting->isShooting()) {
@@ -152,13 +158,14 @@ AIBoundFunction lif::ai_follow(lif::Entity& entity) {
 	auto moving = entity.get<lif::AxisMoving>();
 	const auto collider = entity.get<lif::Collider>();
 	const auto sighted = entity.get<lif::AxisSighted>();
+	const auto warpable = entity.get<lif::Warpable>();
 	if (moving == nullptr || collider == nullptr || sighted == nullptr)
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving"
 				", Collider or AxisSighted component!");
 	moving->setAutoRealign(false);
 	moving->setDistTravelled(3);
 
-	return [&entity, moving, collider, sighted] (const lif::LevelManager& lm) {
+	return [&entity, moving, collider, sighted, warpable] (const lif::LevelManager& lm) {
 		HANDLE_NOT_MOVING;
 		HANDLE_UNALIGNED;
 		const D cur = moving->getDirection();
@@ -180,6 +187,9 @@ AIBoundFunction lif::ai_follow(lif::Entity& entity) {
 			NEW_DIRECTION(sp)
 		}
 
+		if (warpable && warpable->justWarped())
+			NEW_DIRECTION(selectRandomViable(*moving, lm, opp, lif::ai::OPPOSITE_NOT_LAST_CHOICE))
+
 		if (moving->getDistTravelled() > 1 || moving->getDistTravelled() == 0) {
 			collider->reset();
 			NEW_DIRECTION(selectRandomViable(*moving, lm, opp))
@@ -189,11 +199,13 @@ AIBoundFunction lif::ai_follow(lif::Entity& entity) {
 	};
 }
 
+// Ghost AI
 AIBoundFunction lif::ai_follow_dash(lif::Entity& entity) {
 	auto moving = entity.get<lif::AxisMoving>();
 	const auto collider = entity.get<lif::Collider>();
 	const auto sighted = entity.get<lif::AxisSighted>();
 	const auto shooting = entity.get<lif::Shooting>();
+	const auto warpable = entity.get<lif::Warpable>();
 	if (moving == nullptr || collider == nullptr || sighted == nullptr || shooting == nullptr)
 		throw std::invalid_argument("Entity passed to ai_follow_dash has "
 				"no Moving, Collider, AxisSighted or Shooting component!");
@@ -204,15 +216,15 @@ AIBoundFunction lif::ai_follow_dash(lif::Entity& entity) {
 	moving->setAutoRealign(false);
 	moving->setDistTravelled(3);
 
-	return [&entity, shooting, moving, collider, sighted] (const lif::LevelManager& lm) {
+	return [&entity, shooting, moving, collider, sighted, warpable] (const lif::LevelManager& lm) {
 		HANDLE_NOT_MOVING;
 		HANDLE_UNALIGNED;
 		const D cur = moving->getDirection();
 		const D opp = lif::oppositeDirection(cur);
 		const bool colliding = collider->collidesWithSolid();
+		const bool warping = warpable && warpable->justWarped();
 
-		// XXX: is this necessary?
-		if (colliding) {
+		if (colliding || warping) {
 			moving->setDashing(0);
 			if (lm.canGo(*moving, cur))
 				NEW_DIRECTION(opp)
@@ -232,6 +244,9 @@ AIBoundFunction lif::ai_follow_dash(lif::Entity& entity) {
 			}
 			NEW_DIRECTION(sp)
 		}
+
+		if (warping)
+			NEW_DIRECTION(selectRandomViable(*moving, lm, opp, lif::ai::OPPOSITE_NOT_LAST_CHOICE))
 
 		if (moving->getDistTravelled() > 1 || moving->getDistTravelled() == 0) {
 			collider->reset();

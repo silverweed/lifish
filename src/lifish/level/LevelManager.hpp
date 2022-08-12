@@ -160,6 +160,8 @@ public:
 	/** @return the first valid bomb deployed by id-th player, or nullptr if there are none */
 	lif::Bomb* getFirstValidBomb(int id) const;
 
+	bool entityJustTeleported(const lif::Entity& entity) const;
+
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	void update() override;
 	void reset() override;

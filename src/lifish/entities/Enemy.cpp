@@ -24,6 +24,7 @@
 #include "Sounded.hpp"
 #include "Spawning.hpp"
 #include "Time.hpp"
+#include "Warpable.hpp"
 #include "ZIndexed.hpp"
 #include "ai_functions.hpp"
 #include "collision_functions.hpp"
@@ -60,6 +61,7 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 			bonusable->giveBonus(lif::BonusType::SHIELD, lif::conf::enemy::DAMAGE_SHIELD_TIME);
 	});
 	addComponent<lif::Foe>(*this);
+	addComponent<lif::Warpable>(*this);
 	bonusable = addComponent<lif::Bonusable>(*this);
 	if (info.ai >= lif::ai_functions.size()) {
 		std::stringstream ss;

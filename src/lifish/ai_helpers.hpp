@@ -37,15 +37,20 @@ extern std::array<lif::Direction, 4> directions;
 
 lif::Direction random_direction();
 
+enum SelectRandomViableFlags {
+	FORCE_CHANGE             = 1,
+	OPPOSITE_NOT_LAST_CHOICE = 2,
+};
+
 /** Selects a random direction where `moving` can go, choosing `opp` if
- * and only if no other viable direction is found.
- * If `forceChange` is true, avoid taking the same direction.
+ * and only if no other viable direction is found or 'OPPOSITE_NOT_LAST_CHOICE' is set.
+ * If `FORCE_CHANGE` is set, avoid taking the same direction.
  */
 lif::Direction selectRandomViable(
 		const lif::AxisMoving& moving,
 		const lif::LevelManager& lm,
 		const lif::Direction opp,
-		bool forceChange = false);
+		int flags = 0);
 
 lif::Direction seeingPlayer(const lif::LevelManager& lm, const lif::AxisSighted& sighted);
 

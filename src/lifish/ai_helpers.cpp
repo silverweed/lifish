@@ -22,14 +22,15 @@ lif::Direction selectRandomViable(
 		const lif::AxisMoving& moving,
 		const lif::LevelManager& lm,
 		const lif::Direction opp,
-		bool forceChange)
+		int flags)
 {
 	lif::Direction dirs[directions.size()];
 	unsigned short n = 0;
+	const bool forceChange = flags & FORCE_CHANGE;
 	for (const auto& d : directions)
 		if (lm.canGo(moving, d) && d != opp && !(forceChange && moving.getDirection() == d))
 			dirs[n++] = d;
-	if (n == 0)
+	if (n == 0 || flags & OPPOSITE_NOT_LAST_CHOICE)
 		dirs[n++] = opp;
 	std::uniform_int_distribution<int> dist(0, n - 1);
 	return dirs[dist(lif::rng)];

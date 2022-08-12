@@ -90,7 +90,7 @@ public:
 	}
 
 	/** Applies a function to all entities. */
-    template<typename F, typename...Args,
+	template<typename F, typename...Args,
 		typename std::enable_if<std::is_same<
 			typename std::result_of<F(lif::Entity&, Args&&...)>::type, void>::value,
 				std::nullptr_t>::type = nullptr>
@@ -100,7 +100,7 @@ public:
 	}
 
 	/** @see apply */
-    template<typename F, typename...Args,
+	template<typename F, typename...Args,
 		typename std::enable_if<std::is_same<
 			typename std::result_of<F(lif::Entity&, Args&&...)>::type, bool>::value,
 				std::nullptr_t>::type = nullptr>
@@ -111,7 +111,7 @@ public:
 	}
 
 	/** @see apply */
-    template<typename F, typename...Args,
+	template<typename F, typename...Args,
 		typename std::enable_if<std::is_same<
 			typename std::result_of<F(lif::Entity&, Args&&...)>::type, void>::value,
 				std::nullptr_t>::type = nullptr>

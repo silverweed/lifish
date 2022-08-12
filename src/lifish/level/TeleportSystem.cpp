@@ -4,6 +4,7 @@
 #include "Collider.hpp"
 #include "Teleport.hpp"
 #include "Time.hpp"
+#include "Warpable.hpp"
 #include "conf/teleport.hpp"
 #include "game.hpp"
 #include "utils.hpp"
@@ -59,7 +60,7 @@ void TeleportSystem::_updateActive(unsigned tpIdx) {
 	auto colliding = collider->getColliding();
 	std::weak_ptr<lif::Collider> collided;
 	for (auto& cld : colliding) {
-		if (cld.lock() != justTeleportedTo[tpIdx].lock() && !cld.expired()) {
+		if (!cld.expired() && cld.lock() != justTeleportedTo[tpIdx].lock()) {
 			collided = cld;
 			break;
 		}
@@ -84,6 +85,9 @@ void TeleportSystem::_updateActive(unsigned tpIdx) {
 	// Warp the entity
 	if (auto mov = entity.get<lif::Moving>())
 		mov->resetDistTravelledThisFrame();
+
+	if (auto warpable = entity.get<lif::Warpable>())
+		warpable->setJustWarped(true);
 
 	auto warpedTp = teleports[warpToIdx];
 	const auto warpedPos = warpedTp->getPosition();

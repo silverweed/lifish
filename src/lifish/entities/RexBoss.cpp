@@ -514,7 +514,7 @@ struct AIRexFunction {
 		if (consecutive > minSteps) {
 			collider->reset();
 			consecutive = 0;
-			NEW_DIRECTION(lif::ai::selectRandomViable(*moving, lm, opp, true))
+			NEW_DIRECTION(lif::ai::selectRandomViable(*moving, lm, opp, lif::ai::FORCE_CHANGE))
 		} else {
 			if (moving->getDistTravelled() > 0) ++consecutive;
 			SAME_DIRECTION
