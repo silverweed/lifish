@@ -3,7 +3,6 @@
 #include "BaseLevelManager.hpp"
 #include "Direction.hpp"
 #include "DroppingTextManager.hpp"
-#include "LevelEffects.hpp"
 #include "LevelRenderer.hpp"
 #include "LevelTime.hpp"
 #include "TeleportSystem.hpp"
@@ -49,7 +48,6 @@ class LevelManager final : public lif::BaseLevelManager, public sf::Drawable {
 	/** The currently managed level */
 	std::unique_ptr<lif::Level> level;
 	lif::LevelRenderer renderer;
-	lif::LevelEffects effects;
 	std::shared_ptr<lif::LevelTime> levelTime;
 	lif::TeleportSystem teleportSystem;
 

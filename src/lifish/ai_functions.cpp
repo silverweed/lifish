@@ -109,14 +109,13 @@ AIBoundFunction lif::ai_random_forward_haunt(lif::Entity& entity) {
 	auto moving = entity.get<lif::AxisMoving>();
 	const auto collider = entity.get<lif::Collider>();
 	auto shooting = entity.get<lif::Shooting>();
-	const auto warpable = entity.get<lif::Warpable>();
 	if (moving == nullptr || collider == nullptr || shooting == nullptr)
 		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving, "
 				"Shooting or Collider component!");
 	moving->setAutoRealign(false);
 	const auto random_forward = ai_random_forward(entity);
 
-	return [&entity, moving, random_forward, collider, shooting, warpable] (const lif::LevelManager& lm) {
+	return [&entity, moving, random_forward, collider, shooting] (const lif::LevelManager& lm) {
 		HANDLE_NOT_MOVING;
 		HANDLE_UNALIGNED;
 		if (shooting->isShooting()) {

@@ -30,7 +30,6 @@ using lif::LevelManager;
 LevelManager::LevelManager()
 	: lif::BaseLevelManager()
 	, renderer(*this)
-	, effects(sf::Vector2u(lif::GAME_WIDTH - 2 * lif::TILE_SIZE, lif::GAME_HEIGHT - 2 * lif::TILE_SIZE))
 	, levelTime(new lif::LevelTime)
 {
 	reset();
@@ -129,7 +128,6 @@ const std::shared_ptr<lif::Player> LevelManager::getPlayer(int id) const {
 
 void LevelManager::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	renderer.draw(target, states);
-	effects.blendEffects(*this, target);
 }
 
 void LevelManager::setNextLevel() {
@@ -144,7 +142,6 @@ void LevelManager::setNextLevel() {
 void LevelManager::setLevel(const lif::LevelSet& ls, int lvnum) {
 	level = ls.getLevel(lvnum);
 	const auto lvinfo = level->getInfo();
-	effects.setEffects(lvinfo.effects);
 	lif::LevelLoader::load(*level, *this);
 	cd.setLevelLimit(sf::FloatRect(lif::TILE_SIZE, lif::TILE_SIZE,
 				(lvinfo.width + 1) * lif::TILE_SIZE,
