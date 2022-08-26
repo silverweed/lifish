@@ -5,7 +5,8 @@ if [[ $# < 1 ]]; then
 	exit 1
 fi
 
-DIR="lifish_BOOM_${1}_windows_x64"
+VERSION="$1"
+DIR="lifish_BOOM_${VERSION}_windows_x64"
 
 mkdir -p "$DIR"
 if [[ -n $(ls "$DIR") ]]; then
@@ -34,13 +35,16 @@ cp Release/lifish.exe "$DIR"
 
 pushd "$DIR"
 
-cat > README.txt <<'EOF'
+cat > README.txt <<EOF
 ------------------------------------
 BOOM Remake by silverweed
+v. $VERSION
 https://github.com/silverweed/lifish
 ------------------------------------
 
 The game will only work on a 64bit Windows.
+
+Read the latest patch notes at https://silverweed.github.io/boom/
 EOF
 
 popd
