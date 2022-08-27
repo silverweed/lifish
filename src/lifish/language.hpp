@@ -7,6 +7,7 @@ namespace lif {
 enum class Language {
 	ENGLISH,
 	ITALIAN,
+	GERMAN,
 	COUNT
 };
 
