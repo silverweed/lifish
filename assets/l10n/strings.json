@@ -1,170 +1,212 @@
 {
 	"start_game": {
 		"en": "Start Game",
-		"it": "Nuova Partita"
+		"it": "Nuova Partitai",
+		"de": "Spiel starten"
 	},
 	"load_game": {
 		"en": "Load Game",
-		"it": "Carica Partita"
+		"it": "Carica Partita",
+		"de": "Spiel laden"
 	},
 	"preferences": {
 		"en": "Preferences",
-		"it": "Impostazioni"
+		"it": "Impostazioni",
+		"de": "Einstellungen"
 	},
 	"about": {
 		"en": "About",
-		"it": "Info"
+		"it": "Info",
+		"de": "Ueber"
 	},
 	"exit_game": {
 		"en": "Exit",
-		"it": "Esci"
+		"it": "Esci",
+		"de": "Beenden"
 	},
 	"back": {
 		"en": "Back",
-		"it": "Indietro"
+		"it": "Indietro",
+		"de": "Zurueck"
 	},
 	"resume": {
 		"en": "Resume",
-		"it": "Riprendi"
+		"it": "Riprendi",
+		"de": "Fortsetzen"
 	},
 	"save_game": {
 		"en": "Save Game",
-		"it": "Salva il Gioco"
+		"it": "Salva il Gioco",
+		"de": "Spiel speichern"
 	},
 	"quit_to_menu": {
 		"en": "Quit to Menu",
-		"it": "Torna al Menu"
+		"it": "Torna al Menu",
+		"de": "Zurueck zum Menue"
 	},
 	"selected_levelset": {
 		"en": "Selected level set",
-		"it": "Il set di livelli selezionato"
+		"it": "Il set di livelli selezionato",
+		"de": "Level Set auswaehlen"
 	},
 	"levelset_noexist": {
 		"en": "does not exist or has bad format.",
-		"it": "non esiste o ha un formato errato."
+		"it": "non esiste o ha un formato errato.",
+		"de": "existiert nicht oder hat ein falsches Format."
 	},
 	"win_text": {
 		"en": "You reached the last of the alien infested zones\nand defeated the Big Alien Boss himself.\nNot exactly like eating a piece of cake, eh?\nWell, now the Earth is safe, you are a hero,\n interviews, autographs and all the rest.\n\nBut, wait a minute?\nWhat is that strange thing in the sky?\nOH NO! NOT AGAIN!!",
-		"it": "Hai raggiunto l'ultima zona infestata dagli alieni\ne sconfitto il Grosso Boss Alieno.\nNon esattamente una passeggiata, eh?\nBeh, ora la Terra e' salva e tu sei un eroe,\ninterviste, autografi e tutto il resto.\n\nMa, aspetta un attimo?\nCos'e' quella strana cosa nel cielo?\nOH NO! NON DI NUOVO!!"
+		"it": "Hai raggiunto l'ultima zona infestata dagli alieni\ne sconfitto il Grosso Boss Alieno.\nNon esattamente una passeggiata, eh?\nBeh, ora la Terra e' salva e tu sei un eroe,\ninterviste, autografi e tutto il resto.\n\nMa, aspetta un attimo?\nCos'e' quella strana cosa nel cielo?\nOH NO! NON DI NUOVO!!",
+		"de": "Du hast die letzte der von Aliens verseuchten Zonen erreicht \nund den grossen Alien Boss selbst besiegt.\nNicht gerade wie ein Stueck Kuchen zu essen, oder?\nNun, da die Erde sicher ist, bist du ein Held,\nInterviews, Autogramme und den ganzen Rest.\n\nAber, Moment mal?\nWas ist dieses seltsame Ding am Himmel?\nOH NEIN! NICHT SCHON WIEDER!!"
 	},
 	"win_continue": {
 		"en": "click here to continue",
-		"it": "clicca qui per continuare"
+		"it": "clicca qui per continuare",
+		"de": "klicke hier um fortzufahren"
 	},
 	"insert_save_file": {
 		"en": "Insert save file name",
-		"it": "Inserisci il nome del file"
+		"it": "Inserisci il nome del file",
+		"de": "Speicherstand Dateiname"
 	},
 	"do_save": {
 		"en": "Save",
-		"it": "Salva"
+		"it": "Salva",
+		"de": "Speichern"
 	},
 	"invalid_file_name": {
 		"en": "Invalid file name",
-		"it": "Nome file invalido"
+		"it": "Nome file invalido",
+		"de": "Ungueltiger Dateiname"
 	},
 	"music": {
 		"en": "Music",
-		"it": "Musica"
+		"it": "Musica",
+		"de": "Musik"
 	},
 	"controls": {
 		"en": "Controls",
-		"it": "Controlli"
+		"it": "Controlli",
+		"de": "Tastenbelegung"
 	},
 	"fx": {
 		"en": "FX",
-		"it": "FX"
+		"it": "FX",
+		"de": "FX"
 	},
 	"cancel": {
 		"en": "Cancel",
-		"it": "Annulla"
+		"it": "Annulla",
+		"de": "Abbrechen"
 	},
 	"ok": {
 		"en": "OK",
-		"it": "OK"
+		"it": "OK",
+		"de": "OK"
 	},
 	"yes": {
 		"en": "YES",
-		"it": "SI"
+		"it": "SI",
+		"de": "JA"
 	},
 	"no": {
 		"en": "NO",
-		"it": "NO"
+		"it": "NO",
+		"de": "NEIN"
 	},
 	"is_this_ok?": {
 		"en": "Is this OK?",
-		"it": "Va bene?"
+		"it": "Va bene?",
+		"de": "Ist das in Ordnung?"
 	},
 	"players": {
 		"en": "Players",
-		"it": "Giocatori"
+		"it": "Giocatori",
+		"de": "Spielende"
 	},
 	"show_fps": {
 		"en": "Show FPS",
-		"it": "Mostra FPS"
+		"it": "Mostra FPS",
+		"de": "FPS anzeigen"
 	},
 	"show_game_timer": {
 		"en": "Show Timer",
-		"it": "Mostra Timer"
+		"it": "Mostra Timer",
+		"de": "Timer anz."
 	},
 	"fullscreen": {
 		"en": "Fullscreen",
-		"it": "Sch.Intero"
+		"it": "Sch.Intero",
+		"de": "Vollbild"
 	},
 	"fullscreen_res": {
 		"en": "Fllscr.Res.",
-		"it": "Risoluzione"
+		"it": "Risoluzione",
+		"de": "Aufloesung"
 	},
 	"up": {
 		"en": "UP",
-		"it": "SU"
+		"it": "SU",
+		"de": "HOCH"
 	},
 	"down": {
 		"en": "DOWN",
-		"it": "GIU"
+		"it": "GIU",
+		"de": "RUNTER"
 	},
 	"left": {
 		"en": "LEFT",
-		"it": "SINISTRA"
+		"it": "SINISTRA",
+		"de": "LINKS"
 	},
 	"right": {
 		"en": "RIGHT",
-		"it": "DESTRA"
+		"it": "DESTRA",
+		"de": "RECHTS"
 	},
 	"bomb": {
 		"en": "BOMB",
-		"it": "BOMBA"
+		"it": "BOMBA",
+		"de": "BOMBE"
 	},
 	"pause": {
 		"en": "PAUSE",
-		"it": "PAUSA"
+		"it": "PAUSA",
+		"de": "PAUSE"
 	},
 	"use_joystick?": {
 		"en": "Use Joystick?",
-		"it": "Usa Joystick?"
+		"it": "Usa Joystick?",
+		"de": "Joystick benutzen?"
 	},
 	"no_save_data": {
 		"en": "No save data",
-		"it": "Nessun dato di salvataggio"
+		"it": "Nessun dato di salvataggio",
+		"de": "Keine Speicherdaten vorhanden"
 	},
 	"get_ready": {
 		"en": "GET READY!",
-		"it": "PREPARATI!"
+		"it": "PREPARATI!",
+		"de": "BEREIT MACHEN!"
 	},
 	"level": {
 		"en": "LEVEL",
-		"it": "LIVELLO"
+		"it": "LIVELLO",
+		"de": "LEVEL"
 	},
 	"time_bonus": {
 		"en": "TIME BONUS!",
-		"it": "BONUS TEMPO!"
+		"it": "BONUS TEMPO!",
+		"de": "ZEIT BONUS!"
 	},
 	"framerate_limit": {
 		"en": "Framert.Lim.",
-		"it": "Lim.Framert."
+		"it": "Lim.Framert.",
+		"de": "Lim.Frames."
 	},
 	"high_scores": {
 		"en": "High Scores",
-		"it": "Puinteggi Alti"
+		"it": "Puinteggi Alti",
+		"de": "Highscores"
 	}
 }

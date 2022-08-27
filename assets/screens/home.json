@@ -48,6 +48,14 @@
 				"position": [40, 5]
 			},
 			{
+				"type": "image",
+				"name": "lang_de",
+				"src": "de.png",
+				"size": [30, 16],
+				"interactable": true,
+				"position": [75, 5]
+			},
+			{
 				"type": "text",
 				"name": "start",
 				"string": "!start_game",
