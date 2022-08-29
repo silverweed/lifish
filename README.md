@@ -48,6 +48,12 @@ Copyright (c) Giacomo Parolini, 2021
 
 See the LICENSE file for licensing information.
 
+## CONTRIBUTORS ##
+- [silverweed](https://github.com/silverweed)
+- [bl00dy1837](https://github.com/bl00dy1837)
+- [DrSh4dow](https://github.com/DrSh4dow)
+- [eguiraud](https://github.com/eguiraud)
+
 ### Other ###
 
 Coded with [vim](http://www.vim.org/).
