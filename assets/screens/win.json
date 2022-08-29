@@ -20,7 +20,7 @@
 		"elements": [
 			{
 				"type": "text",
-				"string": "YOU HAVE WON!!",
+				"string": "!win_header",
 				"style-override": {
 					"character-size": 26
 				}
@@ -36,7 +36,7 @@
 			{
 				"type": "text",
 				"name": "start",
-				"string": "click here to continue",
+				"string": "!win_continue",
 				"interactable": true,
 				"style-override": {
 					"spacing": 45,
