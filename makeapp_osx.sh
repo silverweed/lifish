@@ -90,4 +90,4 @@ popd
 find "$APPNAME.app" -type f -exec install_name_tool -add_rpath "@executable_path/../Frameworks" {} \; 2>&1 | grep -v "not a Mach-O"
 
 rm -f "$OUT_ZIP" 2>/dev/null
-zip -r "$OUT_ZIP" "$APPNAME.app"
+zip -r --symlinks "$OUT_ZIP" "$APPNAME.app"
