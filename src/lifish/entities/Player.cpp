@@ -246,7 +246,7 @@ void Player::dealDamage(int damage, bool ignoreArmor, bool shortShield) {
 
 	// Give shield after receiving damage
 	bonusable->giveBonus(lif::BonusType::SHIELD,
-			lif::conf::player::DAMAGE_SHIELD_TIME * (shortShield ? 0.025f : 1));
+			lif::conf::player::DAMAGE_SHIELD_TIME * (shortShield ? 0.01f : 1));
 }
 
 void Player::resurrect() {
