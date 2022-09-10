@@ -59,7 +59,7 @@ void HighScoreManager::saveHighScores() {
 }
 
 bool HighScoreManager::isHighScore(int score) const {
-	return entries.size() < MAX_SCORES_NUM || entries[entries.size() - 1].score < score;
+	return score > 0 && (entries.size() < MAX_SCORES_NUM || entries[entries.size() - 1].score < score);
 }
 
 void HighScoreManager::addHighScore(const HighScoreEntry& entry) {
