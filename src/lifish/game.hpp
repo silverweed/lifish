@@ -8,7 +8,7 @@
  *            https://silverweed.github.io/lifish-license.txt
  *            or in the LICENSE file in this repository's root directory.
  *
- * @author [Giacomo Parolini](https://github.com/silverweed)
+ * @author [silverweed](https://github.com/silverweed)
  * @see https://github.com/silverweed/lifish to download the source code
 */
 #pragma once

@@ -21,7 +21,7 @@
 //
 ////////////////////////////////////////////////////////////
 
-/// This is an altered version of the source, modified by Giacomo Parolini ///
+/// This is an altered version of the source, modified by silverweed ///
 
 #include "AnimatedSprite.hpp"
 

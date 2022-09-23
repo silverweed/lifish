@@ -34,7 +34,7 @@ std::string lif::gameInfo() {
 #else
 	ss << " (" ARCH " bit)";
 #endif
-	ss << " by Giacomo Parolini\r\n";
+	ss << " by silverweed\r\n";
 #ifdef HAVE_NFD
 	ss << "    | NFD support: yes\r\n";
 #elif !defined(SFML_SYSTEM_WINDOWS)
