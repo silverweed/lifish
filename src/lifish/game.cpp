@@ -43,7 +43,7 @@ std::string lif::gameInfo() {
 #else
 	ss << " (" ARCH " bit)";
 #endif
-	ss << " by Giacomo Parolini\r\n";
+	ss << " by silverweed\r\n";
 
 	return ss.str();
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/awk -f
 # Prettifies a JSON file. Use like:
 #     ./prettyplz < myfile.json
-# Author: Giacomo Parolini
+# Author: silverweed
 # License: WTFPL
 
 function print_indent(ind,    i) {

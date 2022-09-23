@@ -44,7 +44,7 @@ It also accepts an optional argument which is the path of the level JSON to use 
 The original BOOM assets belong to Factor Software. I don't hold any intellectual property upon them.
 
 ## LICENSE ##
-Copyright (c) Giacomo Parolini, 2021
+Copyright (c) silverweed, 2022
 
 See the LICENSE file for licensing information.
 
