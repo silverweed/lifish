@@ -212,11 +212,11 @@ void InterlevelContext::update() {
 }
 
 void InterlevelContext::_tickDistributePoints() {
-	// Wait 2 seconds before starting updating score
-	if (time < sf::seconds(2)) return;
+	// Wait a bit before starting updating score
+	if (time < sf::seconds(1.8)) return;
 
-	// Wait 60ms before next update
-	if (bonusPoints > 0 && time - lastTickTime < sf::milliseconds(60)) return;
+	// Wait a bit before next update
+	if (bonusPoints > 0 && time - lastTickTime < sf::milliseconds(40)) return;
 
 	if (bonusTime <= sf::Time::Zero) {
 		if (bonusPoints == 0) {
