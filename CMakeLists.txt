@@ -203,7 +203,7 @@ if(NOT ${HAS_CHECK_CXX} STREQUAL "")
 endif()
 
 # Debug / Release
-if(NOT DEBUG)
+if(RELEASE OR DEBUG_RELEASE)
 	if (DEBUG_RELEASE)
 		message(STATUS "Compiling in DEBUG_RELEASE mode")
 	else()
