@@ -444,8 +444,7 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 			}
 			break;
 		case lif::CTX_GAME:
-			if (cur_context == contexts[lif::CTX_INTERLEVEL]
-					&& game->getLM().getLevel()->getInfo().levelnum == args.startLevel)
+			if (cur_context == contexts[lif::CTX_INTERLEVEL])
 			{
 				// New level just started
 				game->onLevelStart();

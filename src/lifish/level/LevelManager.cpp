@@ -437,8 +437,9 @@ int LevelManager::addScore(int id, int amt) {
 }
 
 void LevelManager::addScoreToAll(int amt) {
-	for (auto& s : score)
-		s = std::max(0, s + amt);
+	for (int i = 0; i < players.size(); ++i)
+		if (players[i])
+			addScore(i + 1, amt);
 }
 
 int LevelManager::getScore(int id) const {
