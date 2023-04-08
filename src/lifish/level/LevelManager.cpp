@@ -437,7 +437,7 @@ int LevelManager::addScore(int id, int amt) {
 }
 
 void LevelManager::addScoreToAll(int amt) {
-	for (int i = 0; i < players.size(); ++i)
+	for (auto i = 0u; i < players.size(); ++i)
 		if (players[i])
 			addScore(i + 1, amt);
 }
