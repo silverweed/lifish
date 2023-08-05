@@ -270,13 +270,21 @@ if(MSYS)
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mwindows")
 	endif()
 else()
-	# Use Gold if available (but not on windows, as it breaks with --out-implib: unknown option)
+	# Use Mold if available
 	execute_process(
-		COMMAND ${CMAKE_C_COMPILER} -fuse-ld=gold -Wl,--version
+		COMMAND ${CMAKE_C_COMPILER} -fuse-ld=mold -Wl,--version
 		ERROR_QUIET OUTPUT_VARIABLE LD_VERSION)
-	if("${LD_VERSION}" MATCHES "GNU gold")
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fuse-ld=gold")
-		message(STATUS "Using GNU gold as linker")
+	if("${LD_VERSION}" MATCHES "compatible with GNU ld")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fuse-ld=mold")
+		message(STATUS "Using mold as linker")
+	else()
+		# Use Gold if available (but not on windows, as it breaks with --out-implib: unknown option)
+		execute_process(
+			COMMAND ${CMAKE_C_COMPILER} -fuse-ld=gold -Wl,--version
+			ERROR_QUIET OUTPUT_VARIABLE LD_VERSION)
+		if("${LD_VERSION}" MATCHES "GNU gold")
+			set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fuse-ld=gold")
+			message(STATUS "Using GNU gold as linker")
+		endif()
 	endif()
-
 endif()
