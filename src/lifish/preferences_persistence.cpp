@@ -18,7 +18,15 @@ static inline std::string getCompleteFname(const char *fname) {
 }
 
 void lif::savePreferences(const char *fname) {
+#if defined(SFML_SYSTEM_MACOS)
+	if (!lif::createDirIfNotExisting(lif::saveDir)) {
+		return;
+	}
+	// On macOS, fname is already the complete path to the prefs file
+	const auto filename = fname;
+#else
 	const auto filename = getCompleteFname(fname);
+#endif
 
 	std::ofstream file(filename);
 	if (!file) {
@@ -57,7 +65,12 @@ void lif::savePreferences(const char *fname) {
 }
 
 void lif::loadPreferences(const char *fname) {
+#if defined(SFML_SYSTEM_MACOS)
+	// On macOS, fname is already the complete path to the prefs file
+	const auto filename = fname;
+#else
 	const auto filename = getCompleteFname(fname);
+#endif
 
 	std::ifstream file(filename);
 	if (!file) {
