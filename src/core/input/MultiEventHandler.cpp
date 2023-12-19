@@ -7,7 +7,7 @@ using lif::MultiEventHandler;
 void MultiEventHandler::handleEvents(sf::Window& window) {
 	sf::Event event;
 	while (window.pollEvent(event)) {
-#ifdef IS_APPLE
+#ifdef __APPLE__
 		lif::kb::checkKeyPressed(event);
 #endif
 
