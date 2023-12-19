@@ -12,12 +12,19 @@ set(PROJECT_NAME lifish)
 set(MAJOR BOOM_1)
 set(MINOR 6)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/cmake")
+set(SFML_ROOT "${CMAKE_SOURCE_DIR}/SFML/install")
 
 # Note: thid is here just because I broke my toolchain on mac, and now SFML fails to link with
 # the framework pulled by Homebrew. Therefore, I force SFML_ROOT to a manually-downloaded version
 # of SFML, but that will only work with this directive on.
 if (APPLE)
 	cmake_policy(SET CMP0074 NEW)
+	enable_language(OBJCXX)
+	set(MACOSX_RPATH)
+	set(CMAKE_BUILD_WITH_INSTALL_RPATH true)
+	set(CMAKE_INSTALL_RPATH "@executable_path/../Frameworks")
+	set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 endif()
 
 # detect architecture
@@ -58,6 +65,7 @@ include_directories(src/third_party)
 include_directories(src/ui)
 file(GLOB LIFISH_SRC ${MAIN_FILE}
 	src/core/*cpp
+	src/core/*mm
 	src/core/collisions/*cpp
 	src/core/components/*cpp
 	src/core/cutscenes/*cpp
@@ -170,7 +178,7 @@ if(USE_STATIC_SFML)
 	set(SFML_STATIC_LIBRARIES true)
 endif()
 find_package(SFML 2.5 COMPONENTS graphics window audio system REQUIRED)
-target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-window sfml-audio sfml-system)
+target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-window sfml-audio sfml-system "-framework Foundation")
 if(USE_STATIC_SFML)
 	target_link_libraries(${PROJECT_NAME} ${SFML_DEPENDENCIES})
 	if(UNIX AND NOT APPLE)
