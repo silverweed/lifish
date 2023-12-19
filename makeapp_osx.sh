@@ -39,6 +39,6 @@ sed -i '' "s/CHANGEME_SW_VERSION/$sw_version/" "BOOM Remake.app/Contents/Info.pl
 
 echo -n "APPL????" > "BOOM Remake.app/Contents/PkgInfo"
 
-hdiutil create -fs HFS+ -srcfolder "BOOM Remake.app" -volname "BOOM Remake $sw_version" "BOOM Remake-$sw_version-mac.dmg"
+hdiutil create -fs HFS+ -srcfolder "BOOM Remake.app" -volname "BOOM Remake $sw_version" "BOOM-Remake-$sw_version-mac.dmg"
 
 rm -r "BOOM Remake.app"
