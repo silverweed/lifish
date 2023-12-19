@@ -140,8 +140,11 @@ void PreferencesScreen::build() {
 	interactables[_name] = std::make_unique<Interactable>(text)
 
 	SIMPLE_ROW(lif::getLocalized("players") + ": ", "n_players", lif::to_string(lif::options.nPlayers));
-	SIMPLE_ROW(lif::getLocalized("fullscreen"), "fullscreen", _getFullscreenText());
-	SIMPLE_ROW(lif::getLocalized("fullscreen_res"), "fullscreen_res", _getFullscreenResText());
+
+	if (fullscreenModes.size() > 0) {
+		SIMPLE_ROW(lif::getLocalized("fullscreen"), "fullscreen", _getFullscreenText());
+		SIMPLE_ROW(lif::getLocalized("fullscreen_res"), "fullscreen_res", _getFullscreenResText());
+	}
 	SIMPLE_ROW(lif::getLocalized("show_fps"), "show_fps", "");
 	SIMPLE_ROW("Vsync", "vsync", "");
 	SIMPLE_ROW(lif::getLocalized("framerate_limit"), "framerate_limit", lif::to_string(lif::options.framerateLimit));
@@ -210,8 +213,10 @@ void PreferencesScreen::onLoad() {
 		}
 	}
 
-	interactables["fullscreen"]->getText()->setString(_getFullscreenText());
-	interactables["fullscreen_res"]->getText()->setString(_getFullscreenResText());
+	if (fullscreenModes.size() > 0) {
+		interactables["fullscreen"]->getText()->setString(_getFullscreenText());
+		interactables["fullscreen_res"]->getText()->setString(_getFullscreenResText());
+	}
 	interactables["n_players"]->getText()->setString(lif::to_string(lif::options.nPlayers));
 	interactables["show_fps"]->getText()->setString(lif::options.showFPS
 			? lif::getLocalized("yes") : lif::getLocalized("no"));
@@ -300,7 +305,9 @@ void PreferencesScreen::_setupCallbacks() {
 		const bool wasFullscreen = lif::options.fullscreen;
 		const auto formerVideoMode = lif::options.videoMode;
 		lif::options.fullscreen = desiredFullscreen;
-		lif::options.videoMode = fullscreenModes[desiredFullscreenModeIdx];
+		if (fullscreenModes.size() > 0) {
+			lif::options.videoMode = fullscreenModes[desiredFullscreenModeIdx];
+		}
 		if (lif::options.fullscreen != wasFullscreen || lif::options.videoMode != formerVideoMode) {
 			if (lif::options.fullscreen)
 				_setMustConfirmRes(true);
@@ -468,5 +475,9 @@ lif::ui::Action PreferencesScreen::_changeNPlayers(int newNPlayer) {
 
 void PreferencesScreen::onUnload() {
 	lif::ui::Screen::onUnload();
-	lif::savePreferences(lif::PREFERENCES_SAVE_FILE_NAME);
+	#if defined(SFML_SYSTEM_MACOS)
+		lif::savePreferences(std::string(lif::saveDir + std::string(lif::PREFERENCES_SAVE_FILE_NAME)).c_str());
+	#else
+		lif::savePreferences(lif::PREFERENCES_SAVE_FILE_NAME);
+	#endif
 }
