@@ -220,14 +220,22 @@ int main(int argc, char **argv) {
 	}
 
 	// Must be done AFTER lif::init() but BEFORE the UI initializes!
+#if defined(SFML_SYSTEM_MACOS)
+	lif::loadPreferences(std::string(lif::saveDir + std::string(lif::PREFERENCES_SAVE_FILE_NAME)).c_str());
+#else
 	lif::loadPreferences(lif::PREFERENCES_SAVE_FILE_NAME);
+#endif
 
 	if (args.muteSounds)
 		lif::options.soundsVolume = 0;
 	if (args.muteMusic)
 		lif::options.musicVolume = 0;
 	if (args.levelsetName.length() < 1)
+#if defined(SFML_SYSTEM_MACOS)
+		args.levelsetName = lif::assetDir + std::string("levels.json");
+#else
 		args.levelsetName = std::string(lif::pwd) + lif::DIRSEP + std::string("levels.json");
+#endif
 
 	// Create the game window
 	lif::options.windowSize = sf::Vector2u(lif::WINDOW_WIDTH, lif::WINDOW_HEIGHT);

@@ -10,7 +10,7 @@
 #endif
 
 #if defined(SFML_SYSTEM_MACOS)
-#	include <mach-o/dyld.h>
+#	include "MacPaths.h"
 #elif defined(__unix__)
 #	include <unistd.h>
 #elif defined(SFML_SYSTEM_WINDOWS)
@@ -57,11 +57,6 @@ static bool _initPwd() {
 #if defined(SFML_SYSTEM_WINDOWS)
 	GetModuleFileName(NULL, pwd, lif::PWD_BUFSIZE);
 
-#elif defined(SFML_SYSTEM_MACOS)
-	auto bufsz = static_cast<uint32_t>(lif::PWD_BUFSIZE);
-	if (_NSGetExecutablePath(pwd, &bufsz) != 0)
-		return false;
-
 #elif defined(__unix__)
 	ssize_t bytes = 0;
 	if (access("/proc/self/exe", F_OK) != -1) {
@@ -77,6 +72,8 @@ static bool _initPwd() {
 	pwd[bytes] = '\0';
 #endif
 
+#if !defined(SFML_SYSTEM_MACOS)
+	// On macOS, the path to the executable is not used
 	int len = strlen(pwd);
 	if (len < 1)
 		return false;
@@ -88,6 +85,7 @@ static bool _initPwd() {
 			break;
 		}
 	}
+#endif
 
 	return true;
 }
@@ -104,6 +102,11 @@ bool lif::initCore() {
 		return false;
 
 	// Fill the assetDir and saveDir variables once and for all
+#if defined(SFML_SYSTEM_MACOS)
+	// In addition to saved games, saveDir is also used to save preferences
+	assetDir = bundleResourcesPath() + DIRSEP;
+	saveDir = applicationSupportPath() + DIRSEP + "BOOM Remake" + DIRSEP;
+#else
 	std::stringstream ss;
 	ss << pwd << DIRSEP << "assets" << DIRSEP;
 	assetDir = ss.str();
@@ -111,6 +114,7 @@ bool lif::initCore() {
 	ss.str("");
 	ss << pwd << DIRSEP << "saves" << DIRSEP;
 	saveDir = ss.str();
+#endif
 
 	return true;
 }
