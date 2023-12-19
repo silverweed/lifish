@@ -31,7 +31,7 @@ using Matrix = std::array<std::array<T, COLS>, ROWS>;
 /// Polyfill ///
 template<typename T>
 constexpr T abs(T num) {
-#ifdef IS_APPLE
+#ifdef __APPLE__
 	// Apple Clang is a "good" compiler...
 	if (num < 0) return -num;
 	return num;
