@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: macos-patches
+          ref: boom
 
       - run: ./makeapp_osx.sh
 
