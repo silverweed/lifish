@@ -14,9 +14,6 @@ set(MINOR 6)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-# Note: thid is here just because I broke my toolchain on mac, and now SFML fails to link with
-# the framework pulled by Homebrew. Therefore, I force SFML_ROOT to a manually-downloaded version
-# of SFML, but that will only work with this directive on.
 if (APPLE)
 	cmake_policy(SET CMP0074 NEW)
 	enable_language(OBJCXX)
