@@ -6,7 +6,7 @@
 # - DEBUG_RELEASE: compile with optimization and debug
 # - USE_STATIC_SFML: force to use static SFML libs and dependencies (default on windows)
 
-cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 project(lifish)
 set(PROJECT_NAME lifish)
 set(MAJOR BOOM_1)
