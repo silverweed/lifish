@@ -89,11 +89,11 @@ void AxisSighted::_fillLine(lif::Direction dir) {
 					switch (dir) {
 					case lif::Direction::DOWN:
 					case lif::Direction::UP:
-						vision[dir] = lif::abs(owner.getPosition().y - cld->getPosition().y);
+						vision[dir] = std::abs(owner.getPosition().y - cld->getPosition().y);
 						break;
 					case lif::Direction::LEFT:
 					case lif::Direction::RIGHT:
-						vision[dir] = lif::abs(owner.getPosition().x - cld->getPosition().x);
+						vision[dir] = std::abs(owner.getPosition().x - cld->getPosition().x);
 						break;
 					default:
 						break;
