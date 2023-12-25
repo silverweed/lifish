@@ -1,6 +1,7 @@
 #include "core.hpp"
 #include "GameCache.hpp"
 #include "Options.hpp"
+#include "preferences_persistence.hpp"
 #include "Time.hpp"
 #include <chrono>
 #include <cstring>
@@ -23,6 +24,7 @@
 char lif::pwd[lif::PWD_BUFSIZE];
 std::string lif::assetDir;
 std::string lif::saveDir;
+std::string lif::preferencesPath;
 lif::GameCache lif::cache;
 std::default_random_engine lif::rng;
 lif::Options lif::options;
@@ -106,6 +108,7 @@ bool lif::initCore() {
 	// In addition to saved games, saveDir is also used to save preferences
 	assetDir = bundleResourcesPath() + DIRSEP;
 	saveDir = applicationSupportPath() + DIRSEP + "BOOM Remake" + DIRSEP;
+	preferencesPath = saveDir + std::string(PREFERENCES_SAVE_FILE_NAME);
 #else
 	std::stringstream ss;
 	ss << pwd << DIRSEP << "assets" << DIRSEP;
@@ -114,6 +117,8 @@ bool lif::initCore() {
 	ss.str("");
 	ss << pwd << DIRSEP << "saves" << DIRSEP;
 	saveDir = ss.str();
+
+	preferencesPath = std::string(pwd) + DIRSEP + std::string(PREFERENCES_SAVE_FILE_NAME);
 #endif
 
 	return true;

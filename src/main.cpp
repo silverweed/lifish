@@ -220,11 +220,7 @@ int main(int argc, char **argv) {
 	}
 
 	// Must be done AFTER lif::init() but BEFORE the UI initializes!
-#if defined(SFML_SYSTEM_MACOS)
-	lif::loadPreferences(std::string(lif::saveDir + std::string(lif::PREFERENCES_SAVE_FILE_NAME)).c_str());
-#else
-	lif::loadPreferences(lif::PREFERENCES_SAVE_FILE_NAME);
-#endif
+	lif::loadPreferences(lif::preferencesPath);
 
 	if (args.muteSounds)
 		lif::options.soundsVolume = 0;

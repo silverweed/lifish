@@ -11,26 +11,16 @@
 
 using json = nlohmann::json;
 
-static inline std::string getCompleteFname(const char *fname) {
-	std::stringstream ss;
-	ss << lif::pwd << lif::DIRSEP << fname;
-	return ss.str();
-}
-
-void lif::savePreferences(const char *fname) {
+void lif::savePreferences(std::string fpath) {
 #if defined(SFML_SYSTEM_MACOS)
 	if (!lif::createDirIfNotExisting(lif::saveDir)) {
 		return;
 	}
-	// On macOS, fname is already the complete path to the prefs file
-	const auto filename = fname;
-#else
-	const auto filename = getCompleteFname(fname);
 #endif
 
-	std::ofstream file(filename);
+	std::ofstream file(fpath.c_str());
 	if (!file) {
-		std::cerr << "[ WARNING ] could not save preferences in " << filename << "!\n";
+		std::cerr << "[ WARNING ] could not save preferences in " << fpath << "!\n";
 		return;
 	}
 
@@ -64,17 +54,10 @@ void lif::savePreferences(const char *fname) {
 	file << out.dump(8) << "\n";
 }
 
-void lif::loadPreferences(const char *fname) {
-#if defined(SFML_SYSTEM_MACOS)
-	// On macOS, fname is already the complete path to the prefs file
-	const auto filename = fname;
-#else
-	const auto filename = getCompleteFname(fname);
-#endif
-
-	std::ifstream file(filename);
+void lif::loadPreferences(std::string fpath) {
+	std::ifstream file(fpath.c_str());
 	if (!file) {
-		std::cerr << "[ INFO ] could not load preferences file " << filename << ".\n";
+		std::cerr << "[ INFO ] could not load preferences file " << fpath << ".\n";
 		return;
 	}
 

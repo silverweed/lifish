@@ -21,11 +21,7 @@ static ScreenCallback cb_switchTo(const std::string& screen) {
 static ScreenCallback cb_lang(lif::Language lang) {
 	return [lang] () {
 		lif::switchLanguage(lang);
-		#if defined(SFML_SYSTEM_MACOS)
-			lif::savePreferences(std::string(lif::saveDir + std::string(lif::PREFERENCES_SAVE_FILE_NAME)).c_str());
-		#else
-			lif::savePreferences(lif::PREFERENCES_SAVE_FILE_NAME);
-		#endif
+		lif::savePreferences(lif::preferencesPath);
 		return Action::DO_NOTHING;
 	};
 }

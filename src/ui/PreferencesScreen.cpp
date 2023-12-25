@@ -475,9 +475,5 @@ lif::ui::Action PreferencesScreen::_changeNPlayers(int newNPlayer) {
 
 void PreferencesScreen::onUnload() {
 	lif::ui::Screen::onUnload();
-	#if defined(SFML_SYSTEM_MACOS)
-		lif::savePreferences(std::string(lif::saveDir + std::string(lif::PREFERENCES_SAVE_FILE_NAME)).c_str());
-	#else
-		lif::savePreferences(lif::PREFERENCES_SAVE_FILE_NAME);
-	#endif
+	lif::savePreferences(lif::preferencesPath);
 }
