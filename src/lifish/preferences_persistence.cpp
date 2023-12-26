@@ -18,7 +18,7 @@ void lif::savePreferences(std::string fpath) {
 	}
 #endif
 
-	std::ofstream file(fpath.c_str());
+	std::ofstream file(fpath);
 	if (!file) {
 		std::cerr << "[ WARNING ] could not save preferences in " << fpath << "!\n";
 		return;
@@ -55,7 +55,7 @@ void lif::savePreferences(std::string fpath) {
 }
 
 void lif::loadPreferences(std::string fpath) {
-	std::ifstream file(fpath.c_str());
+	std::ifstream file(fpath);
 	if (!file) {
 		std::cerr << "[ INFO ] could not load preferences file " << fpath << ".\n";
 		return;
