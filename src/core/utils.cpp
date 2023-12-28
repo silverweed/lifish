@@ -42,7 +42,11 @@ void lif::testMusic() {
 }
 
 std::string lif::toRelativePath(const std::string& path) {
+#if defined(SFML_SYSTEM_MACOS)
+	auto idx = lif::assetDir.length();
+#else
 	auto idx = strnlen(lif::pwd, lif::PWD_BUFSIZE);
+#endif
 
 	if (idx >= path.length()) return path;
 
