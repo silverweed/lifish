@@ -302,17 +302,17 @@ void PreferencesScreen::_setupCallbacks() {
 		return Action::DO_NOTHING;
 	};
 	callbacks["ok"] = [this] () {
-		const bool wasFullscreen = lif::options.fullscreen;
-		const auto formerVideoMode = lif::options.videoMode;
+		// const bool wasFullscreen = lif::options.fullscreen;
+		// const auto formerVideoMode = lif::options.videoMode;
 		lif::options.fullscreen = desiredFullscreen;
 		if (fullscreenModes.size() > 0) {
 			lif::options.videoMode = fullscreenModes[desiredFullscreenModeIdx];
 		}
-		if (lif::options.fullscreen != wasFullscreen || lif::options.videoMode != formerVideoMode) {
-			if (lif::options.fullscreen)
-				_setMustConfirmRes(true);
-			return Action::DO_NOTHING;
-		}
+		// if (lif::options.fullscreen != wasFullscreen || lif::options.videoMode != formerVideoMode) {
+		// 	if (lif::options.fullscreen)
+		// 		_setMustConfirmRes(true);
+		// 	return Action::DO_NOTHING;
+		// }
 
 		return Action::SWITCH_TO_PARENT;
 	};
