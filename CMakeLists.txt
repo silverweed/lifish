@@ -60,40 +60,21 @@ include_directories(src/lifish/level)
 include_directories(src/third_party)
 # ui/ contains the ui parts
 include_directories(src/ui)
-if (APPLE)
-	file(GLOB LIFISH_SRC ${MAIN_FILE}
-		src/core/*cpp
-		src/core/*mm
-		src/core/collisions/*cpp
-		src/core/components/*cpp
-		src/core/cutscenes/*cpp
-		src/core/entities/*cpp
-		src/core/input/*cpp
-		src/lifish/*cpp
-		src/lifish/components/*cpp
-		src/lifish/conf/*cpp
-		src/lifish/entities/*cpp
-		src/lifish/level/*cpp
-		src/third_party/*cpp
-		src/ui/*cpp
-	)
-else()
-	file(GLOB LIFISH_SRC ${MAIN_FILE}
-		src/core/*cpp
-		src/core/collisions/*cpp
-		src/core/components/*cpp
-		src/core/cutscenes/*cpp
-		src/core/entities/*cpp
-		src/core/input/*cpp
-		src/lifish/*cpp
-		src/lifish/components/*cpp
-		src/lifish/conf/*cpp
-		src/lifish/entities/*cpp
-		src/lifish/level/*cpp
-		src/third_party/*cpp
-		src/ui/*cpp
-	)
-endif()
+file(GLOB LIFISH_SRC ${MAIN_FILE}
+	src/core/*cpp
+	src/core/collisions/*cpp
+	src/core/components/*cpp
+	src/core/cutscenes/*cpp
+	src/core/entities/*cpp
+	src/core/input/*cpp
+	src/lifish/*cpp
+	src/lifish/components/*cpp
+	src/lifish/conf/*cpp
+	src/lifish/entities/*cpp
+	src/lifish/level/*cpp
+	src/third_party/*cpp
+	src/ui/*cpp
+)
 
 if(NOT RELEASE)
 	# core/debug/ contains debug utils
@@ -152,6 +133,11 @@ if(MSYS)
 	file(GLOB WIN_LIFISH_SRC src/win/*.cpp)
 	add_definitions(-D_WIN32_WINNT=_WIN32_WINNT_VISTA)
 	set(LIFISH_SRC ${LIFISH_SRC} ${WIN_LIFISH_SRC})
+endif()
+
+if(APPLE)
+	file(GLOB APPLE_LIFISH_SRC src/core/*mm)
+	set(LIFISH_SRC ${LIFISH_SRC} ${APPLE_LIFISH_SRC})
 endif()
 
 add_executable(${PROJECT_NAME} ${LIFISH_SRC})
