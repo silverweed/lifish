@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML/Config.hpp>
 #include <string>
 #include <vector>
 
