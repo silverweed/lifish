@@ -12,8 +12,6 @@
 #include "Boss.hpp"
 #include "Controllable.hpp"
 #include "ControlsScreen.hpp"
-#include "CutsceneBuilder.hpp"
-#include "CutscenePlayer.hpp"
 #include "FPSDisplayer.hpp"
 #include "GameCache.hpp"
 #include "GameContext.hpp"
@@ -261,14 +259,10 @@ int main(int argc, char **argv) {
 	// Adjust the origin to make room for side panel
 	const sf::Vector2f origin(-lif::SIDE_PANEL_WIDTH, 0);
 
-	// Create cutscene player
-	lif::CutscenePlayer cutscenePlayer;
-
 	std::array<lif::WindowContext*, 4> contexts;
 	contexts[lif::CTX_GAME] = game.get();
 	contexts[lif::CTX_UI] = &ui;
 	contexts[lif::CTX_INTERLEVEL] = nullptr;
-	contexts[lif::CTX_CUTSCENE] = &cutscenePlayer;
 	// Note: this is always assumed non-null throughout the program
 	lif::WindowContext *cur_context = contexts[lif::CTX_UI];
 #ifndef RELEASE
@@ -457,25 +451,6 @@ lif::WindowContext* checkContextSwitch(sf::RenderWindow& window,
 			// This prevents accidental placement of bombs and similar.
 			game->getLM().disableInputFor(sf::seconds(0.5));
 			break;
-		case lif::CTX_CUTSCENE:
-			{
-				auto& cutscenePlayer = *static_cast<lif::CutscenePlayer*>(contexts[lif::CTX_CUTSCENE]);
-				cutscenePlayer.reset();
-				std::string cutsceneToPlay = "";
-				using WLState = lif::WinLoseHandler::State;
-				if (game->getWLHandler().getState() == WLState::ADVANCED_LEVEL) {
-					cutsceneToPlay = game->getLM().getLevel()->getInfo().cutscenePre;
-					cutscenePlayer.setNewContext(lif::CTX_GAME);
-				} else {
-					cutsceneToPlay = game->getLM().getLevel()->getInfo().cutscenePost;
-					cutscenePlayer.setNewContext(lif::CTX_INTERLEVEL);
-					static_cast<lif::InterlevelContext*>(contexts[lif::CTX_INTERLEVEL])
-						->setAdvancingLevel();
-				}
-				cutscenePlayer.addCutscenes(lif::CutsceneBuilder::fromJson(cutsceneToPlay));
-				cutscenePlayer.play();
-				break;
-			}
 		default:
 			break;
 		}
