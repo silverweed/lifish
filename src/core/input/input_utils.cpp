@@ -4,7 +4,7 @@
 //constexpr unsigned XBOX = 11;
 constexpr unsigned PS3 = 12;
 
-#ifdef IS_APPLE
+#ifdef __APPLE__
 std::array<bool, sf::Keyboard::KeyCount> lif::kb::keyPressed;
 
 bool lif::kb::isKeyPressed(sf::Keyboard::Key key) {
@@ -191,7 +191,7 @@ std::string lif::kb::keyToString(sf::Keyboard::Key key) {
 
 char lif::kb::keyToAlnum(sf::Keyboard::Key key) {
 #define ALPHA(x, X)  \
-	(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift) \
+	(IS_KEY_PRESSED(sf::Keyboard::LShift) || IS_KEY_PRESSED(sf::Keyboard::RShift) \
 		? X : x)
 
 	switch (key) {

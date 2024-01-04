@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML/Config.hpp>
 #include <string>
 #include <vector>
 
@@ -11,7 +12,12 @@ struct HighScoreEntry {
 };
 
 class HighScoreManager {
+#if defined(SFML_SYSTEM_MACOS)
+	// For convenience, make the high scores file visible to the end user on macOS
+	static constexpr const char* HIGH_SCORES_FNAME = "highscores.txt";
+#else
 	static constexpr const char* HIGH_SCORES_FNAME = ".highscores.txt";
+#endif
 	static constexpr std::size_t MAX_SCORES_NUM = 16;
 
 	std::vector<HighScoreEntry> entries;

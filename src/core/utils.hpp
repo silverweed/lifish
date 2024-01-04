@@ -30,17 +30,6 @@ using Matrix = std::array<std::array<T, COLS>, ROWS>;
 
 /// Polyfill ///
 template<typename T>
-constexpr T abs(T num) {
-#ifdef IS_APPLE
-	// Apple Clang is a "good" compiler...
-	if (num < 0) return -num;
-	return num;
-#else
-	return std::abs(num);
-#endif
-}
-
-template<typename T>
 inline std::string to_string(T val) {
 #ifdef __MINGW32__
 	std::stringstream ss;
@@ -117,7 +106,7 @@ constexpr float length(sf::Vector2<T> v) {
 
 template<typename T, typename R>
 constexpr T manhattanDistance(sf::Vector2<T> tileA, sf::Vector2<R> tileB) {
-	return lif::abs(tileA.x - tileB.x) + lif::abs(tileA.y - tileB.y);
+	return std::abs(tileA.x - tileB.x) + std::abs(tileA.y - tileB.y);
 }
 
 template<typename T, typename R>

@@ -82,7 +82,7 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 void Explosion::update() {
 	lif::Entity::update();
 	lightSource->setColor(sf::Color(255, 255, 255,
-		(4 - lif::abs(static_cast<signed>(explosionC->getSprite().getCurrentFrame()) - 3)) * 255 / 4.0));
+		(4 - std::abs(static_cast<signed>(explosionC->getSprite().getCurrentFrame()) - 3)) * 255 / 4.0));
 
 	if (!explosionH->isActive())
 		return;

@@ -21,7 +21,7 @@ Grenade::Grenade(const sf::Vector2f& pos, const sf::Vector2f& target,
 {
 	collider->setActive(false); // collide with nothing, not even level bounds
 	const auto bounce = [] (auto t) {
-		return sf::Vector2f(0, -lif::TILE_SIZE * lif::abs(std::sin(t * 2 * lif::PI)) / std::pow(t + 1, 3));
+		return sf::Vector2f(0, -lif::TILE_SIZE * std::abs(std::sin(t * 2 * lif::PI)) / std::pow(t + 1, 3));
 	};
 	static_cast<lif::GuidedMoving*>(moving)->addModFunc(bounce, false, false);
 	addComponent<lif::Spawning>(*this, [this] () {

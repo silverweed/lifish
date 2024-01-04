@@ -8,7 +8,7 @@ namespace lif {
 
 namespace kb {
 
-#ifdef IS_APPLE
+#ifdef __APPLE__
 	extern std::array<bool, sf::Keyboard::KeyCount> keyPressed;	
 
 	/** Polyfill for SFML's isKeyPressed (which doesn't work on OSX) */
@@ -17,7 +17,7 @@ namespace kb {
 	/** If event is a KeyPressed/KeyReleased event, updates keyPressed status. */
 	void checkKeyPressed(sf::Event event);
 
-#	define IS_KEY_PRESSED lif::kb:isKeyPressed
+#	define IS_KEY_PRESSED lif::kb::isKeyPressed
 #else
 #	define IS_KEY_PRESSED sf::Keyboard::isKeyPressed
 #endif

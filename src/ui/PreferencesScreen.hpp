@@ -56,9 +56,13 @@ class PreferencesScreen : public lif::ui::DynamicScreen {
 
 	std::string _getFullscreenResText() const {
 		const auto& vm = fullscreenModes[desiredFullscreenModeIdx];
-		std::stringstream ss;
-		ss << vm.width << "x" << vm.height << ":" << vm.bitsPerPixel;
-		return desiredFullscreen ? ss.str() : "-";
+		if (fullscreenModes.size() > 0) {
+			std::stringstream ss;
+			ss << vm.width << "x" << vm.height << ":" << vm.bitsPerPixel;
+			return desiredFullscreen ? ss.str() : "-";
+		} else {
+			return "-";
+		}
 	}
 
 	void _setMustConfirmRes(bool must);

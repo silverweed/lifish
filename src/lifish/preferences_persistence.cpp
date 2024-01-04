@@ -11,18 +11,16 @@
 
 using json = nlohmann::json;
 
-static inline std::string getCompleteFname(const char *fname) {
-	std::stringstream ss;
-	ss << lif::pwd << lif::DIRSEP << fname;
-	return ss.str();
-}
+void lif::savePreferences(std::string fpath) {
+#if defined(SFML_SYSTEM_MACOS)
+	if (!lif::createDirIfNotExisting(lif::saveDir)) {
+		return;
+	}
+#endif
 
-void lif::savePreferences(const char *fname) {
-	const auto filename = getCompleteFname(fname);
-
-	std::ofstream file(filename);
+	std::ofstream file(fpath);
 	if (!file) {
-		std::cerr << "[ WARNING ] could not save preferences in " << filename << "!\n";
+		std::cerr << "[ WARNING ] could not save preferences in " << fpath << "!\n";
 		return;
 	}
 
@@ -56,12 +54,10 @@ void lif::savePreferences(const char *fname) {
 	file << out.dump(8) << "\n";
 }
 
-void lif::loadPreferences(const char *fname) {
-	const auto filename = getCompleteFname(fname);
-
-	std::ifstream file(filename);
+void lif::loadPreferences(std::string fpath) {
+	std::ifstream file(fpath);
 	if (!file) {
-		std::cerr << "[ INFO ] could not load preferences file " << filename << ".\n";
+		std::cerr << "[ INFO ] could not load preferences file " << fpath << ".\n";
 		return;
 	}
 

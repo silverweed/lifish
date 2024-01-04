@@ -4,7 +4,7 @@
 lif::Track lif::getNthTrack(int num, float start, float length) {
 	using lif::DIRSEP;
 	std::stringstream ss;
-	ss << lif::pwd << DIRSEP << "assets" << DIRSEP << "music" << DIRSEP << "music" << num << ".ogg";
+	ss << lif::assetDir << "music" << DIRSEP << "music" << num << ".ogg";
 	lif::Track track;
 	track.name = ss.str();
 	track.loopstart = start;

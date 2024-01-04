@@ -52,6 +52,8 @@ extern char pwd[PWD_BUFSIZE];
 extern std::string assetDir;
 /** The save directory */
 extern std::string saveDir;
+/** The preferences path */
+extern std::string preferencesPath;
 
 /** Global game cache (caches textures in memory for faster loading) */
 extern lif::GameCache cache;

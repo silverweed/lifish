@@ -21,7 +21,7 @@ static ScreenCallback cb_switchTo(const std::string& screen) {
 static ScreenCallback cb_lang(lif::Language lang) {
 	return [lang] () {
 		lif::switchLanguage(lang);
-		lif::savePreferences(lif::PREFERENCES_SAVE_FILE_NAME);
+		lif::savePreferences(lif::preferencesPath);
 		return Action::DO_NOTHING;
 	};
 }

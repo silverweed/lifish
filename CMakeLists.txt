@@ -6,18 +6,22 @@
 # - DEBUG_RELEASE: compile with optimization and debug
 # - USE_STATIC_SFML: force to use static SFML libs and dependencies (default on windows)
 
-cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 project(lifish)
 set(PROJECT_NAME lifish)
 set(MAJOR BOOM_1)
-set(MINOR 6)
+set(MINOR 7)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+set(CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-# Note: thid is here just because I broke my toolchain on mac, and now SFML fails to link with
-# the framework pulled by Homebrew. Therefore, I force SFML_ROOT to a manually-downloaded version
-# of SFML, but that will only work with this directive on.
 if (APPLE)
 	cmake_policy(SET CMP0074 NEW)
+	enable_language(OBJCXX)
+	set(MACOSX_RPATH)
+	set(CMAKE_BUILD_WITH_INSTALL_RPATH true)
+	set(CMAKE_INSTALL_RPATH "@executable_path/../Frameworks")
+	set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
+	set(SFML_ROOT "${CMAKE_SOURCE_DIR}/SFML/install")
 endif()
 
 # detect architecture
@@ -71,6 +75,7 @@ file(GLOB LIFISH_SRC ${MAIN_FILE}
 	src/third_party/*cpp
 	src/ui/*cpp
 )
+
 if(NOT RELEASE)
 	# core/debug/ contains debug utils
 	include_directories(src/core/debug)
@@ -130,6 +135,11 @@ if(MSYS)
 	set(LIFISH_SRC ${LIFISH_SRC} ${WIN_LIFISH_SRC})
 endif()
 
+if(APPLE)
+	file(GLOB APPLE_LIFISH_SRC src/core/*mm)
+	set(LIFISH_SRC ${LIFISH_SRC} ${APPLE_LIFISH_SRC})
+endif()
+
 add_executable(${PROJECT_NAME} ${LIFISH_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_STANDARD 14
@@ -170,7 +180,11 @@ if(USE_STATIC_SFML)
 	set(SFML_STATIC_LIBRARIES true)
 endif()
 find_package(SFML 2.5 COMPONENTS graphics window audio system REQUIRED)
-target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-window sfml-audio sfml-system)
+if (APPLE)
+	target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-window sfml-audio sfml-system "-framework Foundation")
+else()
+	target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-window sfml-audio sfml-system)
+endif()
 if(USE_STATIC_SFML)
 	target_link_libraries(${PROJECT_NAME} ${SFML_DEPENDENCIES})
 	if(UNIX AND NOT APPLE)
