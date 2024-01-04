@@ -53,6 +53,7 @@ See the LICENSE file for licensing information.
 - [bl00dy1837](https://github.com/bl00dy1837)
 - [DrSh4dow](https://github.com/DrSh4dow)
 - [eguiraud](https://github.com/eguiraud)
+- [orazioedoardo](https://github.com/orazioedoardo)
 
 ### Other ###
 
