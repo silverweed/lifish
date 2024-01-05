@@ -133,8 +133,10 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			return true;
 
 		case sf::Keyboard::Numpad8:
-			game.lm.getPlayer(1)->setRemainingLives(0);
-			game.lm.getPlayer(1)->get<lif::Killable>()->kill();
+			if (auto player = game.lm.getPlayer(1)) {
+				player->setRemainingLives(0);
+				player->get<lif::Killable>()->kill();
+			}
 			return true;
 
 		case sf::Keyboard::Numpad9:
@@ -180,8 +182,10 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			return true;
 
 		case sf::Keyboard::J:
-			game.lm.getPlayer(2)->setRemainingLives(0);
-			game.lm.getPlayer(2)->get<lif::Killable>()->kill();
+			if (auto player = game.lm.getPlayer(2)) {
+				player->setRemainingLives(0);
+				player->get<lif::Killable>()->kill();
+			}
 			return true;
 
 		case sf::Keyboard::K:
@@ -223,8 +227,9 @@ bool DebugEventHandler::handleEvent(sf::Window&, sf::Event event) {
 			return true;
 
 		case sf::Keyboard::Period:
+			if (auto player = game.lm.getPlayer(1))
 			{
-				auto bns = game.lm.getPlayer(1)->get<lif::Bonusable>();
+				auto bns = player->get<lif::Bonusable>();
 				if (bns->hasBonus(lif::BonusType::SHIELD))
 					bns->giveBonus(lif::BonusType::SHIELD, sf::seconds(0));
 				else
@@ -393,7 +398,7 @@ void _printHelp() {
 		<< "G : draw colliders\n"
 		<< "H : draw SH cells\n"
 		<< "I : print game stats\n"
-		<< "J : kill player 1\n"
+		<< "J : kill player 2\n"
 		<< "K : pause game simulation\n"
 		<< "L : step game simulation (pauses if needed)\n"
 		<< "M : morph all enemies\n"
@@ -410,6 +415,7 @@ void _printHelp() {
 		<< "PageUp   : speed up time\n"
 		<< "Numpad6  : flip all entities\n"
 		<< "Numpad7  : compute and show free tiles\n"
+		<< "Numpad8  : kill player 1\n"
 		<< "Numpad9  : rotate all entities of pi/4\n"
 		<< "Ctrl+Alt+Num : draw layer Num\n"
 		<< "Ctrl+Alt+Shift+Num : draw also layer Num\n"
