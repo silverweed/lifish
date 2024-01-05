@@ -433,7 +433,9 @@ bool LevelManager::canGo(const lif::AxisMoving& am, const lif::Direction dir) co
 
 int LevelManager::addScore(int id, int amt) {
 	assert(0 < id && id <= lif::MAX_PLAYERS);
-	return score[id - 1] = std::max(0, score[id - 1] + amt);
+	if (players[id - 1])
+		score[id - 1] = std::max(0, score[id - 1] + amt);
+	return score[id - 1];
 }
 
 void LevelManager::addScoreToAll(int amt) {
