@@ -245,8 +245,10 @@ int main(int argc, char **argv) {
 	lif::options.showFPS = true;
 #endif
 
-	// Setup icon
+	// Setup window icon except on macOS so the Big Sur version from the app bundle is used instead
+#if !defined(SFML_SYSTEM_MACOS)
 	loadIcon(window);
+#endif
 
 	// Setup UI
 	auto& ui = lif::ui::UI::getInstance();
