@@ -17,6 +17,10 @@ protected:
 		std::string path;
 		int level = 0;
 		int nPlayers = 0;
+
+		bool operator <(const SaveFile& sf) const {
+			return (displayName < sf.displayName);
+		}
 	};
 
 	SaveDataBrowser();

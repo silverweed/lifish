@@ -38,6 +38,8 @@ auto SaveDataBrowser::browseSaveData(std::string path) const -> std::vector<Save
 	}
 	closedir(dir);
 
+	std::sort(files.begin(), files.end());
+
 	return files;
 }
 
