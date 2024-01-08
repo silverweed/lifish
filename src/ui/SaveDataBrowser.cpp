@@ -4,6 +4,11 @@
 #include "dirent.h"
 #include <cstdlib>
 #include <cstring>
+#include <sys/stat.h>
+
+#ifdef _WIN32
+#define stat _stat
+#endif
 
 using lif::SaveDataBrowser;
 
@@ -23,6 +28,13 @@ auto SaveDataBrowser::browseSaveData(std::string path) const -> std::vector<Save
 			SaveDataBrowser::SaveFile file;
 			file.displayName = std::string(ent->d_name, strlen(ent->d_name) - strlen(suffix));
 			file.path = path + lif::DIRSEP + ent->d_name;
+			struct stat result;
+			if (stat(file.path.c_str(), &result) == 0) {
+				file.mtime = result.st_mtime;
+			} else {
+				std::cerr << "[ WARNING ] unknown modification date of " << file.displayName << std::endl;
+				file.mtime = 0;
+			}
 			try {
 				auto savejson = nlohmann::json::parse(std::ifstream(file.path));
 				file.level = savejson["level"];
@@ -37,6 +49,9 @@ auto SaveDataBrowser::browseSaveData(std::string path) const -> std::vector<Save
 		ent = readdir(dir);
 	}
 	closedir(dir);
+
+	// Reverse order, sort by most recent first
+	std::sort(files.rbegin(), files.rend());
 
 	return files;
 }

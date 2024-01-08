@@ -15,8 +15,13 @@ protected:
 	struct SaveFile {
 		std::string displayName;
 		std::string path;
+		std::time_t mtime;
 		int level = 0;
 		int nPlayers = 0;
+
+		bool operator <(const SaveFile& sf) const {
+			return std::difftime(mtime, sf.mtime) < 0;
+		}
 	};
 
 	SaveDataBrowser();
