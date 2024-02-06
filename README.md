@@ -10,7 +10,7 @@ This is the branch of Lifish that contains the code for [BOOM Remake](https://si
 
 Lifish was a work-in-progress arcade game inspired by BOOM, but that project is currently in indefinite hiatus. The `boom` branch is the one that's still being occasionally updated, mostly for bugfixing, as BOOM Remake is already complete.
 
-Lifish (and by extension, BOOM Remake) has a level editor available as a separate program, currently working only on Linux and MacOS: [LifishEdit](https://github.com/silverweed/lifish-edit). 
+Lifish (and by extension, BOOM Remake) has a level editor available as a separate program, currently working only on Linux and MacOS: [LifishEdit](https://codeberg.org/silverweed/lifish-edit). A new level editor is in the making, working on Linux and Windows: [BOOMEdit: Remake](https://codeberg.org/silverweed/boom-edit-remake).
 
 ### Supported platforms ###
 BOOM Remake is known to work on the following platforms:
