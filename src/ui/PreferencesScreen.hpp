@@ -21,7 +21,7 @@ class PreferencesScreen : public lif::ui::DynamicScreen {
 	std::vector<sf::VideoMode> fullscreenModes;
 
 	int desiredFullscreenModeIdx = 0;
-	bool desiredFullscreen;
+	bool desiredFullscreen = false;
 	sf::Time confirmResCountdown;
 	bool mustConfirmRes = false;
 	lif::ShadedText *confirmResText = nullptr;
