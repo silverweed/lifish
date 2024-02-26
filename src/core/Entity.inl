@@ -35,10 +35,10 @@ std::vector<std::shared_ptr<T>> Entity::getAllShared() const {
 	auto pair = components.find(_getKey<T>());
 	if (pair == components.end())
 		return comps;
-	auto& compVec = pair->second;
-	std::for_each(compVec.begin(), compVec.end(), [&comps] (const std::shared_ptr<lif::Component>& c) {
+	const auto& compVec = pair->second;
+	comps.reserve(compVec.size());
+	for (const auto& c : pair->second)
 		comps.emplace_back(std::static_pointer_cast<T>(c));
-	});
 	return comps;
 }
 
@@ -48,10 +48,10 @@ std::vector<T*> Entity::getAll() const {
 	auto pair = components.find(_getKey<T>());
 	if (pair == components.end())
 		return comps;
-	auto& compVec = pair->second;
-	std::for_each(compVec.begin(), compVec.end(), [&comps] (const std::shared_ptr<lif::Component>& c) {
+	const auto& compVec = pair->second;
+	comps.reserve(compVec.size());
+	for (const auto& c : compVec)
 		comps.emplace_back(static_cast<T*>(c.get()));
-	});
 	return comps;
 }
 

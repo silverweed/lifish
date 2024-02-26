@@ -134,7 +134,7 @@ public:
 	/** Gets the owner of this component (non-const) */
 	lif::Entity& getOwnerRW() const { return owner; }
 
-	std::vector<CompKey> getKeys() const { return keys; }
+	const std::vector<CompKey>& getKeys() const { return keys; }
 };
 
 #include "Entity.inl"
