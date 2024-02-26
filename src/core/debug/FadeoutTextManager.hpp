@@ -1,10 +1,10 @@
 #pragma once
 
-#include "FixedSizeCircularBuffer.hpp"
 #include "ShadedText.hpp"
 #include "Time.hpp"
 #include "utils.hpp"
 #include <SFML/Graphics/Drawable.hpp>
+#include <deque>
 
 namespace lif {
 namespace debug {
@@ -21,7 +21,7 @@ class FadeoutTextManager : public sf::Drawable {
 	};
 
 	const sf::Font& font;
-	lif::FixedSizeCircularBuffer<FadeoutText, 20> texts;
+	std::deque<FadeoutText> texts;
 	sf::Time fadeoutTime;
 
 public:
@@ -50,7 +50,7 @@ public:
 		}
 
 		for (int i = 0; i < nToRemove; ++i)
-			texts.pop();
+			texts.pop_front();
 	}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
@@ -65,7 +65,7 @@ public:
 	void add(const std::string& text) {
 		lif::ShadedText txt(font, text, sf::Vector2f(300, 300));
 		txt.setCharacterSize(16);
-		texts.push({ txt, fadeoutTime });
+		texts.push_back({ txt, fadeoutTime });
 	}
 };
 }
