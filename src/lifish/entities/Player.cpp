@@ -22,6 +22,7 @@
 #include "ZIndexed.hpp"
 #include "conf/zindex.hpp"
 #include "utils.hpp"
+#include <SFML/Graphics/Rect.hpp>
 #include <sstream>
 
 using lif::Player;
@@ -175,10 +176,38 @@ void Player::_checkCollision(lif::Collider& cld) {
 	if (bonusable->hasBonus(lif::BonusType::SHIELD))
 		return;
 
-	// Only get damaged if we overlap for at least 2 pixels in at least 1 dimension.
-	// This avoids unexpected damage when colliding diagonally from beyond a wall.
-	if (lif::nOverlappedPixels(collider->getRect(), cld.getRect()) < 2)
-		return;
+	{
+		// Only get damaged if we overlap for at least 2 pixels in at least 1 dimension.
+		// This avoids unexpected damage when colliding diagonally from beyond a wall.
+		// NOTE: this check must be 100% consistent with lif::collide(), otherwise we may
+		// ignore some valid damage!
+		// Before, we were simply checking collider->GetRect() vs cld.getRect() in
+		// lif::nOverlappedPixels(). This resulted in a bug where, if a player is moving down
+		// and they're hit by a bullet coming from above, they could ignore the damage
+		// entirely because the non-modified `orect` didn't intersect `prect` by at least 1 pixel.
+		auto prect = static_cast<sf::IntRect>(collider->getRect()),
+		     orect = static_cast<sf::IntRect>(cld.getRect());
+		const auto dir = moving->getDirection();
+
+		switch (dir) {
+		case Direction::UP:
+			--orect.top;
+			break;
+		case Direction::DOWN:
+			++orect.top;
+			break;
+		case Direction::LEFT:
+			--orect.left;
+			break;
+		case Direction::RIGHT:
+			++orect.left;
+			break;
+		default:;
+		}
+
+		if (lif::nOverlappedPixels(prect, orect) < 2)
+			return;
+	}
 
 	auto damage = 0;
 	const auto layer = cld.getLayer();
