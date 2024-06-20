@@ -23,7 +23,7 @@ static bool checkRight(const sf::Vector2i& etile, const sf::Vector2i& mtile) {
 	return etile.y == mtile.y && etile.x > mtile.x;
 }
 
-static const std::array<std::function<bool(const sf::Vector2i&, const sf::Vector2i&)>, 4> helper_funcs = {{
+static const std::array<bool(*)(const sf::Vector2i&, const sf::Vector2i&), 4> helper_funcs = {{
 	checkUp,
 	checkLeft,
 	checkDown,
