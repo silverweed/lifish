@@ -4,16 +4,16 @@ on: [workflow_dispatch]
 
 jobs:
   build-macos:
-    runs-on: macos-11
+    runs-on: macos-12
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: boom
 
       - run: ./makeapp_osx.sh
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: mac-build
           path: BOOM-Remake-*-mac.dmg
