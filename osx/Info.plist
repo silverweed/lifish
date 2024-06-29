@@ -18,5 +18,7 @@
 		<string>CHANGEME_SW_VERSION</string>
 		<key>CFBundleSignature</key>
 		<string>????</string>
+		<key>LSMinimumSystemVersion</key>
+		<string>10.15</string>
 	</dict>
 </plist>
