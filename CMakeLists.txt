@@ -93,43 +93,6 @@ if(MSVC)
 	include_directories(src/third_party/msvc)
 endif()
 
-# Remove files which aren't being used for now
-list(REMOVE_ITEM LIFISH_SRC
-	"${CMAKE_SOURCE_DIR}/src/core/collisions/SimpleCollisionDetector.cpp"
-	"${CMAKE_SOURCE_DIR}/src/core/cutscenes/Cutscene.cpp"
-	"${CMAKE_SOURCE_DIR}/src/core/cutscenes/CutscenePlayer.cpp"
-	"${CMAKE_SOURCE_DIR}/src/core/cutscenes/CutsceneBuilder.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/level/LevelEffects.cpp"
-	#"${CMAKE_SOURCE_DIR}/src/lifish/entities/AlienBoss.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Cage.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Torch.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/TimedLaser.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Surge.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/SurgeWarn.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Missile.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Rocket.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/RexBoss.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/GodEyeBoss.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/MainframeBoss.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/HauntingSpiritBoss.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/HauntedStatue.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/TransparentWall.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Wisp.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/DroppingBomb.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Spikes.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Flare.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/AcidPond.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Pond.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Fire.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Fog.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/AlienPredator.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/RexFlame.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/entities/Targeter.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/components/LeapingMovement.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/components/CircleShootingPattern.cpp"
-	"${CMAKE_SOURCE_DIR}/src/lifish/components/ScatterVsPlayerPattern.cpp"
-)
-
 # Platform-specific source
 if(MSYS)
 	include_directories(src)
