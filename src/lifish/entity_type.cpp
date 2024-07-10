@@ -23,16 +23,6 @@ EntityType lif::entityFromLetter(const char c) {
 	case 'J': return EntityType::ENEMY10;
 	case '*': return EntityType::ALIEN_BOSS;
 	case '/': return EntityType::BIG_ALIEN_BOSS;
-	/* Non BOOM-compatible entities */
-	case '4': return EntityType::TRANSPARENT_WALL;
-	case '5': return EntityType::ACID_POND;
-	case '6': return EntityType::HAUNTED_STATUE;
-	case '=': return EntityType::HAUNTING_SPIRIT_BOSS;
-	case '^': return EntityType::SPIKES;
-	case 'R': return EntityType::REX_BOSS;
-	case 'O': return EntityType::GOD_EYE_BOSS;
-	case 't': return EntityType::TORCH;
-	case '#': return EntityType::MAINFRAME_BOSS;
 	}
 	return EntityType::UNKNOWN;
 }
@@ -57,16 +47,7 @@ std::ostream& lif::operator<<(std::ostream& stream, const EntityType& et) {
 	case EntityType::ENEMY9:               stream << 'I'; break;
 	case EntityType::ENEMY10:              stream << 'J'; break;
 	case EntityType::ALIEN_BOSS:           stream << '*'; break;
-	case EntityType::BIG_ALIEN_BOSS:           stream << '/'; break;
-	case EntityType::TRANSPARENT_WALL:     stream << '4'; break;
-	case EntityType::ACID_POND:            stream << '5'; break;
-	case EntityType::HAUNTED_STATUE:       stream << '6'; break;
-	case EntityType::HAUNTING_SPIRIT_BOSS: stream << '='; break;
-	case EntityType::SPIKES:               stream << '^'; break;
-	case EntityType::REX_BOSS:             stream << 'R'; break;
-	case EntityType::GOD_EYE_BOSS:         stream << 'O'; break;
-	case EntityType::TORCH:                stream << 't'; break;
-	case EntityType::MAINFRAME_BOSS:       stream << '#'; break;
+	case EntityType::BIG_ALIEN_BOSS:       stream << '/'; break;
 	case EntityType::UNKNOWN:              stream << '?'; break;
 	}
 	return stream;

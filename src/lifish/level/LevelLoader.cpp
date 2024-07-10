@@ -77,20 +77,8 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				entities.add<lif::BreakableWall>(curPos, level.getInfo().tileIDs.breakable);
 				break;
 
-			case EntityType::TRANSPARENT_WALL:
-				//entities.add<lif::TransparentWall>(curPos);
-				break;
-
-			case EntityType::ACID_POND:
-				//entities.add<lif::AcidPond>(curPos, sf::Vector2f(TILE_SIZE, TILE_SIZE));
-				break;
-
 			case EntityType::COIN:
 				entities.add<lif::Coin>(curPos);
-				break;
-
-			case EntityType::HAUNTED_STATUE:
-				//entities.add<lif::HauntedStatue>(curPos);
 				break;
 
 			case EntityType::PLAYER1:
@@ -99,14 +87,6 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 
 			case EntityType::PLAYER2:
 				add_player(1, curPos);
-				break;
-
-			case EntityType::SPIKES:
-				//entities.add<lif::Spikes>(curPos);
-				break;
-
-			case EntityType::TORCH:
-				//entities.add<lif::Torch>(curPos)->fixOrientation(level);
 				break;
 
 			case EntityType::TELEPORT:
@@ -128,22 +108,6 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 					entities.add(boss->getShared<lif::EnergyBar>());
 					break;
 				}
-
-			case EntityType::HAUNTING_SPIRIT_BOSS:
-				//addBoss<lif::HauntingSpiritBoss>(entities, curPos);
-				break;
-
-			case EntityType::REX_BOSS:
-				//addBoss<lif::RexBoss>(entities, curPos)->get<lif::AI>()->setLevelManager(&lm);
-				break;
-
-			case EntityType::GOD_EYE_BOSS:
-				//addBoss<lif::GodEyeBoss>(entities, curPos, lm);
-				break;
-
-			case EntityType::MAINFRAME_BOSS:
-				//addBoss<lif::MainframeBoss>(entities, curPos, lm);
-				break;
 
 			case EntityType::ENEMY1:
 				enemy_id = 1;
@@ -198,27 +162,6 @@ bool LevelLoader::load(const lif::Level& level, lif::LevelManager& lm) {
 				entities.add(lif::EnemyFactory::create(lm, enemy_id, curPos).release());
 		}
 	}
-
-	/*
-	for (auto e : LevelEffects::getEffectEntities(level))
-		entities.add(e);
-
-	if (level.hasEffect("darkness")) {
-		// In case of darkness, we need the Players to have an AxisSighted component
-		for (size_t i = 0; i < lm.players.size(); ++i) {
-			if (lm.players[i] == nullptr || lm.players[i]->get<lif::AxisSighted>() != nullptr)
-				continue;
-			auto sighted = lm.players[i]->addComponent<lif::AxisSighted>(*lm.players[i]);
-			sighted->init();
-			sighted->setEntityGroup(&lm.entities);
-			sighted->setOpaque({
-				lif::c_layers::BREAKABLES,
-				lif::c_layers::UNBREAKABLES
-			});
-		}
-		entities.add<lif::Flare>(sf::seconds(0.07f), sf::seconds(0.7f));
-	}
-	*/
 
 	return true;
 }

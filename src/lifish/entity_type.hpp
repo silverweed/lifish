@@ -25,15 +25,6 @@ enum class EntityType {
 	ENEMY10,
 	ALIEN_BOSS,
 	BIG_ALIEN_BOSS,
-	TRANSPARENT_WALL,
-	ACID_POND,
-	SPIKES,
-	TORCH,
-	HAUNTED_STATUE,
-	HAUNTING_SPIRIT_BOSS,
-	REX_BOSS,
-	GOD_EYE_BOSS,
-	MAINFRAME_BOSS,
 };
 
 EntityType entityFromLetter(const char c);

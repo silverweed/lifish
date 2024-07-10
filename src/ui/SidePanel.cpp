@@ -194,16 +194,6 @@ void SidePanel::draw(sf::RenderTarget& window, sf::RenderStates states) const {
 			text.setString("x" + lif::to_string(powers.bombRadius));
 			window.draw(text, states);
 
-			// Draw absorb
-			//text.setPosition(sf::Vector2f(pos.x + 2 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
-			//text.setString("+" + lif::to_string(powers.absorb));
-			//window.draw(text, states);
-
-			// Draw armor
-			//text.setPosition(sf::Vector2f(pos.x + 3 * BONUS_ICON_WIDTH, pos.y + BONUS_ICON_HEIGHT + 2));
-			//text.setString("+" + lif::to_string(powers.armor));
-			//window.draw(text, states);
-
 			// Draw bonuses
 			for (const auto& bsprite : bonusesSprite[i])
 				_drawWithShadow(window, states, bsprite);
@@ -256,26 +246,6 @@ void SidePanel::update() {
 					bonusesSprite[i][j].setColor(
 							powers.maxBombs == lif::conf::player::DEFAULT_MAX_BOMBS
 							? DISABLED_COLOR : sf::Color::White);
-					break;
-				case B::INCENDIARY_BOMB:
-					bonusesSprite[i][j].setColor(
-							powers.incendiaryBomb
-							? sf::Color::White : DISABLED_COLOR);
-					break;
-				case B::THROWABLE_BOMB:
-					bonusesSprite[i][j].setColor(
-							powers.throwableBomb
-							? sf::Color::White : DISABLED_COLOR);
-					break;
-				case B::ABSORB:
-					bonusesSprite[i][j].setColor(
-							powers.absorb
-							? sf::Color::White : DISABLED_COLOR);
-					break;
-				case B::ARMOR:
-					bonusesSprite[i][j].setColor(
-							powers.armor
-							? sf::Color::White : DISABLED_COLOR);
 					break;
 				case B::SHIELD:
 				case B::SPEEDY:

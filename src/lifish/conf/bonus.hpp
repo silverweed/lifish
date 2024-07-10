@@ -13,7 +13,6 @@ namespace conf {
 		const sf::Time EXPIRE_TIME = sf::seconds(10);
 		const sf::Time SHIELD_DURATION = sf::seconds(20);
 		const sf::Time SPEEDY_DURATION = sf::seconds(20);
-		const sf::Time FIRE_DURATION = sf::seconds(3);
 
 		extern std::discrete_distribution<unsigned> distribution;
 	}

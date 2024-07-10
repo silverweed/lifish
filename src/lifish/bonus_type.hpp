@@ -20,10 +20,6 @@ enum class BonusType {
 	SUDDEN_DEATH,
 	HEALTH_SMALL,
 	HEALTH_FULL,
-	INCENDIARY_BOMB,
-	THROWABLE_BOMB,
-	ABSORB,
-	ARMOR,
 };
 
 std::string bonusToString(lif::BonusType type);

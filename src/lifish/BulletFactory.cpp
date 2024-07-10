@@ -36,12 +36,6 @@ std::map<unsigned, const lif::BulletInfo> bulletsInfo = {
 	/// FreeBullets
 	// star
 	{ 101, lif::BulletInfo{ 101, 4, 1.1f, -1, lif::c_layers::BOSS_BULLETS } },
-	// spirit bullets
-	{ 102, lif::BulletInfo{ 102, 4, 1.f, -1, lif::c_layers::BOSS_BULLETS } },
-	// missile
-	{ 103, lif::BulletInfo{ 103, 4, 0.5f, -1, lif::c_layers::BOSS_BULLETS } },
-	// lightning
-	{ 104, lif::BulletInfo{ 104, 3, 1.3f, -1, lif::c_layers::BOSS_BULLETS } },
 };
 
 }
@@ -67,25 +61,11 @@ std::unique_ptr<lif::Bullet> BulletFactory::create(unsigned infoId, const sf::Ve
 			return std::unique_ptr<lif::Bullet>(new lif::AxisBullet(pos, dir
 				, bulletsInfo.find(infoId)->second, source));
 		}
-	case 9:
-		//return std::unique_ptr<lif::Bullet>(new lif::Grenade(pos, target, bulletsInfo[infoId], source));
-	case 10:
-		/*{
-			auto dir = lif::getDirection(lif::tile(pos), lif::tile(target));
-			if (dir == lif::Direction::NONE && source != nullptr) {
-				const auto moving = source->get<lif::AxisMoving>();
-				if (moving != nullptr)
-					dir = moving->getDirection();
-			}
-			return std::unique_ptr<lif::Bullet>(new lif::Rocket(pos, dir, bulletsInfo[infoId], source));
-		}*/
 	case 101:
 	case 102:
 	case 104:
 		return std::unique_ptr<lif::Bullet>(new lif::FreeBullet(pos,
 			lif::angleBetween(pos, target), bulletsInfo.find(infoId)->second, source));
-	case 103:
-		//return std::unique_ptr<lif::Bullet>(new lif::Missile(pos, target, bulletsInfo[infoId], source));
 	default:
 		throw std::invalid_argument("No bullet with id " + lif::to_string(infoId) + "!");
 	}

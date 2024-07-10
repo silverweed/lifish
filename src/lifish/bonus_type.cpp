@@ -24,14 +24,6 @@ std::string lif::bonusToString(lif::BonusType type) {
 		return "Shield";
 	case B::SPEEDY:
 		return "Speedy";
-	case B::INCENDIARY_BOMB:
-		return "Incendiary Bomb";
-	case B::THROWABLE_BOMB:
-		return "Throwable Bomb";
-	case B::ABSORB:
-		return "Absorb";
-	case B::ARMOR:
-		return "Armor";
 	case B::ZAPPER:
 		return "Zapper";
 	case B::SUDDEN_DEATH:
@@ -82,20 +74,6 @@ void lif::triggerBonus(lif::LevelManager& lm, lif::BonusType type, lif::Player& 
 		break;
 	case B::SPEEDY:
 		player.get<lif::Bonusable>()->giveBonus(B::SPEEDY, lif::conf::bonus::SPEEDY_DURATION);
-		break;
-	case B::INCENDIARY_BOMB:
-		//powers.incendiaryBomb = true;
-		break;
-	case B::THROWABLE_BOMB:
-		//powers.throwableBomb = true;
-		break;
-	case B::ABSORB:
-		//if (powers.absorb < lif::conf::player::MAX_ABSORB)
-			//powers.absorb++;
-		break;
-	case B::ARMOR:
-		//if (powers.armor < lif::conf::player::MAX_ARMOR)
-			//powers.armor++;
 		break;
 	case B::ZAPPER:
 		lm.getEntities().apply([&lm] (lif::Entity& e) {
