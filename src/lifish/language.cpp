@@ -12,7 +12,8 @@ bool lif::switchedLanguage = false;
 static const char* langMap[static_cast<unsigned>(lif::Language::COUNT)] = {
 	"en",
 	"it",
-	"de"
+	"de",
+	"fr"
 };
 static json l10nStrings;
 

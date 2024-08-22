@@ -41,6 +41,14 @@
 				"position": [75, 5]
 			},
 			{
+				"type": "image",
+				"name": "lang_fr",
+				"src": "fr.png",
+				"size": [30, 16],
+				"interactable": true,
+				"position": [110, 5]
+			},
+			{
 				"type": "text",
 				"string": "Lifish - (c) 2022 silverweed\nLifish is free software, licensed under\nthe Lifish License\n(silverweed.github.io/lifish-license.txt)\nThis game uses the Lifish engine to create\na clone of \"BOOM\" by Federico Filipponi.\nCreated by silverweed.\n\nContact: silverweed14@proton.me\nCode: https://codeberg.org/silverweed/lifish\n"
 			},

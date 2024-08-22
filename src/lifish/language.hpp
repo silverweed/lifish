@@ -8,6 +8,7 @@ enum class Language {
 	ENGLISH,
 	ITALIAN,
 	GERMAN,
+	FRENCH,
 	COUNT
 };
 

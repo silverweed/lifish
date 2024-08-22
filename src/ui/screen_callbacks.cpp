@@ -41,5 +41,6 @@ std::unordered_map<std::string, ScreenCallback> lif::ui::screenCallbacks = {
 	{ "resume",      cb_resume },
 	{ "lang_en",     cb_lang(lif::Language::ENGLISH) },
 	{ "lang_it",     cb_lang(lif::Language::ITALIAN) },
-	{ "lang_de",     cb_lang(lif::Language::GERMAN) }
+	{ "lang_de",     cb_lang(lif::Language::GERMAN) },
+	{ "lang_fr",     cb_lang(lif::Language::FRENCH) }
 };
