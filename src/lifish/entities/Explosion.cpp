@@ -8,7 +8,6 @@
 #include "GameCache.hpp"
 #include "Level.hpp"
 #include "LevelManager.hpp"
-#include "LightSource.hpp"
 #include "Player.hpp"
 #include "Scored.hpp"
 #include "Sounded.hpp"
@@ -34,7 +33,6 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 	, sourceEntity(source)
 {
 	explosionC = addComponent<lif::Animated>(*this, lif::getAsset("graphics", "explosionC.png"));
-	lightSource = addComponent<lif::LightSource>(*this, (radius + 0.5) * TILE_SIZE);
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::EXPLOSIONS);
 	explosionC->addAnimation("explode", {
 		sf::IntRect(0, 0, TILE_SIZE, TILE_SIZE),
@@ -81,8 +79,6 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 
 void Explosion::update() {
 	lif::Entity::update();
-	lightSource->setColor(sf::Color(255, 255, 255,
-		(4 - std::abs(static_cast<signed>(explosionC->getSprite().getCurrentFrame()) - 3)) * 255 / 4.0));
 
 	if (!explosionH->isActive())
 		return;

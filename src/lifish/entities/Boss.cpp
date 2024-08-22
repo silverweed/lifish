@@ -1,5 +1,4 @@
 #include "Boss.hpp"
-#include "Absorbable.hpp"
 #include "Animated.hpp"
 #include "Bonusable.hpp"
 #include "BossExplosion.hpp"
@@ -54,7 +53,6 @@ Boss::Boss(const sf::Vector2f& pos)
 		lif::cache.playSound(expl->get<lif::Sounded>()->getSoundFile("explode"));
 		return expl;
 	});
-	addComponent<lif::Absorbable>(*this);
 }
 
 lif::Entity* Boss::init() {

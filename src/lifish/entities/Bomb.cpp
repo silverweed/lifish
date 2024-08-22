@@ -5,7 +5,6 @@
 #include "Explosion.hpp"
 #include "Fixed.hpp"
 #include "GameCache.hpp"
-#include "LightSource.hpp"
 #include "Player.hpp"
 #include "Sounded.hpp"
 #include "Spawning.hpp"
@@ -50,7 +49,6 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Entity *const source,
 	addComponent<lif::Spawning>(*this, [this] () {
 		return new lif::Explosion(position, radius, sourceEntity, incendiary, lif::conf::bomb::EXPL_DAMAGE);
 	});
-	addComponent<lif::LightSource>(*this, 0);
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::BOMBS);
 
 	auto& a_normal_idle = animated->addAnimation("normal_idle", {

@@ -121,7 +121,7 @@ public:
 	 *  This function also checks if player's HP becomes 0 and kills it in that case.
 	 *  This function DOES NOT CHECK if the player has shield.
 	 */
-	void dealDamage(int dmg, bool ignoreArmor = false, bool giveShortShield = false);
+	void dealDamage(int dmg, bool giveShortShield = false);
 };
 
 }

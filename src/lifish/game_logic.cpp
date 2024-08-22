@@ -1,7 +1,5 @@
 #include "game_logic.hpp"
 #include "AI.hpp"
-#include "AbsorbFX.hpp"
-#include "Absorbable.hpp"
 #include "AxisMoving.hpp"
 #include "Bomb.hpp"
 #include "Bonus.hpp"
@@ -122,21 +120,6 @@ void lif::game_logic::scoredKillablesLogic(lif::Entity& e, lif::BaseLevelManager
 			scored->givePoints();
 		} else {
 			lm.addScore(target, scored->givePoints());
-		}
-
-		// Apply absorb
-		if (e.get<lif::Absorbable>() != nullptr) {
-			for (int i = 0; i < lif::MAX_PLAYERS; ++i) {
-				if (target >= 0 && target != i + 1) continue;
-				auto& player = lm.getPlayer(i + 1);
-				if (player == nullptr) continue;
-				auto& powers = player->getPowers();
-				if (powers.absorb > 0 && ++powers.absorbKillCount >= 3 - powers.absorb) {
-					powers.absorbKillCount = 0;
-					player->get<lif::Lifed>()->decLife(-1);
-					tbspawned.emplace_back(new lif::AbsorbFX(e.getPosition(), player));
-				}
-			}
 		}
 
 		auto points = is_boss

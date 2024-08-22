@@ -1,6 +1,5 @@
 #include "Enemy.hpp"
 #include "AI.hpp"
-#include "Absorbable.hpp"
 #include "AlienSprite.hpp"
 #include "Animated.hpp"
 #include "AxisMoving.hpp"
@@ -15,7 +14,6 @@
 #include "Letter.hpp"
 #include "LevelManager.hpp"
 #include "Lifed.hpp"
-#include "LightSource.hpp"
 #include "MovingAnimator.hpp"
 #include "Player.hpp"
 #include "RegularEntityDeath.hpp"
@@ -80,7 +78,6 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 		// on kill
 		animated->getSprite().setLooped(true);
 		death->kill();
-		get<lif::LightSource>()->setActive(true);
 	}, [this] () {
 		return death->isKillInProgress();
 	});
@@ -93,8 +90,6 @@ Enemy::Enemy(const sf::Vector2f& pos, unsigned short id, const lif::EnemyInfo& i
 	death = addComponent<lif::RegularEntityDeath>(*this, lif::conf::enemy::DEATH_TIME);
 	shooting = addComponent<lif::Shooting>(*this, info.attack);
 	sighted = addComponent<lif::AxisSighted>(*this);
-	addComponent<lif::Absorbable>(*this);
-	addComponent<lif::LightSource>(*this, 0)->setActive(false);
 
 	drawProxy = std::make_unique<lif::EnemyDrawableProxy>(*this);
 	// Keep this AFTER drawProxy!!!

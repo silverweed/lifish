@@ -14,7 +14,6 @@ class Player;
 class Animated;
 class Explosion;
 class BufferedSpawner;
-class LightSource;
 
 /**
  * A bomb's explosion; like in original BOOM, the explosion
@@ -48,7 +47,6 @@ protected:
 
 	/** This is only non-null if explosion is incendiary */
 	lif::BufferedSpawner *spawner = nullptr;
-	lif::LightSource *lightSource = nullptr;
 
 	/** Colliders used to check explosion's hits */
 	lif::Collider *explColliderH = nullptr,

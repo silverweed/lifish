@@ -1,6 +1,5 @@
 #include "Player.hpp"
 #include "Animated.hpp"
-#include "ArmorFX.hpp"
 #include "AxisMoving.hpp"
 #include "Bonusable.hpp"
 #include "BufferedSpawner.hpp"
@@ -257,17 +256,11 @@ void Player::_checkCollision(lif::Collider& cld) {
 	}
 
 	if (damage > 0)
-		dealDamage(damage, layer == L::EXPLOSIONS, shortShield);
+		dealDamage(damage, shortShield);
 }
 
-void Player::dealDamage(int damage, bool ignoreArmor, bool shortShield) {
+void Player::dealDamage(int damage, bool shortShield) {
 	if (killable->isKilled()) return;
-
-	// Apply armor
-	if (!ignoreArmor && info.powers.armor > 0) {
-		damage = std::max(1, damage - info.powers.armor);
-		get<lif::BufferedSpawner>()->addSpawned(new lif::ArmorFX(position - sf::Vector2f(TILE_SIZE / 4, 0)));
-	}
 
 	auto lifed = get<lif::Lifed>();
 	lif::cache.playSound(get<lif::Sounded>()->getSoundFile("hurt"));
