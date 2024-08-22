@@ -6,7 +6,7 @@
 		"de": "Spiel starten"
 	},
 	"load_game": {
-		"fr": "Charger la partie",
+		"fr": "Charger une partie",
 		"en": "Load Game",
 		"it": "Carica Partita",
 		"de": "Spiel laden"
@@ -66,13 +66,13 @@
 		"de": "existiert nicht oder hat ein falsches Format."
 	},
 	"win_header": {
-		"fr": "VOUS AVEZ GAGNE' !!",
+		"fr": "VOUS AVEZ GAGNE !!",
 		"en": "YOU HAVE WON!!",
 		"it": "HAI VINTO!!",
 		"de": "DU HAST GEWONNEN!!"
 	},
 	"win_text": {
-		"fr": "Vous avez atteint la derniere des zones\ninfestees par les aliens et vaincu le Gros Boss\nAlien en personne. C'etait pas du gateau,\nn'est-ce pas? Et bien, maintenant la terre est\nsauvee, vous etes un heros, entretiens,\nautographes, et tout le tralala.\n\nMais, attendez une minute ?\nQuelle est cett chose etrange dans le ciel ?\nOH NON !! PAS ENCORE !!",
+		"fr": "Vous avez atteint la derniere des zones\ninfestees par les aliens et vaincu le Gros Boss\nAlien en personne. C'etait pas du gateau,\nn'est-ce pas? Et bien, maintenant la terre est\nsauvee, vous etes un heros, entretiens,\nautographes, et tout le tralala.\n\nMais, attendez une minute ?\nQuelle est cette chose etrange dans le ciel ?\nOH NON !! PAS ENCORE !!",
 		"en": "You reached the last of the alien infested zones\nand defeated the Big Alien Boss himself.\nNot exactly like eating a piece of cake, eh?\nWell, now the Earth is safe, you are a hero,\n interviews, autographs and all the rest.\n\nBut, wait a minute?\nWhat is that strange thing in the sky?\nOH NO! NOT AGAIN!!",
 		"it": "Hai raggiunto l'ultima zona infestata dagli alieni\ne sconfitto il Grosso Boss Alieno.\nNon esattamente una passeggiata, eh?\nBeh, ora la Terra e' salva e tu sei un eroe,\ninterviste, autografi e tutto il resto.\n\nMa, aspetta un attimo?\nCos'e' quella strana cosa nel cielo?\nOH NO! NON DI NUOVO!!",
 		"de": "Du hast die letzte der von Aliens verseuchten\nZonen erreicht und den grossen Alien Boss\nselbst besiegt. Nicht gerade wie ein Stueck\nKuchen zu essen, oder?\nNun, da die Erde sicher ist, bist du ein Held,\nInterviews, Autogramme und den ganzen Rest.\n\nAber, Moment mal?\nWas ist dieses seltsame Ding am Himmel?\nOH NEIN! NICHT SCHON WIEDER!!"
@@ -222,7 +222,7 @@
 		"de": "Joystick benutzen?"
 	},
 	"no_save_data": {
-		"fr": "Pas de sauvegarde",
+		"fr": "Pas de sauvegardes",
 		"en": "No save data",
 		"it": "Nessun dato di salvataggio",
 		"de": "Keine Speicherdaten vorhanden"
