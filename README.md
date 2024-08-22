@@ -49,6 +49,7 @@ See the LICENSE file for licensing information.
 - [DrSh4dow](https://github.com/DrSh4dow)
 - [eguiraud](https://github.com/eguiraud)
 - [orazioedoardo](https://github.com/orazioedoardo)
+- [malespiaut](https://github.com/malespiaut)
 
 ### Other ###
 
