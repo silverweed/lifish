@@ -12,13 +12,13 @@
 		"de": "Spiel laden"
 	},
 	"preferences": {
-		"fr": "Préférences",
+		"fr": "Preferences",
 		"en": "Preferences",
 		"it": "Impostazioni",
 		"de": "Einstellungen"
 	},
 	"about": {
-		"fr": "À propos",
+		"fr": "A propos",
 		"en": "About",
 		"it": "Info",
 		"de": "Ueber"
@@ -66,13 +66,13 @@
 		"de": "existiert nicht oder hat ein falsches Format."
 	},
 	"win_header": {
-		"fr": "VOUS AVEZ GAGNÉ !!",
+		"fr": "VOUS AVEZ GAGNE' !!",
 		"en": "YOU HAVE WON!!",
 		"it": "HAI VINTO!!",
 		"de": "DU HAST GEWONNEN!!"
 	},
 	"win_text": {
-		"fr": "Vous avez atteint la dernière des zones\ninfestées par les aliens et vaincu le Gros Boss\nAlien en personne. C'était pas du gâteau,\nn'est-ce pas? Et bien, maintenant la terre est\nsauvée, vous êtes un héros, entretiens,\nautographes, et tout le tralala.\n\nMais, attendez une minute ?\nQuelle est cett chose étrange dans le ciel ?\nOH NON !! PAS ENCORE !!",
+		"fr": "Vous avez atteint la derniere des zones\ninfestees par les aliens et vaincu le Gros Boss\nAlien en personne. C'etait pas du gateau,\nn'est-ce pas? Et bien, maintenant la terre est\nsauvee, vous etes un heros, entretiens,\nautographes, et tout le tralala.\n\nMais, attendez une minute ?\nQuelle est cett chose etrange dans le ciel ?\nOH NON !! PAS ENCORE !!",
 		"en": "You reached the last of the alien infested zones\nand defeated the Big Alien Boss himself.\nNot exactly like eating a piece of cake, eh?\nWell, now the Earth is safe, you are a hero,\n interviews, autographs and all the rest.\n\nBut, wait a minute?\nWhat is that strange thing in the sky?\nOH NO! NOT AGAIN!!",
 		"it": "Hai raggiunto l'ultima zona infestata dagli alieni\ne sconfitto il Grosso Boss Alieno.\nNon esattamente una passeggiata, eh?\nBeh, ora la Terra e' salva e tu sei un eroe,\ninterviste, autografi e tutto il resto.\n\nMa, aspetta un attimo?\nCos'e' quella strana cosa nel cielo?\nOH NO! NON DI NUOVO!!",
 		"de": "Du hast die letzte der von Aliens verseuchten\nZonen erreicht und den grossen Alien Boss\nselbst besiegt. Nicht gerade wie ein Stueck\nKuchen zu essen, oder?\nNun, da die Erde sicher ist, bist du ein Held,\nInterviews, Autogramme und den ganzen Rest.\n\nAber, Moment mal?\nWas ist dieses seltsame Ding am Himmel?\nOH NEIN! NICHT SCHON WIEDER!!"
@@ -108,7 +108,7 @@
 		"de": "Musik"
 	},
 	"controls": {
-		"fr": "Contrôles",
+		"fr": "Controles",
 		"en": "Controls",
 		"it": "Controlli",
 		"de": "Tastenbelegung"
@@ -144,7 +144,7 @@
 		"de": "NEIN"
 	},
 	"is_this_ok?": {
-		"fr": "Êtes-vous d'accord ?",
+		"fr": "Etes-vous d'accord ?",
 		"en": "Is this OK?",
 		"it": "Va bene?",
 		"de": "Ist das in Ordnung?"
@@ -156,25 +156,25 @@
 		"de": "Spielende"
 	},
 	"show_fps": {
-		"fr": "Afficher les IPS",
+		"fr": "Afficher IPS",
 		"en": "Show FPS",
 		"it": "Mostra FPS",
 		"de": "FPS anzeigen"
 	},
 	"show_game_timer": {
-		"fr": "Afficher le chrono",
+		"fr": "Affich.chrono",
 		"en": "Show Timer",
 		"it": "Mostra Timer",
 		"de": "Timer anz."
 	},
 	"fullscreen": {
-		"fr": "Plein écran",
+		"fr": "Plein ecran",
 		"en": "Fullscreen",
 		"it": "Sch.Intero",
 		"de": "Vollbild"
 	},
 	"fullscreen_res": {
-		"fr": "Résolution",
+		"fr": "Resolution",
 		"en": "Fllscr.Res.",
 		"it": "Risoluzione",
 		"de": "Aufloesung"
@@ -228,7 +228,7 @@
 		"de": "Keine Speicherdaten vorhanden"
 	},
 	"get_ready": {
-		"fr": "PRÊTS !",
+		"fr": "PRETS !",
 		"en": "GET READY!",
 		"it": "PREPARATI!",
 		"de": "BEREIT MACHEN!"
