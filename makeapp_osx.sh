@@ -31,7 +31,6 @@ cp -a osx/Info.plist "BOOM Remake.app/Contents/"
 cp -a build/lifish "BOOM Remake.app/Contents/MacOS/"
 cp -a osx/BOOM.icns "BOOM Remake.app/Contents/Resources/"
 cp -a assets/* "BOOM Remake.app/Contents/Resources/"
-cp -a levels.json "BOOM Remake.app/Contents/Resources/"
 cp -a SFML/install/sfml-{audio,graphics,system,window}.framework "BOOM Remake.app/Contents/Frameworks/"
 cp -a SFML/install/lib/{FLAC,OpenAL,freetype,ogg,vorbis,vorbisenc,vorbisfile}.framework "BOOM Remake.app/Contents/Frameworks/"
 

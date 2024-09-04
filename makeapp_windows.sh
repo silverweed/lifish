@@ -17,18 +17,13 @@ fi
 	echo Missing assets directory!
 	exit 3
 }
-[[ -r levels.json ]] || {
-	echo Missing levels.json!
-	exit 3
-}
 [[ -x Release/lifish ]] || {
 	echo Missing lifish executable! Did you compile the game?
 	exit 3
 }
 
 mkdir "$DIR"/{assets,saves}
-cp -r assets/{fonts,graphics,l10n,music,screens,sounds} "$DIR/assets"
-cp levels.json "$DIR"
+cp -r assets/{fonts,graphics,l10n,levels.json,music,screens,sounds} "$DIR/assets"
 cp Release/lifish "$DIR"
 cp windows/libs/* "$DIR"
 
