@@ -5,12 +5,7 @@
 
 namespace lif {
 
-#if defined(SFML_SYSTEM_MACOS)
-// For convenience, make preferences file visible to the end user on macOS
 constexpr const char* PREFERENCES_SAVE_FILE_NAME = "lif_prefs.json";
-#else
-constexpr const char* PREFERENCES_SAVE_FILE_NAME = ".lif_prefs.json";
-#endif
 
 /** Saves preferences to file */
 void savePreferences(std::string fpath);
