@@ -16,6 +16,10 @@ void lif::savePreferences(std::string fpath) {
 	if (!lif::createDirIfNotExisting(lif::saveDir)) {
 		return;
 	}
+#elif defined(__unix__)
+	if (!lif::createDirIfNotExisting(lif::prefsDir)) {
+		return;
+	}
 #endif
 
 	std::ofstream file(fpath);
