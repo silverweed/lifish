@@ -225,11 +225,7 @@ int main(int argc, char **argv) {
 	if (args.muteMusic)
 		lif::options.musicVolume = 0;
 	if (args.levelsetName.length() < 1)
-#if defined(SFML_SYSTEM_MACOS)
 		args.levelsetName = lif::assetDir + std::string("levels.json");
-#else
-		args.levelsetName = std::string(lif::pwd) + lif::DIRSEP + std::string("levels.json");
-#endif
 
 	// Create the game window
 	lif::options.windowSize = sf::Vector2u(lif::WINDOW_WIDTH, lif::WINDOW_HEIGHT);

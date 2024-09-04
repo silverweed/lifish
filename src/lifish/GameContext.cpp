@@ -80,11 +80,7 @@ void GameContext::onLevelStart() {
 }
 
 void GameContext::loadGame(const lif::SaveData& saveData) {
-#if defined(SFML_SYSTEM_MACOS)
 	levelSetGood = ls.loadFromFile(lif::assetDir + saveData.levelSet);
-#else
-	levelSetGood = ls.loadFromFile(std::string(lif::pwd) + DIRSEP + saveData.levelSet);
-#endif
 	if (!levelSetGood) return;
 	lif::options.nPlayers = saveData.nPlayers;
 	_initLM(window, saveData.level);
