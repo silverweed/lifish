@@ -52,6 +52,8 @@ extern char pwd[PWD_BUFSIZE];
 extern std::string assetDir;
 /** The save directory */
 extern std::string saveDir;
+/** The preferences directory */
+extern std::string prefsDir;
 /** The preferences path */
 extern std::string preferencesPath;
 

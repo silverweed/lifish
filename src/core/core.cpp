@@ -13,6 +13,8 @@
 #if defined(SFML_SYSTEM_MACOS)
 #	include "MacPaths.h"
 #elif defined(__unix__)
+#	include <cstdlib>
+#	include <sys/stat.h>
 #	include <unistd.h>
 #elif defined(SFML_SYSTEM_WINDOWS)
 #	include <Windows.h>
@@ -24,6 +26,7 @@
 char lif::pwd[lif::PWD_BUFSIZE];
 std::string lif::assetDir;
 std::string lif::saveDir;
+std::string lif::prefsDir;
 std::string lif::preferencesPath;
 lif::GameCache lif::cache;
 std::default_random_engine lif::rng;
@@ -109,6 +112,39 @@ bool lif::initCore() {
 	assetDir = bundleResourcesPath() + DIRSEP;
 	saveDir = applicationSupportPath() + DIRSEP + "BOOM Remake" + DIRSEP;
 	preferencesPath = saveDir + std::string(PREFERENCES_SAVE_FILE_NAME);
+
+#elif defined(__unix__)
+	const char * xdg_data_home = std::getenv("XDG_DATA_HOME");
+	const char * xdg_config_home = std::getenv("XDG_CONFIG_HOME");
+	const char * home = std::getenv("HOME");
+
+	std::stringstream ss;
+	// Used for the AppImage distribution
+	ss << pwd << "/../../assets/";
+
+	struct stat result;
+	int err = stat(ss.str().c_str(), &result);
+	if (err != 0 || !S_ISDIR(result.st_mode)) {
+		ss.str("");
+		ss << pwd << "/assets/";
+	}
+
+	assetDir = ss.str();
+
+	if (xdg_data_home) {
+		saveDir = std::string(xdg_data_home) + "/lifish/";
+	} else {
+		saveDir = std::string(home) + "/.local/share/lifish/";
+	}
+
+	if (xdg_config_home) {
+		prefsDir = std::string(xdg_config_home) + "/lifish/";
+	} else {
+		prefsDir = std::string(home) + "/.config/lifish/";
+	}
+
+	preferencesPath = prefsDir + std::string(PREFERENCES_SAVE_FILE_NAME);
+
 #else
 	std::stringstream ss;
 	ss << pwd << DIRSEP << "assets" << DIRSEP;
