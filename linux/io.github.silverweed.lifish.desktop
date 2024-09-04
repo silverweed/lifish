@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=BOOM Remake
+Comment=Blast those nasty aliens in this award winning arcade game
+Icon=io.github.silverweed.lifish
+Exec=lifish
+Terminal=false
+Categories=Game;
