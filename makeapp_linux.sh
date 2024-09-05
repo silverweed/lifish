@@ -44,6 +44,11 @@ for lib in "${required_libs[@]}"; do
 	cp -a -L "/lib/$system_arch-linux-gnu/$lib" lifish.AppDir/usr/lib/
 done
 
+if [ "$1" = "--prepare-github-actions" ]; then
+	tar cf "artifacts/BOOM-Remake-$sw_version-linux-$system_arch.tar" lifish.AppDir
+	exit 0
+fi
+
 if [ ! -f "$appimagetool_filename" ]; then
 	curl -sSf -L -O "$appimagetool_url"
 	echo "${appimagetool_hashes[$system_arch]}  $appimagetool_filename" | shasum -a 256 -c

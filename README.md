@@ -11,7 +11,7 @@ Lifish (and by extension, BOOM Remake) has a level editor available as a separat
 BOOM Remake is known to work on the following platforms:
 
 * Windows 64 bit (>= 7)
-* Linux 64 bit (with non-ancient versions of `libc` and `libstdc++`)
+* Linux x86_64 and aarch64 (with non-ancient versions of `libc` and `libstdc++`)
 * macOS Intel (>= 10.15) and Apple Silicon (>= 11)
 
 ### Binaries ###
