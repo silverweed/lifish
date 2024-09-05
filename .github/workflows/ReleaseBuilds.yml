@@ -43,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: arm
+          ref: boom
 
       - run: mkdir -p artifacts
 
