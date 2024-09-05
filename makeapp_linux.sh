@@ -4,7 +4,7 @@ set -xe
 
 system_arch="$(uname -m)"
 
-sw_version="1.7"
+sw_version="1.8.0"
 
 appimagetool_version="13"
 appimagetool_filename="appimagetool-$system_arch.AppImage"
