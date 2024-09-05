@@ -3,7 +3,7 @@ name: Make Release Builds
 on: [workflow_dispatch]
 
 jobs:
-  build-macos:
+  build-macos-universal:
     runs-on: macos-12
     timeout-minutes: 15
     steps:
@@ -15,10 +15,10 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: mac-build
+          name: mac-build-universal
           path: BOOM-Remake-*-mac.dmg
 
-  build-linux-appimage:
+  build-linux-appimage-x86_64:
     runs-on: ubuntu-20.04
     timeout-minutes: 15
     steps:
@@ -34,5 +34,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: linux-build
+          name: linux-build-x86_64
           path: BOOM-Remake-*-linux-x86_64.AppImage
