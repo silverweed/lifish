@@ -8,6 +8,7 @@
 #include <array>
 #include <cassert>
 #include <ostream>
+#include <filesystem>
 
 // Enable automatic sf::Time / json conversion:
 // https://github.com/nlohmann/json#basic-usage
@@ -226,6 +227,6 @@ void testMusic();
 sf::View keepRatio(const sf::Vector2f& size, const sf::Vector2u& designedsize);
 
 /** Note: this will NOT create a directory recursively */
-bool createDirIfNotExisting(const std::string& path);
+bool createDirIfNotExisting(const std::filesystem::path& path);
 
 } // end namespace lif

@@ -72,12 +72,7 @@ sf::View lif::keepRatio(const sf::Vector2f& size, const sf::Vector2u& designedsi
 	return view;
 }
 
-bool lif::createDirIfNotExisting(const std::string& path) {
-#if defined(_WIN32) || defined(__MINGW32__)
-	bool ok = !!CreateDirectory(path.c_str(), NULL);
-	return ok || GetLastError() == ERROR_ALREADY_EXISTS;
-#else
-	bool ok = mkdir(path.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH) == 0;
-	return ok || errno == EEXIST;
-#endif
+bool lif::createDirIfNotExisting(const std::filesystem::path& path) {
+	bool ok = std::filesystem::create_directories(path);
+	return ok;
 }
