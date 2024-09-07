@@ -28,7 +28,7 @@ jobs:
 
       - run: |
           sudo apt update
-          sudo apt install -y libsfml-dev
+          sudo apt install -y desktop-file-utils libsfml-dev
 
       - run: ./makeapp_linux.sh
 
@@ -62,17 +62,15 @@ jobs:
           run: ./makeapp_linux.sh --prepare-github-actions
 
       - run: |
+          sudo apt update
+          sudo apt install -y desktop-file-utils
+
           cd artifacts
 
           archive_file="$(echo BOOM-Remake-*-linux-aarch64.tar)"
           appimage_file="${archive_file%.*}.AppImage"
 
           tar xf "$archive_file"
-
-          curl -sSf -L -O https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
-          curl -sSf -L -O https://github.com/AppImage/AppImageKit/releases/download/13/runtime-aarch64
-          chmod +x appimagetool-x86_64.AppImage
-          chmod +x runtime-aarch64
 
           ./appimagetool-x86_64.AppImage --runtime-file runtime-aarch64 --no-appstream lifish.AppDir "$appimage_file"
 
