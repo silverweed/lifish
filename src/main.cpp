@@ -310,9 +310,9 @@ int main(int argc, char **argv) {
 		if (ui.mustSaveGame()) {
 			const auto saveName = ui.getSaveName() + ".lifish";
 			if (lif::SaveManager::saveGame(saveName, game->getLM()))
-				std::cerr << "Saved game in " << saveName << "." << std::endl;
+				std::cerr << "[ INFO ] saved game in " << saveName << "." << std::endl;
 			else
-				std::cerr << "Failed to save game in " << saveName << "." << std::endl;
+				std::cerr << "[ WARNING ] could not save game in " << saveName << "." << std::endl;
 		}
 
 		///// LOGIC LOOP /////
