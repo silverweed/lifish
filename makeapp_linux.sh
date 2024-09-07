@@ -6,13 +6,14 @@ system_arch="$(uname -m)"
 
 sw_version="1.8.0"
 
-appimagetool_version="13"
+# These are rolling versions, it shouldn't be assumed that a subsequent build will use the same tool and runtime code
+appimagetool_version="continuous"
 appimagetool_filename="appimagetool-$system_arch.AppImage"
-appimagetool_url="https://github.com/AppImage/AppImageKit/releases/download/$appimagetool_version/$appimagetool_filename"
+appimagetool_baseurl="https://github.com/AppImage/appimagetool/releases/download/$appimagetool_version"
 
-declare -A appimagetool_hashes
-appimagetool_hashes["aarch64"]="334e77beb67fc1e71856c29d5f3f324ca77b0fde7a840fdd14bd3b88c25c341f"
-appimagetool_hashes["x86_64"]="df3baf5ca5facbecfc2f3fa6713c29ab9cefa8fd8c1eac5d283b79cab33e4acb"
+runtime_version="continuous"
+runtime_filename="runtime-$system_arch"
+runtime_baseurl="https://github.com/AppImage/type2-runtime/releases/download/$runtime_version"
 
 # Shared libraries as of Ubuntu 20.04
 required_libs=(
@@ -46,15 +47,29 @@ done
 
 if [ "$1" = "--prepare-github-actions" ]; then
 	tar cf "artifacts/BOOM-Remake-$sw_version-linux-$system_arch.tar" lifish.AppDir
+
+	cd artifacts
+
+	appimagetool_filename="appimagetool-x86_64.AppImage"
+	curl -sSf -L -O "$appimagetool_baseurl/$appimagetool_filename"
+	chmod +x "$appimagetool_filename"
+
+	curl -sSf -L -O "$runtime_baseurl/$runtime_filename"
+	chmod +x "$runtime_filename"
+
 	exit 0
 fi
 
 if [ ! -f "$appimagetool_filename" ]; then
-	curl -sSf -L -O "$appimagetool_url"
-	echo "${appimagetool_hashes[$system_arch]}  $appimagetool_filename" | shasum -a 256 -c
+	curl -sSf -L -O "$appimagetool_baseurl/$appimagetool_filename"
 	chmod +x "$appimagetool_filename"
 fi
 
-./"$appimagetool_filename" lifish.AppDir "BOOM-Remake-$sw_version-linux-$system_arch.AppImage"
+if [ ! -f "$runtime_filename" ]; then
+	curl -sSf -L -O "$runtime_baseurl/$runtime_filename"
+	chmod +x "$runtime_filename"
+fi
+
+./"$appimagetool_filename" --no-appstream --runtime-file "runtime-$system_arch" lifish.AppDir "BOOM-Remake-$sw_version-linux-$system_arch.AppImage"
 
 rm -r lifish.AppDir
