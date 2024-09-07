@@ -73,6 +73,17 @@ sf::View lif::keepRatio(const sf::Vector2f& size, const sf::Vector2u& designedsi
 }
 
 bool lif::createDirIfNotExisting(const std::filesystem::path& path) {
-	bool ok = std::filesystem::create_directories(path);
-	return ok;
+	std::error_code err_created, err_exists;
+
+	if (!std::filesystem::create_directories(path, err_created)) {
+		// Directory not created
+		if (std::filesystem::exists(path, err_exists)) {
+			// Directory already existing
+			return true;
+		}
+		std::cerr << "[ WARNING ] could not create directory " << path << ". " << err_created.message() << std::endl;
+		return false;
+	}
+
+	return true;
 }
