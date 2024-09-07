@@ -56,6 +56,8 @@ void lif::savePreferences(std::string fpath) {
 	}
 
 	file << out.dump(8) << "\n";
+
+	std::cerr << "[ INFO ] saved preferences in " << fpath << ".\n";
 }
 
 void lif::loadPreferences(std::string fpath) {
