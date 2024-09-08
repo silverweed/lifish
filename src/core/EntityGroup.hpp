@@ -81,7 +81,7 @@ public:
 
 	template<typename F, typename...Args,
 		typename std::enable_if<std::is_same<
-			typename std::result_of<F(lif::Entity&, Args&&...)>::type, bool>::value,
+			typename std::invoke_result<F(lif::Entity&, Args&&...)>::type, bool>::value,
 				std::nullptr_t>::type = nullptr>
 	void apply(const F& func, Args&&... args) {
 		for (auto& e : entities)
@@ -92,7 +92,7 @@ public:
 	/** Applies a function to all entities. */
 	template<typename F, typename...Args,
 		typename std::enable_if<std::is_same<
-			typename std::result_of<F(lif::Entity&, Args&&...)>::type, void>::value,
+			typename std::invoke_result<F, lif::Entity&, Args&&...>::type, void>::value,
 				std::nullptr_t>::type = nullptr>
 	void apply(const F& func, Args&&... args) {
 		for (auto& e : entities)
@@ -102,7 +102,7 @@ public:
 	/** @see apply */
 	template<typename F, typename...Args,
 		typename std::enable_if<std::is_same<
-			typename std::result_of<F(lif::Entity&, Args&&...)>::type, bool>::value,
+			typename std::invoke_result<F, lif::Entity&, Args&&...>::type, bool>::value,
 				std::nullptr_t>::type = nullptr>
 	void apply(const F& func, Args&&... args) const {
 		for (const auto& e : entities)
@@ -113,7 +113,7 @@ public:
 	/** @see apply */
 	template<typename F, typename...Args,
 		typename std::enable_if<std::is_same<
-			typename std::result_of<F(lif::Entity&, Args&&...)>::type, void>::value,
+			typename std::invoke_result<F, lif::Entity&, Args&&...>::type, void>::value,
 				std::nullptr_t>::type = nullptr>
 	void apply(const F& func, Args&&... args) const {
 		for (const auto& e : entities)
