@@ -38,6 +38,7 @@ cmake --build build -j "$(nproc)"
 mkdir -p lifish.AppDir/usr/{bin,lib,share/applications}
 
 cp -a linux/* lifish.AppDir/
+cp -a linux/*.desktop lifish.AppDir/usr/share/applications/
 cp -a assets/ lifish.AppDir/
 cp -a build/lifish lifish.AppDir/usr/bin/
 
