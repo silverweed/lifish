@@ -64,7 +64,8 @@ void HighScoreScreen::onLoad() {
 	const sf::Color colors[2] = { sf::Color(255, 255, 255), sf::Color(180, 180, 180) };
 	auto colorIdx = 0;
 
-	for (const auto& entry : lif::getHighScoreManager().getSortedHighScores()) {
+	const auto& highscores = lif::getHighScoreManager().getSortedHighScores();
+	for (const auto& entry : highscores) {
 		auto text = new lif::ShadedText(font, entry.name, pos);
 		text->setFGColor(colors[colorIdx]);
 		text->setShadowSpacing(1, 1);
@@ -81,5 +82,9 @@ void HighScoreScreen::onLoad() {
 		colorIdx = (colorIdx + 1) % 2;
 
 		pos.y += 20;
+	}
+
+	if (highscores.size() == 0) {
+		transitions.add("back", std::make_pair(lif::Direction::DOWN, "back"));
 	}
 }

@@ -394,7 +394,9 @@ void PreferencesScreen::_setupTransitions() {
 	transitions.add("fullscreen",         std::make_pair(D::DOWN,  "fullscreen_res"));
 	transitions.add("fullscreen_res",     std::make_pair(D::DOWN,  "show_fps"));
 	transitions.add("show_fps",           std::make_pair(D::DOWN,  "vsync"));
-	transitions.add("vsync",              std::make_pair(D::DOWN,  "controls"));
+	transitions.add("vsync",              std::make_pair(D::DOWN,  "framerate_limit"));
+	transitions.add("framerate_limit",    std::make_pair(D::DOWN,  "show_game_timer"));
+	transitions.add("show_game_timer",    std::make_pair(D::DOWN,  "controls"));
 	transitions.add("controls",           std::make_pair(D::DOWN,  "ok"));
 	transitions.add("ok",                 std::make_pair(D::RIGHT, "back"));
 	transitions.add("back",               std::make_pair(D::DOWN,  "music_volume_down"));
