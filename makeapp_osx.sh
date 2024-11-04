@@ -23,7 +23,7 @@ popd
 cmake -S . -B build -DRELEASE=true
 cmake --build build -j "$(sysctl -n hw.logicalcpu)"
 
-sw_version="1.8.0"
+sw_version="1.8.2"
 
 mkdir -p "BOOM Remake.app"/Contents/{MacOS,Resources,Frameworks}
 
