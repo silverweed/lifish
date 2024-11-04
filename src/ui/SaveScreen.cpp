@@ -135,6 +135,12 @@ bool SaveScreen::handleEvent(sf::Window& win, sf::Event event) {
 		else
 			errText->setString(lif::getLocalized("invalid_file_name"));
 		return true;
+	case sf::Keyboard::Up:
+	case sf::Keyboard::Left:
+	case sf::Keyboard::Down:
+	case sf::Keyboard::Right:
+		// These are used for menu navigation!
+		return Screen::handleEvent(win, event);
 	default:
 		break;
 	}
