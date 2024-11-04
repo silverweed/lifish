@@ -89,6 +89,8 @@ void LoadScreen::onLoad() {
 		text->setShadowSpacing(2, 2);
 		text->setStyle(sf::Text::Italic);
 		nonInteractables.emplace_back(text);
+		// Add a dummy transition to allow selecting this with keyboard/joystick
+		transitions.add("back", std::make_pair(lif::Direction::DOWN, "back"));
 		return;
 	}
 
