@@ -84,7 +84,7 @@ void HighScoreScreen::onLoad() {
 		pos.y += 20;
 	}
 
-	if (highscores.size() == 0) {
+	if (highscores.size() == 0 && transitions.size() == 0) {
 		transitions.add("back", std::make_pair(lif::Direction::DOWN, "back"));
 	}
 }
