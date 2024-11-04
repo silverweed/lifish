@@ -246,6 +246,7 @@ void ScreenBuilder::_calcTransitions(lif::ui::Screen& screen) {
 		else
 			screen.transitions.add(it->second, std::make_pair(D::DOWN, nxt->second));
 	}
+	// TODO: left/right
 }
 
 void ScreenBuilder::rebuild(lif::ui::Screen& screen) {

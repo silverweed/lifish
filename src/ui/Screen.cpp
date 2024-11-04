@@ -37,13 +37,13 @@ void Screen::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
 void Screen::update() {
 	if (lif::joystick::JoystickManager::getInstance().isAnyEvtMoved() >= 0)
-		usingJoystick = true;
+		lastSelectionMethod = SelectMethod::JOYSTICK;
 
 	_updateItrScale();
 
-	if (usingJoystick)
+	if (lastSelectionMethod == SelectMethod::JOYSTICK)
 		_updateSelectedJoystick();
-	else
+	else if (lastSelectionMethod == SelectMethod::MOUSE)
 		_updateSelectedMouse();
 }
 
@@ -51,14 +51,17 @@ bool Screen::handleEvent(sf::Window&, sf::Event event) {
 	switch (event.type) {
 	case sf::Event::JoystickButtonPressed:
 	case sf::Event::JoystickButtonReleased:
-		usingJoystick = true;
+		lastSelectionMethod = SelectMethod::JOYSTICK;
 		return false;
 	case sf::Event::MouseMoved:
 		if (lif::sqrDistance(sf::Vector2i(event.mouseMove.x, event.mouseMove.y), latestMousePos) > 300) {
 			_saveMousePos(event.mouseMove.x, event.mouseMove.y);
-			usingJoystick = false;
+			lastSelectionMethod = SelectMethod::MOUSE;
 			return false;
 		}
+		break;
+	case sf::Event::KeyPressed:
+		_updateSelectedKeyboard(event.key);
 		break;
 	default:
 		break;
@@ -116,6 +119,43 @@ void Screen::_updateSelectedMouse() {
 		if (inter->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
 			selected = std::make_pair(pair.first, inter.get());
 			break;
+		}
+	}
+	if (selected.second != nullptr)
+		_select(*selected.second);
+}
+
+void Screen::_updateSelectedKeyboard(sf::Event::KeyEvent key) {
+	lif::Direction dir = lif::Direction::NONE;
+	switch (key.code) {
+	case sf::Keyboard::Key::Up:
+		dir = lif::Direction::UP;
+		break;
+	case sf::Keyboard::Key::Down:
+		dir = lif::Direction::DOWN;
+		break;
+	case sf::Keyboard::Key::Left:
+		dir = lif::Direction::LEFT;
+		break;
+	case sf::Keyboard::Key::Right:
+		dir = lif::Direction::RIGHT;
+		break;
+	default: break;
+	}
+
+	if (dir == lif::Direction::NONE)
+		return;
+
+	lastSelectionMethod = SelectMethod::KEYBOARD;
+	
+	if (selected.second == nullptr) {
+		const auto name = transitions.first();
+		selected = std::make_pair(name, interactables[name].get());
+	} else {
+		const auto nxt = transitions.get(selected.first, dir);
+		_deselect();
+		if (nxt != "") {
+			selected = std::make_pair(nxt, interactables[nxt].get());
 		}
 	}
 	if (selected.second != nullptr)

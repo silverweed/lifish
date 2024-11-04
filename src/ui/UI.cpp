@@ -54,7 +54,7 @@ bool UI::handleEvent(sf::Window& window, sf::Event event) {
 			if (lif::joystick::isButton(lif::joystick::ButtonType::START, btn.joystickId, btn.button)) {
 				if (getCurrent() == "pause")
 					newContext = lif::CTX_GAME;
-			} else if (curScreen->isUsingJoystick()) {
+			} else if (curScreen->getLastSelectMethod() == Screen::SelectMethod::JOYSTICK) {
 				if (lif::joystick::isButton(
 						lif::joystick::ButtonType::BTN_DOWN, btn.joystickId, btn.button))
 				{
@@ -75,6 +75,13 @@ bool UI::handleEvent(sf::Window& window, sf::Event event) {
 		case sf::Keyboard::P:
 			active = !active;
 			return true;
+		case sf::Keyboard::Space:
+		case sf::Keyboard::Return:
+			if (curScreen->getLastSelectMethod() == Screen::SelectMethod::KEYBOARD) {
+				fireClick();
+				return true;
+			}
+			break;
 		default:
 			break;
 		}

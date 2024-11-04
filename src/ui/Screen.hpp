@@ -24,6 +24,13 @@ class Screen : public lif::WindowContext {
 public:
 	using Callback = std::function<lif::ui::Action()>;
 
+	enum class SelectMethod {
+		NONE,
+		MOUSE,
+		KEYBOARD,
+		JOYSTICK
+	};
+
 private:
 	friend class lif::ui::ScreenBuilder;
 
@@ -55,8 +62,8 @@ protected:
 	sf::Sprite bgSprite;
 
 	std::string builtWithLayout = "";
-	/** If true, the elements' selection is being done via joystick, else via mouse */
-	bool usingJoystick = false;
+
+	SelectMethod lastSelectionMethod = SelectMethod::NONE;
 
 	/** The styles */
 	std::unordered_map<std::string, lif::ui::ScreenStyle> styles;
@@ -78,6 +85,7 @@ protected:
 	Screen(const sf::RenderWindow& window, const sf::Vector2u& size);
 	void _loadBGSprite(const std::string& bgSpritePath);
 	void _updateSelectedMouse();
+	void _updateSelectedKeyboard(sf::Event::KeyEvent key);
 	void _updateSelectedJoystick();
 	/** Manually triggers an Action, as if an interactable was clicked. Useful for
 	 *  raising actions upon keyboard shortcuts and similar.
@@ -102,7 +110,7 @@ public:
 
 	void updateDynamicText(const std::string& name, const std::string& value);
 
-	bool isUsingJoystick() const { return usingJoystick; }
+	SelectMethod getLastSelectMethod() const { return lastSelectionMethod; }
 
 	bool hasCallback(const std::string& name) const;
 	lif::ui::Action fireCallback(const std::string& name);
