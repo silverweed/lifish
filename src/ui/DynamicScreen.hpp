@@ -13,7 +13,7 @@ public:
 		: lif::ui::Screen(window, size)
 	{}
 
-	void rebuild() override final {
+	void rebuild(ScreenBuilder& builder) override final {
 		clear();
 		build();
 	}

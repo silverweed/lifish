@@ -14,6 +14,12 @@
 				"character-size": 22,
 				"spacing": 50
 			},
+			"error_path": {
+				"font": "pf_tempesta_seven_bold.ttf",
+				"character-size": 14,
+				"spacing": 50,
+				"h-align": "center"
+			},
 			"exit": {
 				"font": "pf_tempesta_seven_bold.ttf",
 				"character-size": 24,
@@ -43,6 +49,7 @@
 				"style-override": {
 					"color": "yellow"
 				},
+				"style": "error_path",
 				"interactable": false
 			},
 			{

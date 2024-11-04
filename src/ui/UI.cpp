@@ -3,6 +3,7 @@
 #include "Interactable.hpp"
 #include "SaveScreen.hpp"
 #include "Screen.hpp"
+#include "ScreenBuilder.hpp"
 #include "contexts.hpp"
 #include "input_utils.hpp"
 #include "screen_callbacks.hpp"
@@ -22,7 +23,8 @@ void UI::load(const sf::RenderWindow& window, std::initializer_list<std::string>
 			std::cerr << "[ WARNING ] Screen " << name << " already loaded: skipping." << std::endl;
 			continue;
 		}
-		auto screen = std::make_unique<lif::ui::Screen>(name, window, size);
+		ScreenBuilder builder { dynamicTexts };
+		auto screen = std::make_unique<lif::ui::Screen>(name, window, size, builder);
 		if (curScreen == nullptr) {
 			curScreen = screen.get();
 			curScreen->setOrigin(origin);
@@ -82,6 +84,9 @@ bool UI::handleEvent(sf::Window& window, sf::Event event) {
 				return true;
 			}
 			break;
+		case sf::Keyboard::Backspace:
+			setCurrentToParent();
+			return true;
 		default:
 			break;
 		}
@@ -192,15 +197,12 @@ std::string UI::getCurrent() const {
 
 void UI::setDynamicText(const std::string& name, const std::string& value) {
 	dynamicTexts[name] = value;
-	for (auto& screen : screens)
-		screen.second->updateDynamicText(name, value);
 }
 
 void UI::rebuildScreens() {
 	for (const auto& screenPair : screens) {
 		auto& screen = screenPair.second;
-		screen->rebuild();
-		for (const auto& textPair : dynamicTexts)
-			screen->updateDynamicText(textPair.first, textPair.second);
+		lif::ui::ScreenBuilder builder { dynamicTexts };
+		screen->rebuild(builder);
 	}
 }

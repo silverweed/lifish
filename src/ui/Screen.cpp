@@ -15,11 +15,10 @@ Screen::Screen(const sf::RenderWindow& window, const sf::Vector2u& size)
 	, size(size)
 {}
 
-Screen::Screen(const std::string& layoutFileName, const sf::RenderWindow& window, const sf::Vector2u& size)
+Screen::Screen(const std::string& layoutFileName, const sf::RenderWindow& window, const sf::Vector2u& size, ScreenBuilder& builder)
 	: window(window)
 	, size(size)
 {
-	lif::ui::ScreenBuilder builder;
 	builder.build(*this, layoutFileName);
 }
 
@@ -249,8 +248,7 @@ void Screen::updateDynamicText(const std::string& name, const std::string& value
 	}
 }
 
-void Screen::rebuild() {
-	lif::ui::ScreenBuilder builder;
+void Screen::rebuild(ScreenBuilder& builder) {
 	builder.rebuild(*this);
 }
 

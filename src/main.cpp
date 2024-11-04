@@ -167,8 +167,12 @@ static void createRenderWindow(sf::Window& window) {
 		sf::Vector2f(videoMode.width, videoMode.height), lif::options.windowSize));
 }
 
-static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
+static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window, const std::string& levelsetName) {
 	ui.setSize(lif::options.windowSize);
+
+	// Setup dynamic texts for static screens
+	ui.setDynamicText("FULL_VERSION", lif::gameInfo());
+	ui.setDynamicText("LEVEL_SET", levelsetName);
 
 	// load static screens
 	ui.load(window, { "home.json", "about.json", "pause.json", "win.json", "error.json" });
@@ -178,9 +182,6 @@ static void setupUI(lif::ui::UI& ui, sf::RenderWindow& window) {
 	ui.add<lif::ui::LoadScreen>(window, lif::options.windowSize);
 	ui.add<lif::ui::SaveScreen>(window, lif::options.windowSize);
 	ui.add<lif::ui::HighScoreScreen>(window, lif::options.windowSize);
-
-	// Setup dynamic texts for static screens
-	ui.setDynamicText("FULL_VERSION", lif::gameInfo());
 }
 
 #if defined(_MSC_VER) && defined(RELEASE)
@@ -248,8 +249,7 @@ int main(int argc, char **argv) {
 
 	// Setup UI
 	auto& ui = lif::ui::UI::getInstance();
-	setupUI(ui, window);
-	ui.setDynamicText("LEVEL_SET", args.levelsetName);
+	setupUI(ui, window, args.levelsetName);
 
 	// Create pointer to game context
 	std::unique_ptr<lif::GameContext> game;

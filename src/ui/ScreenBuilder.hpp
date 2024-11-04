@@ -23,6 +23,7 @@ class ScreenBuilder final : private sf::NonCopyable {
 	sf::FloatRect prevElemBounds;
 	// pair (element, row)
 	std::vector<std::pair<sf::Drawable*, unsigned>> toBeAligned;
+	const std::unordered_map<std::string, std::string>& dynamicTexts;
 	std::vector<std::string> rowAligns;
 	std::vector<float> rowWidths;
 	std::string vAlign;
@@ -34,15 +35,15 @@ class ScreenBuilder final : private sf::NonCopyable {
 	void _addImage(lif::ui::Screen& screen, const nlohmann::json& screenJSON);
 	void _fixAlign(lif::ui::Screen& screen);
 	void _calcTransitions(lif::ui::Screen& screen);
-	sf::String _maybeInsertDynamicText(const std::string& s, lif::ui::Screen& screen, lif::ShadedText *text);
+	sf::String _maybeInsertDynamicText(const std::string& s) const;
 
 public:
-	explicit ScreenBuilder() {}
+	explicit ScreenBuilder(const std::unordered_map<std::string, std::string>& dynTexts) : dynamicTexts(dynTexts) {}
 
 	/** Builds `screen` from layout file `layoutFileName`.
 	 *  Throws is `screen` was already built.
 	 */
-	void build(lif::ui::Screen& screen, const std::string& layoutFileName);
+	void build(Screen& screen, const std::string& layoutFileName);
 	void rebuild(lif::ui::Screen& screen);
 };
 

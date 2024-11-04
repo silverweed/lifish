@@ -51,9 +51,7 @@ static void addStyleProperty(lif::ui::ScreenStyle& style, const std::string& key
 		std::cerr << "Invalid style property: " << key << std::endl;
 }
 
-sf::String ScreenBuilder::_maybeInsertDynamicText(const std::string& s,
-		lif::ui::Screen& screen, lif::ShadedText *text)
-{
+sf::String ScreenBuilder::_maybeInsertDynamicText(const std::string& s) const {
 	const auto len = s.length();
 
 	if (len > 0 && s[0] == '!') {
@@ -65,7 +63,9 @@ sf::String ScreenBuilder::_maybeInsertDynamicText(const std::string& s,
 	if (len > 4 && s[0] == '{' && s[1] == '{' && s[len - 1] == '}' && s[len - 2] == '}') {
 		assert(text != nullptr);
 		const auto name = s.substr(2, len - 4);
-		screen.dynamicTexts[name] = text;
+		const auto mapped = dynamicTexts.find(name);
+		if (mapped != dynamicTexts.end())
+			return mapped->second;
 	}
 	return s;
 }
@@ -150,7 +150,7 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 	// set font
 	newtxt->setFont(*lif::cache.loadFont(lif::getAsset("fonts", style.font)));
 	// set string
-	newtxt->setString(_maybeInsertDynamicText(text["string"].get<std::string>(), screen, newtxt));
+	newtxt->setString(_maybeInsertDynamicText(text["string"].get<std::string>()));
 
 	// set position
 	COMPUTE_POSITION(newtxt)
@@ -300,3 +300,4 @@ void ScreenBuilder::build(lif::ui::Screen& screen, const std::string& layoutFile
 	//std::cerr << "Screen loaded. Has " << screen.texts.size() << " texts, " << screen.images.size()
 		//<< " images and " << screen.nonInteractables.size() << " non-interactables." << std::endl;
 }
+
