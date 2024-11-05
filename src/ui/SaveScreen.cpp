@@ -146,7 +146,7 @@ bool SaveScreen::handleEvent(sf::Window& win, sf::Event event) {
 	}
 
 	const char ch = lif::kb::keyToAlnum(event.key.code);
-	if (ch < 0)
+	if (ch == (char)-1)
 		return false;
 
 	errText->setString("");
