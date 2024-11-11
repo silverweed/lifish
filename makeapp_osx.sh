@@ -2,20 +2,18 @@
 
 set -xe
 
-sfml_version="2.6.1"
-sfml_filename="SFML-$sfml_version-sources.zip"
-sfml_url="https://www.sfml-dev.org/files/$sfml_filename"
+sfml_version="2.6.2"
+sfml_filename="$sfml_version.zip"
+sfml_url="https://github.com/SFML/SFML/archive/refs/tags/$sfml_filename"
 
 if [ ! -f "$sfml_filename" ]; then
 	curl -sSf -L -O "$sfml_url"
-	echo "5bf19e5c303516987f7f54d4ff1b208a0f9352ffa1cd55f992527016de0e8cb7  $sfml_filename" | shasum -a 256 -c
+	echo "19d6dbd9c901c74441d9888c13cb1399f614fe8993d59062a72cfbceb00fed04  $sfml_filename" | shasum -a 256 -c
 	unzip "$sfml_filename"
 	mv "SFML-$sfml_version" SFML
 fi
 
 pushd SFML
-# These arguments to patch avoid prompting to apply the changes repeatedly, making the script somewhat idempotent
-patch -N -r- -p 1 < ../osx/skip_obtaining_hid_devices.patch || true
 cmake -S . -B build -DCMAKE_INSTALL_PREFIX=install -DCMAKE_OSX_DEPLOYMENT_TARGET="10.15" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DSFML_BUILD_FRAMEWORKS=TRUE
 cmake --build build --config Release --target install -j "$(sysctl -n hw.logicalcpu)"
 popd
