@@ -80,7 +80,7 @@ sf::Vector2f directionToVersor(Direction dir);
  */
 template<typename T>
 inline sf::Vector2<T> towards(const sf::Vector2<T>& start, Direction dir, float scale = 1) {
-	return start + scale * sf::Vector2<T>(directionToVersor(dir));
+	return start + static_cast<T>(scale) * sf::Vector2<T>(directionToVersor(dir));
 }
 
 } // end namespace lif

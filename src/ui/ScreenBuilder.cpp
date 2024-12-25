@@ -61,7 +61,6 @@ sf::String ScreenBuilder::_maybeInsertDynamicText(const std::string& s) const {
 	}
 
 	if (len > 4 && s[0] == '{' && s[1] == '{' && s[len - 1] == '}' && s[len - 2] == '}') {
-		assert(text != nullptr);
 		const auto name = s.substr(2, len - 4);
 		const auto mapped = dynamicTexts.find(name);
 		if (mapped != dynamicTexts.end())
