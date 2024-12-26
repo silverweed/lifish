@@ -3,6 +3,7 @@
 #include <fstream>
 #include <unordered_map>
 #include <cassert>
+#include <iostream>
 
 using json = nlohmann::json;
 

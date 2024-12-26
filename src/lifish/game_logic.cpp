@@ -25,6 +25,7 @@
 #include "Spawning.hpp"
 #include "Time.hpp"
 #include <array>
+#include <iostream>
 
 using EntityList = std::vector<lif::Entity*>;
 

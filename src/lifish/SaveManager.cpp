@@ -47,10 +47,6 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 					{ "bombFuseTime",   powers.bombFuseTime },
 					{ "bombRadius",     powers.bombRadius },
 					{ "maxBombs",       powers.maxBombs },
-					{ "incendiaryBomb", powers.incendiaryBomb },
-					{ "throwableBomb",  powers.throwableBomb },
-					{ "absorb",         powers.absorb },
-					{ "armor",          powers.armor },
 				}
 			},
 			{ "score", lm.getScore(i + 1) }
@@ -88,10 +84,6 @@ lif::SaveData SaveManager::loadGame(const std::string& filename) {
 			player.powers.bombRadius = powdata["bombRadius"];
 			player.powers.bombFuseTime = powdata["bombFuseTime"];
 			player.powers.maxBombs = powdata["maxBombs"];
-			//player.powers.incendiaryBomb = powdata["incendiaryBomb"];
-			//player.powers.throwableBomb = powdata["throwableBomb"];
-			//player.powers.absorb = powdata["absorb"];
-			//player.powers.armor = powdata["armor"];
 			const auto& exdata = pldata["extra"];
 			for (unsigned j = 0; j < player.letters.size(); ++j)
 				player.letters[j] = exdata[j];

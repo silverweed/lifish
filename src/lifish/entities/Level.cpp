@@ -9,6 +9,7 @@
 #include "game.hpp"
 #include "utils.hpp"
 #include <sstream>
+#include <iostream>
 
 using lif::Level;
 using lif::pwd;

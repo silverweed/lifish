@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <sys/stat.h>
+#include <iostream>
 
 #ifdef _WIN32
 #define stat _stat

@@ -2,6 +2,7 @@
 
 #include "EntityGroup.hpp"
 #include "SHCollisionDetector.hpp"
+#include "BombFormationsManager.hpp"
 #include <SFML/System/NonCopyable.hpp>
 #ifndef RELEASE
 #	include "Stats.hpp"
@@ -27,6 +28,7 @@ public:
 protected:
 	lif::EntityGroup entities;
 	lif::SHCollisionDetector cd;
+	lif::BombFormationsManager bombFormations;
 
 	std::vector<GameLogicFunc> logicFunctions;
 

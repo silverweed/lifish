@@ -1,0 +1,27 @@
+
+const std::pair<const char*, lif::PatternSignature> bombPatterns[] = {
+	{ "Bandana", 0.25f },
+	{ "Angle", 0.625f },
+	{ "Square", 1.25f },
+	{ "Stick", 1.4375f },
+	{ "Star", 1.625f },
+	{ "Pistol", 2.25625f },
+	{ "Eyelet", 1.7375f },
+	{ "Rectangle", 2.475f },
+	{ "Tree", 3.64027778f },
+	{ "Claws", 4.99586723f },
+	{ "Crab", 3.925f },
+	{ "Snake", 2.51346154f },
+	{ "Cassiopea", 1.50625f },
+	{ "Cannon", 2.25f },
+	{ "Anvil", 2.25277778f },
+	{ "Chair", 3.57118056f },
+	{ "8 Loop", 3.10625f },
+	{ "Constellation", 3.5625f },
+	{ "S of Death", 1.44375f },
+	{ "Worm", 3.2528312f },
+	{ "Wrench", 1.5375f },
+	{ "Y", 2.075f },
+	{ "Straight Walk", 1.98173077f },
+	{ "Vortex", 3.45f }
+};

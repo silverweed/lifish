@@ -6,39 +6,9 @@
 #include "game.hpp"
 #include <optional>
 #include "DebugPainter.hpp"
-#include "bomb_formations.hpp"
+#include "BombFormationsManager.hpp"
 
 using lif::BaseLevelManager;
-
-namespace {
-constexpr auto LEVEL_WIDTH = lif::GAME_WIDTH / lif::TILE_SIZE - 2;
-constexpr auto LEVEL_HEIGHT = lif::GAME_HEIGHT / lif::TILE_SIZE - 2;
-
-using Grid = char[LEVEL_HEIGHT * LEVEL_WIDTH];
-
-using BombPattern = std::vector<const char*>;
-
-const BombPattern bombPatterns[] = {
-	{"* *"},
-	{"* *", 
-	 "  *"},
-	{"* * * *",
-   "  * *  "},
-};
-
-void checkBombCombos(lif::BaseLevelManager& blm) {
-	Grid grid;
-	std::cout << LEVEL_HEIGHT << " x " << LEVEL_WIDTH << "\n";
-	dumpBombsToGrid(blm, grid);
-
-	// for (int row = 0; row < LEVEL_HEIGHT; ++row) {
-	// 	for (int col = 0; col < LEVEL_WIDTH; ++col) {
-	// 		std::cout << grid[row * LEVEL_WIDTH + col] << " ";
-	// 	}
-	// 	std::cout << "\n";
-	// }
-}
-}
 
 BaseLevelManager::BaseLevelManager()
 	: cd(entities)
@@ -98,19 +68,10 @@ void BaseLevelManager::update() {
 			lastBombPlaced = lif::tile(e->getPosition()) - sf::Vector2i { 1, 1 };
 	}
 
-	static std::vector<BombFormation> formations;
 	if (lastBombPlaced)
-		if (auto form = buildBombFormation(*this, *lastBombPlaced))
-			formations.push_back(*form);
+		bombFormations.addBomb(*this, *lastBombPlaced);
 
-	int formIdx = 0;
-	for (const auto& formation : formations) {
-		static const sf::Color colors[] = { sf::Color::Red, sf::Color::Yellow, sf::Color::Blue, sf::Color::Green };
-		for (auto tile : formation)
-				lif::debugPainter->addCircleAt(sf::Vector2f(tile + sf::Vector2i { 1, 1 }) * float(lif::TILE_SIZE), lif::TILE_SIZE * 0.5, 
-				                               colors[formIdx % std::size(colors)]);
-		++formIdx;
-	}
+	bombFormations.debugDisplay();
 
 	DBGSTART("ent_update");
 
