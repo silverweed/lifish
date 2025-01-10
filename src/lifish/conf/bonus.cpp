@@ -11,9 +11,5 @@ std::discrete_distribution<unsigned> lif::conf::bonus::distribution {
 	3,	// sudden death
 	15,	// health small
 	15,	// health full
-	0,	// incendiary bomb
-	0,	// throwable bomb
-	0,	// absorb
-	0,	// armor
 	889	// no bonus
 };
