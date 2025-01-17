@@ -19,7 +19,7 @@ jobs:
           path: BOOM-Remake-*-mac.dmg
 
   build-linux-appimage-x86_64:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
@@ -38,43 +38,20 @@ jobs:
           path: BOOM-Remake-*-linux-x86_64.AppImage
 
   build-linux-appimage-aarch64:
-    runs-on: ubuntu-20.04
-    timeout-minutes: 30
+    runs-on: ubuntu-22.04-arm
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
           ref: boom
 
-      - run: mkdir -p artifacts
-
-      - uses: uraimo/run-on-arch-action@v2
-        with:
-          arch: aarch64
-          distro: ubuntu20.04
-          githubToken: ${{ github.token }}
-
-          dockerRunArgs: --volume "${PWD}/artifacts:/artifacts"
-
-          install: |
-            apt update
-            apt install -y build-essential cmake curl libsfml-dev
-
-          run: ./makeapp_linux.sh --prepare-github-actions
-
       - run: |
           sudo apt update
-          sudo apt install -y desktop-file-utils
+          sudo apt install -y desktop-file-utils libsfml-dev
 
-          cd artifacts
-
-          archive_file="$(echo BOOM-Remake-*-linux-aarch64.tar)"
-          appimage_file="${archive_file%.*}.AppImage"
-
-          tar xf "$archive_file"
-
-          ./appimagetool-x86_64.AppImage --runtime-file runtime-aarch64 --no-appstream lifish.AppDir "$appimage_file"
+      - run: ./makeapp_linux.sh
 
       - uses: actions/upload-artifact@v4
         with:
           name: linux-build-aarch64
-          path: artifacts/BOOM-Remake-*-linux-aarch64.AppImage
+          path: BOOM-Remake-*-linux-aarch64.AppImage
