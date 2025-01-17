@@ -22,8 +22,10 @@ required_libs=(
 	libsfml-system.so.2.5
 	libsfml-window.so.2.5
 
+	libbsd.so.0
 	libFLAC.so.8
 	libfreetype.so.6
+	libmd.so.0
 	libogg.so.0
 	libopenal.so.1
 	libsndio.so.7.0
