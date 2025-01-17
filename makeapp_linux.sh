@@ -15,7 +15,7 @@ runtime_version="continuous"
 runtime_filename="runtime-$system_arch"
 runtime_baseurl="https://github.com/AppImage/type2-runtime/releases/download/$runtime_version"
 
-# Shared libraries as of Ubuntu 20.04
+# Shared libraries as of Ubuntu 22.04
 required_libs=(
 	libsfml-audio.so.2.5
 	libsfml-graphics.so.2.5
@@ -45,21 +45,6 @@ cp -a build/lifish lifish.AppDir/usr/bin/
 for lib in "${required_libs[@]}"; do
 	cp -a -L "/lib/$system_arch-linux-gnu/$lib" lifish.AppDir/usr/lib/
 done
-
-if [ "$1" = "--prepare-github-actions" ]; then
-	tar cf "artifacts/BOOM-Remake-$sw_version-linux-$system_arch.tar" lifish.AppDir
-
-	cd artifacts
-
-	appimagetool_filename="appimagetool-x86_64.AppImage"
-	curl -sSf -L -O "$appimagetool_baseurl/$appimagetool_filename"
-	chmod +x "$appimagetool_filename"
-
-	curl -sSf -L -O "$runtime_baseurl/$runtime_filename"
-	chmod +x "$runtime_filename"
-
-	exit 0
-fi
 
 if [ ! -f "$appimagetool_filename" ]; then
 	curl -sSf -L -O "$appimagetool_baseurl/$appimagetool_filename"
