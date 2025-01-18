@@ -28,7 +28,7 @@ required_libs=(
 	libmd.so.0
 	libogg.so.0
 	libopenal.so.1
-	libsndio.so.7.0
+	libsndio.so.7
 	libvorbis.so.0
 	libvorbisenc.so.2
 	libvorbisfile.so.3
