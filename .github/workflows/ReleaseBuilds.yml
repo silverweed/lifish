@@ -11,7 +11,7 @@ jobs:
       contents: write
 
     outputs:
-      new_tag: ${{ steps.get-release-tag.outputs.new_tag }}
+      latest_tag: ${{ steps.get-release-tag.outputs.latest_tag }}
 
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +40,7 @@ jobs:
           fi
 
           echo "Setting release tag to '${latest_tag}'..."
-          echo "new_tag=$latest_tag" >> "$GITHUB_OUTPUT"
+          echo "latest_tag=$latest_tag" >> "$GITHUB_OUTPUT"
 
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -49,11 +49,11 @@ jobs:
         run: |
           run_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           notes="Linux and macOS builds in this release were compiled and uploaded entirely by GitHub Actions following the steps in the workflow file of this repository. Together with the SHA-256 hashes of the assets being printed in the logs of the workflow run ${run_url}, this allows users to verify that said builds were produced based on the source code of the repository at a specific commit."
-          gh release create --notes "${notes}" "$NEW_TAG"
+          gh release create --notes "${notes}" "$LATEST_TAG"
 
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_TAG: ${{ steps.get-release-tag.outputs.new_tag }}
+          LATEST_TAG: ${{ steps.get-release-tag.outputs.latest_tag }}
 
   build-macos-universal:
     needs: create-new-release
@@ -66,17 +66,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: boom
+          ref: ${{ needs.create-new-release.outputs.latest_tag }}
 
       - name: Compile macOS universal app and upload file to release
         run: |
           ./makeapp_osx.sh
           openssl sha256 BOOM-Remake-*-mac.dmg
-          gh release upload "$NEW_TAG" BOOM-Remake-*-mac.dmg
+          gh release upload "$LATEST_TAG" BOOM-Remake-*-mac.dmg
 
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_TAG: ${{ needs.create-new-release.outputs.new_tag }}
+          LATEST_TAG: ${{ needs.create-new-release.outputs.latest_tag }}
 
   build-linux-appimage-x86_64:
     needs: create-new-release
@@ -89,7 +89,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: boom
+          ref: ${{ needs.create-new-release.outputs.latest_tag }}
 
       - name: Compile Linux x86_64 app and upload file to release
         run: |
@@ -97,11 +97,11 @@ jobs:
           sudo apt install -y desktop-file-utils libsfml-dev
           ./makeapp_linux.sh
           openssl sha256 BOOM-Remake-*-linux-x86_64.AppImage
-          gh release upload "$NEW_TAG" BOOM-Remake-*-linux-x86_64.AppImage
+          gh release upload "$LATEST_TAG" BOOM-Remake-*-linux-x86_64.AppImage
 
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_TAG: ${{ needs.create-new-release.outputs.new_tag }}
+          LATEST_TAG: ${{ needs.create-new-release.outputs.latest_tag }}
 
   build-linux-appimage-aarch64:
     needs: create-new-release
@@ -114,7 +114,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: boom
+          ref: ${{ needs.create-new-release.outputs.latest_tag }}
 
       - name: Compile Linux aarch64 app and upload file to release
         run: |
@@ -122,8 +122,8 @@ jobs:
           sudo apt install -y desktop-file-utils libsfml-dev
           ./makeapp_linux.sh
           openssl sha256 BOOM-Remake-*-linux-aarch64.AppImage
-          gh release upload "$NEW_TAG" BOOM-Remake-*-linux-aarch64.AppImage
+          gh release upload "$LATEST_TAG" BOOM-Remake-*-linux-aarch64.AppImage
 
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_TAG: ${{ needs.create-new-release.outputs.new_tag }}
+          LATEST_TAG: ${{ needs.create-new-release.outputs.latest_tag }}
