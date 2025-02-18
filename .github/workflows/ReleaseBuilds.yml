@@ -3,55 +3,127 @@ name: Make Release Builds
 on: [workflow_dispatch]
 
 jobs:
+  create-new-release:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+
+    permissions:
+      contents: write
+
+    outputs:
+      new_tag: ${{ steps.get-release-tag.outputs.new_tag }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: boom
+
+      - name: Get release tag
+        id: get-release-tag
+        shell: bash
+        run: |
+          git fetch --prune --unshallow --tags
+
+          if ! latest_tag="$(git describe --tags --abbrev=0)"; then
+              echo "No tags in this branch!"
+              exit 1
+          fi
+
+          releases="$(gh api \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              /repos/${{ github.repository }}/releases)"
+
+          if latest_release_tag="$(jq -e -r '.[0].tag_name' <<< "$releases")" && [ "${latest_release_tag}" = "${latest_tag}" ]; then
+              echo "A release for tag ${latest_tag} has already been created!"
+              exit 1
+          fi
+
+          echo "Setting release tag to '${latest_tag}'..."
+          echo "new_tag=$latest_tag" >> "$GITHUB_OUTPUT"
+
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create (empty) release
+        run: |
+          run_url="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          notes="Linux and macOS builds in this release were compiled and uploaded entirely by GitHub Actions following the steps in the workflow file of this repository. Together with the SHA-256 hashes of the assets being printed in the logs of the workflow run ${run_url}, this allows users to verify that said builds were produced based on the source code of the repository at a specific commit."
+          gh release create --notes "${notes}" "$NEW_TAG"
+
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_TAG: ${{ steps.get-release-tag.outputs.new_tag }}
+
   build-macos-universal:
+    needs: create-new-release
     runs-on: macos-13
     timeout-minutes: 15
+
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
         with:
           ref: boom
 
-      - run: ./makeapp_osx.sh
+      - name: Compile macOS universal app and upload file to release
+        run: |
+          ./makeapp_osx.sh
+          openssl sha256 BOOM-Remake-*-mac.dmg
+          gh release upload "$NEW_TAG" BOOM-Remake-*-mac.dmg
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: mac-build-universal
-          path: BOOM-Remake-*-mac.dmg
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_TAG: ${{ needs.create-new-release.outputs.new_tag }}
 
   build-linux-appimage-x86_64:
+    needs: create-new-release
     runs-on: ubuntu-22.04
     timeout-minutes: 15
+
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
         with:
           ref: boom
 
-      - run: |
+      - name: Compile Linux x86_64 app and upload file to release
+        run: |
           sudo apt update
           sudo apt install -y desktop-file-utils libsfml-dev
+          ./makeapp_linux.sh
+          openssl sha256 BOOM-Remake-*-linux-x86_64.AppImage
+          gh release upload "$NEW_TAG" BOOM-Remake-*-linux-x86_64.AppImage
 
-      - run: ./makeapp_linux.sh
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: linux-build-x86_64
-          path: BOOM-Remake-*-linux-x86_64.AppImage
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_TAG: ${{ needs.create-new-release.outputs.new_tag }}
 
   build-linux-appimage-aarch64:
+    needs: create-new-release
     runs-on: ubuntu-22.04-arm
     timeout-minutes: 15
+
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
         with:
           ref: boom
 
-      - run: |
+      - name: Compile Linux aarch64 app and upload file to release
+        run: |
           sudo apt update
           sudo apt install -y desktop-file-utils libsfml-dev
+          ./makeapp_linux.sh
+          openssl sha256 BOOM-Remake-*-linux-aarch64.AppImage
+          gh release upload "$NEW_TAG" BOOM-Remake-*-linux-aarch64.AppImage
 
-      - run: ./makeapp_linux.sh
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: linux-build-aarch64
-          path: BOOM-Remake-*-linux-aarch64.AppImage
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_TAG: ${{ needs.create-new-release.outputs.new_tag }}
