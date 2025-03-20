@@ -3,9 +3,13 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <unordered_map>
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
-#include "json.hpp"
+
+namespace tinyjson {
+class json;
+}
 
 namespace lif {
 
@@ -29,10 +33,10 @@ class ScreenBuilder final : private sf::NonCopyable {
 	std::string vAlign;
 	float totHeight = 0;
 
-	void _parseStyles(lif::ui::Screen& screen, const nlohmann::json& screenJSON);
-	void _addElement(lif::ui::Screen& screen, const nlohmann::json& screenJSON);
-	void _addText(lif::ui::Screen& screen, const nlohmann::json& screenJSON);
-	void _addImage(lif::ui::Screen& screen, const nlohmann::json& screenJSON);
+	void _parseStyles(lif::ui::Screen& screen, const tinyjson::json& screenJSON);
+	void _addElement(lif::ui::Screen& screen, const tinyjson::json& screenJSON);
+	void _addText(lif::ui::Screen& screen, const tinyjson::json& screenJSON);
+	void _addImage(lif::ui::Screen& screen, const tinyjson::json& screenJSON);
 	void _fixAlign(lif::ui::Screen& screen);
 	void _calcTransitions(lif::ui::Screen& screen);
 	sf::String _maybeInsertDynamicText(const std::string& s) const;

@@ -1,12 +1,11 @@
 #include "LevelSet.hpp"
-#include "json.hpp"
 #include "utils.hpp"
 #include <exception>
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
+#include <tinyjson.h>
 
-using json = nlohmann::json;
 using lif::LevelSet;
 using lif::Level;
 
@@ -32,12 +31,13 @@ bool LevelSet::loadFromFile(const std::string& path) {
 			return false;
 	}
 
-	json levelJSON = json::parse(std::ifstream(path));
+	std::string fileContent = lif::readEntireFile(path);
+	tinyjson::json levelJSON = tinyjson::parser::parse(fileContent.c_str());
 
 	// load metadata
 	for (const auto& key : AVAIL_METADATA) {
-		if (levelJSON.find(key) != levelJSON.end())
-			metadata[key] = levelJSON[(std::string)key].get<std::string>();
+		if (auto it = levelJSON.find(key))
+			metadata[key] = it->get_string();
 	}
 	metadata["path"] = lif::toRelativePath(path);
 
@@ -51,15 +51,15 @@ bool LevelSet::loadFromFile(const std::string& path) {
 	 *	}
 	 * }
 	 */
-	for (const auto& trackinfo : tracksdata) {
+	for (const auto& trackinfo : tracksdata.get_array()) {
 		const auto& loop = trackinfo["loop"];
-		const float loopstart = loop["start"];
+		const float loopstart = loop["start"].get_double();
 		float looplength = -1;
 		const auto len = loop.find("length");
-		if (len != loop.end()) {
-			looplength = *len;
+		if (len) {
+			looplength = len->get_double();
 		} else {
-			float loopend = loop["end"];
+			float loopend = loop["end"].get_double();
 			looplength = loopend - loopstart;
 		}
 		tracks.emplace_back(getNthTrack(tracknum++, loopstart, looplength));
@@ -83,9 +83,9 @@ bool LevelSet::loadFromFile(const std::string& path) {
 	 *
 	 * }
 	 */
-	for (const auto& enemyinfo : enemydata) {
-		enemies[enemynum].ai = enemyinfo["ai"];
-		enemies[enemynum].speed = enemyinfo["speed"];
+	for (const auto& enemyinfo : enemydata.get_array()) {
+		enemies[enemynum].ai = enemyinfo["ai"].get_integer();
+		enemies[enemynum].speed = enemyinfo["speed"].get_double();
 
 		const auto& atk = enemyinfo["attack"];
 		const auto& atktype = atk["type"];
@@ -93,7 +93,7 @@ bool LevelSet::loadFromFile(const std::string& path) {
 		enemies[enemynum].attack.type = static_cast<lif::AttackType>(0);
 		for (unsigned i = 0; i < atktype.size(); ++i) {
 			AttackType type;
-			const auto& at = atktype[i].get<std::string>();
+			const auto& at = atktype[i].get_string();
 			if (!lif::stringToAttackType(at, type))
 				throw std::invalid_argument(at.c_str());
 
@@ -104,35 +104,34 @@ bool LevelSet::loadFromFile(const std::string& path) {
 
 		// Optional fields
 		auto it = atk.find("id");
-		if (it != atk.end())
-			enemies[enemynum].attack.bulletId = it->get<unsigned>();
+		if (it)
+			enemies[enemynum].attack.bulletId = it->get_integer();
 
 		it = atk.find("contactDamage");
-		if (it != atk.end())
-			enemies[enemynum].attack.contactDamage = it->get<int>();
+		if (it)
+			enemies[enemynum].attack.contactDamage = it->get_integer();
 
 		it = atk.find("fireRate");
-		if (it != atk.end())
-			enemies[enemynum].attack.fireRate = it->get<float>();
+		if (it)
+			enemies[enemynum].attack.fireRate = it->get_double();
 
 		it = atk.find("blockTime");
-		if (it != atk.end())
-			enemies[enemynum].attack.blockTime = sf::milliseconds(it->get<float>());
+		if (it)
+			enemies[enemynum].attack.blockTime = sf::milliseconds(it->get_double());
 
 		// Find range: first search for `range` (in pixels); if not found, search `tileRange`.
 		// If neither is found, set range to -1 (infinite).
 		enemies[enemynum].attack.range = -1;
 		bool range_found = false;
 		it = atk.find("range");
-		if (it != atk.end()) {
-			enemies[enemynum].attack.range = it->get<float>();
+		if (it) {
+			enemies[enemynum].attack.range = it->get_double();
 			range_found = true;
 		}
 		if (!range_found) {
 			it = atk.find("tileRange");
-			if (it != atk.end()) {
-				enemies[enemynum].attack.range =
-					static_cast<float>(it->get<int>() * lif::TILE_SIZE);
+			if (it) {
+				enemies[enemynum].attack.range = static_cast<float>(it->get_integer() * lif::TILE_SIZE);
 			}
 		}
 		++enemynum;
@@ -160,30 +159,18 @@ bool LevelSet::loadFromFile(const std::string& path) {
 	 *	"cutscenePost": string [opt]
 	 * }
 	 */
-	for (const auto& lvinfo : levelsdata) {
+	for (const auto& lvinfo : levelsdata.get_array()) {
 		LevelInfo info;
 		info.levelnum          = lvnum++;
-		info.time              = lvinfo["time"];
-		info.track             = tracks[lvinfo["music"].get<unsigned short>()-1];
-		info.tilemap           = lvinfo["tilemap"].get<std::string>();
-		info.width             = lvinfo["width"];
-		info.height            = lvinfo["height"];
-		info.tileIDs.border    = lvinfo["tileIDs"]["border"];
-		info.tileIDs.bg        = lvinfo["tileIDs"]["bg"];
-		info.tileIDs.fixed     = lvinfo["tileIDs"]["fixed"];
-		info.tileIDs.breakable = lvinfo["tileIDs"]["breakable"];
-		auto it = lvinfo.find("effects");
-		if (it != lvinfo.end()) {
-			for (const auto& s : *it) {
-				info.effects.insert(s.get<std::string>());
-			}
-		}
-		it = lvinfo.find("cutscenePre");
-		if (it != lvinfo.end())
-			info.cutscenePre = it->get<std::string>();
-		it = lvinfo.find("cutscenePost");
-		if (it != lvinfo.end())
-			info.cutscenePost = it->get<std::string>();
+		info.time              = lvinfo["time"].get_integer();
+		info.track             = tracks[lvinfo["music"].get_integer()-1];
+		info.tilemap           = lvinfo["tilemap"].get_string();
+		info.width             = lvinfo["width"].get_integer();
+		info.height            = lvinfo["height"].get_integer();
+		info.tileIDs.border    = lvinfo["tileIDs"]["border"].get_integer();
+		info.tileIDs.bg        = lvinfo["tileIDs"]["bg"].get_integer();
+		info.tileIDs.fixed     = lvinfo["tileIDs"]["fixed"].get_integer();
+		info.tileIDs.breakable = lvinfo["tileIDs"]["breakable"].get_integer();
 		levels.emplace_back(info);
 	}
 

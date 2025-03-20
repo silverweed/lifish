@@ -1,10 +1,10 @@
 #include "language.hpp"
-#include "json.hpp"
+#include "utils.hpp"
+#include <iostream>
+#include <tinyjson.h>
 #include <fstream>
 #include <unordered_map>
 #include <cassert>
-
-using json = nlohmann::json;
 
 lif::Language lif::curLang = lif::Language::ENGLISH;
 bool lif::switchedLanguage = false;
@@ -15,7 +15,7 @@ static const char* langMap[static_cast<unsigned>(lif::Language::COUNT)] = {
 	"de",
 	"fr"
 };
-static json l10nStrings;
+static tinyjson::json l10nStrings;
 
 lif::Language lif::langFromStr(const std::string& name) {
 	for (unsigned i = 0; i < static_cast<unsigned>(lif::Language::COUNT); ++i) {
@@ -42,7 +42,8 @@ void lif::switchLanguage(lif::Language lang) {
 bool lif::loadL10nStrings(const std::string& filename) {
 	std::cerr << "Loading localization strings from " << filename << "\n";
 	try {
-		l10nStrings = json::parse(std::ifstream(filename));
+		std::string fileContent = lif::readEntireFile(filename);
+		l10nStrings = tinyjson::parser::parse(fileContent.c_str());
 		return true;
 	} catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;
@@ -52,11 +53,11 @@ bool lif::loadL10nStrings(const std::string& filename) {
 
 std::string lif::getLocalized(const std::string& strkey) {
 	const auto it = l10nStrings.find(strkey);
-	if (it == l10nStrings.end()) {
+	if (!it) {
 		std::cerr << "[l10n] '" << strkey << "': no such key.\n";
 		return "";
 	}
 
 	const auto lit = it->find(strFromLang(lif::curLang));
-	return (lit != it->end()) ? *lit : "";
+	return lit ? lit->get_string() : "";
 }

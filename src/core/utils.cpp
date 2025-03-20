@@ -3,34 +3,15 @@
 #include "LoopingMusic.hpp"
 #include "Options.hpp"
 #include "ShadedText.hpp"
-#include "json.hpp"
+#include <fstream>
 #include <cassert>
+#include <iostream>
 #include <random>
 #if defined(_WIN32) || defined(__MINGW32__)
 #	include <windows.h>
 #else
 #	include <sys/stat.h>
 #endif
-
-using json = nlohmann::json;
-
-void sf::to_json(json& j, const sf::Time& time) {
-	j = time.asMilliseconds();
-}
-
-void sf::from_json(const json& j, sf::Time& time) {
-	time = sf::milliseconds(j);
-}
-
-void sf::to_json(json& j, const sf::VideoMode& vm) {
-	j = { vm.width, vm.height, vm.bitsPerPixel };
-}
-
-void sf::from_json(const json& j, sf::VideoMode& vm) {
-	vm.width = j[0];
-	vm.height = j[1];
-	vm.bitsPerPixel = j[2];
-}
 
 void lif::testMusic() {
 	sf::Music sample;
@@ -86,4 +67,12 @@ bool lif::createDirIfNotExisting(const std::filesystem::path& path) {
 	}
 
 	return true;
+}
+
+std::string lif::readEntireFile(const std::string& path) {
+	std::ifstream f(path);
+	if (!f) return "";
+	std::ostringstream sstr;
+	sstr << f.rdbuf();
+	return sstr.str();
 }

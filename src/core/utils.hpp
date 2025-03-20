@@ -2,25 +2,12 @@
 
 #include "Angle.hpp"
 #include "core.hpp"
-#include "json.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <array>
 #include <cassert>
 #include <ostream>
 #include <filesystem>
-
-// Enable automatic sf::Time / json conversion:
-// https://github.com/nlohmann/json#basic-usage
-namespace sf {
-
-void to_json(nlohmann::json& json, const sf::Time& time);
-void from_json(const nlohmann::json& json, sf::Time& time);
-
-void to_json(nlohmann::json& json, const sf::VideoMode& vm);
-void from_json(const nlohmann::json& json, sf::VideoMode& vm);
-
-}
 
 namespace lif {
 
@@ -227,5 +214,7 @@ void testMusic();
 sf::View keepRatio(const sf::Vector2f& size, const sf::Vector2u& designedsize);
 
 bool createDirIfNotExisting(const std::filesystem::path& path);
+
+std::string readEntireFile(const std::string& path);
 
 } // end namespace lif
