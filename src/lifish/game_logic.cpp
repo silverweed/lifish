@@ -30,8 +30,6 @@
 using EntityList = std::vector<lif::Entity*>;
 
 void lif::game_logic::bombDeployLogic(lif::Entity& e, lif::BaseLevelManager& blm, EntityList& tbspawned) {
-	// Used for throwable bombs (pretty ugly, consider refactoring)
-	static std::array<sf::Time, lif::MAX_PLAYERS> latestBomb;
 
 	auto& lm = static_cast<lif::LevelManager&>(blm);
 	if (!lm.isPlayer(e)) return;
@@ -44,41 +42,13 @@ void lif::game_logic::bombDeployLogic(lif::Entity& e, lif::BaseLevelManager& blm
 		&& lm.canDeployBomb(player)
 		&& controllable->hasQueuedBombCommand())
 	{
-		if (pinfo.powers.throwableBomb) {
-			const auto gameTime = lif::time.getGameTime();
-			if (gameTime - latestBomb[pinfo.id - 1] < sf::seconds(0.5))
-				return;
-
-			latestBomb[pinfo.id - 1] = gameTime;
-
-			if (lm.bombsDeployedBy(pinfo.id) > 0) {
-				auto bomb = lm.getFirstValidBomb(pinfo.id);
-				if (bomb == nullptr)
-					throw std::logic_error("Player deployed some bomb, but none found?!");
-
-				bomb->ignite();
-
-				std::cerr << "1\n";
-				return;
-
-			}
-
-		} else if (!lm.canDeployBombAt(lif::tile2(player.getPosition()))) {
-			// doing this check only if !throwableBomb, else the player wouldn't be
-			// able to detonate a bomb while on the same tile as it
+		if (!lm.canDeployBombAt(lif::tile2(player.getPosition()))) {
 			return;
 		}
 
 		auto bomb = new lif::Bomb(lif::aligned2(player.getPosition()),
-					&player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius,
-					pinfo.powers.incendiaryBomb);
+					&player, pinfo.powers.bombFuseTime, pinfo.powers.bombRadius);
 		lif::cache.playSound(bomb->get<lif::Sounded>()->getSoundFile("fuse"));
-		if (pinfo.powers.throwableBomb) {
-			bomb->addComponent<lif::AxisMoving>(*bomb, lif::conf::player::DEFAULT_SPEED * 1.5,
-				player.get<lif::AxisMoving>()->getPrevDirection());
-			bomb->setPosition(static_cast<sf::Vector2f>(lif::tile2(player.getPosition()))
-					* static_cast<float>(lif::TILE_SIZE));
-		}
 		tbspawned.emplace_back(bomb);
 	}
 }

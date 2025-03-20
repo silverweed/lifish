@@ -47,11 +47,7 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 				tinyjson::json_object {{
 					{ "bombFuseTime",   powers.bombFuseTime.asSeconds() },
 					{ "bombRadius",     powers.bombRadius },
-					{ "maxBombs",       powers.maxBombs },
-					{ "incendiaryBomb", powers.incendiaryBomb },
-					{ "throwableBomb",  powers.throwableBomb },
-					{ "absorb",         powers.absorb },
-					{ "armor",          powers.armor },
+					{ "maxBombs",       powers.maxBombs }
 				}}
 			},
 			{ "score", lm.getScore(i + 1) }

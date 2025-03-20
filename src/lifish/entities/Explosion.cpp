@@ -25,7 +25,7 @@ using lif::TILE_SIZE;
 using lif::Direction;
 
 Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
-		const lif::Entity *const source, bool isIncendiary, int damage, lif::c_layers::Layer cLayer)
+		const lif::Entity *const source, int damage, lif::c_layers::Layer cLayer)
 	: lif::Entity(pos)
 	, cLayer(cLayer)
 	, radius(_radius)
@@ -70,9 +70,6 @@ Explosion::Explosion(const sf::Vector2f& pos, unsigned short _radius,
 					explColliderV->getSize(), lif::conf::bonus::FIRE_DURATION));
 					*/
 	});
-
-	if (isIncendiary)
-		spawner = addComponent<lif::BufferedSpawner>(*this);
 
 	propagation.fill(0);
 }

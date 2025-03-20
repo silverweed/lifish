@@ -19,12 +19,10 @@ using lif::TILE_SIZE;
 using namespace lif::conf::bomb;
 
 Bomb::Bomb(const sf::Vector2f& pos, const lif::Entity *const source,
-		const sf::Time& _fuseTime, const unsigned short _radius,
-		bool isIncendiary)
+		const sf::Time& _fuseTime, const unsigned short _radius)
 	: lif::Entity(pos)
 	, fuseTime(_fuseTime)
 	, radius(_radius)
-	, incendiary(isIncendiary)
 	, sourceEntity(source)
 {
 	addComponent<lif::Sounded>(*this,
@@ -47,7 +45,7 @@ Bomb::Bomb(const sf::Vector2f& pos, const lif::Entity *const source,
 	}, lif::c_layers::BOMBS);
 	addComponent<lif::Drawable>(*this, *animated);
 	addComponent<lif::Spawning>(*this, [this] () {
-		return new lif::Explosion(position, radius, sourceEntity, incendiary, lif::conf::bomb::EXPL_DAMAGE);
+		return new lif::Explosion(position, radius, sourceEntity, lif::conf::bomb::EXPL_DAMAGE);
 	});
 	addComponent<lif::ZIndexed>(*this, lif::conf::zindex::BOMBS);
 

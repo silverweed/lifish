@@ -43,10 +43,6 @@ struct SaveData {
  *                bombFuseTime: int,
  *                bombRadius: int,
  *                maxBombs: int,
- *                incendiaryBomb: bool,
- *                throwableBomb: bool,
- *                absorb: int,
- *                armor: int,
  *            },
  *            letters: [ bool ],
  *            score: int

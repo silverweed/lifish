@@ -19,14 +19,8 @@ class RegularEntityDeath;
 struct PlayerPowers {
 	int bombRadius        = lif::conf::bomb::DEFAULT_RADIUS;
 	int maxBombs          = lif::conf::player::DEFAULT_MAX_BOMBS;
-	/** Every (3 - `absorb`) kills heal the player by 1 hp. */
-	int absorb            = 0;
 	short absorbKillCount = 0;
-	/** Reduce every damage by `armor` (never below 1) */
-	int armor             = 0;
 	sf::Time bombFuseTime = lif::conf::bomb::DEFAULT_FUSE;
-	bool incendiaryBomb   = false;
-	bool throwableBomb    = false;
 };
 
 /** This structs contains all the data which is persistent through different levels. */
@@ -50,10 +44,6 @@ struct PlayerInfo {
 		powers.bombRadius = lif::conf::bomb::DEFAULT_RADIUS;
 		powers.maxBombs = lif::conf::player::DEFAULT_MAX_BOMBS;
 		powers.bombFuseTime = lif::conf::bomb::DEFAULT_FUSE;
-		powers.incendiaryBomb = false;
-		powers.throwableBomb = false;
-		powers.absorb = 0;
-		powers.armor = 0;
 	}
 };
 

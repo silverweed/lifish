@@ -37,8 +37,7 @@ public:
 	explicit Bomb(const sf::Vector2f& pos,
 			const lif::Entity *const source = nullptr,
 			const sf::Time& fuseTime = lif::conf::bomb::DEFAULT_FUSE,
-			const unsigned short radius = lif::conf::bomb::DEFAULT_RADIUS,
-			bool isIncendiary = false);
+			const unsigned short radius = lif::conf::bomb::DEFAULT_RADIUS);
 
 	void update() override;
 

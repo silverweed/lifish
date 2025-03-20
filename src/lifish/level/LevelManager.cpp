@@ -78,10 +78,6 @@ void LevelManager::loadGame(const lif::SaveData& saveData) {
 		powers.bombFuseTime = pdata.powers.bombFuseTime;
 		powers.bombRadius = pdata.powers.bombRadius;
 		powers.maxBombs = pdata.powers.maxBombs;
-		powers.incendiaryBomb = pdata.powers.incendiaryBomb;
-		powers.throwableBomb = pdata.powers.throwableBomb;
-		powers.absorb = pdata.powers.absorb;
-		powers.armor = pdata.powers.armor;
 		// Letters
 		for (unsigned j = 0; j < lif::conf::player::N_EXTRA_LETTERS; ++j)
 			player->setExtra(j, pdata.letters[j]);
@@ -174,9 +170,6 @@ void LevelManager::resetPlayerPersistentData() {
 
 bool LevelManager::canDeployBomb(const lif::Player& player) const {
 	const auto pinfo = player.getInfo();
-	if (pinfo.powers.throwableBomb)
-		return true;
-
 	const bool mostlyAligned = lif::manhattanDistance(
 			player.getPosition(), lif::aligned2(player.getPosition())) < 4;
 	return mostlyAligned && bombsDeployedBy(pinfo.id) < pinfo.powers.maxBombs;

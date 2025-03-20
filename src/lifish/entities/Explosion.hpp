@@ -72,7 +72,6 @@ public:
 	 */
 	explicit Explosion(const sf::Vector2f& pos, unsigned short radius,
 			const lif::Entity *const sourceEntity = nullptr,
-			bool isIncendiary = false,
 			int damage = 1,
 			lif::c_layers::Layer cLayer = lif::c_layers::EXPLOSIONS);
 
