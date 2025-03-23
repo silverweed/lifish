@@ -15,7 +15,8 @@ Screen::Screen(const sf::RenderWindow& window, const sf::Vector2u& size)
 	, size(size)
 {}
 
-Screen::Screen(const std::string& layoutFileName, const sf::RenderWindow& window, const sf::Vector2u& size, ScreenBuilder& builder)
+Screen::Screen(const std::string& layoutFileName, const sf::RenderWindow& window, 
+               const sf::Vector2u& size, ScreenBuilder& builder)
 	: window(window)
 	, size(size)
 {

@@ -22,7 +22,7 @@ The latest "official" binaries are available [here](https://silverweed.github.io
 ### DEPENDENCIES ###
 
 * [SFML](https://github.com/SFML/SFML) >= 2.5
-* [nlohmann/json](https://github.com/nlohmann/json) (included in the source)
+* [tinyjson](https://github.com/tiny-json/tinyjson) (included in the source)
 
 #### Linux, OS X, BSD, etc ####
 The game can be compiled on *nix (tested on Linux, OSX and FreeBSD) via `cmake . && make`

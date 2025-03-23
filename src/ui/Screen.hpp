@@ -95,7 +95,8 @@ protected:
 	virtual void clear();
 
 public:
-	explicit Screen(const std::string& layoutFileName, const sf::RenderWindow& window, const sf::Vector2u& size, ScreenBuilder& builder);
+	explicit Screen(const std::string& layoutFileName, const sf::RenderWindow& window, 
+	                const sf::Vector2u& size, ScreenBuilder& builder);
 
 	bool wasBuilt() const { return builtWithLayout.length() > 0; }
 	const std::string& getBuildLayout() const { return builtWithLayout; }
