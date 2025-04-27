@@ -78,10 +78,16 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LATEST_TAG: ${{ needs.create-new-release.outputs.latest_tag }}
 
-  build-linux-appimage-x86_64:
+  build-linux-appimage:
     needs: create-new-release
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.platform.os }}
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - { name: x86_64, os: ubuntu-22.04 }
+          - { name: aarch64, os: ubuntu-22.04-arm }
 
     permissions:
       contents: write
@@ -91,38 +97,13 @@ jobs:
         with:
           ref: ${{ needs.create-new-release.outputs.latest_tag }}
 
-      - name: Compile Linux x86_64 app and upload file to release
+      - name: Compile Linux ${{ matrix.platform.name }} app and upload file to release
         run: |
           sudo apt update
           sudo apt install -y desktop-file-utils libsfml-dev
           ./makeapp_linux.sh
-          openssl sha256 BOOM-Remake-*-linux-x86_64.AppImage
-          gh release upload "$LATEST_TAG" BOOM-Remake-*-linux-x86_64.AppImage
-
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LATEST_TAG: ${{ needs.create-new-release.outputs.latest_tag }}
-
-  build-linux-appimage-aarch64:
-    needs: create-new-release
-    runs-on: ubuntu-22.04-arm
-    timeout-minutes: 15
-
-    permissions:
-      contents: write
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.create-new-release.outputs.latest_tag }}
-
-      - name: Compile Linux aarch64 app and upload file to release
-        run: |
-          sudo apt update
-          sudo apt install -y desktop-file-utils libsfml-dev
-          ./makeapp_linux.sh
-          openssl sha256 BOOM-Remake-*-linux-aarch64.AppImage
-          gh release upload "$LATEST_TAG" BOOM-Remake-*-linux-aarch64.AppImage
+          openssl sha256 BOOM-Remake-*-linux-${{ matrix.platform.name }}.AppImage
+          gh release upload "$LATEST_TAG" BOOM-Remake-*-linux-${{ matrix.platform.name }}.AppImage
 
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
