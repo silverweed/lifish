@@ -7,9 +7,11 @@
 #include "Lifed.hpp"
 #include "utils.hpp"
 #include <iostream>
-#include <tinyjson.h>
+#include "json.hpp"
 
 using lif::SaveManager;
+
+using namespace picojson;
 
 bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager& lm) {
 	if (!lif::createDirIfNotExisting(lif::getSaveDir())) {
@@ -18,48 +20,51 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 
 	std::ofstream saveFile(filename);
 
-	tinyjson::json save = tinyjson::json_object {};
+	auto save = value::object {};
 
-	save.add_member("levelSet", std::string(lm.getLevel()->getLevelSet().getMeta("path")));
-	save.add_member("level", lm.getLevel()->getInfo().levelnum);
-	save.add_member("nPlayers", lif::options.nPlayers);
+	save["levelSet"] = value(std::string(lm.getLevel()->getLevelSet().getMeta("path")));
+	save["level"] = value(int64_t(lm.getLevel()->getInfo().levelnum));
+	save["nPlayers"] = value(int64_t(lif::options.nPlayers));
 
 	const auto& players = lm.players;
-	save.add_member("players", tinyjson::json_array {});
+	save["players"] = value(value::array {});
 	for (unsigned i = 0; i < players.size(); ++i) {
 		const auto& player = players[i];
+		auto &playersArr = save["players"].get<array>();
 		if (player == nullptr) {
 			// Only save the score
-			save["players"].add_element(tinyjson::json_object {
-				{ "continues", -1 },
-				{ "score", lm.getScore(i + 1) }
-			});
+			playersArr.push_back(value(value::object {
+				{ "continues", value(int64_t(-1)) },
+				{ "score", value(int64_t(lm.getScore(i + 1))) }
+			}));
 			continue;
 		}
 
 		const auto& powers = player->getPowers();
 		const auto& info = player->getInfo();
-		save["players"].add_element(tinyjson::json_object {
-			{ "continues", lm.getPlayerContinues(i + 1) },
-			{ "remainingLives", info.remainingLives },
-			{ "life", player->get<lif::Lifed>()->getLife() },
-			{ "powers",
-				tinyjson::json_object {{
-					{ "bombFuseTime",   powers.bombFuseTime.asSeconds() },
-					{ "bombRadius",     powers.bombRadius },
-					{ "maxBombs",       powers.maxBombs }
-				}}
-			},
-			{ "score", lm.getScore(i + 1) }
-		});
 
 		// Letters
-		save["players"][i].add_member("extra", tinyjson::json_array {});
+		auto extra = value::array {};
 		for (unsigned j = 0; j < lif::conf::player::N_EXTRA_LETTERS; ++j)
-			save["players"][i]["extra"].add_element(info.extra[j]);
+			extra.push_back(value(info.extra[j]));
+
+		playersArr.push_back(value(value::object {
+			{ "continues", value(int64_t(lm.getPlayerContinues(i + 1))) },
+			{ "remainingLives", value(int64_t(info.remainingLives)) },
+			{ "life", value(int64_t(player->get<lif::Lifed>()->getLife())) },
+			{ "powers",
+				value(value::object {{
+					{ "bombFuseTime",   value(double(powers.bombFuseTime.asSeconds())) },
+					{ "bombRadius",     value(int64_t(powers.bombRadius)) },
+					{ "maxBombs",       value(int64_t(powers.maxBombs)) }
+				}})
+			},
+			{ "score", value(int64_t(lm.getScore(i + 1))) },
+			{ "extra", value(extra) }
+		}));
 	}
 
-	saveFile << save.to_string();
+	saveFile << value(save).serialize();
 
 	return true;
 }
@@ -68,28 +73,33 @@ lif::SaveData SaveManager::loadGame(const std::string& filename) {
 	lif::SaveData data;
 	try {
 		std::string fileContent = lif::readEntireFile(filename);
-		tinyjson::json load = tinyjson::parser::parse(fileContent.c_str());
+		value loadJson;
+		auto err = picojson::parse(loadJson, fileContent);
+		if (!err.empty())
+			throw std::logic_error(err);
 
-		data.levelSet = load["levelSet"].get_string();
-		data.level = load["level"].get_integer();
-		data.nPlayers = load["nPlayers"].get_integer();
-		for (unsigned i = 0; i < data.players.size(); ++i) {
+		const auto &load = loadJson.get<object>();
+		data.levelSet = get_or<std::string>(load, "levelSet");
+		data.level = get_or<int64_t>(load, "level");
+		data.nPlayers = get_or<int64_t>(load, "nPlayers");
+		const auto &playersdata = get_or<array>(load, "players");
+		for (unsigned i = 0; i < std::min(data.players.size(), playersdata.size()); ++i) {
 			auto& player = data.players[i];
-			const auto& pldata = load["players"][i];
-			player.score = pldata["score"].get_integer();
-			player.continues = pldata["continues"].get_integer();
+			const auto &pldata = playersdata[i].get<object>();
+			player.score = get_or<int64_t>(pldata, "score");
+			player.continues = get_or<int64_t>(pldata, "continues");
 			if (player.continues < 0)
 				continue;
 
-			player.remainingLives = pldata["remainingLives"].get_integer();
-			player.life = pldata["life"].get_integer();
-			const auto& powdata = pldata["powers"];
-			player.powers.bombRadius = powdata["bombRadius"].get_integer();
-			player.powers.bombFuseTime = sf::seconds(powdata["bombFuseTime"].get_double());
-			player.powers.maxBombs = powdata["maxBombs"].get_integer();
-			const auto& exdata = pldata["extra"];
+			player.remainingLives = get_or<int64_t>(pldata, "remainingLives");
+			player.life = get_or<int64_t>(pldata, "life");
+			const auto& powdata = pldata.find("powers")->second.get<object>();
+			player.powers.bombRadius = get_or<int64_t>(powdata, "bombRadius");
+			player.powers.bombFuseTime = sf::seconds(get_or<double>(powdata, "bombFuseTime"));
+			player.powers.maxBombs = get_or<int64_t>(powdata, "maxBombs");
+			const auto& exdata = get_or<array>(pldata, "extra");
 			for (unsigned j = 0; j < player.letters.size(); ++j)
-				player.letters[j] = exdata[j].get_bool();
+				player.letters[j] = exdata[j].get<bool>();
 		}
 	} catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;

@@ -4,10 +4,12 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
-#include <tinyjson.h>
+#include "json.hpp"
 
 using lif::LevelSet;
 using lif::Level;
+
+using namespace picojson;
 
 /** Optional additional metadata; all values must be strings */
 static constexpr const char* AVAIL_METADATA[] = {
@@ -32,17 +34,23 @@ bool LevelSet::loadFromFile(const std::string& path) {
 	}
 
 	std::string fileContent = lif::readEntireFile(path);
-	tinyjson::json levelJSON = tinyjson::parser::parse(fileContent.c_str());
+	value levelJSON;
+	auto err = picojson::parse(levelJSON, fileContent);
+	if (!err.empty()) {
+		throw std::logic_error(err);
+	}
 
+	const auto &levelData = levelJSON.get<object>();
+	
 	// load metadata
 	for (const auto& key : AVAIL_METADATA) {
-		if (auto it = levelJSON.find(key))
-			metadata[key] = it->get_string();
+		if (auto it = levelData.find(key); it != levelData.end())
+			metadata[key] = it->second.get<std::string>();
 	}
 	metadata["path"] = lif::toRelativePath(path);
 
 	// load tracks data
-	const auto& tracksdata = levelJSON["tracks"];
+	const auto& tracksdata = get_or<array>(levelData, "tracks");
 	unsigned tracknum = 1;
 	/* trackinfo = {
 	 *	"loop": {
@@ -51,22 +59,23 @@ bool LevelSet::loadFromFile(const std::string& path) {
 	 *	}
 	 * }
 	 */
-	for (const auto& trackinfo : tracksdata.get_array()) {
-		const auto& loop = trackinfo["loop"];
-		const float loopstart = loop["start"].get_double();
+	for (const auto& trackinfo : tracksdata) {
+		const auto &trackObj = trackinfo.get<object>();
+		const auto& loop = trackObj.find("loop")->second.get<object>();
+		const float loopstart = loop.find("start")->second.get<double>();
 		float looplength = -1;
-		const auto len = loop.find("length");
-		if (len) {
-			looplength = len->get_double();
+		const auto lenIt = loop.find("length");
+		if (lenIt != loop.end()) {
+			looplength = lenIt->second.get<double>();
 		} else {
-			float loopend = loop["end"].get_double();
+			float loopend = loop.find("end")->second.get<double>();
 			looplength = loopend - loopstart;
 		}
 		tracks.emplace_back(getNthTrack(tracknum++, loopstart, looplength));
 	}
 
 	// load enemies data
-	const auto& enemydata = levelJSON["enemies"];
+	const auto& enemydata = levelData.find("enemies")->second.get<array>();
 	unsigned enemynum = 0;
 	/* enemyinfo = {
 	 *	"ai": uint,
@@ -83,17 +92,18 @@ bool LevelSet::loadFromFile(const std::string& path) {
 	 *
 	 * }
 	 */
-	for (const auto& enemyinfo : enemydata.get_array()) {
-		enemies[enemynum].ai = enemyinfo["ai"].get_integer();
-		enemies[enemynum].speed = enemyinfo["speed"].get_double();
+	for (const auto& enemyJson : enemydata) {
+		const auto &enemyinfo = enemyJson.get<object>();
+		enemies[enemynum].ai = enemyinfo.find("ai")->second.get<int64_t>();
+		enemies[enemynum].speed = enemyinfo.find("speed")->second.get<double>();
 
-		const auto& atk = enemyinfo["attack"];
-		const auto& atktype = atk["type"];
+		const auto& atk = enemyinfo.find("attack")->second.get<object>();
+		const auto& atktype = atk.find("type")->second.get<array>();
 
 		enemies[enemynum].attack.type = static_cast<lif::AttackType>(0);
 		for (unsigned i = 0; i < atktype.size(); ++i) {
 			AttackType type;
-			const auto& at = atktype[i].get_string();
+			const auto& at = atktype[i].get<std::string>();
 			if (!lif::stringToAttackType(at, type))
 				throw std::invalid_argument(at.c_str());
 
@@ -103,35 +113,24 @@ bool LevelSet::loadFromFile(const std::string& path) {
 		}
 
 		// Optional fields
-		auto it = atk.find("id");
-		if (it)
-			enemies[enemynum].attack.bulletId = it->get_integer();
-
-		it = atk.find("contactDamage");
-		if (it)
-			enemies[enemynum].attack.contactDamage = it->get_integer();
-
-		it = atk.find("fireRate");
-		if (it)
-			enemies[enemynum].attack.fireRate = it->get_double();
-
-		it = atk.find("blockTime");
-		if (it)
-			enemies[enemynum].attack.blockTime = sf::milliseconds(it->get_double());
+		enemies[enemynum].attack.bulletId = get_or<int64_t>(atk, "id");
+		enemies[enemynum].attack.contactDamage = get_or<int64_t>(atk, "contactDamage");
+		enemies[enemynum].attack.fireRate = get_or<double>(atk, "fireRate");
+		enemies[enemynum].attack.blockTime = sf::milliseconds(get_or<double>(atk, "blockTime"));
 
 		// Find range: first search for `range` (in pixels); if not found, search `tileRange`.
 		// If neither is found, set range to -1 (infinite).
 		enemies[enemynum].attack.range = -1;
 		bool range_found = false;
-		it = atk.find("range");
-		if (it) {
-			enemies[enemynum].attack.range = it->get_double();
+		auto it = atk.find("range");
+		if (it != atk.end()) {
+			enemies[enemynum].attack.range = it->second.get<double>();
 			range_found = true;
 		}
 		if (!range_found) {
 			it = atk.find("tileRange");
-			if (it) {
-				enemies[enemynum].attack.range = static_cast<float>(it->get_integer() * lif::TILE_SIZE);
+			if (it != atk.end()) {
+				enemies[enemynum].attack.range = static_cast<float>(it->second.get<int64_t>() * lif::TILE_SIZE);
 			}
 		}
 		++enemynum;
@@ -139,7 +138,7 @@ bool LevelSet::loadFromFile(const std::string& path) {
 
 
 	// load levels data
-	const auto& levelsdata = levelJSON["levels"];
+	const auto& levelsdata = levelData.find("levels")->second.get<array>();
 
 	unsigned lvnum = 1;
 	/* lvinfo = {
@@ -159,18 +158,20 @@ bool LevelSet::loadFromFile(const std::string& path) {
 	 *	"cutscenePost": string [opt]
 	 * }
 	 */
-	for (const auto& lvinfo : levelsdata.get_array()) {
+	for (const auto& lvJson : levelsdata) {
+		const auto &lvinfo = lvJson.get<object>();
+		const auto &tileIDs = lvinfo.find("tileIDs")->second.get<object>();
 		LevelInfo info;
 		info.levelnum          = lvnum++;
-		info.time              = lvinfo["time"].get_integer();
-		info.track             = tracks[lvinfo["music"].get_integer()-1];
-		info.tilemap           = lvinfo["tilemap"].get_string();
-		info.width             = lvinfo["width"].get_integer();
-		info.height            = lvinfo["height"].get_integer();
-		info.tileIDs.border    = lvinfo["tileIDs"]["border"].get_integer();
-		info.tileIDs.bg        = lvinfo["tileIDs"]["bg"].get_integer();
-		info.tileIDs.fixed     = lvinfo["tileIDs"]["fixed"].get_integer();
-		info.tileIDs.breakable = lvinfo["tileIDs"]["breakable"].get_integer();
+		info.time              = lvinfo.find("time")->second.get<int64_t>();
+		info.track             = tracks[lvinfo.find("music")->second.get<int64_t>()-1];
+		info.tilemap           = lvinfo.find("tilemap")->second.get<std::string>();
+		info.width             = lvinfo.find("width")->second.get<int64_t>();
+		info.height            = lvinfo.find("height")->second.get<int64_t>();
+		info.tileIDs.border    = tileIDs.find("border")->second.get<int64_t>();
+		info.tileIDs.bg        = tileIDs.find("bg")->second.get<int64_t>();
+		info.tileIDs.fixed     = tileIDs.find("fixed")->second.get<int64_t>();
+		info.tileIDs.breakable = tileIDs.find("breakable")->second.get<int64_t>();
 		levels.emplace_back(info);
 	}
 

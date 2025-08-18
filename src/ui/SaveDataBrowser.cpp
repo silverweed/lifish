@@ -4,9 +4,10 @@
 #include "dirent.h"
 #include <cstdlib>
 #include <cstring>
+#include <stdexcept>
 #include <sys/stat.h>
 #include <iostream>
-#include <tinyjson.h>
+#include "json.hpp"
 
 #ifdef _WIN32
 #define stat _stat
@@ -39,9 +40,13 @@ auto SaveDataBrowser::browseSaveData(std::string path) const -> std::vector<Save
 			}
 			try {
 				std::string saveRaw = lif::readEntireFile(file.path);
-				auto savejson = tinyjson::parser::parse(saveRaw.c_str());
-				file.level = savejson["level"].get_integer();
-				file.nPlayers = savejson["nPlayers"].get_integer();
+				picojson::value savejson;
+				auto err = picojson::parse(savejson, saveRaw);
+				if (!err.empty())
+					throw std::logic_error(err);
+				auto saveObj = savejson.get<picojson::object>();
+				file.level = get_or<int64_t>(saveObj, "level");
+				file.nPlayers = get_or<int64_t>(saveObj, "nPlayers");
 				files.emplace_back(file);
 			} catch (const std::exception& e) {
 				file.level = 0;

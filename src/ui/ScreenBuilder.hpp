@@ -7,8 +7,8 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 
-namespace tinyjson {
-class json;
+namespace picojson {
+class value;
 }
 
 namespace lif {
@@ -33,10 +33,10 @@ class ScreenBuilder final : private sf::NonCopyable {
 	std::string vAlign;
 	float totHeight = 0;
 
-	void _parseStyles(lif::ui::Screen& screen, const tinyjson::json& screenJSON);
-	void _addElement(lif::ui::Screen& screen, const tinyjson::json& screenJSON);
-	void _addText(lif::ui::Screen& screen, const tinyjson::json& screenJSON);
-	void _addImage(lif::ui::Screen& screen, const tinyjson::json& screenJSON);
+	void _parseStyles(lif::ui::Screen& screen, const picojson::value& screenJSON);
+	void _addElement(lif::ui::Screen& screen, const picojson::value& screenJSON);
+	void _addText(lif::ui::Screen& screen, const picojson::value& screenJSON);
+	void _addImage(lif::ui::Screen& screen, const picojson::value& screenJSON);
 	void _fixAlign(lif::ui::Screen& screen);
 	void _calcTransitions(lif::ui::Screen& screen);
 	sf::String _maybeInsertDynamicText(const std::string& s) const;

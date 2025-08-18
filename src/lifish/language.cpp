@@ -1,7 +1,7 @@
 #include "language.hpp"
 #include "utils.hpp"
+#include "json.hpp"
 #include <iostream>
-#include <tinyjson.h>
 #include <fstream>
 #include <unordered_map>
 #include <cassert>
@@ -15,7 +15,7 @@ static const char* langMap[static_cast<unsigned>(lif::Language::COUNT)] = {
 	"de",
 	"fr"
 };
-static tinyjson::json l10nStrings;
+static picojson::value::object l10nStrings;
 
 lif::Language lif::langFromStr(const std::string& name) {
 	for (unsigned i = 0; i < static_cast<unsigned>(lif::Language::COUNT); ++i) {
@@ -43,7 +43,13 @@ bool lif::loadL10nStrings(const std::string& filename) {
 	std::cerr << "Loading localization strings from " << filename << "\n";
 	try {
 		std::string fileContent = lif::readEntireFile(filename);
-		l10nStrings = tinyjson::parser::parse(fileContent.c_str());
+		picojson::value l10nJson;
+		auto err = picojson::parse(l10nJson, fileContent);
+		if (!err.empty()) {
+			std::cerr << err << std::endl;
+			return false;
+		}
+		l10nStrings = l10nJson.get<picojson::object>();
 		return true;
 	} catch (const std::exception& e) {
 		std::cerr << e.what() << std::endl;
@@ -53,11 +59,12 @@ bool lif::loadL10nStrings(const std::string& filename) {
 
 std::string lif::getLocalized(const std::string& strkey) {
 	const auto it = l10nStrings.find(strkey);
-	if (!it) {
+	if (it == l10nStrings.end()) {
 		std::cerr << "[l10n] '" << strkey << "': no such key.\n";
 		return "";
 	}
 
-	const auto lit = it->find(strFromLang(lif::curLang));
-	return lit ? lit->get_string() : "";
+	auto langObj = it->second.get<picojson::object>();
+	const auto lit = langObj.find(strFromLang(lif::curLang));
+	return lit != langObj.end() ? lit->second.get<std::string>() : "";
 }

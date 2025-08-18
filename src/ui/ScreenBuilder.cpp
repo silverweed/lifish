@@ -7,10 +7,10 @@
 #include "language.hpp"
 #include <iostream>
 #include <unordered_map>
-#include <tinyjson.h>
+#include "json.hpp"
 
 using lif::ui::ScreenBuilder;
-using namespace tinyjson;
+using namespace picojson;
 
 static sf::Color colorFromName(const std::string& name) {
 	if (name == "red") return sf::Color::Red;
@@ -24,25 +24,25 @@ static sf::Color colorFromName(const std::string& name) {
 	return sf::Color::Black;
 }
 
-static void addStyleProperty(lif::ui::ScreenStyle& style, const std::string& key, const json& value) {
+static void addStyleProperty(lif::ui::ScreenStyle& style, const std::string& key, const value& value) {
 	if (key == "spacing")
-		style.spacing = value.get_integer();
+		style.spacing = value.get<int64_t>();
 	else if (key == "interactable")
-		style.interactable = value.get_bool();
+		style.interactable = value.get<bool>();
 	else if (key == "font")
-		style.font = value.get_string();
+		style.font = value.get<std::string>();
 	else if (key == "character-size")
-		style.characterSize = value.get_integer();
+		style.characterSize = value.get<int64_t>();
 	else if (key == "v-align")
-		style.vAlign = value.get_string();
+		style.vAlign = value.get<std::string>();
 	else if (key == "h-align")
-		style.hAlign = value.get_string();
+		style.hAlign = value.get<std::string>();
 	else if (key == "color") {
-		style.color = colorFromName(value.get_string());
+		style.color = colorFromName(value.get<std::string>());
 	} else if (key == "shadow-color") {
-		style.bgcolor = colorFromName(value.get_string());
+		style.bgcolor = colorFromName(value.get<std::string>());
 	} else if (key == "shadow-spacing") {
-		style.shadowSpacing = value.get_integer();
+		style.shadowSpacing = value.get<int64_t>();
 	} else
 		std::cerr << "Invalid style property: " << key << std::endl;
 }
@@ -65,40 +65,42 @@ sf::String ScreenBuilder::_maybeInsertDynamicText(const std::string& s) const {
 	return s;
 }
 
-void ScreenBuilder::_parseStyles(lif::ui::Screen& screen, const json& stylesJSON) {
-	for (const auto &[styleKey, style] : stylesJSON.get_object()) {
-		for (const auto &[key, val] : style.get_object()) {
+void ScreenBuilder::_parseStyles(lif::ui::Screen& screen, const value& stylesJSON) {
+	for (const auto &[styleKey, style] : stylesJSON.get<object>()) {
+		for (const auto &[key, val] : style.get<object>()) {
 			addStyleProperty(screen.styles[styleKey], key, val);
 		}
 	}
 }
 
 // Define some useful mixins
-#define FILL_STYLE_PROPERTIES(obj) \
+#define FILL_STYLE_PROPERTIES(obj_) \
 	{ \
+		auto obj = obj_.get<object>(); \
 		auto it = obj.find("interactable"); \
-		interactable = it && it->get_bool(); \
+		interactable = it != obj.end() && it->second.is<bool>(); \
 		it = obj.find("consecutive"); \
-		consecutive = it && it->get_bool(); \
+		consecutive = it != obj.end() && it->second.is<bool>(); \
 		it = obj.find("style"); \
-		if (it) \
-			style_name = it->get_string(); \
+		if (it != obj.end()) \
+			style_name = it->second.get<std::string>(); \
 		it = obj.find("position"); \
-		if (it) { \
-			manualPosition.x = (*it)[0].get_integer(); \
+		if (it != obj.end()) { \
+			manualPosition.x = it->second.get<array>()[0].get<int64_t>(); \
 			if (manualPosition.x < 0) \
 				manualPosition.x += lif::WINDOW_WIDTH; \
-			manualPosition.y = (*it)[1].get_integer(); \
+			manualPosition.y = it->second.get<array>()[1].get<int64_t>(); \
 			if (manualPosition.y < 0) \
 				manualPosition.y += lif::WINDOW_HEIGHT; \
 		} \
 	}
 
-#define COMPUTE_STYLE_OVERRIDE(obj) \
+#define COMPUTE_STYLE_OVERRIDE(obj_) \
 	{ \
+		auto obj = obj_.get<object>(); \
 		auto it = obj.find("style-override"); \
-		if (it) \
-			for (const auto &[key, val] : it->get_object()) \
+		if (it != obj.end()) \
+			for (const auto &[key, val] : it->second.get<object>()) \
 				addStyleProperty(style, key, val); \
 	} \
 
@@ -124,7 +126,7 @@ void ScreenBuilder::_parseStyles(lif::ui::Screen& screen, const json& stylesJSON
 		prevElemBounds = bounds; \
 	} \
 
-void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
+void ScreenBuilder::_addText(lif::ui::Screen& screen, const value& text) {
 	bool interactable = false, consecutive = false;
 	sf::Vector2f manualPosition(-1, -1);
 	std::string style_name = "default";
@@ -136,6 +138,8 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 
 	COMPUTE_STYLE_OVERRIDE(text)
 
+	auto textObj = text.get<object>();
+
 	// set shadow
 	newtxt->setShadowSpacing(3.5, 3);
 	newtxt->setFGColor(style.color);
@@ -145,13 +149,16 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 	// set font
 	newtxt->setFont(*lif::cache.loadFont(lif::getAsset("fonts", style.font)));
 	// set string
-	newtxt->setString(_maybeInsertDynamicText(text["string"].get_string()));
+	newtxt->setString(_maybeInsertDynamicText(textObj.find("string")->second.get<std::string>()));
 
 	// set position
 	COMPUTE_POSITION(newtxt)
 
 	if (interactable) {
-		const auto name = text["name"].get_string();
+		std::string name;
+		auto nameIt = textObj.find("name");
+		if (nameIt != textObj.end())
+			name = nameIt->second.get<std::string>();
 		screen.interactables[name] = std::make_unique<lif::ui::Interactable>(newtxt);
 	} else {
 		newtxt->setShadowSpacing(style.shadowSpacing, style.shadowSpacing);
@@ -159,7 +166,7 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const json& text) {
 	}
 }
 
-void ScreenBuilder::_addImage(lif::ui::Screen& screen, const json& image) {
+void ScreenBuilder::_addImage(lif::ui::Screen& screen, const value& image) {
 	bool interactable = false, consecutive = false;
 	sf::Vector2f manualPosition(-1, -1);
 	std::string style_name = "default";
@@ -172,22 +179,22 @@ void ScreenBuilder::_addImage(lif::ui::Screen& screen, const json& image) {
 	COMPUTE_STYLE_OVERRIDE(image)
 
 	// set string
-	newimg->setTexture(*lif::cache.loadTexture(lif::getAsset("graphics", image["src"].get_string())));
-	const auto size = image["size"];
-	newimg->setTextureRect(sf::IntRect(0, 0, size[0].get_integer(), size[1].get_integer()));
+	newimg->setTexture(*lif::cache.loadTexture(lif::getAsset("graphics", image.get<object>().find("src")->second.get<std::string>())));
+	const auto size = image.get<object>().find("size")->second.get<array>();
+	newimg->setTextureRect(sf::IntRect(0, 0, size[0].get<int64_t>(), size[1].get<int64_t>()));
 
 	// set position
 	COMPUTE_POSITION(newimg)
 
 	if (interactable) {
-		const auto name = image["name"].get_string();
+		const auto name = image.get<object>().find("name")->second.get<std::string>();
 		screen.interactables[name] = std::make_unique<lif::ui::Interactable>(newimg);
 	} else
 		screen.nonInteractables.emplace_back(newimg);
 }
 
-void ScreenBuilder::_addElement(lif::ui::Screen& screen, const json& element) {
-	const auto type = element["type"].get_string();
+void ScreenBuilder::_addElement(lif::ui::Screen& screen, const value& element) {
+	const auto type = element.get<object>().find("type")->second.get<std::string>();
 	if (type == "text")
 		_addText(screen, element);
 	else if (type == "image")
@@ -259,27 +266,32 @@ void ScreenBuilder::build(lif::ui::Screen& screen, const std::string& layoutFile
 	// See assets/screens/README for the layout format
 	const auto absname = lif::getAsset("screens", layoutFileName);
 	std::string fileContent = lif::readEntireFile(absname);
-	json screenJSON = tinyjson::parser::parse(fileContent.c_str());
+	value screenJSON;
+	std::string err = picojson::parse(screenJSON, fileContent);
+	if (!err.empty()) {
+		throw std::logic_error(err);
+	}
 
 	// top-level properties
-	screen.name = screenJSON["name"].get_string();
-	auto parent = screenJSON.find("parent");
-	if (parent && parent->type() != tinyjson::json_t::null)
-		screen.parent = parent->get_string();
+	auto screenObj = screenJSON.get<object>();
+	screen.name = screenObj["name"].get<std::string>();
+	auto parent = screenObj.find("parent");
+	if (parent != screenObj.end() && parent->second.is<std::string>())
+		screen.parent = parent->second.get<std::string>();
 	vAlign = "center";
 	{
-		auto it = screenJSON.find("v-align");
-		if (it)
-			vAlign = it->get_string();
+		auto it = screenObj.find("v-align");
+		if (it != screenObj.end())
+			vAlign = it->second.get<std::string>();
 	}
-	const auto bgSpritePath = lif::getAsset("graphics", screenJSON["bg"].get_string());
-	auto layoutJSON = screenJSON["layout"];
+	const auto bgSpritePath = lif::getAsset("graphics", screenObj["bg"].get<std::string>());
+	auto layoutJSON = screenObj["layout"].get<object>();
 
 	// styles
 	_parseStyles(screen, layoutJSON["styles"]);
 
 	// elements
-	for (const auto& element : layoutJSON["elements"].get_array())
+	for (const auto& element : layoutJSON["elements"].get<array>())
 		_addElement(screen, element);
 
 	// fix elements' align

@@ -7,22 +7,22 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <tinyjson.h>
+#include "json.hpp"
 
-using tinyjson::json;
+using namespace picojson;
 
-static json videoModeToJson(const sf::VideoMode& videoMode) {
-	return tinyjson::json_array {
-		json(int(videoMode.width)), json(int(videoMode.height)), json(int(videoMode.bitsPerPixel))
-	};
+static value videoModeToJson(const sf::VideoMode& videoMode) {
+	return value(value::array {
+		value(int64_t(videoMode.width)), value(int64_t(videoMode.height)), value(int64_t(videoMode.bitsPerPixel))
+	});
 }
 
-static sf::VideoMode videoModeFromJson(const json& json) {
-	const tinyjson::json_array& a = json.get_array();
+static sf::VideoMode videoModeFromJson(const value& json) {
+	const auto& a = json.get<array>();
 	sf::VideoMode vm;
-	vm.width = a[0].get_integer();
-	vm.height = a[1].get_integer();
-	vm.bitsPerPixel = a[2].get_integer();
+	vm.width = a[0].get<int64_t>();
+	vm.height = a[1].get<int64_t>();
+	vm.bitsPerPixel = a[2].get<int64_t>();
 	return vm;
 }
 
@@ -44,34 +44,34 @@ void lif::savePreferences(std::string fpath) {
 	}
 
 	// Serialize options into file
-	json out = tinyjson::json_object {};
+	auto out = picojson::value::object {};
 
-	out.add_member("nPlayers", lif::options.nPlayers);
-	out.add_member("musicVolume", static_cast<int>(100 * lif::options.musicVolume));
-	out.add_member("soundVolume", static_cast<int>(100 * lif::options.soundsVolume));
-	out.add_member("soundMuted", lif::options.soundsMute);
-	out.add_member("fullscreen", lif::options.fullscreen);
-	out.add_member("videoMode", videoModeToJson(lif::options.videoMode));
-	out.add_member("showFPS", lif::options.showFPS);
-	out.add_member("showGameTimer", lif::options.showGameTimer);
-	out.add_member("vsync", lif::options.vsync);
-	out.add_member("fpsLimit", lif::options.framerateLimit);
-	out.add_member("lang", lif::strFromLang(lif::curLang));
+	out["nPlayers"] = value(int64_t(lif::options.nPlayers));
+	out["musicVolume"] = value(int64_t(100 * lif::options.musicVolume));
+	out["soundVolume"] = value(int64_t(100 * lif::options.soundsVolume));
+	out["soundMuted"] = value(lif::options.soundsMute);
+	out["fullscreen"] = value(lif::options.fullscreen);
+	out["videoMode"] = value(videoModeToJson(lif::options.videoMode));
+	out["showFPS"] = value(lif::options.showFPS);
+	out["showGameTimer"] = value(lif::options.showGameTimer);
+	out["vsync"] = value(lif::options.vsync);
+	out["fpsLimit"] = value(int64_t(lif::options.framerateLimit));
+	out["lang"] = value(lif::strFromLang(lif::curLang));
 
-	out.add_member("controls", tinyjson::json_array {});
+	out["controls"] = value(value::array {});
 	for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
-		out["controls"].add_element(tinyjson::json_object {
-			{ "up", lif::controls::players[i][lif::controls::CTRL_UP] },
-			{ "down", lif::controls::players[i][lif::controls::CTRL_DOWN] },
-			{ "right", lif::controls::players[i][lif::controls::CTRL_RIGHT] },
-			{ "left", lif::controls::players[i][lif::controls::CTRL_LEFT] },
-			{ "bomb", lif::controls::players[i][lif::controls::CTRL_BOMB] },
-			{ "joyBomb", int(lif::controls::joystickBombKey[i]) },
-			{ "useJoystick", lif::controls::useJoystick[i] },
-		});
+		out["controls"].get<array>().push_back(value(value::object {
+			{ "up", value(int64_t(lif::controls::players[i][lif::controls::CTRL_UP])) },
+			{ "down", value(int64_t(lif::controls::players[i][lif::controls::CTRL_DOWN])) },
+			{ "right", value(int64_t(lif::controls::players[i][lif::controls::CTRL_RIGHT])) },
+			{ "left", value(int64_t(lif::controls::players[i][lif::controls::CTRL_LEFT])) },
+			{ "bomb", value(int64_t(lif::controls::players[i][lif::controls::CTRL_BOMB])) },
+			{ "joyBomb", value(int64_t(int(lif::controls::joystickBombKey[i]))) },
+			{ "useJoystick", value(int64_t(lif::controls::useJoystick[i])) },
+		}));
 	}
 
-	file << out.to_string() << "\n";
+	file << value(out).serialize() << "\n";
 
 	std::cerr << "[ INFO ] saved preferences in " << fpath << ".\n";
 }
@@ -85,29 +85,34 @@ void lif::loadPreferences(std::string fpath) {
 
 	// TODO: validate input
 	try {
-		json in = tinyjson::parser::parse(prefsStr.c_str());
+		value inJson;
+		auto err = picojson::parse(inJson, prefsStr);
+		if (!err.empty())
+			throw std::logic_error(err);
 
-		lif::options.nPlayers = lif::clamp<int>(in["nPlayers"].get_integer(), 1, lif::MAX_PLAYERS);
-		lif::options.musicVolume = in["musicVolume"].get_integer() * 0.01f;
-		lif::options.soundsVolume = in["soundVolume"].get_integer() * 0.01f;
-		lif::options.soundsMute = in["soundMuted"].get_bool();
-		lif::options.fullscreen = in["fullscreen"].get_bool();
+		auto in = inJson.get<object>();
+
+		lif::options.nPlayers = lif::clamp<int>(in["nPlayers"].get<int64_t>(), 1, lif::MAX_PLAYERS);
+		lif::options.musicVolume = in["musicVolume"].get<int64_t>() * 0.01f;
+		lif::options.soundsVolume = in["soundVolume"].get<int64_t>() * 0.01f;
+		lif::options.soundsMute = in["soundMuted"].get<bool>();
+		lif::options.fullscreen = in["fullscreen"].get<bool>();
 		lif::options.videoMode = videoModeFromJson(in["videoMode"]);
-		lif::options.showFPS = in["showFPS"].get_bool();
-		lif::options.showGameTimer = in["showGameTimer"].get_bool();
-		lif::options.vsync = in["vsync"].get_bool();
-		lif::options.framerateLimit = in["fpsLimit"].get_integer();
-		lif::curLang = lif::langFromStr(in["lang"].get_string());
+		lif::options.showFPS = in["showFPS"].get<bool>();
+		lif::options.showGameTimer = in["showGameTimer"].get<bool>();
+		lif::options.vsync = in["vsync"].get<bool>();
+		lif::options.framerateLimit = in["fpsLimit"].get<int64_t>();
+		lif::curLang = lif::langFromStr(in["lang"].get<std::string>());
 
 		for (unsigned i = 0; i < lif::MAX_PLAYERS; ++i) {
-			const auto& ctrls = in["controls"][i];
-			lif::controls::players[i][lif::controls::CTRL_UP] = static_cast<sf::Keyboard::Key>(ctrls["up"].get_integer());
-			lif::controls::players[i][lif::controls::CTRL_DOWN] = static_cast<sf::Keyboard::Key>(ctrls["down"].get_integer());
-			lif::controls::players[i][lif::controls::CTRL_LEFT] = static_cast<sf::Keyboard::Key>(ctrls["left"].get_integer());
-			lif::controls::players[i][lif::controls::CTRL_RIGHT] = static_cast<sf::Keyboard::Key>(ctrls["right"].get_integer());
-			lif::controls::players[i][lif::controls::CTRL_BOMB] = static_cast<sf::Keyboard::Key>(ctrls["bomb"].get_integer());
-			lif::controls::joystickBombKey[i] = static_cast<sf::Keyboard::Key>(ctrls["joyBomb"].get_integer());
-			lif::controls::useJoystick[i] = static_cast<sf::Keyboard::Key>(ctrls["useJoystick"].get_integer());
+			const auto& ctrls = in["controls"].get<array>()[i].get<object>();
+			lif::controls::players[i][lif::controls::CTRL_UP] = static_cast<sf::Keyboard::Key>(get_or<int64_t>(ctrls, "up"));
+			lif::controls::players[i][lif::controls::CTRL_DOWN] = static_cast<sf::Keyboard::Key>(get_or<int64_t>(ctrls, "down"));
+			lif::controls::players[i][lif::controls::CTRL_LEFT] = static_cast<sf::Keyboard::Key>(get_or<int64_t>(ctrls, "left"));
+			lif::controls::players[i][lif::controls::CTRL_RIGHT] = static_cast<sf::Keyboard::Key>(get_or<int64_t>(ctrls, "right"));
+			lif::controls::players[i][lif::controls::CTRL_BOMB] = static_cast<sf::Keyboard::Key>(get_or<int64_t>(ctrls, "bomb"));
+			lif::controls::joystickBombKey[i] = static_cast<sf::Keyboard::Key>(get_or<int64_t>(ctrls, "joyBomb"));
+			lif::controls::useJoystick[i] = static_cast<sf::Keyboard::Key>(get_or<int64_t>(ctrls, "useJoystick"));
 		}
 
 	} catch (const std::exception& e) {
