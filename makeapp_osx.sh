@@ -40,6 +40,30 @@ sed -i '' "s/CHANGEME_SW_VERSION/$sw_version/" "BOOM Remake.app/Contents/Info.pl
 
 echo -n "APPL????" > "BOOM Remake.app/Contents/PkgInfo"
 
-hdiutil create -fs HFS+ -srcfolder "BOOM Remake.app" -volname "BOOM Remake $sw_version" "BOOM-Remake-$sw_version-mac.dmg"
+hdiutil_attempts=0
+hdiutil_max_attempts=10
+
+while true; do
+	hdiutil create -fs HFS+ -srcfolder "BOOM Remake.app" -volname "BOOM Remake $sw_version" "BOOM-Remake-$sw_version-mac.dmg"
+	exit_code=$?
+	(( hdiutil_attempts++ ))
+
+	case "$exit_code" in
+		0)
+			break
+			;;
+		16)
+			if [ "$hdiutil_attempts" -eq "$hdiutil_max_attempts" ]; then
+				exit 16
+			else
+				sleep $((1 * (2 ** hdiutil_attempts)))
+			fi
+
+			;;
+		*)
+			exit "$exit_code"
+			;;
+	esac
+done
 
 rm -r "BOOM Remake.app"
