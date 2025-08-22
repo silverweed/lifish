@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: boom
+          ref: ${{ github.ref_name }}
 
       - name: Get release tag
         id: get-release-tag
