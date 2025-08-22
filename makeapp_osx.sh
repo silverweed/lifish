@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+sw_version="$1"
+if [ -z "$sw_version" ]; then
+	echo "Usage: $0 sw_version"
+	exit 1
+fi
+
 set -xe
 
 sfml_version="2.6.2"
@@ -20,8 +26,6 @@ popd
 
 cmake -S . -B build -DRELEASE=true
 cmake --build build -j "$(sysctl -n hw.logicalcpu)"
-
-sw_version="1.8.2"
 
 mkdir -p "BOOM Remake.app"/Contents/{MacOS,Resources,Frameworks}
 
