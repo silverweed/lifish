@@ -70,7 +70,7 @@ jobs:
 
       - name: Compile macOS universal app and upload file to release
         run: |
-          ./makeapp_osx.sh
+          ./makeapp_osx.sh ${{ needs.create-new-release.outputs.latest_tag }}
           openssl sha256 BOOM-Remake-*-mac.dmg
           gh release upload "$LATEST_TAG" BOOM-Remake-*-mac.dmg
 
@@ -101,7 +101,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y desktop-file-utils libsfml-dev
-          ./makeapp_linux.sh
+          ./makeapp_linux.sh ${{ needs.create-new-release.outputs.latest_tag }}
           openssl sha256 BOOM-Remake-*-linux-${{ matrix.platform.name }}.AppImage
           gh release upload "$LATEST_TAG" BOOM-Remake-*-linux-${{ matrix.platform.name }}.AppImage
 

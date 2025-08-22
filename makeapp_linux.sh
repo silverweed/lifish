@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
+sw_version="$1"
+if [ -z "$sw_version" ]; then
+	echo "Usage: $0 sw_version"
+	exit 1
+fi
+
 set -xe
 
 system_arch="$(uname -m)"
-
-sw_version="1.8.2"
 
 # These are rolling versions, it shouldn't be assumed that a subsequent build will use the same tool and runtime code
 appimagetool_version="continuous"
