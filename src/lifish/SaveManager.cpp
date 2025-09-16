@@ -54,7 +54,7 @@ bool SaveManager::saveGame(const std::string& filename, const lif::LevelManager&
 			{ "life", value(int64_t(player->get<lif::Lifed>()->getLife())) },
 			{ "powers",
 				value(value::object {{
-					{ "bombFuseTime",   value(double(powers.bombFuseTime.asSeconds())) },
+					{ "bombFuseTime",   value(double(powers.bombFuseTime.asMilliseconds())) },
 					{ "bombRadius",     value(int64_t(powers.bombRadius)) },
 					{ "maxBombs",       value(int64_t(powers.maxBombs)) }
 				}})
@@ -95,7 +95,7 @@ lif::SaveData SaveManager::loadGame(const std::string& filename) {
 			player.life = get_or<int64_t>(pldata, "life");
 			const auto& powdata = pldata.find("powers")->second.get<object>();
 			player.powers.bombRadius = get_or<int64_t>(powdata, "bombRadius");
-			player.powers.bombFuseTime = sf::seconds(get_or<double>(powdata, "bombFuseTime"));
+			player.powers.bombFuseTime = sf::milliseconds(get_or<double>(powdata, "bombFuseTime"));
 			player.powers.maxBombs = get_or<int64_t>(powdata, "maxBombs");
 			const auto& exdata = get_or<array>(pldata, "extra");
 			for (unsigned j = 0; j < player.letters.size(); ++j)
