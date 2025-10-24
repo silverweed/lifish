@@ -41,7 +41,7 @@ lifish_hash = {
 	"tracks" => [
 		{
 			"name" => "DMZ beat",
-			"author" => "Giacomo Parolini",
+			"author" => "silverweed",
 			"loop" => {
 				"start" => 7.386,
 				"length" => 44.279
@@ -49,7 +49,7 @@ lifish_hash = {
 		},
 		{
 			"name" => "Spirit Party",
-			"author" => "Luca Barazzetta",
+			"author" => "L.B.",
 			"loop" => {
 				"start" => 3.428,
 				"length" => 106.3
@@ -57,7 +57,7 @@ lifish_hash = {
 		},
 		{
 			"name" => "Tick Tock",
-			"author" => "Luca Barazzetta",
+			"author" => "L.B.",
 			"loop" => {
 				"start" => 3.428,
 				"length" => 96.0

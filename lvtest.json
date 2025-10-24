@@ -1,13 +1,13 @@
 {
 	"name": "Converted BOOM levels",
-	"author": "Federico Filipponi",
+	"author": "silverweed",
 	"difficulty": "average",
 	"created": "2019-09-01 11:18:21 +0200",
 	"comment": "Created with LifishEdit 0.8.2",
 	"tracks": [
 		{
 			"name": "DMZ beat",
-			"author": "Giacomo Parolini",
+			"author": "silverweed",
 			"loop": {
 				"start": 7.386,
 				"length": 44.279
@@ -15,7 +15,7 @@
 		},
 		{
 			"name": "Spirit Party",
-			"author": "Luca Barazzetta",
+			"author": "L.B.",
 			"loop": {
 				"start": 3.428,
 				"length": 106.3
@@ -23,7 +23,7 @@
 		},
 		{
 			"name": "Tick Tock",
-			"author": "Luca Barazzetta",
+			"author": "L.B.",
 			"loop": {
 				"start": 3.428,
 				"length": 96.0
