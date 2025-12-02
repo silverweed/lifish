@@ -32,7 +32,7 @@
 
 #include <SFML/System/Clock.hpp>
 
-// Slightly modified by G. Parolini
+// Slightly modified by silverweed
 
 /*!
  @namespace sftools
