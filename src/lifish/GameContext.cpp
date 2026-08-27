@@ -111,7 +111,7 @@ void GameContext::update() {
 			// Handle cutscenePost
 			if (level->getInfo().cutscenePost.length() > 0)
 				newContext = lif::CTX_CUTSCENE;
-			else if (level->getInfo().levelnum < ls.getLevelsNum() - 1)
+			else if (level->getInfo().levelnum < ls.getLevelsNum())
 				newContext = lif::CTX_INTERLEVEL;
 			return;
 		}
@@ -258,6 +258,7 @@ void GameContext::_resurrectDeadPlayers() {
 				auto player = std::make_shared<Player>(sf::Vector2f(0, 0), i + 1);
 				player->get<lif::Controllable>()->setWindow(window);
 				lm.setPlayer(i + 1, player);
+				lm.resetScore(i + 1);
 			} else {
 				lm.removePlayer(i + 1);
 			}

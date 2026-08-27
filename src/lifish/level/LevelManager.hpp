@@ -122,6 +122,7 @@ public:
 	int addScore(int id, int amt);
 	void addScoreToAll(int amt);
 	int getScore(int id) const;
+	void resetScore(int id);
 
 	short getPlayerContinues(int id) const;
 	void setPlayerContinues(int id, int amt);

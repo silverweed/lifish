@@ -442,6 +442,11 @@ int LevelManager::getScore(int id) const {
 	return score[id - 1];
 }
 
+void LevelManager::resetScore(int id) {
+	assert(0 < id && id <= lif::MAX_PLAYERS);
+	score[id - 1] = 0;
+}
+
 short LevelManager::getPlayerContinues(int id) const {
 	assert(0 < id && id <= lif::MAX_PLAYERS);
 	return playerContinues[id - 1];
