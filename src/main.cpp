@@ -204,6 +204,9 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	// Preload all assets
+	lif::cache.preloadAllAssets();
+
 #ifndef RELEASE
 	// Create debug utils
 	lif::debug::DebugPainter debugPainter;

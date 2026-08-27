@@ -2,6 +2,7 @@
 
 #include "sid.hpp"
 #include <SFML/Audio.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System/NonCopyable.hpp>
 #include <list>
@@ -44,6 +45,8 @@ public:
 	 */
 	sf::Texture* loadTexture(const std::string& textureName);
 
+	sf::SoundBuffer* loadSoundBuffer(const std::string& soundName);
+
 	/** Tries to load `sound_name` into `sound`; if `sound_name` is already
 	 *  in the cache, load it from there; else, load from file and put the
 	 *  loaded soundbuffer into the cache.
@@ -71,6 +74,12 @@ public:
 	 *  automatic cleanup.
 	 */
 	void finalize();
+
+	/** Since we only have like 17M worth of assets, preload all of them at the start
+	 *  rather than lazily. This prevents hitches that were observed when playing the game
+	 *  on a slow disk.
+	 */
+	void preloadAllAssets();
 };
 
 }
