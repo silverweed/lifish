@@ -83,8 +83,10 @@ void Bullet::_destroy() {
 		animatedSprite.stop();
 		animated->setAnimation("destroy");
 		animatedSprite.play();
-		position.x -= (TILE_SIZE - data.size) / 2;
-		position.y -= (TILE_SIZE - data.size) / 2;
+		auto spritePos = animatedSprite.getPosition();
+		spritePos.x -= (TILE_SIZE - data.size) / 2;
+		spritePos.y -= (TILE_SIZE - data.size) / 2;
+		animated->setPosition(spritePos);
 	}
 }
 
