@@ -1,5 +1,6 @@
 #include "Controllable.hpp"
 #include "AxisMoving.hpp"
+#include "Time.hpp"
 #include "input_utils.hpp"
 #include <exception>
 
@@ -70,6 +71,11 @@ void Controllable::update() {
 				usedBomb = true;
 		}
 	}
+
+	if (dir == lif::Direction::NONE)
+		attemptingToMoveForSeconds = 0.f;
+	else
+		attemptingToMoveForSeconds += lif::time.getDelta().asSeconds();
 
 	if (owner.isAligned())// || dir == lif::oppositeDirection(moving->getDirection()))
 		moving->setDirection(dir);

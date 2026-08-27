@@ -28,6 +28,11 @@ class Controllable : public lif::Component {
 
 	lif::AxisMoving *moving = nullptr;
 
+	/** How long the player has been attempting to move for. Gets reset every time the player releases
+	 *  the move button.
+	 */
+	float attemptingToMoveForSeconds = 0.f;
+
 	void _queueBombCommand();
 public:
 	explicit Controllable(lif::Entity& owner,
@@ -43,6 +48,9 @@ public:
 	bool hasFocus() const { return window != nullptr && window->hasFocus(); }
 
 	void disableFor(const sf::Time& time) { disableTime = time; disableClock.restart(); }
+
+	float getAttemptingToMoveForSeconds() const { return attemptingToMoveForSeconds; }
+	void resetAttemptingToMoveForSeconds() { attemptingToMoveForSeconds = 0.f; }
 
 	bool hasQueuedBombCommand() const;
 };

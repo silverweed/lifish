@@ -15,6 +15,11 @@ class TeleportSystem final {
 	std::vector<lif::Teleport*> teleports;
 	/** Countdown to activation. If Zero, the teleport is active. */
 	std::vector<sf::Time> inactiveTime;
+	/** For each teleport, may contain the player that just teleported to it.
+	 *  This is only done for players because they only get teleported again
+	 *  if they're moving for long enough (this is to prevent them from getting
+	 *  stuck in 1x1 teleporter tiles.)
+	 */
 	std::vector<std::weak_ptr<lif::Collider>> justTeleportedTo;
 
 	void _updateActive(unsigned id);

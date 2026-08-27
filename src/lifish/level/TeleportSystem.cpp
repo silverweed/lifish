@@ -2,6 +2,7 @@
 #include "Animated.hpp"
 #include "AxisMoving.hpp"
 #include "Collider.hpp"
+#include "Controllable.hpp"
 #include "Teleport.hpp"
 #include "Time.hpp"
 #include "Warpable.hpp"
@@ -60,7 +61,15 @@ void TeleportSystem::_updateActive(unsigned tpIdx) {
 	auto colliding = collider->getColliding();
 	std::weak_ptr<lif::Collider> collided;
 	for (auto& cld : colliding) {
-		if (!cld.expired() && cld.lock() != justTeleportedTo[tpIdx].lock()) {
+		if (!cld.expired()) {
+			// Special case for players: if they just teleported, don't try to teleport them back
+			// unless they're actively moving
+			auto cldShd = cld.lock();
+			if (cldShd == justTeleportedTo[tpIdx].lock()) {
+				auto controllable = cldShd->getOwner().get<lif::Controllable>();
+				if (controllable->getAttemptingToMoveForSeconds() < 1.f)
+					continue;
+			}
 			collided = cld;
 			break;
 		}
@@ -94,8 +103,11 @@ void TeleportSystem::_updateActive(unsigned tpIdx) {
 	entity.setPosition(warpedPos);
 	if (auto am = entity.get<lif::AxisMoving>()) {
 		am->setPrevAlign(lif::tile(warpedPos));
-		if (shCollided->getLayer() == lif::c_layers::PLAYERS)
+		if (shCollided->getLayer() == lif::c_layers::PLAYERS) {
 			am->stop();
+			auto ctrl = entity.get<lif::Controllable>();
+			ctrl->resetAttemptingToMoveForSeconds();
+		}
 	}
 
 	// Disable both starting and ending teleport
