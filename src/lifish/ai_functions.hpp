@@ -7,7 +7,7 @@
 
 namespace lif {
 
-constexpr unsigned short AI_FUNCTIONS_NUM = 6;
+constexpr unsigned short AI_FUNCTIONS_NUM = 5;
 
 extern const std::array<lif::AIFunction, lif::AI_FUNCTIONS_NUM> ai_functions;
 
@@ -34,8 +34,5 @@ lif::AIBoundFunction ai_follow(lif::Entity& enemy);
  *  ai_follow behaviour.
  */
 lif::AIBoundFunction ai_follow_dash(lif::Entity& enemy);
-
-/** Actively chase the nearest player */
-lif::AIBoundFunction ai_chase(lif::Entity& enemy);
 
 } // end namespace lif

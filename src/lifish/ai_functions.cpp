@@ -26,7 +26,6 @@ const std::array<lif::AIFunction, lif::AI_FUNCTIONS_NUM> lif::ai_functions = {{
 	lif::ai_random_forward_haunt,
 	lif::ai_follow,
 	lif::ai_follow_dash,
-	lif::ai_chase,
 }};
 
 AIBoundFunction lif::ai_random(lif::Entity& entity) {
@@ -95,7 +94,7 @@ AIBoundFunction lif::ai_random_forward(lif::Entity& entity) {
 		// Note: this `if` prevents the entity to change direction twice in a row even
 		// when it shouldn't (due to the fact that, if its movement is less than 1px/frame,
 		// it may be considered "aligned" again after changing direction.)
-		if (moving->getDistTravelled() > 3 || moving->getDistTravelled() == 0) {
+		if (moving->getDistTravelled() > lif::TILE_SIZE / 2 || moving->getDistTravelled() == 0) {
 			collider->reset();
 			NEW_DIRECTION(selectRandomViable(*moving, lm, opp))
 		} else {
@@ -159,7 +158,7 @@ AIBoundFunction lif::ai_follow(lif::Entity& entity) {
 	const auto sighted = entity.get<lif::AxisSighted>();
 	const auto warpable = entity.get<lif::Warpable>();
 	if (moving == nullptr || collider == nullptr || sighted == nullptr)
-		throw std::invalid_argument("Entity passed to ai_random_forward_haunt has no Moving"
+		throw std::invalid_argument("Entity passed to ai_follow has no Moving"
 				", Collider or AxisSighted component!");
 	moving->setAutoRealign(false);
 	moving->setDistTravelled(3);
@@ -176,20 +175,13 @@ AIBoundFunction lif::ai_follow(lif::Entity& entity) {
 
 		auto sp = seeingPlayer(lm, *sighted);
 		if (sp != lif::Direction::NONE) {
-			//auto shooting = entity.get<lif::Shooting>();
-			//if (shooting != nullptr && !shooting->isRecharging()) {
-				//auto sounded = entity.get<lif::Sounded>();
-				//if (sounded != nullptr) {
-					//lif::cache.playSound(sounded->getSoundFile("yell"));
-				//}
-			//}
 			NEW_DIRECTION(sp)
 		}
 
 		if (warpable && warpable->justWarped())
 			NEW_DIRECTION(selectRandomViable(*moving, lm, opp, lif::ai::OPPOSITE_NOT_LAST_CHOICE))
 
-		if (moving->getDistTravelled() > 1 || moving->getDistTravelled() == 0) {
+		if (moving->getDistTravelled() > lif::TILE_SIZE / 2 || moving->getDistTravelled() == 0) {
 			collider->reset();
 			NEW_DIRECTION(selectRandomViable(*moving, lm, opp))
 		} else {
@@ -254,9 +246,4 @@ AIBoundFunction lif::ai_follow_dash(lif::Entity& entity) {
 			SAME_DIRECTION
 		}
 	};
-}
-
-AIBoundFunction lif::ai_chase(lif::Entity& entity) {
-	// TODO
-	return ai_follow(entity);
 }
