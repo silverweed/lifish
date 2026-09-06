@@ -20,6 +20,7 @@
 #include "conf/zindex.hpp"
 #include "game.hpp"
 #include <cassert>
+#include <numeric>
 
 using lif::Boss;
 using lif::TILE_SIZE;

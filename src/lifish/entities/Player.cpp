@@ -23,6 +23,7 @@
 #include "utils.hpp"
 #include <SFML/Graphics/Rect.hpp>
 #include <iostream>
+#include <numeric>
 
 using lif::Player;
 using lif::TILE_SIZE;
