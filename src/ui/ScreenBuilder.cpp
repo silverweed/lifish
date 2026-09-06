@@ -266,7 +266,7 @@ void ScreenBuilder::build(lif::ui::Screen& screen, const std::string& layoutFile
 	if (screen.wasBuilt())
 		throw std::logic_error("screen passed to ScreenBuilder has already been built!");
 
-	// See ass)ets/screens/README for the layout format
+	// See assets/screens/README for the layout format
 	const auto absname = lif::getAsset("screens", layoutFileName);
 	std::string fileContent = lif::readEntireFile(absname);
 	value screenJSON;
