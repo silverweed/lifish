@@ -114,7 +114,7 @@ bool LevelSet::loadFromFile(const std::string& path) {
 
 		// Optional fields
 		enemies[enemynum].attack.bulletId = get_or<int64_t>(atk, "id");
-		enemies[enemynum].attack.contactDamage = get_or<int64_t>(atk, "contactDamage");
+		enemies[enemynum].attack.contactDamage = get_or<int64_t>(atk, "contactDamage", 1);
 		enemies[enemynum].attack.fireRate = get_or<double>(atk, "fireRate");
 		enemies[enemynum].attack.blockTime = sf::milliseconds(get_or<double>(atk, "blockTime"));
 
