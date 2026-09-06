@@ -78,9 +78,9 @@ void ScreenBuilder::_parseStyles(lif::ui::Screen& screen, const value& stylesJSO
 	{ \
 		auto obj = obj_.get<object>(); \
 		auto it = obj.find("interactable"); \
-		interactable = it != obj.end() && it->second.is<bool>(); \
+		interactable = it != obj.end() && it->second.get<bool>(); \
 		it = obj.find("consecutive"); \
-		consecutive = it != obj.end() && it->second.is<bool>(); \
+		consecutive = it != obj.end() && it->second.get<bool>(); \
 		it = obj.find("style"); \
 		if (it != obj.end()) \
 			style_name = it->second.get<std::string>(); \
@@ -159,6 +159,8 @@ void ScreenBuilder::_addText(lif::ui::Screen& screen, const value& text) {
 		auto nameIt = textObj.find("name");
 		if (nameIt != textObj.end())
 			name = nameIt->second.get<std::string>();
+		// All interactable names must be unique!
+		assert(screen.interactables.find(name) == screen.interactables.end());
 		screen.interactables[name] = std::make_unique<lif::ui::Interactable>(newtxt);
 	} else {
 		newtxt->setShadowSpacing(style.shadowSpacing, style.shadowSpacing);
@@ -188,6 +190,8 @@ void ScreenBuilder::_addImage(lif::ui::Screen& screen, const value& image) {
 
 	if (interactable) {
 		const auto name = image.get<object>().find("name")->second.get<std::string>();
+		// All interactable names must be unique!
+		assert(screen.interactables.find(name) == screen.interactables.end());
 		screen.interactables[name] = std::make_unique<lif::ui::Interactable>(newimg);
 	} else
 		screen.nonInteractables.emplace_back(newimg);
@@ -209,19 +213,18 @@ void ScreenBuilder::_fixAlign(lif::ui::Screen& screen) {
 				: vAlign == "bottom" ? (screen.size.y - totHeight - V_PADDING)
 				: (screen.size.y - totHeight) / 2;
 
-	for (auto& pair : toBeAligned) {
-		auto& e = pair.first;
-		if (!e)
+	for (auto [drawable, row] : toBeAligned) {
+		if (!drawable)
 			continue;
-		unsigned row = pair.second;
 		const float xOffset = rowAligns[row] == "left" ? H_PADDING
 					: rowAligns[row] == "right" ? (screen.size.x - rowWidths[row] - H_PADDING)
 					: (screen.size.x - rowWidths[row]) / 2;
 
-		if (auto text = dynamic_cast<lif::ShadedText*>(e)) {
+		if (auto text = dynamic_cast<lif::ShadedText*>(drawable)) {
 			text->setPosition(text->getPosition() + sf::Vector2f(xOffset, yOffset));
 		} else {
-			auto sprite = static_cast<sf::Sprite*>(e);
+			assert(dynamic_cast<sf::Sprite*>(drawable));
+			auto sprite = static_cast<sf::Sprite*>(drawable);
 			sprite->setPosition(sprite->getPosition() + sf::Vector2f(xOffset, yOffset));
 		}
 	}
@@ -263,7 +266,7 @@ void ScreenBuilder::build(lif::ui::Screen& screen, const std::string& layoutFile
 	if (screen.wasBuilt())
 		throw std::logic_error("screen passed to ScreenBuilder has already been built!");
 
-	// See assets/screens/README for the layout format
+	// See ass)ets/screens/README for the layout format
 	const auto absname = lif::getAsset("screens", layoutFileName);
 	std::string fileContent = lif::readEntireFile(absname);
 	value screenJSON;
