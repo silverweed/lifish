@@ -68,7 +68,8 @@
 				"type": "text",
 				"string": "{{FULL_VERSION}}",
 				"style": "version",
-				"position": [ 5, -18 ]
+				"position": [ 5, -18 ],
+				"interactable": false
 			}
 		]
 	}

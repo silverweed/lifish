@@ -1,6 +1,7 @@
 #pragma once
 
 #include <exception>
+#include <variant>
 #include <SFML/Graphics.hpp>
 #include "ShadedText.hpp"
 
@@ -12,92 +13,69 @@ namespace ui {
  *  lif::ShadedText and sf::Sprite
  */
 class Interactable : public sf::Drawable, public lif::WithOrigin {
-	enum class Type {
-		TEXT, SPRITE
-	};
-	union {
-		lif::ShadedText *text = nullptr;
-		sf::Sprite *sprite;
-	};
-	const Type type;
+	std::variant<std::unique_ptr<lif::ShadedText>, std::unique_ptr<sf::Sprite>> inner;
 
 public:
-	explicit Interactable(lif::ShadedText *text)
-		: text(text)
-		, type(Type::TEXT)
+	template <typename T>
+	explicit Interactable(T* x)
+		: inner(std::unique_ptr<T>(x))
 	{}
-	explicit Interactable(sf::Sprite *sprite)
-		: sprite(sprite)
-		, type(Type::SPRITE)
-	{}
-	~Interactable() {
-		switch (type) {
-		case Type::TEXT: delete text; return;
-		case Type::SPRITE: delete sprite; return;
-		}
-	}
 
 	void setPosition(const sf::Vector2f& pos) {
-		switch (type) {
-		case Type::TEXT: text->setPosition(pos); return;
-		case Type::SPRITE: sprite->setPosition(pos); return;
-		}
+		if (auto *text = std::get_if<std::unique_ptr<lif::ShadedText>>(&inner)) 
+			(*text)->setPosition(pos);
+		else 
+			std::get<std::unique_ptr<sf::Sprite>>(inner)->setPosition(pos);
 	}
 
 	void setColor(sf::Color color) {
-		switch (type) {
-		case Type::TEXT: text->setFGColor(color); return;
-		case Type::SPRITE: sprite->setColor(color); return;
-		}
+		if (auto *text = std::get_if<std::unique_ptr<lif::ShadedText>>(&inner)) 
+			(*text)->setFGColor(color);
+		else 
+			std::get<std::unique_ptr<sf::Sprite>>(inner)->setColor(color);
 	}
 
 	sf::Vector2f getPosition() const {
-		switch (type) {
-		case Type::TEXT: return text->getPosition();
-		case Type::SPRITE: return sprite->getPosition();
-		}
-		return sf::Vector2f(0, 0);
+		if (auto *text = std::get_if<std::unique_ptr<lif::ShadedText>>(&inner)) 
+			return (*text)->getPosition();
+		else 
+			return std::get<std::unique_ptr<sf::Sprite>>(inner)->getPosition();
 	}
 
 	sf::FloatRect getGlobalBounds() const {
-		switch (type) {
-		case Type::TEXT: return text->getGlobalBounds();
-		case Type::SPRITE: return sprite->getGlobalBounds();
-		}
-		return sf::FloatRect(0, 0, 0, 0);
+		if (auto *text = std::get_if<std::unique_ptr<lif::ShadedText>>(&inner)) 
+			return (*text)->getGlobalBounds();
+		else 
+			return std::get<std::unique_ptr<sf::Sprite>>(inner)->getGlobalBounds();
 	}
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override {
-		switch (type) {
-		case Type::TEXT: target.draw(*text, states); return;
-		case Type::SPRITE: target.draw(*sprite, states);  return;
-		}
+		if (auto *text = std::get_if<std::unique_ptr<lif::ShadedText>>(&inner)) 
+			target.draw(**text, states);
+		else 
+			target.draw(*std::get<std::unique_ptr<sf::Sprite>>(inner), states);
 	}
 
 	void setOrigin(const sf::Vector2f& pos) override {
-		switch (type) {
-		case Type::TEXT: text->setOrigin(pos); return;
-		case Type::SPRITE: sprite->setOrigin(pos); return;
-		}
+		if (auto *text = std::get_if<std::unique_ptr<lif::ShadedText>>(&inner)) 
+			(*text)->setOrigin(pos);
+		else 
+			std::get<std::unique_ptr<sf::Sprite>>(inner)->setOrigin(pos);
 	}
 
 	lif::ShadedText* getText() const {
-		if (type != Type::TEXT)
-			throw std::bad_cast();
-		return text;
+		return std::get<std::unique_ptr<lif::ShadedText>>(inner).get();
 	}
 
 	sf::Sprite* getSprite() const {
-		if (type != Type::SPRITE)
-			throw std::bad_cast();
-		return sprite;
+		return std::get<std::unique_ptr<sf::Sprite>>(inner).get();
 	}
 
 	void setScale(float x, float y) {
-		switch (type) {
-		case Type::TEXT: text->setScale(x, y); return;
-		case Type::SPRITE: sprite->setScale(x, y); return;
-		}
+		if (auto *text = std::get_if<std::unique_ptr<lif::ShadedText>>(&inner)) 
+			(*text)->setScale(x, y);
+		else 
+			std::get<std::unique_ptr<sf::Sprite>>(inner)->setScale(x, y);
 	}
 };
 
