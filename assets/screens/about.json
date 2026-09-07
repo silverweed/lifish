@@ -50,7 +50,7 @@
 			},
 			{
 				"type": "text",
-				"string": "Lifish - (c) 2024 silverweed\nLifish is free software, licensed under\nthe Lifish License\n(silverweed.github.io/lifish-license.txt)\nThis game uses the Lifish engine to create\na clone of \"BOOM\" by Federico Filipponi.\nCreated by silverweed.\n\nContact: silverweed14@proton.me\nCode: https://codeberg.org/silverweed/lifish\n"
+				"string": "BOOM Remake - (c) 2026 silverweed\nBOOM Remake is free software, licensed under\nthe Lifish License\n(silverweed.work/blog/lifish-license.txt)\nThis game is a recreation from scratch of\n\"BOOM\" by Federico Filipponi (Factor Software).\nCreated by silverweed.\n\nContact: silverweed14@proton.me\nCode: https://github.com/silverweed/lifish\n"
 			},
 			{
 				"type": "text",

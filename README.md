@@ -1,7 +1,7 @@
-<img src="https://silverweed.github.io/assets/img/boom/boom_screen1.png" style='height: 300px'/>
+<img src="https://silverweed.work/blog/assets/img/boom/boom_screen1.png" style='height: 300px'/>
 
 ## ABOUT ##
-This is the branch of Lifish that contains the code for [BOOM Remake](https://silverweed.github.io/boom), a faithful remake of the original BOOM game.
+This is the branch of Lifish that contains the code for [BOOM Remake](https://silverweed.work/blog/boom), a faithful remake of the original BOOM game.
 
 Lifish was a work-in-progress arcade game inspired by BOOM, but that project is currently in indefinite hiatus. The `boom` branch is the one that's still being occasionally updated, mostly for bugfixing, as BOOM Remake is already complete.
 
@@ -15,7 +15,7 @@ BOOM Remake is known to work on the following platforms:
 * macOS Intel (>= 10.15) and Apple Silicon (>= 11)
 
 ### Binaries ###
-The latest "official" binaries are available [here](https://silverweed.github.io/boom/). The latest version in this repo may contain additional features that I haven't had time to polish and package yet in the release.
+The latest "official" binaries are available [here](https://silverweed.work/blog/boom/). The latest version in this repo may contain additional features that I haven't had time to polish and package yet in the release.
 
 ## Building ##
 

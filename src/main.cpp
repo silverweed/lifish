@@ -5,7 +5,7 @@
  * @see https://github.com/silverweed/lifish to download the source code
  *
  * This game is licensed under the Lifish License, available at
- * https://silverweed.github.io/lifish-license.txt
+ * https://silverweed.work/blog/lifish-license.txt
  * or in the LICENSE file in this repository's root directory.
 */
 #include "Bonusable.hpp"

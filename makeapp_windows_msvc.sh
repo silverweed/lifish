@@ -39,7 +39,7 @@ https://github.com/silverweed/lifish
 
 The game will only work on a 64bit Windows.
 
-Read the latest patch notes at https://silverweed.github.io/boom/
+Read the latest patch notes at https://silverweed.work/blog/boom/
 EOF
 
 popd
