@@ -20,7 +20,7 @@ if [ ! -f "$sfml_filename" ]; then
 fi
 
 pushd SFML
-cmake -S . -B build -DCMAKE_INSTALL_PREFIX=install -DCMAKE_OSX_DEPLOYMENT_TARGET="10.15" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DSFML_BUILD_FRAMEWORKS=TRUE
+cmake -S . -B build -DCMAKE_INSTALL_PREFIX=install -DCMAKE_OSX_DEPLOYMENT_TARGET="11.0" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DSFML_BUILD_FRAMEWORKS=TRUE
 cmake --build build --config Release --target install -j "$(sysctl -n hw.logicalcpu)"
 popd
 

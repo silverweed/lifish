@@ -12,7 +12,7 @@ BOOM Remake is known to work on the following platforms:
 
 * Windows 64 bit (>= 7)
 * Linux x86_64 and aarch64 (with non-ancient versions of `libc` and `libstdc++`)
-* macOS Intel (>= 10.15) and Apple Silicon (>= 11)
+* macOS Intel (>= 11) and Apple Silicon (>= 11)
 
 ### Binaries ###
 The latest "official" binaries are available [here](https://silverweed.work/blog/boom/). The latest version in this repo may contain additional features that I haven't had time to polish and package yet in the release.
